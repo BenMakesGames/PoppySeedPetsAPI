@@ -30,6 +30,18 @@ class Inventory
      */
     private $owner;
 
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     * @Groups({"myInventory"})
+     */
+    private $createdOn;
+
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     * @Groups({"myInventory"})
+     */
+    private $modifiedOn;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -55,6 +67,30 @@ class Inventory
     public function setOwner(?User $owner): self
     {
         $this->owner = $owner;
+
+        return $this;
+    }
+
+    public function getCreatedOn(): ?\DateTimeImmutable
+    {
+        return $this->createdOn;
+    }
+
+    public function setCreatedOn(\DateTimeImmutable $createdOn): self
+    {
+        $this->createdOn = $createdOn;
+
+        return $this;
+    }
+
+    public function getModifiedOn(): ?\DateTimeImmutable
+    {
+        return $this->modifiedOn;
+    }
+
+    public function setModifiedOn(\DateTimeImmutable $modifiedOn): self
+    {
+        $this->modifiedOn = $modifiedOn;
 
         return $this;
     }

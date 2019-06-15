@@ -7,7 +7,7 @@ use App\Entity\User;
 /**
  * @method User|null getUser()
  */
-abstract class APIController extends AbstractController
+abstract class PsyPetsController extends AbstractController
 {
 
 }

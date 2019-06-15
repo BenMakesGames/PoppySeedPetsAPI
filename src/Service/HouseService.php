@@ -5,19 +5,19 @@ use App\Entity\User;
 
 class HouseService
 {
-    public function __construct()
+    private $petService;
+
+    public function __construct(PetService $petService)
     {
+        $this->petService = $petService;
     }
 
     public function run(User $user)
     {
         foreach($user->getPets() as $pet)
         {
-            if($pet->getEnergy() >= 60)
-            {
-                $pet->setFood($pet->getFood() - 1);
-                // TODO: run this pet
-            }
+            if($pet->getTime() >= 60)
+                $this->petService->runHour($pet);
         }
     }
 }

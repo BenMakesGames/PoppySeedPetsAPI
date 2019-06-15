@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 /**
  * @Route("/account")
  */
-class AccountController extends APIController
+class AccountController extends PsyPetsController
 {
     const STARTING_PET_IMAGES = [
         'desikh'

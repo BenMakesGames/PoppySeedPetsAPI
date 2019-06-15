@@ -6,17 +6,10 @@ use App\Entity\Item;
 use App\Model\ItemFood;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-class UpsertItemCommand extends Command
+class UpsertItemCommand extends PsyPetsCommand
 {
     private $em;
     private $itemRepository;
@@ -33,31 +26,21 @@ class UpsertItemCommand extends Command
     {
         $this
             ->setName('app:upsert-item')
-            ->setDescription('Creates a new item, or updates an existing one.')
-            ->addArgument('item', InputArgument::REQUIRED, 'The name of the item to upsert.')
+            ->setDescription('Creates a new Item, or updates an existing one.')
+            ->addArgument('item', InputArgument::REQUIRED, 'The name of the Item to upsert.')
         ;
     }
 
-    /** @var InputInterface */ private $input;
-    /** @var OutputInterface */ private $output;
-    /** @var QuestionHelper */ private $questionHelper;
-
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function doCommand()
     {
-        $this->input = $input;
-        $this->output = $output;
-
-        $name = $input->getArgument('item');
+        $name = $this->input->getArgument('item');
         $item = $this->itemRepository->findOneBy(['name' => $name]);
 
-        $this->questionHelper = $this->getHelper('question');
-
         if($item)
+            $this->output->writeln('Updating "' . $item->getName() . '"');
+        else
         {
-            $output->writeln('Updating "' . $item->getName() . '"');
-        } else
-        {
-            $output->writeln('Creating "' . $name . '"');
+            $this->output->writeln('Creating "' . $name . '"');
 
             $item = (new Item())
                 ->setName($name)
@@ -73,58 +56,26 @@ class UpsertItemCommand extends Command
         $this->em->flush();
     }
 
-    private function confirm(string $prompt, bool $defaultValue): bool
+    private function askName(string $prompt, Item $item, string $name)
     {
-        if($defaultValue)
-            $prompt .= ' (Yes) ';
-        else
-            $prompt .= ' (No) ';
+        $question = new Question($prompt . ' (' . $name . ') ', $name);
+        $question->setValidator(function($answer) use($item) {
+            $answer = trim($answer);
 
-        return $this->questionHelper->ask($this->input, $this->output, new ConfirmationQuestion($prompt, $defaultValue));
-    }
+            $existing = $this->itemRepository->findOneBy([ 'name' => $answer ]);
 
-    private function askInt(string $prompt, int $defaultValue): int
-    {
-        $question = new Question($prompt . ' (' . $defaultValue . ') ', $defaultValue);
+            if($existing && $existing->getId() !== $item->getId())
+                throw new \RuntimeException('There\'s already an Item with that name.');
 
-        $question->setValidator(function($answer) {
-            if((int)$answer != $answer)
-                throw new \RuntimeException('Must be a number.');
-
-            return (int)$answer;
+            return $answer;
         });
 
         return $this->ask($question);
-    }
-
-    private function askPositiveInt(string $prompt, int $defaultValue): int
-    {
-        $question = new Question($prompt . ' (' . $defaultValue . ') ', $defaultValue);
-
-        $question->setValidator(function($answer) {
-            if((int)$answer != $answer)
-                throw new \RuntimeException('Must be a number.');
-            if($answer < 0)
-                throw new \RuntimeException('Must not be less than 0.');
-
-            return (int)$answer;
-        });
-
-        return $this->ask($question);
-    }
-
-    private function ask(Question $q)
-    {
-        return $this->questionHelper->ask($this->input, $this->output, $q);
     }
 
     private function name(Item $item, string $name)
     {
-        if($item->getName() !== $name)
-        {
-            if($this->confirm('Rename "' . $item->getName() . '" to "' . $name . '"?', false))
-                $item->setName($name);
-        }
+        $item->setName($this->askName('What is it called?', $item, $name));
     }
 
     private function food(Item $item)
@@ -143,6 +94,7 @@ class UpsertItemCommand extends Command
             $food->food = $this->askInt('Food hours', $food->food);
             $food->love = $this->askInt('Love hours', $food->love);
             $food->junk = $this->askInt('Junk hours', $food->junk);
+            $food->whack = $this->askInt('Whack hours', $food->whack);
 
             $item->setFood($food);
         }
@@ -154,7 +106,7 @@ class UpsertItemCommand extends Command
 
     private function size(Item $item)
     {
-        $size = $this->askPositiveInt('How many bits is it?', $item->getSize());
+        $size = $this->askInt('How many bits is it?', $item->getSize(), function(int $n) { return $n > 0; });
 
         $item->setSize($size);
     }

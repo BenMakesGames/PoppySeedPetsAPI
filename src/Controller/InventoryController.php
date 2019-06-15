@@ -10,7 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/inventory")
  */
-class InventoryController extends APIController
+class InventoryController extends PsyPetsController
 {
     /**
      * @Route("/my", methods={"GET"})
@@ -18,8 +18,8 @@ class InventoryController extends APIController
      */
     public function getMyInventory(ResponseService $responseService, InventoryRepository $inventoryRepository)
     {
-        $inventoryRepository->findBy([ 'owner' => $this->getUser() ]);
-        return $responseService->success($inventoryRepository, SerializationGroup::MY_INVENTORY);
+        $inventory = $inventoryRepository->findBy([ 'owner' => $this->getUser() ]);
+        return $responseService->success($inventory, SerializationGroup::MY_INVENTORY);
     }
 
 }

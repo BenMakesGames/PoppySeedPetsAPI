@@ -30,9 +30,9 @@ class Pet
     private $name;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="`time`")
      */
-    private $energy = 60;
+    private $time = 60;
 
     /**
      * @ORM\Column(type="integer")
@@ -85,8 +85,30 @@ class Pet
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"myPets"})
      */
-    private $isDead;
+    private $isDead = false;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $junk = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $whack = 0;
+
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     * @Groups({"myPets"})
+     */
+    private $birthDate;
+
+    public function __construct()
+    {
+        $this->birthDate = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -117,14 +139,14 @@ class Pet
         return $this;
     }
 
-    public function getEnergy(): ?int
+    public function getTime(): ?int
     {
-        return $this->energy;
+        return $this->time;
     }
 
-    public function setEnergy(int $energy): self
+    public function setTime(int $time): self
     {
-        $this->energy = $energy;
+        $this->time = $time;
 
         return $this;
     }
@@ -245,6 +267,42 @@ class Pet
     public function setIsDead(bool $isDead): self
     {
         $this->isDead = $isDead;
+
+        return $this;
+    }
+
+    public function getJunk(): ?int
+    {
+        return $this->junk;
+    }
+
+    public function setJunk(int $junk): self
+    {
+        $this->junk = $junk;
+
+        return $this;
+    }
+
+    public function getWhack(): ?int
+    {
+        return $this->whack;
+    }
+
+    public function setWhack(int $whack): self
+    {
+        $this->whack = $whack;
+
+        return $this;
+    }
+
+    public function getBirthDate(): ?\DateTimeImmutable
+    {
+        return $this->birthDate;
+    }
+
+    public function setBirthDate(\DateTimeImmutable $birthDate): self
+    {
+        $this->birthDate = $birthDate;
 
         return $this;
     }

@@ -63,6 +63,11 @@ class User implements UserInterface
      */
     private $pets;
 
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     */
+    private $registeredOn;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -220,6 +225,18 @@ class User implements UserInterface
                 $pet->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRegisteredOn(): ?\DateTimeImmutable
+    {
+        return $this->registeredOn;
+    }
+
+    public function setRegisteredOn(\DateTimeImmutable $registeredOn): self
+    {
+        $this->registeredOn = $registeredOn;
 
         return $this;
     }

@@ -1,0 +1,59 @@
+<?php
+namespace App\Command;
+
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Question\Question;
+
+abstract class PsyPetsCommand extends Command
+{
+    /** @var InputInterface */ protected $input;
+    /** @var OutputInterface */ protected $output;
+    /** @var QuestionHelper */ protected $questionHelper;
+
+    abstract protected function doCommand();
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $this->input = $input;
+        $this->output = $output;
+        $this->questionHelper = $this->getHelper('question');
+
+        $this->doCommand();
+    }
+
+    protected function confirm(string $prompt, bool $defaultValue): bool
+    {
+        if($defaultValue)
+            $prompt .= ' (Yes) ';
+        else
+            $prompt .= ' (No) ';
+
+        return $this->questionHelper->ask($this->input, $this->output, new ConfirmationQuestion($prompt, $defaultValue));
+    }
+
+    protected function askInt(string $prompt, int $defaultValue, callable $constraint = null): int
+    {
+        $question = new Question($prompt . ' (' . $defaultValue . ') ', $defaultValue);
+
+        $question->setValidator(function($answer) use($constraint) {
+            if((int)$answer != $answer)
+                throw new \RuntimeException('Must be a number.');
+
+            if($constraint && !$constraint((int)$answer))
+                throw new \RuntimeException('Number is out of range.');
+
+            return (int)$answer;
+        });
+
+        return $this->ask($question);
+    }
+
+    protected function ask(Question $q)
+    {
+        return $this->questionHelper->ask($this->input, $this->output, $q);
+    }
+}

@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class IncreaseEnergyCommand extends Command
+class IncreaseTimeCommand extends Command
 {
     private $em;
 
@@ -24,13 +24,13 @@ class IncreaseEnergyCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('app:increase-energy')
-            ->setDescription('Increases energy of all pets by 1.')
+            ->setName('app:increase-time')
+            ->setDescription('Increases Time of all Pets by 1.')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->em->getConnection()->executeQuery('UPDATE pets SET energy=energy+1 WHERE energy<4320');
+        $this->em->getConnection()->executeQuery('UPDATE pets SET `time`=`time`+1 WHERE `time`<4320');
     }
 }

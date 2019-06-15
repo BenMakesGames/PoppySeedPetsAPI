@@ -35,6 +35,14 @@ class Item
      */
     private $size = 100;
 
+    /**
+     * @Groups({"myInventory"})
+     */
+    public function isEdible(): bool
+    {
+        return $this->food !== null;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
