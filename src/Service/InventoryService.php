@@ -1,0 +1,135 @@
+<?php
+namespace App\Service;
+
+use App\Entity\Inventory;
+use App\Entity\User;
+use App\Model\ItemFood;
+use App\Model\ItemQuantity;
+use App\Repository\ItemRepository;
+use Doctrine\ORM\EntityManagerInterface;
+
+class InventoryService
+{
+    private $itemRepository;
+    private $em;
+
+    public function __construct(ItemRepository $itemRepository, EntityManagerInterface $em)
+    {
+        $this->itemRepository = $itemRepository;
+        $this->em = $em;
+    }
+
+    /**
+     * @return ItemQuantity[]
+     */
+    public function deserializeItemList(string $list)
+    {
+        if($list === '') return [];
+
+        $quantities = [];
+
+        $items = \explode(',', $list);
+        foreach($items as $item)
+        {
+            list($itemId, $quantity) = \explode(':', $item);
+            $itemQuantity = new ItemQuantity();
+
+            $itemQuantity->item = $this->itemRepository->find($itemId);
+            $itemQuantity->quantity = $quantity;
+
+            $quantities[] = $itemQuantity;
+        }
+
+        return $quantities;
+    }
+
+    /**
+     * @param ItemQuantity[] $quantities
+     */
+    public function serializeItemList($quantities): string
+    {
+        if(\count($quantities) === 0) return '';
+
+        \usort($quantities, function(ItemQuantity $a, ItemQuantity $b) {
+            return $a->item->getId() <=> $b->item->getId();
+        });
+
+        $items = [];
+
+        foreach($quantities as $itemQuantity)
+        {
+            $items[] = $itemQuantity->item->getId() . ':' . $itemQuantity->quantity;
+        }
+
+        return \implode(',', $items);
+    }
+
+    /**
+     * @param Inventory[] $inventory
+     * @return ItemQuantity[]
+     */
+    public function buildQuantitiesFromInventory($inventory)
+    {
+        /** @var ItemQuantity[] $quantities */
+        $quantities = [];
+
+        foreach($inventory as $i)
+        {
+            $item = $i->getItem();
+
+            if(array_key_exists($item->getId(), $quantities))
+                $quantities[$item->getId()]->quantity++;
+            else
+            {
+                $quantities[$item->getId()] = new ItemQuantity();
+                $quantities[$item->getId()]->item = $item;
+                $quantities[$item->getId()]->quantity = 1;
+            }
+        }
+
+        return array_values($quantities);
+    }
+
+    /**
+     * @param ItemQuantity[] $quantities
+     * @return Inventory[]
+     */
+    public function giveInventory($quantities, User $user, User $creator)
+    {
+        $inventory = [];
+
+        foreach($quantities as $itemQuantity)
+        {
+            for($i = 0; $i < $itemQuantity->quantity; $i++)
+            {
+                $i = (new Inventory())
+                    ->setOwner($user)
+                    ->setCreatedBy($creator)
+                    ->setItem($itemQuantity->item)
+                ;
+
+                $this->em->persist($i);
+
+                $inventory[] = $i;
+            }
+        }
+
+        return $inventory;
+    }
+
+    /**
+     * @param ItemQuantity[] $quantities
+     */
+    public function totalFood($quantities): ItemFood
+    {
+        $food = new ItemFood();
+
+        foreach($quantities as $quantity)
+        {
+            $itemFood = $quantity->item->getFood() ?: new ItemFood();
+            $food = $food->add($itemFood->multiply($quantity->quantity));
+        }
+
+        return $food;
+    }
+}

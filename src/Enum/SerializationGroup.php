@@ -1,7 +1,7 @@
 <?php
 namespace App\Enum;
 
-class SerializationGroup
+final class SerializationGroup
 {
     const LOG_IN = 'logIn';
     const MY_PETS = 'myPets';

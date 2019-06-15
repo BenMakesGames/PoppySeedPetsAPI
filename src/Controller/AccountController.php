@@ -21,7 +21,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class AccountController extends PsyPetsController
 {
     const STARTING_PET_IMAGES = [
-        'desikh'
+        'mammal/desikh'
     ];
 
     /**
@@ -45,25 +45,25 @@ class AccountController extends PsyPetsController
         if($email === '')
             throw new UnprocessableEntityHttpException('Email address is required.');
 
-        if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+        if(!\filter_var($email, FILTER_VALIDATE_EMAIL))
             throw new UnprocessableEntityHttpException('Email address is not valid.');
 
-        if(strlen($petName) < 2 || strlen($petName) > 30)
+        if(\strlen($petName) < 2 || \strlen($petName) > 30)
             throw new UnprocessableEntityHttpException('Pet name must be between 2 and 30 characters long.');
 
-        if(!in_array($petImage, self::STARTING_PET_IMAGES))
+        if(!\in_array($petImage, self::STARTING_PET_IMAGES))
             throw new UnprocessableEntityHttpException('Must choose your pet\'s appearance.');
 
-        if(!preg_match('/[A-Fa-f0-9]{6}/', $petColorA))
+        if(!\preg_match('/[A-Fa-f0-9]{6}/', $petColorA))
             throw new UnprocessableEntityHttpException('Pet color A is not valid.');
 
-        if(!preg_match('/[A-Fa-f0-9]{6}/', $petColorB))
+        if(!\preg_match('/[A-Fa-f0-9]{6}/', $petColorB))
             throw new UnprocessableEntityHttpException('Pet color B is not valid.');
 
-        if(strlen($name) < 2 || strlen($name) > 30)
+        if(\strlen($name) < 2 || \strlen($name) > 30)
             throw new UnprocessableEntityHttpException('Name must be between 2 and 30 characters long.');
 
-        if(strlen($password) < 10)
+        if(\strlen($password) < 10)
             throw new UnprocessableEntityHttpException('Pass phrase must be at least 10 characters long.');
 
         $existingUser = $userRepository->findOneBy([ 'email' => $email ]);
@@ -88,6 +88,8 @@ class AccountController extends PsyPetsController
             ->setImage($petImage)
             ->setColorA($petColorA)
             ->setColorB($petColorB)
+            ->setFood(mt_rand(10, 12))
+            ->setSafety(-9)
         ;
 
         $em->persist($pet);

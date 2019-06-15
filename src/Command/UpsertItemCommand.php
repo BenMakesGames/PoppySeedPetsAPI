@@ -50,6 +50,7 @@ class UpsertItemCommand extends PsyPetsCommand
         }
 
         $this->name($item, $name);
+        $this->image($item);
         $this->food($item);
         $this->size($item);
 
@@ -76,6 +77,14 @@ class UpsertItemCommand extends PsyPetsCommand
     private function name(Item $item, string $name)
     {
         $item->setName($this->askName('What is it called?', $item, $name));
+    }
+
+    private function image(Item $item)
+    {
+        if($item->getImage())
+            $item->setImage($this->ask(new Question('What is its image? (' . $item->getImage() . ') ', $item->getImage())));
+        else
+            $item->setImage($this->ask(new Question('What is its image? ', '')));
     }
 
     private function food(Item $item)

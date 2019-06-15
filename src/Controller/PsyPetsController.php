@@ -5,7 +5,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\User;
 
 /**
- * @method User|null getUser()
+ * @method null|User getUser()
  */
 abstract class PsyPetsController extends AbstractController
 {

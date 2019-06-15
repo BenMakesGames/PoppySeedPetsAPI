@@ -37,22 +37,22 @@ class Pet
     /**
      * @ORM\Column(type="integer")
      */
-    private $food = 4;
+    private $food = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $safety = 4;
+    private $safety = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $love = 4;
+    private $love = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $esteem = 4;
+    private $esteem = 0;
 
     /**
      * @ORM\Column(type="integer")
@@ -105,9 +105,21 @@ class Pet
      */
     private $birthDate;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $stomachSize;
+
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     */
+    private $lastInteracted;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
+        $this->lastInteracted = (new \DateTimeImmutable())->modify('-3 days');
+        $this->stomachSize = mt_rand(12, 24);
     }
 
     public function getId(): ?int
@@ -175,6 +187,11 @@ class Pet
         return $this;
     }
 
+    public function getMaxSafety(): int
+    {
+        return 24;
+    }
+
     public function getLove(): ?int
     {
         return $this->love;
@@ -187,6 +204,11 @@ class Pet
         return $this;
     }
 
+    public function getMaxLove(): int
+    {
+        return 24;
+    }
+
     public function getEsteem(): ?int
     {
         return $this->esteem;
@@ -197,6 +219,11 @@ class Pet
         $this->esteem = $esteem;
 
         return $this;
+    }
+
+    public function getMaxEsteem(): int
+    {
+        return 24;
     }
 
     public function getExperience(): ?int
@@ -305,5 +332,111 @@ class Pet
         $this->birthDate = $birthDate;
 
         return $this;
+    }
+
+    /**
+     * @Groups({"myPets"})
+     */
+    public function getFull(): string
+    {
+        $fullness = ($this->getFood() + $this->getJunk() + $this->getWhack()) / $this->getStomachSize();
+
+        if($fullness >= 0.75)
+        {
+            if(substr($this->getImage(), 5) === 'fish/')
+                return 'stuffed to the gills';
+            else
+                return 'stuffed';
+        }
+        else if($fullness >= 0.50)
+            return 'full';
+        else if($fullness >= 0.25)
+            return 'sated';
+        else if($fullness >= 0)
+            return '...';
+        else if($fullness >= -0.25)
+            return 'peckish';
+        else if($fullness >= -0.50)
+            return 'hungry';
+        else if($fullness >= -0.75)
+            return 'very hungry';
+        else
+            return 'starving';
+    }
+
+    /**
+     * @Groups({"myPets"})
+     */
+    public function getSafe(): string
+    {
+        if($this->getSafety() >= 16)
+            return 'untouchable';
+        else if($this->getSafety() >= 8)
+            return 'safe';
+        else if($this->getSafety() >= -8)
+            return '...';
+        else if($this->getSafety() >= -16)
+            return 'on edge';
+        else
+            return 'terrified';
+    }
+
+    /**
+     * @Groups({"myPets"})
+     */
+    public function getLoved(): string
+    {
+        if($this->getLove() >= 16)
+            return 'very loved';
+        else if($this->getLove() >= 8)
+            return 'loved';
+        else if($this->getLove() >= -8)
+            return '...';
+        else if($this->getLove() >= -16)
+            return 'lonely';
+        else
+            return 'hated';
+    }
+
+    /**
+     * @Groups({"myPets"})
+     */
+    public function getEsteemed(): string
+    {
+        if($this->getEsteem() >= 16)
+            return 'amazing';
+        else if($this->getLove() >= 8)
+            return 'accomplished';
+        else if($this->getLove() >= -8)
+            return '...';
+        else if($this->getEsteem() >= -16)
+            return 'useless';
+        else
+            return 'depressed';
+    }
+
+    public function getStomachSize(): int
+    {
+        return $this->stomachSize;
+    }
+
+    public function getLastInteracted(): ?\DateTimeImmutable
+    {
+        return $this->lastInteracted;
+    }
+
+    public function setLastInteracted(\DateTimeImmutable $lastInteracted): self
+    {
+        $this->lastInteracted = $lastInteracted;
+
+        return $this;
+    }
+
+    /**
+     * @Groups({"myPets"})
+     */
+    public function getCanInteract(): bool
+    {
+        return $this->getLastInteracted() < (new \DateTimeImmutable())->modify('-30 minutes');
     }
 }

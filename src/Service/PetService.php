@@ -17,10 +17,33 @@ class PetService
         $this->randomService = $randomService;
     }
 
+    public function doPet(Pet $pet)
+    {
+        $now = new \DateTimeImmutable();
+
+        if($pet->getIsDead())
+            throw new \InvalidArgumentException($pet->getName() . ' is dead :|');
+
+        if($pet->getLastInteracted() < $now->modify('-48 hours'))
+            $pet->setLastInteracted($now->modify('-24 hours'));
+        else if($pet->getLastInteracted() < $now->modify('-24 hours'))
+            $pet->setLastInteracted($now->modify('-30 minutes'));
+        else if($pet->getLastInteracted() < $now->modify('-30 minutes'))
+            $pet->setLastInteracted($now);
+        else
+            throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
+
+        if($pet->getFood() + $pet->getWhack() > 0)
+            $pet->setSafety(min($pet->getMaxSafety(), $pet->getSafety() + 2));
+
+        if($pet->getFood() + $pet->getWhack() > 0 && $pet->getSafety() + $pet->getWhack() > 0)
+            $pet->setLove(min($pet->getMaxLove(), $pet->getLove() + 2));
+    }
+
     /**
      * @param Inventory[] $inventory
      */
-    public function feedPet(Pet $pet, array $inventory)
+    public function doFeed(Pet $pet, array $inventory)
     {
         if($pet->getIsDead())
             throw new \InvalidArgumentException($pet->getName() . ' is dead :|');
@@ -34,11 +57,17 @@ class PetService
         {
             $food = $i->getItem()->getFood();
 
+            if($food->junk) $pet->setJunk($pet->getJunk() + $food->junk);
+            if($food->whack) $pet->setWhack($pet->getWhack() + $food->whack);
             if($food->food) $pet->setFood($pet->getFood() + $food->food);
-            if($food->love) $pet->setLove($pet->getLove() + $food->love);
-            //if($food->junk) $pet->setJunk($pet->getJunk() + $food->junk);
+
+            if($pet->getFood() + $pet->getWhack() - $pet->getJunk() > 0)
+                if($food->love) $pet->setLove($pet->getLove() + $food->love);
 
             $this->em->remove($i);
+
+            if($pet->getJunk() + $pet->getWhack() + $pet->getFood() > 16)
+                break;
         }
     }
 

@@ -8,7 +8,7 @@ use App\Model\ItemFood;
 use App\Model\ItemQuantity;
 use App\Repository\ItemRepository;
 use App\Repository\RecipeRepository;
-use App\Service\RecipeService;
+use App\Service\InventoryService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Question\Question;
@@ -17,17 +17,17 @@ class UpsertRecipeCommand extends PsyPetsCommand
 {
     private $em;
     private $recipeRepository;
-    private $recipeService;
+    private $inventoryService;
     private $itemRepository;
 
     public function __construct(
-        EntityManagerInterface $em, RecipeRepository $recipeRepository, RecipeService $recipeService,
+        EntityManagerInterface $em, RecipeRepository $recipeRepository, InventoryService $inventoryService,
         ItemRepository $itemRepository
     )
     {
         $this->em = $em;
         $this->recipeRepository = $recipeRepository;
-        $this->recipeService = $recipeService;
+        $this->inventoryService = $inventoryService;
         $this->itemRepository = $itemRepository;
 
         parent::__construct();
@@ -65,6 +65,21 @@ class UpsertRecipeCommand extends PsyPetsCommand
         $this->makes($recipe);
 
         $this->em->flush();
+
+        $ingredientFood = $this->inventoryService->totalFood($this->inventoryService->deserializeItemList($recipe->getIngredients()));
+        $makesFood = $this->inventoryService->totalFood($this->inventoryService->deserializeItemList($recipe->getMakes()));
+
+        $this->output->writeln('Ingredient food value totals:');
+        $this->output->writeln('  Food: ' . $ingredientFood->food);
+        $this->output->writeln('  Love: ' . $ingredientFood->love);
+        $this->output->writeln('  Junk: ' . $ingredientFood->junk);
+        $this->output->writeln('  Whack: ' . $ingredientFood->whack);
+
+        $this->output->writeln('Product food value totals:');
+        $this->output->writeln('  Food: ' . $makesFood->food);
+        $this->output->writeln('  Love: ' . $makesFood->love);
+        $this->output->writeln('  Junk: ' . $makesFood->junk);
+        $this->output->writeln('  Whack: ' . $makesFood->whack);
     }
 
     private function askName(string $prompt, Recipe $recipe, string $name)
@@ -91,20 +106,20 @@ class UpsertRecipeCommand extends PsyPetsCommand
 
     private function ingredients(Recipe $recipe)
     {
-        $ingredients = $this->recipeService->deserializeItemList($recipe->getIngredients());
+        $ingredients = $this->inventoryService->deserializeItemList($recipe->getIngredients());
 
         $ingredients = $this->editItemList($ingredients, 'ingredients');
 
-        $recipe->setIngredients($this->recipeService->serializeItemList($ingredients));
+        $recipe->setIngredients($this->inventoryService->serializeItemList($ingredients));
     }
 
     private function makes(Recipe $recipe)
     {
-        $makes = $this->recipeService->deserializeItemList($recipe->getMakes());
+        $makes = $this->inventoryService->deserializeItemList($recipe->getMakes());
 
         $makes = $this->editItemList($makes, 'products');
 
-        $recipe->setMakes($this->recipeService->serializeItemList($makes));
+        $recipe->setMakes($this->inventoryService->serializeItemList($makes));
     }
 
     /**

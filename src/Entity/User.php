@@ -17,6 +17,7 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"logIn", "myInventory"})
      */
     private $id;
 
@@ -38,7 +39,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"logIn"})
+     * @Groups({"logIn", "myInventory"})
      */
     private $name;
 

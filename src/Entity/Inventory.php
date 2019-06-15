@@ -42,6 +42,24 @@ class Inventory
      */
     private $modifiedOn;
 
+    /**
+     * @ORM\Column(type="json")
+     * @Groups({"myInventory"})
+     */
+    private $comments = [];
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @Groups({"myInventory"})
+     */
+    private $createdBy;
+
+    public function __construct()
+    {
+        $this->createdOn = new \DateTimeImmutable();
+        $this->modifiedOn = new \DateTimeImmutable();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -91,6 +109,30 @@ class Inventory
     public function setModifiedOn(\DateTimeImmutable $modifiedOn): self
     {
         $this->modifiedOn = $modifiedOn;
+
+        return $this;
+    }
+
+    public function getComments(): array
+    {
+        return $this->comments;
+    }
+
+    public function addComment(string $comment): self
+    {
+        $this->comments[] = $comment;
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): self
+    {
+        $this->createdBy = $createdBy;
 
         return $this;
     }
