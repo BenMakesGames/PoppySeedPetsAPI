@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -36,6 +38,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"logIn"})
      */
     private $name;
 
@@ -54,6 +57,16 @@ class User implements UserInterface
      * @ORM\Column(type="datetime_immutable")
      */
     private $sessionExpiration;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Pet", mappedBy="owner")
+     */
+    private $pets;
+
+    public function __construct()
+    {
+        $this->pets = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -150,9 +163,10 @@ class User implements UserInterface
         return $this->lastActivity;
     }
 
-    public function setLastActivity(\DateTimeImmutable $lastActivity): self
+    public function setLastActivity(): self
     {
-        $this->lastActivity = $lastActivity;
+        $this->lastActivity = new \DateTimeImmutable();
+        $this->sessionExpiration = (new \DateTimeImmutable())->modify('+8 hours');
 
         return $this;
     }
@@ -174,9 +188,38 @@ class User implements UserInterface
         return $this->sessionExpiration;
     }
 
-    public function setSessionExpiration(\DateTimeImmutable $sessionExpiration): self
+    public function logOut()
     {
-        $this->sessionExpiration = $sessionExpiration;
+        $this->sessionExpiration = new \DateTimeImmutable();
+    }
+
+    /**
+     * @return Collection|Pet[]
+     */
+    public function getPets(): Collection
+    {
+        return $this->pets;
+    }
+
+    public function addPet(Pet $pet): self
+    {
+        if (!$this->pets->contains($pet)) {
+            $this->pets[] = $pet;
+            $pet->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removePet(Pet $pet): self
+    {
+        if ($this->pets->contains($pet)) {
+            $this->pets->removeElement($pet);
+            // set the owning side to null (unless already changed)
+            if ($pet->getOwner() === $this) {
+                $pet->setOwner(null);
+            }
+        }
 
         return $this;
     }

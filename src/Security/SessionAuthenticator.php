@@ -2,6 +2,7 @@
 namespace App\Security;
 
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,21 +15,23 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 class SessionAuthenticator extends AbstractGuardAuthenticator
 {
     private $userRepository;
+    private $em;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, EntityManagerInterface $em)
     {
         $this->userRepository = $userRepository;
+        $this->em = $em;
     }
 
     public function supports(Request $request)
     {
-        return $request->headers->has('X-SESSION-ID');
+        return $request->headers->has('Authorization') && substr($request->headers->get('Authorization'), 0, 7) === 'Bearer ';
     }
 
     public function getCredentials(Request $request)
     {
         return [
-            'sessionId' => $request->headers->get('X-SESSION-ID'),
+            'sessionId' => substr($request->headers->get('Authorization'), 7)
         ];
     }
 
@@ -44,6 +47,9 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
 
         if(!$user || $user->getSessionExpiration() < new \DateTimeImmutable())
             return null;
+
+        $user->setLastActivity();
+        $this->em->flush();
 
         return $user;
     }

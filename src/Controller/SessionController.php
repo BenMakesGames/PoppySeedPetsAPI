@@ -1,20 +1,25 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\RandomService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class SessionController extends AbstractController
+class SessionController extends APIController
 {
+    const STARTING_PET_IMAGES = [
+        'desikh'
+    ];
+
     /**
      * @Route("/register", methods={"POST"})
      */
@@ -24,12 +29,32 @@ class SessionController extends AbstractController
         UserPasswordEncoderInterface $userPasswordEncoder
     )
     {
-        $name = $request->request->get('name');
-        $email = $request->request->get('email');
-        $password = $request->request->get('password');
+        $petName = $request->request->get('petName');
+        $petImage = $request->request->get('petImage');
+        $petColorA = $request->request->get('petColorA');
+        $petColorB = $request->request->get('petColorB');
+
+        $name = $request->request->get('playerName');
+        $email = $request->request->get('playerEmail');
+        $password = $request->request->get('playerPassphrase');
+
+        if($email === '')
+            throw new UnprocessableEntityHttpException('Email address is required.');
 
         if(!filter_var($email, FILTER_VALIDATE_EMAIL))
             throw new UnprocessableEntityHttpException('Email address is not valid.');
+
+        if(strlen($petName) < 2 || strlen($petName) > 30)
+            throw new UnprocessableEntityHttpException('Pet name must be between 2 and 30 characters long.');
+
+        if(!in_array($petImage, self::STARTING_PET_IMAGES))
+            throw new UnprocessableEntityHttpException('Must choose your pet\'s appearance.');
+
+        if(!preg_match('/[A-Fa-f0-9]{6}/', $petColorA))
+            throw new UnprocessableEntityHttpException('Pet color A is not valid.');
+
+        if(!preg_match('/[A-Fa-f0-9]{6}/', $petColorB))
+            throw new UnprocessableEntityHttpException('Pet color B is not valid.');
 
         if(strlen($name) < 2 || strlen($name) > 30)
             throw new UnprocessableEntityHttpException('Name must be between 2 and 30 characters long.');
@@ -42,21 +67,27 @@ class SessionController extends AbstractController
         if($existingUser)
             throw new UnprocessableEntityHttpException('Email address is already in use.');
 
-        $user = new User();
-
-        $sessionId = $randomService->getString(40);
-
-        $user
+        $user = (new User())
             ->setEmail($email)
             ->setName($name)
-            ->setLastActivity(new \DateTimeImmutable())
-            ->setSessionExpiration((new \DateTimeImmutable())->modify('+8 hours'))
-            ->setSessionId($sessionId)
+            ->setLastActivity()
+            ->setSessionId($randomService->getString(40))
         ;
 
         $user->setPassword($userPasswordEncoder->encodePassword($user, $password));
 
         $em->persist($user);
+
+        $pet = (new Pet())
+            ->setOwner($user)
+            ->setName($petName)
+            ->setImage($petImage)
+            ->setColorA($petColorA)
+            ->setColorB($petColorB)
+        ;
+
+        $em->persist($pet);
+
         $em->flush();
 
         return $responseService->success($user, 'logIn');
@@ -71,7 +102,7 @@ class SessionController extends AbstractController
     )
     {
         $email = $request->request->get('email');
-        $password = $request->request->get('password');
+        $password = $request->request->get('passphrase');
 
         $user = $userRepository->findOneBy([ 'email' => $email ]);
 
@@ -81,8 +112,7 @@ class SessionController extends AbstractController
         $sessionId = $randomService->getString(40);
 
         $user
-            ->setLastActivity(new \DateTimeImmutable())
-            ->setSessionExpiration((new \DateTimeImmutable())->modify('+8 hours'))
+            ->setLastActivity()
             ->setSessionId($sessionId)
         ;
 
@@ -99,10 +129,7 @@ class SessionController extends AbstractController
     {
         $user = $this->getUser();
 
-        $user
-            ->setLastActivity(new \DateTimeImmutable())
-            ->setSessionExpiration(new \DateTimeImmutable())
-        ;
+        $user->logOut();
 
         $em->flush();
     }

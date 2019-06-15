@@ -3,13 +3,13 @@ namespace App\Service;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class ResponseService
 {
     private $serializer;
 
-    public function __construct(Serializer $serializer)
+    public function __construct(SerializerInterface $serializer)
     {
         $this->serializer = $serializer;
     }
@@ -18,18 +18,20 @@ class ResponseService
     {
         if(!is_array($groups)) $groups = [ $groups ];
 
-        $json = [
+        $responseData = [
             'success' => true,
-            'data' => $this->serializer->serialize($data, 'json', [
-                'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS,
-                'groups' => $groups,
-            ])
+            'data' => $data
         ];
+
+        $json = $this->serializer->serialize($responseData, 'json', [
+            'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS,
+            'groups' => $groups,
+        ]);
 
         return new JsonResponse($json, Response::HTTP_OK, [], true);
     }
 
-    public function error($messages, $httpResponse): JsonResponse
+    public function error(array $messages, int $httpResponse): JsonResponse
     {
         return new JsonResponse([
             'success' => false,
