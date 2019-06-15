@@ -77,6 +77,12 @@ class Pet
      */
     private $colorB;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Inventory", cascade={"persist", "remove"})
+     * @Groups({"myPets"})
+     */
+    private $hat;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -210,6 +216,18 @@ class Pet
     public function setColorB(string $color): self
     {
         $this->colorB = $color;
+
+        return $this;
+    }
+
+    public function getHat(): ?Inventory
+    {
+        return $this->hat;
+    }
+
+    public function setHat(?Inventory $hat): self
+    {
+        $this->hat = $hat;
 
         return $this;
     }
