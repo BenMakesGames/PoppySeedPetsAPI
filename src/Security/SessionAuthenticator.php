@@ -43,7 +43,7 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
             return null;
         }
 
-        $user = $this->userRepository->findOneBy([ 'sessionId' => $sessionId ]);
+        $user = $this->userRepository->findOneBySessionId($sessionId);
 
         if(!$user || $user->getSessionExpiration() < new \DateTimeImmutable())
             return null;

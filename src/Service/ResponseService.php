@@ -14,9 +14,12 @@ class ResponseService
         $this->serializer = $serializer;
     }
 
+    /**
+     * @param string|string[] $groups
+     */
     public function success($data, $groups): JsonResponse
     {
-        if(!is_array($groups)) $groups = [ $groups ];
+        if(!\is_array($groups)) $groups = [ $groups ];
 
         $responseData = [
             'success' => true,

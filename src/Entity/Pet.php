@@ -83,6 +83,11 @@ class Pet
      */
     private $hat;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isDead;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -228,6 +233,18 @@ class Pet
     public function setHat(?Inventory $hat): self
     {
         $this->hat = $hat;
+
+        return $this;
+    }
+
+    public function getIsDead(): ?bool
+    {
+        return $this->isDead;
+    }
+
+    public function setIsDead(bool $isDead): self
+    {
+        $this->isDead = $isDead;
 
         return $this;
     }

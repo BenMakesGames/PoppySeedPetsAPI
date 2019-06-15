@@ -37,7 +37,7 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=40)
      * @Groups({"logIn"})
      */
     private $name;
@@ -48,7 +48,7 @@ class User implements UserInterface
     private $lastActivity;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=40, unique=true)
      * @Groups({"logIn"})
      */
     private $sessionId;

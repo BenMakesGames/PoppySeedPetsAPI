@@ -3,9 +3,10 @@ namespace App\Controller;
 
 use App\Entity\Pet;
 use App\Entity\User;
+use App\Enum\SerializationGroup;
 use App\Repository\UserRepository;
-use App\Service\RandomService;
 use App\Service\ResponseService;
+use App\Service\SessionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -14,18 +15,21 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class SessionController extends APIController
+/**
+ * @Route("/account")
+ */
+class AccountController extends APIController
 {
     const STARTING_PET_IMAGES = [
         'desikh'
     ];
 
     /**
-     * @Route("/register", methods={"POST"})
+     * @Route("", methods={"POST"})
      */
     public function register(
         Request $request, EntityManagerInterface $em, ResponseService $responseService,
-        RandomService $randomService, UserRepository $userRepository,
+        SessionService $sessionService, UserRepository $userRepository,
         UserPasswordEncoderInterface $userPasswordEncoder
     )
     {
@@ -70,9 +74,9 @@ class SessionController extends APIController
         $user = (new User())
             ->setEmail($email)
             ->setName($name)
-            ->setLastActivity()
-            ->setSessionId($randomService->getString(40))
         ;
+
+        $sessionService->logIn($user);
 
         $user->setPassword($userPasswordEncoder->encodePassword($user, $password));
 
@@ -90,7 +94,7 @@ class SessionController extends APIController
 
         $em->flush();
 
-        return $responseService->success($user, 'logIn');
+        return $responseService->success($user, SerializationGroup::LOG_IN);
     }
 
     /**
@@ -98,7 +102,7 @@ class SessionController extends APIController
      */
     public function logIn(
         Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $userPasswordEncoder,
-        RandomService $randomService, EntityManagerInterface $em, ResponseService $responseService
+        SessionService $sessionService, EntityManagerInterface $em, ResponseService $responseService
     )
     {
         $email = $request->request->get('email');
@@ -109,16 +113,11 @@ class SessionController extends APIController
         if(!$user || !$userPasswordEncoder->isPasswordValid($user, $password))
             throw new AccessDeniedHttpException('Username and/or password does not exist.');
 
-        $sessionId = $randomService->getString(40);
-
-        $user
-            ->setLastActivity()
-            ->setSessionId($sessionId)
-        ;
+        $sessionService->logIn($user);
 
         $em->flush();
 
-        return $responseService->success($user, 'logIn');
+        return $responseService->success($user, SerializationGroup::LOG_IN);
     }
 
     /**
