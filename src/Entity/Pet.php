@@ -200,7 +200,7 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        if($this->getFood() + $this->getWhack() > 0)
+        if($amount < 0 || ($this->getFood() + $this->getWhack() > 0))
             $this->safety = max(-$this->getMaxSafety(), min($this->safety + $amount, $this->getMaxSafety()));
 
         return $this;
@@ -220,7 +220,7 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        if($this->getFood() + $this->getWhack() > 0 && $this->getSafety() + $this->getWhack() > 0)
+        if($amount < 0 || ($this->getFood() + $this->getWhack() > 0 && $this->getSafety() + $this->getWhack() > 0))
             $this->love = max(-$this->getMaxLove(), min($this->love + $amount, $this->getMaxLove()));
 
         return $this;
@@ -240,7 +240,7 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        if($this->getFood() + $this->getWhack() > 0 && $this->getSafety() + $this->getWhack() > 0 && $this->getLove() + $this->getWhack() > 0)
+        if($amount < 0 || ($this->getFood() + $this->getWhack() > 0 && $this->getSafety() + $this->getWhack() > 0 && $this->getLove() + $this->getWhack() > 0))
             $this->esteem = max(-$this->getMaxEsteem(), min($this->esteem + $amount, $this->getMaxEsteem()));
 
         return $this;

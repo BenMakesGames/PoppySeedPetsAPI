@@ -3,8 +3,7 @@ namespace App\Service;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use function App\Functions\array_any;
-use function App\Functions\array_list;
+use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -29,6 +28,36 @@ class PetService
         $this->huntingService = $huntingService;
         $this->gatheringService = $gatheringService;
     }
+
+    /**
+     * @param string[] $stats
+     */
+    public function gainExp(Pet $pet, int $exp, $stats)
+    {
+        if($exp === 0) return;
+
+        $divideBy = 1;
+
+        if($pet->getFood() + $pet->getWhack() - $pet->getJunk() <= 0) $divideBy++;
+        if($pet->getSafety() + $pet->getWhack() <= 0) $divideBy++;
+        if($pet->getLove() + $pet->getWhack() <= 0) $divideBy++;
+        if($pet->getEsteem() + $pet->getWhack() <= 0) $divideBy++;
+
+        $divideBy += $pet->getWhack() / $pet->getStomachSize();
+
+        $exp = \ceil($exp / $divideBy);
+
+        if($exp === 0) return;
+
+        $pet->increaseExperience($exp);
+
+        while($pet->getExperience() >= $pet->getExperienceToLevel())
+        {
+            $pet->decreaseExperience($pet->getExperienceToLevel());
+            $pet->getSkills()->increaseStat(ArrayFunctions::pick_one($stats));
+        }
+    }
+
 
     public function doPet(Pet $pet)
     {
@@ -86,7 +115,7 @@ class PetService
         if($pet->getIsDead())
             throw new \InvalidArgumentException($pet->getName() . ' is dead :|');
 
-        if(array_any($inventory, function(Inventory $i) { return $i->getItem()->getFood() !== null; }))
+        if(ArrayFunctions::any($inventory, function(Inventory $i) { return $i->getItem()->getFood() !== null; }))
             throw new \InvalidArgumentException('At least one of the items selected is not edible!');
 
         \shuffle($inventory);
@@ -98,12 +127,10 @@ class PetService
         {
             $food = $i->getItem()->getFood();
 
-            if($food->junk) $pet->increaseJunk($food->junk);
             if($food->whack) $pet->increaseWhack($food->whack);
             if($food->food) $pet->increaseFood($food->food);
-
-            if($pet->getFood() + $pet->getWhack() - $pet->getJunk() > 0)
-                if($food->love) $pet->increaseLove($food->love);
+            if($food->love) $pet->increaseLove($food->love);
+            if($food->junk) $pet->increaseJunk($food->junk);
 
             $this->em->remove($i);
 
@@ -129,7 +156,7 @@ class PetService
         }
 
 
-        $this->activityLogService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . array_list($foodsEaten) . '.', $petChanges->compare($pet));
+        $this->activityLogService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.', $petChanges->compare($pet));
     }
 
     public function runHour(Pet $pet)
@@ -187,7 +214,12 @@ class PetService
             {
                 $changes = new PetChanges($pet);
 
-                // TODO: throw up
+                $pet->increaseWhack(-mt_rand(1, $pet->getWhack() / 2));
+                $pet->increaseJunk(-mt_rand(1, $pet->getJunk() / 2));
+                $pet->increaseFood(-mt_rand(1, $pet->getFood() / 2));
+
+                $pet->increaseSafety(-round(mt_rand(1, $pet->getWhack() + $pet->getJunk()) / 2));
+                $pet->increaseEsteem(-round(mt_rand(1, $pet->getWhack() + $pet->getJunk()) / 2));
 
                 $pet->spendTime(\mt_rand(15, 45));
 
