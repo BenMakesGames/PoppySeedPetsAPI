@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\Pet;
+use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Repository\PetRepository;
 
@@ -9,6 +10,9 @@ class HouseService
 {
     private $petService;
     private $petRepository;
+
+    /** @var PetActivityLog[] */
+    public $activityLogs = [];
 
     public function __construct(PetService $petService, PetRepository $petRepository)
     {
@@ -27,10 +31,20 @@ class HouseService
             ->execute()
         ;
 
-        foreach($petsWithTime as $pet)
+        while(count($petsWithTime) > 0)
         {
-            if($pet->getTime() >= 60)
-                $this->petService->runHour($pet);
+            \shuffle($petsWithTime);
+
+            for($i = count($petsWithTime) - 1; $i >= 0; $i--)
+            {
+                if($petsWithTime[$i]->getTime() >= 60)
+                {
+                    $this->activityLogs = array_merge($this->activityLogs, $this->petService->runHour($petsWithTime[$i]));
+
+                    if($petsWithTime[$i]->getTime() < 60)
+                        unset($petsWithTime[$i]);
+                }
+            }
         }
     }
 }

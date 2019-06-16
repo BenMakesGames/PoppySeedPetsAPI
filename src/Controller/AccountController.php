@@ -144,7 +144,7 @@ class AccountController extends PsyPetsController
      * @Route("/collectWeeklyBox")
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function collectWeeklyBox(EntityManagerInterface $em)
+    public function collectWeeklyBox(EntityManagerInterface $em, ResponseService $responseService)
     {
         $user = $this->getUser();
 
@@ -155,9 +155,12 @@ class AccountController extends PsyPetsController
 
         $user->setLastAllowanceCollected($user->getLastAllowanceCollected()->modify('+' . (floor($days / 7) * 7) . ' days'));
 
-
+        $newInventory = [];
+        // TODO: get items
 
         $em->flush();
+
+        return $responseService->success($newInventory, SerializationGroup::MY_INVENTORY);
     }
 
     /**

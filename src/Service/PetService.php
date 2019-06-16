@@ -208,6 +208,8 @@ class PetService
 
         // TODO: pick a productive activity
 
+        $activityLogs[] = $this->logActivity($pet, $pet->getName() . ' didn\'t do anything, because doing things hasn\'t been implemented yet.');
+
         return $activityLogs;
     }
 
