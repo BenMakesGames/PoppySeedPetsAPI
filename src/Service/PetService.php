@@ -3,7 +3,9 @@ namespace App\Service;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
+use App\Entity\PetActivityLog;
 use function App\Functions\array_any;
+use function App\Functions\array_list;
 use App\Model\PetChanges;
 use App\Model\PetChangesSummary;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,7 +21,7 @@ class PetService
         $this->randomService = $randomService;
     }
 
-    public function doPet(Pet $pet): PetChangesSummary
+    public function doPet(Pet $pet): PetActivityLog
     {
         $now = new \DateTimeImmutable();
 
@@ -43,13 +45,13 @@ class PetService
         if($pet->getFood() + $pet->getWhack() > 0 && $pet->getSafety() + $pet->getWhack() > 0)
             $pet->setLove(min($pet->getMaxLove(), $pet->getLove() + 1));
 
-        return $changes->compare($pet);
+        return $this->logActivity($pet, 'You pet ' . $pet->getName(). '.', $changes->compare($pet));
     }
 
     /**
      * @param Inventory[] $inventory
      */
-    public function doFeed(Pet $pet, array $inventory): PetChangesSummary
+    public function doFeed(Pet $pet, array $inventory): PetActivityLog
     {
         if($pet->getIsDead())
             throw new \InvalidArgumentException($pet->getName() . ' is dead :|');
@@ -60,6 +62,7 @@ class PetService
         \shuffle($inventory);
 
         $petChanges = new PetChanges($pet);
+        $foodsEaten = [];
 
         foreach($inventory as $i)
         {
@@ -74,19 +77,38 @@ class PetService
 
             $this->em->remove($i);
 
+            $foodsEaten[] = $i->getItem()->getName();
+
             if($pet->getJunk() + $pet->getWhack() + $pet->getFood() > 16)
                 break;
         }
 
-        return $petChanges->compare($pet);
+        return $this->logActivity($pet, $pet->getName() . ' ate ' . array_list($foodsEaten) . '.', $petChanges->compare($pet));
     }
 
+    /**
+     * @return PetActivityLog[]
+     */
     public function runHour(Pet $pet)
     {
+        $activityLogs = [];
+
         if($pet->getTime() < 60)
             throw new \InvalidArgumentException('Pet does not have enough Time.');
 
         $pet->setFood($pet->getFood() - 1);
+
+        if($pet->getSafety() > 0)
+            $pet->setSafety($pet->getSafety() - 1);
+        else if($pet->getSafety() < 0 && $pet->getFood() + $pet->getWhack() > 0)
+            $pet->setSafety($pet->getSafety() + 1);
+
+        if($pet->getLove() > 0)
+            $pet->setLove($pet->getLove() - 1);
+
+        if($pet->getEsteem() > 0)
+            $pet->setEsteem($pet->getEsteem() - 1);
+
         $pet->setTime($pet->getTime() - 60);
 
         if($pet->getWhack() > 0 || $pet->getJunk() > 0)
@@ -118,26 +140,49 @@ class PetService
 
             if($this->randomService->roll(1, $whackDie) + $this->randomService->roll(1, $junkDie) < $pet->getWhack() + $pet->getJunk())
             {
+                $changes = new PetChanges($pet);
+
                 // TODO: throw up
-                return;
+
+                $activityLogs[] = $this->logActivity($pet, $pet->getName() . ' threw up :(', $changes->compare($pet));
+
+                return $activityLogs;
             }
 
             if($this->randomService->roll(1, 12) < $pet->getWhack())
             {
                 // TODO: something whacky?
-                return;
+                return $activityLogs;
             }
 
             if($this->randomService->roll(1, $junkDie) < $pet->getJunk())
             {
-                // TODO: lay around/do something meaningless
-                return;
+                $activityLogs[] = $this->logActivity($pet, $pet->getName() . ' couldn\'t muster the energy to do anything.');
+
+                return $activityLogs;
             }
         }
+
+        // TODO: pick a productive activity
+
+        return $activityLogs;
     }
 
-    function calculateAgeInDays(Pet $pet)
+    public function calculateAgeInDays(Pet $pet)
     {
         return (new \DateTimeImmutable())->diff($pet->getBirthDate())->days;
+    }
+
+    public function logActivity(Pet $pet, string $entry, ?PetChangesSummary $changes = null): PetActivityLog
+    {
+        $log = (new PetActivityLog())
+            ->setPet($pet)
+            ->setEntry($entry)
+            ->setChanges($changes)
+        ;
+
+        $this->em->persist($log);
+
+        return $log;
     }
 }

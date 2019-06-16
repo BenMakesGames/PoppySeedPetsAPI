@@ -24,3 +24,33 @@ function array_all(array $array, callable $delegate)
 
     return true;
 }
+
+/**
+ * @param string[] $strings
+ */
+function array_list($strings, string $separator = ', ', string $lastSeparator = ', and ')
+{
+    if(count($strings) === 0)
+        return '';
+    else if(count($strings) === 1)
+        return reset($strings);
+
+    $list = '';
+
+    $length = count($strings);
+    $index = 0;
+
+    foreach($strings as $string)
+    {
+        if($index === $length - 1)
+            $list .= $lastSeparator;
+        else if($index > 0)
+            $list .= $separator;
+
+        $list .= $string;
+
+        $index++;
+    }
+
+    return $list;
+}

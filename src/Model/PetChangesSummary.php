@@ -7,25 +7,25 @@ class PetChangesSummary
 {
     /**
      * @var string|null
-     * @Groups({"myPets"})
+     * @Groups({"petActivityLogs"})
      */
     public $food;
 
     /**
      * @var string|null
-     * @Groups({"myPets"})
+     * @Groups({"petActivityLogs"})
      */
     public $safety;
 
     /**
      * @var int
-     * @Groups({"myPets"})
+     * @Groups({"petActivityLogs"})
      */
     public $love;
 
     /**
      * @var string|null
-     * @Groups({"myPets"})
+     * @Groups({"petActivityLogs"})
      */
     public $esteem;
 

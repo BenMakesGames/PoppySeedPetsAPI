@@ -2,6 +2,7 @@
 namespace App\Security;
 
 use App\Repository\UserRepository;
+use App\Service\HouseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,11 +17,15 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
 {
     private $userRepository;
     private $em;
+    private $houseService;
 
-    public function __construct(UserRepository $userRepository, EntityManagerInterface $em)
+    public function __construct(
+        UserRepository $userRepository, EntityManagerInterface $em, HouseService $houseService
+    )
     {
         $this->userRepository = $userRepository;
         $this->em = $em;
+        $this->houseService = $houseService;
     }
 
     public function supports(Request $request)
@@ -49,6 +54,7 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
             return null;
 
         $user->setLastActivity();
+        $this->houseService->run($user);
         $this->em->flush();
 
         return $user;
