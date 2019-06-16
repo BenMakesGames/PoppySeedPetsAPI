@@ -13,14 +13,21 @@ class PetService
     private $em;
     private $randomService;
     private $activityLogService;
+    private $fishingService;
+    private $huntingService;
+    private $gatheringService;
 
     public function __construct(
-        EntityManagerInterface $em, RandomService $randomService, ActivityLogService $activityLogService
+        EntityManagerInterface $em, RandomService $randomService, ActivityLogService $activityLogService,
+        FishingService $fishingService, HuntingService $huntingService, GatheringService $gatheringService
     )
     {
         $this->em = $em;
         $this->randomService = $randomService;
         $this->activityLogService = $activityLogService;
+        $this->fishingService = $fishingService;
+        $this->huntingService = $huntingService;
+        $this->gatheringService = $gatheringService;
     }
 
     public function doPet(Pet $pet)
@@ -216,8 +223,7 @@ class PetService
 
         $petDesires = [
             'fish' => $this->generateFishingDesire($pet),
-            'huntMonsters' => $this->generateMonsterHuntingDesire($pet),
-            //'huntGhosts' => $this->generateGhostHuntingDesire($pet),
+            //'hunt' => $this->generateMonsterHuntingDesire($pet),
             'gather' => $this->generateGatheringDesire($pet),
         ];
 
@@ -225,10 +231,9 @@ class PetService
 
         switch($desire)
         {
-            case 'fish': $this->doFish($pet); break;
-            case 'huntMonsters': $this->doHuntMonsters($pet); break;
-            //case 'huntGhosts': $this->doHuntGhosts($pet); break;
-            case 'gather': $this->doGather($pet); break;
+            case 'fish': $this->fishingService->adventure($pet); break;
+            //case 'hunt': $this->huntingService->adventure($pet); break;
+            case 'gather': $this->gatheringService->adventure($pet); break;
             default: $this->doNothing($pet); break;
         }
     }
@@ -237,26 +242,6 @@ class PetService
     {
         $pet->spendTime(\mt_rand(30, 60));
         $this->activityLogService->createActivityLog($pet, $pet->getName() . ' hung around the house.');
-    }
-
-    private function doFish(Pet $pet)
-    {
-
-    }
-
-    private function doHuntMonsters(Pet $pet)
-    {
-
-    }
-
-    private function doHuntGhosts(Pet $pet)
-    {
-
-    }
-
-    private function doGather(Pet $pet)
-    {
-
     }
 
     private function pickDesire(array $petDesires)

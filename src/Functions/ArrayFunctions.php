@@ -25,6 +25,11 @@ function array_all(array $array, callable $delegate)
     return true;
 }
 
+function array_pick_one(array $array)
+{
+    return $array[mt_rand(0, count($array) - 1)];
+}
+
 /**
  * @param string[] $strings
  */

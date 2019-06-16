@@ -263,6 +263,13 @@ class Pet
         return $this;
     }
 
+    public function decreaseExperience(int $amount): self
+    {
+        $this->experience -= $amount;
+
+        return $this;
+    }
+
     public function getImage(): ?string
     {
         return $this->image;
@@ -479,5 +486,18 @@ class Pet
         $this->skills = $skills;
 
         return $this;
+    }
+
+    /**
+     * @Groups({"myPets"})
+     */
+    public function getLevel(): int
+    {
+        return $this->getSkills()->getTotal();
+    }
+
+    public function getExperienceToLevel(): int
+    {
+        return $this->getLevel() * 10;
     }
 }

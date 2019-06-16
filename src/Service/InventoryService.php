@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\Inventory;
+use App\Entity\Item;
 use App\Entity\User;
 use App\Model\ItemFood;
 use App\Model\ItemQuantity;
@@ -91,11 +92,13 @@ class InventoryService
     }
 
     /**
-     * @param ItemQuantity[] $quantities
+     * @param ItemQuantity|ItemQuantity[] $quantities
      * @return Inventory[]
      */
-    public function giveInventory($quantities, User $user, User $creator)
+    public function giveInventory($quantities, User $owner, User $creator)
     {
+        if(!is_array($quantities)) $quantities = [ $quantities ];
+
         $inventory = [];
 
         foreach($quantities as $itemQuantity)
@@ -103,7 +106,7 @@ class InventoryService
             for($i = 0; $i < $itemQuantity->quantity; $i++)
             {
                 $i = (new Inventory())
-                    ->setOwner($user)
+                    ->setOwner($owner)
                     ->setCreatedBy($creator)
                     ->setItem($itemQuantity->item)
                 ;
@@ -115,6 +118,25 @@ class InventoryService
         }
 
         return $inventory;
+    }
+
+    /**
+     * @param Item|string $item
+     */
+    public function giveCopyOfItem($item, User $owner, User $creator, string $comment): Inventory
+    {
+        if(is_string($item)) $item = $this->itemRepository->findOneByName($item);
+
+        $i = (new Inventory())
+            ->setOwner($owner)
+            ->setCreatedBy($creator)
+            ->setItem($item)
+            ->addComment($comment)
+        ;
+
+        $this->em->persist($i);
+
+        return $i;
     }
 
     /**

@@ -71,6 +71,32 @@ class PetSkills
         return $this->id;
     }
 
+    public function getTotal(): int
+    {
+        return
+            $this->strength + $this->stamina + $this->dexterity + $this->intelligence + $this->perception +
+            $this->nature + $this->brawl + $this->umbra + $this->stealth
+        ;
+    }
+
+    public function getStat(string $statName): int
+    {
+        if($statName === 'id' || $statName === 'pet' || !property_exists($this, $statName))
+            throw new \InvalidArgumentException('Unknown stat "' . $statName . '".');
+
+        return $this->{$statName};
+    }
+
+    public function increaseStat(string $statName): self
+    {
+        if($statName === 'id' || $statName === 'pet' || !property_exists($this, $statName))
+            throw new \InvalidArgumentException('Unknown stat "' . $statName . '".');
+
+        $this->{$statName}++;
+
+        return $this;
+    }
+
     public function getStrength(): int
     {
         return $this->strength;
