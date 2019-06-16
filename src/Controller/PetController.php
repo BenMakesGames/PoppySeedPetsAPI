@@ -47,7 +47,7 @@ class PetController extends PsyPetsController
 
         return $responseService->success(
             $pet,
-            [ SerializationGroup::MY_PETS ]
+            SerializationGroup::MY_PETS
         );
     }
 
@@ -87,7 +87,7 @@ class PetController extends PsyPetsController
 
         return $responseService->success(
             $pet,
-            [ SerializationGroup::MY_PETS ]
+            SerializationGroup::MY_PETS
         );
     }
 }
