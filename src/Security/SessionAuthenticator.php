@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -51,7 +52,7 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
         $user = $this->userRepository->findOneBySessionId($sessionId);
 
         if(!$user || $user->getSessionExpiration() < new \DateTimeImmutable() || $user->getIsLocked())
-            return null;
+            throw new AccessDeniedHttpException('sessionId is invalid. Please try logging in again.');
 
         $user->setLastActivity();
         $this->houseService->run($user);
