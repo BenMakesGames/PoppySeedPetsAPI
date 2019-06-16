@@ -88,8 +88,7 @@ class AccountController extends PsyPetsController
             ->setImage($petImage)
             ->setColorA($petColorA)
             ->setColorB($petColorB)
-            ->setFood(mt_rand(10, 12))
-            ->setSafety(-9)
+            ->setNeeds(mt_rand(10, 12), -9)
         ;
 
         $em->persist($pet);

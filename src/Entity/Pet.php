@@ -163,14 +163,24 @@ class Pet
         return $this;
     }
 
+    public function setNeeds(int $food, int $safety): self
+    {
+        $this->food = $food;
+        $this->safety = $safety;
+
+        return $this;
+    }
+
     public function getFood(): ?int
     {
         return $this->food;
     }
 
-    public function setFood(int $food): self
+    public function increaseFood(int $amount): self
     {
-        $this->food = $food;
+        if($amount === 0) return $this;
+
+        $this->food = min($this->food + $amount, $this->getStomachSize());
 
         return $this;
     }
@@ -180,9 +190,12 @@ class Pet
         return $this->safety;
     }
 
-    public function setSafety(int $safety): self
+    public function increaseSafety(int $amount): self
     {
-        $this->safety = $safety;
+        if($amount === 0) return $this;
+
+        if($this->getFood() + $this->getWhack() > 0)
+            $this->safety = max(-$this->getMaxSafety(), min($this->safety + $amount, $this->getMaxSafety()));
 
         return $this;
     }
@@ -197,9 +210,12 @@ class Pet
         return $this->love;
     }
 
-    public function setLove(int $love): self
+    public function increaseLove(int $amount): self
     {
-        $this->love = $love;
+        if($amount === 0) return $this;
+
+        if($this->getFood() + $this->getWhack() > 0 && $this->getSafety() + $this->getWhack() > 0)
+            $this->love = max(-$this->getMaxLove(), min($this->love + $amount, $this->getMaxLove()));
 
         return $this;
     }
@@ -214,9 +230,12 @@ class Pet
         return $this->esteem;
     }
 
-    public function setEsteem(int $esteem): self
+    public function increaseEsteem(int $amount): self
     {
-        $this->esteem = $esteem;
+        if($amount === 0) return $this;
+
+        if($this->getFood() + $this->getWhack() > 0 && $this->getSafety() + $this->getWhack() > 0 && $this->getLove() + $this->getWhack() > 0)
+            $this->esteem = max(-$this->getMaxEsteem(), min($this->esteem + $amount, $this->getMaxEsteem()));
 
         return $this;
     }
@@ -231,9 +250,9 @@ class Pet
         return $this->experience;
     }
 
-    public function setExperience(int $experience): self
+    public function increaseExperience(int $amount): self
     {
-        $this->experience = $experience;
+        $this->experience += $amount;
 
         return $this;
     }
@@ -303,9 +322,11 @@ class Pet
         return $this->junk;
     }
 
-    public function setJunk(int $junk): self
+    public function increaseJunk(int $amount): self
     {
-        $this->junk = $junk;
+        if($amount === 0) return $this;
+
+        $this->junk = max(0, min($this->junk + $amount, $this->getStomachSize()));
 
         return $this;
     }
@@ -315,9 +336,11 @@ class Pet
         return $this->whack;
     }
 
-    public function setWhack(int $whack): self
+    public function increaseWhack(int $amount): self
     {
-        $this->whack = $whack;
+        if($amount === 0) return $this;
+
+        $this->whack = max(0, min($this->whack + $amount, $this->getStomachSize()));
 
         return $this;
     }

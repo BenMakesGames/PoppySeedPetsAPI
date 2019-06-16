@@ -39,13 +39,34 @@ class PetService
 
         $changes = new PetChanges($pet);
 
-        if($pet->getFood() + $pet->getWhack() > 0)
-            $pet->setSafety(min($pet->getMaxSafety(), $pet->getSafety() + 1));
-
-        if($pet->getFood() + $pet->getWhack() > 0 && $pet->getSafety() + $pet->getWhack() > 0)
-            $pet->setLove(min($pet->getMaxLove(), $pet->getLove() + 1));
+        $pet->increaseSafety(1);
+        $pet->increaseLove(1);
 
         return $this->logActivity($pet, 'You pet ' . $pet->getName(). '.', $changes->compare($pet));
+    }
+
+    public function doPraise(Pet $pet): PetActivityLog
+    {
+        $now = new \DateTimeImmutable();
+
+        if($pet->getIsDead())
+            throw new \InvalidArgumentException($pet->getName() . ' is dead :|');
+
+        if($pet->getLastInteracted() < $now->modify('-48 hours'))
+            $pet->setLastInteracted($now->modify('-24 hours'));
+        else if($pet->getLastInteracted() < $now->modify('-24 hours'))
+            $pet->setLastInteracted($now->modify('-15 minutes'));
+        else if($pet->getLastInteracted() < $now->modify('-15 minutes'))
+            $pet->setLastInteracted($now);
+        else
+            throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
+
+        $changes = new PetChanges($pet);
+
+        $pet->increaseLove(1);
+        $pet->increaseEsteem(1);
+
+        return $this->logActivity($pet, 'You praised ' . $pet->getName(). '.', $changes->compare($pet));
     }
 
     /**
@@ -68,22 +89,38 @@ class PetService
         {
             $food = $i->getItem()->getFood();
 
-            if($food->junk) $pet->setJunk($pet->getJunk() + $food->junk);
-            if($food->whack) $pet->setWhack($pet->getWhack() + $food->whack);
-            if($food->food) $pet->setFood($pet->getFood() + $food->food);
+            if($food->junk) $pet->increaseJunk($food->junk);
+            if($food->whack) $pet->increaseWhack($food->whack);
+            if($food->food) $pet->increaseFood($food->food);
 
             if($pet->getFood() + $pet->getWhack() - $pet->getJunk() > 0)
-                if($food->love) $pet->setLove($pet->getLove() + $food->love);
+                if($food->love) $pet->increaseLove($food->love);
 
             $this->em->remove($i);
 
             $foodsEaten[] = $i->getItem()->getName();
 
-            if($pet->getJunk() + $pet->getWhack() + $pet->getFood() > 16)
+            if($pet->getJunk() + $pet->getWhack() + $pet->getFood() >= $pet->getStomachSize())
                 break;
         }
 
-        return $this->logActivity($pet, $pet->getName() . ' ate ' . array_list($foodsEaten) . '.', $petChanges->compare($pet));
+        // gain love & safety equal to 1/8 food gained, when hand-fed
+        $foodGained = $pet->getFood() - $petChanges->food;
+
+        if($foodGained > 0)
+        {
+            $remainder = $foodGained % 8;
+            $gain = floor($foodGained / 8);
+
+            if ($remainder > 0 && mt_rand(1, 8) <= $remainder)
+                $gain++;
+
+            $pet->increaseSafety($gain);
+            $pet->increaseLove($gain);
+        }
+
+
+        return $this->logActivity($pet, 'You fed ' . $pet->getName() . ' ' . array_list($foodsEaten) . '.', $petChanges->compare($pet));
     }
 
     /**
@@ -96,18 +133,24 @@ class PetService
         if($pet->getTime() < 60)
             throw new \InvalidArgumentException('Pet does not have enough Time.');
 
-        $pet->setFood($pet->getFood() - 1);
+        $pet->increaseFood(-1);
+
+        if($pet->getJunk() > 0)
+            $pet->increaseJunk(-1);
+
+        if($pet->getWhack() > 0)
+            $pet->increaseWhack(-1);
 
         if($pet->getSafety() > 0)
-            $pet->setSafety($pet->getSafety() - 1);
-        else if($pet->getSafety() < 0 && $pet->getFood() + $pet->getWhack() > 0)
-            $pet->setSafety($pet->getSafety() + 1);
+            $pet->increaseSafety(-1);
+        else if($pet->getSafety() < 0)
+            $pet->increaseSafety(1);
 
         if($pet->getLove() > 0)
-            $pet->setLove($pet->getLove() - 1);
+            $pet->increaseLove(-1);
 
         if($pet->getEsteem() > 0)
-            $pet->setEsteem($pet->getEsteem() - 1);
+            $pet->increaseEsteem(-1);
 
         $pet->setTime($pet->getTime() - 60);
 

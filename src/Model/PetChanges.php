@@ -5,10 +5,10 @@ use App\Entity\Pet;
 
 class PetChanges
 {
-    private $food;
-    private $safety;
-    private $love;
-    private $esteem;
+    public $food;
+    public $safety;
+    public $love;
+    public $esteem;
 
     public function __construct(Pet $pet)
     {
@@ -16,7 +16,6 @@ class PetChanges
         $this->safety = $pet->getSafety();
         $this->love = $pet->getLove();
         $this->esteem = $pet->getEsteem();
-        $this->experience = $pet->getExperience();
     }
 
     public function compare(Pet $pet): PetChangesSummary
