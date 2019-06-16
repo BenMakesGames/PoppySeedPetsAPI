@@ -31,6 +31,6 @@ class IncreaseTimeCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->em->getConnection()->executeQuery('UPDATE pets SET `time`=`time`+1 WHERE `time`<4320');
+        $this->em->getConnection()->executeQuery('UPDATE pet SET `time`=`time`+1 WHERE `time`<4320');
     }
 }

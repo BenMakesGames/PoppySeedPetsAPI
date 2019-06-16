@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Pet;
+use App\Entity\PetSkills;
 use App\Entity\User;
 use App\Enum\SerializationGroup;
 use App\Repository\UserRepository;
@@ -25,7 +26,7 @@ class AccountController extends PsyPetsController
     ];
 
     /**
-     * @Route("", methods={"POST"})
+     * @Route("/register", methods={"POST"})
      */
     public function register(
         Request $request, EntityManagerInterface $em, ResponseService $responseService,
@@ -82,6 +83,10 @@ class AccountController extends PsyPetsController
 
         $em->persist($user);
 
+        $petSkills = new PetSkills();
+
+        $em->persist($petSkills);
+
         $pet = (new Pet())
             ->setOwner($user)
             ->setName($petName)
@@ -89,6 +94,7 @@ class AccountController extends PsyPetsController
             ->setColorA($petColorA)
             ->setColorB($petColorB)
             ->setNeeds(mt_rand(10, 12), -9)
+            ->setSkills($petSkills)
         ;
 
         $em->persist($pet);

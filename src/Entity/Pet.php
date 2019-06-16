@@ -115,6 +115,12 @@ class Pet
      */
     private $lastInteracted;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\PetSkills", inversedBy="pet", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $skills;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -156,9 +162,9 @@ class Pet
         return $this->time;
     }
 
-    public function setTime(int $time): self
+    public function spendTime(int $amount): self
     {
-        $this->time = $time;
+        $this->time -= $amount;
 
         return $this;
     }
@@ -461,5 +467,17 @@ class Pet
     public function getCanInteract(): bool
     {
         return $this->getLastInteracted() < (new \DateTimeImmutable())->modify('-30 minutes');
+    }
+
+    public function getSkills(): ?PetSkills
+    {
+        return $this->skills;
+    }
+
+    public function setSkills(PetSkills $skills): self
+    {
+        $this->skills = $skills;
+
+        return $this;
     }
 }

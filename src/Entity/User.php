@@ -82,7 +82,13 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      * @Groups({"privateProfile"})
      */
-    private $isLocked;
+    private $isLocked = false;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"logIn"})
+     */
+    private $moneys = 0;
 
     public function __construct()
     {
@@ -272,6 +278,18 @@ class User implements UserInterface
     public function setIsLocked(bool $isLocked): self
     {
         $this->isLocked = $isLocked;
+
+        return $this;
+    }
+
+    public function getMoneys(): int
+    {
+        return $this->moneys;
+    }
+
+    public function increaseMoneys(int $amount): self
+    {
+        $this->moneys += $amount;
 
         return $this;
     }

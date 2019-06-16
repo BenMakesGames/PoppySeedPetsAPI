@@ -1,0 +1,198 @@
+<?php
+
+namespace App\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass="App\Repository\PetSkillsRepository")
+ */
+class PetSkills
+{
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $strength = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $dexterity = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $intelligence = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $perception = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $stealth = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $stamina = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $nature = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $brawl = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $umbra = 0;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="skills", cascade={"persist", "remove"})
+     */
+    private $pet;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getStrength(): int
+    {
+        return $this->strength;
+    }
+
+    public function setStrength(int $strength): self
+    {
+        $this->strength = $strength;
+
+        return $this;
+    }
+
+    public function getDexterity(): int
+    {
+        return $this->dexterity;
+    }
+
+    public function setDexterity(int $dexterity): self
+    {
+        $this->dexterity = $dexterity;
+
+        return $this;
+    }
+
+    public function getIntelligence(): int
+    {
+        return $this->intelligence;
+    }
+
+    public function setIntelligence(int $intelligence): self
+    {
+        $this->intelligence = $intelligence;
+
+        return $this;
+    }
+
+    public function getPerception(): int
+    {
+        return $this->perception;
+    }
+
+    public function setPerception(int $perception): self
+    {
+        $this->perception = $perception;
+
+        return $this;
+    }
+
+    public function getStealth(): int
+    {
+        return $this->stealth;
+    }
+
+    public function setStealth(int $stealth): self
+    {
+        $this->stealth = $stealth;
+
+        return $this;
+    }
+
+    public function getStamina(): int
+    {
+        return $this->stamina;
+    }
+
+    public function setStamina(int $stamina): self
+    {
+        $this->stamina = $stamina;
+
+        return $this;
+    }
+
+    public function getNature(): int
+    {
+        return $this->nature;
+    }
+
+    public function setNature(int $nature): self
+    {
+        $this->nature = $nature;
+
+        return $this;
+    }
+
+    public function getBrawl(): int
+    {
+        return $this->brawl;
+    }
+
+    public function setBrawl(int $brawl): self
+    {
+        $this->brawl = $brawl;
+
+        return $this;
+    }
+
+    public function getUmbra(): int
+    {
+        return $this->umbra;
+    }
+
+    public function setUmbra(int $umbra): self
+    {
+        $this->umbra = $umbra;
+
+        return $this;
+    }
+
+    public function getPet(): ?Pet
+    {
+        return $this->pet;
+    }
+
+    public function setPet(Pet $pet): self
+    {
+        $this->pet = $pet;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $pet->getSkills()) {
+            $pet->setSkills($this);
+        }
+
+        return $this;
+    }
+}

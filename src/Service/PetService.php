@@ -3,11 +3,9 @@ namespace App\Service;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Entity\PetActivityLog;
 use function App\Functions\array_any;
 use function App\Functions\array_list;
 use App\Model\PetChanges;
-use App\Model\PetChangesSummary;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetService
@@ -116,7 +114,7 @@ class PetService
             $remainder = $foodGained % 8;
             $gain = floor($foodGained / 8);
 
-            if ($remainder > 0 && mt_rand(1, 8) <= $remainder)
+            if ($remainder > 0 && \mt_rand(1, 8) <= $remainder)
                 $gain++;
 
             $pet->increaseSafety($gain);
@@ -151,8 +149,6 @@ class PetService
         if($pet->getEsteem() > 0)
             $pet->increaseEsteem(-1);
 
-        $pet->setTime($pet->getTime() - 60);
-
         if($pet->getWhack() > 0 || $pet->getJunk() > 0)
         {
             if($this->calculateAgeInDays($pet) > 365 * 2)
@@ -186,6 +182,8 @@ class PetService
 
                 // TODO: throw up
 
+                $pet->spendTime(\mt_rand(15, 45));
+
                 $this->activityLogService->createActivityLog($pet, $pet->getName() . ' threw up :(', $changes->compare($pet));
 
                 return;
@@ -194,6 +192,8 @@ class PetService
             if($this->randomService->roll(1, 12) < $pet->getWhack())
             {
                 // TODO: something whacky?
+                $pet->spendTime(60);
+
                 return;
             }
 
@@ -201,17 +201,111 @@ class PetService
             {
                 $this->activityLogService->createActivityLog($pet, $pet->getName() . ' couldn\'t muster the energy to do anything.');
 
+                $pet->spendTime(\mt_rand(30, 60));
+
                 return;
             }
         }
 
-        // TODO: pick a productive activity
+        $eatDesire = $pet->getStomachSize() / 2 - $pet->getFood();
 
-        $this->activityLogService->createActivityLog($pet, $pet->getName() . ' didn\'t do anything, because doing things hasn\'t been implemented yet.');
+        if(\mt_rand(1, $pet->getStomachSize()) <= $eatDesire)
+        {
+
+        }
+
+        $petDesires = [
+            'fish' => $this->generateFishingDesire($pet),
+            'huntMonsters' => $this->generateMonsterHuntingDesire($pet),
+            //'huntGhosts' => $this->generateGhostHuntingDesire($pet),
+            'gather' => $this->generateGatheringDesire($pet),
+        ];
+
+        $desire = $this->pickDesire($petDesires);
+
+        switch($desire)
+        {
+            case 'fish': $this->doFish($pet); break;
+            case 'huntMonsters': $this->doHuntMonsters($pet); break;
+            //case 'huntGhosts': $this->doHuntGhosts($pet); break;
+            case 'gather': $this->doGather($pet); break;
+            default: $this->doNothing($pet); break;
+        }
+    }
+
+    private function doNothing(Pet $pet)
+    {
+        $pet->spendTime(\mt_rand(30, 60));
+        $this->activityLogService->createActivityLog($pet, $pet->getName() . ' hung around the house.');
+    }
+
+    private function doFish(Pet $pet)
+    {
+
+    }
+
+    private function doHuntMonsters(Pet $pet)
+    {
+
+    }
+
+    private function doHuntGhosts(Pet $pet)
+    {
+
+    }
+
+    private function doGather(Pet $pet)
+    {
+
+    }
+
+    private function pickDesire(array $petDesires)
+    {
+        $totalDesire = \array_sum($petDesires);
+
+        $pick = mt_rand(0, $totalDesire - 1);
+
+        foreach($petDesires as $action=>$desire)
+        {
+            if($pick < $desire)
+                return $action;
+
+            $pick -= $desire;
+        }
+
+        return array_key_last($petDesires);
     }
 
     public function calculateAgeInDays(Pet $pet)
     {
         return (new \DateTimeImmutable())->diff($pet->getBirthDate())->days;
+    }
+
+    public function generateFishingDesire(Pet $pet): int
+    {
+        $desire = $pet->getSkills()->getDexterity() + $pet->getSkills()->getNature() + \mt_rand(1, 4);
+
+        return round($desire * (1 + \mt_rand(-10, 10) / 100));
+    }
+
+    public function generateMonsterHuntingDesire(Pet $pet): int
+    {
+        $desire = $pet->getSkills()->getStrength() + $pet->getSkills()->getBrawl() + \mt_rand(1, 4);
+
+        return round($desire * (1 + \mt_rand(-10, 10) / 100));
+    }
+
+    public function generateGatheringDesire(Pet $pet): int
+    {
+        $desire = $pet->getSkills()->getPerception() + $pet->getSkills()->getNature() + \mt_rand(1, 4);
+
+        return round($desire * (1 + \mt_rand(-10, 10) / 100));
+    }
+
+    public function generateGhostHuntingDesire(Pet $pet): int
+    {
+        $desire = $pet->getSkills()->getPerception() + $pet->getSkills()->getUmbra() + \mt_rand(1, 4);
+
+        return round($desire * (1 + \mt_rand(-10, 10) / 100));
     }
 }

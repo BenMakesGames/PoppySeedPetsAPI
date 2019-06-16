@@ -31,6 +31,11 @@ class Monster
      */
     private $loot;
 
+    /**
+     * @ORM\Column(type="string", length=20)
+     */
+    private $additionalStat;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -68,6 +73,18 @@ class Monster
     public function setLoot(string $loot): self
     {
         $this->loot = $loot;
+
+        return $this;
+    }
+
+    public function getAdditionalStat(): ?string
+    {
+        return $this->additionalStat;
+    }
+
+    public function setAdditionalStat(string $additionalStat): self
+    {
+        $this->additionalStat = $additionalStat;
 
         return $this;
     }
