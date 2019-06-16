@@ -36,7 +36,7 @@ class PetController extends PsyPetsController
     {
         try
         {
-            $activity = $petService->doPet($pet);
+            $petService->doPet($pet);
         }
         catch(\Exception $e)
         {
@@ -46,8 +46,8 @@ class PetController extends PsyPetsController
         $em->flush();
 
         return $responseService->success(
-            [ 'pet' => $pet, 'activity' => [ $activity ] ],
-            [ SerializationGroup::MY_PETS, SerializationGroup::PET_ACTIVITY_LOGS ]
+            $pet,
+            [ SerializationGroup::MY_PETS ]
         );
     }
 
@@ -76,7 +76,7 @@ class PetController extends PsyPetsController
 
         try
         {
-            $activity = $petService->doFeed($pet, $inventory);
+            $petService->doFeed($pet, $inventory);
         }
         catch(\Exception $e)
         {
@@ -86,8 +86,8 @@ class PetController extends PsyPetsController
         $em->flush();
 
         return $responseService->success(
-            [ 'pet' => $pet, 'activity' => [ $activity ] ],
-            [ SerializationGroup::MY_PETS, SerializationGroup::PET_ACTIVITY_LOGS ]
+            $pet,
+            [ SerializationGroup::MY_PETS ]
         );
     }
 }

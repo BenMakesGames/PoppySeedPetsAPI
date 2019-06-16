@@ -11,9 +11,6 @@ class HouseService
     private $petService;
     private $petRepository;
 
-    /** @var PetActivityLog[] */
-    public $activityLogs = [];
-
     public function __construct(PetService $petService, PetRepository $petRepository)
     {
         $this->petService = $petService;
@@ -39,7 +36,7 @@ class HouseService
             {
                 if($petsWithTime[$i]->getTime() >= 60)
                 {
-                    $this->activityLogs = array_merge($this->activityLogs, $this->petService->runHour($petsWithTime[$i]));
+                    $this->petService->runHour($petsWithTime[$i]);
 
                     if($petsWithTime[$i]->getTime() < 60)
                         unset($petsWithTime[$i]);
