@@ -4,10 +4,12 @@ namespace App\Controller;
 use App\Entity\Pet;
 use App\Enum\SerializationGroup;
 use App\Repository\InventoryRepository;
+use App\Repository\PetActivityLogRepository;
 use App\Service\PetService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -24,6 +26,44 @@ class PetController extends PsyPetsController
     public function getMyPets(ResponseService $responseService)
     {
         return $responseService->success($this->getUser()->getPets(), SerializationGroup::MY_PETS);
+    }
+
+    /**
+     * @Route("/{pet}", methods={"GET"}, requirements={"pet"="\d+"})
+     */
+    public function profile(
+        Pet $pet, ResponseService $responseService
+    )
+    {
+        $user = $this->getUser();
+
+        $groups = [
+            SerializationGroup::PUBLIC_PROFILE
+        ];
+
+        if($user->getId() === $pet->getOwner()->getId())
+        {
+            $groups[] = SerializationGroup::MY_PETS;
+        }
+
+        return $responseService->success($pet, $groups);
+    }
+
+    /**
+     * @Route("/{pet}/logs", methods={"GET"}, requirements={"pet"="\d+"})
+     */
+    public function logs(
+        Pet $pet, ResponseService $responseService, PetActivityLogRepository $petActivityLogRepository
+    )
+    {
+        $user = $this->getUser();
+
+        if($user->getId() !== $pet->getOwner()->getId())
+            throw new AccessDeniedHttpException();
+
+        $logs = $petActivityLogRepository->findBy([ 'pet' => $pet->getId() ], [ 'id' => 'DESC' ], 10);
+
+        return $responseService->success($logs, SerializationGroup::PET_ACTIVITY_LOGS);
     }
 
     /**
