@@ -21,7 +21,7 @@ class Inventory
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Item")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPets", "myInventory"})
+     * @Groups({"myPets", "myInventory", "publicProfile"})
      */
     private $item;
 
@@ -44,7 +44,7 @@ class Inventory
 
     /**
      * @ORM\Column(type="json")
-     * @Groups({"myInventory"})
+     * @Groups({"myInventory", "privateProfile"})
      */
     private $comments = [];
 

@@ -15,12 +15,13 @@ class Item
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"encyclopedia"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=40, unique=true)
-     * @Groups({"myPets", "myInventory"})
+     * @Groups({"myPets", "myInventory", "publicProfile", "encyclopedia"})
      */
     private $name;
 
@@ -31,22 +32,24 @@ class Item
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"myInventory"})
+     * @Groups({"myInventory", "encyclopedia"})
      */
     private $size = 100;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
+     * @Groups({"encyclopedia"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"myPets", "myInventory", "publicProfile", "encyclopedia"})
      */
     private $image;
 
     /**
-     * @Groups({"myInventory"})
+     * @Groups({"myInventory", "encyclopedia"})
      */
     public function isEdible(): bool
     {

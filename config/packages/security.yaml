@@ -17,6 +17,7 @@ security:
         main:
             anonymous: ~
             logout: ~
+            stateless: true
 
             guard:
                 authenticators:

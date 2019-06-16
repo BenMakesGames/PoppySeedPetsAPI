@@ -17,7 +17,7 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"logIn", "myInventory"})
+     * @Groups({"logIn", "myInventory", "publicProfile"})
      */
     private $id;
 
@@ -39,12 +39,13 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"logIn", "myInventory"})
+     * @Groups({"logIn", "myInventory", "publicProfile"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"semiPrivateProfile"})
      */
     private $lastActivity;
 
@@ -61,17 +62,33 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Pet", mappedBy="owner")
+     * @Groups({"publicProfile"})
      */
     private $pets;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"semiPrivateProfile"})
      */
     private $registeredOn;
+
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     * @Groups({"logIn"})
+     */
+    private $lastAllowanceCollected;
+
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"privateProfile"})
+     */
+    private $isLocked;
 
     public function __construct()
     {
         $this->pets = new ArrayCollection();
+        $this->registeredOn = new \DateTimeImmutable();
+        $this->lastAllowanceCollected = (new \DateTimeImmutable())->modify('-7 days');
     }
 
     public function getId(): ?int
@@ -235,9 +252,26 @@ class User implements UserInterface
         return $this->registeredOn;
     }
 
-    public function setRegisteredOn(\DateTimeImmutable $registeredOn): self
+    public function getLastAllowanceCollected(): ?\DateTimeImmutable
     {
-        $this->registeredOn = $registeredOn;
+        return $this->lastAllowanceCollected;
+    }
+
+    public function setLastAllowanceCollected(\DateTimeImmutable $lastAllowanceCollected): self
+    {
+        $this->lastAllowanceCollected = $lastAllowanceCollected;
+
+        return $this;
+    }
+
+    public function getIsLocked(): ?bool
+    {
+        return $this->isLocked;
+    }
+
+    public function setIsLocked(bool $isLocked): self
+    {
+        $this->isLocked = $isLocked;
 
         return $this;
     }

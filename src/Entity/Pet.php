@@ -14,7 +14,7 @@ class Pet
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myPets"})
+     * @Groups({"myPets", "publicProfile"})
      */
     private $id;
 
@@ -25,7 +25,7 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPets"})
+     * @Groups({"myPets", "publicProfile"})
      */
     private $name;
 
@@ -61,31 +61,31 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"myPets"})
+     * @Groups({"myPets", "publicProfile"})
      */
     private $image;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPets"})
+     * @Groups({"myPets", "publicProfile"})
      */
     private $colorA;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPets"})
+     * @Groups({"myPets", "publicProfile"})
      */
     private $colorB;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Inventory", cascade={"persist", "remove"})
-     * @Groups({"myPets"})
+     * @Groups({"myPets", "publicProfile"})
      */
     private $hat;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"myPets"})
+     * @Groups({"myPets", "publicProfile"})
      */
     private $isDead = false;
 
@@ -101,7 +101,7 @@ class Pet
 
     /**
      * @ORM\Column(type="datetime_immutable")
-     * @Groups({"myPets"})
+     * @Groups({"myPets", "publicProfile"})
      */
     private $birthDate;
 

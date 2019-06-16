@@ -110,10 +110,16 @@ class AccountController extends PsyPetsController
         $email = $request->request->get('email');
         $password = $request->request->get('passphrase');
 
+        if(!$email || !$password)
+            throw new UnprocessableEntityHttpException('"email" and "passphrase" are both required.');
+
         $user = $userRepository->findOneBy([ 'email' => $email ]);
 
         if(!$user || !$userPasswordEncoder->isPasswordValid($user, $password))
-            throw new AccessDeniedHttpException('Username and/or password does not exist.');
+            throw new AccessDeniedHttpException('Email and/or passphrase is not correct.');
+
+        if($user->getIsLocked())
+            throw new AccessDeniedHttpException('This account has been locked.');
 
         $sessionService->logIn($user);
 
@@ -133,5 +139,44 @@ class AccountController extends PsyPetsController
         $user->logOut();
 
         $em->flush();
+    }
+
+    /**
+     * @Route("/collectWeeklyBox")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function collectWeeklyBox(EntityManagerInterface $em)
+    {
+        $user = $this->getUser();
+
+        $days = (new \DateTimeImmutable())->diff($user->getLastAllowanceCollected())->days;
+
+        if($days < 7)
+            throw new UnprocessableEntityHttpException('It\'s too early to collect your weekly box.');
+
+        $user->setLastAllowanceCollected($user->getLastAllowanceCollected()->modify('+' . (floor($days / 7) * 7) . ' days'));
+
+
+
+        $em->flush();
+    }
+
+    /**
+     * @Route("/{user}", methods={"GET"}, requirements={"user"="\d+"})
+     */
+    public function getProfile(User $user, ResponseService $responseService)
+    {
+        $currentUser = $this->getUser();
+
+        $groups = [ SerializationGroup::PUBLIC_PROFILE ];
+
+        if($currentUser)
+        {
+            $groups[] = SerializationGroup::SEMI_PRIVATE_PROFILE;
+
+            // TODO: if mutual friends, add SerializationGroup::PRIVATE_PROFILE
+        }
+
+        return $responseService->success($user, $groups);
     }
 }

@@ -45,7 +45,7 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
 
         $user = $this->userRepository->findOneBySessionId($sessionId);
 
-        if(!$user || $user->getSessionExpiration() < new \DateTimeImmutable())
+        if(!$user || $user->getSessionExpiration() < new \DateTimeImmutable() || $user->getIsLocked())
             return null;
 
         $user->setLastActivity();
