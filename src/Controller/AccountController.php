@@ -134,6 +134,15 @@ class AccountController extends PsyPetsController
     }
 
     /**
+     * @Route("", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getAccount(ResponseService $responseService)
+    {
+        return $responseService->success($this->getUser(), SerializationGroup::LOG_IN);
+    }
+
+    /**
      * @Route("/logOut", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
