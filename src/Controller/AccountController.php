@@ -5,7 +5,9 @@ use App\Entity\Pet;
 use App\Entity\PetSkills;
 use App\Entity\User;
 use App\Enum\SerializationGroup;
+use App\Functions\ArrayFunctions;
 use App\Repository\UserRepository;
+use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\SessionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -156,22 +158,46 @@ class AccountController extends PsyPetsController
     }
 
     /**
-     * @Route("/collectWeeklyBox")
+     * @Route("/collectWeeklyCarePackage", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function collectWeeklyBox(EntityManagerInterface $em, ResponseService $responseService)
+    public function collectWeeklyBox(
+        Request $request, EntityManagerInterface $em, ResponseService $responseService,
+        InventoryService $inventoryService
+    )
     {
         $user = $this->getUser();
+
+        $type = $request->request->getInt('type');
+
+        if($type < 1 || $type > 2)
+            throw new UnprocessableEntityHttpException('Must specify a Care Package "type".');
 
         $days = (new \DateTimeImmutable())->diff($user->getLastAllowanceCollected())->days;
 
         if($days < 7)
-            throw new UnprocessableEntityHttpException('It\'s too early to collect your weekly box.');
+            throw new UnprocessableEntityHttpException('It\'s too early to collect your weekly Care Package.');
 
         $user->setLastAllowanceCollected($user->getLastAllowanceCollected()->modify('+' . (floor($days / 7) * 7) . ' days'));
 
         $newInventory = [];
-        // TODO: get items
+
+        if($type === 1)
+        {
+            for($i = 0; $i < 3; $i++)
+                $newInventory[] = $inventoryService->giveCopyOfItem(ArrayFunctions::pick_one(['Carrot', 'Onion', 'Celery', 'Carrot', 'Sweet Beet']), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
+
+            for($i = 0; $i < 3; $i++)
+                $newInventory[] = $inventoryService->giveCopyOfItem(ArrayFunctions::pick_one(['Orange', 'Red', 'Blackberries', 'Blueberries']), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
+        }
+        else if($type === 2)
+        {
+            for($i = 0; $i < 5; $i++)
+                $newInventory[] = $inventoryService->giveCopyOfItem(ArrayFunctions::pick_one(['Egg', 'Wheat Flour', 'Sugar', 'Milk']), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
+
+            for($i = 0; $i < 2; $i++)
+                $newInventory[] = $inventoryService->giveCopyOfItem(ArrayFunctions::pick_one(['Corn Syrup', 'Aging Powder', 'Cocoa Beans']), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
+        }
 
         $em->flush();
 
