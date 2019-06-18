@@ -30,7 +30,7 @@ class EncyclopediaController extends PsyPetsController
         if(!$item)
             throw new NotFoundHttpException();
 
-        return $responseService->success($item, SerializationGroup::ENCYCLOPEDIA);
+        return $responseService->success($item, null, SerializationGroup::ENCYCLOPEDIA);
     }
 
 }

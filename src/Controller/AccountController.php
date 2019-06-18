@@ -103,7 +103,7 @@ class AccountController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success($user, SerializationGroup::LOG_IN);
+        return $responseService->success(null, $user, SerializationGroup::LOG_IN);
     }
 
     /**
@@ -132,7 +132,7 @@ class AccountController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success($user, SerializationGroup::LOG_IN);
+        return $responseService->success(null, $user, SerializationGroup::LOG_IN);
     }
 
     /**
@@ -141,7 +141,7 @@ class AccountController extends PsyPetsController
      */
     public function getAccount(ResponseService $responseService)
     {
-        return $responseService->success($this->getUser(), SerializationGroup::LOG_IN);
+        return $responseService->success(null, $this->getUser(), SerializationGroup::LOG_IN);
     }
 
     /**
@@ -201,7 +201,7 @@ class AccountController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success($newInventory, SerializationGroup::MY_INVENTORY);
+        return $responseService->success($newInventory, null, SerializationGroup::MY_INVENTORY);
     }
 
     /**
@@ -220,6 +220,6 @@ class AccountController extends PsyPetsController
             // TODO: if mutual friends, add SerializationGroup::PRIVATE_PROFILE
         }
 
-        return $responseService->success($user, $groups);
+        return $responseService->success($user, null, $groups);
     }
 }

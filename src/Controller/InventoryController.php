@@ -24,7 +24,7 @@ class InventoryController extends PsyPetsController
     public function getMyInventory(ResponseService $responseService, InventoryRepository $inventoryRepository)
     {
         $inventory = $inventoryRepository->findBy([ 'owner' => $this->getUser() ]);
-        return $responseService->success($inventory, SerializationGroup::MY_INVENTORY);
+        return $responseService->success($inventory, null, SerializationGroup::MY_INVENTORY);
     }
 
     /**
@@ -62,6 +62,6 @@ class InventoryController extends PsyPetsController
 
         $newInventory = $inventoryService->giveInventory($makes, $user, $user);
 
-        return $responseService->success($newInventory, SerializationGroup::MY_INVENTORY);
+        return $responseService->success($newInventory, null, SerializationGroup::MY_INVENTORY);
     }
 }

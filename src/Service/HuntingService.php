@@ -3,11 +3,11 @@ namespace App\Service;
 
 class HuntingService
 {
-    private $activityLogService;
+    private $responseService;
 
-    public function __construct(ActivityLogService $activityLogService)
+    public function __construct(ResponseService $responseService)
     {
-        $this->activityLogService = $activityLogService;
+        $this->responseService = $responseService;
     }
 
 }
