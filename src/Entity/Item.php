@@ -49,6 +49,16 @@ class Item
     private $image;
 
     /**
+     * @ORM\Column(type="string", length=40, name="color_a_range")
+     */
+    private $colorARange = '0-0,100-100,100-100';
+
+    /**
+     * @ORM\Column(type="string", length=40, name="color_b_range")
+     */
+    private $colorBRange = '0-0,100-100,100-100';
+
+    /**
      * @Groups({"myInventory", "encyclopedia"})
      */
     public function isEdible(): bool
@@ -117,6 +127,30 @@ class Item
     public function setImage(string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getColorARange(): ?string
+    {
+        return $this->colorARange;
+    }
+
+    public function setColorARange(string $colorARange): self
+    {
+        $this->colorARange = $colorARange;
+
+        return $this;
+    }
+
+    public function getColorBRange(): ?string
+    {
+        return $this->colorBRange;
+    }
+
+    public function setColorBRange(string $colorBRange): self
+    {
+        $this->colorBRange = $colorBRange;
 
         return $this;
     }

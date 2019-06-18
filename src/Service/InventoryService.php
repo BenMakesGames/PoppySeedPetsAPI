@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Entity\User;
+use App\Functions\ColorFunctions;
 use App\Model\ItemFood;
 use App\Model\ItemQuantity;
 use App\Repository\ItemRepository;
@@ -109,6 +110,8 @@ class InventoryService
                     ->setOwner($owner)
                     ->setCreatedBy($creator)
                     ->setItem($itemQuantity->item)
+                    ->setColorA('ffffff')
+                    ->setColorB('ffffff')
                 ;
 
                 $this->em->persist($i);
@@ -132,11 +135,29 @@ class InventoryService
             ->setCreatedBy($creator)
             ->setItem($item)
             ->addComment($comment)
+            ->setColorA($this->generateColorFromRange($item->getColorARange()))
+            ->setColorB($this->generateColorFromRange($item->getColorBRange()))
         ;
 
         $this->em->persist($i);
 
         return $i;
+    }
+
+    public function generateColorFromRange(string $range): string
+    {
+        $hsl = explode(',', $range);
+        $hRange = explode('-', $hsl[0]);
+        $sRange = explode('-', $hsl[1]);
+        $lRange = explode('-', $hsl[2]);
+
+        $rgb = ColorFunctions::HSL2RGB(
+            mt_rand($hRange[0], $hRange[1]) / 360,
+            mt_rand($sRange[0], $sRange[1]) / 100,
+            mt_rand($lRange[0], $lRange[1]) / 100
+        );
+
+        return ColorFunctions::RGB2Hex((int)$rgb['r'], (int)$rgb['g'], (int)$rgb['b']);
     }
 
     /**

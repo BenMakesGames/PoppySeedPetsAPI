@@ -54,6 +54,16 @@ class Inventory
      */
     private $createdBy;
 
+    /**
+     * @ORM\Column(type="string", length=6)
+     */
+    private $colorA;
+
+    /**
+     * @ORM\Column(type="string", length=6)
+     */
+    private $colorB;
+
     public function __construct()
     {
         $this->createdOn = new \DateTimeImmutable();
@@ -133,6 +143,30 @@ class Inventory
     public function setCreatedBy(?User $createdBy): self
     {
         $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    public function getColorA(): ?string
+    {
+        return $this->colorA;
+    }
+
+    public function setColorA(string $colorA): self
+    {
+        $this->colorA = $colorA;
+
+        return $this;
+    }
+
+    public function getColorB(): ?string
+    {
+        return $this->colorB;
+    }
+
+    public function setColorB(string $colorB): self
+    {
+        $this->colorB = $colorB;
 
         return $this;
     }
