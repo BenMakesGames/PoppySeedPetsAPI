@@ -93,6 +93,32 @@ class PetController extends PsyPetsController
     }
 
     /**
+     * @Route("/{pet}/praise", methods={"POST"}, requirements={"pet"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function praise(
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em, PetService $petService
+    )
+    {
+        try
+        {
+            $petService->doPraise($pet);
+        }
+        catch(\Exception $e)
+        {
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        }
+
+        $em->flush();
+
+        return $responseService->success(
+            $pet,
+            null,
+            SerializationGroup::MY_PETS
+        );
+    }
+
+    /**
      * @Route("/{pet}/feed", methods={"POST"}, requirements={"pet"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */

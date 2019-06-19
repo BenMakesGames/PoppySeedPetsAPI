@@ -30,8 +30,8 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
         if($e instanceof HttpException)
         {
             $event->setResponse($this->responseService->error(
-                [ $e->getMessage() ],
-                $e->getStatusCode()
+                $e->getStatusCode(),
+                [ $e->getMessage() ]
             ));
         }
     }

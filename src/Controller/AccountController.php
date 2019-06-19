@@ -201,7 +201,7 @@ class AccountController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success($newInventory, null, SerializationGroup::MY_INVENTORY);
+        return $responseService->success($newInventory, $user, SerializationGroup::MY_INVENTORY);
     }
 
     /**

@@ -60,7 +60,7 @@ class ResponseService
         return new JsonResponse($json, Response::HTTP_OK, [], true);
     }
 
-    public function error(int $httpResponse, array $messages, ?User $user): JsonResponse
+    public function error(int $httpResponse, array $messages, ?User $user = null): JsonResponse
     {
         $responseData = [
             'success' => false,
