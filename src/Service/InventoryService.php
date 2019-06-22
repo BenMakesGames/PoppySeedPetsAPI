@@ -45,7 +45,7 @@ class InventoryService
             $itemQuantity = new ItemQuantity();
 
             $itemQuantity->item = $this->itemRepository->find($itemId);
-            $itemQuantity->quantity = $quantity;
+            $itemQuantity->quantity = (int)$quantity;
 
             $quantities[] = $itemQuantity;
         }
@@ -112,7 +112,7 @@ class InventoryService
 
         foreach($quantities as $itemQuantity)
         {
-            for($i = 0; $i < $itemQuantity->quantity; $i++)
+            for($q = 0; $q < $itemQuantity->quantity; $q++)
             {
                 $i = (new Inventory())
                     ->setOwner($owner)
