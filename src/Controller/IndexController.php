@@ -26,6 +26,6 @@ class IndexController extends PsyPetsController
                 'pericarditis',
                 'All my friends in college',
             ]
-        ]);
+        ], null, []);
     }
 }
