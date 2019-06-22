@@ -2,7 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Inventory;
 use App\Entity\Item;
+use App\Entity\User;
+use App\Model\ItemQuantity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -26,5 +29,35 @@ class ItemRepository extends ServiceEntityRepository
         if(!$item) throw new \InvalidArgumentException('There is no item called ' . $itemName . '.');
 
         return $item;
+    }
+
+    /**
+     * @return ItemQuantity[]
+     */
+    public function getInventoryQuantities(User $user)
+    {
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->from(Inventory::class, 'inventory')
+            ->select('item,COUNT(inventory.id) AS quantity')
+            ->leftJoin(Item::class, 'item', 'WITH', 'inventory.item = item.id')
+            ->andWhere('inventory.owner=:user')
+            ->groupBy('item.id')
+            ->setParameter('user', $user->getId())
+        ;
+
+        $results = $query->getQuery()->execute();
+
+        $quantities = [];
+
+        foreach($results as $result)
+        {
+            $quantity = new ItemQuantity();
+            $quantity->item = $result[0];
+            $quantity->quantity = (int)$result['quantity'];
+
+            $quantities[] = $quantity;
+        }
+
+        return $quantities;
     }
 }

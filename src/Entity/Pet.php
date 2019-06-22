@@ -186,7 +186,7 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        $this->food = min($this->food + $amount, $this->getStomachSize());
+        $this->food = max(-24, min($this->food + $amount, $this->getStomachSize()));
 
         return $this;
     }

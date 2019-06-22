@@ -31,12 +31,6 @@ class Item
     private $food = null;
 
     /**
-     * @ORM\Column(type="integer")
-     * @Groups({"myInventory", "encyclopedia"})
-     */
-    private $size = 100;
-
-    /**
      * @ORM\Column(type="text", nullable=true)
      * @Groups({"encyclopedia"})
      */
@@ -91,18 +85,6 @@ class Item
     public function setFood(?ItemFood $food): self
     {
         $this->food = $food;
-
-        return $this;
-    }
-
-    public function getSize(): ?int
-    {
-        return $this->size;
-    }
-
-    public function setSize(int $size): self
-    {
-        $this->size = $size;
 
         return $this;
     }

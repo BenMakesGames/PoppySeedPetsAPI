@@ -18,7 +18,6 @@ class ResponseService
     private $activityLogs = [];
     private $em;
     private $serializer;
-    private $security;
 
     public function __construct(SerializerInterface $serializer, EntityManagerInterface $em)
     {

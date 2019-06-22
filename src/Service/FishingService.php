@@ -67,7 +67,7 @@ class FishingService
 
         if(\mt_rand(1, 10 + $pet->getSkills()->getDexterity() + $pet->getSkills()->getNature() + $pet->getSkills()->getPerception()) >= 5)
         {
-            $this->inventoryService->giveCopyOfItem('Fish', $pet->getOwner(), $pet->getOwner(), 'From a Mini Minnow that ' . $pet->getName() . ' fished at a Small Lake.');
+            $this->inventoryService->petCollectsItem('Fish', $pet, 'From a Mini Minnow that ' . $pet->getName() . ' fished at a Small Lake.');
             $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Small Lake, and caught a Mini Minnow.');
 
             $this->petService->gainExp($pet, 1, ['dexterity', 'nature', 'perception']);
@@ -88,10 +88,10 @@ class FishingService
 
         if(\mt_rand(1, 10 + $pet->getSkills()->getDexterity() + $pet->getSkills()->getNature() + $pet->getSkills()->getStrength()) >= 6)
         {
-            $this->inventoryService->giveCopyOfItem('Fish', $pet->getOwner(), $pet->getOwner(), 'From a Muscly Trout that ' . $pet->getName() . ' fished Under a Bridge.');
+            $this->inventoryService->petCollectsItem('Fish', $pet, 'From a Muscly Trout that ' . $pet->getName() . ' fished Under a Bridge.');
 
             if(\mt_rand(1, 20 + $pet->getSkills()->getIntelligence()) >= 15)
-                $this->inventoryService->giveCopyOfItem('Scales', $pet->getOwner(), $pet->getOwner(), 'From a Muscly Trout that ' . $pet->getName() . ' fished Under a Bridge.');
+                $this->inventoryService->petCollectsItem('Scales', $pet, 'From a Muscly Trout that ' . $pet->getName() . ' fished Under a Bridge.');
 
             $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing Under a Bridge, and caught a Muscly Trout.');
 
@@ -116,10 +116,10 @@ class FishingService
             // toad
             if(\mt_rand(1, 10 + $pet->getSkills()->getStamina() + $pet->getSkills()->getDexterity() + $pet->getSkills()->getStrength()) >= 7)
             {
-                $this->inventoryService->giveCopyOfItem('Toad Legs', $pet->getOwner(), $pet->getOwner(), 'From a Huge Toad that ' . $pet->getName() . ' fished at a Roadside Creek.');
+                $this->inventoryService->petCollectsItem('Toad Legs', $pet, 'From a Huge Toad that ' . $pet->getName() . ' fished at a Roadside Creek.');
 
                 if(\mt_rand(1, 20 + $pet->getSkills()->getNature()) >= 15)
-                    $this->inventoryService->giveCopyOfItem('Toadstool', $pet->getOwner(), $pet->getOwner(), 'From a Huge Toad that ' . $pet->getName() . ' fished at a Roadside Creek.');
+                    $this->inventoryService->petCollectsItem('Toadstool', $pet, 'From a Huge Toad that ' . $pet->getName() . ' fished at a Roadside Creek.');
 
                 $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Roadside Creek, and a Huge Toad bit the line! ' . $pet->getName() . ' used all their strength to reel it in!');
 
@@ -140,10 +140,10 @@ class FishingService
             // singing fish
             if(\mt_rand(1, 10 + $pet->getSkills()->getDexterity() + $pet->getSkills()->getNature() + $pet->getSkills()->getPerception()) >= 6)
             {
-                $this->inventoryService->giveCopyOfItem(mt_rand(1, 2) === 1 ? 'Plastic' : 'Fish', $pet->getOwner(), $pet->getOwner(), 'From a Singing Fish that ' . $pet->getName() . ' fished at a Roadside Creek.');
+                $this->inventoryService->petCollectsItem(mt_rand(1, 2) === 1 ? 'Plastic' : 'Fish', $pet, 'From a Singing Fish that ' . $pet->getName() . ' fished at a Roadside Creek.');
 
                 if(\mt_rand(1, 20 + $pet->getSkills()->getPerception()) >= 15)
-                    $this->inventoryService->giveCopyOfItem('Musical Scales', $pet->getOwner(), $pet->getOwner(), 'From a Singing Fish that ' . $pet->getName() . ' fished at a Roadside Creek.');
+                    $this->inventoryService->petCollectsItem('Musical Scales', $pet, 'From a Singing Fish that ' . $pet->getName() . ' fished at a Roadside Creek.');
 
                 $this->petService->gainExp($pet, 2, ['dexterity', 'nature', 'perception']);
             }
@@ -164,7 +164,7 @@ class FishingService
 
         if(\mt_rand(1, 5) === 1)
         {
-            $this->inventoryService->giveCopyOfItem('Mermaid Egg', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' was fishing in a Waterfall Basin, and one of these got caught on the line!');
+            $this->inventoryService->petCollectsItem('Mermaid Egg', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' was fishing in a Waterfall Basin, and one of these got caught on the line!');
             $this->petService->gainExp($pet, 1, ['nature', 'perception']);
 
             $pet->spendTime(mt_rand(30, 45));
@@ -173,10 +173,10 @@ class FishingService
         {
             if(\mt_rand(1, 10 + $pet->getSkills()->getDexterity() + $pet->getSkills()->getNature() + $pet->getSkills()->getPerception()) >= 7)
             {
-                $this->inventoryService->giveCopyOfItem('Fish', $pet->getOwner(), $pet->getOwner(), 'From a Medium Minnow that ' . $pet->getName() . ' fished in a Waterfall Basin.');
+                $this->inventoryService->petCollectsItem('Fish', $pet, 'From a Medium Minnow that ' . $pet->getName() . ' fished in a Waterfall Basin.');
 
                 if(\mt_rand(1, 20 + $pet->getSkills()->getNature()) >= 10)
-                    $this->inventoryService->giveCopyOfItem('Fish', $pet->getOwner(), $pet->getOwner(), 'From a Medium Minnow that ' . $pet->getName() . ' fished in a Waterfall Basin.');
+                    $this->inventoryService->petCollectsItem('Fish', $pet, 'From a Medium Minnow that ' . $pet->getName() . ' fished in a Waterfall Basin.');
 
                 $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing in a Waterfall Basin, and caught a Medium Minnow.');
 

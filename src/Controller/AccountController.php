@@ -185,18 +185,18 @@ class AccountController extends PsyPetsController
         if($type === 1)
         {
             for($i = 0; $i < 3; $i++)
-                $newInventory[] = $inventoryService->giveCopyOfItem(ArrayFunctions::pick_one(['Carrot', 'Onion', 'Celery', 'Carrot', 'Sweet Beet']), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
+                $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Carrot', 'Onion', 'Celery', 'Carrot', 'Sweet Beet']), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
 
             for($i = 0; $i < 3; $i++)
-                $newInventory[] = $inventoryService->giveCopyOfItem(ArrayFunctions::pick_one(['Orange', 'Red', 'Blackberries', 'Blueberries']), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
+                $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Orange', 'Red', 'Blackberries', 'Blueberries']), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
         }
         else if($type === 2)
         {
             for($i = 0; $i < 5; $i++)
-                $newInventory[] = $inventoryService->giveCopyOfItem(ArrayFunctions::pick_one(['Egg', 'Wheat Flour', 'Sugar', 'Milk']), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
+                $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Egg', 'Wheat Flour', 'Sugar', 'Milk']), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
 
             for($i = 0; $i < 2; $i++)
-                $newInventory[] = $inventoryService->giveCopyOfItem(ArrayFunctions::pick_one(['Corn Syrup', 'Aging Powder', 'Cocoa Beans']), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
+                $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Corn Syrup', 'Aging Powder', 'Cocoa Beans']), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
         }
 
         $em->flush();

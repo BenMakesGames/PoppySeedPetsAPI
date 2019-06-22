@@ -52,7 +52,7 @@ class UpsertItemCommand extends PsyPetsCommand
         $this->name($item, $name);
         $this->image($item);
         $this->food($item);
-        $this->size($item);
+        //$this->size($item);
 
         $this->em->flush();
     }
@@ -113,10 +113,12 @@ class UpsertItemCommand extends PsyPetsCommand
         }
     }
 
+    /*
     private function size(Item $item)
     {
         $size = $this->askInt('How many bits is it?', $item->getSize(), function(int $n) { return $n > 0; });
 
         $item->setSize($size);
     }
+    */
 }

@@ -134,7 +134,7 @@ class PetController extends PsyPetsController
         if(!\is_array($items)) $items = [ $items ];
 
         $inventory = $inventoryRepository->findBy([
-            'user' => $user,
+            'owner' => $user,
             'id' => $items
         ]);
 

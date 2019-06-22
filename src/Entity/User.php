@@ -90,6 +90,16 @@ class User implements UserInterface
      */
     private $moneys = 0;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $maxInventory = 50;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $maxPets = 1;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -290,6 +300,30 @@ class User implements UserInterface
     public function increaseMoneys(int $amount): self
     {
         $this->moneys += $amount;
+
+        return $this;
+    }
+
+    public function getMaxInventory(): int
+    {
+        return $this->maxInventory;
+    }
+
+    public function setMaxInventory(int $maxInventory): self
+    {
+        $this->maxInventory = $maxInventory;
+
+        return $this;
+    }
+
+    public function getMaxPets(): int
+    {
+        return $this->maxPets;
+    }
+
+    public function setMaxPets(int $maxPets): self
+    {
+        $this->maxPets = $maxPets;
 
         return $this;
     }

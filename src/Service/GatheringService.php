@@ -79,17 +79,17 @@ class GatheringService
 
         if(\mt_rand(1, 8) >= 6)
         {
-            $this->inventoryService->giveCopyOfItem('Blueberries', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' harvested these from a Thorny Berry Bush.');
+            $this->inventoryService->petCollectsItem('Blueberries', $pet, $pet->getName() . ' harvested these from a Thorny Berry Bush.');
 
             if(\mt_rand(1, 4) == 1)
-                $this->inventoryService->giveCopyOfItem('Blueberries', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' harvested these from a Thorny Berry Bush.');
+                $this->inventoryService->petCollectsItem('Blueberries', $pet, $pet->getName() . ' harvested these from a Thorny Berry Bush.');
         }
         else
         {
-            $this->inventoryService->giveCopyOfItem('Blackberries', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' harvested these from a Thorny Berry Bush.');
+            $this->inventoryService->petCollectsItem('Blackberries', $pet, $pet->getName() . ' harvested these from a Thorny Berry Bush.');
 
             if(\mt_rand(1, 3) == 1)
-                $this->inventoryService->giveCopyOfItem('Blackberries', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' harvested these from a Thorny Berry Bush.');
+                $this->inventoryService->petCollectsItem('Blackberries', $pet, $pet->getName() . ' harvested these from a Thorny Berry Bush.');
         }
 
         $this->petService->gainExp($pet, 1, [ 'perception', 'nature', 'stamina' ]);
@@ -104,7 +104,7 @@ class GatheringService
             if(\mt_rand(1, 20 + $pet->getSkills()->getDexterity() + $pet->getSkills()->getStrength() + $pet->getSkills()->getStealth()) >= 15)
             {
                 $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Huge Toad inside a Hollow Log, got the jump on it, wrestled it to the ground, and claimed its Toadstool!');
-                $this->inventoryService->giveCopyOfItem('Toadstool', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' harvested this from the back of a Huge Toad found inside a Hollow Log.');
+                $this->inventoryService->petCollectsItem('Toadstool', $pet, $pet->getName() . ' harvested this from the back of a Huge Toad found inside a Hollow Log.');
                 $this->petService->gainExp($pet, 2, [ 'perception', 'nature', 'dexterity', 'strength', 'stealth' ]);
                 $pet->increaseEsteem(\mt_rand(1, 2));
             }
@@ -119,7 +119,7 @@ class GatheringService
         else
         {
             $this->responseService->createActivityLog($pet, $pet->getName() . ' broke a Crooked Branch off of a Hollow Log.');
-            $this->inventoryService->giveCopyOfItem('Crooked Stick', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' broke this off of a Hollow Log.');
+            $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' broke this off of a Hollow Log.');
             $this->petService->gainExp($pet, 1, [ 'perception', 'nature' ]);
 
             $pet->spendTime(\mt_rand(30, 45));
@@ -131,10 +131,10 @@ class GatheringService
         if(\mt_rand(1, 20 + $pet->getSkills()->getStealth() + $pet->getSkills()->getDexterity()) >= 10)
         {
             $this->responseService->createActivityLog($pet, $pet->getName() . ' stole an Egg from a Bird Nest.');
-            $this->inventoryService->giveCopyOfItem('Egg', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' stole this from a Bird Nest.');
+            $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a Bird Nest.');
 
             if(\mt_rand(1, 20 + $pet->getSkills()->getPerception()) >= 10)
-                $this->inventoryService->giveCopyOfItem('Fluff', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' stole this from a Bird Nest, after a fight.');
+                $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' stole this from a Bird Nest, after a fight.');
 
             $pet->increaseEsteem(\mt_rand(1, 2));
             $this->petService->gainExp($pet, 2, [ 'perception', 'nature', 'stealth', 'dexterity' ]);
@@ -146,8 +146,8 @@ class GatheringService
             if(\mt_rand(1, 20 + $pet->getSkills()->getStrength() + $pet->getSkills()->getDexterity() + $pet->getSkills()->getBrawl()) >= 15)
             {
                 $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to steal an Egg from a Bird Nest, was spotted by a parent, and was able to defeat it in combat!');
-                $this->inventoryService->giveCopyOfItem('Egg', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' stole this from a Bird Nest, after a fight.');
-                $this->inventoryService->giveCopyOfItem('Fluff', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' stole this from a Bird Nest, after a fight.');
+                $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a Bird Nest, after a fight.');
+                $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' stole this from a Bird Nest, after a fight.');
                 $this->petService->gainExp($pet, 2, [ 'perception', 'nature', 'stealth', 'dexterity', 'strength', 'brawl' ]);
                 $pet->spendTime(\mt_rand(45, 75));
             }

@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\Inventory;
 use App\Entity\Item;
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Functions\ColorFunctions;
 use App\Model\ItemFood;
@@ -14,11 +15,18 @@ class InventoryService
 {
     private $itemRepository;
     private $em;
+    private $responseService;
+    private $petService;
 
-    public function __construct(ItemRepository $itemRepository, EntityManagerInterface $em)
+    public function __construct(
+        ItemRepository $itemRepository, EntityManagerInterface $em, ResponseService $responseService,
+        PetService $petService
+    )
     {
         $this->itemRepository = $itemRepository;
+        $this->responseService = $responseService;
         $this->em = $em;
+        $this->petService = $petService;
     }
 
     /**
@@ -126,7 +134,34 @@ class InventoryService
     /**
      * @param Item|string $item
      */
-    public function giveCopyOfItem($item, User $owner, User $creator, string $comment): Inventory
+    public function petCollectsItem($item, ?Pet $pet, string $comment): ?Inventory
+    {
+        if(is_string($item)) $item = $this->itemRepository->findOneByName($item);
+
+        if($pet && $item->isEdible() && mt_rand(1, 20) < 10 - $pet->getFood())
+        {
+            $this->petService->doEet($pet, $item);
+            return null;
+        }
+
+        $i = (new Inventory())
+            ->setOwner($pet->getOwner())
+            ->setCreatedBy($pet->getOwner())
+            ->setItem($item)
+            ->addComment($comment)
+            ->setColorA($this->generateColorFromRange($item->getColorARange()))
+            ->setColorB($this->generateColorFromRange($item->getColorBRange()))
+        ;
+
+        $this->em->persist($i);
+
+        return $i;
+    }
+
+    /**
+     * @param Item|string $item
+     */
+    public function receiveItem($item, User $owner, User $creator, string $comment): Inventory
     {
         if(is_string($item)) $item = $this->itemRepository->findOneByName($item);
 

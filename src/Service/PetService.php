@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\Inventory;
+use App\Entity\Item;
 use App\Entity\Pet;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
@@ -115,7 +116,7 @@ class PetService
         if($pet->getIsDead())
             throw new \InvalidArgumentException($pet->getName() . ' is dead :|');
 
-        if(ArrayFunctions::any($inventory, function(Inventory $i) { return $i->getItem()->getFood() !== null; }))
+        if(ArrayFunctions::any($inventory, function(Inventory $i) { return $i->getItem()->getFood() === null; }))
             throw new \InvalidArgumentException('At least one of the items selected is not edible!');
 
         \shuffle($inventory);
@@ -157,6 +158,21 @@ class PetService
 
 
         $this->responseService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.', $petChanges->compare($pet));
+    }
+
+    public function doEet(Pet $pet, Item $item)
+    {
+        $petChanges = new PetChanges($pet);
+
+        $food = $item->getFood();
+
+        if($food->whack) $pet->increaseWhack($food->whack);
+        if($food->food) $pet->increaseFood($food->food);
+        if($food->love) $pet->increaseLove($food->love);
+        if($food->junk) $pet->increaseJunk($food->junk);
+
+        $this->responseService->createActivityLog($pet, $pet->getName() . ' immediately ate the ' . $item->getName() . '.', $petChanges->compare($pet));
+
     }
 
     public function runHour(Pet $pet)

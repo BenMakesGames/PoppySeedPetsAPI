@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Enum\SerializationGroup;
 use App\Repository\InventoryRepository;
+use App\Repository\ItemRepository;
 use App\Repository\RecipeRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -24,6 +25,21 @@ class InventoryController extends PsyPetsController
     public function getMyInventory(ResponseService $responseService, InventoryRepository $inventoryRepository)
     {
         $inventory = $inventoryRepository->findBy([ 'owner' => $this->getUser() ]);
+        return $responseService->success($inventory, null, SerializationGroup::MY_INVENTORY);
+    }
+
+    /**
+     * @Route("/my/quantities", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function availableRecipes(
+        ResponseService $responseService, ItemRepository $itemRepository
+    )
+    {
+        $user = $this->getUser();
+
+        $inventory = $itemRepository->getInventoryQuantities($user);
+
         return $responseService->success($inventory, null, SerializationGroup::MY_INVENTORY);
     }
 
