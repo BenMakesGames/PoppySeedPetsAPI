@@ -78,6 +78,8 @@ class InventoryController extends PsyPetsController
 
         $newInventory = $inventoryService->giveInventory($makes, $user, $user);
 
+        $em->flush();
+
         return $responseService->success($newInventory, null, SerializationGroup::MY_INVENTORY);
     }
 }
