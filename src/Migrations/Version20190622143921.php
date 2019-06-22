@@ -23,6 +23,7 @@ final class Version20190622143921 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE user ADD max_inventory INT NOT NULL, ADD max_pets INT NOT NULL');
+        $this->addSql('UPDATE user SET max_inventory=50,max_pets=1');
         $this->addSql('ALTER TABLE item DROP size');
     }
 
