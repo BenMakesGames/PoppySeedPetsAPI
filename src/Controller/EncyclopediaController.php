@@ -6,6 +6,7 @@ use App\Enum\SerializationGroup;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\RecipeRepository;
+use App\Service\Filter\ItemFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,6 +21,18 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class EncyclopediaController extends PsyPetsController
 {
+    /**
+     * @Route("", methods={"GET"})
+     */
+    public function search(Request $request, ItemFilterService $itemFilterService, ResponseService $responseService)
+    {
+        return $responseService->success(
+            $itemFilterService->getResults($request),
+            null,
+            [ SerializationGroup::FILTER_RESULTS, SerializationGroup::ITEM_ENCYCLOPEDIA ]
+        );
+    }
+
     /**
      * @Route("/item/{itemName}", methods={"GET"})
      */

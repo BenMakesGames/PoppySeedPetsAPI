@@ -14,5 +14,7 @@ final class SerializationGroup
     const SEMI_PRIVATE_PROFILE = 'semiPrivateProfile';
     const PRIVATE_PROFILE = 'privateProfile';
 
+    // encyclopedias:
     const ITEM_ENCYCLOPEDIA = 'itemEncyclopedia';
+    const FILTER_RESULTS = 'filterResults';
 }

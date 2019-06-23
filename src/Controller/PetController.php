@@ -41,7 +41,7 @@ class PetController extends PsyPetsController
             SerializationGroup::PUBLIC_PROFILE
         ];
 
-        if($user->getId() === $pet->getOwner()->getId())
+        if($user !== null && $user->getId() === $pet->getOwner()->getId())
         {
             $groups[] = SerializationGroup::MY_PET;
         }
