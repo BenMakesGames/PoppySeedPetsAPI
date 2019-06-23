@@ -25,7 +25,7 @@ class PetController extends PsyPetsController
      */
     public function getMyPets(ResponseService $responseService)
     {
-        return $responseService->success($this->getUser()->getPets(), null, SerializationGroup::MY_PETS);
+        return $responseService->success($this->getUser()->getPets(), null, SerializationGroup::MY_PET);
     }
 
     /**
@@ -43,7 +43,7 @@ class PetController extends PsyPetsController
 
         if($user->getId() === $pet->getOwner()->getId())
         {
-            $groups[] = SerializationGroup::MY_PETS;
+            $groups[] = SerializationGroup::MY_PET;
         }
 
         return $responseService->success($pet, null, $groups);
@@ -88,7 +88,7 @@ class PetController extends PsyPetsController
         return $responseService->success(
             $pet,
             null,
-            SerializationGroup::MY_PETS
+            SerializationGroup::MY_PET
         );
     }
 
@@ -114,7 +114,7 @@ class PetController extends PsyPetsController
         return $responseService->success(
             $pet,
             null,
-            SerializationGroup::MY_PETS
+            SerializationGroup::MY_PET
         );
     }
 
@@ -155,7 +155,7 @@ class PetController extends PsyPetsController
         return $responseService->success(
             $pet,
             null,
-            SerializationGroup::MY_PETS
+            SerializationGroup::MY_PET
         );
     }
 }

@@ -14,7 +14,7 @@ class Pet
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myPets", "publicProfile"})
+     * @Groups({"myPet", "publicProfile"})
      */
     private $id;
 
@@ -25,7 +25,7 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPets", "publicProfile"})
+     * @Groups({"myPet", "publicProfile"})
      */
     private $name;
 
@@ -61,31 +61,31 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"myPets", "publicProfile"})
+     * @Groups({"myPet", "publicProfile"})
      */
     private $image;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPets", "publicProfile"})
+     * @Groups({"myPet", "publicProfile"})
      */
     private $colorA;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPets", "publicProfile"})
+     * @Groups({"myPet", "publicProfile"})
      */
     private $colorB;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Inventory", cascade={"persist", "remove"})
-     * @Groups({"myPets", "publicProfile"})
+     * @Groups({"myPet", "publicProfile"})
      */
     private $hat;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"myPets", "publicProfile"})
+     * @Groups({"myPet", "publicProfile"})
      */
     private $isDead = false;
 
@@ -101,7 +101,7 @@ class Pet
 
     /**
      * @ORM\Column(type="datetime_immutable")
-     * @Groups({"myPets", "publicProfile"})
+     * @Groups({"myPet", "publicProfile"})
      */
     private $birthDate;
 
@@ -371,7 +371,7 @@ class Pet
     }
 
     /**
-     * @Groups({"myPets"})
+     * @Groups({"myPet"})
      */
     public function getFull(): string
     {
@@ -401,7 +401,7 @@ class Pet
     }
 
     /**
-     * @Groups({"myPets"})
+     * @Groups({"myPet"})
      */
     public function getSafe(): string
     {
@@ -418,7 +418,7 @@ class Pet
     }
 
     /**
-     * @Groups({"myPets"})
+     * @Groups({"myPet"})
      */
     public function getLoved(): string
     {
@@ -435,7 +435,7 @@ class Pet
     }
 
     /**
-     * @Groups({"myPets"})
+     * @Groups({"myPet"})
      */
     public function getEsteemed(): string
     {
@@ -469,7 +469,7 @@ class Pet
     }
 
     /**
-     * @Groups({"myPets"})
+     * @Groups({"myPet"})
      */
     public function getCanInteract(): bool
     {
@@ -489,7 +489,7 @@ class Pet
     }
 
     /**
-     * @Groups({"myPets"})
+     * @Groups({"myPet"})
      */
     public function getLevel(): int
     {

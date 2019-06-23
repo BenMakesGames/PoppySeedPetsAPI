@@ -109,7 +109,7 @@ class AccountController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success(null, $user, SerializationGroup::LOG_IN);
+        return $responseService->success(null, $user, SerializationGroup::MY_ACCOUNT);
     }
 
     /**
@@ -138,7 +138,7 @@ class AccountController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success(null, $user, SerializationGroup::LOG_IN);
+        return $responseService->success(null, $user, SerializationGroup::MY_ACCOUNT);
     }
 
     /**
@@ -147,7 +147,7 @@ class AccountController extends PsyPetsController
      */
     public function getAccount(ResponseService $responseService)
     {
-        return $responseService->success(null, $this->getUser(), SerializationGroup::LOG_IN);
+        return $responseService->success(null, $this->getUser(), SerializationGroup::MY_ACCOUNT);
     }
 
     /**

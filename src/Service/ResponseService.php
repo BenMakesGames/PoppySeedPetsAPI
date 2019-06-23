@@ -48,7 +48,7 @@ class ResponseService
         if($user)
         {
             $responseData['user'] = $user;
-            $groups[] = SerializationGroup::LOG_IN;
+            $groups[] = SerializationGroup::MY_ACCOUNT;
         }
 
         $json = $this->serializer->serialize($responseData, 'json', [
@@ -71,7 +71,7 @@ class ResponseService
         if($user)
         {
             $responseData['user'] = $user;
-            $groups[] = SerializationGroup::LOG_IN;
+            $groups[] = SerializationGroup::MY_ACCOUNT;
         }
 
         $json = $this->serializer->serialize($responseData, 'json', [

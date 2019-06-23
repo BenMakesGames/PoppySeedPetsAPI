@@ -1,10 +1,11 @@
 <?php
 namespace App\Enum;
 
+// each SerializationGroup has a corresponding model class in the front-end
 final class SerializationGroup
 {
-    const LOG_IN = 'logIn';
-    const MY_PETS = 'myPets';
+    const MY_ACCOUNT = 'myAccount';
+    const MY_PET = 'myPet';
     const MY_INVENTORY = 'myInventory';
     const PET_ACTIVITY_LOGS = 'petActivityLogs';
 
@@ -13,5 +14,5 @@ final class SerializationGroup
     const SEMI_PRIVATE_PROFILE = 'semiPrivateProfile';
     const PRIVATE_PROFILE = 'privateProfile';
 
-    const ENCYCLOPEDIA = 'encyclopedia';
+    const ITEM_ENCYCLOPEDIA = 'itemEncyclopedia';
 }

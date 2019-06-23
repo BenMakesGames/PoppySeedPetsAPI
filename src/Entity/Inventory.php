@@ -14,14 +14,14 @@ class Inventory
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myPets", "myInventory"})
+     * @Groups({"myPet", "myInventory"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Item")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPets", "myInventory", "publicProfile"})
+     * @Groups({"myPet", "myInventory", "publicProfile"})
      */
     private $item;
 

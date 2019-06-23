@@ -17,7 +17,7 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"logIn", "myInventory", "publicProfile"})
+     * @Groups({"myAccount", "myInventory", "publicProfile"})
      */
     private $id;
 
@@ -39,7 +39,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"logIn", "myInventory", "publicProfile"})
+     * @Groups({"myAccount", "myInventory", "publicProfile"})
      */
     private $name;
 
@@ -51,7 +51,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=40, unique=true)
-     * @Groups({"logIn"})
+     * @Groups({"myAccount"})
      */
     private $sessionId;
 
@@ -73,8 +73,8 @@ class User implements UserInterface
     private $registeredOn;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
-     * @Groups({"logIn"})
+     * @ORM\Column(type="date_immutable")
+     * @Groups({"myAccount"})
      */
     private $lastAllowanceCollected;
 
@@ -86,7 +86,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"logIn"})
+     * @Groups({"myAccount"})
      */
     private $moneys = 0;
 
