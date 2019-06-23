@@ -29,6 +29,8 @@ class AccountController extends PsyPetsController
         'elemental/cotton-candy',
         'bird/chickie',
         'mammal/mole',
+        'bird/odd-flying-thing',
+        'elemental/triangle',
     ];
 
     /**
