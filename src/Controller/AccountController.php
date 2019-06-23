@@ -24,13 +24,16 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class AccountController extends PsyPetsController
 {
     const STARTING_PET_IMAGES = [
-        'mammal/desikh',
+        'monotreme/desikh',
         'mammal/roundish',
         'elemental/cotton-candy',
         'bird/chickie',
         'mammal/mole',
         'bird/odd-flying-thing',
         'elemental/triangle',
+        'fish/ba-ha',
+        'mammal/much-cuter-mousie',
+        'fungus/mushroom',
     ];
 
     /**
