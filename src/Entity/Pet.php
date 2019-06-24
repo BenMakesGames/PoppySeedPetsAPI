@@ -368,7 +368,7 @@ class Pet
 
         if($fullness >= 0.75)
         {
-            if(substr($this->getImage(), 5) === 'fish/')
+            if(substr($this->getSpecies()->getImage(), 5) === 'fish/')
                 return 'stuffed to the gills';
             else
                 return 'stuffed';
