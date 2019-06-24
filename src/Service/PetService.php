@@ -271,7 +271,7 @@ class PetService
 
         $petDesires = [
             'fish' => $this->generateFishingDesire($pet),
-            //'hunt' => $this->generateMonsterHuntingDesire($pet),
+            'hunt' => $this->generateMonsterHuntingDesire($pet),
             'gather' => $this->generateGatheringDesire($pet),
         ];
 
@@ -280,7 +280,7 @@ class PetService
         switch($desire)
         {
             case 'fish': $this->fishingService->adventure($pet); break;
-            //case 'hunt': $this->huntingService->adventure($pet); break;
+            case 'hunt': $this->huntingService->adventure($pet); break;
             case 'gather': $this->gatheringService->adventure($pet); break;
             default: $this->doNothing($pet); break;
         }

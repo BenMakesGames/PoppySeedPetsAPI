@@ -134,11 +134,11 @@ class InventoryService
     /**
      * @param Item|string $item
      */
-    public function petCollectsItem($item, ?Pet $pet, string $comment): ?Inventory
+    public function petCollectsItem($item, Pet $pet, string $comment): ?Inventory
     {
         if(is_string($item)) $item = $this->itemRepository->findOneByName($item);
 
-        if($pet && $item->isEdible() && mt_rand(1, 20) < 10 - $pet->getFood())
+        if($item->isEdible() && mt_rand(1, 20) < 10 - $pet->getFood())
         {
             $this->petService->doEet($pet, $item);
             return null;
