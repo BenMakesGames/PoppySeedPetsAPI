@@ -205,7 +205,7 @@ class AccountController extends PsyPetsController
                 $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Egg', 'Wheat Flour', 'Sugar', 'Milk']), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
 
             for($i = 0; $i < 2; $i++)
-                $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Corn Syrup', 'Aging Powder', 'Cocoa Beans']), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
+                $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Corn Syrup', 'Aging Powder', 'Cocoa Beans', 'Baking Soda']), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
         }
 
         $em->flush();
