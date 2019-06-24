@@ -52,7 +52,7 @@ class FishingService
             $this->responseService->createActivityLog($pet, $description, $changes->compare($pet));
     }
 
-    private function nothingBiting(Pet $pet, int $percentChance, string $atLocationName): string
+    private function nothingBiting(Pet $pet, int $percentChance, string $atLocationName): ?string
     {
         if(\mt_rand(1, 100) <= $percentChance)
         {
