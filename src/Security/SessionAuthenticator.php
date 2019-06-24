@@ -55,6 +55,8 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
             throw new AccessDeniedHttpException('sessionId is invalid. Please try logging in again.');
 
         $user->setLastActivity();
+        $this->em->flush();
+
         $this->houseService->run($user);
         $this->em->flush();
 
