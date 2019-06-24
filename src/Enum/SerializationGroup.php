@@ -16,5 +16,6 @@ final class SerializationGroup
 
     // encyclopedias:
     const ITEM_ENCYCLOPEDIA = 'itemEncyclopedia';
+    const PET_ENCYCLOPEDIA = 'petEncyclopedia';
     const FILTER_RESULTS = 'filterResults';
 }

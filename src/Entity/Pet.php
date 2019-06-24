@@ -60,12 +60,6 @@ class Pet
     private $experience = 0;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"myPet", "publicProfile"})
-     */
-    private $image;
-
-    /**
      * @ORM\Column(type="string", length=6)
      * @Groups({"myPet", "publicProfile"})
      */
@@ -120,6 +114,13 @@ class Pet
      * @ORM\JoinColumn(nullable=false)
      */
     private $skills;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\PetSpecies")
+     * @ORM\JoinColumn(nullable=false)
+     * @Groups({"myPet", "publicProfile"})
+     */
+    private $species;
 
     public function __construct()
     {
@@ -266,18 +267,6 @@ class Pet
     public function decreaseExperience(int $amount): self
     {
         $this->experience -= $amount;
-
-        return $this;
-    }
-
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    public function setImage(string $image): self
-    {
-        $this->image = $image;
 
         return $this;
     }
@@ -499,5 +488,17 @@ class Pet
     public function getExperienceToLevel(): int
     {
         return $this->getLevel() * 10;
+    }
+
+    public function getSpecies(): ?PetSpecies
+    {
+        return $this->species;
+    }
+
+    public function setSpecies(?PetSpecies $species): self
+    {
+        $this->species = $species;
+
+        return $this;
     }
 }

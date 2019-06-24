@@ -22,7 +22,7 @@ class HouseService
 
     public function run(User $user)
     {
-        $item = $this->cache->getItem('user-running-house-hours:' . $user->getId());
+        $item = $this->cache->getItem('User #' . $user->getId() . ' - Running House Hours');
 
         if(!$item->isHit())
         {

@@ -5,8 +5,10 @@ use App\Entity\Item;
 use App\Enum\SerializationGroup;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
+use App\Repository\PetSpeciesRepository;
 use App\Repository\RecipeRepository;
 use App\Service\Filter\ItemFilterService;
+use App\Service\Filter\PetSpeciesFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,9 +24,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class EncyclopediaController extends PsyPetsController
 {
     /**
-     * @Route("", methods={"GET"})
+     * @Route("/item", methods={"GET"})
      */
-    public function search(Request $request, ItemFilterService $itemFilterService, ResponseService $responseService)
+    public function itemSearch(Request $request, ItemFilterService $itemFilterService, ResponseService $responseService)
     {
         return $responseService->success(
             $itemFilterService->getResults($request),
@@ -36,7 +38,7 @@ class EncyclopediaController extends PsyPetsController
     /**
      * @Route("/item/{itemName}", methods={"GET"})
      */
-    public function getMyInventory(string $itemName, ItemRepository $itemRepository, ResponseService $responseService)
+    public function getItemByName(string $itemName, ItemRepository $itemRepository, ResponseService $responseService)
     {
         $item = $itemRepository->findOneBy([ 'name' => $itemName ]);
 
@@ -44,6 +46,31 @@ class EncyclopediaController extends PsyPetsController
             throw new NotFoundHttpException();
 
         return $responseService->success($item, null, SerializationGroup::ITEM_ENCYCLOPEDIA);
+    }
+
+    /**
+     * @Route("/species", methods={"GET"})
+     */
+    public function speciesSearch(Request $request, PetSpeciesFilterService $petSpeciesFilterService, ResponseService $responseService)
+    {
+        return $responseService->success(
+            $petSpeciesFilterService->getResults($request),
+            null,
+            [ SerializationGroup::FILTER_RESULTS, SerializationGroup::PET_ENCYCLOPEDIA ]
+        );
+    }
+
+    /**
+     * @Route("/species/{speciesName}", methods={"GET"})
+     */
+    public function getSpeciesByName(string $speciesName, PetSpeciesRepository $petSpeciesRepository, ResponseService $responseService)
+    {
+        $species = $petSpeciesRepository->findOneBy([ 'name' => $speciesName ]);
+
+        if(!$species)
+            throw new NotFoundHttpException();
+
+        return $responseService->success($species, null, SerializationGroup::PET_ENCYCLOPEDIA);
     }
 
 }

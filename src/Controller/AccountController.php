@@ -6,6 +6,7 @@ use App\Entity\PetSkills;
 use App\Entity\User;
 use App\Enum\SerializationGroup;
 use App\Functions\ArrayFunctions;
+use App\Repository\PetSpeciesRepository;
 use App\Repository\UserRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -23,25 +24,12 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  */
 class AccountController extends PsyPetsController
 {
-    const STARTING_PET_IMAGES = [
-        'monotreme/desikh',
-        'mammal/roundish',
-        'elemental/cotton-candy',
-        'bird/chickie',
-        'mammal/mole',
-        'bird/odd-flying-thing',
-        'elemental/triangle',
-        'fish/ba-ha',
-        'mammal/much-cuter-mousie',
-        'fungus/mushroom',
-    ];
-
     /**
      * @Route("/register", methods={"POST"})
      */
     public function register(
         Request $request, EntityManagerInterface $em, ResponseService $responseService,
-        SessionService $sessionService, UserRepository $userRepository,
+        SessionService $sessionService, UserRepository $userRepository, PetSpeciesRepository $petSpeciesRepository,
         UserPasswordEncoderInterface $userPasswordEncoder
     )
     {
@@ -63,7 +51,9 @@ class AccountController extends PsyPetsController
         if(\strlen($petName) < 2 || \strlen($petName) > 30)
             throw new UnprocessableEntityHttpException('Pet name must be between 2 and 30 characters long.');
 
-        if(!\in_array($petImage, self::STARTING_PET_IMAGES))
+        $species = $petSpeciesRepository->findOneBy([ 'image' => $petImage ]);
+
+        if(!$species)
             throw new UnprocessableEntityHttpException('Must choose your pet\'s appearance.');
 
         if(!\preg_match('/[A-Fa-f0-9]{6}/', $petColorA))
@@ -101,7 +91,7 @@ class AccountController extends PsyPetsController
         $pet = (new Pet())
             ->setOwner($user)
             ->setName($petName)
-            ->setImage($petImage)
+            ->setSpecies($species)
             ->setColorA($petColorA)
             ->setColorB($petColorB)
             ->setNeeds(mt_rand(10, 12), -9)
