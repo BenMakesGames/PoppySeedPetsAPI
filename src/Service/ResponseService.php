@@ -82,7 +82,7 @@ class ResponseService
         return new JsonResponse($json, $httpResponse, [], true);
     }
 
-    public function createActivityLog(Pet $pet, string $entry, ?PetChangesSummary $changes = null)
+    public function createActivityLog(Pet $pet, string $entry, ?PetChangesSummary $changes = null): PetActivityLog
     {
         $log = (new PetActivityLog())
             ->setPet($pet)
