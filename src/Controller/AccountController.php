@@ -8,6 +8,7 @@ use App\Enum\SerializationGroup;
 use App\Functions\ArrayFunctions;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserRepository;
+use App\Service\Filter\UserFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\SessionService;
@@ -144,6 +145,18 @@ class AccountController extends PsyPetsController
     }
 
     /**
+     * @Route("/search", methods={"GET"})
+     */
+    public function search(Request $request, UserFilterService $userFilterService, ResponseService $responseService)
+    {
+        return $responseService->success(
+            $userFilterService->getResults($request),
+            $this->getUser(),
+            [ SerializationGroup::FILTER_RESULTS, SerializationGroup::PUBLIC_PROFILE ]
+        );
+    }
+
+    /**
      * @Route("/logOut", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -210,15 +223,6 @@ class AccountController extends PsyPetsController
     {
         $currentUser = $this->getUser();
 
-        $groups = [ SerializationGroup::PUBLIC_PROFILE ];
-
-        if($currentUser)
-        {
-            $groups[] = SerializationGroup::SEMI_PRIVATE_PROFILE;
-
-            // TODO: if mutual friends, add SerializationGroup::PRIVATE_PROFILE
-        }
-
-        return $responseService->success($user, null, $groups);
+        return $responseService->success($user, $currentUser, SerializationGroup::PUBLIC_PROFILE);
     }
 }

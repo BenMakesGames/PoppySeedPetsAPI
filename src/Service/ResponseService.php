@@ -49,6 +49,9 @@ class ResponseService
         {
             $responseData['user'] = $user;
             $groups[] = SerializationGroup::MY_ACCOUNT;
+
+            if($user->hasRole('ROLE_ADMIN'))
+                $groups[] = SerializationGroup::ADMIN;
         }
 
         $json = $this->serializer->serialize($responseData, 'json', [
@@ -72,6 +75,9 @@ class ResponseService
         {
             $responseData['user'] = $user;
             $groups[] = SerializationGroup::MY_ACCOUNT;
+
+            if($user->hasRole('ROLE_ADMIN'))
+                $groups[] = SerializationGroup::ADMIN;
         }
 
         $json = $this->serializer->serialize($responseData, 'json', [

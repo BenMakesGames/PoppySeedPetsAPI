@@ -33,4 +33,10 @@ class FilterResults
      * @Groups({"filterResults"})
      */
     public $results;
+
+    /**
+     * @var array[]
+     * @Groups({"admin"})
+     */
+    public $query;
 }

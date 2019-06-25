@@ -44,7 +44,7 @@ class Inventory
 
     /**
      * @ORM\Column(type="json")
-     * @Groups({"myInventory", "privateProfile"})
+     * @Groups({"myInventory"})
      */
     private $comments = [];
 

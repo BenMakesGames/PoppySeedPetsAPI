@@ -27,18 +27,18 @@ class Filterer
     {
         $page = $params->getInt('page', 0);
         $orderBy = strtolower($params->getAlnum('orderBy', 'name'));
-        $orderDir = strtolower($params->getAlpha('orderDir', 'asc'));
+        $orderDir = strtolower($params->getAlpha('orderDir'));
         $filters = $params->get('filter', []);
-
-        if($orderDir !== 'asc' && $orderDir !== 'desc') $this->orderDir = 'asc';
 
         if(array_key_exists($orderBy, $this->orderByMap))
             $orderBy = array_key_first($this->orderByMap);
 
+        if($orderDir !== 'asc' && $orderDir !== 'desc') $orderDir = $this->orderByMap[$orderBy][1];
+
         $filters = array_filter($filters, function($filter) { return array_key_exists($filter, $this->filterMap); }, ARRAY_FILTER_USE_KEY);
 
         $qb = $this->repository->createQueryBuilder($this->entityAlias)
-            ->orderBy($this->orderByMap[$orderBy], $orderDir)
+            ->orderBy($this->orderByMap[$orderBy][0], $orderDir)
         ;
 
         foreach($filters as $filter=>$value)
@@ -68,6 +68,7 @@ class Filterer
         $results->pageCount = $lastPage;
         $results->resultCount = $numResults;
         $results->results = $paginator->getQuery()->execute();
+        $results->query = [ 'sql ' => $paginator->getQuery()->getSQL(), 'parameters' => $paginator->getQuery()->getParameters()->toArray() ];
 
         return $results;
     }

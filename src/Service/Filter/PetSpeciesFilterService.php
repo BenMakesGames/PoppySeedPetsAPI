@@ -17,8 +17,8 @@ class PetSpeciesFilterService
             $petSpeciesRepository, 'i',
             self::PAGE_SIZE,
             [
-                'name' => 'i.name', // first one is the default
-                'id' => 'i.id',
+                'name' => [ 'i.name', 'asc' ], // first one is the default
+                'id' => [ 'i.id', 'asc' ],
             ],
             [
                 'name' => array($this, 'filterName'),

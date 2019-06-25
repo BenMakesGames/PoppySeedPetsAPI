@@ -10,6 +10,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="name_index", columns={"name"})
+ * })
  */
 class User implements UserInterface
 {
@@ -23,6 +26,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"myAccount"})
      */
     private $email;
 
@@ -45,7 +49,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="datetime_immutable")
-     * @Groups({"semiPrivateProfile"})
+     * @Groups({"publicProfile"})
      */
     private $lastActivity;
 
@@ -68,7 +72,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="datetime_immutable")
-     * @Groups({"semiPrivateProfile"})
+     * @Groups({"publicProfile"})
      */
     private $registeredOn;
 
@@ -80,7 +84,6 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"privateProfile"})
      */
     private $isLocked = false;
 
@@ -92,11 +95,13 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"myAccount"})
      */
     private $maxInventory = 50;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"myAccount"})
      */
     private $maxPets = 1;
 
@@ -144,6 +149,11 @@ class User implements UserInterface
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return in_array($role, $this->getRoles());
     }
 
     public function setRoles(array $roles): self

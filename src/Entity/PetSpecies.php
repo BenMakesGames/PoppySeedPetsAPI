@@ -19,7 +19,7 @@ class PetSpecies
 
     /**
      * @ORM\Column(type="string", length=40, unique=true)
-     * @Groups({"myPet", "publicProfile", "petEncyclopedia"})
+     * @Groups({"petEncyclopedia"})
      */
     private $name;
 
