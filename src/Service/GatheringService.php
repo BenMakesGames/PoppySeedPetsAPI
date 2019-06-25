@@ -39,6 +39,8 @@ class GatheringService
                 $activityLog = $this->foundNothing($pet, $roll);
                 break;
             case 5:
+                $activityLog = $this->foundTeaBush($pet);
+                break;
             case 6:
             case 7:
                 $activityLog = $this->foundBerryBush($pet);
@@ -98,6 +100,22 @@ class GatheringService
         $pet->spendTime(\mt_rand(45, 75));
 
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' went out gathering, but couldn\'t find anything.');
+    }
+
+    private function foundTeaBush(Pet $pet): PetActivityLog
+    {
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Tea Bush, and grabbed a few Tea Leaves.');
+
+        $this->inventoryService->petCollectsItem('Tea Leaves', $pet, $pet->getName() . ' harvested this from a Tea Bush.');
+        $this->inventoryService->petCollectsItem('Tea Leaves', $pet, $pet->getName() . ' harvested this from a Tea Bush.');
+
+        if(\mt_rand(1, 2) === 1)
+            $this->inventoryService->petCollectsItem('Tea Leaves', $pet, $pet->getName() . ' harvested this from a Tea Bush.');
+
+        $this->petService->gainExp($pet, 1, [ 'perception', 'nature' ]);
+        $pet->spendTime(\mt_rand(45, 60));
+
+        return $activityLog;
     }
 
     private function foundBerryBush(Pet $pet): PetActivityLog
@@ -194,7 +212,7 @@ class GatheringService
         {
             if(\mt_rand(1, 20 + $pet->getSkills()->getStrength() + $pet->getSkills()->getDexterity() + $pet->getSkills()->getBrawl()) >= 15)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to steal an Egg from a Bird Nest, was spotted by a parent, and was able to defeat it in combat!');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to steal an Egg from a Bird Nest, was spotted by a parent bird, and was able to defeat it in combat!');
                 $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a Bird Nest, after a fight.');
                 $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' stole this from a Bird Nest, after a fight.');
                 $this->petService->gainExp($pet, 2, [ 'perception', 'nature', 'stealth', 'dexterity', 'strength', 'brawl' ]);
@@ -202,7 +220,7 @@ class GatheringService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to steal an Egg from a Bird Nest, but was spotted by a parent, and chased off!');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to steal an Egg from a Bird Nest, but was spotted by a parent bird, and chased off!');
                 $this->petService->gainExp($pet, 1, [ 'perception', 'nature', 'stealth', 'dexterity' ]);
                 $pet->increaseEsteem(-\mt_rand(1, 2));
                 $pet->spendTime(\mt_rand(45, 75));

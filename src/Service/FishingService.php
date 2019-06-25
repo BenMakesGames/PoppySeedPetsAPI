@@ -23,7 +23,7 @@ class FishingService
     {
         $maxSkill = 5 + $pet->getSkills()->getDexterity() + $pet->getSkills()->getNature() - $pet->getWhack();
 
-        if($maxSkill > 7) $maxSkill = 7;
+        if($maxSkill > 9) $maxSkill = 9;
 
         $roll = \mt_rand(1, $maxSkill);
 
@@ -45,7 +45,11 @@ class FishingService
                 $activityLog = $this->fishedRoadsideCreek($pet);
                 break;
             case 7:
+            case 8:
                 $activityLog = $this->fishedWaterfallBasin($pet);
+                break;
+            case 9:
+                $activityLog = $this->fishedPlazaFountain($pet);
                 break;
         }
 
@@ -209,6 +213,18 @@ class FishingService
                 $pet->spendTime(mt_rand(45, 60));
             }
         }
+
+        return $activityLog;
+    }
+
+    private function fishedPlazaFountain(Pet $pet): PetActivityLog
+    {
+        $moneys = \mt_rand(2, 9);
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fished around in the Plaza Fountain, and grabbed ' . $moneys . ' moneys.');
+        $this->petService->gainExp($pet, 1, ['perception']);
+        $pet->getOwner()->increaseMoneys($moneys);
+
+        $pet->spendTime(mt_rand(30, 45));
 
         return $activityLog;
     }
