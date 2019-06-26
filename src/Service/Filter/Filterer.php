@@ -13,6 +13,7 @@ class Filterer
     private $filterMap;
     private $pageSize;
     private $entityAlias;
+    private $defaultFilters = [];
 
     public function __construct(EntityRepository $repository, string $entityAlias, int $pageSize, array $orderByMap, array $filterCallbacks)
     {
@@ -23,12 +24,17 @@ class Filterer
         $this->entityAlias = $entityAlias;
     }
 
+    public function addFilter(string $key, $value)
+    {
+        $this->defaultFilters[$key] = $value;
+    }
+
     public function filter(ParameterBag $params): FilterResults
     {
         $page = $params->getInt('page', 0);
         $orderBy = strtolower($params->getAlnum('orderBy', 'name'));
         $orderDir = strtolower($params->getAlpha('orderDir'));
-        $filters = $params->get('filter', []);
+        $filters = array_merge($this->defaultFilters, $params->get('filter', []));
 
         if(array_key_exists($orderBy, $this->orderByMap))
             $orderBy = array_key_first($this->orderByMap);

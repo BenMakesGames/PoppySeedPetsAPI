@@ -2,7 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Model\FilterResults;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 trait FilterService
 {
@@ -11,8 +11,13 @@ trait FilterService
      */
     private $filterer;
 
-    public function getResults(Request $request): FilterResults
+    public function getResults(ParameterBag $parameters): FilterResults
     {
-        return $this->filterer->filter($request->query);
+        return $this->filterer->filter($parameters);
+    }
+
+    public function addFilter(string $key, $value)
+    {
+        $this->filterer->addFilter($key, $value);
     }
 }

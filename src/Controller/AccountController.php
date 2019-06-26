@@ -150,7 +150,7 @@ class AccountController extends PsyPetsController
     public function search(Request $request, UserFilterService $userFilterService, ResponseService $responseService)
     {
         return $responseService->success(
-            $userFilterService->getResults($request),
+            $userFilterService->getResults($request->query),
             $this->getUser(),
             [ SerializationGroup::FILTER_RESULTS, SerializationGroup::PUBLIC_PROFILE ]
         );

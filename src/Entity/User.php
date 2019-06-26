@@ -105,11 +105,22 @@ class User implements UserInterface
      */
     private $maxPets = 1;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserFriend", mappedBy="user", orphanRemoval=true)
+     */
+    private $friends;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserFriend", mappedBy="friend", orphanRemoval=true)
+     */
+    private $friendsOf;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
         $this->registeredOn = new \DateTimeImmutable();
         $this->lastAllowanceCollected = (new \DateTimeImmutable())->modify('-7 days');
+        $this->friends = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -334,6 +345,37 @@ class User implements UserInterface
     public function setMaxPets(int $maxPets): self
     {
         $this->maxPets = $maxPets;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserFriend[]
+     */
+    public function getFriends(): Collection
+    {
+        return $this->friends;
+    }
+
+    public function addFriend(UserFriend $friend): self
+    {
+        if (!$this->friends->contains($friend)) {
+            $this->friends[] = $friend;
+            $friend->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFriend(UserFriend $friend): self
+    {
+        if ($this->friends->contains($friend)) {
+            $this->friends->removeElement($friend);
+            // set the owning side to null (unless already changed)
+            if ($friend->getUser() === $this) {
+                $friend->setUser(null);
+            }
+        }
 
         return $this;
     }

@@ -29,7 +29,7 @@ class EncyclopediaController extends PsyPetsController
     public function itemSearch(Request $request, ItemFilterService $itemFilterService, ResponseService $responseService)
     {
         return $responseService->success(
-            $itemFilterService->getResults($request),
+            $itemFilterService->getResults($request->query),
             null,
             [ SerializationGroup::FILTER_RESULTS, SerializationGroup::ITEM_ENCYCLOPEDIA ]
         );
@@ -54,7 +54,7 @@ class EncyclopediaController extends PsyPetsController
     public function speciesSearch(Request $request, PetSpeciesFilterService $petSpeciesFilterService, ResponseService $responseService)
     {
         return $responseService->success(
-            $petSpeciesFilterService->getResults($request),
+            $petSpeciesFilterService->getResults($request->query),
             null,
             [ SerializationGroup::FILTER_RESULTS, SerializationGroup::PET_ENCYCLOPEDIA ]
         );
