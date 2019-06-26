@@ -115,12 +115,18 @@ class User implements UserInterface
      */
     private $friendsOf;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserStats", mappedBy="user", orphanRemoval=true)
+     */
+    private $stats;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
         $this->registeredOn = new \DateTimeImmutable();
         $this->lastAllowanceCollected = (new \DateTimeImmutable())->modify('-7 days');
         $this->friends = new ArrayCollection();
+        $this->stats = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -374,6 +380,37 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($friend->getUser() === $this) {
                 $friend->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserStats[]
+     */
+    public function getStats(): Collection
+    {
+        return $this->stats;
+    }
+
+    public function addStat(UserStats $stat): self
+    {
+        if (!$this->stats->contains($stat)) {
+            $this->stats[] = $stat;
+            $stat->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStat(UserStats $stat): self
+    {
+        if ($this->stats->contains($stat)) {
+            $this->stats->removeElement($stat);
+            // set the owning side to null (unless already changed)
+            if ($stat->getUser() === $this) {
+                $stat->setUser(null);
             }
         }
 
