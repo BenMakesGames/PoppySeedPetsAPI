@@ -59,7 +59,7 @@ class FriendController extends PsyPetsController
         $em->persist($newFriend);
         $em->flush();
 
-        return $responseService->success(null, $user, []);
+        return $responseService->success();
     }
 
     /**
@@ -77,7 +77,6 @@ class FriendController extends PsyPetsController
 
         return $responseService->success(
             $userFilterService->getResults($request->query),
-            $user,
             [ SerializationGroup::FILTER_RESULTS, SerializationGroup::PUBLIC_PROFILE ]
         );
     }
@@ -110,7 +109,7 @@ class FriendController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success(null, $user, []);
+        return $responseService->success();
     }
 
     /**
@@ -134,6 +133,6 @@ class FriendController extends PsyPetsController
         $em->remove($userFriend);
         $em->flush();
 
-        return $responseService->success(null, $user, []);
+        return $responseService->success();
     }
 }

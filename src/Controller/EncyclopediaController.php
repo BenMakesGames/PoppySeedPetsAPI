@@ -30,7 +30,6 @@ class EncyclopediaController extends PsyPetsController
     {
         return $responseService->success(
             $itemFilterService->getResults($request->query),
-            null,
             [ SerializationGroup::FILTER_RESULTS, SerializationGroup::ITEM_ENCYCLOPEDIA ]
         );
     }
@@ -45,7 +44,7 @@ class EncyclopediaController extends PsyPetsController
         if(!$item)
             throw new NotFoundHttpException();
 
-        return $responseService->success($item, null, SerializationGroup::ITEM_ENCYCLOPEDIA);
+        return $responseService->success($item, SerializationGroup::ITEM_ENCYCLOPEDIA);
     }
 
     /**
@@ -55,7 +54,6 @@ class EncyclopediaController extends PsyPetsController
     {
         return $responseService->success(
             $petSpeciesFilterService->getResults($request->query),
-            null,
             [ SerializationGroup::FILTER_RESULTS, SerializationGroup::PET_ENCYCLOPEDIA ]
         );
     }
@@ -70,7 +68,7 @@ class EncyclopediaController extends PsyPetsController
         if(!$species)
             throw new NotFoundHttpException();
 
-        return $responseService->success($species, null, SerializationGroup::PET_ENCYCLOPEDIA);
+        return $responseService->success($species, SerializationGroup::PET_ENCYCLOPEDIA);
     }
 
 }

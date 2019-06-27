@@ -19,6 +19,7 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * @Route("/account")
@@ -31,7 +32,7 @@ class AccountController extends PsyPetsController
     public function register(
         Request $request, EntityManagerInterface $em, ResponseService $responseService,
         SessionService $sessionService, UserRepository $userRepository, PetSpeciesRepository $petSpeciesRepository,
-        UserPasswordEncoderInterface $userPasswordEncoder
+        UserPasswordEncoderInterface $userPasswordEncoder, Security $security
     )
     {
         $petName = $request->request->get('petName');
@@ -103,7 +104,7 @@ class AccountController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success(null, $user, SerializationGroup::MY_ACCOUNT);
+        return $responseService->success(null, [], $user);
     }
 
     /**
@@ -132,7 +133,7 @@ class AccountController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success(null, $user, SerializationGroup::MY_ACCOUNT);
+        return $responseService->success(null, [], $user);
     }
 
     /**
@@ -141,7 +142,7 @@ class AccountController extends PsyPetsController
      */
     public function getAccount(ResponseService $responseService)
     {
-        return $responseService->success(null, $this->getUser(), SerializationGroup::MY_ACCOUNT);
+        return $responseService->success(null, [], $this->getUser());
     }
 
     /**
@@ -151,7 +152,6 @@ class AccountController extends PsyPetsController
     {
         return $responseService->success(
             $userFilterService->getResults($request->query),
-            $this->getUser(),
             [ SerializationGroup::FILTER_RESULTS, SerializationGroup::PUBLIC_PROFILE ]
         );
     }
@@ -213,7 +213,7 @@ class AccountController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success($newInventory, $user, SerializationGroup::MY_INVENTORY);
+        return $responseService->success($newInventory, SerializationGroup::MY_INVENTORY);
     }
 
     /**
@@ -221,8 +221,6 @@ class AccountController extends PsyPetsController
      */
     public function getProfile(User $user, ResponseService $responseService)
     {
-        $currentUser = $this->getUser();
-
-        return $responseService->success($user, $currentUser, SerializationGroup::PUBLIC_PROFILE);
+        return $responseService->success($user, SerializationGroup::PUBLIC_PROFILE);
     }
 }

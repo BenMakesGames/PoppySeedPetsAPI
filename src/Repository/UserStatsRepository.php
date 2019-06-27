@@ -20,17 +20,29 @@ class UserStatsRepository extends ServiceEntityRepository
         parent::__construct($registry, UserStats::class);
     }
 
-    public function incrementStat(User $user, string $name, int $change = 1)
+    public function incrementStat(User $user, string $name, int $change = 1): UserStats
     {
         $stat = $this->findOneBy([
             'user' => $user,
-            'name' => $name
+            'stat' => $name
         ]);
 
         if(!$stat)
         {
+            $stat = (new UserStats())
+                ->setUser($user)
+                ->setStat($name)
+                ->increaseValue($change)
+            ;
 
+            $this->getEntityManager()->persist($stat);
         }
+        else
+        {
+            $stat->increaseValue($change);
+        }
+
+        return $stat;
     }
 
     // /**

@@ -18,17 +18,26 @@ class ResponseService
     private $activityLogs = [];
     private $em;
     private $serializer;
+    private $security;
 
-    public function __construct(SerializerInterface $serializer, EntityManagerInterface $em)
+    public function __construct(
+        SerializerInterface $serializer, EntityManagerInterface $em, Security $security
+    )
     {
         $this->serializer = $serializer;
         $this->em = $em;
+        $this->security = $security;
+    }
+
+    public function itemActionSuccess($markdown): JsonResponse
+    {
+        return $this->success($markdown, []);
     }
 
     /**
      * @param string|string[] $groups
      */
-    public function success($data, ?User $user, $groups): JsonResponse
+    public function success($data = null, $groups = [], ?User $user = null): JsonResponse
     {
         if(!\is_array($groups)) $groups = [ $groups ];
 
@@ -44,6 +53,9 @@ class ResponseService
             $responseData['activity'] = $this->activityLogs;
             $groups[] = SerializationGroup::PET_ACTIVITY_LOGS;
         }
+
+        if(!$user)
+            $user = $this->security->getUser();
 
         if($user)
         {

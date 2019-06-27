@@ -53,6 +53,11 @@ class Item
     private $colorBRange = '0-0,100-100,100-100';
 
     /**
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $useActions = [];
+
+    /**
      * @Groups({"myInventory", "itemEncyclopedia"})
      */
     public function isEdible(): bool
@@ -135,5 +140,30 @@ class Item
         $this->colorBRange = $colorBRange;
 
         return $this;
+    }
+
+    public function getUseActions(): ?array
+    {
+        return $this->useActions;
+    }
+
+    public function setUseActions(?array $useActions): self
+    {
+        $this->useActions = $useActions;
+
+        return $this;
+    }
+
+    public function hasUseAction(string $action): bool
+    {
+        if($this->useActions === null) return false;
+
+        foreach($this->useActions as $useAction)
+        {
+            if($useAction[1] === $action)
+                return true;
+        }
+
+        return false;
     }
 }

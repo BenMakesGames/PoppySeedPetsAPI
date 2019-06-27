@@ -30,7 +30,7 @@ class UserStats
     /**
      * @ORM\Column(type="integer")
      */
-    private $value;
+    private $value = 0;
 
     /**
      * @ORM\Column(type="datetime_immutable")
@@ -41,6 +41,11 @@ class UserStats
      * @ORM\Column(type="datetime_immutable")
      */
     private $lastTime;
+
+    public function __construct()
+    {
+        $this->firstTime = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -76,9 +81,10 @@ class UserStats
         return $this->value;
     }
 
-    public function setValue(int $value): self
+    public function increaseValue(int $value): self
     {
-        $this->value = $value;
+        $this->lastTime = new \DateTimeImmutable();
+        $this->value += $value;
 
         return $this;
     }
@@ -88,22 +94,8 @@ class UserStats
         return $this->firstTime;
     }
 
-    public function setFirstTime(\DateTimeImmutable $firstTime): self
-    {
-        $this->firstTime = $firstTime;
-
-        return $this;
-    }
-
     public function getLastTime(): ?\DateTimeImmutable
     {
         return $this->lastTime;
-    }
-
-    public function setLastTime(\DateTimeImmutable $lastTime): self
-    {
-        $this->lastTime = $lastTime;
-
-        return $this;
     }
 }

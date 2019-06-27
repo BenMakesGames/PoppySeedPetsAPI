@@ -75,12 +75,12 @@ class Inventory
         return $this->id;
     }
 
-    public function getItem(): ?Item
+    public function getItem(): Item
     {
         return $this->item;
     }
 
-    public function setItem(?Item $item): self
+    public function setItem(Item $item): self
     {
         $this->item = $item;
 

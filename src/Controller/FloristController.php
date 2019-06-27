@@ -6,8 +6,11 @@ use App\Entity\PetSkills;
 use App\Entity\User;
 use App\Enum\SerializationGroup;
 use App\Functions\ArrayFunctions;
+use App\Repository\InventoryRepository;
 use App\Repository\PetSpeciesRepository;
+use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\Filter\UserFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -25,29 +28,61 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  */
 class FloristController extends PsyPetsController
 {
-    private const ITEMS_FOR_SALE = [
+    private const FLOWERS_FOR_SALE = [
         'Agrimony' => 10,
         'Bird\'s-foot Trefoil' => 10,
-        'Coriander' => 10,
+        'Coriander Flower' => 10,
         'Green Carnation' => 10,
         'Iris' => 10,
         'Purple Violet' => 10,
         'Red Clover' => 10,
         'Viscaria' => 10,
         'Witch-hazel' => 10,
-        'Wheat' => 10,
+        'Wheat Flower' => 10,
     ];
 
     /**
      * @Route("/send", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function send(Request $request)
+    public function send(
+        Request $request, UserRepository $userRepository, InventoryService $inventoryService, ResponseService $responseService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+    )
     {
-        $flower = $request->request->get('flower');
+        $user = $this->getUser();
+
+        $flowerName = $request->request->get('flower');
         $recipientId = $request->request->get('recipient');
 
+        if(!array_key_exists($flowerName, self::FLOWERS_FOR_SALE))
+            throw new UnprocessableEntityHttpException('"I don\'t have that flower available; sorry."');
 
+        $cost = self::FLOWERS_FOR_SALE[$flowerName];
+
+        if($cost > $user->getMoneys())
+            throw new UnprocessableEntityHttpException('"It seems you don\'t have quite enough moneys."');
+
+        $recipient = $userRepository->find($recipientId);
+
+        if(!$recipient)
+            throw new UnprocessableEntityHttpException('"Hm. I don\'t know who that is."');
+
+        if($recipient->getId() === $this->getUser()->getId())
+            $flowerName = 'Narcissus';
+
+        $user->increaseMoneys(-10);
+
+        $inventoryService->receiveItem($flowerName, $recipient, $user, $user->getName() . ' bought this for you at The Florist\'s.');
+
+        $stat = $userStatsRepository->incrementStat($user, 'flowers purchased');
+
+        if($stat->getValue() === 1)
+            $inventoryService->receiveItem('Book of Flowers', $user, $user, 'This was delivered to you from The Florist\'s.');
+
+        $em->flush();
+
+        return $responseService->success();
     }
 
 }
