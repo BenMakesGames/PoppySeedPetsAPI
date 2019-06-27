@@ -32,7 +32,7 @@ class Item
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"itemEncyclopedia"})
+     * @Groups({"myInventory", "itemEncyclopedia"})
      */
     private $description;
 
@@ -54,6 +54,7 @@ class Item
 
     /**
      * @ORM\Column(type="json", nullable=true)
+     * @Groups({"myInventory", "itemEncyclopedia"})
      */
     private $useActions = [];
 

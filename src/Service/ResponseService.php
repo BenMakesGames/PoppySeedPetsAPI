@@ -29,9 +29,9 @@ class ResponseService
         $this->security = $security;
     }
 
-    public function itemActionSuccess($markdown): JsonResponse
+    public function itemActionSuccess($markdown, $useActions = []): JsonResponse
     {
-        return $this->success($markdown, []);
+        return $this->success([ 'text' => $markdown, 'useActions' => $useActions ], []);
     }
 
     /**
