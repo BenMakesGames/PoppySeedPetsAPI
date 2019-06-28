@@ -6,6 +6,7 @@ use App\Entity\Item;
 use App\Entity\Pet;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
+use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetService
@@ -16,10 +17,12 @@ class PetService
     private $fishingService;
     private $huntingService;
     private $gatheringService;
+    private $userStatsRepository;
 
     public function __construct(
         EntityManagerInterface $em, RandomService $randomService, ResponseService $responseService,
-        FishingService $fishingService, HuntingService $huntingService, GatheringService $gatheringService
+        FishingService $fishingService, HuntingService $huntingService, GatheringService $gatheringService,
+        UserStatsRepository $userStatsRepository
     )
     {
         $this->em = $em;
@@ -28,6 +31,7 @@ class PetService
         $this->fishingService = $fishingService;
         $this->huntingService = $huntingService;
         $this->gatheringService = $gatheringService;
+        $this->userStatsRepository = $userStatsRepository;
     }
 
     /**
@@ -82,6 +86,7 @@ class PetService
         $pet->increaseLove(1);
 
         $this->responseService->createActivityLog($pet, 'You pet ' . $pet->getName(). '.', $changes->compare($pet));
+        $this->userStatsRepository->incrementStat($pet->getOwner(), 'Petted a Pet');
     }
 
     public function doPraise(Pet $pet)
@@ -106,6 +111,7 @@ class PetService
         $pet->increaseEsteem(1);
 
         $this->responseService->createActivityLog($pet, 'You praised ' . $pet->getName(). '.', $changes->compare($pet));
+        $this->userStatsRepository->incrementStat($pet->getOwner(), 'Praised a Pet');
     }
 
     /**
@@ -158,9 +164,10 @@ class PetService
 
 
         $this->responseService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.', $petChanges->compare($pet));
+        $this->userStatsRepository->incrementStat($pet->getOwner(), 'Food Hours Fed to Pets', $foodGained);
     }
 
-    public function doEet(Pet $pet, Item $item)
+    public function doEat(Pet $pet, Item $item)
     {
         $petChanges = new PetChanges($pet);
 

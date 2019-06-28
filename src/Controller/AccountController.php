@@ -117,6 +117,7 @@ class AccountController extends PsyPetsController
     {
         $email = $request->request->get('email');
         $password = $request->request->get('passphrase');
+        $sessionHours = $request->request->getInt('sessionHours', 0);
 
         if(!$email || !$password)
             throw new UnprocessableEntityHttpException('"email" and "passphrase" are both required.');
@@ -129,7 +130,7 @@ class AccountController extends PsyPetsController
         if($user->getIsLocked())
             throw new AccessDeniedHttpException('This account has been locked.');
 
-        $sessionService->logIn($user);
+        $sessionService->logIn($user, $sessionHours);
 
         $em->flush();
 

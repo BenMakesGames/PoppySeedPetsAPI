@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Enum\SerializationGroup;
 use App\Repository\InventoryRepository;
 use App\Repository\PetActivityLogRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\PetService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -74,6 +75,9 @@ class PetController extends PsyPetsController
         Pet $pet, ResponseService $responseService, EntityManagerInterface $em, PetService $petService
     )
     {
+        if($pet->getOwner()->getId() !== $this->getUser()->getId())
+            throw new AccessDeniedHttpException('You can\'t pet that pet.');
+
         try
         {
             $petService->doPet($pet);
@@ -99,6 +103,9 @@ class PetController extends PsyPetsController
         Pet $pet, ResponseService $responseService, EntityManagerInterface $em, PetService $petService
     )
     {
+        if($pet->getOwner()->getId() !== $this->getUser()->getId())
+            throw new AccessDeniedHttpException('You can\'t praise that pet.');
+
         try
         {
             $petService->doPraise($pet);

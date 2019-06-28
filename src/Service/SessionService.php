@@ -37,10 +37,10 @@ class SessionService
         return $sessionId;
     }
 
-    public function logIn(User $user)
+    public function logIn(User $user, ?int $hours = null)
     {
         $user
-            ->setLastActivity()
+            ->setLastActivity($hours)
             ->setSessionId($this->getSessionId())
         ;
     }

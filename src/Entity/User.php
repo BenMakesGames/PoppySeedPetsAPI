@@ -120,6 +120,11 @@ class User implements UserInterface
      */
     private $stats;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $defaultSessionLengthInHours = 72;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -229,10 +234,14 @@ class User implements UserInterface
         return $this->lastActivity;
     }
 
-    public function setLastActivity(): self
+    public function setLastActivity(?int $sessionHours): self
     {
         $this->lastActivity = new \DateTimeImmutable();
-        $this->sessionExpiration = (new \DateTimeImmutable())->modify('+8 hours');
+
+        if(!$sessionHours)
+            $sessionHours = $this->getDefaultSessionLengthInHours();
+
+        $this->sessionExpiration = (new \DateTimeImmutable())->modify('+' . $sessionHours . ' hours');
 
         return $this;
     }
@@ -413,6 +422,18 @@ class User implements UserInterface
                 $stat->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDefaultSessionLengthInHours(): int
+    {
+        return $this->defaultSessionLengthInHours;
+    }
+
+    public function setDefaultSessionLengthInHours(int $defaultSessionLengthInHours): self
+    {
+        $this->defaultSessionLengthInHours = $defaultSessionLengthInHours;
 
         return $this;
     }
