@@ -122,6 +122,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"myAccount"})
      */
     private $defaultSessionLengthInHours = 72;
 

@@ -9,6 +9,7 @@ final class SerializationGroup
     const MY_ACCOUNT = 'myAccount';
     const MY_PET = 'myPet';
     const MY_INVENTORY = 'myInventory';
+    const MY_STATS = 'myStats';
     const PET_ACTIVITY_LOGS = 'petActivityLogs';
     const FILTER_RESULTS = 'filterResults';
     const ITEM_ENCYCLOPEDIA = 'itemEncyclopedia';

@@ -8,6 +8,7 @@ use App\Enum\SerializationGroup;
 use App\Functions\ArrayFunctions;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\Filter\UserFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -217,6 +218,17 @@ class AccountController extends PsyPetsController
         $em->flush();
 
         return $responseService->success($newInventory, SerializationGroup::MY_INVENTORY);
+    }
+
+    /**
+     * @Route("/stats", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getStats(ResponseService $responseService, UserStatsRepository $userStatsRepository)
+    {
+        $stats = $userStatsRepository->findBy([ 'user' => $this->getUser() ]);
+
+        return $responseService->success($stats, SerializationGroup::MY_STATS);
     }
 
     /**

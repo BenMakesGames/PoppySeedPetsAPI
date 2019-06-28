@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserStatsRepository")
@@ -24,21 +25,25 @@ class UserStats
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @Groups({"myStats"})
      */
     private $stat;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"myStats"})
      */
     private $value = 0;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"myStats"})
      */
     private $firstTime;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"myStats"})
      */
     private $lastTime;
 
