@@ -161,13 +161,15 @@ class AccountController extends PsyPetsController
      * @Route("/logOut", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function logOut(EntityManagerInterface $em)
+    public function logOut(EntityManagerInterface $em, ResponseService $responseService)
     {
         $user = $this->getUser();
 
         $user->logOut();
 
         $em->flush();
+
+        return $responseService->success();
     }
 
     /**

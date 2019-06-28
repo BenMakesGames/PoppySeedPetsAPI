@@ -54,17 +54,7 @@ class ResponseService
             $groups[] = SerializationGroup::PET_ACTIVITY_LOGS;
         }
 
-        if(!$user)
-            $user = $this->security->getUser();
-
-        if($user)
-        {
-            $responseData['user'] = $user;
-            $groups[] = SerializationGroup::MY_ACCOUNT;
-
-            if($user->hasRole('ROLE_ADMIN'))
-                $groups[] = SerializationGroup::ADMIN;
-        }
+        $this->injectUserData($responseData, $groups, $user);
 
         $json = $this->serializer->serialize($responseData, 'json', [
             'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS,
@@ -83,6 +73,27 @@ class ResponseService
 
         $groups = [];
 
+        $this->injectUserData($responseData, $groups, $user);
+
+        $json = $this->serializer->serialize($responseData, 'json', [
+            'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS,
+            'groups' => $groups,
+        ]);
+
+        return new JsonResponse($json, $httpResponse, [], true);
+    }
+
+    private function injectUserData(array &$responseData, array &$groups, ?User $user)
+    {
+
+        if(!$user)
+        {
+            $user = $this->security->getUser();
+
+            if(!$user)
+                $responseData['user'] = null;
+        }
+
         if($user)
         {
             $responseData['user'] = $user;
@@ -91,13 +102,6 @@ class ResponseService
             if($user->hasRole('ROLE_ADMIN'))
                 $groups[] = SerializationGroup::ADMIN;
         }
-
-        $json = $this->serializer->serialize($responseData, 'json', [
-            'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS,
-            'groups' => $groups,
-        ]);
-
-        return new JsonResponse($json, $httpResponse, [], true);
     }
 
     public function createActivityLog(Pet $pet, string $entry, ?PetChangesSummary $changes = null): PetActivityLog

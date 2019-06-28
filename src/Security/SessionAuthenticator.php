@@ -54,7 +54,7 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
         if(!$user || $user->getSessionExpiration() < new \DateTimeImmutable() || $user->getIsLocked())
             throw new AccessDeniedHttpException('sessionId is invalid. Please try logging in again.');
 
-        $user->setLastActivity();
+        $user->setLastActivity(null);
         $this->em->flush();
 
         $this->houseService->run($user);
