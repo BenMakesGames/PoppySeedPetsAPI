@@ -45,7 +45,7 @@ class ResponseService
             'success' => true,
         ];
 
-        if($data)
+        if($data !== null)
             $responseData['data'] = $data;
 
         if(count($this->activityLogs) > 0)

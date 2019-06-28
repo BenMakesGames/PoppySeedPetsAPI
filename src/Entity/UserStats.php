@@ -81,7 +81,7 @@ class UserStats
         return $this;
     }
 
-    public function getValue(): ?int
+    public function getValue(): int
     {
         return $this->value;
     }
@@ -94,7 +94,7 @@ class UserStats
         return $this;
     }
 
-    public function getFirstTime(): ?\DateTimeImmutable
+    public function getFirstTime(): \DateTimeImmutable
     {
         return $this->firstTime;
     }
