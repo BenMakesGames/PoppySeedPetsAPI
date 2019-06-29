@@ -35,6 +35,12 @@ class PetChangesSummary
      */
     public $exp;
 
+    /**
+     * @var string|null
+     * @Groups({"petActivityLogs"})
+     */
+    public $level;
+
     public static function rate($value): ?string
     {
         if($value > 20)

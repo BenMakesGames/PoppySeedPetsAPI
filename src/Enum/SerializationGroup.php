@@ -15,4 +15,5 @@ final class SerializationGroup
     const ITEM_ENCYCLOPEDIA = 'itemEncyclopedia';
     const PET_ENCYCLOPEDIA = 'petEncyclopedia';
     const PUBLIC_PROFILE = 'publicProfile';
+    const ARTICLE = 'article';
 }

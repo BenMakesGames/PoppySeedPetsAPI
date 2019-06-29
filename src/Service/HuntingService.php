@@ -84,10 +84,10 @@ class HuntingService
         $skill = 10 + $pet->getSkills()->getStrength() + $pet->getSkills()->getBrawl();
 
         $pet->increaseFood(-1);
-        $this->petService->gainExp($pet, 1, [ 'strength', 'brawl' ]);
 
         if(\mt_rand(1, $skill) >= 6)
         {
+            $pet->increaseEsteem(1);
             if(\mt_rand(1, 2) === 1)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wrestled a Goat, and won, receiving Milk.');
@@ -95,8 +95,8 @@ class HuntingService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wrestled a Goat, and won, receiving Fluff.');
-                $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . '\'s prize for out-wrestling a Goat.');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wrestled a Goat, and won, receiving Butter.');
+                $this->inventoryService->petCollectsItem('Butter', $pet, $pet->getName() . '\'s prize for out-wrestling a Goat.');
             }
         }
         else
@@ -104,11 +104,13 @@ class HuntingService
             if(\mt_rand(1, 4) === 1)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wrestled a Goat. The Goat won.');
-                $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' wrestled a Goat, and lost, but managed to grab a bit of Fluff.');
+                $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' wrestled a Goat, and lost, but managed to grab a fistful of Fluff.');
             }
             else
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wrestled a Goat. The Goat won.');
         }
+
+        $this->petService->gainExp($pet, 1, [ 'strength', 'brawl' ]);
 
         return $activityLog;
     }
