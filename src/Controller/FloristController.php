@@ -38,7 +38,7 @@ class FloristController extends PsyPetsController
         'Red Clover' => 10,
         'Viscaria' => 10,
         'Witch-hazel' => 10,
-        'Wheat Flower' => 10,
+        'Wheat' => 10,
     ];
 
     /**
