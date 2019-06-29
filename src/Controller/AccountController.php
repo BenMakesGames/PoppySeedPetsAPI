@@ -36,12 +36,12 @@ class AccountController extends PsyPetsController
         UserPasswordEncoderInterface $userPasswordEncoder, Security $security
     )
     {
-        $petName = $request->request->get('petName');
+        $petName = trim($request->request->get('petName'));
         $petImage = $request->request->get('petImage');
         $petColorA = $request->request->get('petColorA');
         $petColorB = $request->request->get('petColorB');
 
-        $name = $request->request->get('playerName');
+        $name = trim($request->request->get('playerName'));
         $email = $request->request->get('playerEmail');
         $password = $request->request->get('playerPassphrase');
 
@@ -145,6 +145,24 @@ class AccountController extends PsyPetsController
     public function getAccount(ResponseService $responseService)
     {
         return $responseService->success(null, [], $this->getUser());
+    }
+
+    /**
+     * @Route("/rename", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function rename(Request $request, ResponseService $responseService, EntityManagerInterface $em)
+    {
+        $name = trim($request->request->get('name'));
+
+        if(\strlen($name) < 2 || \strlen($name) > 30)
+            throw new UnprocessableEntityHttpException('Name must be between 2 and 30 characters long.');
+
+        $this->getUser()->setName($name);
+
+        $em->flush();
+
+        return $responseService->success();
     }
 
     /**
