@@ -46,7 +46,7 @@ class UserFilterService
     public function filterName(QueryBuilder $qb, $value)
     {
         $qb
-            ->andWhere('u.uame LIKE :nameLike')
+            ->andWhere('u.name LIKE :nameLike')
             ->setParameter('nameLike', '%' . $value . '%')
         ;
     }

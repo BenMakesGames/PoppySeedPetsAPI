@@ -20,7 +20,7 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myAccount", "myInventory", "publicProfile", "article", "publicPetProfile"})
+     * @Groups({"myAccount", "myInventory", "userPublicProfile", "article", "petPublicProfile"})
      */
     private $id;
 
@@ -43,13 +43,13 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myAccount", "myInventory", "publicProfile", "article", "publicPetProfile"})
+     * @Groups({"myAccount", "myInventory", "userPublicProfile", "article", "petPublicProfile"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="datetime_immutable")
-     * @Groups({"publicProfile"})
+     * @Groups({"userPublicProfile"})
      */
     private $lastActivity;
 
@@ -66,13 +66,13 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Pet", mappedBy="owner")
-     * @Groups({"publicProfile"})
+     * @Groups({"userPublicProfile"})
      */
     private $pets;
 
     /**
      * @ORM\Column(type="datetime_immutable")
-     * @Groups({"publicProfile"})
+     * @Groups({"userPublicProfile"})
      */
     private $registeredOn;
 

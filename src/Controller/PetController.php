@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Enum\SerializationGroup;
 use App\Repository\InventoryRepository;
 use App\Repository\PetActivityLogRepository;
+use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\PetService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,25 +36,15 @@ class PetController extends PsyPetsController
         Pet $pet, ResponseService $responseService
     )
     {
-        $user = $this->getUser();
-
-        $groups = [
-            SerializationGroup::PUBLIC_PROFILE
-        ];
-
-        if($user !== null && $user->getId() === $pet->getOwner()->getId())
-        {
-            $groups[] = SerializationGroup::MY_PET;
-        }
-
-        return $responseService->success($pet, $groups);
+        return $responseService->success($pet, SerializationGroup::PET_PUBLIC_PROFILE);
     }
 
     /**
      * @Route("/{pet}/logs", methods={"GET"}, requirements={"pet"="\d+"})
      */
     public function logs(
-        Pet $pet, ResponseService $responseService, PetActivityLogRepository $petActivityLogRepository
+        Pet $pet, ResponseService $responseService, PetActivityLogsFilterService $petActivityLogsFilterService,
+        Request $request
     )
     {
         $user = $this->getUser();
@@ -61,9 +52,12 @@ class PetController extends PsyPetsController
         if($user->getId() !== $pet->getOwner()->getId())
             throw new AccessDeniedHttpException();
 
-        $logs = $petActivityLogRepository->findBy([ 'pet' => $pet->getId() ], [ 'id' => 'DESC' ], 10);
+        $petActivityLogsFilterService->addFilter('pet', $pet->getId());
 
-        return $responseService->success($logs, SerializationGroup::PET_ACTIVITY_LOGS);
+        return $responseService->success(
+            $petActivityLogsFilterService->getResults($request->query),
+            [ SerializationGroup::FILTER_RESULTS, SerializationGroup::PET_ACTIVITY_LOGS ]
+        );
     }
 
     /**

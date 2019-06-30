@@ -173,7 +173,7 @@ class AccountController extends PsyPetsController
     {
         return $responseService->success(
             $userFilterService->getResults($request->query),
-            [ SerializationGroup::FILTER_RESULTS, SerializationGroup::PUBLIC_PROFILE ]
+            [ SerializationGroup::FILTER_RESULTS, SerializationGroup::USER_PUBLIC_PROFILE ]
         );
     }
 
@@ -244,6 +244,6 @@ class AccountController extends PsyPetsController
      */
     public function getProfile(User $user, ResponseService $responseService)
     {
-        return $responseService->success($user, SerializationGroup::PUBLIC_PROFILE);
+        return $responseService->success($user, SerializationGroup::USER_PUBLIC_PROFILE);
     }
 }

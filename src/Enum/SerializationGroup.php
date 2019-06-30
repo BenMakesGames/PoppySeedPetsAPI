@@ -11,9 +11,10 @@ final class SerializationGroup
     const MY_INVENTORY = 'myInventory';
     const MY_STATS = 'myStats';
     const PET_ACTIVITY_LOGS = 'petActivityLogs';
+    const PET_PUBLIC_PROFILE = 'petPublicProfile';
     const FILTER_RESULTS = 'filterResults';
     const ITEM_ENCYCLOPEDIA = 'itemEncyclopedia';
     const PET_ENCYCLOPEDIA = 'petEncyclopedia';
-    const PUBLIC_PROFILE = 'publicProfile';
+    const USER_PUBLIC_PROFILE = 'userPublicProfile';
     const ARTICLE = 'article';
 }

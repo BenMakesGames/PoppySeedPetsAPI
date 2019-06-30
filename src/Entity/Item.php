@@ -21,7 +21,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=40, unique=true)
-     * @Groups({"myPet", "myInventory", "publicProfile", "itemEncyclopedia"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "itemEncyclopedia"})
      */
     private $name;
 
@@ -38,7 +38,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"myPet", "myInventory", "publicProfile", "itemEncyclopedia"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "itemEncyclopedia"})
      */
     private $image;
 

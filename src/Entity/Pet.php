@@ -14,19 +14,19 @@ class Pet
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "publicProfile", "publicPetProfile"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="pets")
-     * @Groups({"publicPetProfile"})
+     * @Groups({"petPublicProfile"})
      */
     private $owner;
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet", "publicProfile", "publicPetProfile"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
      */
     private $name;
 
@@ -62,25 +62,25 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPet", "publicProfile"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
      */
     private $colorA;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPet", "publicProfile"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
      */
     private $colorB;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Inventory", cascade={"persist", "remove"})
-     * @Groups({"myPet", "publicProfile"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petPublicProfile"})
      */
     private $hat;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"myPet", "publicProfile"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
      */
     private $isDead = false;
 
@@ -96,7 +96,7 @@ class Pet
 
     /**
      * @ORM\Column(type="datetime_immutable")
-     * @Groups({"myPet", "publicProfile"})
+     * @Groups({"myPet", "petPublicProfile"})
      */
     private $birthDate;
 
@@ -119,7 +119,7 @@ class Pet
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\PetSpecies")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet", "publicProfile"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
      */
     private $species;
 
