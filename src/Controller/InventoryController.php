@@ -5,6 +5,7 @@ use App\Enum\SerializationGroup;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\RecipeRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -49,7 +50,8 @@ class InventoryController extends PsyPetsController
      */
     public function prepareRecipe(
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
-        RecipeRepository $recipeRepository, InventoryService $inventoryService, EntityManagerInterface $em
+        RecipeRepository $recipeRepository, InventoryService $inventoryService, EntityManagerInterface $em,
+        UserStatsRepository $userStatsRepository
     )
     {
         $user = $this->getUser();
@@ -77,6 +79,8 @@ class InventoryController extends PsyPetsController
         $makes = $inventoryService->deserializeItemList($recipe->getMakes());
 
         $newInventory = $inventoryService->giveInventory($makes, $user, $user);
+
+        $userStatsRepository->incrementStat($user, 'Cooked Something');
 
         $em->flush();
 

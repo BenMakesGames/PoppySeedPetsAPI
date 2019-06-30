@@ -34,7 +34,7 @@ class ItemRepository extends ServiceEntityRepository
     /**
      * @return ItemQuantity[]
      */
-    public function getInventoryQuantities(User $user)
+    public function getInventoryQuantities(User $user, $indexBy = null)
     {
         $query = $this->getEntityManager()->createQueryBuilder()
             ->from(Inventory::class, 'inventory')
@@ -55,7 +55,10 @@ class ItemRepository extends ServiceEntityRepository
             $quantity->item = $result[0];
             $quantity->quantity = (int)$result['quantity'];
 
-            $quantities[] = $quantity;
+            if($indexBy)
+                $quantities[$result['item'][$indexBy]] = $quantities;
+            else
+                $quantities[] = $quantity;
         }
 
         return $quantities;

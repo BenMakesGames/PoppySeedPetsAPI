@@ -7,6 +7,9 @@ use App\Entity\Pet;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\UserStatsRepository;
+use App\Service\PetActivity\FishingService;
+use App\Service\PetActivity\GatheringService;
+use App\Service\PetActivity\HuntingService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetService

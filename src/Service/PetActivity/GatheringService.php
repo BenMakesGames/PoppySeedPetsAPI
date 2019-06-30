@@ -1,9 +1,12 @@
 <?php
-namespace App\Service;
+namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Model\PetChanges;
+use App\Service\InventoryService;
+use App\Service\PetService;
+use App\Service\ResponseService;
 
 class GatheringService
 {

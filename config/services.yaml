@@ -27,11 +27,14 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    App\Service\FishingService:
+    App\Service\PetActivity\FishingService:
         lazy: true
 
-    App\Service\GatheringService:
+    App\Service\PetActivity\GatheringService:
         lazy: true
 
-    App\Service\HuntingService:
+    App\Service\PetActivity\HuntingService:
+        lazy: true
+
+    App\Service\PetActivity\CraftingService:
         lazy: true

@@ -62,6 +62,11 @@ class PetSkills
     private $umbra = 0;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $crafts = 0;
+
+    /**
      * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="skills", cascade={"persist", "remove"})
      */
     private $pet;
@@ -75,7 +80,7 @@ class PetSkills
     {
         return
             $this->strength + $this->stamina + $this->dexterity + $this->intelligence + $this->perception +
-            $this->nature + $this->brawl + $this->umbra + $this->stealth
+            $this->nature + $this->brawl + $this->umbra + $this->stealth + $this->crafts
         ;
     }
 
@@ -201,6 +206,18 @@ class PetSkills
     public function setUmbra(int $umbra): self
     {
         $this->umbra = $umbra;
+
+        return $this;
+    }
+
+    public function getCrafts(): int
+    {
+        return $this->crafts;
+    }
+
+    public function setCrafts(int $crafts): self
+    {
+        $this->crafts = $crafts;
 
         return $this;
     }

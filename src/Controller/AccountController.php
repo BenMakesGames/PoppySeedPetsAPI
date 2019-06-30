@@ -197,7 +197,7 @@ class AccountController extends PsyPetsController
      */
     public function collectWeeklyBox(
         Request $request, EntityManagerInterface $em, ResponseService $responseService,
-        InventoryService $inventoryService
+        InventoryService $inventoryService, UserStatsRepository $userStatsRepository
     )
     {
         $user = $this->getUser();
@@ -223,6 +223,8 @@ class AccountController extends PsyPetsController
 
             for($i = 0; $i < 3; $i++)
                 $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Orange', 'Red', 'Blackberries', 'Blueberries']), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
+
+            $userStatsRepository->incrementStat($user, 'Cooked Something');
         }
         else if($type === 2)
         {
@@ -231,6 +233,8 @@ class AccountController extends PsyPetsController
 
             for($i = 0; $i < 2; $i++)
                 $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Corn Syrup', 'Aging Powder', 'Cocoa Beans', 'Baking Soda']), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
+
+            $userStatsRepository->incrementStat($user, 'Cooked Something');
         }
 
         $em->flush();

@@ -5,7 +5,6 @@ use App\Entity\Pet;
 use App\Enum\SerializationGroup;
 use App\Repository\InventoryRepository;
 use App\Repository\PetActivityLogRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\PetService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
