@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class ResponseService
@@ -19,19 +20,25 @@ class ResponseService
     private $em;
     private $serializer;
     private $security;
+    private $normalizer;
 
     public function __construct(
-        SerializerInterface $serializer, EntityManagerInterface $em, Security $security
+        SerializerInterface $serializer, NormalizerInterface $normalizer, EntityManagerInterface $em, Security $security
     )
     {
         $this->serializer = $serializer;
+        $this->normalizer = $normalizer;
         $this->em = $em;
         $this->security = $security;
     }
 
-    public function itemActionSuccess($markdown, $useActions = []): JsonResponse
+    public function itemActionSuccess($markdown, $data = []): JsonResponse
     {
-        return $this->success([ 'text' => $markdown, 'useActions' => $useActions ], []);
+        $data = array_merge($data, [
+            'text' => $markdown
+        ]);
+
+        return $this->success($data);
     }
 
     /**
@@ -46,19 +53,17 @@ class ResponseService
         ];
 
         if($data !== null)
-            $responseData['data'] = $data;
+            $responseData['data'] = $this->normalizer->normalize($data, null, [ 'groups' => $groups ]);
 
         if(count($this->activityLogs) > 0)
         {
-            $responseData['activity'] = $this->activityLogs;
-            $groups[] = SerializationGroup::PET_ACTIVITY_LOGS;
+            $responseData['activity'] = $this->normalizer->normalize($this->activityLogs, null, [ 'groups' => [ SerializationGroup::PET_ACTIVITY_LOGS ] ]);
         }
 
-        $this->injectUserData($responseData, $groups, $user);
+        $this->injectUserData($responseData, $user);
 
         $json = $this->serializer->serialize($responseData, 'json', [
             'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS,
-            'groups' => $groups,
         ]);
 
         return new JsonResponse($json, Response::HTTP_OK, [], true);
@@ -83,9 +88,8 @@ class ResponseService
         return new JsonResponse($json, $httpResponse, [], true);
     }
 
-    private function injectUserData(array &$responseData, array &$groups, ?User $user)
+    private function injectUserData(array &$responseData, ?User $user)
     {
-
         if(!$user)
         {
             $user = $this->security->getUser();
@@ -95,13 +99,7 @@ class ResponseService
         }
 
         if($user)
-        {
-            $responseData['user'] = $user;
-            $groups[] = SerializationGroup::MY_ACCOUNT;
-
-            if($user->hasRole('ROLE_ADMIN'))
-                $groups[] = SerializationGroup::ADMIN;
-        }
+            $responseData['user'] = $this->normalizer->normalize($user, null, [ 'groups' => [ SerializationGroup::MY_ACCOUNT ] ]);
     }
 
     public function createActivityLog(Pet $pet, string $entry, ?PetChangesSummary $changes = null): PetActivityLog

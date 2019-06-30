@@ -14,18 +14,19 @@ class Pet
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "publicProfile"})
+     * @Groups({"myPet", "publicProfile", "publicPetProfile"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="pets")
+     * @Groups({"publicPetProfile"})
      */
     private $owner;
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet", "publicProfile"})
+     * @Groups({"myPet", "publicProfile", "publicPetProfile"})
      */
     private $name;
 
