@@ -36,7 +36,7 @@ class Filterer
         $orderDir = strtolower($params->getAlpha('orderDir'));
         $filters = array_merge($this->defaultFilters, $params->get('filter', []));
 
-        if(array_key_exists($orderBy, $this->orderByMap))
+        if(!array_key_exists($orderBy, $this->orderByMap))
             $orderBy = array_key_first($this->orderByMap);
 
         if($orderDir !== 'asc' && $orderDir !== 'desc') $orderDir = $this->orderByMap[$orderBy][1];
