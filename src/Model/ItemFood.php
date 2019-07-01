@@ -1,12 +1,32 @@
 <?php
 namespace App\Model;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 class ItemFood
 {
-    /** @var int */ public $food = 0;
-    /** @var int */ public $love = 0;
-    /** @var int */ public $junk = 0;
-    /** @var int */ public $whack = 0;
+    /**
+     * @var int
+     * @Groups({"itemAdmin"})
+     */
+    public $food = 0;
+
+    /**
+     * @var int
+     * @Groups({"itemAdmin"})
+     */
+    public $love = 0;
+
+    /**
+     * @var int
+     * @Groups({"itemAdmin"})
+     */
+    public $junk = 0;
+
+    /**
+     * @var int
+     * @Groups({"itemAdmin"})
+     */
+    public $whack = 0;
 
     public function add(ItemFood $f): ItemFood
     {

@@ -78,7 +78,7 @@ class ResponseService
 
         $groups = [];
 
-        $this->injectUserData($responseData, $groups, $user);
+        $this->injectUserData($responseData, $user);
 
         $json = $this->serializer->serialize($responseData, 'json', [
             'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS,

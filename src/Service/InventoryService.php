@@ -118,8 +118,6 @@ class InventoryService
                     ->setOwner($owner)
                     ->setCreatedBy($creator)
                     ->setItem($itemQuantity->item)
-                    ->setColorA('ffffff')
-                    ->setColorB('ffffff')
                 ;
 
                 $this->em->persist($i);
@@ -149,8 +147,6 @@ class InventoryService
             ->setCreatedBy($pet->getOwner())
             ->setItem($item)
             ->addComment($comment)
-            ->setColorA($this->generateColorFromRange($item->getColorARange()))
-            ->setColorB($this->generateColorFromRange($item->getColorBRange()))
         ;
 
         $this->em->persist($i);
@@ -170,8 +166,6 @@ class InventoryService
             ->setCreatedBy($creator)
             ->setItem($item)
             ->addComment($comment)
-            ->setColorA($this->generateColorFromRange($item->getColorARange()))
-            ->setColorB($this->generateColorFromRange($item->getColorBRange()))
         ;
 
         $this->em->persist($i);
