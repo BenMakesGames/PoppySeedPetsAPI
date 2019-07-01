@@ -18,17 +18,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class ArticleController extends PsyPetsController
 {
     /**
-     * @Route("/{article}", methods={"GET"})
-     * @IsGranted("ROLE_ADMIN")
-     */
-    public function getArticle(Article $article, ResponseService $responseService, Request $request)
-    {
-        $this->adminIPsOnly($request);
-
-        return $responseService->success($article, [ SerializationGroup::ARTICLE_ADMIN ]);
-    }
-
-    /**
      * @Route("/latest", methods={"GET"})
      */
     public function getLatest(ResponseService $responseService, ArticleRepository $articleRepository)
@@ -37,6 +26,17 @@ class ArticleController extends PsyPetsController
             $articleRepository->findOneBy([], [ 'createdOn' => 'DESC' ]),
             [ SerializationGroup::ARTICLE ]
         );
+    }
+
+    /**
+     * @Route("/{article}", methods={"GET"}, requirements={"article"="\d+"})
+     * @IsGranted("ROLE_ADMIN")
+     */
+    public function getArticle(Article $article, ResponseService $responseService, Request $request)
+    {
+        $this->adminIPsOnly($request);
+
+        return $responseService->success($article, [ SerializationGroup::ARTICLE_ADMIN ]);
     }
 
     /**
