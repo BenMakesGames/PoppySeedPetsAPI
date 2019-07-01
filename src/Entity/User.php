@@ -187,6 +187,14 @@ class User implements UserInterface
     }
 
     /**
+     * @Groups({"myAccount"})
+     */
+    public function getIsAdmin(): bool
+    {
+        return $this->hasRole('ROLE_ADMIN');
+    }
+
+    /**
      * @see UserInterface
      */
     public function getPassword(): string
