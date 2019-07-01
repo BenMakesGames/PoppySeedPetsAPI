@@ -76,7 +76,7 @@ class Pet
      * @ORM\OneToOne(targetEntity="App\Entity\Inventory", cascade={"persist", "remove"})
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petPublicProfile"})
      */
-    private $hat;
+    private $tool;
 
     /**
      * @ORM\Column(type="boolean")
@@ -296,14 +296,14 @@ class Pet
         return $this;
     }
 
-    public function getHat(): ?Inventory
+    public function getTool(): ?Inventory
     {
-        return $this->hat;
+        return $this->tool;
     }
 
-    public function setHat(?Inventory $hat): self
+    public function setTool(?Inventory $tool): self
     {
-        $this->hat = $hat;
+        $this->tool = $tool;
 
         return $this;
     }

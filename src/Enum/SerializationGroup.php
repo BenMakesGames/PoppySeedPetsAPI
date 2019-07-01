@@ -17,4 +17,5 @@ final class SerializationGroup
     const PET_ENCYCLOPEDIA = 'petEncyclopedia';
     const USER_PUBLIC_PROFILE = 'userPublicProfile';
     const ARTICLE = 'article';
+    const ARTICLE_ADMIN = 'articleAdmin';
 }

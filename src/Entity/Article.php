@@ -14,18 +14,19 @@ class Article
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"articleAdmin"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"article"})
+     * @Groups({"article", "articleAdmin"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"article"})
+     * @Groups({"article", "articleAdmin"})
      */
     private $body;
 
@@ -41,6 +42,11 @@ class Article
      * @Groups({"article"})
      */
     private $author;
+
+    public function __construct()
+    {
+        $this->createdOn = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -74,13 +80,6 @@ class Article
     public function getCreatedOn(): ?\DateTimeImmutable
     {
         return $this->createdOn;
-    }
-
-    public function setCreatedOn(\DateTimeImmutable $createdOn): self
-    {
-        $this->createdOn = $createdOn;
-
-        return $this;
     }
 
     public function getAuthor(): ?User
