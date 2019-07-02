@@ -25,7 +25,7 @@ class HuntingService
     {
         $maxSkill = 10 + $pet->getSkills()->getStrength() + $pet->getSkills()->getBrawl() - $pet->getWhack() - $pet->getJunk();
 
-        if($maxSkill > 10) $maxSkill = 10;
+        if($maxSkill > 12) $maxSkill = 12;
 
         $roll = \mt_rand(1, $maxSkill);
 
@@ -52,9 +52,10 @@ class HuntingService
             case 10:
                 $activityLog = $this->huntedOnionBoy($pet);
                 break;
-            /*case 11:
-                $this->huntedWindUpGator($pet);
-                break;*/
+            case 11:
+            case 12:
+                $activityLog = $this->huntedThievingMagpie($pet);
+                break;
         }
 
         if($activityLog)
@@ -66,6 +67,7 @@ class HuntingService
         $skill = 10 + $pet->getSkills()->getDexterity() + $pet->getSkills()->getBrawl();
 
         $pet->increaseFood(-1);
+        $pet->spendTime(mt_rand(30, 60));
 
         if(\mt_rand(1, $skill) >= 6)
         {
@@ -87,6 +89,7 @@ class HuntingService
         $skill = 10 + $pet->getSkills()->getStrength() + $pet->getSkills()->getBrawl();
 
         $pet->increaseFood(-1);
+        $pet->spendTime(mt_rand(45, 60));
 
         if(\mt_rand(1, $skill) >= 6)
         {
@@ -124,6 +127,8 @@ class HuntingService
 
         $pet->increaseFood(-1);
 
+        $pet->spendTime(mt_rand(45, 60));
+
         if(\mt_rand(1, $skill) >= 6)
         {
             $this->petService->gainExp($pet, 1, [ 'strength', 'brawl' ]);
@@ -153,6 +158,8 @@ class HuntingService
     {
         $skill = 10 + $pet->getSkills()->getStamina();
 
+        $pet->spendTime(mt_rand(30, 60));
+
         if(\mt_rand(1, $skill) >= 7)
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' powered through it.');
@@ -164,6 +171,51 @@ class HuntingService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' encountered an Onion Boy. The fumes were overwhelming, and ' . $pet->getName() . ' fled.');
             $this->petService->gainExp($pet, 1, [ 'stamina' ]);
             $pet->increaseSafety(-2);
+        }
+
+        return $activityLog;
+    }
+
+    private function huntedThievingMagpie(Pet $pet): PetActivityLog
+    {
+        $intSkill = 10 + $pet->getSkills()->getIntelligence();
+        $dexSkill = 10 + $pet->getSkills()->getDexterity() + $pet->getSkills()->getBrawl();
+
+        $pet->spendTime(mt_rand(45, 60));
+
+        if(\mt_rand(1, $intSkill) <= 2 && $pet->getOwner()->getMoneys() >= 2)
+        {
+            $moneysLost = \mt_rand(1, 2);
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'brawl' ]);
+            $pet->getOwner()->increaseMoneys(-$moneysLost);
+            $pet->increaseEsteem(-2);
+            $pet->increaseSafety(-2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was outsmarted by a Thieving Magpie, and lost ' . $moneysLost . ' ' . ($moneysLost === 1 ? 'money' : 'moneys') . '.');
+        }
+        else if(\mt_rand(1, $dexSkill) >= 9)
+        {
+            $this->petService->gainExp($pet, 2, [ 'intelligence', 'dexterity', 'brawl' ]);
+            $pet->increaseEsteem(2);
+            $pet->increaseSafety(2);
+
+            if(mt_rand(1, 4) === 1)
+            {
+                $moneys = \mt_rand(2, 5);
+                $pet->getOwner()->increaseMoneys($moneys);
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' pounced on a Thieving Magpie, and liberated its ' . $moneys . ' moneys.');
+            }
+            else
+            {
+                $item = [ 'Egg', 'String', 'Rice', 'Plastic' ][mt_rand(0, 3)];
+                $this->inventoryService->petCollectsItem($item, $pet, 'Liberated from a Thieving Magpie.');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' pounced on a Thieving Magpie, and liberated ' . ($item === 'Egg' ? 'an' : 'some') . ' ' . $item . '.');
+            }
+        }
+        else
+        {
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'brawl' ]);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to take down a Thieving Magpie, but it got away.');
+            $pet->increaseSafety(-1);
         }
 
         return $activityLog;
