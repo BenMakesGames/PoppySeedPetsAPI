@@ -56,7 +56,10 @@ class ItemRepository extends ServiceEntityRepository
             $quantity->quantity = (int)$result['quantity'];
 
             if($indexBy)
-                $quantities[$result['item'][$indexBy]] = $quantities;
+            {
+                $getter = 'get' . $indexBy;
+                $quantities[$quantity->item->$getter()] = $quantity;
+            }
             else
                 $quantities[] = $quantity;
         }

@@ -27,6 +27,7 @@ class GatheringService
         $maxSkill = 10 + $pet->getSkills()->getPerception() + $pet->getSkills()->getNature() - $pet->getWhack() - $pet->getJunk();
 
         if($maxSkill > 12) $maxSkill = 12;
+        else if($maxSkill < 1) $maxSkill = 1;
 
         $roll = \mt_rand(1, $maxSkill);
 

@@ -26,7 +26,8 @@ class FishingService
     {
         $maxSkill = 5 + $pet->getSkills()->getDexterity() + $pet->getSkills()->getNature() - $pet->getWhack();
 
-        if($maxSkill > 9) $maxSkill = 9;
+        if($maxSkill > 10) $maxSkill = 10;
+        else if($maxSkill < 1) $maxSkill = 1;
 
         $roll = \mt_rand(1, $maxSkill);
 
@@ -36,28 +37,37 @@ class FishingService
         switch($roll)
         {
             case 1:
+                $activityLog = $this->failedToFish($pet);
+                break;
             case 2:
             case 3:
+            case 4:
                 $activityLog = $this->fishedSmallLake($pet);
                 break;
-            case 4:
             case 5:
+            case 6:
                 $activityLog = $this->fishedUnderBridge($pet);
                 break;
-            case 6:
+            case 7:
                 $activityLog = $this->fishedRoadsideCreek($pet);
                 break;
-            case 7:
             case 8:
+            case 9:
                 $activityLog = $this->fishedWaterfallBasin($pet);
                 break;
-            case 9:
+            case 10:
                 $activityLog = $this->fishedPlazaFountain($pet);
                 break;
         }
 
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));
+    }
+
+    private function failedToFish(Pet $pet): PetActivityLog
+    {
+        $pet->spendTime(mt_rand(30, 60));
+        return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to fish, but couldn\'t find a quiet place to do so.');
     }
 
     private function nothingBiting(Pet $pet, int $percentChance, string $atLocationName): ?PetActivityLog

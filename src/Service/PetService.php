@@ -7,6 +7,7 @@ use App\Entity\Pet;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\UserStatsRepository;
+use App\Service\PetActivity\CraftingService;
 use App\Service\PetActivity\FishingService;
 use App\Service\PetActivity\GatheringService;
 use App\Service\PetActivity\HuntingService;
@@ -20,12 +21,13 @@ class PetService
     private $fishingService;
     private $huntingService;
     private $gatheringService;
+    private $craftingService;
     private $userStatsRepository;
 
     public function __construct(
         EntityManagerInterface $em, RandomService $randomService, ResponseService $responseService,
         FishingService $fishingService, HuntingService $huntingService, GatheringService $gatheringService,
-        UserStatsRepository $userStatsRepository
+        CraftingService $craftingService, UserStatsRepository $userStatsRepository
     )
     {
         $this->em = $em;
@@ -34,6 +36,7 @@ class PetService
         $this->fishingService = $fishingService;
         $this->huntingService = $huntingService;
         $this->gatheringService = $gatheringService;
+        $this->craftingService = $craftingService;
         $this->userStatsRepository = $userStatsRepository;
     }
 
@@ -283,6 +286,7 @@ class PetService
             'fish' => $this->generateFishingDesire($pet),
             'hunt' => $this->generateMonsterHuntingDesire($pet),
             'gather' => $this->generateGatheringDesire($pet),
+            'craft' => $this->generateCraftingDesire($pet),
         ];
 
         $desire = $this->pickDesire($petDesires);
@@ -292,6 +296,7 @@ class PetService
             case 'fish': $this->fishingService->adventure($pet); break;
             case 'hunt': $this->huntingService->adventure($pet); break;
             case 'gather': $this->gatheringService->adventure($pet); break;
+            case 'craft': $this->craftingService->adventure($pet); break;
             default: $this->doNothing($pet); break;
         }
     }
@@ -338,16 +343,16 @@ class PetService
         return round($desire * (1 + \mt_rand(-10, 10) / 100));
     }
 
-    public function generateGatheringDesire(Pet $pet): int
+    public function generateCraftingDesire(Pet $pet): int
     {
-        $desire = $pet->getSkills()->getPerception() + $pet->getSkills()->getNature() + \mt_rand(1, 4);
+        $desire = $pet->getSkills()->getIntelligence() + $pet->getSkills()->getCrafts() + \mt_rand(1, 4);
 
         return round($desire * (1 + \mt_rand(-10, 10) / 100));
     }
 
-    public function generateGhostHuntingDesire(Pet $pet): int
+    public function generateGatheringDesire(Pet $pet): int
     {
-        $desire = $pet->getSkills()->getPerception() + $pet->getSkills()->getUmbra() + \mt_rand(1, 4);
+        $desire = $pet->getSkills()->getPerception() + $pet->getSkills()->getNature() + \mt_rand(1, 4);
 
         return round($desire * (1 + \mt_rand(-10, 10) / 100));
     }

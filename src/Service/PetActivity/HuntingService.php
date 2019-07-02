@@ -26,6 +26,7 @@ class HuntingService
         $maxSkill = 10 + $pet->getSkills()->getStrength() + $pet->getSkills()->getBrawl() - $pet->getWhack() - $pet->getJunk();
 
         if($maxSkill > 12) $maxSkill = 12;
+        else if($maxSkill < 1) $maxSkill = 1;
 
         $roll = \mt_rand(1, $maxSkill);
 
@@ -35,6 +36,8 @@ class HuntingService
         switch($roll)
         {
             case 1:
+                $activityLog = $this->failedToHunt($pet);
+                break;
             case 2:
             case 3:
             case 4:
@@ -60,6 +63,12 @@ class HuntingService
 
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));
+    }
+
+    private function failedToHunt(Pet $pet): PetActivityLog
+    {
+        $pet->spendTime(mt_rand(30, 60));
+        return $this->responseService->createActivityLog($pet, $pet->getName() . ' went out hunting, but couldn\'t find anything to hunt.');
     }
 
     private function huntedDustBunny(Pet $pet): PetActivityLog

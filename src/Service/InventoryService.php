@@ -173,6 +173,19 @@ class InventoryService
         return $i;
     }
 
+    public function loseItem($item, User $owner, int $quantity = 1): int
+    {
+        if(is_string($item)) $item = $this->itemRepository->findOneByName($item);
+
+        $statement = $this->em->getConnection()->prepare('DELETE FROM inventory WHERE owner_id=:user AND item_id=:item LIMIT ' . $quantity);
+        $statement->execute([
+            'user' => $owner->getId(),
+            'item' => $item->getId()
+        ]);
+
+        return $statement->rowCount();
+    }
+
     public function generateColorFromRange(string $range): string
     {
         $hsl = explode(',', $range);
