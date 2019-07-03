@@ -253,7 +253,7 @@ class AccountController extends PsyPetsController
 
         $gotBox->setValue(true);
 
-        $inventoryService->receiveItem('4th of July Box', $user, $user, 'Received on 4th of July, ' . $now->format('Y'));
+        $inventoryService->receiveItem('4th of July Box', $user, $user, 'Received on the ' . $now->format('jS') . ' of July, ' . $now->format('Y'));
 
         $em->flush();
 
