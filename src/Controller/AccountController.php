@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Enum\SerializationGroup;
 use App\Functions\ArrayFunctions;
 use App\Repository\PetSpeciesRepository;
+use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\Filter\UserFilterService;
@@ -17,6 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -226,6 +228,36 @@ class AccountController extends PsyPetsController
         $em->flush();
 
         return $responseService->success($newInventory, SerializationGroup::MY_INVENTORY);
+    }
+
+    /**
+     * @Route("/collect4thOfJulyBox", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function collect4thOfJulyBox(
+        InventoryService $inventoryService, EntityManagerInterface $em, ResponseService $responseService,
+        UserQuestRepository $userQuestRepository
+    )
+    {
+        $now = new \DateTimeImmutable();
+
+        if($now->format('m') != 7 || $now->format('d') < 3 || $now->format('d') > 5)
+            throw new NotFoundHttpException();
+
+        $user = $this->getUser();
+
+        $gotBox = $userQuestRepository->findOrCreate($user, '4th of July, ' . $now->format('Y'), false);
+
+        if($gotBox->getValue())
+            throw new UnprocessableEntityHttpException('You already received the 4th of July Box this year.');
+
+        $gotBox->setValue(true);
+
+        $inventoryService->receiveItem('4th of July Box', $user, $user, 'Received on 4th of July, ' . $now->format('Y'));
+
+        $em->flush();
+
+        return $responseService->success();
     }
 
     /**

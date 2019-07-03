@@ -78,7 +78,7 @@ class InventoryController extends PsyPetsController
 
         $makes = $inventoryService->deserializeItemList($recipe->getMakes());
 
-        $newInventory = $inventoryService->giveInventory($makes, $user, $user);
+        $newInventory = $inventoryService->giveInventory($makes, $user, $user, $user->getName() . ' prepared this.');
 
         $userStatsRepository->incrementStat($user, 'Cooked Something');
 

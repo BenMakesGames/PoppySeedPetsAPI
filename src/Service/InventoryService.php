@@ -104,7 +104,7 @@ class InventoryService
      * @param ItemQuantity|ItemQuantity[] $quantities
      * @return Inventory[]
      */
-    public function giveInventory($quantities, User $owner, User $creator)
+    public function giveInventory($quantities, User $owner, User $creator, string $comment)
     {
         if(!is_array($quantities)) $quantities = [ $quantities ];
 
@@ -118,6 +118,7 @@ class InventoryService
                     ->setOwner($owner)
                     ->setCreatedBy($creator)
                     ->setItem($itemQuantity->item)
+                    ->addComment($comment)
                 ;
 
                 $this->em->persist($i);

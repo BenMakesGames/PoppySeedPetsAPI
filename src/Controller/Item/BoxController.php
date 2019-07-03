@@ -80,4 +80,40 @@ class BoxController extends PsyPetsItemController
 
         return $responseService->itemActionSuccess('Opening the box revealed ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
+
+    /**
+     * @Route("/july4/{inventory}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function open4thOfJulyBox(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/july4/#/open');
+
+        $comment = $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.';
+
+        $newInventory = [
+            $inventoryService->receiveItem('Hot Dog', $user, $user, $comment),
+            $inventoryService->receiveItem('Hot Dog', $user, $user, $comment),
+            $inventoryService->receiveItem('Sunscreen', $user, $user, $comment),
+            $inventoryService->receiveItem('Red Firework', $user, $user, $comment),
+            $inventoryService->receiveItem('White Firework', $user, $user, $comment),
+            $inventoryService->receiveItem('Blue Firework', $user, $user, $comment),
+        ];
+
+        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
+
+        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
+        sort($itemList);
+
+        $em->remove($inventory);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess('Opening the box revealed ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+    }
 }
