@@ -16,8 +16,13 @@ trait FilterService
         return $this->filterer->filter($parameters);
     }
 
-    public function addFilter(string $key, $value)
+    public function addDefaultFilter(string $key, $value)
     {
-        $this->filterer->addFilter($key, $value);
+        $this->filterer->addDefaultFilter($key, $value);
+    }
+
+    public function addRequiredFilter(string $key, $value)
+    {
+        $this->filterer->addRequiredFilter($key, $value);
     }
 }

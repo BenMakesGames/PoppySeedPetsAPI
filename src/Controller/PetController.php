@@ -52,7 +52,7 @@ class PetController extends PsyPetsController
         if($user->getId() !== $pet->getOwner()->getId())
             throw new AccessDeniedHttpException();
 
-        $petActivityLogsFilterService->addFilter('pet', $pet->getId());
+        $petActivityLogsFilterService->addDefaultFilter('pet', $pet->getId());
 
         return $responseService->success(
             $petActivityLogsFilterService->getResults($request->query),

@@ -14,6 +14,7 @@ class Filterer
     private $pageSize;
     private $entityAlias;
     private $defaultFilters = [];
+    private $requiredFilters = [];
 
     public function __construct(EntityRepository $repository, string $entityAlias, int $pageSize, array $orderByMap, array $filterCallbacks)
     {
@@ -24,9 +25,14 @@ class Filterer
         $this->entityAlias = $entityAlias;
     }
 
-    public function addFilter(string $key, $value)
+    public function addDefaultFilter(string $key, $value)
     {
         $this->defaultFilters[$key] = $value;
+    }
+
+    public function addRequiredFilter(string $key, $value)
+    {
+        $this->requiredFilters[$key] = $value;
     }
 
     public function filter(ParameterBag $params): FilterResults
@@ -34,7 +40,7 @@ class Filterer
         $page = $params->getInt('page', 0);
         $orderBy = strtolower($params->getAlnum('orderBy', 'name'));
         $orderDir = strtolower($params->getAlpha('orderDir'));
-        $filters = array_merge($this->defaultFilters, $params->get('filter', []));
+        $filters = array_merge($this->defaultFilters, $params->get('filter', []), $this->requiredFilters);
 
         if(!array_key_exists($orderBy, $this->orderByMap))
             $orderBy = array_key_first($this->orderByMap);
@@ -59,7 +65,7 @@ class Filterer
 
         if($page < 0)
             $page = 0;
-        else if($page >= $lastPage)
+        else if($lastPage > 0 && $page >= $lastPage)
             $page = $lastPage - 1;
 
         $paginator->getQuery()

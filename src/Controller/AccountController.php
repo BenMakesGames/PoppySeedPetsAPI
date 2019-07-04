@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\PetSkills;
 use App\Entity\User;
@@ -36,7 +37,7 @@ class AccountController extends PsyPetsController
     public function register(
         Request $request, EntityManagerInterface $em, ResponseService $responseService,
         SessionService $sessionService, UserRepository $userRepository, PetSpeciesRepository $petSpeciesRepository,
-        UserPasswordEncoderInterface $userPasswordEncoder, Security $security
+        UserPasswordEncoderInterface $userPasswordEncoder, InventoryService $inventoryService
     )
     {
         $petName = trim($request->request->get('petName'));
@@ -105,6 +106,8 @@ class AccountController extends PsyPetsController
         ;
 
         $em->persist($pet);
+
+        $inventoryService->receiveItem('Welcome Note', $user, null, 'This Welcome Note was waiting for ' . $user->getName() . ' in their house.');
 
         $em->flush();
 

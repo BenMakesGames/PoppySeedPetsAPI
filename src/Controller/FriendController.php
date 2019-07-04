@@ -73,7 +73,7 @@ class FriendController extends PsyPetsController
         $user = $this->getUser();
 
         $userFilterService->setUser($user);
-        $userFilterService->addFilter('friendedBy', $user->getId());
+        $userFilterService->addDefaultFilter('friendedBy', $user->getId());
 
         return $responseService->success(
             $userFilterService->getResults($request->query),

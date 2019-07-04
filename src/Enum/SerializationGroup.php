@@ -5,7 +5,6 @@ namespace App\Enum;
 final class SerializationGroup
 {
     const ITEM_ADMIN = 'itemAdmin';
-
     const MY_ACCOUNT = 'myAccount';
     const MY_PET = 'myPet';
     const MY_INVENTORY = 'myInventory';
@@ -18,4 +17,5 @@ final class SerializationGroup
     const USER_PUBLIC_PROFILE = 'userPublicProfile';
     const ARTICLE = 'article';
     const ARTICLE_ADMIN = 'articleAdmin';
+    const MUSEUM = 'museum';
 }
