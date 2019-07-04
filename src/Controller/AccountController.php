@@ -275,6 +275,48 @@ class AccountController extends PsyPetsController
     }
 
     /**
+     * @Route("/typeahead", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function typeaheadSearch(Request $request, ResponseService $responseService, UserRepository $userRepository)
+    {
+        $search = trim($request->query->get('search', ''));
+        $maxResults = 5;
+
+        if($search === '')
+            throw new UnprocessableEntityHttpException('search must contain at least one character.');
+
+        $users = $userRepository->createQueryBuilder('u')
+            ->andWhere('u.name LIKE :nameLike')
+            ->setParameter('nameLike', $search . '%')
+            ->setMaxResults($maxResults)
+            ->orderBy('u.name', 'ASC')
+            ->getQuery()
+            ->execute()
+        ;
+
+        if(count($users) < $maxResults)
+        {
+            $ids = array_map(function(User $u) { return $u->getId(); }, $users);
+
+            $users = array_merge($users, $userRepository->createQueryBuilder('u')
+                ->andWhere('u.name LIKE :nameLike')
+                ->andWhere('u.id NOT IN (:ids)')
+                ->setParameter('nameLike', '%' . $search . '%')
+                ->setParameter('ids', $ids)
+                ->setMaxResults($maxResults - count($users))
+                ->orderBy('u.name', 'ASC')
+                ->getQuery()
+                ->execute()
+            );
+        }
+
+        $suggestions = array_map(function(User $u) { return [ 'name' => $u->getName(), 'id' => $u->getId() ]; }, $users);
+
+        return $responseService->success($suggestions);
+    }
+
+    /**
      * @Route("/{user}", methods={"GET"}, requirements={"user"="\d+"})
      */
     public function getProfile(User $user, ResponseService $responseService)
