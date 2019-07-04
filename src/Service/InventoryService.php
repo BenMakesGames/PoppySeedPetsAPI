@@ -158,7 +158,7 @@ class InventoryService
     /**
      * @param Item|string $item
      */
-    public function receiveItem($item, User $owner, User $creator, string $comment): Inventory
+    public function receiveItem($item, User $owner, ?User $creator, string $comment): Inventory
     {
         if(is_string($item)) $item = $this->itemRepository->findOneByName($item);
 
