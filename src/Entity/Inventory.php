@@ -21,7 +21,7 @@ class Inventory
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Item")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet", "myInventory", "userPublicProfile"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile"})
      */
     private $item;
 
@@ -54,6 +54,12 @@ class Inventory
      * @Groups({"myInventory"})
      */
     private $createdBy;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="tool")
+     * @Groups({"myInventory"})
+     */
+    private $pet;
 
     public function __construct()
     {
@@ -134,6 +140,24 @@ class Inventory
     public function setCreatedBy(?User $createdBy): self
     {
         $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    public function getPet(): ?Pet
+    {
+        return $this->pet;
+    }
+
+    public function setPet(?Pet $pet): self
+    {
+        $this->pet = $pet;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newTool = $pet === null ? null : $this;
+        if ($newTool !== $pet->getTool()) {
+            $pet->setTool($newTool);
+        }
 
         return $this;
     }

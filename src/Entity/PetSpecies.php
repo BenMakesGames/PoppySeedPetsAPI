@@ -35,6 +35,24 @@ class PetSpecies
      */
     private $description;
 
+    /**
+     * @ORM\Column(type="float")
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
+     */
+    private $handX;
+
+    /**
+     * @ORM\Column(type="float")
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
+     */
+    private $handY;
+
+    /**
+     * @ORM\Column(type="float")
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
+     */
+    private $handAngle;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -72,6 +90,42 @@ class PetSpecies
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getHandX(): ?float
+    {
+        return $this->handX;
+    }
+
+    public function setHandX(float $handX): self
+    {
+        $this->handX = $handX;
+
+        return $this;
+    }
+
+    public function getHandY(): ?float
+    {
+        return $this->handY;
+    }
+
+    public function setHandY(float $handY): self
+    {
+        $this->handY = $handY;
+
+        return $this;
+    }
+
+    public function getHandAngle(): ?float
+    {
+        return $this->handAngle;
+    }
+
+    public function setHandAngle(float $handAngle): self
+    {
+        $this->handAngle = $handAngle;
 
         return $this;
     }

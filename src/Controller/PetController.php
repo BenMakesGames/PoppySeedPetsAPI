@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Enum\SerializationGroup;
 use App\Repository\InventoryRepository;
@@ -11,6 +12,7 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -37,6 +39,56 @@ class PetController extends PsyPetsController
     )
     {
         return $responseService->success($pet, SerializationGroup::PET_PUBLIC_PROFILE);
+    }
+
+    /**
+     * @Route("/{pet}/equip/{inventory}", methods={"POST"}, requirements={"pet"="\d+", "inventory"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function equipPet(
+        Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        if($inventory->getOwner()->getId() !== $user->getId())
+            throw new NotFoundHttpException();
+
+        if($pet->getOwner()->getId() !== $user->getId())
+            throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
+
+        if($inventory->getPet())
+        {
+            $em->persist($inventory->getPet());
+            $inventory->getPet()->setTool(null);
+        }
+
+        $inventory->setPet($pet);
+
+        $em->flush();
+
+        return $responseService->success();
+    }
+
+    /**
+     * @Route("/{pet}/unequip", methods={"POST"}, requirements={"pet"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function unequipPet(Pet $pet, ResponseService $responseService, EntityManagerInterface $em)
+    {
+        $user = $this->getUser();
+
+        if($pet->getOwner()->getId() !== $user->getId())
+            throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
+
+        if($pet->getTool())
+            throw new UnprocessableEntityHttpException($pet->getName() . ' is not currently equipped.');
+
+        $pet->setTool(null);
+
+        $em->flush();
+
+        return $responseService->success();
     }
 
     /**

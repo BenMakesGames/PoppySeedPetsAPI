@@ -21,7 +21,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=40, unique=true)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "itemEncyclopedia", "itemAdmin", "museum"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum"})
      */
     private $name;
 
@@ -39,7 +39,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "itemEncyclopedia", "itemAdmin", "museum"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum"})
      */
     private $image;
 
@@ -48,6 +48,12 @@ class Item
      * @Groups({"myInventory", "itemEncyclopedia", "itemAdmin"})
      */
     private $useActions = [];
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\ItemTool")
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
+     */
+    private $tool;
 
     /**
      * @Groups({"myInventory", "itemEncyclopedia"})
@@ -133,5 +139,17 @@ class Item
         }
 
         return false;
+    }
+
+    public function getTool(): ?ItemTool
+    {
+        return $this->tool;
+    }
+
+    public function setTool(?ItemTool $tool): self
+    {
+        $this->tool = $tool;
+
+        return $this;
     }
 }

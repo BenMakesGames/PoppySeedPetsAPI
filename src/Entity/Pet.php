@@ -14,7 +14,7 @@ class Pet
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory"})
      */
     private $id;
 
@@ -26,7 +26,7 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory"})
      */
     private $name;
 
@@ -73,12 +73,6 @@ class Pet
     private $colorB;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Inventory", cascade={"persist", "remove"})
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petPublicProfile"})
-     */
-    private $tool;
-
-    /**
      * @ORM\Column(type="boolean")
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
      */
@@ -122,6 +116,13 @@ class Pet
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
      */
     private $species;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Inventory", inversedBy="pet")
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
+     */
+    private $tool;
 
     public function __construct()
     {
@@ -292,18 +293,6 @@ class Pet
     public function setColorB(string $color): self
     {
         $this->colorB = $color;
-
-        return $this;
-    }
-
-    public function getTool(): ?Inventory
-    {
-        return $this->tool;
-    }
-
-    public function setTool(?Inventory $tool): self
-    {
-        $this->tool = $tool;
 
         return $this;
     }
@@ -499,6 +488,18 @@ class Pet
     public function setSpecies(?PetSpecies $species): self
     {
         $this->species = $species;
+
+        return $this;
+    }
+
+    public function getTool(): ?Inventory
+    {
+        return $this->tool;
+    }
+
+    public function setTool(?Inventory $tool): self
+    {
+        $this->tool = $tool;
 
         return $this;
     }
