@@ -36,7 +36,7 @@ class FilterResults
 
     /**
      * @var array[]
-     * @Groups({"admin"})
+     * @Groups({"queryAdmin"})
      */
     public $query;
 }

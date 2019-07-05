@@ -5,12 +5,14 @@ use App\Entity\Item;
 use App\Entity\MuseumItem;
 use App\Entity\User;
 use App\Enum\SerializationGroup;
+use App\Model\FilterResults;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MuseumItemRepository;
 use App\Service\Filter\MuseumFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -58,6 +60,53 @@ class MuseumController extends PsyPetsController
     }
 
     /**
+     * @Route("/donatable", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getDonatable(
+        ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository
+    )
+    {
+        $user = $this->getUser();
+
+        $qb = $inventoryRepository->createQueryBuilder('i')
+            ->andWhere('i.owner=:user')
+            ->leftJoin('i.item', 'item')
+            ->andWhere('item.id NOT IN (SELECT miitem.id FROM App\\Entity\\MuseumItem mi LEFT JOIN mi.item miitem WHERE mi.user=:user)')
+            ->setParameter('user', $user)
+            ->groupBy('item.id')
+            ->orderBy('item.name', 'ASC')
+        ;
+
+        $paginator = new Paginator($qb);
+
+        $resultCount = $paginator->count();
+        $lastPage = ceil($resultCount / 20);
+        $page = $request->query->getInt('page', 0);
+
+        if($page < 0)
+            $page = 0;
+        else if($lastPage > 0 && $page >= $lastPage)
+            $page = $lastPage - 1;
+
+        $paginator->getQuery()
+            ->setFirstResult($page * 20)
+            ->setMaxResults(20)
+        ;
+
+        $results = new FilterResults();
+
+        $results->page = $page;
+        $results->pageSize = 20;
+        $results->pageCount = $lastPage;
+        $results->resultCount = $resultCount;
+        $results->results = $paginator->getQuery()->execute();
+        $results->query = [ 'sql ' => $paginator->getQuery()->getSQL(), 'parameters' => $paginator->getQuery()->getParameters()->toArray() ];
+
+        return $responseService->success($results, [ SerializationGroup::FILTER_RESULTS, SerializationGroup::MY_INVENTORY ]);
+    }
+
+    /**
      * @Route("/donate", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -74,6 +123,9 @@ class MuseumController extends PsyPetsController
             throw new UnprocessableEntityHttpException('You may only donate up to 20 items at a time.');
 
         $inventory = $inventoryRepository->findBy([ 'id' => $inventoryIds ]);
+
+        if(count($inventory) === 0)
+            throw new UnprocessableEntityHttpException('No items were selected.');
 
         for($i = count($inventory) - 1; $i >= 0; $i--)
         {
@@ -94,6 +146,9 @@ class MuseumController extends PsyPetsController
                 continue;
             }
         }
+
+        if(count($inventory) === 0)
+            throw new UnprocessableEntityHttpException('Some of the selected items could not be donated? That\'s weird. Try reloading and trying again.');
 
         foreach($inventory as $i)
         {

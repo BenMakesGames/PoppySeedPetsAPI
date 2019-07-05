@@ -18,4 +18,5 @@ final class SerializationGroup
     const ARTICLE = 'article';
     const ARTICLE_ADMIN = 'articleAdmin';
     const MUSEUM = 'museum';
+    const QUERY_ADMIN = 'queryAdmin';
 }

@@ -45,7 +45,6 @@ class MuseumItem
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"museum"})
      */
     private $createdBy;

@@ -48,6 +48,9 @@ class ResponseService
     {
         if(!\is_array($groups)) $groups = [ $groups ];
 
+        if($user && $user->getIsAdmin())
+            $groups[] = SerializationGroup::QUERY_ADMIN;
+
         $responseData = [
             'success' => true,
         ];
