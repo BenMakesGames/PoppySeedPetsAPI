@@ -49,10 +49,10 @@ class PetService
 
         $divideBy = 1;
 
-        if($pet->getFood() + $pet->getWhack() - $pet->getJunk() <= 0) $divideBy++;
-        if($pet->getSafety() + $pet->getWhack() <= 0) $divideBy++;
-        if($pet->getLove() + $pet->getWhack() <= 0) $divideBy++;
-        if($pet->getEsteem() + $pet->getWhack() <= 0) $divideBy++;
+        if($pet->getFood() + $pet->getWhack() - $pet->getJunk() < 0) $divideBy++;
+        if($pet->getSafety() + $pet->getWhack() < 0) $divideBy++;
+        if($pet->getLove() + $pet->getWhack() < 0) $divideBy++;
+        if($pet->getEsteem() + $pet->getWhack() < 0) $divideBy++;
 
         $divideBy += $pet->getWhack() / $pet->getStomachSize();
 
