@@ -78,18 +78,18 @@ class PetService
             throw new \InvalidArgumentException($pet->getName() . ' is dead :|');
 
         if($pet->getLastInteracted() < $now->modify('-48 hours'))
-            $pet->setLastInteracted($now->modify('-24 hours'));
-        else if($pet->getLastInteracted() < $now->modify('-24 hours'))
-            $pet->setLastInteracted($now->modify('-15 minutes'));
-        else if($pet->getLastInteracted() < $now->modify('-15 minutes'))
+            $pet->setLastInteracted($now->modify('-20 hours'));
+        else if($pet->getLastInteracted() < $now->modify('-20 hours'))
+            $pet->setLastInteracted($now->modify('-4 hours'));
+        else if($pet->getLastInteracted() < $now->modify('-4 hours'))
             $pet->setLastInteracted($now);
         else
             throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
 
         $changes = new PetChanges($pet);
 
-        $pet->increaseSafety(1);
-        $pet->increaseLove(1);
+        $pet->increaseSafety(6);
+        $pet->increaseLove(6);
 
         $this->responseService->createActivityLog($pet, 'You pet ' . $pet->getName(). '.', $changes->compare($pet));
         $this->userStatsRepository->incrementStat($pet->getOwner(), 'Petted a Pet');
@@ -103,18 +103,18 @@ class PetService
             throw new \InvalidArgumentException($pet->getName() . ' is dead :|');
 
         if($pet->getLastInteracted() < $now->modify('-48 hours'))
-            $pet->setLastInteracted($now->modify('-24 hours'));
-        else if($pet->getLastInteracted() < $now->modify('-24 hours'))
-            $pet->setLastInteracted($now->modify('-15 minutes'));
-        else if($pet->getLastInteracted() < $now->modify('-15 minutes'))
+            $pet->setLastInteracted($now->modify('-20 hours'));
+        else if($pet->getLastInteracted() < $now->modify('-20 hours'))
+            $pet->setLastInteracted($now->modify('-4 hours'));
+        else if($pet->getLastInteracted() < $now->modify('-4 hours'))
             $pet->setLastInteracted($now);
         else
             throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
 
         $changes = new PetChanges($pet);
 
-        $pet->increaseLove(1);
-        $pet->increaseEsteem(1);
+        $pet->increaseLove(6);
+        $pet->increaseEsteem(6);
 
         $this->responseService->createActivityLog($pet, 'You praised ' . $pet->getName(). '.', $changes->compare($pet));
         $this->userStatsRepository->incrementStat($pet->getOwner(), 'Praised a Pet');
@@ -201,34 +201,38 @@ class PetService
         if($pet->getWhack() > 0)
             $pet->increaseWhack(-1);
 
-        if($pet->getSafety() > 0)
+        if($pet->getSafety() > 0 && mt_rand(1, 2) === 1)
             $pet->increaseSafety(-1);
         else if($pet->getSafety() < 0)
             $pet->increaseSafety(1);
 
-        if($pet->getLove() > 0)
+        if($pet->getLove() > 0 && mt_rand(1, 2) === 1)
             $pet->increaseLove(-1);
+        else if($pet->getLove() < 0 && mt_rand(1, 2) === 1)
+            $pet->increaseLove(1);
 
         if($pet->getEsteem() > 0)
             $pet->increaseEsteem(-1);
+        else if($pet->getEsteem() < 0 && mt_rand(1, 2) === 1)
+            $pet->increaseEsteem(1);
 
         if($pet->getWhack() > 0 || $pet->getJunk() > 0)
         {
             if($this->calculateAgeInDays($pet) > 365 * 2)
             {
-                // adult tolerance
+                // elderly tolerance
                 $junkDie = 8;
                 $whackDie = 12;
             }
             else if($this->calculateAgeInDays($pet) > 365)
             {
-                // young adult tolerance
+                // adult tolerance
                 $junkDie = 12;
                 $whackDie = 20;
             }
             else if($this->calculateAgeInDays($pet) > 365 / 2)
             {
-                // teen tolerance
+                // young adult tolerance
                 $junkDie = 20;
                 $whackDie = 10;
             }

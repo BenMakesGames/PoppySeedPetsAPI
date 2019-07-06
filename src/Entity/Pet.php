@@ -101,6 +101,7 @@ class Pet
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"myPet"})
      */
     private $lastInteracted;
 
@@ -388,9 +389,9 @@ class Pet
             return 'untouchable';
         else if($this->getSafety() >= 8)
             return 'safe';
-        else if($this->getSafety() >= -8)
+        else if($this->getSafety() >= 0)
             return '...';
-        else if($this->getSafety() >= -16)
+        else if($this->getSafety() >= -12)
             return 'on edge';
         else
             return 'terrified';
@@ -405,9 +406,9 @@ class Pet
             return 'very loved';
         else if($this->getLove() >= 8)
             return 'loved';
-        else if($this->getLove() >= -8)
+        else if($this->getLove() >= 0)
             return '...';
-        else if($this->getLove() >= -16)
+        else if($this->getLove() >= -12)
             return 'lonely';
         else
             return 'hated';
@@ -422,9 +423,9 @@ class Pet
             return 'amazing';
         else if($this->getEsteem() >= 8)
             return 'accomplished';
-        else if($this->getEsteem() >= -8)
+        else if($this->getEsteem() >= 0)
             return '...';
-        else if($this->getEsteem() >= -16)
+        else if($this->getEsteem() >= -12)
             return 'useless';
         else
             return 'depressed';
