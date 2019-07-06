@@ -5,9 +5,11 @@ use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\PetSkills;
 use App\Entity\User;
+use App\Entity\UserNotificationPreferences;
 use App\Enum\SerializationGroup;
 use App\Functions\ArrayFunctions;
 use App\Repository\PetSpeciesRepository;
+use App\Repository\UserNotificationPreferencesRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
@@ -109,6 +111,12 @@ class AccountController extends PsyPetsController
 
         $inventoryService->receiveItem('Welcome Note', $user, null, 'This Welcome Note was waiting for ' . $user->getName() . ' in their house.');
 
+        $preferences = (new UserNotificationPreferences())
+            ->setUser($user)
+        ;
+
+        $em->persist($preferences);
+
         $em->flush();
 
         return $responseService->success(null, [], $user);
@@ -151,6 +159,20 @@ class AccountController extends PsyPetsController
     public function getAccount(ResponseService $responseService)
     {
         return $responseService->success(null, [], $this->getUser());
+    }
+
+    /**
+     * @Route("/notificationPreferences", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getNotificationPreferences(
+        UserNotificationPreferencesRepository $notificationPreferencesRepository, ResponseService $responseService
+    )
+    {
+        return $responseService->success(
+            $notificationPreferencesRepository->findOneBy([ 'user' => $this->getUser() ]),
+            SerializationGroup::NOTIFICATION_PREFERENCES
+        );
     }
 
     /**

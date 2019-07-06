@@ -48,7 +48,7 @@ class ResponseService
     {
         if(!\is_array($groups)) $groups = [ $groups ];
 
-        if($user && $user->getIsAdmin())
+        if($this->security->getUser() && $this->security->getUser()->getIsAdmin())
             $groups[] = SerializationGroup::QUERY_ADMIN;
 
         $responseData = [

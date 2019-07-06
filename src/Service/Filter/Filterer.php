@@ -38,7 +38,7 @@ class Filterer
     public function filter(ParameterBag $params): FilterResults
     {
         $page = $params->getInt('page', 0);
-        $orderBy = strtolower($params->getAlnum('orderBy', 'name'));
+        $orderBy = strtolower($params->getAlnum('orderBy'));
         $orderDir = strtolower($params->getAlpha('orderDir'));
         $filters = array_merge($this->defaultFilters, $params->get('filter', []), $this->requiredFilters);
 
@@ -80,7 +80,11 @@ class Filterer
         $results->pageCount = $lastPage;
         $results->resultCount = $numResults;
         $results->results = $paginator->getQuery()->execute();
-        $results->query = [ 'sql ' => $paginator->getQuery()->getSQL(), 'parameters' => $paginator->getQuery()->getParameters()->toArray() ];
+
+        $results->query = [
+            'sql' => $paginator->getQuery()->getSQL(),
+            'parameters' => $paginator->getQuery()->getParameters()->toArray()
+        ];
 
         return $results;
     }

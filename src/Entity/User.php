@@ -126,6 +126,11 @@ class User implements UserInterface
      */
     private $defaultSessionLengthInHours = 72;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\UserNotificationPreferences", mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $userNotificationPreferences;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -443,6 +448,23 @@ class User implements UserInterface
     public function setDefaultSessionLengthInHours(int $defaultSessionLengthInHours): self
     {
         $this->defaultSessionLengthInHours = $defaultSessionLengthInHours;
+
+        return $this;
+    }
+
+    public function getUserNotificationPreferences(): ?UserNotificationPreferences
+    {
+        return $this->userNotificationPreferences;
+    }
+
+    public function setUserNotificationPreferences(UserNotificationPreferences $userNotificationPreferences): self
+    {
+        $this->userNotificationPreferences = $userNotificationPreferences;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $userNotificationPreferences->getUser()) {
+            $userNotificationPreferences->setUser($this);
+        }
 
         return $this;
     }

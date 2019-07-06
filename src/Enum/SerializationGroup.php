@@ -9,6 +9,7 @@ final class SerializationGroup
     const MY_PET = 'myPet';
     const MY_INVENTORY = 'myInventory';
     const MY_STATS = 'myStats';
+    const NOTIFICATION_PREFERENCES = 'notificationPreferences';
     const PET_ACTIVITY_LOGS = 'petActivityLogs';
     const PET_PUBLIC_PROFILE = 'petPublicProfile';
     const FILTER_RESULTS = 'filterResults';
