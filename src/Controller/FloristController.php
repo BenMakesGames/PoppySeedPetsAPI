@@ -73,6 +73,8 @@ class FloristController extends PsyPetsController
 
         $user->increaseMoneys(-10);
 
+        $userStatsRepository->incrementStat($user, 'Total Moneys Spent', 10);
+
         $inventoryService->receiveItem($flowerName, $recipient, $user, $user->getName() . ' bought this for you at The Florist\'s.');
 
         $stat = $userStatsRepository->incrementStat($user, 'Flowers Purchased');

@@ -4,6 +4,7 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Model\PetChanges;
+use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\PetService;
 use App\Service\ResponseService;
@@ -13,12 +14,17 @@ class HuntingService
     private $responseService;
     private $inventoryService;
     private $petService;
+    private $userStatsRepository;
 
-    public function __construct(ResponseService $responseService, InventoryService $inventoryService, PetService $petService)
+    public function __construct(
+        ResponseService $responseService, InventoryService $inventoryService, PetService $petService,
+        UserStatsRepository $userStatsRepository
+    )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petService = $petService;
+        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function adventure(Pet $pet)
@@ -197,6 +203,7 @@ class HuntingService
             $moneysLost = \mt_rand(1, 2);
             $this->petService->gainExp($pet, 1, [ 'intelligence', 'brawl' ]);
             $pet->getOwner()->increaseMoneys(-$moneysLost);
+            $this->userStatsRepository->incrementStat($pet->getOwner(), 'Moneys Stolen by Thieving Magpies', $moneysLost);
             $pet->increaseEsteem(-2);
             $pet->increaseSafety(-2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was outsmarted by a Thieving Magpie, and lost ' . $moneysLost . ' ' . ($moneysLost === 1 ? 'money' : 'moneys') . '.');

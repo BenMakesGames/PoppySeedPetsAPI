@@ -2,6 +2,7 @@
 namespace App\Controller;
 use App\Entity\Item;
 use App\Repository\ItemRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\BookStoreService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -48,7 +49,7 @@ class BookStoreController extends PsyPetsController
      */
     public function buyBook(
         Item $book, BookStoreService $bookStoreService, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService
+        ResponseService $responseService, UserStatsRepository $userStatsRepository
     )
     {
         $user = $this->getUser();
@@ -61,7 +62,9 @@ class BookStoreController extends PsyPetsController
         if($user->getMoneys() < $bookPrices[$book->getName()])
             throw new UnprocessableEntityHttpException('You don\'t have enough money to buy ' . $book->getName() . '.');
 
-        $user->increaseMoneys(-$bookPrices[$book->getName()]);
+        $cost = $bookPrices[$book->getName()];
+        $user->increaseMoneys(-$cost);
+        $userStatsRepository->incrementStat($user, 'Total Moneys Spent', $cost);
 
         $inventoryService->receiveItem($book, $user, null, $user->getName() . ' bought this from the Book Store.');
 
