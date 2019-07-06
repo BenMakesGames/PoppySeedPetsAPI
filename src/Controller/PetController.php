@@ -81,7 +81,7 @@ class PetController extends PsyPetsController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
 
-        if($pet->getTool())
+        if(!$pet->getTool())
             throw new UnprocessableEntityHttpException($pet->getName() . ' is not currently equipped.');
 
         $pet->setTool(null);
