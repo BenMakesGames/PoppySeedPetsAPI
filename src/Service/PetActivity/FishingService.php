@@ -26,7 +26,7 @@ class FishingService
     {
         $maxSkill = 5 + $pet->getSkills()->getDexterity() + $pet->getSkills()->getNature() - $pet->getWhack();
 
-        if($maxSkill > 10) $maxSkill = 10;
+        if($maxSkill > 11) $maxSkill = 11;
         else if($maxSkill < 1) $maxSkill = 1;
 
         $roll = \mt_rand(1, $maxSkill);
@@ -56,6 +56,7 @@ class FishingService
                 $activityLog = $this->fishedWaterfallBasin($pet);
                 break;
             case 10:
+            case 11:
                 $activityLog = $this->fishedPlazaFountain($pet);
                 break;
         }

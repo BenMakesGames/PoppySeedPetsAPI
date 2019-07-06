@@ -53,6 +53,15 @@ class CraftingService
                 $possibilities[] = 'createWoodenSword';
         }
 
+        if(array_key_exists('Iron Ore', $quantities) && $pet->getSafety() > 0)
+            $possibilities[] = 'createIronBar';
+
+        if(array_key_exists('Silver Ore', $quantities) && $pet->getSafety() > 0)
+            $possibilities[] = 'createSilverBar';
+
+        if(array_key_exists('Gold Ore', $quantities) && $pet->getSafety() > 0)
+            $possibilities[] = 'createGoldBar';
+
         if(count($possibilities) === 0)
         {
             $pet->spendTime(\mt_rand(30, 60));
@@ -240,6 +249,93 @@ class CraftingService
             $pet->spendTime(\mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts',  'brawl' ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Wooden Sword, but couldn\'t quite figure it out.');
+        }
+    }
+
+    private function createIronBar(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getStamina() + $pet->getSkills()->getCrafts());
+        if($roll <= 2)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->inventoryService->loseItem('Iron Ore', $pet->getOwner(), 1);
+            $pet->increaseEsteem(-1);
+            $pet->increaseSafety(-\mt_rand(2, 24));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to refine some Iron Ore, but got burned while trying! :(');
+        }
+        else if($roll >= 12)
+        {
+            $pet->spendTime(\mt_rand(60, 75));
+            $this->inventoryService->loseItem('Iron Ore', $pet->getOwner(), 1);
+            $this->inventoryService->petCollectsItem('Iron Bar', $pet, $pet->getName() . ' refined this from Iron Ore.');
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            $pet->increaseEsteem(1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' refined some Iron Ore into an Iron Bar.');
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(45, 75));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to refine Iron Ore into an Iron Bar, but couldn\'t figure it out.');
+        }
+    }
+
+    private function createSilverBar(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getStamina() + $pet->getSkills()->getCrafts());
+        if($roll <= 2)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->inventoryService->loseItem('Silver Ore', $pet->getOwner(), 1);
+            $pet->increaseEsteem(-1);
+            $pet->increaseSafety(-\mt_rand(2, 12));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to refine some Silver Ore, but got burned while trying! :(');
+        }
+        else if($roll >= 12)
+        {
+            $pet->spendTime(\mt_rand(60, 75));
+            $this->inventoryService->loseItem('Silver Ore', $pet->getOwner(), 1);
+            $this->inventoryService->petCollectsItem('Silver Bar', $pet, $pet->getName() . ' refined this from Silver Ore.');
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            $pet->increaseEsteem(1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' refined some Silver Ore into an Silver Bar.');
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(45, 75));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to refine Silver Ore into an Silver Bar, but couldn\'t figure it out.');
+        }
+    }
+
+    private function createGoldBar(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getStamina() + $pet->getSkills()->getCrafts());
+        if($roll <= 2)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->inventoryService->loseItem('Gold Ore', $pet->getOwner(), 1);
+            $pet->increaseEsteem(-1);
+            $pet->increaseSafety(-\mt_rand(2, 8));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to refine some Gold Ore, but got burned while trying! :(');
+        }
+        else if($roll >= 12)
+        {
+            $pet->spendTime(\mt_rand(60, 75));
+            $this->inventoryService->loseItem('Gold Ore', $pet->getOwner(), 1);
+            $this->inventoryService->petCollectsItem('Gold Bar', $pet, $pet->getName() . ' refined this from Gold Ore.');
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            $pet->increaseEsteem(1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' refined some Gold Ore into an Gold Bar.');
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(45, 75));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to refine Gold Ore into an Gold Bar, but couldn\'t figure it out.');
         }
     }
 }

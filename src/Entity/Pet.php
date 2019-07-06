@@ -420,9 +420,9 @@ class Pet
     {
         if($this->getEsteem() >= 16)
             return 'amazing';
-        else if($this->getLove() >= 8)
+        else if($this->getEsteem() >= 8)
             return 'accomplished';
-        else if($this->getLove() >= -8)
+        else if($this->getEsteem() >= -8)
             return '...';
         else if($this->getEsteem() >= -16)
             return 'useless';
