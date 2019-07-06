@@ -67,7 +67,7 @@ class PetController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success();
+        return $responseService->success($pet, SerializationGroup::MY_PET);
     }
 
     /**
@@ -88,7 +88,7 @@ class PetController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success();
+        return $responseService->success($pet, SerializationGroup::MY_PET);
     }
 
     /**
@@ -134,10 +134,7 @@ class PetController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success(
-            $pet,
-            SerializationGroup::MY_PET
-        );
+        return $responseService->success($pet, SerializationGroup::MY_PET);
     }
 
     /**
@@ -162,10 +159,7 @@ class PetController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success(
-            $pet,
-            SerializationGroup::MY_PET
-        );
+        return $responseService->success($pet, SerializationGroup::MY_PET);
     }
 
     /**

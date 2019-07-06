@@ -20,77 +20,93 @@ class ItemTool
     /**
      * @ORM\Column(type="integer")
      */
-    private $strength;
+    private $strength = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $dexterity;
+    private $dexterity = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $intelligence;
+    private $intelligence = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $perception;
+    private $perception = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $stealth;
+    private $stealth = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $stamina;
+    private $stamina = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $nature;
+    private $nature = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $brawl;
+    private $brawl = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $umbra;
+    private $umbra = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $crafts;
+    private $crafts = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $fishing = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $gathering = 0;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
      */
     private $gripX;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
      */
     private $gripY;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
      */
     private $gripAngle;
+
+    /**
+     * @ORM\Column(type="float")
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
+     */
+    private $gripScale;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getStrength(): ?int
+    public function getStrength(): int
     {
         return $this->strength;
     }
@@ -102,7 +118,7 @@ class ItemTool
         return $this;
     }
 
-    public function getDexterity(): ?int
+    public function getDexterity(): int
     {
         return $this->dexterity;
     }
@@ -114,7 +130,7 @@ class ItemTool
         return $this;
     }
 
-    public function getIntelligence(): ?int
+    public function getIntelligence(): int
     {
         return $this->intelligence;
     }
@@ -126,7 +142,7 @@ class ItemTool
         return $this;
     }
 
-    public function getPerception(): ?int
+    public function getPerception(): int
     {
         return $this->perception;
     }
@@ -138,7 +154,7 @@ class ItemTool
         return $this;
     }
 
-    public function getStealth(): ?int
+    public function getStealth(): int
     {
         return $this->stealth;
     }
@@ -150,7 +166,7 @@ class ItemTool
         return $this;
     }
 
-    public function getStamina(): ?int
+    public function getStamina(): int
     {
         return $this->stamina;
     }
@@ -162,7 +178,7 @@ class ItemTool
         return $this;
     }
 
-    public function getNature(): ?int
+    public function getNature(): int
     {
         return $this->nature;
     }
@@ -174,7 +190,7 @@ class ItemTool
         return $this;
     }
 
-    public function getBrawl(): ?int
+    public function getBrawl(): int
     {
         return $this->brawl;
     }
@@ -186,7 +202,7 @@ class ItemTool
         return $this;
     }
 
-    public function getUmbra(): ?int
+    public function getUmbra(): int
     {
         return $this->umbra;
     }
@@ -198,7 +214,7 @@ class ItemTool
         return $this;
     }
 
-    public function getCrafts(): ?int
+    public function getCrafts(): int
     {
         return $this->crafts;
     }
@@ -206,6 +222,30 @@ class ItemTool
     public function setCrafts(int $crafts): self
     {
         $this->crafts = $crafts;
+
+        return $this;
+    }
+
+    public function getFishing(): int
+    {
+        return $this->fishing;
+    }
+
+    public function setFishing(int $fishing): self
+    {
+        $this->fishing = $fishing;
+
+        return $this;
+    }
+
+    public function getGathering(): ?int
+    {
+        return $this->gathering;
+    }
+
+    public function setGathering(int $gathering): self
+    {
+        $this->gathering = $gathering;
 
         return $this;
     }
@@ -242,6 +282,18 @@ class ItemTool
     public function setGripAngle(int $gripAngle): self
     {
         $this->gripAngle = $gripAngle;
+
+        return $this;
+    }
+
+    public function getGripScale(): ?float
+    {
+        return $this->gripScale;
+    }
+
+    public function setGripScale(float $gripScale): self
+    {
+        $this->gripScale = $gripScale;
 
         return $this;
     }

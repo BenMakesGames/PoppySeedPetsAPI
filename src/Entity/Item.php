@@ -51,7 +51,7 @@ class Item
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\ItemTool")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
      */
     private $tool;
 
