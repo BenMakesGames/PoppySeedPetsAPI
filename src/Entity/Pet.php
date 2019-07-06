@@ -101,7 +101,6 @@ class Pet
 
     /**
      * @ORM\Column(type="datetime_immutable")
-     * @Groups({"myPet"})
      */
     private $lastInteracted;
 
@@ -204,8 +203,15 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        if($amount < 0 || ($this->getFood() + $this->getWhack() > 0))
-            $this->safety = max(-$this->getMaxSafety(), min($this->safety + $amount, $this->getMaxSafety()));
+        $divisor = 1;
+
+        if($this->getFood() + $this->getWhack() < 0) $divisor++;
+
+        $amount = floor($amount / $divisor);
+
+        if($amount === 0) return $this;
+
+        $this->safety = max(-$this->getMaxSafety(), min($this->safety + $amount, $this->getMaxSafety()));
 
         return $this;
     }
@@ -224,8 +230,16 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        if($amount < 0 || ($this->getFood() + $this->getWhack() > 0 && $this->getSafety() + $this->getWhack() > 0))
-            $this->love = max(-$this->getMaxLove(), min($this->love + $amount, $this->getMaxLove()));
+        $divisor = 1;
+
+        if($this->getFood() + $this->getWhack() < 0) $divisor++;
+        if($this->getSafety() + $this->getWhack() < 0) $divisor++;
+
+        $amount = floor($amount / $divisor);
+
+        if($amount === 0) return $this;
+
+        $this->love = max(-$this->getMaxLove(), min($this->love + $amount, $this->getMaxLove()));
 
         return $this;
     }
@@ -244,8 +258,17 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        if($amount < 0 || ($this->getFood() + $this->getWhack() > 0 && $this->getSafety() + $this->getWhack() > 0 && $this->getLove() + $this->getWhack() > 0))
-            $this->esteem = max(-$this->getMaxEsteem(), min($this->esteem + $amount, $this->getMaxEsteem()));
+        $divisor = 1;
+
+        if($this->getFood() + $this->getWhack() < 0) $divisor++;
+        if($this->getSafety() + $this->getWhack() < 0) $divisor++;
+        if($this->getLove() + $this->getWhack() < 0) $divisor++;
+
+        $amount = floor($amount / $divisor);
+
+        if($amount === 0) return $this;
+
+        $this->esteem = max(-$this->getMaxEsteem(), min($this->esteem + $amount, $this->getMaxEsteem()));
 
         return $this;
     }
