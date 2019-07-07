@@ -110,7 +110,7 @@ class PetShelterController extends PsyPetsController
         if(count($user->getPets()) >= $user->getMaxPets())
             $dialog = 'You already have the maximum allowed number of pets.';
         else
-            $dialog = 'Hello! Here to adopt a new friend?\n\nIf no one catches your eye today, come back tomorrow. We get newcomers every day!';
+            $dialog = "Hello! Here to adopt a new friend?\n\nIf no one catches your eye today, come back tomorrow. We get newcomers every day!";
 
         return $responseService->success([ 'dialog' => $dialog, 'pets' => $pets, 'costToAdopt' => $costToAdopt ], SerializationGroupEnum::PET_SHELTER_PET);
     }
