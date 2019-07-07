@@ -103,7 +103,7 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      * @Groups({"myAccount"})
      */
-    private $maxPets = 1;
+    private $maxPets = 2;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\UserFriend", mappedBy="user", orphanRemoval=true)
