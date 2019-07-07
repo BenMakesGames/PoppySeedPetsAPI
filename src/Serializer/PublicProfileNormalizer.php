@@ -2,7 +2,7 @@
 namespace App\Serializer;
 
 use App\Entity\User;
-use App\Enum\SerializationGroup;
+use App\Enum\SerializationGroupEnum;
 use App\Repository\UserFriendRepository;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -28,7 +28,7 @@ class PublicProfileNormalizer implements NormalizerInterface
     {
         $data = $this->normalizer->normalize($user, $format, $context);
 
-        if(in_array(SerializationGroup::USER_PUBLIC_PROFILE, $context['groups']))
+        if(in_array(SerializationGroupEnum::USER_PUBLIC_PROFILE, $context['groups']))
         {
             $friend = $this->userFriendRepository->findOneBy([
                 'user' => $this->security->getUser(),

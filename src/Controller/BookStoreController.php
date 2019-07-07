@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 use App\Entity\Item;
+use App\Enum\UserStatEnum;
 use App\Repository\ItemRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\BookStoreService;
@@ -64,7 +65,7 @@ class BookStoreController extends PsyPetsController
 
         $cost = $bookPrices[$book->getName()];
         $user->increaseMoneys(-$cost);
-        $userStatsRepository->incrementStat($user, 'Total Moneys Spent', $cost);
+        $userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, $cost);
 
         $inventoryService->receiveItem($book, $user, null, $user->getName() . ' bought this from the Book Store.');
 

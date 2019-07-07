@@ -260,10 +260,10 @@ class GatheringService
 
             if(\mt_rand(1, 20) + $pet->getSkills()->getStrength() + $pet->getSkills()->getBrawl() >= 15)
             {
-                $loot[] = $possibleLoot[array_rand($possibleLoot)];
+                $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
                 if(\mt_rand(1, 20 + $pet->getSkills()->getPerception() + $pet->getSkills()->getNature()) >= 25)
-                    $loot[] = $possibleLoot[array_rand($possibleLoot)];
+                    $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
                 if(\mt_rand(1, 20 + $pet->getSkills()->getPerception() + $pet->getSkills()->getNature()) >= 15)
                     $loot[] = 'Talon';
@@ -283,13 +283,13 @@ class GatheringService
         }
         else
         {
-            $loot[] = $possibleLoot[array_rand($possibleLoot)];
+            $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
             if(\mt_rand(1, 20 + $pet->getSkills()->getPerception() + $pet->getSkills()->getNature()) >= 15)
-                $loot[] = $possibleLoot[array_rand($possibleLoot)];
+                $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
             if(\mt_rand(1, 20 + $pet->getSkills()->getPerception() + $pet->getSkills()->getNature()) >= 25)
-                $loot[] = $possibleLoot[array_rand($possibleLoot)];
+                $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found an Overgrown Garden, and harvested ' . ArrayFunctions::list_nice($loot) . '.');
             $pet->spendTime(\mt_rand(45, 60));

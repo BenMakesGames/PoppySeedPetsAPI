@@ -6,7 +6,7 @@ use App\Entity\Pet;
 use App\Entity\PetSkills;
 use App\Entity\User;
 use App\Entity\UserNotificationPreferences;
-use App\Enum\SerializationGroup;
+use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserNotificationPreferencesRepository;
@@ -57,8 +57,8 @@ class AccountController extends PsyPetsController
         if(!\filter_var($email, FILTER_VALIDATE_EMAIL))
             throw new UnprocessableEntityHttpException('Email address is not valid.');
 
-        if(\strlen($petName) < 2 || \strlen($petName) > 30)
-            throw new UnprocessableEntityHttpException('Pet name must be between 2 and 30 characters long.');
+        if(\strlen($petName) < 1 || \strlen($petName) > 30)
+            throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
 
         $species = $petSpeciesRepository->findOneBy([ 'image' => $petImage ]);
 
@@ -171,7 +171,7 @@ class AccountController extends PsyPetsController
     {
         return $responseService->success(
             $notificationPreferencesRepository->findOneBy([ 'user' => $this->getUser() ]),
-            SerializationGroup::NOTIFICATION_PREFERENCES
+            SerializationGroupEnum::NOTIFICATION_PREFERENCES
         );
     }
 
@@ -200,7 +200,7 @@ class AccountController extends PsyPetsController
     {
         return $responseService->success(
             $userFilterService->getResults($request->query),
-            [ SerializationGroup::FILTER_RESULTS, SerializationGroup::USER_PUBLIC_PROFILE ]
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::USER_PUBLIC_PROFILE ]
         );
     }
 
@@ -252,7 +252,7 @@ class AccountController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success($newInventory, SerializationGroup::MY_INVENTORY);
+        return $responseService->success($newInventory, SerializationGroupEnum::MY_INVENTORY);
     }
 
     /**
@@ -293,7 +293,7 @@ class AccountController extends PsyPetsController
     {
         $stats = $userStatsRepository->findBy([ 'user' => $this->getUser() ]);
 
-        return $responseService->success($stats, SerializationGroup::MY_STATS);
+        return $responseService->success($stats, SerializationGroupEnum::MY_STATS);
     }
 
     /**
@@ -343,6 +343,6 @@ class AccountController extends PsyPetsController
      */
     public function getProfile(User $user, ResponseService $responseService)
     {
-        return $responseService->success($user, SerializationGroup::USER_PUBLIC_PROFILE);
+        return $responseService->success($user, SerializationGroupEnum::USER_PUBLIC_PROFILE);
     }
 }

@@ -27,7 +27,7 @@ final class ArrayFunctions
 
     public static function pick_one(array $array)
     {
-        return $array[mt_rand(0, count($array) - 1)];
+        return $array[array_rand($array)];
     }
 
     /**

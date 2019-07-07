@@ -3,7 +3,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\UserFriend;
-use App\Enum\SerializationGroup;
+use App\Enum\SerializationGroupEnum;
 use App\Repository\UserFriendRepository;
 use App\Repository\UserRepository;
 use App\Service\Filter\UserFilterService;
@@ -77,7 +77,7 @@ class FriendController extends PsyPetsController
 
         return $responseService->success(
             $userFilterService->getResults($request->query),
-            [ SerializationGroup::FILTER_RESULTS, SerializationGroup::USER_PUBLIC_PROFILE ]
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::USER_PUBLIC_PROFILE ]
         );
     }
 

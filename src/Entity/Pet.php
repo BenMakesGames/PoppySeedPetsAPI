@@ -26,7 +26,7 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "petShelterPet"})
      */
     private $name;
 
@@ -62,13 +62,13 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet"})
      */
     private $colorA;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet"})
      */
     private $colorB;
 
@@ -113,7 +113,7 @@ class Pet
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\PetSpecies")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet"})
      */
     private $species;
 

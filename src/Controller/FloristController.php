@@ -4,7 +4,8 @@ namespace App\Controller;
 use App\Entity\Pet;
 use App\Entity\PetSkills;
 use App\Entity\User;
-use App\Enum\SerializationGroup;
+use App\Enum\SerializationGroupEnum;
+use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\PetSpeciesRepository;
@@ -73,11 +74,11 @@ class FloristController extends PsyPetsController
 
         $user->increaseMoneys(-10);
 
-        $userStatsRepository->incrementStat($user, 'Total Moneys Spent', 10);
+        $userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, 10);
 
         $inventoryService->receiveItem($flowerName, $recipient, $user, $user->getName() . ' bought this for you at The Florist\'s.');
 
-        $stat = $userStatsRepository->incrementStat($user, 'Flowers Purchased');
+        $stat = $userStatsRepository->incrementStat($user, UserStatEnum::FLOWERS_PURCHASED);
 
         if($stat->getValue() === 1)
             $inventoryService->receiveItem('Book of Flowers', $user, $user, 'This was delivered to you from The Florist\'s.');

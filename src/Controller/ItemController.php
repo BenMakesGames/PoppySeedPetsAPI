@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Item;
-use App\Enum\SerializationGroup;
+use App\Enum\SerializationGroupEnum;
 use App\Repository\ItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,6 +24,6 @@ class ItemController extends PsyPetsController
     {
         $this->adminIPsOnly($request);
 
-        return $responseService->success($item, [ SerializationGroup::ITEM_ADMIN ]);
+        return $responseService->success($item, [ SerializationGroupEnum::ITEM_ADMIN ]);
     }
 }

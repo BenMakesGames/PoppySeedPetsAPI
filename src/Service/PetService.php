@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Entity\Pet;
+use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
@@ -91,11 +92,11 @@ class PetService
 
         $changes = new PetChanges($pet);
 
-        $pet->increaseSafety(6);
-        $pet->increaseLove(6);
+        $pet->increaseSafety(7);
+        $pet->increaseLove(7);
 
         $this->responseService->createActivityLog($pet, 'You pet ' . $pet->getName(). '.', $changes->compare($pet));
-        $this->userStatsRepository->incrementStat($pet->getOwner(), 'Petted a Pet');
+        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PETTED_A_PET);
     }
 
     public function doPraise(Pet $pet)
@@ -116,11 +117,11 @@ class PetService
 
         $changes = new PetChanges($pet);
 
-        $pet->increaseLove(6);
-        $pet->increaseEsteem(6);
+        $pet->increaseLove(7);
+        $pet->increaseEsteem(7);
 
         $this->responseService->createActivityLog($pet, 'You praised ' . $pet->getName(). '.', $changes->compare($pet));
-        $this->userStatsRepository->incrementStat($pet->getOwner(), 'Praised a Pet');
+        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PRAISED_A_PET);
     }
 
     /**
@@ -173,7 +174,7 @@ class PetService
 
 
         $this->responseService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.', $petChanges->compare($pet));
-        $this->userStatsRepository->incrementStat($pet->getOwner(), 'Food Hours Fed to Pets', $foodGained);
+        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
     }
 
     public function doEat(Pet $pet, Item $item)

@@ -1,7 +1,8 @@
 <?php
 namespace App\Controller;
 
-use App\Enum\SerializationGroup;
+use App\Enum\SerializationGroupEnum;
+use App\Enum\UserStatEnum;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\RecipeRepository;
@@ -26,7 +27,7 @@ class InventoryController extends PsyPetsController
     public function getMyInventory(ResponseService $responseService, InventoryRepository $inventoryRepository)
     {
         $inventory = $inventoryRepository->findBy([ 'owner' => $this->getUser() ], [ 'modifiedOn' => 'DESC' ]);
-        return $responseService->success($inventory, SerializationGroup::MY_INVENTORY);
+        return $responseService->success($inventory, SerializationGroupEnum::MY_INVENTORY);
     }
 
     /**
@@ -41,7 +42,7 @@ class InventoryController extends PsyPetsController
 
         $inventory = $itemRepository->getInventoryQuantities($user);
 
-        return $responseService->success($inventory, SerializationGroup::MY_INVENTORY);
+        return $responseService->success($inventory, SerializationGroupEnum::MY_INVENTORY);
     }
 
     /**
@@ -80,11 +81,11 @@ class InventoryController extends PsyPetsController
 
         $newInventory = $inventoryService->giveInventory($makes, $user, $user, $user->getName() . ' prepared this.');
 
-        $userStatsRepository->incrementStat($user, 'Cooked Something');
+        $userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING);
 
         $em->flush();
 
-        return $responseService->success($newInventory, SerializationGroup::MY_INVENTORY);
+        return $responseService->success($newInventory, SerializationGroupEnum::MY_INVENTORY);
     }
 
     /**
@@ -112,7 +113,7 @@ class InventoryController extends PsyPetsController
         foreach($inventory as $i)
             $em->remove($i);
 
-        $userStatsRepository->incrementStat($user, 'Items Thrown Away', count($inventory));
+        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_THROWN_AWAY, count($inventory));
 
         $em->flush();
 

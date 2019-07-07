@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Item;
-use App\Enum\SerializationGroup;
+use App\Enum\SerializationGroupEnum;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\PetSpeciesRepository;
@@ -30,7 +30,7 @@ class EncyclopediaController extends PsyPetsController
     {
         return $responseService->success(
             $itemFilterService->getResults($request->query),
-            [ SerializationGroup::FILTER_RESULTS, SerializationGroup::ITEM_ENCYCLOPEDIA ]
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::ITEM_ENCYCLOPEDIA ]
         );
     }
 
@@ -44,7 +44,7 @@ class EncyclopediaController extends PsyPetsController
         if(!$item)
             throw new NotFoundHttpException();
 
-        return $responseService->success($item, SerializationGroup::ITEM_ENCYCLOPEDIA);
+        return $responseService->success($item, SerializationGroupEnum::ITEM_ENCYCLOPEDIA);
     }
 
     /**
@@ -54,7 +54,7 @@ class EncyclopediaController extends PsyPetsController
     {
         return $responseService->success(
             $petSpeciesFilterService->getResults($request->query),
-            [ SerializationGroup::FILTER_RESULTS, SerializationGroup::PET_ENCYCLOPEDIA ]
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::PET_ENCYCLOPEDIA ]
         );
     }
 
@@ -68,7 +68,7 @@ class EncyclopediaController extends PsyPetsController
         if(!$species)
             throw new NotFoundHttpException();
 
-        return $responseService->success($species, SerializationGroup::PET_ENCYCLOPEDIA);
+        return $responseService->success($species, SerializationGroupEnum::PET_ENCYCLOPEDIA);
     }
 
 }

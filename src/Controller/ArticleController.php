@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Article;
-use App\Enum\SerializationGroup;
+use App\Enum\SerializationGroupEnum;
 use App\Repository\ArticleRepository;
 use App\Service\Filter\ArticleFilterService;
 use App\Service\ResponseService;
@@ -24,7 +24,7 @@ class ArticleController extends PsyPetsController
     {
         return $responseService->success(
             $articleRepository->findOneBy([], [ 'createdOn' => 'DESC' ]),
-            [ SerializationGroup::ARTICLE ]
+            [ SerializationGroupEnum::ARTICLE ]
         );
     }
 
@@ -36,7 +36,7 @@ class ArticleController extends PsyPetsController
     {
         $this->adminIPsOnly($request);
 
-        return $responseService->success($article, [ SerializationGroup::ARTICLE_ADMIN ]);
+        return $responseService->success($article, [ SerializationGroupEnum::ARTICLE_ADMIN ]);
     }
 
     /**
@@ -46,7 +46,7 @@ class ArticleController extends PsyPetsController
     {
         return $responseService->success(
             $articleFilterService->getResults($request->query),
-            [ SerializationGroup::FILTER_RESULTS, SerializationGroup::ARTICLE ]
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::ARTICLE ]
         );
     }
 

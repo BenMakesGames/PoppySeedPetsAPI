@@ -3,7 +3,7 @@ namespace App\Controller;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Enum\SerializationGroup;
+use App\Enum\SerializationGroupEnum;
 use App\Repository\InventoryRepository;
 use App\Repository\PetActivityLogRepository;
 use App\Service\Filter\PetActivityLogsFilterService;
@@ -28,7 +28,7 @@ class PetController extends PsyPetsController
      */
     public function getMyPets(ResponseService $responseService)
     {
-        return $responseService->success($this->getUser()->getPets(), SerializationGroup::MY_PET);
+        return $responseService->success($this->getUser()->getPets(), SerializationGroupEnum::MY_PET);
     }
 
     /**
@@ -38,7 +38,7 @@ class PetController extends PsyPetsController
         Pet $pet, ResponseService $responseService
     )
     {
-        return $responseService->success($pet, SerializationGroup::PET_PUBLIC_PROFILE);
+        return $responseService->success($pet, SerializationGroupEnum::PET_PUBLIC_PROFILE);
     }
 
     /**
@@ -59,15 +59,14 @@ class PetController extends PsyPetsController
 
         if($inventory->getPet())
         {
-            $em->persist($inventory->getPet());
             $inventory->getPet()->setTool(null);
+            $em->flush();
         }
 
-        $inventory->setPet($pet);
-
+        $pet->setTool($inventory);
         $em->flush();
 
-        return $responseService->success($pet, SerializationGroup::MY_PET);
+        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
     }
 
     /**
@@ -88,7 +87,7 @@ class PetController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success($pet, SerializationGroup::MY_PET);
+        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
     }
 
     /**
@@ -108,7 +107,7 @@ class PetController extends PsyPetsController
 
         return $responseService->success(
             $petActivityLogsFilterService->getResults($request->query),
-            [ SerializationGroup::FILTER_RESULTS, SerializationGroup::PET_ACTIVITY_LOGS ]
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::PET_ACTIVITY_LOGS ]
         );
     }
 
@@ -134,7 +133,7 @@ class PetController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success($pet, SerializationGroup::MY_PET);
+        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
     }
 
     /**
@@ -159,7 +158,7 @@ class PetController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success($pet, SerializationGroup::MY_PET);
+        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
     }
 
     /**
@@ -198,7 +197,7 @@ class PetController extends PsyPetsController
 
         return $responseService->success(
             $pet,
-            SerializationGroup::MY_PET
+            SerializationGroupEnum::MY_PET
         );
     }
 }

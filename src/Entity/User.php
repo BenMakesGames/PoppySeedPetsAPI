@@ -145,6 +145,11 @@ class User implements UserInterface
         return $this->id;
     }
 
+    public function getDailySeed(): int
+    {
+        return (($this->id * date('N')) % (date('nd') * 53)) + date('Yj');
+    }
+
     public function getEmail(): ?string
     {
         return $this->email;

@@ -4,7 +4,7 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
-use App\Enum\SerializationGroup;
+use App\Enum\SerializationGroupEnum;
 use App\Model\PetChangesSummary;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -49,7 +49,7 @@ class ResponseService
         if(!\is_array($groups)) $groups = [ $groups ];
 
         if($this->security->getUser() && $this->security->getUser()->getIsAdmin())
-            $groups[] = SerializationGroup::QUERY_ADMIN;
+            $groups[] = SerializationGroupEnum::QUERY_ADMIN;
 
         $responseData = [
             'success' => true,
@@ -60,7 +60,7 @@ class ResponseService
 
         if(count($this->activityLogs) > 0)
         {
-            $responseData['activity'] = $this->normalizer->normalize($this->activityLogs, null, [ 'groups' => [ SerializationGroup::PET_ACTIVITY_LOGS ] ]);
+            $responseData['activity'] = $this->normalizer->normalize($this->activityLogs, null, [ 'groups' => [ SerializationGroupEnum::PET_ACTIVITY_LOGS ] ]);
         }
 
         $this->injectUserData($responseData, $user);
@@ -102,7 +102,7 @@ class ResponseService
         }
 
         if($user)
-            $responseData['user'] = $this->normalizer->normalize($user, null, [ 'groups' => [ SerializationGroup::MY_ACCOUNT ] ]);
+            $responseData['user'] = $this->normalizer->normalize($user, null, [ 'groups' => [ SerializationGroupEnum::MY_ACCOUNT ] ]);
     }
 
     public function createActivityLog(Pet $pet, string $entry, ?PetChangesSummary $changes = null): PetActivityLog

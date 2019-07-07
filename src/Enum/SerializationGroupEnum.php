@@ -2,7 +2,7 @@
 namespace App\Enum;
 
 // each SerializationGroup has a corresponding model class in the front-end
-final class SerializationGroup
+final class SerializationGroupEnum
 {
     const ITEM_ADMIN = 'itemAdmin';
     const MY_ACCOUNT = 'myAccount';
@@ -20,4 +20,5 @@ final class SerializationGroup
     const ARTICLE_ADMIN = 'articleAdmin';
     const MUSEUM = 'museum';
     const QUERY_ADMIN = 'queryAdmin';
+    const PET_SHELTER_PET = 'petShelterPet';
 }

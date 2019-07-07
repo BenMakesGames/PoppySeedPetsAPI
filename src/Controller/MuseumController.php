@@ -5,7 +5,8 @@ use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Entity\MuseumItem;
 use App\Entity\User;
-use App\Enum\SerializationGroup;
+use App\Enum\SerializationGroupEnum;
+use App\Enum\UserStatEnum;
 use App\Model\FilterResults;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
@@ -43,7 +44,7 @@ class MuseumController extends PsyPetsController
 
         return $responseService->success(
             $museumFilterService->getResults($request->query),
-            [ SerializationGroup::FILTER_RESULTS, SerializationGroup::MUSEUM ]
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MUSEUM ]
         );
     }
 
@@ -60,7 +61,7 @@ class MuseumController extends PsyPetsController
 
         return $responseService->success(
             $museumFilterService->getResults($request->query),
-            [ SerializationGroup::FILTER_RESULTS, SerializationGroup::MUSEUM ]
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MUSEUM ]
         );
     }
 
@@ -108,7 +109,7 @@ class MuseumController extends PsyPetsController
         $results->results = $paginator->getQuery()->execute();
         $results->query = [ 'sql ' => $paginator->getQuery()->getSQL(), 'parameters' => $paginator->getQuery()->getParameters()->toArray() ];
 
-        return $responseService->success($results, [ SerializationGroup::FILTER_RESULTS, SerializationGroup::MY_INVENTORY ]);
+        return $responseService->success($results, [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MY_INVENTORY ]);
     }
 
     /**
@@ -151,7 +152,7 @@ class MuseumController extends PsyPetsController
         $results->results = $paginator->getQuery()->execute();
         $results->query = [ 'sql ' => $paginator->getQuery()->getSQL(), 'parameters' => $paginator->getQuery()->getParameters()->toArray() ];
 
-        return $responseService->success($results, [ SerializationGroup::FILTER_RESULTS, SerializationGroup::USER_PUBLIC_PROFILE ]);
+        return $responseService->success($results, [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::USER_PUBLIC_PROFILE ]);
     }
 
     /**
@@ -212,7 +213,7 @@ class MuseumController extends PsyPetsController
             $em->remove($i);
         }
 
-        $userStatsRepository->incrementStat($user, 'Items Donated to Museum', count($inventory));
+        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, count($inventory));
 
         $em->flush();
 

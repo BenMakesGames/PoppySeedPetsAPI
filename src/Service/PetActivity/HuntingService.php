@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\UserStatEnum;
 use App\Model\PetChanges;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
@@ -203,7 +204,7 @@ class HuntingService
             $moneysLost = \mt_rand(1, 2);
             $this->petService->gainExp($pet, 1, [ 'intelligence', 'brawl' ]);
             $pet->getOwner()->increaseMoneys(-$moneysLost);
-            $this->userStatsRepository->incrementStat($pet->getOwner(), 'Moneys Stolen by Thieving Magpies', $moneysLost);
+            $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::MONEYS_STOLEN_BY_THIEVING_MAGPIES, $moneysLost);
             $pet->increaseEsteem(-2);
             $pet->increaseSafety(-2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was outsmarted by a Thieving Magpie, and lost ' . $moneysLost . ' ' . ($moneysLost === 1 ? 'money' : 'moneys') . '.');
