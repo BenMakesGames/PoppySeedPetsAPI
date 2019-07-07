@@ -86,4 +86,36 @@ class InventoryController extends PsyPetsController
 
         return $responseService->success($newInventory, SerializationGroup::MY_INVENTORY);
     }
+
+    /**
+     * @Route("/throwAway", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function throwAway(
+        Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+    )
+    {
+        $user = $this->getUser();
+
+        $inventoryIds = $request->request->get('inventory');
+        if(!\is_array($inventoryIds)) $inventoryIds = [ $inventoryIds ];
+
+        $inventory = $inventoryRepository->findBy([
+            'owner' => $user,
+            'id' => $inventoryIds
+        ]);
+
+        if(\count($inventory) !== \count($inventoryIds))
+            throw new UnprocessableEntityHttpException('Some of the items could not be found??');
+
+        foreach($inventory as $i)
+            $em->remove($i);
+
+        $userStatsRepository->incrementStat($user, 'Items Thrown Away', count($inventory));
+
+        $em->flush();
+
+        return $responseService->success();
+    }
 }

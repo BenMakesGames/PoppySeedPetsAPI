@@ -6,6 +6,7 @@ use App\Entity\Item;
 use App\Entity\Pet;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
+use App\Repository\InventoryRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\CraftingService;
 use App\Service\PetActivity\FishingService;
@@ -23,11 +24,12 @@ class PetService
     private $gatheringService;
     private $craftingService;
     private $userStatsRepository;
+    private $inventoryRepository;
 
     public function __construct(
         EntityManagerInterface $em, RandomService $randomService, ResponseService $responseService,
         FishingService $fishingService, HuntingService $huntingService, GatheringService $gatheringService,
-        CraftingService $craftingService, UserStatsRepository $userStatsRepository
+        CraftingService $craftingService, UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository
     )
     {
         $this->em = $em;
@@ -38,6 +40,7 @@ class PetService
         $this->gatheringService = $gatheringService;
         $this->craftingService = $craftingService;
         $this->userStatsRepository = $userStatsRepository;
+        $this->inventoryRepository = $inventoryRepository;
     }
 
     /**
@@ -263,8 +266,8 @@ class PetService
 
             if($this->randomService->roll(1, 12) < $pet->getWhack())
             {
-                // TODO: something whacky?
-                $pet->spendTime(60);
+                $this->responseService->createActivityLog($pet, $pet->getName() . ' is feeling loopy, so took some time to rest.');
+                $pet->spendTime(\mt_rand(45, 75));
 
                 return;
             }
@@ -272,8 +275,7 @@ class PetService
             if($this->randomService->roll(1, $junkDie) < $pet->getJunk())
             {
                 $this->responseService->createActivityLog($pet, $pet->getName() . ' couldn\'t muster the energy to do anything.');
-
-                $pet->spendTime(\mt_rand(30, 60));
+                $pet->spendTime(\mt_rand(45, 75));
 
                 return;
             }
@@ -286,11 +288,19 @@ class PetService
 
         }
 
+        $itemsInHouse = (int)$this->inventoryRepository->createQueryBuilder('i')
+            ->select('COUNT(i.id)')
+            ->andWhere('i.owner=:user')
+            ->setParameter('user', $pet->getOwner())
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+
         $petDesires = [
-            'fish' => $this->generateFishingDesire($pet),
-            'hunt' => $this->generateMonsterHuntingDesire($pet),
-            'gather' => $this->generateGatheringDesire($pet),
-            'craft' => $this->generateCraftingDesire($pet),
+            'fish' => $this->generateFishingDesire($pet, $itemsInHouse),
+            'hunt' => $this->generateMonsterHuntingDesire($pet, $itemsInHouse),
+            'gather' => $this->generateGatheringDesire($pet, $itemsInHouse),
+            'craft' => $this->generateCraftingDesire($pet, $itemsInHouse),
         ];
 
         $desire = $this->pickDesire($petDesires);
@@ -333,31 +343,39 @@ class PetService
         return (new \DateTimeImmutable())->diff($pet->getBirthDate())->days;
     }
 
-    public function generateFishingDesire(Pet $pet): int
+    public function generateFishingDesire(Pet $pet, int $itemsInHouse): int
     {
         $desire = $pet->getSkills()->getDexterity() + $pet->getSkills()->getNature() + \mt_rand(1, 4);
 
-        return round($desire * (1 + \mt_rand(-10, 10) / 100));
+        if($itemsInHouse > $pet->getOwner()->getMaxInventory() * 3 / 4) $desire -= ($itemsInHouse - $pet->getOwner()->getMaxInventory() * 3 / 4) / 2;
+
+        return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
     }
 
-    public function generateMonsterHuntingDesire(Pet $pet): int
+    public function generateMonsterHuntingDesire(Pet $pet, int $itemsInHouse): int
     {
         $desire = $pet->getSkills()->getStrength() + $pet->getSkills()->getBrawl() + \mt_rand(1, 4);
 
-        return round($desire * (1 + \mt_rand(-10, 10) / 100));
+        if($itemsInHouse > $pet->getOwner()->getMaxInventory() * 3 / 4) $desire -= ($itemsInHouse - $pet->getOwner()->getMaxInventory() * 3 / 4) / 2;
+
+        return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
     }
 
-    public function generateCraftingDesire(Pet $pet): int
+    public function generateCraftingDesire(Pet $pet, int $itemsInHouse): int
     {
         $desire = $pet->getSkills()->getIntelligence() + $pet->getSkills()->getCrafts() + \mt_rand(1, 4);
 
-        return round($desire * (1 + \mt_rand(-10, 10) / 100));
+        if($itemsInHouse > $pet->getOwner()->getMaxInventory() * 3 / 4) $desire += ($itemsInHouse - $pet->getOwner()->getMaxInventory() * 3 / 4) / 2;
+
+        return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
     }
 
-    public function generateGatheringDesire(Pet $pet): int
+    public function generateGatheringDesire(Pet $pet, int $itemsInHouse): int
     {
         $desire = $pet->getSkills()->getPerception() + $pet->getSkills()->getNature() + \mt_rand(1, 4);
 
-        return round($desire * (1 + \mt_rand(-10, 10) / 100));
+        if($itemsInHouse > $pet->getOwner()->getMaxInventory() * 3 / 4) $desire -= ($itemsInHouse - $pet->getOwner()->getMaxInventory() * 3 / 4) / 2;
+
+        return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
     }
 }

@@ -41,6 +41,18 @@ class CraftingService
                 $possibilities[] = 'createWhiteCloth';
         }
 
+        if(array_key_exists('Tea Leaves', $quantities))
+        {
+            if($quantities['Tea Leaves']->quantity >= 2)
+                $possibilities[] = 'createYellowDyeFromTeaLeaves';
+        }
+
+        if(array_key_exists('Scales', $quantities))
+        {
+            if($quantities['Scales']->quantity >= 2)
+                $possibilities[] = 'createGreenDyeFromScales';
+        }
+
         if(array_key_exists('Crooked Stick', $quantities))
         {
             if(array_key_exists('String', $quantities))
@@ -105,6 +117,60 @@ class CraftingService
             $pet->spendTime(\mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts' ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spin some Fluff into String, but couldn\'t figure it out.');
+        }
+    }
+
+    private function createYellowDyeFromTeaLeaves(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getNature() + $pet->getSkills()->getCrafts());
+        if($roll <= 2)
+        {
+            $pet->spendTime(\mt_rand(45, 60));
+            $this->inventoryService->loseItem('Tea Leaves', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'nature', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extract Yellow Dye from Tea Leaves, but messed it up, ruining the Tea Leaves :(');
+        }
+        else if($roll >= 12)
+        {
+            $pet->spendTime(\mt_rand(60, 75));
+            $this->inventoryService->loseItem('Tea Leaves', $pet->getOwner(), 2);
+            $this->inventoryService->petCollectsItem('Yellow Dye', $pet, $pet->getName() . ' extracted this from Tea Leaves.');
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'nature', 'crafts' ]);
+            $pet->increaseEsteem(1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' extracted Yellow Dye from some Tea Leaves.');
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'nature', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to extract Yellow Dye from some Tea Leaves, but wasn\'t sure how to start.');
+        }
+    }
+
+    private function createGreenDyeFromScales(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getNature() + $pet->getSkills()->getCrafts());
+        if($roll <= 2)
+        {
+            $pet->spendTime(\mt_rand(45, 60));
+            $this->inventoryService->loseItem('Scales', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'nature', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extract Green Dye from Scales, but messed it up, ruining the Scales :(');
+        }
+        else if($roll >= 12)
+        {
+            $pet->spendTime(\mt_rand(60, 75));
+            $this->inventoryService->loseItem('Scales', $pet->getOwner(), 2);
+            $this->inventoryService->petCollectsItem('Green Dye', $pet, $pet->getName() . ' extracted this from Scales.');
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'nature', 'crafts' ]);
+            $pet->increaseEsteem(1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' extracted Green Dye from some Scales.');
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'nature', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to extract Green Dye from some Scales, but wasn\'t sure how to start.');
         }
     }
 

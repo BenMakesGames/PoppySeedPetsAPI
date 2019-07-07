@@ -476,7 +476,7 @@ class Pet
      */
     public function getCanInteract(): bool
     {
-        return $this->getLastInteracted() < (new \DateTimeImmutable())->modify('-30 minutes');
+        return $this->getLastInteracted() < (new \DateTimeImmutable())->modify('-4 hours');
     }
 
     public function getSkills(): ?PetSkills
