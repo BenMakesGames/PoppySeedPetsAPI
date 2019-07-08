@@ -31,7 +31,7 @@ class InventoryRepository extends ServiceEntityRepository
             ->setParameter('itemName', $itemName)
             ->setMaxResults(1)
             ->getQuery()
-            ->getSingleResult()
+            ->getOneOrNullResult()
         ;
     }
 

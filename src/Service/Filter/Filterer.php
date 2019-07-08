@@ -5,6 +5,7 @@ use App\Model\FilterResults;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class Filterer
 {
@@ -40,7 +41,12 @@ class Filterer
         $page = $params->getInt('page', 0);
         $orderBy = strtolower($params->getAlnum('orderBy'));
         $orderDir = strtolower($params->getAlpha('orderDir'));
-        $filters = array_merge($this->defaultFilters, $params->get('filter', []), $this->requiredFilters);
+
+        $filters = $params->get('filter', []);
+        if(!is_array($filters))
+            throw new UnprocessableEntityHttpException('filter must be an array.');
+
+        $filters = array_merge($this->defaultFilters, $filters, $this->requiredFilters);
 
         if(!array_key_exists($orderBy, $this->orderByMap))
             $orderBy = array_key_first($this->orderByMap);
