@@ -197,7 +197,15 @@ class FishingService
         $nothingBiting = $this->nothingBiting($pet, 20,  'in a Waterfall Basin');
         if($nothingBiting !== null) return $nothingBiting;
 
-        if(\mt_rand(1, 5) === 1)
+        if(\mt_rand(1, 100) === 1)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Waterfall Basin, and reeled in a Little Strongbox!');
+            $this->petService->gainExp($pet, 1, ['nature', 'perception']);
+            $this->inventoryService->petCollectsItem('Little Strongbox', $pet, $pet->getName() . ' was fishing in a Waterfall Basin, and one of these got caught on the line!');
+
+            $pet->spendTime(mt_rand(45, 75));
+        }
+        else if(\mt_rand(1, 5) === 1)
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Waterfall Basin, and reeled in a Mermaid Egg!');
             $this->petService->gainExp($pet, 1, ['nature', 'perception']);

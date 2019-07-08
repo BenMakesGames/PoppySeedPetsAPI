@@ -32,7 +32,7 @@ class HuntingService
     {
         $maxSkill = 10 + $pet->getSkills()->getStrength() + $pet->getSkills()->getBrawl() - $pet->getWhack() - $pet->getJunk();
 
-        if($maxSkill > 12) $maxSkill = 12;
+        if($maxSkill > 13) $maxSkill = 13;
         else if($maxSkill < 1) $maxSkill = 1;
 
         $roll = \mt_rand(1, $maxSkill);
@@ -65,6 +65,9 @@ class HuntingService
             case 11:
             case 12:
                 $activityLog = $this->huntedThievingMagpie($pet);
+                break;
+            case 13:
+                $activityLog = $this->huntedGhosts($pet);
                 break;
         }
 
@@ -233,6 +236,41 @@ class HuntingService
             $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'brawl' ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to take down a Thieving Magpie, but it got away.');
             $pet->increaseSafety(-1);
+        }
+
+        return $activityLog;
+    }
+
+    private function huntedGhosts(Pet $pet): PetActivityLog
+    {
+        $skill = 10 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getBrawl() + $pet->getSkills()->getUmbra();
+
+        if(mt_rand(1, $skill) >= 15)
+        {
+            $this->petService->gainExp($pet, 2, [ 'intelligence', 'brawl', 'umbra' ]);
+
+            if(mt_rand(1, 100) === 1)
+                $prize = 'Little Strongbox';
+            else if(mt_rand(1, 5) === 1)
+                $prize = 'Iron Bar';
+            else if(mt_rand(1, 8) === 1)
+                $prize = 'Fluff';
+            else
+                $prize = 'Quintessence';
+
+            $pet->spendTime(mt_rand(45, 60));
+            $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt ' . $pet->getName() . ', but ' . $pet->getName() . ' was able to dispel it (and got its ' . $prize . ')!');
+            $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' collected this from the remains of a Pirate Ghost.');
+            $pet->increaseSafety(2);
+            $pet->increaseEsteem(1);
+
+        }
+        else
+        {
+            $pet->spendTime(mt_rand(60, 75));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'brawl', 'umbra' ]);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went out hunting, and got haunted by a Pirate Ghost! After harassing ' . $pet->getName() . ' for a while, the ghost became bored, and left.');
+            $pet->increaseSafety(-3);
         }
 
         return $activityLog;
