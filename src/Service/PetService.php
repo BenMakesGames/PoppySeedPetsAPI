@@ -13,6 +13,7 @@ use App\Service\PetActivity\CraftingService;
 use App\Service\PetActivity\FishingService;
 use App\Service\PetActivity\GatheringService;
 use App\Service\PetActivity\HuntingService;
+use App\Service\PetActivity\TreasureMapService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetService
@@ -26,11 +27,13 @@ class PetService
     private $craftingService;
     private $userStatsRepository;
     private $inventoryRepository;
+    private $treasureMapService;
 
     public function __construct(
         EntityManagerInterface $em, RandomService $randomService, ResponseService $responseService,
         FishingService $fishingService, HuntingService $huntingService, GatheringService $gatheringService,
-        CraftingService $craftingService, UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository
+        CraftingService $craftingService, UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
+        TreasureMapService $treasureMapService
     )
     {
         $this->em = $em;
@@ -42,6 +45,7 @@ class PetService
         $this->craftingService = $craftingService;
         $this->userStatsRepository = $userStatsRepository;
         $this->inventoryRepository = $inventoryRepository;
+        $this->treasureMapService = $treasureMapService;
     }
 
     /**
@@ -296,6 +300,12 @@ class PetService
             ->getQuery()
             ->getSingleScalarResult()
         ;
+
+        if($pet->getTool()->getItem()->getName() === 'Cetgueli\'s Treasure Map')
+        {
+            $this->treasureMapService->doCetguelisTreasureMap($pet);
+            return;
+        }
 
         $petDesires = [
             'fish' => $this->generateFishingDesire($pet, $itemsInHouse),
