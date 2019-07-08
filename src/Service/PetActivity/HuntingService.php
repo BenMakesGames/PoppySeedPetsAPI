@@ -115,8 +115,8 @@ class HuntingService
             $pet->increaseEsteem(1);
             if(\mt_rand(1, 2) === 1)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wrestled a Goat, and won, receiving Milk.');
-                $this->inventoryService->petCollectsItem('Milk', $pet, $pet->getName() . '\'s prize for out-wrestling a Goat.');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wrestled a Goat, and won, receiving Creamy Milk.');
+                $this->inventoryService->petCollectsItem('Creamy Milk', $pet, $pet->getName() . '\'s prize for out-wrestling a Goat.');
             }
             else
             {

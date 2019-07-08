@@ -33,7 +33,7 @@ class BoxController extends PsyPetsItemController
         $newInventory = [];
 
         for($i = 0; $i < 5; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Egg', 'Wheat Flour', 'Sugar', 'Milk' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Egg', 'Wheat Flour', 'Sugar', 'Creamy Milk' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
 
         for($i = 0; $i < 4; $i++)
             $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Corn Syrup', 'Aging Powder', 'Cocoa Beans', 'Baking Soda', 'Cream of Tartar' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
