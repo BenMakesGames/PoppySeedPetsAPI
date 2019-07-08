@@ -21,6 +21,20 @@ class InventoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Inventory::class);
     }
 
+    public function findOneByName(User $owner, string $itemName): ?Inventory
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.owner=:user')
+            ->setParameter('user', $owner)
+            ->leftJoin('i.item', 'item')
+            ->andWhere('item.name=:itemName')
+            ->setParameter('itemName', $itemName)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleResult()
+        ;
+    }
+
     // /**
     //  * @return Inventory[] Returns an array of Inventory objects
     //  */

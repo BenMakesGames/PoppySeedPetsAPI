@@ -63,6 +63,14 @@ class Item
         return $this->food !== null;
     }
 
+    /**
+     * @Groups({"myInventory", "itemEncyclopedia"})
+     */
+    public function isEquipable(): bool
+    {
+        return $this->tool !== null;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
