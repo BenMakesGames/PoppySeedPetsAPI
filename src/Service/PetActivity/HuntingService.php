@@ -32,7 +32,7 @@ class HuntingService
     {
         $maxSkill = 10 + $pet->getSkills()->getStrength() + $pet->getSkills()->getBrawl() - $pet->getWhack() - $pet->getJunk();
 
-        if($maxSkill > 13) $maxSkill = 13;
+        if($maxSkill > 14) $maxSkill = 14;
         else if($maxSkill < 1) $maxSkill = 1;
 
         $roll = \mt_rand(1, $maxSkill);
@@ -68,6 +68,9 @@ class HuntingService
                 break;
             case 13:
                 $activityLog = $this->huntedGhosts($pet);
+                break;
+            case 14:
+                $activityLog = $this->huntedSatyr($pet);
                 break;
         }
 
@@ -261,8 +264,8 @@ class HuntingService
             $pet->spendTime(mt_rand(45, 60));
             $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt ' . $pet->getName() . ', but ' . $pet->getName() . ' was able to dispel it (and got its ' . $prize . ')!');
             $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' collected this from the remains of a Pirate Ghost.');
-            $pet->increaseSafety(2);
-            $pet->increaseEsteem(1);
+            $pet->increaseSafety(3);
+            $pet->increaseEsteem(2);
 
         }
         else
@@ -271,6 +274,41 @@ class HuntingService
             $this->petService->gainExp($pet, 1, [ 'intelligence', 'brawl', 'umbra' ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went out hunting, and got haunted by a Pirate Ghost! After harassing ' . $pet->getName() . ' for a while, the ghost became bored, and left.');
             $pet->increaseSafety(-3);
+        }
+
+        return $activityLog;
+    }
+
+    private function huntedSatyr(Pet $pet): PetActivityLog
+    {
+        $skill = 10 + $pet->getSkills()->getStrength() + $pet->getSkills()->getBrawl();
+
+        $pet->increaseFood(-1);
+        $pet->spendTime(mt_rand(45, 60));
+
+        if(\mt_rand(1, $skill) >= 15)
+        {
+            $pet->increaseSafety(3);
+            $pet->increaseEsteem(2);
+            $this->petService->gainExp($pet, 2, [ 'strength', 'brawl' ]);
+            if(\mt_rand(1, 2) === 1)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fought a Satyr, and won, receiving its Yogurt (gross), and Wine.');
+                $this->inventoryService->petCollectsItem('Yogurt', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.');
+                $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.');
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fought a Satyr, and won, receiving its Yogurt (gross), and Horn. Er: Talon, I guess.');
+                $this->inventoryService->petCollectsItem('Yogurt', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.');
+                $this->inventoryService->petCollectsItem('Talon', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.');
+            }
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to fight a drunken Satyr, but the Satyr misinterpreted ' . $pet->getName() . '\'s intentions, and it started to get really weird, so ' . $pet->getName() . ' ran away.');
+            $pet->increaseSafety(-\mt_rand(1, 5));
+            $this->petService->gainExp($pet, 1, [ 'strength', 'brawl' ]);
         }
 
         return $activityLog;
