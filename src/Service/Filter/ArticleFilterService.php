@@ -8,7 +8,7 @@ class ArticleFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 20;
+    public const PAGE_SIZE = 10;
 
     public function __construct(ArticleRepository $articleRepository)
     {
