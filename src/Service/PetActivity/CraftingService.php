@@ -98,6 +98,12 @@ class CraftingService
             }
         }
 
+        if(array_key_exists('Rusty Blunderbuss', $quantities))
+            $possibilities[] = [ $this, 'repairRustyBlunderbuss' ];
+
+        if(array_key_exists('Rusty Rapier', $quantities))
+            $possibilities[] = [ $this, 'repairRustyRapier' ];
+
         if(count($possibilities) === 0)
         {
             $pet->spendTime(\mt_rand(30, 60));
@@ -352,5 +358,63 @@ class CraftingService
         $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts' ]);
         $pet->increaseEsteem(1);
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Painted Fishing Rod.');
+    }
+
+    private function repairRustyBlunderbuss(Pet $pet)
+    {
+        $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + $pet->getSkills()->getCrafts());
+
+        if($roll <= 5)
+        {
+            $pet->spendTime(\mt_rand(45, 60));
+            $this->inventoryService->loseItem('Rusty Blunderbuss', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts' ]);
+            $pet->increaseEsteem(-2);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to repair a Rusty Blunderbuss, but accidentally broke it beyond repair :(');
+        }
+        else if($roll >= 18)
+        {
+            $pet->spendTime(\mt_rand(60, 75));
+            $this->inventoryService->loseItem('Rusty Blunderbuss', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 2, [ 'intelligence', 'dexterity', 'crafts' ]);
+            $pet->increaseEsteem(2);
+            $this->inventoryService->petCollectsItem('Blunderbuss', $pet, $pet->getName() . ' repaired this Rusty Blunderbuss.');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' repaired a Rusty Blunderbuss. It\'s WAY less rusty now!');
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(60, 75));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' spent a while trying to repair a Rusty Blunderbuss, but wasn\'t able to make any progress.');
+        }
+    }
+
+    private function repairRustyRapier(Pet $pet)
+    {
+        $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + $pet->getSkills()->getCrafts());
+
+        if($roll <= 5)
+        {
+            $pet->spendTime(\mt_rand(45, 60));
+            $this->inventoryService->loseItem('Rusty Rapier', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts' ]);
+            $pet->increaseEsteem(-2);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to repair a Rusty Rapier, but accidentally broke it beyond repair :(');
+        }
+        else if($roll >= 14)
+        {
+            $pet->spendTime(\mt_rand(60, 75));
+            $this->inventoryService->loseItem('Rusty Rapier', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 2, [ 'intelligence', 'dexterity', 'crafts' ]);
+            $pet->increaseEsteem(2);
+            $this->inventoryService->petCollectsItem('Rapier', $pet, $pet->getName() . ' repaired this Rapier.');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' repaired a Rusty Rapier. It\'s WAY less rusty now!');
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(60, 75));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' spent a while trying to repair a Rusty Rapier, but wasn\'t able to make any progress.');
+        }
     }
 }
