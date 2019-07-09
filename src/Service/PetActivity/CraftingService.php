@@ -68,6 +68,11 @@ class CraftingService
                 $possibilities[] = [ $this, 'createWoodenSword' ];
         }
 
+        if(array_key_exists('Crooked Fishing Rod', $quantities) && array_key_exists('Yellow Dye', $quantities) && array_key_exists('Green Dye', $quantities))
+        {
+            $possibilities[] = [ $this, 'createPaintedFishingRod' ];
+        }
+
         // pets won't try any refining tasks if they don't feel sufficiently safe
         if($pet->getSafety() > 0)
         {
@@ -335,5 +340,17 @@ class CraftingService
             $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts',  'brawl' ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Wooden Sword, but couldn\'t quite figure it out.');
         }
+    }
+
+    private function createPaintedFishingRod(Pet $pet)
+    {
+        $pet->spendTime(\mt_rand(45, 90));
+        $this->inventoryService->loseItem('Crooked Fishing Rod', $pet->getOwner(), 1);
+        $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), 1);
+        $this->inventoryService->loseItem('Green Dye', $pet->getOwner(), 1);
+        $this->inventoryService->petCollectsItem('Painted Fishing Rod', $pet, $pet->getName() . ' painted this, using Yellow and Green Dye.');
+        $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts' ]);
+        $pet->increaseEsteem(1);
+        return $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Painted Fishing Rod.');
     }
 }
