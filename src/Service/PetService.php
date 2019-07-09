@@ -301,7 +301,7 @@ class PetService
             ->getSingleScalarResult()
         ;
 
-        if($pet->getTool()->getItem()->getName() === 'Cetgueli\'s Treasure Map')
+        if($pet->getTool() && $pet->getTool()->getItem()->getName() === 'Cetgueli\'s Treasure Map')
         {
             $this->treasureMapService->doCetguelisTreasureMap($pet);
             return;
