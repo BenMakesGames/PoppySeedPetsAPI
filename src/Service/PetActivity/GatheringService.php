@@ -70,6 +70,9 @@ class GatheringService
             case 15:
                 $activityLog = $this->foundIronMine($pet);
                 break;
+            case 16:
+                $activityLog = $this->foundMicroJungle($pet);
+                break;
         }
 
         if($activityLog)
@@ -336,6 +339,54 @@ class GatheringService
             $this->petService->gainExp($pet, 1, [ 'strength', 'stamina', 'nature', 'perception' ]);
             $pet->increaseFood(-2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found an Old Iron Mine, and tried to do some mining, but got too tired.');
+        }
+
+        return $activityLog;
+    }
+
+    private function foundMicroJungle(Pet $pet): PetActivityLog
+    {
+        $possibleLoot = [
+            'Naner', 'Naner', 'Orange', 'Orange', 'Cocoa Beans', 'Cocoa Beans', 'Coffee Beans',
+        ];
+
+        $loot = [];
+
+        $roll = mt_rand(1, 20 + $pet->getSkills()->getPerception() + $pet->getSkills()->getNature());
+
+        if($roll >= 12)
+        {
+            $loot[] = ArrayFunctions::pick_one($possibleLoot);
+
+            if($roll >= 16)
+                $loot[] = ArrayFunctions::pick_one($possibleLoot);
+
+            if($roll >= 24)
+                $loot[] = ArrayFunctions::pick_one($possibleLoot);
+
+            if($roll >= 30 && mt_rand(1, 20) === 1)
+                $loot[] = 'Gold Ore';
+        }
+
+        sort($loot);
+
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' entered the island\'s Micro-Jungle, and got ' . ArrayFunctions::list_nice($loot) . '.');
+
+        $pet->spendTime(\mt_rand(45, 60) + count($loot) * 5);
+
+        foreach($loot as $itemName)
+            $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in the island\'s Micro-Jungle.');
+
+        if(mt_rand(1, 10 + $pet->getSkills()->getStamina() < 8))
+        {
+            $pet->increaseFood(-1);
+            $pet->increaseSafety(-mt_rand(1, 2));
+            $pet->increaseWhack(mt_rand(2, 4));
+
+            if(mt_rand(1, 10) === 1 && count($pet->getOwner()->getPets()) > 1)
+                $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and I don\'t mean in a sexy way; ' . $pet->getName() . ' got a bit light-headed.');
+            else
+                $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and ' . $pet->getName() . ' got a bit light-headed.');
         }
 
         return $activityLog;
