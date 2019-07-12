@@ -97,7 +97,7 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      * @Groups({"myAccount"})
      */
-    private $maxInventory = 50;
+    private $maxInventory = 100;
 
     /**
      * @ORM\Column(type="integer")
