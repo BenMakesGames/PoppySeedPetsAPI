@@ -30,7 +30,7 @@ class CraftingService
         $this->refiningService = $refiningService;
     }
 
-    public function adventure(Pet $pet)
+    public function getCraftingPossibilities(Pet $pet): array
     {
         $quantities = $this->itemRepository->getInventoryQuantities($pet->getOwner(), 'name');
 
@@ -77,7 +77,7 @@ class CraftingService
         if($pet->getSafety() > 0)
         {
             if(array_key_exists('Iron Ore', $quantities))
-            $possibilities[] = [ $this->refiningService, 'createIronBar' ];
+                $possibilities[] = [ $this->refiningService, 'createIronBar' ];
 
             if(array_key_exists('Silver Ore', $quantities))
                 $possibilities[] = [ $this->refiningService, 'createSilverBar' ];
@@ -104,23 +104,26 @@ class CraftingService
         if(array_key_exists('Rusty Rapier', $quantities))
             $possibilities[] = [ $this, 'repairRustyRapier' ];
 
-        if(count($possibilities) === 0)
-        {
-            $pet->spendTime(\mt_rand(30, 60));
+        return $possibilities;
+    }
 
-            $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to make something, but couldn\'t find any materials to work with.');
-            return;
-        }
+    public function adventure(Pet $pet, array $possibilities)
+    {
+        if(count($possibilities) === 0)
+            throw new \InvalidArgumentException('possibilities must contain at least one item.');
 
         $method = $possibilities[\mt_rand(0, count($possibilities) - 1)];
 
         $activityLog = null;
         $changes = new PetChanges($pet);
 
+        /** @var PetActivityLog $activityLog */
         $activityLog = $method($pet);
 
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));
+
+        return $activityLog;
     }
 
     private function createStringFromFluff(Pet $pet): PetActivityLog
