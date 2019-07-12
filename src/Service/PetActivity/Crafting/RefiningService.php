@@ -22,7 +22,7 @@ class RefiningService
         $this->responseService = $responseService;
     }
 
-    private function createIronBar(Pet $pet): PetActivityLog
+    public function createIronBar(Pet $pet): PetActivityLog
     {
         $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getStamina() + $pet->getSkills()->getCrafts());
         if($roll <= 2)
@@ -51,7 +51,7 @@ class RefiningService
         }
     }
 
-    private function createSilverBar(Pet $pet): PetActivityLog
+    public function createSilverBar(Pet $pet): PetActivityLog
     {
         $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getStamina() + $pet->getSkills()->getCrafts());
         if($roll <= 2)
@@ -80,7 +80,7 @@ class RefiningService
         }
     }
 
-    private function createGoldBar(Pet $pet): PetActivityLog
+    public function createGoldBar(Pet $pet): PetActivityLog
     {
         $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getStamina() + $pet->getSkills()->getCrafts());
         if($roll <= 2)
@@ -109,7 +109,7 @@ class RefiningService
         }
     }
 
-    private function createIronKey(Pet $pet): PetActivityLog
+    public function createIronKey(Pet $pet): PetActivityLog
     {
         $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getStamina() + $pet->getSkills()->getCrafts());
         if($roll <= 2)
@@ -149,7 +149,7 @@ class RefiningService
         }
     }
 
-    private function createSilverKey(Pet $pet): PetActivityLog
+    public function createSilverKey(Pet $pet): PetActivityLog
     {
         $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getStamina() + $pet->getSkills()->getCrafts());
         $reRoll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getStamina() + $pet->getSkills()->getCrafts());
@@ -202,7 +202,7 @@ class RefiningService
         }
     }
 
-    private function createGoldKey(Pet $pet): PetActivityLog
+    public function createGoldKey(Pet $pet): PetActivityLog
     {
         $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getStamina() + $pet->getSkills()->getCrafts());
         $reRoll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getStamina() + $pet->getSkills()->getCrafts());
