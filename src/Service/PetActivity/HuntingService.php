@@ -346,13 +346,13 @@ class HuntingService
             if(\mt_rand(1, 2) === 1)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fought a Satyr, and won, receiving its Yogurt (gross), and Wine.');
-                $this->inventoryService->petCollectsItem('Yogurt', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.');
+                $this->inventoryService->petCollectsItem('Plain Yogurt', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.');
                 $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.');
             }
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fought a Satyr, and won, receiving its Yogurt (gross), and Horn. Er: Talon, I guess.');
-                $this->inventoryService->petCollectsItem('Yogurt', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.');
+                $this->inventoryService->petCollectsItem('Plain Yogurt', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.');
                 $this->inventoryService->petCollectsItem('Talon', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.');
             }
         }
