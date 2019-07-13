@@ -134,7 +134,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="integer")
      */
-    private $maxSellPrice;
+    private $maxSellPrice = 50;
 
     public function __construct()
     {

@@ -89,6 +89,8 @@ class AccountController extends PsyPetsController
 
         $user->setPassword($userPasswordEncoder->encodePassword($user, $password));
 
+        $sessionService->logIn($user);
+
         $em->persist($user);
 
         $petSkills = new PetSkills();
@@ -116,8 +118,6 @@ class AccountController extends PsyPetsController
         $em->persist($preferences);
 
         $em->flush();
-
-        $sessionService->logIn($user);
 
         return $responseService->success();
     }
