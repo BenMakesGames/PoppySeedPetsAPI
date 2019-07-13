@@ -25,8 +25,8 @@ class MarketFilterService
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
             [
-                'name' => [ 'item.name', 'asc' ], // first one is the default
-                'price' => [ 'i.sellPrice', 'asc' ],
+                'price' => [ 'i.sellPrice', 'asc' ], // first one is the default
+                'name' => [ 'item.name', 'asc' ],
             ],
             [
                 'name' => array($this, 'filterName'),

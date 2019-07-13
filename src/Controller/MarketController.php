@@ -76,6 +76,6 @@ class MarketController extends PsyPetsController
             $cache->deleteItem('Trading Inventory #' . $inventory->getId());
         }
 
-        $responseService->success();
+        return $responseService->success();
     }
 }
