@@ -69,6 +69,9 @@ class MarketController extends PsyPetsController
                 ->setSellPrice(null)
             ;
 
+            if($inventory->getPet())
+                $inventory->getPet()->setTool(null);
+
             $em->flush();
         }
         finally
