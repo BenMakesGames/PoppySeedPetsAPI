@@ -44,7 +44,7 @@ class ResponseService
     /**
      * @param string|string[] $groups
      */
-    public function success($data = null, $groups = [], ?User $user = null): JsonResponse
+    public function success($data = null, $groups = []): JsonResponse
     {
         if(!\is_array($groups)) $groups = [ $groups ];
 
@@ -63,7 +63,7 @@ class ResponseService
             $responseData['activity'] = $this->normalizer->normalize($this->activityLogs, null, [ 'groups' => [ SerializationGroupEnum::PET_ACTIVITY_LOGS ] ]);
         }
 
-        $this->injectUserData($responseData, $user);
+        $this->injectUserData($responseData);
 
         $json = $this->serializer->serialize($responseData, 'json', [
             'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS,
@@ -72,7 +72,7 @@ class ResponseService
         return new JsonResponse($json, Response::HTTP_OK, [], true);
     }
 
-    public function error(int $httpResponse, array $messages, ?User $user = null): JsonResponse
+    public function error(int $httpResponse, array $messages): JsonResponse
     {
         $responseData = [
             'success' => false,
@@ -81,7 +81,7 @@ class ResponseService
 
         $groups = [];
 
-        $this->injectUserData($responseData, $user);
+        $this->injectUserData($responseData);
 
         $json = $this->serializer->serialize($responseData, 'json', [
             'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS,
@@ -91,17 +91,13 @@ class ResponseService
         return new JsonResponse($json, $httpResponse, [], true);
     }
 
-    private function injectUserData(array &$responseData, ?User $user)
+    private function injectUserData(array &$responseData)
     {
+        $user = $this->security->getUser();
+
         if(!$user)
-        {
-            $user = $this->security->getUser();
-
-            if(!$user)
-                $responseData['user'] = null;
-        }
-
-        if($user)
+            $responseData['user'] = null;
+        else
             $responseData['user'] = $this->normalizer->normalize($user, null, [ 'groups' => [ SerializationGroupEnum::MY_ACCOUNT ] ]);
     }
 

@@ -61,6 +61,11 @@ class Inventory
      */
     private $pet;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $sellPrice;
+
     public function __construct()
     {
         $this->createdOn = new \DateTimeImmutable();
@@ -158,6 +163,18 @@ class Inventory
         if ($newTool !== $pet->getTool()) {
             $pet->setTool($newTool);
         }
+
+        return $this;
+    }
+
+    public function getSellPrice(): ?int
+    {
+        return $this->sellPrice;
+    }
+
+    public function setSellPrice(?int $sellPrice): self
+    {
+        $this->sellPrice = $sellPrice;
 
         return $this;
     }

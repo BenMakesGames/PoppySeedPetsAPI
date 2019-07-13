@@ -3,14 +3,18 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class SessionService
 {
     private $userRepository;
+    private $tokenStorage;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, TokenStorageInterface $tokenStorage)
     {
         $this->userRepository = $userRepository;
+        $this->tokenStorage = $tokenStorage;
     }
 
     private function generateSessionId(): string
@@ -43,5 +47,7 @@ class SessionService
             ->setLastActivity($hours)
             ->setSessionId($this->getSessionId())
         ;
+
+        $this->tokenStorage->setToken(new UsernamePasswordToken($user, null, 'main', $user->getRoles()));
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Inventory;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Repository\InventoryRepository;
@@ -11,6 +12,7 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -86,6 +88,34 @@ class InventoryController extends PsyPetsController
         $em->flush();
 
         return $responseService->success($newInventory, SerializationGroupEnum::MY_INVENTORY);
+    }
+
+    /**
+     * @Route("/{inventory}/sellPrice", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function setSellPrice(
+        Inventory $inventory, ResponseService $responseService, Request $request, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        if($inventory->getOwner()->getId() !== $user->getId())
+            throw new NotFoundHttpException();
+
+        $price = $request->request->getInt('price', 0);
+
+        if($price >= $user->getMaxSellPrice())
+            throw new UnprocessableEntityHttpException('You cannot list items for more than ' . $user->getMaxSellPrice() . ' moneys. See the Market Manager to see if you can increase this limit!');
+
+        if($price <= 0)
+            $inventory->setSellPrice(null);
+        else
+            $inventory->setSellPrice($price);
+
+        $em->flush();
+
+        return $responseService->success($inventory->getSellPrice());
     }
 
     /**

@@ -64,6 +64,9 @@ class CraftingService
             if(array_key_exists('White Cloth', $quantities))
                 $possibilities[] = [ $this, 'createStereotypicalTorch' ];
 
+            if(array_key_exists('Toadstool', $quantities) && array_key_exists('Quintessence', $quantities))
+                $possibilities[] = [ $this, 'createChampignon' ];
+
             if($quantities['Crooked Stick']->quantity >= 2 && array_key_exists('String', $quantities) && $quantities['String']->quantity >= 2)
                 $possibilities[] = [ $this, 'createWoodenSword' ];
         }
@@ -309,6 +312,47 @@ class CraftingService
             $pet->spendTime(\mt_rand(15, 45));
             $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts',  'nature' ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Stereotypical Torch, but couldn\'t figure it out.');
+        }
+    }
+
+    private function createChampignon(Pet $pet)
+    {
+        $quintessenceHandling = \mt_rand(1, 10 + $pet->getSkills()->getUmbra());
+
+        if($quintessenceHandling <= 2)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 1, [ 'umbra' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Champignon, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(');
+        }
+
+        $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + $pet->getSkills()->getCrafts());
+
+        if($roll <= 3)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Champignon, but broke the Crooked Stick :(');
+        }
+        else if($roll >= 15)
+        {
+            $pet->spendTime(\mt_rand(45, 60));
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Toadstool', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
+            $this->inventoryService->petCollectsItem('Champignon', $pet, $pet->getName() . ' created this from a Crooked Stick, Toadstool, and bit of Quintessence.');
+            $this->petService->gainExp($pet, 2, [ 'intelligence', 'dexterity', 'crafts',  'umbra' ]);
+            $pet->increaseEsteem(2);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Champignon.');
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts',  'umbra' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Champignon, but couldn\'t quite figure it out.');
         }
     }
 

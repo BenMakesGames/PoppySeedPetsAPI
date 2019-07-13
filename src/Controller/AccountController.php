@@ -87,8 +87,6 @@ class AccountController extends PsyPetsController
             ->setName($name)
         ;
 
-        $sessionService->logIn($user);
-
         $user->setPassword($userPasswordEncoder->encodePassword($user, $password));
 
         $em->persist($user);
@@ -119,7 +117,9 @@ class AccountController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success(null, [], $user);
+        $sessionService->logIn($user);
+
+        return $responseService->success();
     }
 
     /**
@@ -149,7 +149,7 @@ class AccountController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success(null, [], $user);
+        return $responseService->success();
     }
 
     /**
@@ -158,7 +158,7 @@ class AccountController extends PsyPetsController
      */
     public function getAccount(ResponseService $responseService)
     {
-        return $responseService->success(null, [], $this->getUser());
+        return $responseService->success();
     }
 
     /**

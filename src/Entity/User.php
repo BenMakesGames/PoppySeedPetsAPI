@@ -131,6 +131,11 @@ class User implements UserInterface
      */
     private $userNotificationPreferences;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $maxSellPrice;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -470,6 +475,18 @@ class User implements UserInterface
         if ($this !== $userNotificationPreferences->getUser()) {
             $userNotificationPreferences->setUser($this);
         }
+
+        return $this;
+    }
+
+    public function getMaxSellPrice(): ?int
+    {
+        return $this->maxSellPrice;
+    }
+
+    public function setMaxSellPrice(int $maxSellPrice): self
+    {
+        $this->maxSellPrice = $maxSellPrice;
 
         return $this;
     }
