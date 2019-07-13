@@ -3,27 +3,24 @@ namespace App\Service\Filter;
 
 use App\Model\FilterResults;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class Filterer
 {
-    private $repository;
     private $orderByMap;
     private $filterMap;
     private $pageSize;
-    private $entityAlias;
     private $defaultFilters = [];
     private $requiredFilters = [];
 
-    public function __construct(EntityRepository $repository, string $entityAlias, int $pageSize, array $orderByMap, array $filterCallbacks)
+    public function __construct(int $pageSize, array $orderByMap, array $filterCallbacks)
     {
-        $this->repository = $repository;
         $this->pageSize = $pageSize;
         $this->orderByMap = $orderByMap;
         $this->filterMap = $filterCallbacks;
-        $this->entityAlias = $entityAlias;
     }
 
     public function addDefaultFilter(string $key, $value)
@@ -36,8 +33,10 @@ class Filterer
         $this->requiredFilters[$key] = $value;
     }
 
-    public function filter(ParameterBag $params): FilterResults
+    public function filter(QueryBuilder $qb, ParameterBag $params): FilterResults
     {
+        // sanitize parameters:
+
         $page = $params->getInt('page', 0);
         $orderBy = strtolower($params->getAlnum('orderBy'));
         $orderDir = strtolower($params->getAlpha('orderDir'));
@@ -55,14 +54,12 @@ class Filterer
 
         $filters = array_filter($filters, function($filter) { return array_key_exists($filter, $this->filterMap); }, ARRAY_FILTER_USE_KEY);
 
-        $qb = $this->repository->createQueryBuilder($this->entityAlias)
-            ->orderBy($this->orderByMap[$orderBy][0], $orderDir)
-        ;
+        // assemble query:
+
+        $qb->orderBy($this->orderByMap[$orderBy][0], $orderDir);
 
         foreach($filters as $filter=>$value)
-        {
             $this->filterMap[$filter]($qb, $value);
-        }
 
         $paginator = new Paginator($qb->getQuery());
 
@@ -78,6 +75,8 @@ class Filterer
             ->setFirstResult($page * $this->pageSize)
             ->setMaxResults($this->pageSize)
         ;
+
+        // get results:
 
         $results = new FilterResults();
 

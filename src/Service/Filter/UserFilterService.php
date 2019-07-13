@@ -20,10 +20,13 @@ class UserFilterService
      */
     private $user;
 
+    private $repository;
+
     public function __construct(UserRepository $userRepository)
     {
+        $this->repository = $userRepository;
+
         $this->filterer = new Filterer(
-            $userRepository, 'u',
             self::PAGE_SIZE,
             [
                 'lastActivity' => [ 'u.lastActivity', 'desc' ], // first one is the default
@@ -36,6 +39,11 @@ class UserFilterService
                 'friendedBy' => [ $this, 'filterFriendedBy' ],
             ]
         );
+    }
+
+    public function createQueryBuilder(): QueryBuilder
+    {
+        return $this->repository->createQueryBuilder('u');
     }
 
     public function setUser(?User $user)

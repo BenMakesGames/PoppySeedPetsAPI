@@ -11,10 +11,13 @@ class PetSpeciesFilterService
 
     public const PAGE_SIZE = 20;
 
+    private $repository;
+
     public function __construct(PetSpeciesRepository $petSpeciesRepository)
     {
+        $this->repository = $petSpeciesRepository;
+
         $this->filterer = new Filterer(
-            $petSpeciesRepository, 'i',
             self::PAGE_SIZE,
             [
                 'name' => [ 'i.name', 'asc' ], // first one is the default
@@ -24,6 +27,11 @@ class PetSpeciesFilterService
                 'name' => array($this, 'filterName'),
             ]
         );
+    }
+
+    public function createQueryBuilder(): QueryBuilder
+    {
+        return $this->repository->createQueryBuilder('i');
     }
 
     public function filterName(QueryBuilder $qb, $value)

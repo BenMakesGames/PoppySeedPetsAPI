@@ -21,4 +21,5 @@ final class SerializationGroupEnum
     const MUSEUM = 'museum';
     const QUERY_ADMIN = 'queryAdmin';
     const PET_SHELTER_PET = 'petShelterPet';
+    const MARKET_ITEM = 'marketItem';
 }

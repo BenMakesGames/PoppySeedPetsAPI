@@ -16,10 +16,13 @@ class PetActivityLogsFilterService
 
     public const PAGE_SIZE = 20;
 
+    private $repository;
+
     public function __construct(PetActivityLogRepository $petActivityLogRepository)
     {
+        $this->repository = $petActivityLogRepository;
+
         $this->filterer = new Filterer(
-            $petActivityLogRepository, 'l',
             self::PAGE_SIZE,
             [
                 'id' => [ 'l.id', 'desc' ], // first one is the default
@@ -28,6 +31,11 @@ class PetActivityLogsFilterService
                 'pet' => [ $this, 'filterPet' ],
             ]
         );
+    }
+
+    public function createQueryBuilder(): QueryBuilder
+    {
+        return $this->repository->createQueryBuilder('l');
     }
 
     public function filterPet(QueryBuilder $qb, $value)

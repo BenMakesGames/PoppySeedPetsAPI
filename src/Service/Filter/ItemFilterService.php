@@ -10,10 +10,13 @@ class ItemFilterService
 
     public const PAGE_SIZE = 20;
 
+    private $repository;
+
     public function __construct(ItemRepository $itemRepository)
     {
+        $this->repository = $itemRepository;
+
         $this->filterer = new Filterer(
-            $itemRepository, 'i',
             self::PAGE_SIZE,
             [
                 'name' => [ 'i.name', 'asc' ], // first one is the default
@@ -24,6 +27,11 @@ class ItemFilterService
                 'edible' => array($this, 'filterEdible')
             ]
         );
+    }
+
+    public function createQueryBuilder(): QueryBuilder
+    {
+        return $this->repository->createQueryBuilder('i');
     }
 
     public function filterName(QueryBuilder $qb, $value)

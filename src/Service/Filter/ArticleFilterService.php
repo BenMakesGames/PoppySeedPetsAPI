@@ -10,10 +10,13 @@ class ArticleFilterService
 
     public const PAGE_SIZE = 10;
 
+    private $repository;
+
     public function __construct(ArticleRepository $articleRepository)
     {
+        $this->repository = $articleRepository;
+
         $this->filterer = new Filterer(
-            $articleRepository, 'a',
             self::PAGE_SIZE,
             [
                 'createdOn' => [ 'a.createdOn', 'desc' ], // first one is the default
@@ -21,5 +24,10 @@ class ArticleFilterService
             [
             ]
         );
+    }
+
+    public function createQueryBuilder(): QueryBuilder
+    {
+        return $this->repository->createQueryBuilder('a');
     }
 }

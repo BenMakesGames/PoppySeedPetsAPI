@@ -2,6 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Model\FilterResults;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 trait FilterService
@@ -13,7 +14,7 @@ trait FilterService
 
     public function getResults(ParameterBag $parameters): FilterResults
     {
-        return $this->filterer->filter($parameters);
+        return $this->filterer->filter($this->createQueryBuilder(), $parameters);
     }
 
     public function addDefaultFilter(string $key, $value)
@@ -25,4 +26,6 @@ trait FilterService
     {
         $this->filterer->addRequiredFilter($key, $value);
     }
+
+    abstract function createQueryBuilder(): QueryBuilder;
 }

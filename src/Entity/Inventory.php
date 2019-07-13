@@ -14,20 +14,21 @@ class Inventory
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "myInventory"})
+     * @Groups({"myPet", "myInventory", "marketItem"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Item")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem"})
      */
     private $item;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"marketItem"})
      */
     private $owner;
 
@@ -63,6 +64,7 @@ class Inventory
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"myInventory"})
      */
     private $sellPrice;
 
@@ -177,5 +179,15 @@ class Inventory
         $this->sellPrice = $sellPrice;
 
         return $this;
+    }
+
+    /**
+     * @Groups({"marketItem"})
+     */
+    public function getBuyPrice(): ?int
+    {
+        if($this->sellPrice === null || $this->sellPrice <= 0) return null;
+
+        return \ceil($this->sellPrice * 1.02);
     }
 }

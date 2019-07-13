@@ -16,19 +16,29 @@ class MuseumFilterService
 
     public const PAGE_SIZE = 20;
 
+    private $repository;
+
     public function __construct(MuseumItemRepository $museumItemRepository)
     {
+        $this->repository = $museumItemRepository;
+
         $this->filterer = new Filterer(
-            $museumItemRepository, 'm',
             self::PAGE_SIZE,
             [
                 'donatedOn' => [ 'm.donatedOn', 'desc' ], // first one is the default
-                'itemName' => [ 'm.item.name', 'asc' ],
+                'itemName' => [ 'item.name', 'asc' ],
             ],
             [
                 'user' => [ $this, 'filterUser' ],
             ]
         );
+    }
+
+    public function createQueryBuilder(): QueryBuilder
+    {
+        return $this->repository->createQueryBuilder('m')
+            ->leftJoin('m.item', 'item')
+        ;
     }
 
     public function filterUser(QueryBuilder $qb, $value)
