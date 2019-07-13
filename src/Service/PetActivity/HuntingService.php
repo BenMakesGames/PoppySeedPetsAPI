@@ -32,7 +32,7 @@ class HuntingService
     {
         $maxSkill = 10 + $pet->getSkills()->getStrength() + $pet->getSkills()->getBrawl() - $pet->getWhack() - $pet->getJunk();
 
-        if($maxSkill > 14) $maxSkill = 14;
+        if($maxSkill > 15) $maxSkill = 15;
         else if($maxSkill < 1) $maxSkill = 1;
 
         $roll = \mt_rand(1, $maxSkill);
@@ -60,16 +60,19 @@ class HuntingService
                 $activityLog = $this->huntedLargeToad($pet);
                 break;
             case 10:
-                $activityLog = $this->huntedOnionBoy($pet);
+                $activityLog = $this->huntedScarecrow($pet);
                 break;
             case 11:
+                $activityLog = $this->huntedOnionBoy($pet);
+                break;
             case 12:
+            case 13:
                 $activityLog = $this->huntedThievingMagpie($pet);
                 break;
-            case 13:
+            case 14:
                 $activityLog = $this->huntedGhosts($pet);
                 break;
-            case 14:
+            case 15:
                 $activityLog = $this->huntedSatyr($pet);
                 break;
         }
@@ -170,6 +173,55 @@ class HuntingService
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' picked a fight with a Giant Toad, but lost.');
             $pet->increaseEsteem(-2);
+            $this->petService->gainExp($pet, 1, [ 'strength', 'brawl' ]);
+        }
+
+        return $activityLog;
+    }
+
+    private function huntedScarecrow(Pet $pet): PetActivityLog
+    {
+        $skill = 10 + $pet->getSkills()->getStrength() + $pet->getSkills()->getBrawl();
+
+        $pet->increaseFood(-1);
+
+        $pet->spendTime(mt_rand(45, 60));
+
+        if(\mt_rand(1, $skill) >= 7)
+        {
+            $this->petService->gainExp($pet, 1, [ 'strength', 'brawl' ]);
+
+            if(mt_rand(1, 2) === 1)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' beat up a Scarecrow, then took some of the Wheat it was defending.');
+                $this->inventoryService->petCollectsItem('Wheat', $pet, $pet->getName() . ' took this from a Wheat Farm, after beating up its Scarecrow.');
+
+                if(mt_rand(1, 10 + $pet->getSkills()->getPerception() + $pet->getSkills()->getNature()) >= 10)
+                {
+                    $this->petService->gainExp($pet, 1, [ 'perception', 'nature' ]);
+
+                    if(mt_rand(1, 2) === 1)
+                        $this->inventoryService->petCollectsItem('Wheat', $pet, $pet->getName() . ' took this from a Wheat Farm, after beating up its Scarecrow.');
+                    else
+                        $this->inventoryService->petCollectsItem('Wheat Flower', $pet, $pet->getName() . ' took this from a Wheat Farm, after beating up its Scarecrow.');
+                }
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' beat up a Scarecrow, then took some of the Rice it was defending.');
+                $this->inventoryService->petCollectsItem('Rice', $pet, $pet->getName() . ' took this from a Rice Farm, after beating up its Scarecrow');
+
+                if(mt_rand(1, 10 + $pet->getSkills()->getPerception() + $pet->getSkills()->getNature()) >= 10)
+                {
+                    $this->petService->gainExp($pet, 1, [ 'perception', 'nature' ]);
+                    $this->inventoryService->petCollectsItem('Rice', $pet, $pet->getName() . ' took this from a Rice Farm, after beating up its Scarecrow.');
+                }
+            }
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to take out a Scarecrow, but lost.');
+            $pet->increaseEsteem(-1);
             $this->petService->gainExp($pet, 1, [ 'strength', 'brawl' ]);
         }
 
