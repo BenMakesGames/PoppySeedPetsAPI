@@ -88,7 +88,7 @@ class CraftingService
             if(array_key_exists('Gold Ore', $quantities))
                 $possibilities[] = [ $this->refiningService, 'createGoldBar' ];
 
-            if(mt_rand(1, 10 + $pet->getSkills()->getCrafts() + $pet->getSkills()->getIntelligence()) >= 10)
+            if(mt_rand(1, 10 + $pet->getCrafts() + $pet->getIntelligence()) >= 10)
             {
                 if(array_key_exists('Iron Bar', $quantities))
                     $possibilities[] = [ $this->refiningService, 'createIronKey' ];
@@ -131,7 +131,7 @@ class CraftingService
 
     private function createStringFromFluff(Pet $pet): PetActivityLog
     {
-        $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + $pet->getSkills()->getCrafts());
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
         if($roll <= 2)
         {
             $pet->spendTime(\mt_rand(30, 60));
@@ -158,7 +158,7 @@ class CraftingService
 
     private function createYellowDyeFromTeaLeaves(Pet $pet): PetActivityLog
     {
-        $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getNature() + $pet->getSkills()->getCrafts());
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getNature() + $pet->getCrafts());
         if($roll <= 2)
         {
             $pet->spendTime(\mt_rand(45, 60));
@@ -185,7 +185,7 @@ class CraftingService
 
     private function createGreenDyeFromScales(Pet $pet): PetActivityLog
     {
-        $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getNature() + $pet->getSkills()->getCrafts());
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getNature() + $pet->getCrafts());
         if($roll <= 2)
         {
             $pet->spendTime(\mt_rand(45, 60));
@@ -212,7 +212,7 @@ class CraftingService
 
     private function createWhiteCloth(Pet $pet): PetActivityLog
     {
-        $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + $pet->getSkills()->getCrafts());
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
         if($roll <= 2)
         {
             $pet->spendTime(\mt_rand(45, 60));
@@ -239,7 +239,7 @@ class CraftingService
 
     private function createCrookedFishingRod(Pet $pet): PetActivityLog
     {
-        $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + \max($pet->getSkills()->getCrafts(), $pet->getSkills()->getNature()));
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + \max($pet->getCrafts(), $pet->getNature()));
 
         if($roll <= 3)
         {
@@ -278,7 +278,7 @@ class CraftingService
 
     private function createStereotypicalTorch(Pet $pet): PetActivityLog
     {
-        $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + \max($pet->getSkills()->getCrafts(), $pet->getSkills()->getNature()));
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
 
         if($roll <= 2)
         {
@@ -286,14 +286,14 @@ class CraftingService
             if(\mt_rand(1, 2) === 1)
             {
                 $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), 1);
-                $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts', 'nature' ]);
+                $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts' ]);
                 $pet->increaseEsteem(-1);
                 return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Stereotypical Torch, but accidentally tore the White Cloth into useless shapes :(');
             }
             else
             {
                 $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
-                $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts',  'nature' ]);
+                $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts' ]);
                 return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Stereotypical Torch, but accidentally split the Crooked Stick :(');
             }
         }
@@ -303,21 +303,21 @@ class CraftingService
             $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
             $this->inventoryService->petCollectsItem('Stereotypical Torch', $pet, $pet->getName() . ' created this from White Cloth and a Crooked Stick.');
-            $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts',  'nature' ]);
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts' ]);
             $pet->increaseEsteem(2);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Stereotypical Torch.');
         }
         else
         {
             $pet->spendTime(\mt_rand(15, 45));
-            $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts',  'nature' ]);
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts' ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Stereotypical Torch, but couldn\'t figure it out.');
         }
     }
 
     private function createChampignon(Pet $pet)
     {
-        $quintessenceHandling = \mt_rand(1, 10 + $pet->getSkills()->getUmbra());
+        $quintessenceHandling = \mt_rand(1, 10 + $pet->getUmbra());
 
         if($quintessenceHandling <= 2)
         {
@@ -327,7 +327,7 @@ class CraftingService
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Champignon, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(');
         }
 
-        $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + $pet->getSkills()->getCrafts());
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
 
         if($roll <= 3)
         {
@@ -358,7 +358,7 @@ class CraftingService
 
     private function createWoodenSword(Pet $pet)
     {
-        $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + \max($pet->getSkills()->getCrafts(), $pet->getSkills()->getBrawl()));
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + \max($pet->getCrafts(), $pet->getBrawl()));
 
         if($roll <= 3)
         {
@@ -409,7 +409,7 @@ class CraftingService
 
     private function repairRustyBlunderbuss(Pet $pet)
     {
-        $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + $pet->getSkills()->getCrafts());
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
 
         if($roll <= 5)
         {
@@ -438,13 +438,13 @@ class CraftingService
 
     private function repairRustyRapier(Pet $pet)
     {
-        $roll = \mt_rand(1, 20 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + $pet->getSkills()->getCrafts());
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + \max($pet->getCrafts(), $pet->getBrawl()));
 
         if($roll <= 5)
         {
             $pet->spendTime(\mt_rand(45, 60));
             $this->inventoryService->loseItem('Rusty Rapier', $pet->getOwner(), 1);
-            $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts' ]);
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts', 'brawl' ]);
             $pet->increaseEsteem(-2);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to repair a Rusty Rapier, but accidentally broke it beyond repair :(');
         }
@@ -452,7 +452,7 @@ class CraftingService
         {
             $pet->spendTime(\mt_rand(60, 75));
             $this->inventoryService->loseItem('Rusty Rapier', $pet->getOwner(), 1);
-            $this->petService->gainExp($pet, 2, [ 'intelligence', 'dexterity', 'crafts' ]);
+            $this->petService->gainExp($pet, 2, [ 'intelligence', 'dexterity', 'crafts', 'brawl' ]);
             $pet->increaseEsteem(2);
             $this->inventoryService->petCollectsItem('Rapier', $pet, $pet->getName() . ' repaired this Rapier.');
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' repaired a Rusty Rapier. It\'s WAY less rusty now!');
@@ -460,7 +460,7 @@ class CraftingService
         else
         {
             $pet->spendTime(\mt_rand(60, 75));
-            $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts' ]);
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts', 'brawl' ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' spent a while trying to repair a Rusty Rapier, but wasn\'t able to make any progress.');
         }
     }

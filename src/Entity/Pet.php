@@ -527,4 +527,59 @@ class Pet
 
         return $this;
     }
+
+    public function getDexterity(): int
+    {
+        return $this->getSkills()->getDexterity() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getDexterity() : 0);
+    }
+
+    public function getStrength(): int
+    {
+        return $this->getSkills()->getStrength() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getStrength() : 0);
+    }
+
+    public function getStamina(): int
+    {
+        return $this->getSkills()->getStamina() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getStamina() : 0);
+    }
+
+    public function getIntelligence(): int
+    {
+        return $this->getSkills()->getIntelligence() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getIntelligence() : 0);
+    }
+
+    public function getPerception(): int
+    {
+        return $this->getSkills()->getPerception() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getPerception() : 0);
+    }
+
+    public function getNature(): int
+    {
+        return $this->getSkills()->getNature() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getNature() : 0);
+    }
+
+    public function getBrawl(): int
+    {
+        return $this->getSkills()->getBrawl() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getBrawl() : 0);
+    }
+
+    public function getStealth(): int
+    {
+        return $this->getSkills()->getStealth() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getStealth() : 0);
+    }
+
+    public function getCrafts(): int
+    {
+        return $this->getSkills()->getCrafts() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getCrafts() : 0);
+    }
+
+    public function getUmbra(): int
+    {
+        return $this->getSkills()->getUmbra() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getUmbra() : 0);
+    }
+
+    public function getFishing(): int
+    {
+        return $this->getTool() ? $this->getTool()->getItem()->getTool()->getFishing() : 0;
+    }
 }

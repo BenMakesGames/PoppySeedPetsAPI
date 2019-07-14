@@ -30,7 +30,7 @@ class HuntingService
 
     public function adventure(Pet $pet)
     {
-        $maxSkill = 10 + $pet->getSkills()->getStrength() + $pet->getSkills()->getBrawl() - $pet->getWhack() - $pet->getJunk();
+        $maxSkill = 10 + $pet->getStrength() + $pet->getBrawl() - $pet->getWhack() - $pet->getJunk();
 
         if($maxSkill > 15) $maxSkill = 15;
         else if($maxSkill < 1) $maxSkill = 1;
@@ -89,7 +89,7 @@ class HuntingService
 
     private function huntedDustBunny(Pet $pet): PetActivityLog
     {
-        $skill = 10 + $pet->getSkills()->getDexterity() + $pet->getSkills()->getBrawl();
+        $skill = 10 + $pet->getDexterity() + $pet->getBrawl();
 
         $pet->increaseFood(-1);
         $pet->spendTime(mt_rand(30, 60));
@@ -111,7 +111,7 @@ class HuntingService
 
     private function huntedGoat(Pet $pet): PetActivityLog
     {
-        $skill = 10 + $pet->getSkills()->getStrength() + $pet->getSkills()->getBrawl();
+        $skill = 10 + $pet->getStrength() + $pet->getBrawl();
 
         $pet->increaseFood(-1);
         $pet->spendTime(mt_rand(45, 60));
@@ -148,7 +148,7 @@ class HuntingService
 
     private function huntedLargeToad(Pet $pet): PetActivityLog
     {
-        $skill = 10 + $pet->getSkills()->getStrength() + $pet->getSkills()->getBrawl();
+        $skill = 10 + $pet->getStrength() + $pet->getBrawl();
 
         $pet->increaseFood(-1);
 
@@ -181,7 +181,7 @@ class HuntingService
 
     private function huntedScarecrow(Pet $pet): PetActivityLog
     {
-        $skill = 10 + $pet->getSkills()->getStrength() + $pet->getSkills()->getBrawl();
+        $skill = 10 + $pet->getStrength() + $pet->getBrawl();
 
         $pet->increaseFood(-1);
 
@@ -196,7 +196,7 @@ class HuntingService
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' beat up a Scarecrow, then took some of the Wheat it was defending.');
                 $this->inventoryService->petCollectsItem('Wheat', $pet, $pet->getName() . ' took this from a Wheat Farm, after beating up its Scarecrow.');
 
-                if(mt_rand(1, 10 + $pet->getSkills()->getPerception() + $pet->getSkills()->getNature()) >= 10)
+                if(mt_rand(1, 10 + $pet->getPerception() + $pet->getNature()) >= 10)
                 {
                     $this->petService->gainExp($pet, 1, [ 'perception', 'nature' ]);
 
@@ -211,7 +211,7 @@ class HuntingService
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' beat up a Scarecrow, then took some of the Rice it was defending.');
                 $this->inventoryService->petCollectsItem('Rice', $pet, $pet->getName() . ' took this from a Rice Farm, after beating up its Scarecrow');
 
-                if(mt_rand(1, 10 + $pet->getSkills()->getPerception() + $pet->getSkills()->getNature()) >= 10)
+                if(mt_rand(1, 10 + $pet->getPerception() + $pet->getNature()) >= 10)
                 {
                     $this->petService->gainExp($pet, 1, [ 'perception', 'nature' ]);
                     $this->inventoryService->petCollectsItem('Rice', $pet, $pet->getName() . ' took this from a Rice Farm, after beating up its Scarecrow.');
@@ -230,7 +230,7 @@ class HuntingService
 
     private function huntedOnionBoy(Pet $pet): PetActivityLog
     {
-        $skill = 10 + $pet->getSkills()->getStamina();
+        $skill = 10 + $pet->getStamina();
 
         $pet->spendTime(mt_rand(30, 60));
 
@@ -252,8 +252,8 @@ class HuntingService
 
     private function huntedThievingMagpie(Pet $pet): PetActivityLog
     {
-        $intSkill = 10 + $pet->getSkills()->getIntelligence();
-        $dexSkill = 10 + $pet->getSkills()->getDexterity() + $pet->getSkills()->getBrawl();
+        $intSkill = 10 + $pet->getIntelligence();
+        $dexSkill = 10 + $pet->getDexterity() + $pet->getBrawl();
 
         $pet->spendTime(mt_rand(45, 60));
 
@@ -298,7 +298,7 @@ class HuntingService
 
     private function huntedGhosts(Pet $pet): PetActivityLog
     {
-        $skill = 10 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getBrawl() + $pet->getSkills()->getUmbra();
+        $skill = 10 + $pet->getIntelligence() + $pet->getBrawl() + $pet->getUmbra();
 
         if(mt_rand(1, $skill) >= 15)
         {
@@ -333,7 +333,7 @@ class HuntingService
 
     private function huntedSatyr(Pet $pet): PetActivityLog
     {
-        $skill = 10 + $pet->getSkills()->getStrength() + $pet->getSkills()->getBrawl();
+        $skill = 10 + $pet->getStrength() + $pet->getBrawl();
 
         $pet->increaseFood(-1);
         $pet->spendTime(mt_rand(45, 60));

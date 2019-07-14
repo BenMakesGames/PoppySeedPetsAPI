@@ -36,7 +36,7 @@ class TreasureMapService
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        $followMapCheck = mt_rand(1, 10 + $pet->getSkills()->getPerception() + $pet->getSkills()->getNature() + $pet->getSkills()->getIntelligence());
+        $followMapCheck = mt_rand(1, 10 + $pet->getPerception() + $pet->getSkills()->getNature() + $pet->getIntelligence());
 
         if($followMapCheck < 15)
         {
@@ -67,7 +67,7 @@ class TreasureMapService
             $this->em->remove($pet->getTool());
             $pet->setTool(null);
 
-            $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' found this by following Cegueli\'s Treasure Map!');
+            $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' found this by following Cetgueli\'s Treasure Map!');
         }
 
         if($activityLog)
