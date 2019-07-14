@@ -5,6 +5,8 @@ final class UserStatEnum
 {
     const TOTAL_MONEYS_SPENT = 'Total Moneys Spent';
     const TOTAL_MONEYS_EARNED_IN_MARKET = 'Total Moneys Earned in Market';
+    const ITEMS_SOLD_IN_MARKET = 'Items Sold in Market';
+    const ITEMS_BOUGHT_IN_MARKET = 'Items Bought in Market';
     const FLOWERS_PURCHASED = 'Flowers Purchased';
     const COOKED_SOMETHING = 'Cooked Something';
     const ITEMS_THROWN_AWAY = 'Items Thrown Away';
