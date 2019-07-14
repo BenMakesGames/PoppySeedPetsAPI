@@ -101,6 +101,16 @@ class ItemTool
      */
     private $gripScale;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $music = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $smithing = 0;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -294,6 +304,30 @@ class ItemTool
     public function setGripScale(float $gripScale): self
     {
         $this->gripScale = $gripScale;
+
+        return $this;
+    }
+
+    public function getMusic(): ?int
+    {
+        return $this->music;
+    }
+
+    public function setMusic(int $music): self
+    {
+        $this->music = $music;
+
+        return $this;
+    }
+
+    public function getSmithing(): ?int
+    {
+        return $this->smithing;
+    }
+
+    public function setSmithing(int $smithing): self
+    {
+        $this->smithing = $smithing;
 
         return $this;
     }

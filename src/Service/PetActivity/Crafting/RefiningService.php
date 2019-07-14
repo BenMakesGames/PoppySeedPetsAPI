@@ -22,9 +22,37 @@ class RefiningService
         $this->responseService = $responseService;
     }
 
+    public function getCraftingPossibilities(Pet $pet, array $quantities): array
+    {
+        $possibilities = [];
+
+        if(array_key_exists('Iron Ore', $quantities))
+            $possibilities[] = [ $this, 'createIronBar' ];
+
+        if(array_key_exists('Silver Ore', $quantities))
+            $possibilities[] = [ $this, 'createSilverBar' ];
+
+        if(array_key_exists('Gold Ore', $quantities))
+            $possibilities[] = [ $this, 'createGoldBar' ];
+
+        if(mt_rand(1, 10 + $pet->getCrafts() + $pet->getIntelligence() + $pet->getSmithing()) >= 10)
+        {
+            if(array_key_exists('Iron Bar', $quantities))
+                $possibilities[] = [ $this, 'createIronKey' ];
+
+            if(array_key_exists('Silver Bar', $quantities))
+                $possibilities[] = [ $this, 'createSilverKey' ];
+
+            if(array_key_exists('Gold Bar', $quantities))
+                $possibilities[] = [ $this, 'createGoldKey' ];
+        }
+
+        return $possibilities;
+    }
+
     public function createIronBar(Pet $pet): PetActivityLog
     {
-        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getSkills()->getCrafts());
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
         if($roll <= 2)
         {
             $pet->spendTime(\mt_rand(30, 60));
@@ -53,7 +81,7 @@ class RefiningService
 
     public function createSilverBar(Pet $pet): PetActivityLog
     {
-        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getSkills()->getCrafts());
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
         if($roll <= 2)
         {
             $pet->spendTime(\mt_rand(30, 60));
@@ -82,7 +110,7 @@ class RefiningService
 
     public function createGoldBar(Pet $pet): PetActivityLog
     {
-        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getSkills()->getCrafts());
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
         if($roll <= 2)
         {
             $pet->spendTime(\mt_rand(30, 60));
@@ -111,7 +139,7 @@ class RefiningService
 
     public function createIronKey(Pet $pet): PetActivityLog
     {
-        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getSkills()->getCrafts());
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
         if($roll <= 2)
         {
             $pet->spendTime(\mt_rand(30, 60));
@@ -151,8 +179,8 @@ class RefiningService
 
     public function createSilverKey(Pet $pet): PetActivityLog
     {
-        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getSkills()->getCrafts());
-        $reRoll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getSkills()->getCrafts());
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+        $reRoll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
 
         if($roll <= 2)
         {
@@ -204,8 +232,8 @@ class RefiningService
 
     public function createGoldKey(Pet $pet): PetActivityLog
     {
-        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getSkills()->getCrafts());
-        $reRoll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getSkills()->getCrafts());
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+        $reRoll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
 
         if($roll <= 2)
         {

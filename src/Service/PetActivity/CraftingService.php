@@ -7,6 +7,7 @@ use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetActivity\Crafting\RefiningService;
+use App\Service\PetActivity\Crafting\ScrollMakingService;
 use App\Service\PetService;
 use App\Service\ResponseService;
 
@@ -17,10 +18,11 @@ class CraftingService
     private $petService;
     private $itemRepository;
     private $refiningService;
+    private $scrollMakingService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetService $petService,
-        ItemRepository $itemRepository, RefiningService $refiningService
+        ItemRepository $itemRepository, RefiningService $refiningService, ScrollMakingService $scrollMakingService
     )
     {
         $this->responseService = $responseService;
@@ -28,6 +30,7 @@ class CraftingService
         $this->petService = $petService;
         $this->itemRepository = $itemRepository;
         $this->refiningService = $refiningService;
+        $this->scrollMakingService = $scrollMakingService;
     }
 
     public function getCraftingPossibilities(Pet $pet): array
@@ -78,34 +81,16 @@ class CraftingService
 
         // pets won't try any refining tasks if they don't feel sufficiently safe
         if($pet->getSafety() > 0)
-        {
-            if(array_key_exists('Iron Ore', $quantities))
-                $possibilities[] = [ $this->refiningService, 'createIronBar' ];
-
-            if(array_key_exists('Silver Ore', $quantities))
-                $possibilities[] = [ $this->refiningService, 'createSilverBar' ];
-
-            if(array_key_exists('Gold Ore', $quantities))
-                $possibilities[] = [ $this->refiningService, 'createGoldBar' ];
-
-            if(mt_rand(1, 10 + $pet->getCrafts() + $pet->getIntelligence()) >= 10)
-            {
-                if(array_key_exists('Iron Bar', $quantities))
-                    $possibilities[] = [ $this->refiningService, 'createIronKey' ];
-
-                if(array_key_exists('Silver Bar', $quantities))
-                    $possibilities[] = [ $this->refiningService, 'createSilverKey' ];
-
-                if(array_key_exists('Gold Bar', $quantities))
-                    $possibilities[] = [ $this->refiningService, 'createGoldKey' ];
-            }
-        }
+            $possibilities = array_merge($possibilities, $this->refiningService->getCraftingPossibilities($pet, $quantities));
 
         if(array_key_exists('Rusty Blunderbuss', $quantities))
             $possibilities[] = [ $this, 'repairRustyBlunderbuss' ];
 
         if(array_key_exists('Rusty Rapier', $quantities))
             $possibilities[] = [ $this, 'repairRustyRapier' ];
+
+        if($pet->getUmbra() >= 5)
+            $possibilities = array_merge($possibilities, $this->scrollMakingService->getCraftingPossibilities($pet, $quantities));
 
         return $possibilities;
     }

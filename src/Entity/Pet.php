@@ -582,4 +582,14 @@ class Pet
     {
         return $this->getTool() ? $this->getTool()->getItem()->getTool()->getFishing() : 0;
     }
+
+    public function getMusic(): int
+    {
+        return $this->getTool() ? $this->getTool()->getItem()->getTool()->getMusic() : 0;
+    }
+
+    public function getSmithing(): int
+    {
+        return $this->getTool() ? $this->getTool()->getItem()->getTool()->getSmithing() : 0;
+    }
 }

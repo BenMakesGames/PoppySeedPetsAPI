@@ -173,8 +173,8 @@ class FishingService
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Roadside Creek, and caught a Singing Fish!');
                 $this->inventoryService->petCollectsItem(mt_rand(1, 2) === 1 ? 'Plastic' : 'Fish', $pet, 'From a Singing Fish that ' . $pet->getName() . ' fished at a Roadside Creek.');
 
-                if(\mt_rand(1, 20 + $pet->getPerception()) >= 15)
-                    $this->inventoryService->petCollectsItem('Musical Scales', $pet, 'From a Singing Fish that ' . $pet->getName() . ' fished at a Roadside Creek.');
+                if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getMusic()) >= 10)
+                    $this->inventoryService->petCollectsItem('Music Note', $pet, 'From a Singing Fish that ' . $pet->getName() . ' fished at a Roadside Creek.');
 
                 $this->petService->gainExp($pet, 2, ['dexterity', 'nature', 'perception']);
 
