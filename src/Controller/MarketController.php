@@ -3,6 +3,8 @@ namespace App\Controller;
 
 use App\Entity\Inventory;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UserStatEnum;
+use App\Repository\UserStatsRepository;
 use App\Service\Filter\MarketFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -37,7 +39,8 @@ class MarketController extends PsyPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function buy(
-        Inventory $inventory, ResponseService $responseService, AdapterInterface $cache, EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, AdapterInterface $cache, EntityManagerInterface $em,
+        UserStatsRepository $userStatsRepository
     )
     {
         $user = $this->getUser();
@@ -62,7 +65,10 @@ class MarketController extends PsyPetsController
         try
         {
             $inventory->getOwner()->increaseMoneys($inventory->getSellPrice());
+            $userStatsRepository->incrementStat($inventory->getOwner(), UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $inventory->getSellPrice());
+
             $user->increaseMoneys(-$inventory->getBuyPrice());
+            $userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, $inventory->getBuyPrice());
 
             $inventory
                 ->setOwner($user)
