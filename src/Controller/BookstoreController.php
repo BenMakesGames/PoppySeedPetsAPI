@@ -1,13 +1,15 @@
 <?php
 namespace App\Controller;
 use App\Entity\Item;
+use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Repository\ItemRepository;
 use App\Repository\UserStatsRepository;
-use App\Service\BookStoreService;
+use App\Service\BookstoreService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -15,21 +17,24 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 // allows player to buy books; inventory grows based on various criteria
 
 /**
- * @Route("/bookStore")
+ * @Route("/bookstore")
  */
-class BookStoreController extends PsyPetsController
+class BookstoreController extends PsyPetsController
 {
     /**
      * @Route("", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getAvailableBooks(
-        BookStoreService $bookStoreService, ItemRepository $itemRepository
+        BookstoreService $bookstoreService, ItemRepository $itemRepository, ResponseService $responseService
     )
     {
         $user = $this->getUser();
 
-        $bookPrices = $bookStoreService->getAvailableInventory($user);
+        if($user->getUnlockedBookstore() === null)
+            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+
+        $bookPrices = $bookstoreService->getAvailableInventory($user);
 
         $bookItems = $itemRepository->findBy([ 'name' => array_keys($bookPrices) ], [ 'name' => 'ASC' ]);
 
@@ -38,24 +43,29 @@ class BookStoreController extends PsyPetsController
         foreach($bookItems as $bookItem)
         {
             $books[] = [
-                'book' => $bookItem,
+                'item' => $bookItem,
                 'price' => $bookPrices[$bookItem->getName()]
             ];
         }
+
+        return $responseService->success($books, [ SerializationGroupEnum::MARKET_ITEM ]);
     }
 
     /**
-     * @Route("/buy/{book}", methods={"POST"})
+     * @Route("/{book}/buy", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function buyBook(
-        Item $book, BookStoreService $bookStoreService, InventoryService $inventoryService, EntityManagerInterface $em,
+        Item $book, BookstoreService $bookstoreService, InventoryService $inventoryService, EntityManagerInterface $em,
         ResponseService $responseService, UserStatsRepository $userStatsRepository
     )
     {
         $user = $this->getUser();
 
-        $bookPrices = $bookStoreService->getAvailableInventory($user);
+        if($user->getUnlockedBookstore() === null)
+            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+
+        $bookPrices = $bookstoreService->getAvailableInventory($user);
 
         if(!array_key_exists($book->getName(), $bookPrices))
             throw new UnprocessableEntityHttpException('That item cannot be purchased.');
@@ -71,6 +81,6 @@ class BookStoreController extends PsyPetsController
 
         $em->flush();
 
-        $responseService->success();
+        return $responseService->success();
     }
 }

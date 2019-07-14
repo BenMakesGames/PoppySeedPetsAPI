@@ -1,0 +1,107 @@
+<?php
+namespace App\Controller\Item;
+
+use App\Entity\Inventory;
+use App\Service\ResponseService;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
+/**
+ * @Route("/item/grandparootSecrets")
+ */
+class GrandparootSecretsController extends PsyPetsItemController
+{
+    /**
+     * @Route("/{inventory}/read", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function read(Inventory $inventory, ResponseService $responseService)
+    {
+        $this->validateInventory($inventory, 'grandparootSecrets/#/read');
+
+        return $responseService->itemActionSuccess('# Unlocking the Secrets of Grandparoot
+
+Grandparoot - and the Aging Powder which can be extracted from it - is a truly wondrous substance! It makes possible the rapid aging of foods, and other substances; it goes saying that you should always wear gloves when using the stuff! Your hand isn\'t going to instantly fall off if some touches you, but they don\'t say "cooks that work with Grandparoot end up with grandpa hands" for nothing!
+
+How exactly the substance works is beyond the scope of this book (I asked physicist friend; it didn\'t make a lick of sense to me!) but I _can_ tell you how you can use Aging Powder to aid you in the kitchen!
+ 
+### Making Aging Powder
+
+Grandparoot on its own isn\'t very useful raw. The root is exceptionally bitter (which is fine: you definitely shouldn\'t eat it!) and the compounds we need - what we commonly call Aging Powder - are locked up in the fibers of the vegetable.
+
+To get Aging Powder, take your Grandparoot, and simmer it in about 1.5 cups of water in a small saucepan. It\'s important to use enough water to get the process started, but not too much, for reasons we\'ll soon get into.
+
+The heat will break up the fibers, freeing the aging compound inside. It takes a few minutes to really get going, but there\'s a observable turning point where the process will accelerate; the root will begin to shrivel, and your simmer will quickly become a boil as spacetime begins warping inside your saucepan! It\'s important that you be vigilant, and watch for this moment! Once the water begins to boil, turn the heat off. The water will continue to boil, but that\'s okay. As it boils away, the process will slow, and eventually stop.
+ 
+At the bottom of your saucepan, you should be left with a dessicated Grandparoot. There may be some water around the edges of the saucepan; that\'s fine.
+
+The reason for using a particular amount of water is to control the amount of time that the aging process takes place. You want it to run long enough to break apart the root, but not so long that the aging component is completely spent.
+
+It\'s time to separate out the actual Aging Powder!
+
+Remove the dessicated root from the saucepan. Try to avoid contact with any water remaining in the saucepan. We won\'t restart the aging process (heat is needed for that), but the root is easier to work with when dry.
+
+Grind the root in a spice grinder or mortar and pestle.
+
+What you have now is a mixture of ash (burned Grandparoot plant material), and Aging Powder. The Aging Powder is significantly lighter in color; you should be able to see it clearly.
+ 
+Aging Powder is much denser than ash, so it should be very easy to separate by pouring the mixture on one end of a rimmed baking sheet, and gently shaking while holding the pan at a slight angle. The Aging Powder will slide down the sheet much more quickly than the ash, separating out!
+ 
+It\'s okay if you have a few specks of ash in there. If you can still see a lot of Aging Powder in the ash, remove the Aging Powder you were able to separate, and repeat the process.
+
+Congratulations! You now have Aging Powder!
+
+### Wine
+
+Ordinarily, the process of wine-making is a very time-consuming one. Fortunately, Aging Root makes it possible to quickly make Wine in your own home!
+ 
+Wine experts will tell you that Aging Root gives the wine a slight metallic taste; I\'ve never been able to taste it, myself, and it\'s certainly cheaper than buying a bottle at the grocery store!
+
+You can make a glass of wine by combining Aging Root with many fruits, and even some vegetables. Blackberry Wine is one of my favorites!
+
+You will get a small amount of foam around the edge of your glass; scoop that off, but don\'t throw it away! That\'s tartaric acid - dried, it\'s known as Cream of Tartar - very useful in baking!
+
+### Mushrooms
+
+You can easily grow a variety of mushrooms on wood with the help of Aging Powder!
+ 
+First, mix some Aging Powder with some water, to form a thin sludge.
+
+Take a bit of wood (even a Wooden Sword you\'re no longer using will work!) to a dimly-lit place, and pour the sludge on.
+
+Et voilà! Mushrooms!
+
+### Yogurt
+
+You can\'t get away from the fact that to make Yogurt, you need Yogurt, but you _can_ get away from the time requirement with the application of - you guessed it - Aging Powder!
+
+Take some Yogurt as a starter, and pour in some Creamy Milk. Apply Aging Root. It\'s as easy as that!
+
+### Charcoal
+
+Of course Charcoal is available from the grocery store, and it\'s not very expensive, but it can be fun to make your own!
+
+If you\'ve got a fireplace, you\'ve probably already incidentally done so... and thrown the stuff away!
+
+For shame! You can use that the next time you want to grill! (Don\'t even talk to me about gas grills!)
+
+If you\'re looking for Charcoal in a pinch, set some wood on fire, place it in something that can withstand the temperature of burning wood, and sprinkle some Aging Powder in!
+
+### Kombucha
+
+I hadn\'t tried Kombucha until I started experimenting with Aging Root; it\'s a very refreshing drink, but ordinarily takes a few days to make.
+
+You know where this is going!
+
+If you already have Black Tea or Sweet Black Tea made, simply add Aging Root. (If the tea isn\'t sweetened, you\'ll need to add Sugar as well; Sugar is needed to get the fermenting process going!
+
+If you haven\'t made any tea yet, don\'t worry: Aging Powder will speed up the steeping process as well! Combine Tea Leaves, Sugar, and Aging Root, and let time do the rest... in just under a minute!
+
+### Conclusion
+
+There\'s a lot more you can do with Aging Powder, of course, and you should feel free to experiment. I hope this book has opened your eyes to the possibilities that Grandparoot can bring to your kitchen!
+
+Happy cooking!
+');
+    }
+}

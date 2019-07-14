@@ -136,6 +136,18 @@ class User implements UserInterface
      */
     private $maxSellPrice = 50;
 
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"myAccount"})
+     */
+    private $unlockedFlorist;
+
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"myAccount"})
+     */
+    private $unlockedBookstore;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -487,6 +499,30 @@ class User implements UserInterface
     public function setMaxSellPrice(int $maxSellPrice): self
     {
         $this->maxSellPrice = $maxSellPrice;
+
+        return $this;
+    }
+
+    public function getUnlockedFlorist(): ?\DateTimeImmutable
+    {
+        return $this->unlockedFlorist;
+    }
+
+    public function setUnlockedFlorist(): self
+    {
+        $this->unlockedFlorist = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getUnlockedBookstore(): ?\DateTimeImmutable
+    {
+        return $this->unlockedBookstore;
+    }
+
+    public function setUnlockedBookstore(): self
+    {
+        $this->unlockedBookstore = new \DateTimeImmutable();
 
         return $this;
     }

@@ -53,6 +53,9 @@ class FloristController extends PsyPetsController
     {
         $user = $this->getUser();
 
+        if($user->getUnlockedFlorist() === null)
+            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+
         $flowerName = $request->request->get('flower');
         $recipientId = $request->request->get('recipient');
 

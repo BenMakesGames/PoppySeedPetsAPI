@@ -4,7 +4,7 @@ use App\Entity\User;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 
-class BookStoreService
+class BookstoreService
 {
     private $userStatsRepository;
     private $userQuestRepository;
@@ -18,7 +18,8 @@ class BookStoreService
     public function getAvailableInventory(User $user)
     {
         $bookPrices = [
-            'Welcome Note' => 10,
+            'Welcome Note' => 10, // remember: this item can be turned into plain paper
+            'Unlocking the Secrets of Grandparoot' => 15,
         ];
 
         $flowersPurchased = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => 'Flowers Purchased' ]);
@@ -29,7 +30,16 @@ class BookStoreService
         $cookedSomething = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => 'Cooked Something' ]);
 
         if($cookedSomething && $cookedSomething->getValue() >= 5)
-            $bookPrices['Candy Cookbook'] = 20;
+        {
+            $bookPrices['Candy-maker\'s Cookbook'] = 20;
+        }
+
+        if($cookedSomething && $cookedSomething->getValue() >= 10)
+        {
+            $bookPrices['Big Book of Baking'] = 25;
+        }
+
+        ksort($bookPrices);
 
         return $bookPrices;
     }

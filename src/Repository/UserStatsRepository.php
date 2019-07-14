@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use App\Entity\UserStats;
+use App\Enum\UserStatEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -40,6 +41,14 @@ class UserStatsRepository extends ServiceEntityRepository
         else
         {
             $stat->increaseValue($change);
+        }
+
+        if($user->getUnlockedBookstore() === null && ($name === UserStatEnum::ITEMS_THROWN_AWAY || $name === UserStatEnum::ITEMS_DONATED_TO_MUSEUM))
+        {
+            $tossedAndDonated = $this->findBy([ 'user' => $user, 'stat' => [ UserStatEnum::ITEMS_THROWN_AWAY, UserStatEnum::ITEMS_DONATED_TO_MUSEUM ] ]);
+            $total = array_sum(array_map(function(UserStats $s) { return $s->getValue(); }, $tossedAndDonated));
+            if($total >= 50)
+                $user->setUnlockedBookstore();
         }
 
         return $stat;

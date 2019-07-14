@@ -57,6 +57,10 @@ class FriendController extends PsyPetsController
         ;
 
         $em->persist($newFriend);
+
+        if($user->getUnlockedFlorist() === null)
+            $user->setUnlockedFlorist();
+
         $em->flush();
 
         return $responseService->success();
