@@ -25,6 +25,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @Route("/museum")
@@ -117,10 +118,11 @@ class MuseumController extends PsyPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getTopDonors(
-        Request $request, ResponseService $responseService, UserRepository $userRepository
+        Request $request, ResponseService $responseService, UserRepository $userRepository, NormalizerInterface $normalizer
     )
     {
         $qb = $userRepository->createQueryBuilder('u')
+            ->select('u AS user,s.value AS itemsDonated')
             ->leftJoin('App:UserStats', 's', Expr\Join::WITH, 's.user = u.id')
             ->andWhere('s.stat = :statName')
             ->orderBy('s.value', 'DESC')
@@ -144,7 +146,6 @@ class MuseumController extends PsyPetsController
         ;
 
         $results = new FilterResults();
-
         $results->page = $page;
         $results->pageSize = 20;
         $results->pageCount = $lastPage;
@@ -152,7 +153,7 @@ class MuseumController extends PsyPetsController
         $results->results = $paginator->getQuery()->execute();
         $results->query = [ 'sql ' => $paginator->getQuery()->getSQL(), 'parameters' => $paginator->getQuery()->getParameters()->toArray() ];
 
-        return $responseService->success($results, [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::USER_PUBLIC_PROFILE ]);
+        return $responseService->success($results, [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MUSEUM ]);
     }
 
     /**
