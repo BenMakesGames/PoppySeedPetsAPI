@@ -75,9 +75,13 @@ class CraftingService
         }
 
         if(array_key_exists('Crooked Fishing Rod', $quantities) && array_key_exists('Yellow Dye', $quantities) && array_key_exists('Green Dye', $quantities))
-        {
             $possibilities[] = [ $this, 'createPaintedFishingRod' ];
-        }
+
+        /*if(array_key_exists('Fiberglass', $quantities) && array_key_exists('String', $quantities))
+        {
+            $possibilities[] = [$this, 'createFiberglassBow'];
+            $possibilities[] = [$this, 'createFiberglassFishingRod'];
+        }*/
 
         // pets won't try any refining tasks if they don't feel sufficiently safe
         if($pet->getSafety() > 0)

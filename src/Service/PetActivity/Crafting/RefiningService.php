@@ -35,6 +35,12 @@ class RefiningService
         if(array_key_exists('Gold Ore', $quantities))
             $possibilities[] = [ $this, 'createGoldBar' ];
 
+        if(array_key_exists('Sand', $quantities) && array_key_exists('Limestone', $quantities))
+            $possibilities[] = [ $this, 'createGlass' ];
+
+        if(array_key_exists('Glass', $quantities) && array_key_exists('Plastic', $quantities))
+            $possibilities[] = [ $this, 'createFiberglass' ];
+
         if(mt_rand(1, 10 + $pet->getCrafts() + $pet->getIntelligence() + $pet->getSmithing()) >= 10)
         {
             if(array_key_exists('Iron Bar', $quantities))
@@ -48,6 +54,83 @@ class RefiningService
         }
 
         return $possibilities;
+    }
+
+    public function createGlass(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+        if($roll <= 2)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->inventoryService->loseItem('Sand', $pet->getOwner(), 1);
+            $pet->increaseEsteem(-1);
+            $pet->increaseSafety(-\mt_rand(2, 12));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Glass, but got burned while trying! :(');
+        }
+        else if($roll >= 13)
+        {
+            $pet->spendTime(\mt_rand(60, 75));
+            $this->inventoryService->loseItem('Sand', $pet->getOwner(), 1);
+
+            if(mt_rand(1, 3) === 1)
+            {
+                $this->inventoryService->loseItem('Limestone', $pet->getOwner(), 1);
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' melted Sand and Limestone into Glass.');
+            }
+            else
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' melted Sand and Limestone into Glass. (There\'s plenty of Limestone left over, though!)');
+
+            $this->inventoryService->petCollectsItem('Glass', $pet, $pet->getName() . ' created this from Sand and Limestone.');
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            $pet->increaseEsteem(1);
+
+            return $activityLog;
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(45, 75));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Glass, but couldn\'t figure it out.');
+        }
+    }
+
+    public function createFiberglass(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 2)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+
+            if(mt_rand(1, 2) === 1)
+                $this->inventoryService->loseItem('Plastic', $pet->getOwner(), 1);
+            else
+                $this->inventoryService->loseItem('Glass', $pet->getOwner(), 1);
+
+            $pet->increaseEsteem(-1);
+            $pet->increaseSafety(-\mt_rand(2, 12));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Fiberglass, but got burned while trying! :(');
+        }
+        else if($roll >= 15)
+        {
+            $pet->spendTime(\mt_rand(60, 75));
+            $this->inventoryService->loseItem('Glass', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), 1);
+
+            $this->inventoryService->petCollectsItem('Fiberglass', $pet, $pet->getName() . ' created this from Glass and Plastic.');
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            $pet->increaseEsteem(1);
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' made Fiberglass from Glass and Plastic.');
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(45, 75));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Fiberglass, but couldn\'t figure it out.');
+        }
     }
 
     public function createIronBar(Pet $pet): PetActivityLog

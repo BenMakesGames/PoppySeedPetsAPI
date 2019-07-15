@@ -55,6 +55,12 @@ class PetService
     {
         if($exp === 0) return;
 
+        $possibleStats = array_map(function($stat) use($pet) {
+            return ($pet->{'get' . $stat}() < 20);
+        }, $stats);
+
+        if(count($possibleStats) === 0) return;
+
         $divideBy = 1;
 
         if($pet->getFood() + $pet->getWhack() - $pet->getJunk() < 0) $divideBy++;
@@ -73,7 +79,7 @@ class PetService
         while($pet->getExperience() >= $pet->getExperienceToLevel())
         {
             $pet->decreaseExperience($pet->getExperienceToLevel());
-            $pet->getSkills()->increaseStat(ArrayFunctions::pick_one($stats));
+            $pet->getSkills()->increaseStat(ArrayFunctions::pick_one($possibleStats));
         }
     }
 

@@ -64,6 +64,8 @@ class GatheringService
                 $activityLog = $this->foundBirdNest($pet);
                 break;
             case 13:
+                $activityLog = $this->foundBeach($pet);
+                break;
             case 14:
                 $activityLog = $this->foundOvergrownGarden($pet);
                 break;
@@ -81,7 +83,14 @@ class GatheringService
 
     private function foundAbandonedQuarry(Pet $pet): PetActivityLog
     {
-        if($pet->getStrength() < 2)
+        if(mt_rand(1, 2000) < $pet->getPerception())
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to an Abandoned Quarry, and happened to find a piece of Striped Microcline!');
+            $this->petService->gainExp($pet, 1, [ 'perception', 'nature' ]);
+            $this->inventoryService->petCollectsItem('Striped Microcline', $pet, $pet->getName() . ' found this at an Abandoned Quarry.');
+            $pet->spendTime(\mt_rand(30, 45));
+        }
+        else if($pet->getStrength() < 2)
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a huge block of Limestone at an Abandoned Quarry, but isn\'t strong enough to lift it...');
             $pet->increaseFood(-1);
@@ -245,12 +254,80 @@ class GatheringService
         return $activityLog;
     }
 
+    private function foundBeach(Pet $pet): PetActivityLog
+    {
+        $possibleLoot = [
+            'Fish', 'Silica Grounds', 'Seaweed'
+        ];
+
+        $loot = [];
+        $didWhat = 'found this at a Sandy Beach';
+
+        if(\mt_rand(1, 20 + $pet->getStealth() + $pet->getDexterity()) < 10)
+        {
+            $pet->spendTime(\mt_rand(45, 75));
+            $pet->increaseFood(-1);
+
+            if(\mt_rand(1, 20) + $pet->getStrength() + $pet->getBrawl() >= 15)
+            {
+                $loot[] = ArrayFunctions::pick_one([ 'Fish', 'Crooked Stick', 'Egg' ]);
+
+                if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature()) >= 25)
+                    $loot[] = ArrayFunctions::pick_one([ 'Feather', 'Talon' ]);
+
+                $this->petService->gainExp($pet, 1, [ 'stealth', 'dexterity', 'strength', 'brawl', 'nature', 'perception' ]);
+                $this->petService->gainExp($pet, 1, [ 'strength', 'brawl' ]);
+                $pet->increaseEsteem(\mt_rand(1, 2));
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to a Sandy Beach, but while looking around, was attacked by a Giant Seagull. ' . $pet->getName() . ' defeated the Giant Seagull, and took its ' . ArrayFunctions::list_nice($loot) . '.');
+                $didWhat = 'defeated a Giant Seagull at the Beach, and got this';
+            }
+            else
+            {
+                $this->petService->gainExp($pet, 1, [ 'stealth', 'dexterity', 'strength', 'brawl', 'nature', 'perception' ]);
+                $pet->increaseEsteem(-\mt_rand(1, 2));
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to a Sandy Beach, but was attacked and routed by a Giant Seagull.');
+            }
+        }
+        else
+        {
+            $loot[] = ArrayFunctions::pick_one($possibleLoot);
+
+            if($pet->getTool() && $pet->getTool()->getItem()->getTool()->getFishing() > 0)
+                $loot[] = 'Fish';
+            else if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature()) >= 15)
+                $loot[] = ArrayFunctions::pick_one($possibleLoot);
+
+            if(\mt_rand(1, 100) == 1)
+                $loot[] = 'Secret Seashell';
+
+            if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature()) >= 25)
+            {
+                $moneys = \mt_rand(4, 12);
+                $pet->getOwner()->increaseMoneys($moneys);
+                $lootList = $loot;
+                $lootList[] = $moneys . '~~m~~';
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to a Sandy Beach, and found ' . ArrayFunctions::list_nice($lootList) . '.');
+                $pet->spendTime(\mt_rand(45, 75));
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to a Sandy Beach, and found ' . ArrayFunctions::list_nice($loot) . '.');
+                $pet->spendTime(\mt_rand(45, 60));
+            }
+        }
+
+        foreach($loot as $itemName)
+            $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' ' . $didWhat . '.');
+
+        return $activityLog;
+    }
+
     private function foundOvergrownGarden(Pet $pet): PetActivityLog
     {
         $possibleLoot = [
             'Carrot', 'Onion', 'Celery',
             'Carrot', 'Onion', 'Celery',
-            'Corn', 'Ginger', 'Sweet Beet',
+            'Sweet Beet', 'Ginger', 'Rice Flower'
         ];
 
         $loot = [];
@@ -293,6 +370,9 @@ class GatheringService
 
             if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature()) >= 25)
                 $loot[] = ArrayFunctions::pick_one($possibleLoot);
+
+            if(\mt_rand(1, 100) == 1)
+                $loot[] = 'Honeydont';
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found an Overgrown Garden, and harvested ' . ArrayFunctions::list_nice($loot) . '.');
             $pet->spendTime(\mt_rand(45, 60));

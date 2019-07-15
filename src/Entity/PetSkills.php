@@ -97,7 +97,8 @@ class PetSkills
         if($statName === 'id' || $statName === 'pet' || !property_exists($this, $statName))
             throw new \InvalidArgumentException('Unknown stat "' . $statName . '".');
 
-        $this->{$statName}++;
+        if($this->{$statName} < 20)
+            $this->{$statName}++;
 
         return $this;
     }
