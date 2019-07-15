@@ -77,23 +77,26 @@ class CraftingService
         if(array_key_exists('Crooked Fishing Rod', $quantities) && array_key_exists('Yellow Dye', $quantities) && array_key_exists('Green Dye', $quantities))
             $possibilities[] = [ $this, 'createPaintedFishingRod' ];
 
-        /*if(array_key_exists('Fiberglass', $quantities) && array_key_exists('String', $quantities))
+        // TODO: fiberglass stuff!
+        /*
+        if(array_key_exists('Fiberglass', $quantities) && array_key_exists('String', $quantities))
         {
             $possibilities[] = [$this, 'createFiberglassBow'];
             $possibilities[] = [$this, 'createFiberglassFishingRod'];
-        }*/
+        }
+        */
 
         // pets won't try any refining tasks if they don't feel sufficiently safe
         if($pet->getSafety() > 0)
             $possibilities = array_merge($possibilities, $this->refiningService->getCraftingPossibilities($pet, $quantities));
 
-        if(array_key_exists('Rusty Blunderbuss', $quantities))
+        if(array_key_exists('Rusty Blunderbuss', $quantities) && $pet->getCrafts() >= 5)
             $possibilities[] = [ $this, 'repairRustyBlunderbuss' ];
 
-        if(array_key_exists('Rusty Rapier', $quantities))
+        if(array_key_exists('Rusty Rapier', $quantities) && $pet->getCrafts() >= 5)
             $possibilities[] = [ $this, 'repairRustyRapier' ];
 
-        if(mt_rand(1, 20 + $pet->getUmbra()) >= 17)
+        if(mt_rand(1, 20 + $pet->getUmbra()) >= 15)
             $possibilities = array_merge($possibilities, $this->scrollMakingService->getCraftingPossibilities($pet, $quantities));
 
         return $possibilities;

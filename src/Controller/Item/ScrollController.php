@@ -159,5 +159,4 @@ class ScrollController extends PsyPetsItemController
 
         return $responseService->itemActionSuccess('You read the scroll, producing ' . $moneys . '~~m~~, and ' . $item . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
-
 }

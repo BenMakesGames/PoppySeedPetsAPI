@@ -49,8 +49,10 @@ class TravelingMerchantController extends PsyPetsController
         }
 
         if(!$exchange)
-            throw new NotFoundHttpException('There is no such exchange.');
+            throw new NotFoundHttpException('There is no such exchange available.');
 
-        
+        $user = $this->getUser();
+
+        // TODO: finish the traveling merchant
     }
 }
