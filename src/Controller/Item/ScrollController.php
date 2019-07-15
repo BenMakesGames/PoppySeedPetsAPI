@@ -105,6 +105,46 @@ class ScrollController extends PsyPetsItemController
     }
 
     /**
+     * @Route("/sea/{inventory}/invoke", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function invokeSeaScroll(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'scroll/sea/#/invoke');
+
+        $em->remove($inventory);
+
+        $userStatsRepository->incrementStat($user, 'Read a Scroll');
+
+        $items = [
+            'Fish', 'Fish', 'Seaweed', 'Seaweed', 'Seaweed', 'Silica Grounds', 'Silica Grounds', 'Silica Grounds'
+        ];
+
+        if(mt_rand(1, 5) === 1) $items[] = 'Crooked Stick';
+        if(mt_rand(1, 5) === 1) $items[] = 'Mermaid Egg';
+        if(mt_rand(1, 10) === 1) $items[] = 'Glass';
+        if(mt_rand(1, 15) === 1) $items[] = 'Music Note';
+        if(mt_rand(1, 25) === 1) $items[] = 'Little Strongbox';
+
+        $newInventory = [];
+
+        foreach($items as $item)
+            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.');
+
+        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
+        sort($itemList);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess('You read the scroll, summoning ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+    }
+
+    /**
      * @Route("/minorRiches/{inventory}/invoke", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */

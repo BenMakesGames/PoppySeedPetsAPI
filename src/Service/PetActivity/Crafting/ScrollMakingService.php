@@ -38,7 +38,7 @@ class ScrollMakingService
         if(array_key_exists('Rice Flower', $quantities))
             $possibilities[] = [ $this, 'createFlowerScroll' ];
 
-        if(array_key_exists('Fish', $quantities))
+        if(array_key_exists('Seaweed', $quantities))
             $possibilities[] = [ $this, 'createSeaScroll' ];
 
         if(array_key_exists('Silver Bar', $quantities))
@@ -110,7 +110,7 @@ class ScrollMakingService
 
     public function createSeaScroll(Pet $pet): PetActivityLog
     {
-        return $this->createGenericScroll($pet, 'Fish', 'Scroll of the Sea');
+        return $this->createGenericScroll($pet, 'Seaweed', 'Scroll of the Sea');
     }
 
     public function createSilverScroll(Pet $pet): PetActivityLog
