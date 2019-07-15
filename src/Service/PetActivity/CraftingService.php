@@ -89,7 +89,7 @@ class CraftingService
         if(array_key_exists('Rusty Rapier', $quantities))
             $possibilities[] = [ $this, 'repairRustyRapier' ];
 
-        if($pet->getUmbra() >= 5)
+        if(mt_rand(1, 20 + $pet->getUmbra()) >= 17)
             $possibilities = array_merge($possibilities, $this->scrollMakingService->getCraftingPossibilities($pet, $quantities));
 
         return $possibilities;

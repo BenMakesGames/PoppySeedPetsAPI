@@ -123,7 +123,7 @@ class ScrollController extends PsyPetsItemController
 
         $moneys = \mt_rand(30, 50);
 
-        $item = ArrayFunctions::pick_one([ 'Gold Bar', 'Gold Ore' ]);
+        $item = ArrayFunctions::pick_one([ 'Little Strongbox', 'Bag of Beans' ]);
 
         $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.');
 
@@ -136,14 +136,14 @@ class ScrollController extends PsyPetsItemController
      * @Route("/majorRiches/{inventory}/invoke", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function invokeMinorRichesScroll(
+    public function invokeMajorRichesScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'scroll/minorRiches/#/invoke');
+        $this->validateInventory($inventory, 'scroll/majorRiches/#/invoke');
 
         $em->remove($inventory);
 
@@ -151,7 +151,7 @@ class ScrollController extends PsyPetsItemController
 
         $moneys = \mt_rand(60, 100);
 
-        $item = ArrayFunctions::pick_one([ 'Smooth Gem', 'Firestone', 'Moon Pearl', 'Blackonite' ]);
+        $item = ArrayFunctions::pick_one([ 'Striped Microcline', 'Firestone', 'Moon Pearl', 'Blackonite' ]);
 
         $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.');
 

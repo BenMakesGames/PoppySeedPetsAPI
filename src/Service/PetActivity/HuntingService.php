@@ -32,7 +32,7 @@ class HuntingService
     {
         $maxSkill = 10 + $pet->getStrength() + $pet->getBrawl() - $pet->getWhack() - $pet->getJunk();
 
-        if($maxSkill > 15) $maxSkill = 15;
+        if($maxSkill > 16) $maxSkill = 16;
         else if($maxSkill < 1) $maxSkill = 1;
 
         $roll = \mt_rand(1, $maxSkill);
@@ -74,6 +74,9 @@ class HuntingService
                 break;
             case 15:
                 $activityLog = $this->huntedSatyr($pet);
+                break;
+            case 16:
+                $activityLog = $this->huntedPaperGolem($pet);
                 break;
         }
 
@@ -361,6 +364,35 @@ class HuntingService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to fight a drunken Satyr, but the Satyr misinterpreted ' . $pet->getName() . '\'s intentions, and it started to get really weird, so ' . $pet->getName() . ' ran away.');
             $pet->increaseSafety(-\mt_rand(1, 5));
             $this->petService->gainExp($pet, 1, [ 'strength', 'brawl' ]);
+        }
+
+        return $activityLog;
+    }
+
+    private function huntedPaperGolem(Pet $pet): PetActivityLog
+    {
+        $skill = 10 + $pet->getDexterity() + $pet->getStamina() + \max($pet->getCrafts(), $pet->getBrawl());
+
+        $pet->increaseFood(-1);
+        $pet->spendTime(mt_rand(45, 60));
+
+        if(\mt_rand(1, $skill) >= 17)
+        {
+            $pet->increaseSafety(1);
+            $pet->increaseEsteem(2);
+            $this->petService->gainExp($pet, 2, [ 'dexterity', 'stamina', 'crafts', 'brawl' ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' unfolded a Paper Golem!');
+            $this->inventoryService->petCollectsItem('Paper', $pet, $pet->getName() . ' got this by unfolding a Paper Golem.');
+        }
+        else
+        {
+            $pet->increaseFood(-1);
+            $pet->increaseEsteem(-1);
+            $pet->increaseSafety(-1);
+            $this->petService->gainExp($pet, 1, [ 'dexterity', 'stamina', 'crafts', 'brawl' ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to unfold a Paper Golem, but got a nasty paper cut!');
         }
 
         return $activityLog;
