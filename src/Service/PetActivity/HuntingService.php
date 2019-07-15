@@ -32,7 +32,7 @@ class HuntingService
     {
         $maxSkill = 10 + $pet->getStrength() + $pet->getBrawl() - $pet->getWhack() - $pet->getJunk();
 
-        if($maxSkill > 16) $maxSkill = 16;
+        if($maxSkill > 17) $maxSkill = 17;
         else if($maxSkill < 1) $maxSkill = 1;
 
         $roll = \mt_rand(1, $maxSkill);
@@ -73,9 +73,10 @@ class HuntingService
                 $activityLog = $this->huntedGhosts($pet);
                 break;
             case 15:
+            case 16:
                 $activityLog = $this->huntedSatyr($pet);
                 break;
-            case 16:
+            case 17:
                 $activityLog = $this->huntedPaperGolem($pet);
                 break;
         }
