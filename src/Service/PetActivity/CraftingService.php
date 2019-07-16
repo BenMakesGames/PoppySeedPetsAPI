@@ -77,6 +77,10 @@ class CraftingService
                 $possibilities[] = [ $this, 'createHuntingSpear' ];
         }
 
+
+        if(array_key_exists('Hunting Spear', $quantities) && array_key_exists('Feathers', $quantities))
+            $possibilities[] = [ $this, 'createDecoratedSpear' ];
+
         if(array_key_exists('Crooked Fishing Rod', $quantities) && array_key_exists('Yellow Dye', $quantities) && array_key_exists('Green Dye', $quantities))
             $possibilities[] = [ $this, 'createPaintedFishingRod' ];
 
@@ -387,6 +391,68 @@ class CraftingService
             $pet->spendTime(\mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts',  'brawl' ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Wooden Sword, but couldn\'t quite figure it out.');
+        }
+    }
+
+    private function createHuntingSpear(Pet $pet)
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + \max($pet->getCrafts(), $pet->getBrawl()));
+
+        if($roll <= 3)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            if(\mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
+                $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts', 'brawl' ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Hunting Spear, but broke the String :(');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
+                $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts',  'brawl' ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Hunting Spear, but broke the Crooked Stick :(');
+
+            }
+        }
+        else if($roll >= 13)
+        {
+            $pet->spendTime(\mt_rand(45, 60));
+            $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Talon', $pet->getOwner(), 1);
+            $this->inventoryService->petCollectsItem('Hunting Spear', $pet, $pet->getName() . ' created this.');
+            $this->petService->gainExp($pet, 2, [ 'intelligence', 'dexterity', 'crafts',  'brawl' ]);
+            $pet->increaseEsteem(2);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Hunting Spear.');
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts',  'brawl' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Hunting Spear, but couldn\'t quite figure it out.');
+        }
+    }
+
+    private function createDecoratedSpear(Pet $pet)
+    {
+        $roll = \mt_rand(1, 20 + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll >= 12)
+        {
+            $pet->spendTime(\mt_rand(15, 30));
+            $this->inventoryService->loseItem('Feathers', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Hunting Spear', $pet->getOwner(), 1);
+            $this->inventoryService->petCollectsItem('Decorated Spear', $pet, $pet->getName() . ' decorated a Hunting Spear with Feathers to make this.');
+            $this->petService->gainExp($pet, 2, [ 'dexterity', 'crafts' ]);
+            $pet->increaseEsteem(1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Decorated Spear.');
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(15, 30));
+            $this->petService->gainExp($pet, 1, [ 'dexterity', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to decorate a Hunting Spear with Feathers, but couldn\'t get the look just right.');
         }
     }
 
