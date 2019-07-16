@@ -30,6 +30,33 @@ class InventoryService
     }
 
     /**
+     * @param User $user
+     * @param Item|string|integer $item
+     */
+    public function countInventory(User $user, $item): int
+    {
+        if(is_string($item))
+            $item = $this->itemRepository->findOneByName($item);
+
+        if($item instanceof Item)
+            $item = $item->getId();
+
+        if(!is_integer($item))
+            throw new \InvalidArgumentException('item must be an Item, string, or integer.');
+
+        return (int)$this->em->createQueryBuilder()
+            ->select('COUNT(i.id)')
+            ->from(Inventory::class, 'i')
+            ->andWhere('i.owner=:owner')
+            ->andWhere('i.item=:item')
+            ->setParameter('owner', $user->getId())
+            ->setParameter('item', $item)
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+    }
+
+    /**
      * @return ItemQuantity[]
      */
     public function deserializeItemList(string $list)

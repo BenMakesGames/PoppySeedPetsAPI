@@ -24,7 +24,8 @@ class ItemFilterService
             ],
             [
                 'name' => array($this, 'filterName'),
-                'edible' => array($this, 'filterEdible')
+                'edible' => array($this, 'filterEdible'),
+                'equipable' => array($this, 'filterEquipable'),
             ]
         );
     }
@@ -50,5 +51,13 @@ class ItemFilterService
             $qb->andWhere('i.food = :foodNull');
 
         $qb->setParameter('foodNull', 'N;');
+    }
+
+    public function filterEquipable(QueryBuilder $qb, $value)
+    {
+        if($value)
+            $qb->andWhere('i.tool IS NOT NULL');
+        else
+            $qb->andWhere('i.food IS NULL');
     }
 }

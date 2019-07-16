@@ -148,6 +148,12 @@ class User implements UserInterface
      */
     private $unlockedBookstore;
 
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"myAccount"})
+     */
+    private $unlockedMerchant;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -523,6 +529,18 @@ class User implements UserInterface
     public function setUnlockedBookstore(): self
     {
         $this->unlockedBookstore = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getUnlockedMerchant(): ?\DateTimeImmutable
+    {
+        return $this->unlockedMerchant;
+    }
+
+    public function setUnlockedMerchant(): self
+    {
+        $this->unlockedMerchant = new \DateTimeImmutable();
 
         return $this;
     }

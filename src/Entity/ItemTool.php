@@ -248,7 +248,7 @@ class ItemTool
         return $this;
     }
 
-    public function getGathering(): ?int
+    public function getGathering(): int
     {
         return $this->gathering;
     }
@@ -308,7 +308,7 @@ class ItemTool
         return $this;
     }
 
-    public function getMusic(): ?int
+    public function getMusic(): int
     {
         return $this->music;
     }
@@ -320,7 +320,7 @@ class ItemTool
         return $this;
     }
 
-    public function getSmithing(): ?int
+    public function getSmithing(): int
     {
         return $this->smithing;
     }
