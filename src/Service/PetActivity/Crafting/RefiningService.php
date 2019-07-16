@@ -53,6 +53,9 @@ class RefiningService
                 $possibilities[] = [ $this, 'createGoldKey' ];
         }
 
+        if(array_key_exists('Crooked Stick', $quantities) && array_key_exists('Iron Bar', $quantities))
+            $possibilities[] = [ $this, 'createScythe' ];
+
         return $possibilities;
     }
 
@@ -120,7 +123,7 @@ class RefiningService
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), 1);
 
             $this->inventoryService->petCollectsItem('Fiberglass', $pet, $pet->getName() . ' created this from Glass and Plastic.');
-            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            $this->petService->gainExp($pet, 2, [ 'intelligence', 'stamina', 'crafts' ]);
             $pet->increaseEsteem(1);
 
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' made Fiberglass from Glass and Plastic.');
@@ -130,6 +133,38 @@ class RefiningService
             $pet->spendTime(\mt_rand(45, 75));
             $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Fiberglass, but couldn\'t figure it out.');
+        }
+    }
+
+    public function createScythe(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 3)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Scythe, but broke the Crooked Stick! :(');
+        }
+        else if($roll >= 13)
+        {
+            $pet->spendTime(\mt_rand(60, 75));
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), 1);
+
+            $this->inventoryService->petCollectsItem('Scythe', $pet, $pet->getName() . ' created this from a Crooked Stick, and Iron Bar.');
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            $pet->increaseEsteem(1);
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Scythe from a Crooked Stick, and Iron Bar.');
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(45, 75));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Scythe, but couldn\'t figure it out.');
         }
     }
 
