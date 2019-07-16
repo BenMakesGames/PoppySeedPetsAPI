@@ -77,9 +77,11 @@ class CraftingService
                 $possibilities[] = [ $this, 'createHuntingSpear' ];
         }
 
-
         if(array_key_exists('Hunting Spear', $quantities) && array_key_exists('Feathers', $quantities))
             $possibilities[] = [ $this, 'createDecoratedSpear' ];
+
+        if(array_key_exists('Decorated Spear', $quantities) && array_key_exists('Quintessence', $quantities))
+            $possibilities[] = [ $this, 'createVeilPiercer' ];
 
         if(array_key_exists('Crooked Fishing Rod', $quantities) && array_key_exists('Yellow Dye', $quantities) && array_key_exists('Green Dye', $quantities))
             $possibilities[] = [ $this, 'createPaintedFishingRod' ];
@@ -453,6 +455,37 @@ class CraftingService
             $pet->spendTime(\mt_rand(15, 30));
             $this->petService->gainExp($pet, 1, [ 'dexterity', 'crafts' ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to decorate a Hunting Spear with Feathers, but couldn\'t get the look just right.');
+        }
+    }
+
+    private function createVeilPiercer(Pet $pet)
+    {
+        $umbraCheck = \mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence());
+        $craftsCheck = \mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
+
+        if($umbraCheck <= 3)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'umbra' ]);
+            $pet->increaseEsteem(-1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchanted a Decorated Spear, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(');
+        }
+        else if($craftsCheck < 15)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ 'crafts', 'dexterity', 'intelligence', 'umbra' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried enchant a Decorated Spear, but couldn\'t get an enchantment to stick.');
+        }
+        else // success!
+        {
+            $pet->spendTime(\mt_rand(45, 60));
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Decorated Spear', $pet->getOwner(), 1);
+            $this->inventoryService->petCollectsItem('Veil-piercer', $pet, $pet->getName() . ' made this by enchanting a Decorated Spear.');
+            $this->petService->gainExp($pet, 2, [ 'crafts', 'dexterity', 'intelligence', 'umbra' ]);
+            $pet->increaseEsteem(2);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' enchanted a Decorated Spear to be a Veil-piercer.');
         }
     }
 
