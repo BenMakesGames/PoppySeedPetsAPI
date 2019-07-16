@@ -70,8 +70,11 @@ class CraftingService
             if(array_key_exists('Toadstool', $quantities) && array_key_exists('Quintessence', $quantities))
                 $possibilities[] = [ $this, 'createChampignon' ];
 
-            if($quantities['Crooked Stick']->quantity >= 2 && array_key_exists('String', $quantities) && $quantities['String']->quantity >= 2)
+            if($quantities['Crooked Stick']->quantity >= 2 && array_key_exists('String', $quantities))
                 $possibilities[] = [ $this, 'createWoodenSword' ];
+
+            if(array_key_exists('Talon', $quantities) && array_key_exists('String', $quantities))
+                $possibilities[] = [ $this, 'createHuntingSpear' ];
         }
 
         if(array_key_exists('Crooked Fishing Rod', $quantities) && array_key_exists('Yellow Dye', $quantities) && array_key_exists('Green Dye', $quantities))
@@ -372,7 +375,7 @@ class CraftingService
         else if($roll >= 12)
         {
             $pet->spendTime(\mt_rand(45, 60));
-            $this->inventoryService->loseItem('String', $pet->getOwner(), 2);
+            $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 2);
             $this->inventoryService->petCollectsItem('Wooden Sword', $pet, $pet->getName() . ' created this from some String and two Crooked Sticks.');
             $this->petService->gainExp($pet, 2, [ 'intelligence', 'dexterity', 'crafts',  'brawl' ]);
