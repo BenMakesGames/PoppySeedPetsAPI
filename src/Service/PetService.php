@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Entity\Pet;
+use App\Entity\PetActivityLog;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
@@ -12,6 +13,7 @@ use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\CraftingService;
 use App\Service\PetActivity\FishingService;
 use App\Service\PetActivity\GatheringService;
+use App\Service\PetActivity\GenericAdventureService;
 use App\Service\PetActivity\HuntingService;
 use App\Service\PetActivity\TreasureMapService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,12 +30,13 @@ class PetService
     private $userStatsRepository;
     private $inventoryRepository;
     private $treasureMapService;
+    private $genericAdventureService;
 
     public function __construct(
         EntityManagerInterface $em, RandomService $randomService, ResponseService $responseService,
         FishingService $fishingService, HuntingService $huntingService, GatheringService $gatheringService,
         CraftingService $craftingService, UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
-        TreasureMapService $treasureMapService
+        TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService
     )
     {
         $this->em = $em;
@@ -46,6 +49,7 @@ class PetService
         $this->userStatsRepository = $userStatsRepository;
         $this->inventoryRepository = $inventoryRepository;
         $this->treasureMapService = $treasureMapService;
+        $this->genericAdventureService = $genericAdventureService;
     }
 
     /**
@@ -330,6 +334,12 @@ class PetService
                 $activityLog->setEntry($description . ' ' . $activityLog->getEntry());
             }
 
+            return;
+        }
+
+        if(mt_rand(1, 50) === 1)
+        {
+            $this->genericAdventureService->adventure($pet);
             return;
         }
 
