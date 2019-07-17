@@ -51,7 +51,7 @@ class Item
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\ItemTool")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia"})
      */
     private $tool;
 
@@ -61,14 +61,6 @@ class Item
     public function isEdible(): bool
     {
         return $this->food !== null;
-    }
-
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     */
-    public function isEquipable(): bool
-    {
-        return $this->tool !== null;
     }
 
     public function getId(): ?int

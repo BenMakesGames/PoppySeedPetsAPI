@@ -10,6 +10,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class ItemTool
 {
+    public const MODIFIERS = [
+        'strength', 'dexterity', 'stamina', 'intelligence', 'perception',
+        'stealth', 'nature', 'brawl', 'umbra', 'crafts', 'fishing', 'gathering',
+        'music', 'smithing'
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -331,4 +337,46 @@ class ItemTool
 
         return $this;
     }
+
+    /**
+     * @Groups({"myInventory", "itemEncyclopedia"})
+     */
+    public function getModifiers(): array
+    {
+        $modifiers = [];
+
+        foreach(self::MODIFIERS as $modifier)
+        {
+            $value = $this->{'get' . $modifier}();
+
+            if($value !== 0)
+                $modifiers[] = self::rate($value) . ' ' . $modifier;
+        }
+
+        return $modifiers;
+    }
+
+
+    public static function rate($value): ?string
+    {
+        if($value >= 10)
+            return '++++';
+        else if($value >= 6)
+            return '+++';
+        else if($value >= 3)
+            return '++';
+        else if($value >= 1)
+            return '+';
+        else if($value <= -10)
+            return '----';
+        else if($value <= -6)
+            return '---';
+        else if($value <= -3)
+            return '--';
+        else if($value <= -1)
+            return '-';
+        else
+            return null;
+    }
+
 }
