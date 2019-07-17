@@ -100,8 +100,17 @@ class FishingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Small Lake, and almost caught a Mini Minnow, but it got away.');
-            $this->petService->gainExp($pet, 1, ['dexterity', 'nature', 'perception']);
+            if(mt_rand(1, 15) === 1)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Small Lake, but nothing was biting, so ' . $pet->getName() . ' grabbed some Silica Grounds, instead.');
+                $this->inventoryService->petCollectsItem('Silica Grounds', $pet, $pet->getName() . ' took this from a Small Lake.');
+                $this->petService->gainExp($pet, 1, ['dexterity', 'nature', 'perception']);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Small Lake, and almost caught a Mini Minnow, but it got away.');
+                $this->petService->gainExp($pet, 1, ['dexterity', 'nature', 'perception']);
+            }
 
             $pet->spendTime(mt_rand(45, 60));
         }

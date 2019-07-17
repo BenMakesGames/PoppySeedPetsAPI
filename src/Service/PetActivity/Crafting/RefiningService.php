@@ -35,7 +35,7 @@ class RefiningService
         if(array_key_exists('Gold Ore', $quantities))
             $possibilities[] = [ $this, 'createGoldBar' ];
 
-        if(array_key_exists('Sand', $quantities) && array_key_exists('Limestone', $quantities))
+        if(array_key_exists('Silica Grounds', $quantities) && array_key_exists('Limestone', $quantities))
             $possibilities[] = [ $this, 'createGlass' ];
 
         if(array_key_exists('Glass', $quantities) && array_key_exists('Plastic', $quantities))
@@ -65,7 +65,7 @@ class RefiningService
         if($roll <= 2)
         {
             $pet->spendTime(\mt_rand(30, 60));
-            $this->inventoryService->loseItem('Sand', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Silica Grounds', $pet->getOwner(), 1);
             $pet->increaseEsteem(-1);
             $pet->increaseSafety(-\mt_rand(2, 12));
             $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
@@ -74,17 +74,17 @@ class RefiningService
         else if($roll >= 13)
         {
             $pet->spendTime(\mt_rand(60, 75));
-            $this->inventoryService->loseItem('Sand', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Silica Grounds', $pet->getOwner(), 1);
 
             if(mt_rand(1, 3) === 1)
             {
                 $this->inventoryService->loseItem('Limestone', $pet->getOwner(), 1);
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' melted Sand and Limestone into Glass.');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' melted Silica Grounds and Limestone into Glass.');
             }
             else
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' melted Sand and Limestone into Glass. (There\'s plenty of Limestone left over, though!)');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' melted Silica Grounds and Limestone into Glass. (There\'s plenty of Limestone left over, though!)');
 
-            $this->inventoryService->petCollectsItem('Glass', $pet, $pet->getName() . ' created this from Sand and Limestone.');
+            $this->inventoryService->petCollectsItem('Glass', $pet, $pet->getName() . ' created this from Silica Grounds and Limestone.');
             $this->petService->gainExp($pet, 1, [ 'intelligence', 'stamina', 'crafts' ]);
             $pet->increaseEsteem(1);
 
