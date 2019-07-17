@@ -51,13 +51,13 @@ class PetService
     /**
      * @param string[] $stats
      */
-    public function gainExp(Pet $pet, int $exp, $stats)
+    public function gainExp(Pet $pet, int $exp, array $stats)
     {
         if($exp === 0) return;
 
-        $possibleStats = array_map(function($stat) use($pet) {
+        $possibleStats = array_filter($stats, function($stat) use($pet) {
             return ($pet->{'get' . $stat}() < 20);
-        }, $stats);
+        });
 
         if(count($possibleStats) === 0) return;
 
