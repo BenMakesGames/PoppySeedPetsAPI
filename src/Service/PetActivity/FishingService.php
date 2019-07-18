@@ -59,6 +59,8 @@ class FishingService
             case 11:
                 $activityLog = $this->fishedPlazaFountain($pet);
                 break;
+            // case 13: spookfish
+            // case 15: boxfish
         }
 
         if($activityLog)

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\RecipeRepository")
@@ -18,6 +19,7 @@ class Recipe
 
     /**
      * @ORM\Column(type="string", length=40, unique=true)
+     * @Groups({"knownRecipe"})
      */
     private $name;
 

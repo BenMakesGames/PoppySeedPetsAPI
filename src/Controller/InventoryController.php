@@ -2,10 +2,12 @@
 namespace App\Controller;
 
 use App\Entity\Inventory;
+use App\Entity\KnownRecipes;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
+use App\Repository\KnownRecipesRepository;
 use App\Repository\RecipeRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
@@ -54,7 +56,7 @@ class InventoryController extends PsyPetsController
     public function prepareRecipe(
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
         RecipeRepository $recipeRepository, InventoryService $inventoryService, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository
+        UserStatsRepository $userStatsRepository, KnownRecipesRepository $knownRecipesRepository
     )
     {
         $user = $this->getUser();
@@ -84,6 +86,26 @@ class InventoryController extends PsyPetsController
         $newInventory = $inventoryService->giveInventory($makes, $user, $user, $user->getName() . ' prepared this.');
 
         $userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING);
+
+        if($inventoryService->countInventory($user, 'Cooking Buddy') > 0)
+        {
+            $alreadyKnownRecipe = $knownRecipesRepository->findOneBy([
+                'user' => $user,
+                'recipe' => $recipe
+            ]);
+
+            if(!$alreadyKnownRecipe)
+            {
+                $knownRecipe = (new KnownRecipes())
+                    ->setUser($user)
+                    ->setRecipe($recipe)
+                ;
+
+                $em->persist($knownRecipe);
+
+                $userStatsRepository->incrementStat($user, UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY);
+            }
+        }
 
         $em->flush();
 

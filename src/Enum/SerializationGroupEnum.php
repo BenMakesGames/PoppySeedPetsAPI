@@ -22,4 +22,5 @@ final class SerializationGroupEnum
     const QUERY_ADMIN = 'queryAdmin';
     const PET_SHELTER_PET = 'petShelterPet';
     const MARKET_ITEM = 'marketItem';
+    const KNOWN_RECIPE = 'knownRecipe';
 }
