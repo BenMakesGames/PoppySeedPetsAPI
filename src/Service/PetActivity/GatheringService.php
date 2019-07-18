@@ -79,6 +79,9 @@ class GatheringService
 
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));
+
+        if(mt_rand(1, 50) === 1)
+            $this->inventoryService->petAttractsRandomBug($pet);
     }
 
     private function foundAbandonedQuarry(Pet $pet): PetActivityLog

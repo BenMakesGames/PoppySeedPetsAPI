@@ -15,4 +15,6 @@ final class UserStatEnum
     const PETTED_A_PET = 'Petted a Pet';
     const PRAISED_A_PET = 'Praised a Pet';
     const MONEYS_STOLEN_BY_THIEVING_MAGPIES = 'Moneys Stolen by Thieving Magpies';
+    const BUGS_SQUISHED = 'Bugs Squished';
+    const BUGS_PUT_OUTSIDE = 'Bugs Put Outside';
 }

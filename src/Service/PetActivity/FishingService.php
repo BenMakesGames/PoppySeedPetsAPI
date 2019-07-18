@@ -63,6 +63,9 @@ class FishingService
 
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));
+
+        if(mt_rand(1, 50) === 1)
+            $this->inventoryService->petAttractsRandomBug($pet);
     }
 
     private function failedToFish(Pet $pet): PetActivityLog

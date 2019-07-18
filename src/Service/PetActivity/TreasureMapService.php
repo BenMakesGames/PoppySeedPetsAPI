@@ -72,5 +72,8 @@ class TreasureMapService
 
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));
+
+        if(mt_rand(1, 25) === 1)
+            $this->inventoryService->petAttractsRandomBug($pet);
     }
 }

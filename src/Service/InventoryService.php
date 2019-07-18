@@ -5,9 +5,11 @@ use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Entity\Pet;
 use App\Entity\User;
+use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Model\ItemFood;
 use App\Model\ItemQuantity;
+use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -175,6 +177,24 @@ class InventoryService
             ->setCreatedBy($pet->getOwner())
             ->setItem($item)
             ->addComment($comment)
+        ;
+
+        $this->em->persist($i);
+
+        return $i;
+    }
+
+    public function petAttractsRandomBug(Pet $pet): Inventory
+    {
+        $bugName  = ArrayFunctions::pick_one([ 'Spider', 'Centipede', 'Cockroach', 'Line of Ants', 'Fruit Fly', 'Stink Bug' ]);
+
+        $bug = $this->itemRepository->findOneByName($bugName);
+
+        $i = (new Inventory())
+            ->setOwner($pet->getOwner())
+            ->setCreatedBy(null)
+            ->setItem($bug)
+            ->addComment('Ah! How\'d this get inside?!')
         ;
 
         $this->em->persist($i);
