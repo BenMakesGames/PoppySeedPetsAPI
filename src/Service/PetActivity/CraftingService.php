@@ -111,7 +111,7 @@ class CraftingService
         return $possibilities;
     }
 
-    public function adventure(Pet $pet, array $possibilities)
+    public function adventure(Pet $pet, array $possibilities): PetActivityLog
     {
         if(count($possibilities) === 0)
             throw new \InvalidArgumentException('possibilities must contain at least one item.');
