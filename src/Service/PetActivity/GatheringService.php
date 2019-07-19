@@ -27,7 +27,7 @@ class GatheringService
     {
         $maxSkill = 10 + $pet->getPerception() + $pet->getNature() - $pet->getWhack() - $pet->getJunk();
 
-        if($maxSkill > 15) $maxSkill = 15;
+        if($maxSkill > 18) $maxSkill = 18;
         else if($maxSkill < 1) $maxSkill = 1;
 
         $roll = \mt_rand(1, $maxSkill);
@@ -74,6 +74,12 @@ class GatheringService
                 break;
             case 16:
                 $activityLog = $this->foundMicroJungle($pet);
+                break;
+            case 17:
+                $activityLog = $this->foundNothing($pet, $roll);
+                break;
+            case 18:
+                $activityLog = $this->foundWildHedgemaze($pet);
                 break;
         }
 
@@ -328,8 +334,7 @@ class GatheringService
     private function foundOvergrownGarden(Pet $pet): PetActivityLog
     {
         $possibleLoot = [
-            'Carrot', 'Onion', 'Celery',
-            'Carrot', 'Onion', 'Celery',
+            'Carrot', 'Onion', 'Celery', 'Tomato',
             'Sweet Beet', 'Ginger', 'Rice Flower'
         ];
 
@@ -471,6 +476,70 @@ class GatheringService
             else
                 $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and ' . $pet->getName() . ' got a bit light-headed.');
         }
+
+        // more chances to get bugs in the jungle!
+        if(mt_rand(1, 10) === 1)
+            $this->inventoryService->petAttractsRandomBug($pet);
+
+        return $activityLog;
+    }
+
+    private function foundWildHedgemaze(Pet $pet): PetActivityLog
+    {
+        $possibleLoot = [
+            'Pumpkin', 'Crooked Stick', 'Sweet Beet', 'String', 'Grandpa Root', 'Pamplemousse',
+        ];
+
+        $loot = [];
+
+        if(\mt_rand(1, 20 + $pet->getIntelligence() + $pet->getPerception()) < 15)
+        {
+            $pet->spendTime(\mt_rand(45, 75));
+            $pet->increaseFood(-1);
+
+            if(\mt_rand(1, 20) + $pet->getIntelligence() + $pet->getUmbra() >= 15)
+            {
+                $loot[] = ArrayFunctions::pick_one($possibleLoot);
+                $loot[] = ArrayFunctions::pick_one($possibleLoot);
+
+                if(\mt_rand(1, 8) === 1)
+                    $loot[] = 'Silver Ore';
+                else if(\mt_rand(1, 8) === 1)
+                    $loot[] = 'Music Note';
+                else
+                    $loot[] = 'Quintessence';
+
+                if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature()) >= 25)
+                    $loot[] = ArrayFunctions::pick_one($possibleLoot);
+
+                $this->petService->gainExp($pet, 2, [ 'intelligence', 'umbra', 'nature', 'perception' ]);
+                $pet->increaseEsteem(\mt_rand(2, 3));
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' got lost in a Wild Hedgemaze, and ran into a Hedgemaze Sphinx. ' . $pet->getName() . ' was able to solve it\'s riddle, and kept exploring, coming away with ' . ArrayFunctions::list_nice($loot) . '.');
+            }
+            else
+            {
+                $this->petService->gainExp($pet, 1, [ 'intelligence', 'umbra', 'nature', 'perception' ]);
+                $pet->increaseEsteem(-\mt_rand(1, 2));
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' got lost in a Wild Hedgemaze, and ran into a Hedgemaze Sphinx. The sphinx asked a really hard question; ' . $pet->getName() . ' wasn\'t able to answer it, and was consequentially ejected from the maze.');
+            }
+        }
+        else
+        {
+            $loot[] = ArrayFunctions::pick_one($possibleLoot);
+            $loot[] = ArrayFunctions::pick_one($possibleLoot);
+
+            if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature()) >= 25)
+                $loot[] = ArrayFunctions::pick_one($possibleLoot);
+
+            if(\mt_rand(1, 100) == 1)
+                $loot[] = 'Melowatern';
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wandered through a Wild Hedgemaze, and found ' . ArrayFunctions::list_nice($loot) . '.');
+            $pet->spendTime(\mt_rand(45, 60));
+        }
+
+        foreach($loot as $itemName)
+            $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in a Wild Hedgemaze.');
 
         return $activityLog;
     }
