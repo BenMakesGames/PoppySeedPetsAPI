@@ -25,7 +25,7 @@ class GatheringService
 
     public function adventure(Pet $pet)
     {
-        $maxSkill = 10 + $pet->getPerception() + $pet->getNature() - $pet->getWhack() - $pet->getJunk();
+        $maxSkill = 10 + $pet->getPerception() + $pet->getNature() + $pet->getGathering() - $pet->getWhack() - $pet->getJunk();
 
         if($maxSkill > 18) $maxSkill = 18;
         else if($maxSkill < 1) $maxSkill = 1;
@@ -165,7 +165,7 @@ class GatheringService
         }
 
 
-        if(\mt_rand(1, 10 + $pet->getStamina()) >= 10)
+        if(\mt_rand(1, 10 + $pet->getStamina() + $pet->getGathering()) >= 10)
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' harvested berries from a Thorny ' . $harvest . ' Bush.');
         }
@@ -191,7 +191,7 @@ class GatheringService
     {
         if(\mt_rand(1, 4) === 1)
         {
-            if(\mt_rand(1, 20 + $pet->getDexterity() + $pet->getStrength() + $pet->getStealth()) >= 15)
+            if(\mt_rand(1, 20 + $pet->getDexterity() + $pet->getStrength() + $pet->getStealth() + $pet->getBrawl()) >= 15)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Huge Toad inside a Hollow Log, got the jump on it, wrestled it to the ground, and claimed its Toadstool!');
                 $this->inventoryService->petCollectsItem('Toadstool', $pet, $pet->getName() . ' harvested this from the back of a Huge Toad found inside a Hollow Log.');
@@ -309,7 +309,7 @@ class GatheringService
             if(\mt_rand(1, 100) == 1)
                 $loot[] = 'Secret Seashell';
 
-            if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature()) >= 25)
+            if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering()) >= 25)
             {
                 $moneys = \mt_rand(4, 12);
                 $pet->getOwner()->increaseMoneys($moneys);
@@ -350,10 +350,10 @@ class GatheringService
             {
                 $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
-                if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature()) >= 25)
+                if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering()) >= 25)
                     $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
-                if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature()) >= 15)
+                if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering()) >= 15)
                     $loot[] = 'Talon';
 
                 $this->petService->gainExp($pet, 1, [ 'stealth', 'dexterity', 'strength', 'brawl', 'nature', 'perception' ]);
@@ -373,10 +373,10 @@ class GatheringService
         {
             $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
-            if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature()) >= 15)
+            if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering()) >= 15)
                 $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
-            if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature()) >= 25)
+            if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering()) >= 25)
                 $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
             if(\mt_rand(1, 100) == 1)
@@ -440,7 +440,7 @@ class GatheringService
 
         $loot = [];
 
-        $roll = mt_rand(1, 20 + $pet->getPerception() + $pet->getNature());
+        $roll = mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering());
 
         if($roll >= 12)
         {
@@ -509,7 +509,7 @@ class GatheringService
                 else
                     $loot[] = 'Quintessence';
 
-                if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature()) >= 25)
+                if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering()) >= 25)
                     $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
                 $this->petService->gainExp($pet, 2, [ 'intelligence', 'umbra', 'nature', 'perception' ]);
@@ -528,7 +528,7 @@ class GatheringService
             $loot[] = ArrayFunctions::pick_one($possibleLoot);
             $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
-            if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature()) >= 25)
+            if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering()) >= 25)
                 $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
             if(\mt_rand(1, 100) == 1)

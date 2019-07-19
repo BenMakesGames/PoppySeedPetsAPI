@@ -26,7 +26,7 @@ class FishingService
     {
         $maxSkill = 5 + $pet->getDexterity() + $pet->getNature() + $pet->getFishing() - $pet->getWhack();
 
-        if($maxSkill > 11) $maxSkill = 11;
+        if($maxSkill > 12) $maxSkill = 12;
         else if($maxSkill < 1) $maxSkill = 1;
 
         $roll = \mt_rand(1, $maxSkill);
@@ -58,6 +58,9 @@ class FishingService
             case 10:
             case 11:
                 $activityLog = $this->fishedPlazaFountain($pet);
+                break;
+            case 12:
+                $activityLog = $this->fishedFloodedPaddyField($pet);
                 break;
             // case 13: spookfish
             // case 15: boxfish
@@ -261,6 +264,47 @@ class FishingService
         $pet->getOwner()->increaseMoneys($moneys);
 
         $pet->spendTime(mt_rand(30, 45));
+
+        return $activityLog;
+    }
+
+    private function fishedFloodedPaddyField(Pet $pet): PetActivityLog
+    {
+        $nothingBiting = $this->nothingBiting($pet, 20, 'at a Flooded Paddy Field');
+        if($nothingBiting !== null) return $nothingBiting;
+
+        $foundRice = mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering()) >= 15;
+
+        if($foundRice)
+        {
+            $this->inventoryService->petCollectsItem('Rice', $pet, $pet->getName() . ' found this at a Flooded Paddy Field while fishing.');
+            $this->petService->gainExp($pet, 1, [ 'perception', 'nature' ]);
+        }
+
+        if(\mt_rand(1, 10 + $pet->getDexterity() + $pet->getNature() + $pet->getPerception() + $pet->getFishing()) >= 10)
+        {
+            if($foundRice)
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Flooded Paddy Field, caught a Crawfish, and picked some Rice!');
+            else
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Flooded Paddy Field, and caught a Crawfish.');
+
+            $this->inventoryService->petCollectsItem('Fish', $pet, 'From a Crawfish that ' . $pet->getName() . ' fished at a Flooded Paddy Field.');
+
+            $this->petService->gainExp($pet, 1, [ 'dexterity', 'nature', 'perception' ]);
+
+            $pet->spendTime(mt_rand(45, 60));
+        }
+        else
+        {
+            if($foundRice)
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Flooded Paddy Field, and almost caught a Crawfish, but it got away. There was plenty of Rice, around, though, so ' . $pet->getName() . ' grabbed some of that.');
+            else
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Flooded Paddy Field, and almost caught a Crawfish, but it got away.');
+
+            $this->petService->gainExp($pet, 1, [ 'dexterity', 'nature', 'perception' ]);
+
+            $pet->spendTime(mt_rand(45, 60));
+        }
 
         return $activityLog;
     }

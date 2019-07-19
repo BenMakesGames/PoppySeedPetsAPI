@@ -592,4 +592,9 @@ class Pet
     {
         return $this->getTool() ? $this->getTool()->getItem()->getTool()->getSmithing() : 0;
     }
+
+    public function getGathering(): int
+    {
+        return $this->getTool() ? $this->getTool()->getItem()->getTool()->getGathering() : 0;
+    }
 }
