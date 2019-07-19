@@ -458,12 +458,17 @@ class GatheringService
 
         sort($loot);
 
-        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' entered the island\'s Micro-Jungle, and got ' . ArrayFunctions::list_nice($loot) . '.');
-
         $pet->spendTime(\mt_rand(45, 60) + count($loot) * 5);
 
-        foreach($loot as $itemName)
-            $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in the island\'s Micro-Jungle.');
+        if(count($loot) === 0)
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' entered the island\'s Micro-Jungle, but couldn\'t find anything.');
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' entered the island\'s Micro-Jungle, and got ' . ArrayFunctions::list_nice($loot) . '.');
+
+            foreach($loot as $itemName)
+                $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in the island\'s Micro-Jungle.');
+        }
 
         if(mt_rand(1, 10 + $pet->getStamina()) < 8)
         {
