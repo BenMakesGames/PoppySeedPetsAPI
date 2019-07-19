@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Item;
-use App\Model\ItemFood;
+use App\Entity\ItemFood;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -96,19 +96,25 @@ class UpsertItemCommand extends PsyPetsCommand
         if($edible)
         {
             if($item->getFood() !== null)
-                $food = clone $item->getFood();
+                $food = $item->getFood();
             else
+            {
                 $food = new ItemFood();
+                $this->em->persist($food);
 
-            $food->food = $this->askInt('Food hours', $food->food);
-            $food->love = $this->askInt('Love hours', $food->love);
-            $food->junk = $this->askInt('Junk hours', $food->junk);
-            $food->whack = $this->askInt('Whack hours', $food->whack);
+                $item->setFood($food);
+            }
 
-            $item->setFood($food);
+            $food->setFood($this->askInt('Food hours', $food->getFood()));
+            $food->setLove($this->askInt('Love hours', $food->getLove()));
+            $food->setJunk($this->askInt('Junk hours', $food->getJunk()));
+            $food->setWhack($this->askInt('Whack hours', $food->getWhack()));
         }
         else
         {
+            if($item->getFood())
+                $this->em->remove($item->getFood());
+            
             $item->setFood(null);
         }
     }

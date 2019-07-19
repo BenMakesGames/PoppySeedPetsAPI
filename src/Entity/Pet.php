@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\FlavorEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -123,6 +124,11 @@ class Pet
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
      */
     private $tool;
+
+    /**
+     * @ORM\Column(type="string", length=20)
+     */
+    private $favoriteFlavor;
 
     public function __construct()
     {
@@ -596,5 +602,20 @@ class Pet
     public function getGathering(): int
     {
         return $this->getTool() ? $this->getTool()->getItem()->getTool()->getGathering() : 0;
+    }
+
+    public function getFavoriteFlavor(): ?string
+    {
+        return $this->favoriteFlavor;
+    }
+
+    public function setFavoriteFlavor(string $favoriteFlavor): self
+    {
+        if(!FlavorEnum::isAFlavor($favoriteFlavor))
+            throw new \InvalidArgumentException('favoriteFlavor must be a value from FlavorEnum.');
+
+        $this->favoriteFlavor = $favoriteFlavor;
+
+        return $this;
     }
 }

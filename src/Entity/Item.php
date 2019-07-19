@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Model\ItemFood;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -24,12 +23,6 @@ class Item
      * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem"})
      */
     private $name;
-
-    /**
-     * @ORM\Column(type="object", nullable=true)
-     * @Groups({"itemAdmin"})
-     */
-    private $food = null;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -56,6 +49,11 @@ class Item
     private $tool;
 
     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\ItemFood", cascade={"persist", "remove"})
+     */
+    private $food;
+
+    /**
      * @Groups({"myInventory", "itemEncyclopedia"})
      */
     public function isEdible(): bool
@@ -76,18 +74,6 @@ class Item
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getFood(): ?ItemFood
-    {
-        return $this->food;
-    }
-
-    public function setFood(?ItemFood $food): self
-    {
-        $this->food = $food;
 
         return $this;
     }
@@ -149,6 +135,18 @@ class Item
     public function setTool(?ItemTool $tool): self
     {
         $this->tool = $tool;
+
+        return $this;
+    }
+
+    public function getFood(): ?ItemFood
+    {
+        return $this->food;
+    }
+
+    public function setFood(?ItemFood $food): self
+    {
+        $this->food = $food;
 
         return $this;
     }

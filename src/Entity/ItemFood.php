@@ -1,0 +1,321 @@
+<?php
+
+namespace App\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass="App\Repository\ItemFoodRepository")
+ */
+class ItemFood
+{
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $food = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $love = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $junk = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $whack = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $earthy = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $fruity = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $tannic = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $spicy = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $creamy = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $meaty = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $planty = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $fishy = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $floral = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $fatty = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $oniony = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $chemicaly = 0;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getFood(): ?int
+    {
+        return $this->food;
+    }
+
+    public function setFood(int $food): self
+    {
+        $this->food = $food;
+
+        return $this;
+    }
+
+    public function getLove(): ?int
+    {
+        return $this->love;
+    }
+
+    public function setLove(int $love): self
+    {
+        $this->love = $love;
+
+        return $this;
+    }
+
+    public function getJunk(): ?int
+    {
+        return $this->junk;
+    }
+
+    public function setJunk(int $junk): self
+    {
+        $this->junk = $junk;
+
+        return $this;
+    }
+
+    public function getWhack(): ?int
+    {
+        return $this->whack;
+    }
+
+    public function setWhack(int $whack): self
+    {
+        $this->whack = $whack;
+
+        return $this;
+    }
+
+    public function getEarthy(): ?int
+    {
+        return $this->earthy;
+    }
+
+    public function setEarthy(int $earthy): self
+    {
+        $this->earthy = $earthy;
+
+        return $this;
+    }
+
+    public function getFruity(): ?int
+    {
+        return $this->fruity;
+    }
+
+    public function setFruity(int $fruity): self
+    {
+        $this->fruity = $fruity;
+
+        return $this;
+    }
+
+    public function getTannic(): ?int
+    {
+        return $this->tannic;
+    }
+
+    public function setTannic(int $tannic): self
+    {
+        $this->tannic = $tannic;
+
+        return $this;
+    }
+
+    public function getSpicy(): ?int
+    {
+        return $this->spicy;
+    }
+
+    public function setSpicy(int $spicy): self
+    {
+        $this->spicy = $spicy;
+
+        return $this;
+    }
+
+    public function getCreamy(): ?int
+    {
+        return $this->creamy;
+    }
+
+    public function setCreamy(int $creamy): self
+    {
+        $this->creamy = $creamy;
+
+        return $this;
+    }
+
+    public function getMeaty(): ?int
+    {
+        return $this->meaty;
+    }
+
+    public function setMeaty(int $meaty): self
+    {
+        $this->meaty = $meaty;
+
+        return $this;
+    }
+
+    public function getPlanty(): ?int
+    {
+        return $this->planty;
+    }
+
+    public function setPlanty(int $planty): self
+    {
+        $this->planty = $planty;
+
+        return $this;
+    }
+
+    public function getFishy(): ?int
+    {
+        return $this->fishy;
+    }
+
+    public function setFishy(int $fishy): self
+    {
+        $this->fishy = $fishy;
+
+        return $this;
+    }
+
+    public function getFloral(): ?int
+    {
+        return $this->floral;
+    }
+
+    public function setFloral(int $floral): self
+    {
+        $this->floral = $floral;
+
+        return $this;
+    }
+
+    public function getFatty(): ?int
+    {
+        return $this->fatty;
+    }
+
+    public function setFatty(int $fatty): self
+    {
+        $this->fatty = $fatty;
+
+        return $this;
+    }
+
+    public function getOniony(): ?int
+    {
+        return $this->oniony;
+    }
+
+    public function setOniony(int $oniony): self
+    {
+        $this->oniony = $oniony;
+
+        return $this;
+    }
+
+    public function getChemicaly(): ?int
+    {
+        return $this->chemicaly;
+    }
+
+    public function setChemicaly(int $chemicaly): self
+    {
+        $this->chemicaly = $chemicaly;
+
+        return $this;
+    }
+
+    public function add(ItemFood $f): ItemFood
+    {
+        $added = clone $this;
+
+        if($f === null) return $added;
+
+        $added->food += $f->food;
+        $added->love += $f->love;
+        $added->junk += $f->junk;
+        $added->whack += $f->whack;
+
+        return $added;
+    }
+
+    public function multiply(int $f): ItemFood
+    {
+        $multiplied = clone $this;
+
+        $multiplied->food *= $f;
+        $multiplied->love *= $f;
+        $multiplied->junk *= $f;
+        $multiplied->whack *= $f;
+
+        return $multiplied;
+    }
+}

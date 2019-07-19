@@ -5,6 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\FlavorEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
@@ -158,10 +159,18 @@ class PetService
         {
             $food = $i->getItem()->getFood();
 
-            if($food->whack) $pet->increaseWhack($food->whack);
-            if($food->food) $pet->increaseFood($food->food);
-            if($food->love) $pet->increaseLove($food->love);
-            if($food->junk) $pet->increaseJunk($food->junk);
+            $pet->increaseWhack($food->getWhack());
+            $pet->increaseFood($food->getFood());
+            $pet->increaseJunk($food->getJunk());
+
+            // consider favorite flavor:
+            if(!FlavorEnum::isAFlavor($pet->getFavoriteFlavor()))
+                throw new \Exception('pet\'s favorite flavor is invalid');
+
+            $favoriteFlavorStrength = $food->{'get' . $pet->getFavoriteFlavor()}();
+
+            $pet->increaseLove($favoriteFlavorStrength + $food->getLove());
+            $pet->increaseEsteem($favoriteFlavorStrength + $food->getLove());
 
             $this->em->remove($i);
 
@@ -183,7 +192,6 @@ class PetService
                 $gain++;
 
             $pet->increaseSafety($gain);
-            $pet->increaseLove($gain);
         }
 
 
@@ -197,10 +205,17 @@ class PetService
 
         $food = $item->getFood();
 
-        if($food->whack) $pet->increaseWhack($food->whack);
-        if($food->food) $pet->increaseFood($food->food);
-        if($food->love) $pet->increaseLove($food->love);
-        if($food->junk) $pet->increaseJunk($food->junk);
+        $pet->increaseWhack($food->getWhack());
+        $pet->increaseFood($food->getFood());
+        $pet->increaseJunk($food->getJunk());
+
+        // consider favorite flavor:
+        if(!FlavorEnum::isAFlavor($pet->getFavoriteFlavor()))
+            throw new \Exception('pet\'s favorite flavor is invalid');
+
+        $favoriteFlavorStrength = $food->{'get' . $pet->getFavoriteFlavor()}();
+
+        $pet->increaseEsteem($favoriteFlavorStrength + $food->getLove());
 
         $this->responseService->createActivityLog($pet, $pet->getName() . ' immediately ate the ' . $item->getName() . '.', $petChanges->compare($pet));
 

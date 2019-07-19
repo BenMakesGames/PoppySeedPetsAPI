@@ -4,7 +4,6 @@ namespace App\Command;
 
 use App\Entity\Item;
 use App\Entity\Recipe;
-use App\Model\ItemFood;
 use App\Model\ItemQuantity;
 use App\Repository\ItemRepository;
 use App\Repository\RecipeRepository;
@@ -70,16 +69,16 @@ class UpsertRecipeCommand extends PsyPetsCommand
         $makesFood = $this->inventoryService->totalFood($this->inventoryService->deserializeItemList($recipe->getMakes()));
 
         $this->output->writeln('Ingredient food value totals:');
-        $this->output->writeln('  Food: ' . $ingredientFood->food);
-        $this->output->writeln('  Love: ' . $ingredientFood->love);
-        $this->output->writeln('  Junk: ' . $ingredientFood->junk);
-        $this->output->writeln('  Whack: ' . $ingredientFood->whack);
+        $this->output->writeln('  Food: ' . $ingredientFood->getFood());
+        $this->output->writeln('  Love: ' . $ingredientFood->getLove());
+        $this->output->writeln('  Junk: ' . $ingredientFood->getJunk());
+        $this->output->writeln('  Whack: ' . $ingredientFood->getWhack());
 
         $this->output->writeln('Product food value totals:');
-        $this->output->writeln('  Food: ' . $makesFood->food);
-        $this->output->writeln('  Love: ' . $makesFood->love);
-        $this->output->writeln('  Junk: ' . $makesFood->junk);
-        $this->output->writeln('  Whack: ' . $makesFood->whack);
+        $this->output->writeln('  Food: ' . $makesFood->getFood());
+        $this->output->writeln('  Love: ' . $makesFood->getLove());
+        $this->output->writeln('  Junk: ' . $makesFood->getJunk());
+        $this->output->writeln('  Whack: ' . $makesFood->getWhack());
     }
 
     private function askName(string $prompt, Recipe $recipe, string $name)

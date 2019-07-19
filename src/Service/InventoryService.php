@@ -3,11 +3,11 @@ namespace App\Service;
 
 use App\Entity\Inventory;
 use App\Entity\Item;
+use App\Entity\ItemFood;
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
-use App\Model\ItemFood;
 use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;

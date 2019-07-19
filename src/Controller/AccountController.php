@@ -6,6 +6,7 @@ use App\Entity\Pet;
 use App\Entity\PetSkills;
 use App\Entity\User;
 use App\Entity\UserNotificationPreferences;
+use App\Enum\FlavorEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\PetSpeciesRepository;
@@ -105,6 +106,7 @@ class AccountController extends PsyPetsController
             ->setColorB($petColorB)
             ->setNeeds(mt_rand(10, 12), -9)
             ->setSkills($petSkills)
+            ->setFavoriteFlavor(FlavorEnum::getRandom())
         ;
 
         $em->persist($pet);
