@@ -465,7 +465,7 @@ class GatheringService
         foreach($loot as $itemName)
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in the island\'s Micro-Jungle.');
 
-        if(mt_rand(1, 10 + $pet->getStamina() < 8))
+        if(mt_rand(1, 10 + $pet->getStamina()) < 8)
         {
             $pet->increaseFood(-1);
             $pet->increaseSafety(-mt_rand(1, 2));
