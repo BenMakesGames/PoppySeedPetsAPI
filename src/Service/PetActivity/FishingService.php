@@ -26,7 +26,7 @@ class FishingService
     {
         $maxSkill = 5 + $pet->getDexterity() + $pet->getNature() + $pet->getFishing() - $pet->getWhack();
 
-        if($maxSkill > 12) $maxSkill = 12;
+        if($maxSkill > 13) $maxSkill = 13;
         else if($maxSkill < 1) $maxSkill = 1;
 
         $roll = \mt_rand(1, $maxSkill);
@@ -62,7 +62,9 @@ class FishingService
             case 12:
                 $activityLog = $this->fishedFloodedPaddyField($pet);
                 break;
-            // case 13: spookfish
+            case 13:
+                $activityLog = $this->fishedFoggyLake($pet);
+                break;
             // case 15: boxfish
         }
 
@@ -103,24 +105,17 @@ class FishingService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Small Lake, and caught a Mini Minnow.');
             $this->inventoryService->petCollectsItem('Fish', $pet, 'From a Mini Minnow that ' . $pet->getName() . ' fished at a Small Lake.');
             $this->petService->gainExp($pet, 1, ['dexterity', 'nature', 'perception']);
-
-            $pet->spendTime(mt_rand(45, 60));
+        }
+        else if(mt_rand(1, 15) === 1)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Small Lake, but nothing was biting, so ' . $pet->getName() . ' grabbed some Silica Grounds, instead.');
+            $this->inventoryService->petCollectsItem('Silica Grounds', $pet, $pet->getName() . ' took this from a Small Lake.');
+            $this->petService->gainExp($pet, 1, ['dexterity', 'nature', 'perception']);
         }
         else
         {
-            if(mt_rand(1, 15) === 1)
-            {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Small Lake, but nothing was biting, so ' . $pet->getName() . ' grabbed some Silica Grounds, instead.');
-                $this->inventoryService->petCollectsItem('Silica Grounds', $pet, $pet->getName() . ' took this from a Small Lake.');
-                $this->petService->gainExp($pet, 1, ['dexterity', 'nature', 'perception']);
-            }
-            else
-            {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Small Lake, and almost caught a Mini Minnow, but it got away.');
-                $this->petService->gainExp($pet, 1, ['dexterity', 'nature', 'perception']);
-            }
-
-            $pet->spendTime(mt_rand(45, 60));
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Small Lake, and almost caught a Mini Minnow, but it got away.');
+            $this->petService->gainExp($pet, 1, ['dexterity', 'nature', 'perception']);
         }
 
         return $activityLog;
@@ -302,6 +297,56 @@ class FishingService
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Flooded Paddy Field, and almost caught a Crawfish, but it got away.');
 
             $this->petService->gainExp($pet, 1, [ 'dexterity', 'nature', 'perception' ]);
+
+            $pet->spendTime(mt_rand(45, 60));
+        }
+
+        return $activityLog;
+    }
+
+    private function fishedFoggyLake(Pet $pet): PetActivityLog
+    {
+        $nothingBiting = $this->nothingBiting($pet, 20, 'at a Foggy Lake');
+        if($nothingBiting !== null) return $nothingBiting;
+
+        if(\mt_rand(1, 10 + $pet->getDexterity() + $pet->getNature() + $pet->getPerception() + $pet->getFishing()) >= 5)
+        {
+            if(mt_rand(1, 4) === 1)
+            {
+                if(mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence()) >= 15)
+                {
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Foggy Lake, caught a Ghost Fish, and harvested Quintessence from it.');
+                    $this->inventoryService->petCollectsItem('Quintessence', $pet, 'From a Ghost Fish that ' . $pet->getName() . ' fished at a Foggy Lake.');
+                    $this->petService->gainExp($pet, 2, [ 'dexterity', 'nature', 'perception', 'intelligence', 'umbra' ]);
+                }
+                else
+                {
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Foggy Lake, and caught a Ghost Fish, but failed to harvest any Quintessence from it.');
+                    $this->petService->gainExp($pet, 1, [ 'dexterity', 'nature', 'perception', 'intelligence', 'umbra' ]);
+                }
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Foggy Lake, and caught a Mung Fish.');
+                $this->inventoryService->petCollectsItem('Beans', $pet, $pet->getName() . ' got this from a Mung Fish at a Foggy Lake.');
+                $this->petService->gainExp($pet, 2, ['dexterity', 'nature', 'perception']);
+            }
+
+            $pet->spendTime(mt_rand(45, 60));
+        }
+        else
+        {
+            if(mt_rand(1, 15) === 1)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Foggy Lake Lake, but nothing was biting, so ' . $pet->getName() . ' grabbed some Silica Grounds, instead.');
+                $this->inventoryService->petCollectsItem('Silica Grounds', $pet, $pet->getName() . ' took this from a Foggy Lake.');
+                $this->petService->gainExp($pet, 1, ['dexterity', 'nature', 'perception']);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Foggy Lake, and almost caught something, but it got away.');
+                $this->petService->gainExp($pet, 1, ['dexterity', 'nature', 'perception']);
+            }
 
             $pet->spendTime(mt_rand(45, 60));
         }

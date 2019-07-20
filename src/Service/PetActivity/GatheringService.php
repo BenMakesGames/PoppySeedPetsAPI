@@ -334,8 +334,8 @@ class GatheringService
     private function foundOvergrownGarden(Pet $pet): PetActivityLog
     {
         $possibleLoot = [
-            'Carrot', 'Onion', 'Celery', 'Tomato',
-            'Sweet Beet', 'Ginger', 'Rice Flower'
+            'Carrot', 'Onion', 'Celery', 'Tomato', 'Beans',
+            'Sweet Beet', 'Sweet Beet', 'Ginger', 'Rice Flower'
         ];
 
         $loot = [];
