@@ -12,7 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class CandyMakersCookbookController extends PsyPetsItemController
 {
     /**
-     * @Route("/{inventory}/read", methods={"POST"})
+     * @Route("/{inventory}/read", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function read(Inventory $inventory, ResponseService $responseService)
