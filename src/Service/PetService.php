@@ -142,7 +142,7 @@ class PetService
     /**
      * @param Inventory[] $inventory
      */
-    public function doFeed(Pet $pet, array $inventory)
+    public function doFeed(Pet $pet, array $inventory): PetActivityLog
     {
         if($pet->getIsDead())
             throw new \InvalidArgumentException($pet->getName() . ' is dead :|');
@@ -154,6 +154,7 @@ class PetService
 
         $petChanges = new PetChanges($pet);
         $foodsEaten = [];
+        $favorites = [];
 
         foreach($inventory as $i)
         {
@@ -169,8 +170,12 @@ class PetService
 
             $favoriteFlavorStrength = $food->{'get' . $pet->getFavoriteFlavor()}();
 
-            $pet->increaseLove($favoriteFlavorStrength + $food->getLove());
-            $pet->increaseEsteem($favoriteFlavorStrength + $food->getLove());
+            if($favoriteFlavorStrength > 0)
+            {
+                $pet->increaseLove($favoriteFlavorStrength + $food->getLove());
+                $pet->increaseEsteem($favoriteFlavorStrength + $food->getLove());
+                $favorites[] = $i->getItem();
+            }
 
             $this->em->remove($i);
 
@@ -195,8 +200,12 @@ class PetService
         }
 
 
-        $this->responseService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.', $petChanges->compare($pet));
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
+
+        if(count($favorites) > 0)
+            return $this->responseService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '. ' . $pet->getName() . ' really liked the ' . ArrayFunctions::pick_one($favorites)->getName() . '!', $petChanges->compare($pet));
+        else
+            return $this->responseService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.', $petChanges->compare($pet));
     }
 
     public function doEat(Pet $pet, Item $item)

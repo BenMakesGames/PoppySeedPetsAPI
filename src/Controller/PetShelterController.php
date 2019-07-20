@@ -2,6 +2,7 @@
 namespace App\Controller;
 use App\Entity\Pet;
 use App\Entity\PetSkills;
+use App\Enum\FlavorEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
@@ -181,6 +182,7 @@ class PetShelterController extends PsyPetsController
                 ->setSpecies(ArrayFunctions::pick_one($allSpecies))
                 ->setColorA($colorA)
                 ->setColorB($colorB)
+                ->setFavoriteFlavor(FlavorEnum::getRandom())
             ;
         }
 
