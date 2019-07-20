@@ -8,13 +8,13 @@ class ItemQuantity
 {
     /**
      * @var Item
-     * @Groups({"myInventory"})
+     * @Groups({"myInventory", "knownRecipe"})
      */
     public $item;
 
     /**
      * @var int
-     * @Groups({"myInventory"})
+     * @Groups({"myInventory", "knownRecipe"})
      */
     public $quantity;
 }
