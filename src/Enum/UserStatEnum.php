@@ -3,6 +3,8 @@ namespace App\Enum;
 
 final class UserStatEnum
 {
+    use Enum;
+
     const TOTAL_MONEYS_SPENT = 'Total Moneys Spent';
     const TOTAL_MONEYS_EARNED_IN_MARKET = 'Total Moneys Earned in Market';
     const ITEMS_SOLD_IN_MARKET = 'Items Sold in Market';

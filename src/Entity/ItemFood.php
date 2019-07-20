@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use App\Enum\FlavorEnum;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ItemFoodRepository")
@@ -317,5 +319,35 @@ class ItemFood
         $multiplied->whack *= $f;
 
         return $multiplied;
+    }
+
+    /**
+     * @Groups({"myInventory", "itemEncyclopedia"})
+     */
+    public function getModifiers(): array
+    {
+        $modifiers = [];
+
+        if($this->food >= 10)
+            $modifiers[] = 'huge meal';
+        else if($this->food >= 6)
+            $modifiers[] = 'meal';
+        else if($this->food >= 3)
+            $modifiers[] = 'small meal';
+        else if($this->food >= 1)
+            $modifiers[] = 'snack';
+        else
+            $modifiers[] = 'no food value';
+
+        if($this->love > 0) $modifiers[] = 'all pets love to eat this food';
+        else if($this->love < 0) $modifiers[] = 'all pets hate to eat this food';
+
+        if($this->junk !== 0) $modifiers[] = 'a junk food';
+        if($this->whack > 0) $modifiers[] = 'makes pets feel a little whacky';
+
+        foreach(FlavorEnum::getValues() as $flavor)
+            if($this->$flavor > 0) $modifiers[] = $flavor;
+
+        return $modifiers;
     }
 }

@@ -4,6 +4,8 @@ namespace App\Enum;
 // each SerializationGroup has a corresponding model class in the front-end
 final class SerializationGroupEnum
 {
+    use Enum;
+
     const ITEM_ADMIN = 'itemAdmin';
     const MY_ACCOUNT = 'myAccount';
     const MY_PET = 'myPet';

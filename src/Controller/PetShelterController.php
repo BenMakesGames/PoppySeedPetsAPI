@@ -182,7 +182,7 @@ class PetShelterController extends PsyPetsController
                 ->setSpecies(ArrayFunctions::pick_one($allSpecies))
                 ->setColorA($colorA)
                 ->setColorB($colorB)
-                ->setFavoriteFlavor(FlavorEnum::getRandom())
+                ->setFavoriteFlavor(FlavorEnum::getRandomValue())
             ;
         }
 

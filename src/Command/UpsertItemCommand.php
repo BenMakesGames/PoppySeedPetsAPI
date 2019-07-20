@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Entity\Item;
 use App\Entity\ItemFood;
+use App\Enum\FlavorEnum;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -52,7 +53,6 @@ class UpsertItemCommand extends PsyPetsCommand
         $this->name($item, $name);
         $this->image($item);
         $this->food($item);
-        //$this->size($item);
 
         $this->em->flush();
     }
@@ -109,22 +109,16 @@ class UpsertItemCommand extends PsyPetsCommand
             $food->setLove($this->askInt('Love hours', $food->getLove()));
             $food->setJunk($this->askInt('Junk hours', $food->getJunk()));
             $food->setWhack($this->askInt('Whack hours', $food->getWhack()));
+
+            foreach(FlavorEnum::getValues() as $flavor)
+                $food->{'set' . $flavor}($this->askInt(ucfirst($flavor) . ' hours', $food->{'get' . $flavor}()));
         }
         else
         {
             if($item->getFood())
                 $this->em->remove($item->getFood());
-            
+
             $item->setFood(null);
         }
     }
-
-    /*
-    private function size(Item $item)
-    {
-        $size = $this->askInt('How many bits is it?', $item->getSize(), function(int $n) { return $n > 0; });
-
-        $item->setSize($size);
-    }
-    */
 }

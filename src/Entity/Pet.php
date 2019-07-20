@@ -611,7 +611,7 @@ class Pet
 
     public function setFavoriteFlavor(string $favoriteFlavor): self
     {
-        if(!FlavorEnum::isAFlavor($favoriteFlavor))
+        if(!FlavorEnum::isAValue($favoriteFlavor))
             throw new \InvalidArgumentException('favoriteFlavor must be a value from FlavorEnum.');
 
         $this->favoriteFlavor = $favoriteFlavor;

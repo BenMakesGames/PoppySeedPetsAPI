@@ -36,6 +36,11 @@ class ItemTool
     /**
      * @ORM\Column(type="integer")
      */
+    private $stamina = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
     private $intelligence = 0;
 
     /**
@@ -47,11 +52,6 @@ class ItemTool
      * @ORM\Column(type="integer")
      */
     private $stealth = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $stamina = 0;
 
     /**
      * @ORM\Column(type="integer")
@@ -84,6 +84,16 @@ class ItemTool
     private $gathering = 0;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $music = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $smithing = 0;
+
+    /**
      * @ORM\Column(type="float")
      * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
      */
@@ -106,16 +116,6 @@ class ItemTool
      * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
      */
     private $gripScale;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $music = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $smithing = 0;
 
     public function getId(): ?int
     {
@@ -142,6 +142,18 @@ class ItemTool
     public function setDexterity(int $dexterity): self
     {
         $this->dexterity = $dexterity;
+
+        return $this;
+    }
+
+    public function getStamina(): int
+    {
+        return $this->stamina;
+    }
+
+    public function setStamina(int $stamina): self
+    {
+        $this->stamina = $stamina;
 
         return $this;
     }
@@ -178,18 +190,6 @@ class ItemTool
     public function setStealth(int $stealth): self
     {
         $this->stealth = $stealth;
-
-        return $this;
-    }
-
-    public function getStamina(): int
-    {
-        return $this->stamina;
-    }
-
-    public function setStamina(int $stamina): self
-    {
-        $this->stamina = $stamina;
 
         return $this;
     }

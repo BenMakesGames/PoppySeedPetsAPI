@@ -43,23 +43,16 @@ class Item
     private $useActions = [];
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\ItemTool")
+     * @ORM\OneToOne(targetEntity="App\Entity\ItemTool")
      * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia"})
      */
     private $tool;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\ItemFood", cascade={"persist", "remove"})
-     */
-    private $food;
-
-    /**
      * @Groups({"myInventory", "itemEncyclopedia"})
      */
-    public function isEdible(): bool
-    {
-        return $this->food !== null;
-    }
+    private $food;
 
     public function getId(): ?int
     {

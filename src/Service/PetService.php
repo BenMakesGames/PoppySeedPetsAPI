@@ -165,7 +165,7 @@ class PetService
             $pet->increaseJunk($food->getJunk());
 
             // consider favorite flavor:
-            if(!FlavorEnum::isAFlavor($pet->getFavoriteFlavor()))
+            if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
                 throw new \Exception('pet\'s favorite flavor is invalid');
 
             $favoriteFlavorStrength = $food->{'get' . $pet->getFavoriteFlavor()}();
@@ -219,7 +219,7 @@ class PetService
         $pet->increaseJunk($food->getJunk());
 
         // consider favorite flavor:
-        if(!FlavorEnum::isAFlavor($pet->getFavoriteFlavor()))
+        if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
             throw new \Exception('pet\'s favorite flavor is invalid');
 
         $favoriteFlavorStrength = $food->{'get' . $pet->getFavoriteFlavor()}();

@@ -166,7 +166,7 @@ class InventoryService
     {
         if(is_string($item)) $item = $this->itemRepository->findOneByName($item);
 
-        if($item->isEdible() && \mt_rand(1, 20) < 10 - $pet->getFood())
+        if($item->getFood() !== null && \mt_rand(1, 20) < 10 - $pet->getFood())
         {
             $this->petService->doEat($pet, $item);
             return null;

@@ -106,7 +106,7 @@ class AccountController extends PsyPetsController
             ->setColorB($petColorB)
             ->setNeeds(mt_rand(10, 12), -9)
             ->setSkills($petSkills)
-            ->setFavoriteFlavor(FlavorEnum::getRandom())
+            ->setFavoriteFlavor(FlavorEnum::getRandomValue())
         ;
 
         $em->persist($pet);
