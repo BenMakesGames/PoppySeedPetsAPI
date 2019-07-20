@@ -207,7 +207,13 @@ class InventoryService
      */
     public function receiveItem($item, User $owner, ?User $creator, string $comment): Inventory
     {
-        if(is_string($item)) $item = $this->itemRepository->findOneByName($item);
+        if(is_string($item))
+        {
+            if($item === 'Beans' && mt_rand(1, 100) === 1)
+                $item = 'Magic Beans';
+
+            $item = $this->itemRepository->findOneByName($item);
+        }
 
         $i = (new Inventory())
             ->setOwner($owner)

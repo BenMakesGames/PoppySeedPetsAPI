@@ -98,10 +98,10 @@ class BoxController extends PsyPetsItemController
 
         $newInventory = [];
 
-        $beans = \mt_rand(4, \mt_rand(6, 10));
+        $beans = \mt_rand(6, \mt_rand(7, 12));
 
         for($i = 0; $i < $beans; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Coffee Beans', 'Cocoa Beans' ]), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.');
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Coffee Beans', 'Cocoa Beans', 'Beans' ]), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.');
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
