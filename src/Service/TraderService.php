@@ -59,7 +59,7 @@ class TraderService
     {
         mt_srand($user->getDailySeed());
 
-        $numOffers = mt_rand(2, 4);
+        $numOffers = mt_rand(3, 5);
 
         $now = new \DateTimeImmutable();
 
