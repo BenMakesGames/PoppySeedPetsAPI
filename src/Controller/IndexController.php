@@ -32,6 +32,7 @@ class IndexController extends PsyPetsController
 
     /**
      * @Route("/myIp")
+     * @IsGranted("ROLE_ADMIN")
      */
     public function clientIP(ResponseService $responseService, Request $request)
     {
