@@ -114,7 +114,7 @@ class TraderService
 
         if($dayOfWeek === 'Mon' || $leapDay)
         {
-            $offers[] = [
+            /*$offers[] = [
                 'id' => self::ID_PROOF_OF_ADVENTURING,
                 'cost' => [
                     [ 'type' => 'item', 'item' => $this->itemRepository->findOneByName('Moon Pearl'), 'quantity' => 1 ],
@@ -125,7 +125,7 @@ class TraderService
                     [ 'item' => $this->itemRepository->findOneByName('Proof of Adventuring'), 'quantity' => 1 ],
                 ],
                 'comment' => 'I just really like Naner Puddin\'.'
-            ];
+            ];*/
         }
 
         if($dayOfWeek === 'Tue')
