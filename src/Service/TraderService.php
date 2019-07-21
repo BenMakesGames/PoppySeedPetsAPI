@@ -187,6 +187,24 @@ class TraderService
             ];
         }
 
+        if($dayOfWeek === 'Sun')
+        {
+            $askingItem = array_rand($asking);
+            $askingQuantity = $asking[$askingItem];
+            unset($asking[$askingItem]);
+
+            $offers[] = [
+                'id' => 'sunflower',
+                'cost' => [
+                    [ 'type' => 'item', 'item' => $this->itemRepository->findOneByName($askingItem), 'quantity' => $askingQuantity ]
+                ],
+                'yield' => [
+                    [ 'type' => 'item', 'item' => $this->itemRepository->findOneByName('Sunflower'), 'quantity' => 1 ]
+                ],
+                'comment' => 'Have a nice Sunday!',
+            ];
+        }
+
         return [
             'dialog' => $dialog,
             'offers' => $offers,
