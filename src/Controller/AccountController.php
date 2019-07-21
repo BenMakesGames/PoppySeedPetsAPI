@@ -160,6 +160,72 @@ class AccountController extends PsyPetsController
     }
 
     /**
+     * @Route("/updateEmail", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function updateEmail(
+        Request $request, ResponseService $responseService, UserPasswordEncoderInterface $passwordEncoder,
+        UserRepository $userRepository
+    )
+    {
+        $user = $this->getUser();
+
+        if(!$passwordEncoder->isPasswordValid($user, $request->request->get('confirmPassphrase')))
+            throw new AccessDeniedHttpException('Email and/or passphrase is not correct.');
+
+        $newEmail = trim($request->request->get('newEmail'));
+
+        if($newEmail === '' || !filter_var($newEmail, FILTER_VALIDATE_EMAIL))
+            throw new UnprocessableEntityHttpException('Email address is not valid.');
+
+        $alreadyInUse = $userRepository->findOneBy([ 'email' => $newEmail ]);
+
+        if($alreadyInUse)
+        {
+            if($alreadyInUse->getId() === $user->getId())
+                return $responseService->success(); // sure.
+            else
+            {
+                if(strpos($newEmail, '+') === -1)
+                {
+                    $emailParts = explode('@', $newEmail);
+                    $exampleEmail = $emailParts[0] . '+whatever@' . $emailParts[1];
+                    throw new UnprocessableEntityHttpException('That e-mail address is already in use. If it\'s your e-mail address, many e-mail services allow you to put a "+" in your address, for example "' . $exampleEmail . '".');
+                }
+                else
+                    throw new UnprocessableEntityHttpException('That e-mail address is already in use.');
+            }
+        }
+
+        $user->setEmail($newEmail);
+
+        return $responseService->success();
+    }
+
+    /**
+     * @Route("/updatePassphrase", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function updatePassphrase(
+        Request $request, ResponseService $responseService, UserPasswordEncoderInterface $passwordEncoder
+    )
+    {
+        $user = $this->getUser();
+
+        if(!$passwordEncoder->isPasswordValid($user, $request->request->get('confirmPassphrase')))
+            throw new AccessDeniedHttpException('Email and/or passphrase is not correct.');
+
+        $newPassphrase = trim($request->request->get('newPassphrase'));
+
+        if(strlen($newPassphrase) < 10)
+            throw new UnprocessableEntityHttpException('Passphrase must be at least 10 characters long.');
+
+        $user->setPassword($passwordEncoder->encodePassword($user, $newPassphrase));
+
+        return $responseService->success();
+    }
+
+    /**
      * @Route("", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
