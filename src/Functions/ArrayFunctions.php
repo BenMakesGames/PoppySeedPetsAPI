@@ -25,6 +25,20 @@ final class ArrayFunctions
         return true;
     }
 
+    /**
+     * @return mixed|null
+     */
+    public static function find_one(array $array, callable $delegate)
+    {
+        foreach($array as $item)
+        {
+            if($delegate($item))
+                return $item;
+        }
+
+        return null;
+    }
+
     public static function pick_one(array $array)
     {
         return $array[array_rand($array)];

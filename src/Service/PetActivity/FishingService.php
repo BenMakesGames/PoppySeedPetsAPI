@@ -71,7 +71,7 @@ class FishingService
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));
 
-        if(mt_rand(1, 50) === 1)
+        if(mt_rand(1, 75) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);
     }
 

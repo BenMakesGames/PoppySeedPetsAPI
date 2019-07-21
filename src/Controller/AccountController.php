@@ -149,6 +149,11 @@ class AccountController extends PsyPetsController
 
         $sessionService->logIn($user, $sessionHours);
 
+        $user = $this->getUser();
+
+        if($user->getUnlockedMerchant() === null && $user->getRegisteredOn() <= (new \DateTimeImmutable())->modify('-5 days'))
+            $user->setUnlockedMerchant();
+
         $em->flush();
 
         return $responseService->success();
@@ -158,8 +163,16 @@ class AccountController extends PsyPetsController
      * @Route("", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function getAccount(ResponseService $responseService)
+    public function getAccount(ResponseService $responseService, EntityManagerInterface $em)
     {
+        $user = $this->getUser();
+
+        if($user->getUnlockedMerchant() === null && $user->getRegisteredOn() <= (new \DateTimeImmutable())->modify('-5 days'))
+        {
+            $user->setUnlockedMerchant();
+            $em->flush();
+        }
+
         return $responseService->success();
     }
 
