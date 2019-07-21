@@ -6,6 +6,7 @@ use App\Functions\ArrayFunctions;
 use App\Repository\ItemRepository;
 use App\Service\ResponseService;
 use App\Service\TraderService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -41,7 +42,7 @@ class TraderController extends PsyPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function makeExchange(
-        string $id, TraderService $travelingMerchantService, ResponseService $responseService
+        string $id, TraderService $travelingMerchantService, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -61,6 +62,8 @@ class TraderController extends PsyPetsController
             throw new UnprocessableEntityHttpException('You don\'t have the items needed to make this exchange.');
 
         $travelingMerchantService->makeExchange($user, $exchange);
+
+        $em->flush();
 
         return $responseService->success();
     }
