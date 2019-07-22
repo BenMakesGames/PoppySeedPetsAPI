@@ -134,7 +134,7 @@ class Pet
      * @ORM\Column(type="text")
      * @Groups({"myPet"})
      */
-    private $note;
+    private $note = '';
 
     public function __construct()
     {
