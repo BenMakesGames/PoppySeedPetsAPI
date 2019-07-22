@@ -716,7 +716,7 @@ class Pet
 
     public function getAffectionPointsToLevel(): int
     {
-        return ($this->getAffectionLevel() + 1) * 10 + 40;
+        return ($this->getAffectionLevel() + 1) * 50;
     }
 
     public function getAffectionRewardsClaimed(): int
