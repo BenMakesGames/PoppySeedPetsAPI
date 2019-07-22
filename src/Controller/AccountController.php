@@ -207,7 +207,8 @@ class AccountController extends PsyPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function updatePassphrase(
-        Request $request, ResponseService $responseService, UserPasswordEncoderInterface $passwordEncoder
+        Request $request, ResponseService $responseService, UserPasswordEncoderInterface $passwordEncoder,
+        EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -221,6 +222,8 @@ class AccountController extends PsyPetsController
             throw new UnprocessableEntityHttpException('Passphrase must be at least 10 characters long.');
 
         $user->setPassword($passwordEncoder->encodePassword($user, $newPassphrase));
+
+        $em->flush();
 
         return $responseService->success();
     }
