@@ -3,12 +3,39 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SpiritCompanionRepository")
  */
 class SpiritCompanion
 {
+    const NAMES = [
+        'Duša',
+        'Achak',
+        'Avira',
+        'Cheveyo',
+        'Drogo',
+        'Du\'an',
+        'Espiridión',
+        'Euthymios',
+        'Fravardin',
+        'Gogo',
+        'Hew',
+        'Imamu',
+        'Kneph',
+        'Menos',
+        'Spyridon',
+        'Arima',
+        'Efrit',
+        'Enid',
+        'Janan',
+        'Pneuma',
+        'Psykhe',
+        'Rei',
+        'Tien',
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -18,11 +45,13 @@ class SpiritCompanion
 
     /**
      * @ORM\Column(type="string", length=40)
+     * @Groups({"myPet"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=40)
+     * @Groups({"myPet"})
      */
     private $image;
 

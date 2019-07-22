@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\MeritEnum;
 use App\Enum\UserStatEnum;
 use App\Model\PetChanges;
 use App\Repository\UserStatsRepository;
@@ -340,34 +341,82 @@ class HuntingService
 
     private function huntedSatyr(Pet $pet): PetActivityLog
     {
-        $skill = 10 + $pet->getStrength() + $pet->getBrawl();
+        $brawlRoll = mt_rand(1, 10 + $pet->getStrength() + $pet->getBrawl());
+        $musicSkill = mt_rand(1, 10 + $pet->getIntelligence() + $pet->getMusic());
 
         $pet->increaseFood(-1);
         $pet->spendTime(mt_rand(45, 60));
 
-        if(\mt_rand(1, $skill) >= 15)
+        if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY) && $pet->hasMerit(MeritEnum::SOOTHING_VOICE))
         {
-            $pet->increaseSafety(3);
-            $pet->increaseEsteem(2);
-            $this->petService->gainExp($pet, 2, [ 'strength', 'brawl' ]);
-            if(\mt_rand(1, 2) === 1)
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' encountered a Satyr, but remembered that Satyrs love music, so sang a song. The Satyr was so enthralled by ' . $pet->getName() . '\'s soothing voice, that it offered gifts before leaving in peace.');
+            $pet->increaseEsteem(1);
+            $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.');
+
+            if(mt_rand(1, 5) === 1)
+                $this->inventoryService->petCollectsItem('Music Note', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.');
+            else
+                $this->inventoryService->petCollectsItem('Plain Yogurt', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.');
+        }
+        else if($musicSkill > $brawlRoll)
+        {
+            if($pet->hasMerit(MeritEnum::SOOTHING_VOICE))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fought a Satyr, and won, receiving its Yogurt (gross), and Wine.');
-                $this->inventoryService->petCollectsItem('Plain Yogurt', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.');
-                $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' encountered a Satyr, who upon hearing ' . $pet->getName() . '\'s voice, bade them sing. ' . $pet->getName() . ' did so; the Satyr was so enthralled by their soothing voice, that it offered gifts before leaving in peace.');
+                $pet->increaseEsteem(1);
+                $this->petService->gainExp($pet, 1, [ 'music' ]);
+                $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.');
+
+                if(mt_rand(1, 5) === 1)
+                    $this->inventoryService->petCollectsItem('Music Note', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.');
+                else
+                    $this->inventoryService->petCollectsItem('Plain Yogurt', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.');
+            }
+            else if($musicSkill >= 15)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' encountered a Satyr, who challenged ' . $pet->getName() . ' to a sing. It was surprised by ' . $pet->getName() . '\'s musical skill, and apologetically offered gifts before leaving in peace.');
+                $pet->increaseEsteem(2);
+                $this->petService->gainExp($pet, 2, [ 'intelligence', 'music' ]);
+                $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.');
+
+                if(mt_rand(1, 5) === 1)
+                    $this->inventoryService->petCollectsItem('Music Note', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.');
+                else
+                    $this->inventoryService->petCollectsItem('Plain Yogurt', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.');
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fought a Satyr, and won, receiving its Yogurt (gross), and Horn. Er: Talon, I guess.');
-                $this->inventoryService->petCollectsItem('Plain Yogurt', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.');
-                $this->inventoryService->petCollectsItem('Talon', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' encountered a Satyr, who challenged ' . $pet->getName() . ' to a sing. The Satyr quickly cut ' . $pet->getName() . ' off, complaining loudly, and leaving in a huff.');
+                $pet->increaseEsteem(-1);
+                $this->petService->gainExp($pet, 1, [ 'intelligence', 'music' ]);
             }
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to fight a drunken Satyr, but the Satyr misinterpreted ' . $pet->getName() . '\'s intentions, and it started to get really weird, so ' . $pet->getName() . ' ran away.');
-            $pet->increaseSafety(-\mt_rand(1, 5));
-            $this->petService->gainExp($pet, 1, [ 'strength', 'brawl' ]);
+            if($brawlRoll >= 15)
+            {
+                $pet->increaseSafety(3);
+                $pet->increaseEsteem(2);
+                $this->petService->gainExp($pet, 2, [ 'strength', 'brawl' ]);
+                if(\mt_rand(1, 2) === 1)
+                {
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fought a Satyr, and won, receiving its Yogurt (gross), and Wine.');
+                    $this->inventoryService->petCollectsItem('Plain Yogurt', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.');
+                    $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.');
+                }
+                else
+                {
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fought a Satyr, and won, receiving its Yogurt (gross), and Horn. Er: Talon, I guess.');
+                    $this->inventoryService->petCollectsItem('Plain Yogurt', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.');
+                    $this->inventoryService->petCollectsItem('Talon', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.');
+                }
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to fight a drunken Satyr, but the Satyr misinterpreted ' . $pet->getName() . '\'s intentions, and it started to get really weird, so ' . $pet->getName() . ' ran away.');
+                $pet->increaseSafety(-\mt_rand(1, 5));
+                $this->petService->gainExp($pet, 1, [ 'strength', 'brawl' ]);
+            }
         }
 
         return $activityLog;

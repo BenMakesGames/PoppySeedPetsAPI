@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\MeritEnum;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetService;
@@ -83,6 +84,8 @@ class FishingService
 
     private function nothingBiting(Pet $pet, int $percentChance, string $atLocationName): ?PetActivityLog
     {
+        if($pet->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION)) $percentChance /= 2;
+
         if(\mt_rand(1, 100) <= $percentChance)
         {
             $this->petService->gainExp($pet, 1, [ 'dexterity', 'nature' ]);
@@ -206,10 +209,18 @@ class FishingService
 
     private function fishedWaterfallBasin(Pet $pet): PetActivityLog
     {
-        $nothingBiting = $this->nothingBiting($pet, 20,  'in a Waterfall Basin');
+        $nothingBiting = $this->nothingBiting($pet, 20, 'in a Waterfall Basin');
         if($nothingBiting !== null) return $nothingBiting;
 
-        if(\mt_rand(1, 100) === 1)
+        if(\mt_rand(1, 100) === 1 && $pet->hasMerit(MeritEnum::LUCKY))
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Waterfall Basin, and reeled in a Little Strongbox! Lucky~!');
+            $this->petService->gainExp($pet, 1, ['nature', 'perception']);
+            $this->inventoryService->petCollectsItem('Little Strongbox', $pet, $pet->getName() . ' was fishing in a Waterfall Basin, and one of these got caught on the line! Lucky~!');
+
+            $pet->spendTime(mt_rand(45, 75));
+        }
+        else if(\mt_rand(1, 100) === 1)
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Waterfall Basin, and reeled in a Little Strongbox!');
             $this->petService->gainExp($pet, 1, ['nature', 'perception']);
@@ -219,11 +230,24 @@ class FishingService
         }
         else if(\mt_rand(1, 5) === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Waterfall Basin, and reeled in a Mermaid Egg!');
-            $this->petService->gainExp($pet, 1, ['nature', 'perception']);
-            $this->inventoryService->petCollectsItem('Mermaid Egg', $pet, $pet->getName() . ' was fishing in a Waterfall Basin, and one of these got caught on the line!');
+            if(mt_rand(1, 2) === 1 && $pet->hasMerit(MeritEnum::SOOTHING_VOICE))
+            {
+                $reward = mt_rand(1, 10) === 1 ? 'Secret Seashell' : 'Moon Pearl';
 
-            $pet->spendTime(mt_rand(30, 45));
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Waterfall Basin. There, ' . $pet->getName() . '\'s humming caught the attention of a mermaid, who became fascinated by ' . $pet->getName() . '\'s soothing voice. After listening for a while, she gave ' . $pet->getName() . ' a ' . $reward . ', and left.');
+                $this->petService->gainExp($pet, 1, ['music']);
+                $this->inventoryService->petCollectsItem($reward, $pet, $pet->getName() . ' received this from a Waterfall Basin mermaid who was enchanted by ' . $pet->getName() . '\'s soothing voice.');
+
+                $pet->spendTime(mt_rand(30, 45));
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Waterfall Basin, and reeled in a Mermaid Egg!');
+                $this->petService->gainExp($pet, 1, ['nature', 'perception']);
+                $this->inventoryService->petCollectsItem('Mermaid Egg', $pet, $pet->getName() . ' was fishing in a Waterfall Basin, and one of these got caught on the line!');
+
+                $pet->spendTime(mt_rand(30, 45));
+            }
         }
         else
         {
@@ -253,10 +277,20 @@ class FishingService
 
     private function fishedPlazaFountain(Pet $pet): PetActivityLog
     {
-        $moneys = \mt_rand(2, 9);
-        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fished around in the Plaza Fountain, and grabbed ' . $moneys . ' moneys.');
+        if($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 7) === 1)
+        {
+            $moneys = \mt_rand(10, 15);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fished around in the Plaza Fountain, and grabbed ' . $moneys . ' moneys! Lucky~!');
+            $pet->getOwner()->increaseMoneys($moneys);
+        }
+        else
+        {
+            $moneys = \mt_rand(2, 9);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fished around in the Plaza Fountain, and grabbed ' . $moneys . ' moneys.');
+            $pet->getOwner()->increaseMoneys($moneys);
+        }
+
         $this->petService->gainExp($pet, 1, [ 'perception' ]);
-        $pet->getOwner()->increaseMoneys($moneys);
 
         $pet->spendTime(mt_rand(30, 45));
 

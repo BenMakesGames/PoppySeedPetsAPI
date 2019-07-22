@@ -3,7 +3,10 @@ namespace App\Controller;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
+use App\Entity\SpiritCompanion;
+use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Functions\ArrayFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\PetActivityLogRepository;
 use App\Service\Filter\PetActivityLogsFilterService;
@@ -109,6 +112,53 @@ class PetController extends PsyPetsController
             throw new UnprocessableEntityHttpException($pet->getName() . ' is not currently equipped.');
 
         $pet->setTool(null);
+
+        $em->flush();
+
+        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+    }
+
+    /**
+     * @Route("/{pet}/chooseAffectionReward", methods={"POST"}, requirements={"pet"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function chooseAffectionReward(
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        if($pet->getOwner()->getId() !== $user->getId())
+            throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
+
+        if($pet->getAffectionRewardsClaimed() >= $pet->getAffectionLevel())
+            throw new UnprocessableEntityHttpException('You\'ll have to raise ' . $pet->getName() . '\'s affection, first.');
+
+        $merit = $request->request->get('merit');
+
+        if(!MeritEnum::isAValue($merit))
+            throw new UnprocessableEntityHttpException('"' . $merit . '" is not a merit.');
+
+        if($pet->hasMerit($merit))
+            throw new UnprocessableEntityHttpException($pet->getName() . ' already has ' . $merit . '.');
+
+        $pet
+            ->addMerit($merit)
+            ->increaseAffectionRewardsClaimed()
+        ;
+
+        if($merit === MeritEnum::SPIRIT_COMPANION)
+        {
+            $spiritCompanion = (new SpiritCompanion())
+                ->setSkill('')
+                ->setImage(ArrayFunctions::pick_one([ 'blob', 'dino', 'erm', 'splat' ]))
+                ->setName(ArrayFunctions::pick_one(SpiritCompanion::NAMES))
+            ;
+
+            $pet->setSpiritCompanion($spiritCompanion);
+
+            $em->persist($spiritCompanion);
+        }
 
         $em->flush();
 

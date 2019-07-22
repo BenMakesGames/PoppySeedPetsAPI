@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
+use App\Functions\DateFunctions;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -156,11 +157,13 @@ class Pet
 
     /**
      * @ORM\Column(type="json")
+     * @Groups({"myPet"})
      */
     private $merits = [];
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\SpiritCompanion", inversedBy="pet", cascade={"persist", "remove"})
+     * @Groups({"myPet"})
      */
     private $spiritCompanion;
 
@@ -575,12 +578,20 @@ class Pet
 
     public function getStrength(): int
     {
-        return $this->getSkills()->getStrength() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getStrength() : 0);
+        return
+            $this->getSkills()->getStrength() +
+            ($this->getTool() ? $this->getTool()->getItem()->getTool()->getStrength() : 0) +
+            ($this->hasMerit(MeritEnum::MOON_BOUND) ? DateFunctions::moonStrength(new \DateTimeImmutable()) : 0)
+        ;
     }
 
     public function getStamina(): int
     {
-        return $this->getSkills()->getStamina() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getStamina() : 0);
+        return
+            $this->getSkills()->getStamina() +
+            ($this->getTool() ? $this->getTool()->getItem()->getTool()->getStamina() : 0) +
+            ($this->hasMerit(MeritEnum::MOON_BOUND) ? DateFunctions::moonStrength(new \DateTimeImmutable()) : 0)
+        ;
     }
 
     public function getIntelligence(): int
@@ -605,7 +616,11 @@ class Pet
 
     public function getStealth(): int
     {
-        return $this->getSkills()->getStealth() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getStealth() : 0);
+        return
+            $this->getSkills()->getStealth() +
+            ($this->getTool() ? $this->getTool()->getItem()->getTool()->getStealth() : 0) +
+            ($this->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION) ? 1 : 0)
+        ;
     }
 
     public function getCrafts(): int
@@ -620,7 +635,10 @@ class Pet
 
     public function getFishing(): int
     {
-        return $this->getTool() ? $this->getTool()->getItem()->getTool()->getFishing() : 0;
+        // no bonus for the casting no reflection merit; we grant that bonus elsewhere
+        return
+            ($this->getTool() ? $this->getTool()->getItem()->getTool()->getFishing() : 0)
+        ;
     }
 
     public function getMusic(): int

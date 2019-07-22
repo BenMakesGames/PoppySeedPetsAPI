@@ -12,11 +12,11 @@ trait Enum
 
     public static function isAValue(string $value): bool
     {
-        return in_array($value, FlavorEnum::getValues());
+        return in_array($value, self::getValues());
     }
 
     public static function getRandomValue(): string
     {
-        return ArrayFunctions::pick_one(FlavorEnum::getValues());
+        return ArrayFunctions::pick_one(self::getValues());
     }
 }

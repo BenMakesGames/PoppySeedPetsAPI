@@ -425,7 +425,7 @@ class GatheringService
                 else
                     $loot = 'Silver Ore';
 
-                $punctuation = '!! Lucky~!';
+                $punctuation = '! Lucky~!';
             }
             else if(mt_rand(1, 50) === 1)
             {
