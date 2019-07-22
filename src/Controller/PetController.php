@@ -42,6 +42,31 @@ class PetController extends PsyPetsController
     }
 
     /**
+     * @Route("/{pet}/updateNote", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function updateNote(
+        Pet $pet, Request $request, EntityManagerInterface $em, ResponseService $responseService
+    )
+    {
+        $user = $this->getUser();
+
+        if($pet->getOwner()->getId() !== $user->getId())
+            throw new NotFoundHttpException();
+
+        $note = trim($request->request->get('note', ''));
+
+        if(strlen($note) > 1000)
+            return new UnprocessableEntityHttpException('Note cannot be longer than 1000 characters.');
+
+        $pet->setNote($note);
+
+        $em->flush();
+
+        return $responseService->success();
+    }
+
+    /**
      * @Route("/{pet}/equip/{inventory}", methods={"POST"}, requirements={"pet"="\d+", "inventory"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -55,7 +80,7 @@ class PetController extends PsyPetsController
             throw new NotFoundHttpException();
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
+            throw new NotFoundHttpException();
 
         if($inventory->getPet())
         {

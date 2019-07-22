@@ -130,6 +130,12 @@ class Pet
      */
     private $favoriteFlavor;
 
+    /**
+     * @ORM\Column(type="text")
+     * @Groups({"myPet"})
+     */
+    private $note;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -615,6 +621,18 @@ class Pet
             throw new \InvalidArgumentException('favoriteFlavor must be a value from FlavorEnum.');
 
         $this->favoriteFlavor = $favoriteFlavor;
+
+        return $this;
+    }
+
+    public function getNote(): ?string
+    {
+        return $this->note;
+    }
+
+    public function setNote(string $note): self
+    {
+        $this->note = $note;
 
         return $this;
     }
