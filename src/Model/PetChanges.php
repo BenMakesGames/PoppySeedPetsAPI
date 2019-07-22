@@ -11,6 +11,8 @@ class PetChanges
     public $esteem;
     public $exp;
     public $level;
+    public $affection;
+    public $affectionLevel;
 
     public function __construct(Pet $pet)
     {
@@ -20,6 +22,8 @@ class PetChanges
         $this->esteem = $pet->getEsteem();
         $this->exp = $pet->getExperience();
         $this->level = $pet->getLevel();
+        $this->affection = $pet->getAffectionPoints();
+        $this->affectionLevel = $pet->getAffectionLevel();
     }
 
     public function compare(Pet $pet): PetChangesSummary
@@ -30,6 +34,8 @@ class PetChanges
         $esteem = $pet->getEsteem() - $this->esteem;
         $exp = $pet->getExperience() - $this->exp;
         $level = $pet->getLevel() - $this->level;
+        $affection = $pet->getAffectionPoints() - $this->affection;
+        $affectionLevel = $pet->getAffectionLevel() - $this->affectionLevel;
 
         $summary = new PetChangesSummary();
 
@@ -39,6 +45,8 @@ class PetChanges
         $summary->esteem = PetChangesSummary::rate($esteem);
         $summary->exp = PetChangesSummary::rate($exp);
         $summary->level = PetChangesSummary::rate($level);
+        $summary->affection = PetChangesSummary::rate($affection);
+        $summary->affectionLevel = PetChangesSummary::rate($affectionLevel);
 
         return $summary;
     }

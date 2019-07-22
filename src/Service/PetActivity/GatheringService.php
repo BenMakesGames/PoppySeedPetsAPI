@@ -3,6 +3,8 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\Enum;
+use App\Enum\MeritEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
@@ -95,6 +97,7 @@ class GatheringService
         if(mt_rand(1, 2000) < $pet->getPerception())
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to an Abandoned Quarry, and happened to find a piece of Striped Microcline!');
+
             $this->petService->gainExp($pet, 1, [ 'perception', 'nature' ]);
             $this->inventoryService->petCollectsItem('Striped Microcline', $pet, $pet->getName() . ' found this at an Abandoned Quarry.');
             $pet->spendTime(\mt_rand(30, 45));
@@ -234,7 +237,7 @@ class GatheringService
             $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a Bird Nest.');
 
             if(\mt_rand(1, 20 + $pet->getPerception()) >= 10)
-                $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' stole this from a Bird Nest, after a fight.');
+                $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' stole this from a Bird Nest.');
 
             $pet->increaseEsteem(\mt_rand(1, 2));
             $this->petService->gainExp($pet, 2, [ 'perception', 'nature', 'stealth', 'dexterity' ]);
@@ -379,10 +382,22 @@ class GatheringService
             if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering()) >= 25)
                 $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
-            if(\mt_rand(1, 100) == 1)
+
+            $lucky = false;
+
+            if($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 20) === 1)
+            {
+                $loot[] = 'Honeydont';
+                $lucky = true;
+            }
+            else if(\mt_rand(1, 100) == 1)
                 $loot[] = 'Honeydont';
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found an Overgrown Garden, and harvested ' . ArrayFunctions::list_nice($loot) . '.');
+
+            if($lucky)
+                $activityLog->setEntry($activityLog->getEntry() . ' (Honeydont?! Lucky~!)');
+
             $pet->spendTime(\mt_rand(45, 60));
         }
 
@@ -400,7 +415,19 @@ class GatheringService
         {
             $this->petService->gainExp($pet, 2, [ 'strength', 'stamina', 'nature', 'perception' ]);
             $pet->increaseFood(-1);
-            if(mt_rand(1, 50) === 1)
+
+            if($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 20) === 1)
+            {
+                $pet->increaseEsteem(5);
+
+                if(mt_rand(1, 2) === 1)
+                    $loot = 'Gold Ore';
+                else
+                    $loot = 'Silver Ore';
+
+                $punctuation = '!! Lucky~!';
+            }
+            else if(mt_rand(1, 50) === 1)
             {
                 $pet->increaseEsteem(5);
                 $loot = 'Gold Ore';
@@ -497,7 +524,34 @@ class GatheringService
 
         $loot = [];
 
-        if(\mt_rand(1, 20 + $pet->getIntelligence() + $pet->getPerception()) < 15)
+        if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
+        {
+            $pet->spendTime(\mt_rand(30, 45));
+
+            $loot[] = ArrayFunctions::pick_one($possibleLoot);
+            $loot[] = ArrayFunctions::pick_one($possibleLoot);
+
+            if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering()) >= 20)
+                $loot[] = ArrayFunctions::pick_one($possibleLoot);
+
+            $lucky = false;
+
+            if($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 15) === 1)
+            {
+                $loot[] = 'Melowatern';
+                $lucky = true;
+            }
+            else if(\mt_rand(1, 75) == 1)
+                $loot[] = 'Melowatern';
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to the Wild Hedgemaze. It turns out mazes are way easier with a perfect memory! ' . $pet->getName() . ' found ' . ArrayFunctions::list_nice($loot) . '.');
+
+            if($lucky)
+                $activityLog->setEntry($activityLog->getEntry() . ' (Melowatern!? Lucky~!)');
+
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'perception' ]);
+        }
+        else if(\mt_rand(1, 20 + $pet->getIntelligence() + $pet->getPerception()) < 15)
         {
             $pet->spendTime(\mt_rand(45, 75));
             $pet->increaseFood(-1);
@@ -536,10 +590,21 @@ class GatheringService
             if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering()) >= 25)
                 $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
-            if(\mt_rand(1, 100) == 1)
+            $lucky = false;
+
+            if($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 20) === 1)
+            {
+                $loot[] = 'Melowatern';
+                $lucky = true;
+            }
+            else if(\mt_rand(1, 100) == 1)
                 $loot[] = 'Melowatern';
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wandered through a Wild Hedgemaze, and found ' . ArrayFunctions::list_nice($loot) . '.');
+
+            if($lucky)
+                $activityLog->setEntry($activityLog->getEntry() . ' (Melowatern!? Lucky~!)');
+
             $pet->spendTime(\mt_rand(45, 60));
         }
 

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Enum\FlavorEnum;
+use App\Enum\MeritEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -135,6 +136,33 @@ class Pet
      * @Groups({"myPet"})
      */
     private $note = '';
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $affectionPoints = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"myPet"})
+     */
+    private $affectionLevel = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"myPet"})
+     */
+    private $affectionRewardsClaimed = 0;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $merits = [];
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\SpiritCompanion", inversedBy="pet", cascade={"persist", "remove"})
+     */
+    private $spiritCompanion;
 
     public function __construct()
     {
@@ -468,7 +496,7 @@ class Pet
 
     public function getStomachSize(): int
     {
-        return $this->stomachSize;
+        return $this->stomachSize + $this->hasMerit(MeritEnum::LARGE_STOMACH) ? 12 : 0;
     }
 
     public function getLastInteracted(): ?\DateTimeImmutable
@@ -513,7 +541,7 @@ class Pet
 
     public function getExperienceToLevel(): int
     {
-        return $this->getLevel() * 10;
+        return ($this->getLevel() + 1) * 10;
     }
 
     public function getSpecies(): ?PetSpecies
@@ -625,7 +653,7 @@ class Pet
         return $this;
     }
 
-    public function getNote(): ?string
+    public function getNote(): string
     {
         return $this->note;
     }
@@ -633,6 +661,89 @@ class Pet
     public function setNote(string $note): self
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    public function getAffectionPoints(): int
+    {
+        return $this->affectionPoints;
+    }
+
+    public function setAffectionPoints(int $affectionPoints): self
+    {
+        $this->affectionPoints = $affectionPoints;
+
+        return $this;
+    }
+
+    public function getAffectionLevel(): int
+    {
+        return $this->affectionLevel;
+    }
+
+    public function increaseAffectionPoints(int $amount): self
+    {
+        $this->affectionPoints += $amount;
+
+        return $this;
+    }
+
+    public function decreaseAffectionPoints(int $amount): self
+    {
+        $this->affectionPoints -= $amount;
+
+        return $this;
+    }
+
+    public function getAffectionPointsToLevel(): int
+    {
+        return ($this->getAffectionLevel() + 1) * 10 + 40;
+    }
+
+    public function getAffectionRewardsClaimed(): int
+    {
+        return $this->affectionRewardsClaimed;
+    }
+
+    public function increaseAffectionRewardsClaimed(): self
+    {
+        $this->affectionRewardsClaimed++;
+
+        return $this;
+    }
+
+    public function getMerits(): array
+    {
+        return $this->merits;
+    }
+
+    public function addMerit(string $merit): self
+    {
+        if(!MeritEnum::isAValue($merit))
+            throw new \InvalidArgumentException('"' . $merit . '" is not a valid merit');
+
+        if($this->hasMerit($merit))
+            throw new \InvalidArgumentException($this->getName() . ' already has the merit "' . $merit . '"');
+
+        $this->merits[] = $merit;
+
+        return $this;
+    }
+
+    public function hasMerit(string $merit): bool
+    {
+        return in_array($merit, $this->getMerits());
+    }
+
+    public function getSpiritCompanion(): ?SpiritCompanion
+    {
+        return $this->spiritCompanion;
+    }
+
+    public function setSpiritCompanion(?SpiritCompanion $spiritCompanion): self
+    {
+        $this->spiritCompanion = $spiritCompanion;
 
         return $this;
     }

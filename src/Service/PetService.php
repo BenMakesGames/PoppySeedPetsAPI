@@ -88,6 +88,33 @@ class PetService
         }
     }
 
+    /**
+     * @param string[] $stats
+     */
+    public function gainAffection(Pet $pet, int $points)
+    {
+        if($points === 0) return;
+
+        $divideBy = 1;
+
+        if($pet->getFood() + $pet->getWhack() - $pet->getJunk() < 0) $divideBy++;
+        if($pet->getSafety() + $pet->getWhack() < 0) $divideBy++;
+        if($pet->getLove() + $pet->getWhack() < 0) $divideBy++;
+        if($pet->getEsteem() + $pet->getWhack() < 0) $divideBy++;
+
+        $divideBy += $pet->getWhack() / $pet->getStomachSize();
+
+        $points = \ceil($points / $divideBy);
+
+        if($points === 0) return;
+
+        $pet->increaseAffectionPoints($points);
+
+        while($pet->getAffectionPoints() >= $pet->getAffectionPointsToLevel())
+        {
+            $pet->decreaseAffectionPoints($pet->getAffectionPointsToLevel());
+        }
+    }
 
     public function doPet(Pet $pet)
     {
@@ -96,19 +123,31 @@ class PetService
         if($pet->getIsDead())
             throw new \InvalidArgumentException($pet->getName() . ' is dead :|');
 
-        if($pet->getLastInteracted() < $now->modify('-48 hours'))
-            $pet->setLastInteracted($now->modify('-20 hours'));
-        else if($pet->getLastInteracted() < $now->modify('-20 hours'))
-            $pet->setLastInteracted($now->modify('-4 hours'));
-        else if($pet->getLastInteracted() < $now->modify('-4 hours'))
-            $pet->setLastInteracted($now);
-        else
-            throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
-
         $changes = new PetChanges($pet);
 
-        $pet->increaseSafety(7);
-        $pet->increaseLove(7);
+        if($pet->getLastInteracted() < $now->modify('-48 hours'))
+        {
+            $pet->setLastInteracted($now->modify('-20 hours'));
+            $pet->increaseSafety(15);
+            $pet->increaseLove(15);
+            $this->gainAffection($pet, 10);
+        }
+        else if($pet->getLastInteracted() < $now->modify('-20 hours'))
+        {
+            $pet->setLastInteracted($now->modify('-4 hours'));
+            $pet->increaseSafety(10);
+            $pet->increaseLove(10);
+            $this->gainAffection($pet, 5);
+        }
+        else if($pet->getLastInteracted() < $now->modify('-4 hours'))
+        {
+            $pet->setLastInteracted($now);
+            $pet->increaseSafety(7);
+            $pet->increaseLove(7);
+            $this->gainAffection($pet, 1);
+        }
+        else
+            throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
 
         $this->responseService->createActivityLog($pet, 'You pet ' . $pet->getName(). '.', $changes->compare($pet));
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PETTED_A_PET);
@@ -121,19 +160,31 @@ class PetService
         if($pet->getIsDead())
             throw new \InvalidArgumentException($pet->getName() . ' is dead :|');
 
-        if($pet->getLastInteracted() < $now->modify('-48 hours'))
-            $pet->setLastInteracted($now->modify('-20 hours'));
-        else if($pet->getLastInteracted() < $now->modify('-20 hours'))
-            $pet->setLastInteracted($now->modify('-4 hours'));
-        else if($pet->getLastInteracted() < $now->modify('-4 hours'))
-            $pet->setLastInteracted($now);
-        else
-            throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
-
         $changes = new PetChanges($pet);
 
-        $pet->increaseLove(7);
-        $pet->increaseEsteem(7);
+        if($pet->getLastInteracted() < $now->modify('-48 hours'))
+        {
+            $pet->setLastInteracted($now->modify('-20 hours'));
+            $pet->increaseLove(15);
+            $pet->increaseEsteem(15);
+            $this->gainAffection($pet, 10);
+        }
+        else if($pet->getLastInteracted() < $now->modify('-20 hours'))
+        {
+            $pet->setLastInteracted($now->modify('-4 hours'));
+            $pet->increaseLove(10);
+            $pet->increaseEsteem(10);
+            $this->gainAffection($pet, 5);
+        }
+        else if($pet->getLastInteracted() < $now->modify('-4 hours'))
+        {
+            $pet->setLastInteracted($now);
+            $pet->increaseLove(7);
+            $pet->increaseEsteem(7);
+            $this->gainAffection($pet, 1);
+        }
+        else
+            throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
 
         $this->responseService->createActivityLog($pet, 'You praised ' . $pet->getName(). '.', $changes->compare($pet));
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PRAISED_A_PET);
@@ -174,6 +225,7 @@ class PetService
             {
                 $pet->increaseLove($favoriteFlavorStrength + $food->getLove());
                 $pet->increaseEsteem($favoriteFlavorStrength + $food->getLove());
+                $this->gainAffection($pet, $favoriteFlavorStrength);
                 $favorites[] = $i->getItem();
             }
 
@@ -197,6 +249,7 @@ class PetService
                 $gain++;
 
             $pet->increaseSafety($gain);
+            $this->gainAffection($pet, $gain);
         }
 
 

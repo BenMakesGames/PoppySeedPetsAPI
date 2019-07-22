@@ -10,9 +10,9 @@ trait Enum
         return (new \ReflectionClass(__CLASS__))->getConstants();
     }
 
-    public static function isAValue(string $flavor): bool
+    public static function isAValue(string $value): bool
     {
-        return in_array($flavor, FlavorEnum::getValues());
+        return in_array($value, FlavorEnum::getValues());
     }
 
     public static function getRandomValue(): string
