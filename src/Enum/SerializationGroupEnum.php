@@ -19,7 +19,6 @@ final class SerializationGroupEnum
     const PET_ENCYCLOPEDIA = 'petEncyclopedia';
     const USER_PUBLIC_PROFILE = 'userPublicProfile';
     const ARTICLE = 'article';
-    const ARTICLE_ADMIN = 'articleAdmin';
     const MUSEUM = 'museum';
     const QUERY_ADMIN = 'queryAdmin';
     const PET_SHELTER_PET = 'petShelterPet';

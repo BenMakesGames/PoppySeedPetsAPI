@@ -29,17 +29,6 @@ class ArticleController extends PsyPetsController
     }
 
     /**
-     * @Route("/{article}", methods={"GET"}, requirements={"article"="\d+"})
-     * @IsGranted("ROLE_ADMIN")
-     */
-    public function getArticle(Article $article, ResponseService $responseService, Request $request)
-    {
-        $this->adminIPsOnly($request);
-
-        return $responseService->success($article, [ SerializationGroupEnum::ARTICLE_ADMIN ]);
-    }
-
-    /**
      * @Route("", methods={"GET"})
      */
     public function getAll(Request $request, ResponseService $responseService, ArticleFilterService $articleFilterService)

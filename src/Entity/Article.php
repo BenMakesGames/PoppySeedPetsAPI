@@ -14,19 +14,19 @@ class Article
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"articleAdmin"})
+     * @Groups({"article"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"article", "articleAdmin"})
+     * @Groups({"article"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"article", "articleAdmin"})
+     * @Groups({"article"})
      */
     private $body;
 
