@@ -57,6 +57,9 @@ class CraftingService
         {
             if($quantities['Scales']->quantity >= 2)
                 $possibilities[] = [ $this, 'createGreenDyeFromScales' ];
+
+            if(array_key_exists('Talon', $quantities) && array_key_exists('Wooden Sword', $quantities))
+                $possibilities[] = [ $this, 'createSnakebite' ];
         }
 
         if(array_key_exists('Crooked Stick', $quantities))
@@ -455,6 +458,37 @@ class CraftingService
             $pet->spendTime(\mt_rand(15, 30));
             $this->petService->gainExp($pet, 1, [ 'dexterity', 'crafts' ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to decorate a Hunting Spear with Feathers, but couldn\'t get the look just right.');
+        }
+    }
+
+    private function createSnakebite(Pet $pet)
+    {
+        $roll = \mt_rand(1, 20 + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 2)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ 'dexterity', 'crafts' ]);
+            $pet->increaseEsteem(-2);
+            $pet->increaseSafety(-4);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to craft Snakebite, but cut themself on a Talon!');
+        }
+        else if($roll >= 15)
+        {
+            $pet->spendTime(\mt_rand(45, 75));
+            $this->inventoryService->loseItem('Talon', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Scales', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Wooden Spear', $pet->getOwner(), 1);
+            $this->inventoryService->petCollectsItem('Snakebite', $pet, $pet->getName() . ' made this by improving a Wooden Sword.');
+            $this->petService->gainExp($pet, 2, [ 'dexterity', 'crafts' ]);
+            $pet->increaseEsteem(2);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Snakebite sword.');
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ 'dexterity', 'crafts' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to improve a Wooden Sword into Snakebite, but failed.');
         }
     }
 
