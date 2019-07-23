@@ -477,28 +477,44 @@ class PetService
 
     public function generateFishingDesire(Pet $pet): int
     {
-        $desire = $pet->getSkills()->getDexterity() + $pet->getSkills()->getNature() + \mt_rand(1, 4);
+        $desire = $pet->getDexterity() + $pet->getNature() + $pet->getFishing() + \mt_rand(1, 4);
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getDexterity() + $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getFishing();
 
         return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
     }
 
     public function generateMonsterHuntingDesire(Pet $pet): int
     {
-        $desire = $pet->getSkills()->getStrength() + $pet->getSkills()->getBrawl() + \mt_rand(1, 4);
+        $desire = $pet->getStrength() + $pet->getBrawl() + \mt_rand(1, 4);
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getStrength() + $pet->getTool()->getItem()->getTool()->getBrawl();
 
         return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
     }
 
     public function generateCraftingDesire(Pet $pet): int
     {
-        $desire = $pet->getSkills()->getIntelligence() + $pet->getSkills()->getCrafts() + \mt_rand(1, 4);
+        $desire = $pet->getIntelligence() + $pet->getCrafts() + \mt_rand(1, 4);
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getIntelligence() + $pet->getTool()->getItem()->getTool()->getCrafts();
 
         return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
     }
 
     public function generateGatheringDesire(Pet $pet): int
     {
-        $desire = $pet->getSkills()->getPerception() + $pet->getSkills()->getNature() + \mt_rand(1, 4);
+        $desire = $pet->getPerception() + $pet->getNature() + $pet->getGathering() + \mt_rand(1, 4);
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getPerception() + $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getGathering();
 
         return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
     }
