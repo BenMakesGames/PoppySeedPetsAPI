@@ -64,4 +64,30 @@ class ArticleController extends PsyPetsController
 
         return $responseService->success();
     }
+
+    /**
+     * @Route("/{article}", methods={"POST"}, requirements={"article"="\d+"})
+     * @IsGranted("ROLE_ADMIN")
+     */
+    public function getArticle(
+        Article $article, ResponseService $responseService, Request $request, EntityManagerInterface $em
+    )
+    {
+        $this->adminIPsOnly($request);
+
+        $title = trim($request->request->get('title', ''));
+        $body = trim($request->request->get('body', ''));
+
+        if($title === '' || $body === '')
+            throw new UnprocessableEntityHttpException('title and body are both required.');
+
+        $article
+            ->setTitle($title)
+            ->setBody($body)
+        ;
+
+        $em->flush();
+
+        return $responseService->success();
+    }
 }
