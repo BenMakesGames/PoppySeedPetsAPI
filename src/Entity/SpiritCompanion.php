@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Functions\ArrayFunctions;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -36,6 +37,15 @@ class SpiritCompanion
         'Tien',
     ];
 
+    const STARS = [
+        'Altair',
+        'Cassiopeia',
+        'Cepheus',
+        'Gemini',
+        'Hydra',
+        'Sagittarius'
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -56,14 +66,21 @@ class SpiritCompanion
     private $image;
 
     /**
-     * @ORM\Column(type="string", length=40)
-     */
-    private $skill;
-
-    /**
      * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="spiritCompanion", cascade={"persist", "remove"})
      */
     private $pet;
+
+    /**
+     * @ORM\Column(type="string", length=40)
+     * @Groups({"myPet"})
+     */
+    private $star;
+
+    public function __construct()
+    {
+        $this->star = ArrayFunctions::pick_one(self::STARS);
+        $this->name = ArrayFunctions::pick_one(self::NAMES);
+    }
 
     public function getId(): ?int
     {
@@ -75,13 +92,6 @@ class SpiritCompanion
         return $this->name;
     }
 
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
     public function getImage(): ?string
     {
         return $this->image;
@@ -90,18 +100,6 @@ class SpiritCompanion
     public function setImage(string $image): self
     {
         $this->image = $image;
-
-        return $this;
-    }
-
-    public function getSkill(): ?string
-    {
-        return $this->skill;
-    }
-
-    public function setSkill(string $skill): self
-    {
-        $this->skill = $skill;
 
         return $this;
     }
@@ -122,5 +120,10 @@ class SpiritCompanion
         }
 
         return $this;
+    }
+
+    public function getStar(): string
+    {
+        return $this->star;
     }
 }

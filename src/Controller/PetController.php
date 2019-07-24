@@ -150,9 +150,7 @@ class PetController extends PsyPetsController
         if($merit === MeritEnum::SPIRIT_COMPANION)
         {
             $spiritCompanion = (new SpiritCompanion())
-                ->setSkill('')
                 ->setImage(ArrayFunctions::pick_one([ 'blob', 'dino', 'erm', 'splat' ]))
-                ->setName(ArrayFunctions::pick_one(SpiritCompanion::NAMES))
             ;
 
             $pet->setSpiritCompanion($spiritCompanion);
