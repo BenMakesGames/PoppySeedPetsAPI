@@ -44,6 +44,7 @@ class TraderService
         'Witch-hazel' => 1,
         'Bag of Beans' =>  0.1,
         'Tomato' => 1,
+        'Sweet Beet' => 1,
     ];
 
     public function __construct(
@@ -169,6 +170,11 @@ class TraderService
             if($offeringQuantity < 1)
             {
                 $askingQuantity = round($askingQuantity / $offeringQuantity);
+                $offeringQuantity = 1;
+            }
+            else if($offeringQuantity > 1 && $askingQuantity % $offeringQuantity === 0)
+            {
+                $askingQuantity /= $offeringQuantity;
                 $offeringQuantity = 1;
             }
 
