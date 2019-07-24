@@ -23,7 +23,7 @@ class TraderService
         'Aging Powder' => 4,
         'Black Tea' => 3,
         'Toadstool' => 2,
-        'Painted Fishing Rod' => 1,
+        'Painted Fishing Rod' => 0.6666,
         'Mermaid Egg' => 1,
         'Plastic' => 1,
     ];
@@ -34,12 +34,12 @@ class TraderService
         'Baker\'s Yeast' => 1,
         'Cooking Buddy' => 0.0666,
         'Feathers' => 1,
-        'Iron Ore' => 0.2,
+        'Iron Ore' => 0.25,
         'Smallish Pumpkin' => 0.5,
         'Cream of Tartar' => 2,
         'Onion' => 1,
         'Naner' => 1,
-        'Quintessence' => 0.1,
+        'Quintessence' => 0.15,
         'Plain Yogurt' => 0.6666,
         'Witch-hazel' => 1,
         'Bag of Beans' =>  0.1,
@@ -167,6 +167,12 @@ class TraderService
             $offeringItem = array_rand($offering);
             $offeringQuantity = $offering[$offeringItem];
 
+            if($askingQuantity < 1)
+            {
+                $offeringQuantity = $offeringQuantity / $askingQuantity;
+                $askingQuantity = 1;
+            }
+
             if($offeringQuantity < 1)
             {
                 $askingQuantity = round($askingQuantity / $offeringQuantity);
@@ -177,6 +183,9 @@ class TraderService
                 $askingQuantity /= $offeringQuantity;
                 $offeringQuantity = 1;
             }
+
+            $offeringQuantity = round($offeringQuantity);
+            $askingQuantity = round($askingQuantity);
 
             unset($asking[$askingItem]);
             unset($offering[$offeringItem]);
