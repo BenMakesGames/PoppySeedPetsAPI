@@ -67,6 +67,16 @@ class PetSkills
     private $crafts = 0;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $music;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $computer = 0;
+
+    /**
      * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="skills", cascade={"persist", "remove"})
      */
     private $pet;
@@ -80,7 +90,7 @@ class PetSkills
     {
         return
             $this->strength + $this->stamina + $this->dexterity + $this->intelligence + $this->perception +
-            $this->nature + $this->brawl + $this->umbra + $this->stealth + $this->crafts
+            $this->nature + $this->brawl + $this->umbra + $this->stealth + $this->crafts + $this->music + $this->computer
         ;
     }
 
@@ -236,6 +246,30 @@ class PetSkills
         if ($this !== $pet->getSkills()) {
             $pet->setSkills($this);
         }
+
+        return $this;
+    }
+
+    public function getComputer(): int
+    {
+        return $this->computer;
+    }
+
+    public function setComputer(int $computer): self
+    {
+        $this->computer = $computer;
+
+        return $this;
+    }
+
+    public function getMusic(): ?int
+    {
+        return $this->music;
+    }
+
+    public function setMusic(int $music): self
+    {
+        $this->music = $music;
 
         return $this;
     }

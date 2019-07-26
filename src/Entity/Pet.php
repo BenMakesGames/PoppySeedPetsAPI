@@ -643,7 +643,7 @@ class Pet
 
     public function getMusic(): int
     {
-        return $this->getTool() ? $this->getTool()->getItem()->getTool()->getMusic() : 0;
+        return $this->getSkills()->getMusic() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getMusic() : 0);
     }
 
     public function getSmithing(): int
@@ -656,7 +656,12 @@ class Pet
         return $this->getTool() ? $this->getTool()->getItem()->getTool()->getGathering() : 0;
     }
 
-    public function getFavoriteFlavor(): ?string
+    public function getComputer(): int
+    {
+        return $this->getSkills()->getComputer() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getComputer() : 0);
+    }
+
+    public function getFavoriteFlavor(): string
     {
         return $this->favoriteFlavor;
     }

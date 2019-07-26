@@ -13,7 +13,7 @@ class ItemTool
     public const MODIFIERS = [
         'strength', 'dexterity', 'stamina', 'intelligence', 'perception',
         'stealth', 'nature', 'brawl', 'umbra', 'crafts', 'fishing', 'gathering',
-        'music', 'smithing'
+        'music', 'smithing', 'computer'
     ];
 
     /**
@@ -116,6 +116,11 @@ class ItemTool
      * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
      */
     private $gripScale;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $computer;
 
     public function getId(): ?int
     {
@@ -377,6 +382,18 @@ class ItemTool
             return '-';
         else
             return null;
+    }
+
+    public function getComputer(): ?int
+    {
+        return $this->computer;
+    }
+
+    public function setComputer(int $computer): self
+    {
+        $this->computer = $computer;
+
+        return $this;
     }
 
 }

@@ -6,6 +6,7 @@ use App\Entity\Item;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\FlavorEnum;
+use App\Enum\MeritEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
@@ -16,6 +17,7 @@ use App\Service\PetActivity\FishingService;
 use App\Service\PetActivity\GatheringService;
 use App\Service\PetActivity\GenericAdventureService;
 use App\Service\PetActivity\HuntingService;
+use App\Service\PetActivity\Protocol7Service;
 use App\Service\PetActivity\TreasureMapService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -32,12 +34,14 @@ class PetService
     private $inventoryRepository;
     private $treasureMapService;
     private $genericAdventureService;
+    private $protocol7Service;
 
     public function __construct(
         EntityManagerInterface $em, RandomService $randomService, ResponseService $responseService,
         FishingService $fishingService, HuntingService $huntingService, GatheringService $gatheringService,
         CraftingService $craftingService, UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
-        TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService
+        TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService,
+        Protocol7Service $protocol7Service
     )
     {
         $this->em = $em;
@@ -51,6 +55,7 @@ class PetService
         $this->inventoryRepository = $inventoryRepository;
         $this->treasureMapService = $treasureMapService;
         $this->genericAdventureService = $genericAdventureService;
+        $this->protocol7Service = $protocol7Service;
     }
 
     /**
@@ -432,6 +437,11 @@ class PetService
             'gather' => $this->generateGatheringDesire($pet),
         ];
 
+        /*
+        if($pet->hasMerit(MeritEnum::PROTOCOL_7))
+            $petDesires['hack'] = $this->generateHackingDesire($pet);
+        */
+
         if(count($craftingPossibilities) > 0)
             $petDesires['craft'] = $this->generateCraftingDesire($pet);
 
@@ -443,6 +453,7 @@ class PetService
             case 'hunt': $this->huntingService->adventure($pet); break;
             case 'gather': $this->gatheringService->adventure($pet); break;
             case 'craft': $this->craftingService->adventure($pet, $craftingPossibilities); break;
+            case 'hack': $this->protocol7Service->adventure($pet); break;
             default: $this->doNothing($pet); break;
         }
     }
@@ -515,6 +526,17 @@ class PetService
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getPerception() + $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getGathering();
+
+        return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
+    }
+
+    public function generateHackingDesire(Pet $pet): int
+    {
+        $desire = $pet->getIntelligence() + $pet->getComputer() + \mt_rand(1, 4);
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getIntelligence() + $pet->getTool()->getItem()->getTool()->getComputer();
 
         return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
     }
