@@ -478,7 +478,7 @@ class CraftingService
             $pet->spendTime(\mt_rand(45, 75));
             $this->inventoryService->loseItem('Talon', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Scales', $pet->getOwner(), 1);
-            $this->inventoryService->loseItem('Wooden Spear', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Wooden Sword', $pet->getOwner(), 1);
             $this->inventoryService->petCollectsItem('Snakebite', $pet, $pet->getName() . ' made this by improving a Wooden Sword.');
             $this->petService->gainExp($pet, 2, [ 'dexterity', 'crafts' ]);
             $pet->increaseEsteem(2);
