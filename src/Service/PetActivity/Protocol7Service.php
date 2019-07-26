@@ -85,12 +85,14 @@ class Protocol7Service
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
         $baddie = ArrayFunctions::pick_one([ 'a Pop-under Ad', 'an overflowed buffer', 'a Spam E-mail' ]);
 
+        $loot = ArrayFunctions::pick_one([ 'Pointer' ]);
+
         if($roll >= 10)
         {
         }
         else
         {
-
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 01 of Project-E, but their avatar was disrupted by ' . $baddie . '.');
         }
     }
 
@@ -102,6 +104,10 @@ class Protocol7Service
         if($roll >= 12)
         {
         }
+        else
+        {
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 02 of Project-E, but their avatar was disrupted by ' . $baddie . '.');
+        }
     }
 
     private function foundLayer03(Pet $pet): PetActivityLog
@@ -109,18 +115,12 @@ class Protocol7Service
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
         $baddie = ArrayFunctions::pick_one([ 'a Keylogger', 'a Rootkit', 'a Boot Sector Virus' ]);
 
-        if(mt_rand(1, 10) === 1)
-        {
-            $baddie = 'a Rainbow Table';
-            //$loot =
-        }
-
         if($roll >= 15)
         {
         }
         else
         {
-            $this->responseService->createActivityLog($pet, $pet->getName() . ' access Layer 3 of Project-E, but their avatar was disrupted by ' . $baddie . '.');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 03 of Project-E, but their avatar was disrupted by ' . $baddie . '.');
         }
     }
 
