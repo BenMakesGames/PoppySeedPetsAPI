@@ -38,6 +38,9 @@ class ProgrammingService
         if(array_key_exists('Pointer', $quantities))
         {
             $possibilities[] = [ $this, 'createStringFromPointer' ];
+
+            if(array_key_exists('Finite State Machine', $quantities))
+                $possibilities[] = [ $this, 'createRegex' ];
         }
 
         return $possibilities;
@@ -86,6 +89,43 @@ class ProgrammingService
             $pet->spendTime(\mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ 'intelligence', 'computer' ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to dereference a Pointer, but couldn\'t figure out all the syntax errors.');
+        }
+    }
+
+    private function createRegex(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
+        if($roll <= 2)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'computer' ]);
+
+            if(mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('Pointer', $pet->getOwner(), 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a Regex, but mis-scoped a Pointer :(');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Finite State Machine', $pet->getOwner(), 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a Regex, but lost a Finite State Machine to a stack overflow :(');
+            }
+        }
+        else if($roll >= 14)
+        {
+            $pet->spendTime(\mt_rand(45, 60));
+            $this->inventoryService->loseItem('Pointer', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Finite State Machine', $pet->getOwner(), 1);
+            $this->inventoryService->petCollectsItem('Regex', $pet, $pet->getName() . ' build this from a Finite State Machine.');
+            $this->petService->gainExp($pet, 2, [ 'intelligence', 'computer' ]);
+            $pet->increaseEsteem(1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' upgraded a Finite State Machine into a Regex.');
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ 'intelligence', 'computer' ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to create a Regex, but all the documentation they found online was too old.');
         }
     }
 }
