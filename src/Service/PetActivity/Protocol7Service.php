@@ -137,7 +137,7 @@ class Protocol7Service
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
         $baddie = ArrayFunctions::pick_one([ 'a Keylogger', 'a Rootkit', 'a Boot Sector Virus' ]);
 
-        $loot = ArrayFunctions::pick_one([ 'Hash Table' ]);
+        $loot = ArrayFunctions::pick_one([ 'Hash Table', 'Beans' ]);
 
         if($roll >= 15)
         {

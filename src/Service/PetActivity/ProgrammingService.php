@@ -43,6 +43,9 @@ class ProgrammingService
                 $possibilities[] = [ $this, 'createRegex' ];
         }
 
+        if(array_key_exists('Hash Table', $quantities) && array_key_exists('Finite State Machine', $quantities) && array_key_exists('String', $quantities))
+            $possibilities[] = [ $this, 'createCompiler' ];
+
         return $possibilities;
     }
 
