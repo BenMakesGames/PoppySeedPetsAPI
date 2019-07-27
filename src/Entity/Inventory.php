@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -72,6 +74,7 @@ class Inventory
     {
         $this->createdOn = new \DateTimeImmutable();
         $this->modifiedOn = new \DateTimeImmutable();
+        $this->parkEventPrize = new ArrayCollection();
     }
 
     public function getId(): ?int

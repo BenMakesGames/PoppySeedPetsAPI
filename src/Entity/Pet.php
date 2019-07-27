@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Functions\DateFunctions;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -167,11 +169,22 @@ class Pet
      */
     private $spiritCompanion;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\ParkEvent", mappedBy="participants")
+     */
+    private $parkEvents;
+
+    /**
+     * @ORM\Column(type="date_immutable", nullable=true)
+     */
+    private $lastParkEventJoinedOn;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
         $this->lastInteracted = (new \DateTimeImmutable())->modify('-3 days');
         $this->stomachSize = mt_rand(12, 24);
+        $this->parkEvents = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -767,6 +780,46 @@ class Pet
     public function setSpiritCompanion(?SpiritCompanion $spiritCompanion): self
     {
         $this->spiritCompanion = $spiritCompanion;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ParkEvent[]
+     */
+    public function getParkEvents(): Collection
+    {
+        return $this->parkEvents;
+    }
+
+    public function addParkEvent(ParkEvent $parkEvent): self
+    {
+        if (!$this->parkEvents->contains($parkEvent)) {
+            $this->parkEvents[] = $parkEvent;
+            $parkEvent->addParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParkEvent(ParkEvent $parkEvent): self
+    {
+        if ($this->parkEvents->contains($parkEvent)) {
+            $this->parkEvents->removeElement($parkEvent);
+            $parkEvent->removeParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function getLastParkEventJoinedOn(): ?\DateTimeImmutable
+    {
+        return $this->lastParkEventJoinedOn;
+    }
+
+    public function setLastParkEventJoinedOn(): self
+    {
+        $this->lastParkEventJoinedOn = new \DateTimeImmutable();
 
         return $this;
     }

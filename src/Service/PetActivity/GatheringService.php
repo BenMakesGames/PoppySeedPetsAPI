@@ -3,7 +3,6 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Enum\Enum;
 use App\Enum\MeritEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
