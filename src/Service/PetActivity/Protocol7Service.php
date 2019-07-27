@@ -29,7 +29,7 @@ class Protocol7Service
     {
         $maxSkill = 10 + $pet->getIntelligence() + $pet->getComputer() - $pet->getWhack() - $pet->getJunk();
 
-        if($maxSkill > 18) $maxSkill = 18;
+        if($maxSkill > 13) $maxSkill = 13;
         else if($maxSkill < 1) $maxSkill = 1;
 
         $roll = \mt_rand(1, $maxSkill);
@@ -89,9 +89,24 @@ class Protocol7Service
 
         if($roll >= 10)
         {
+            $pet->increaseEsteem(1);
+            $this->petService->gainExp($pet, 1, [ 'computer', 'intelligence' ]);
+
+            if(mt_rand(1, 10) === 1)
+            {
+                $moneys = mt_rand(2, 4);
+                $pet->getOwner()->increaseMoneys($moneys);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took ' . $moneys . '~~m~~!');
+            }
+            else
+            {
+                $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.');
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took its ' . $loot . '!');
+            }
         }
         else
         {
+            $this->petService->gainExp($pet, 1, [ 'computer', 'intelligence' ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 01 of Project-E, but their avatar was disrupted by ' . $baddie . '.');
         }
     }
@@ -101,11 +116,18 @@ class Protocol7Service
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
         $baddie = ArrayFunctions::pick_one([ 'a Trojan Horse', 'a Clickjacker', 'an SQL Injection' ]);
 
+        $loot = ArrayFunctions::pick_one([ 'Finite State Machine', 'Browser Cookie' ]);
+
         if($roll >= 12)
         {
+            $pet->increaseEsteem(1);
+            $this->petService->gainExp($pet, 1, [ 'computer', 'intelligence' ]);
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took its ' . $loot . '!');
         }
         else
         {
+            $this->petService->gainExp($pet, 1, [ 'computer', 'intelligence' ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 02 of Project-E, but their avatar was disrupted by ' . $baddie . '.');
         }
     }
@@ -115,11 +137,20 @@ class Protocol7Service
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
         $baddie = ArrayFunctions::pick_one([ 'a Keylogger', 'a Rootkit', 'a Boot Sector Virus' ]);
 
+        $loot = ArrayFunctions::pick_one([ 'Hash Table' ]);
+
         if($roll >= 15)
         {
+            $pet->increaseSafety(1);
+            $pet->increaseEsteem(1);
+            $this->petService->gainExp($pet, 2, [ 'computer', 'intelligence' ]);
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took its ' . $loot . '!');
         }
         else
         {
+            $pet->increaseSafety(-1);
+            $this->petService->gainExp($pet, 1, [ 'computer', 'intelligence' ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 03 of Project-E, but their avatar was disrupted by ' . $baddie . '.');
         }
     }

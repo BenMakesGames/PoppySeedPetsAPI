@@ -17,6 +17,7 @@ use App\Service\PetActivity\FishingService;
 use App\Service\PetActivity\GatheringService;
 use App\Service\PetActivity\GenericAdventureService;
 use App\Service\PetActivity\HuntingService;
+use App\Service\PetActivity\ProgrammingService;
 use App\Service\PetActivity\Protocol7Service;
 use App\Service\PetActivity\TreasureMapService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,6 +31,7 @@ class PetService
     private $huntingService;
     private $gatheringService;
     private $craftingService;
+    private $programmingService;
     private $userStatsRepository;
     private $inventoryRepository;
     private $treasureMapService;
@@ -41,7 +43,7 @@ class PetService
         FishingService $fishingService, HuntingService $huntingService, GatheringService $gatheringService,
         CraftingService $craftingService, UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
         TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService,
-        Protocol7Service $protocol7Service
+        Protocol7Service $protocol7Service, ProgrammingService $programmingService
     )
     {
         $this->em = $em;
@@ -56,6 +58,7 @@ class PetService
         $this->treasureMapService = $treasureMapService;
         $this->genericAdventureService = $genericAdventureService;
         $this->protocol7Service = $protocol7Service;
+        $this->programmingService = $programmingService;
     }
 
     /**
@@ -394,6 +397,7 @@ class PetService
         ;
 
         $craftingPossibilities = $this->craftingService->getCraftingPossibilities($pet);
+        $programmingPossibilities = $this->programmingService->getCraftingPossibilities($pet);
 
         $houseTooFull = \mt_rand(1, 10) > $pet->getOwner()->getMaxInventory() - $itemsInHouse;
 
@@ -404,7 +408,7 @@ class PetService
             else
                 $description = 'The house is getting pretty full.';
 
-            if(count($craftingPossibilities) === 0)
+            if(count($craftingPossibilities) === 0 && count($programmingPossibilities) === 0)
             {
                 $pet->spendTime(\mt_rand(45, 60));
 
@@ -412,7 +416,14 @@ class PetService
             }
             else
             {
-                $activityLog = $this->craftingService->adventure($pet, $craftingPossibilities);
+                $possibilities = [];
+
+                if(count($craftingPossibilities) > 0) $possibilities[] = [ $this->craftingService, $craftingPossibilities ];
+                if(count($programmingPossibilities) > 0) $possibilities[] = [ $this->programmingService, $programmingPossibilities ];
+
+                $do = ArrayFunctions::pick_one($possibilities);
+
+                $activityLog = $do[0]->adventure($pet, $do[1]);
                 $activityLog->setEntry($description . ' ' . $activityLog->getEntry());
             }
 
@@ -437,13 +448,11 @@ class PetService
             'gather' => $this->generateGatheringDesire($pet),
         ];
 
-        /*
         if($pet->hasMerit(MeritEnum::PROTOCOL_7))
             $petDesires['hack'] = $this->generateHackingDesire($pet);
-        */
 
-        if(count($craftingPossibilities) > 0)
-            $petDesires['craft'] = $this->generateCraftingDesire($pet);
+        if(count($craftingPossibilities) > 0) $petDesires['craft'] = $this->generateCraftingDesire($pet);
+        if(count($programmingPossibilities) > 0) $petDesires['program'] = $this->generateProgrammingDesire($pet);
 
         $desire = $this->pickDesire($petDesires);
 
@@ -453,6 +462,7 @@ class PetService
             case 'hunt': $this->huntingService->adventure($pet); break;
             case 'gather': $this->gatheringService->adventure($pet); break;
             case 'craft': $this->craftingService->adventure($pet, $craftingPossibilities); break;
+            case 'program': $this->programmingService->adventure($pet, $programmingPossibilities); break;
             case 'hack': $this->protocol7Service->adventure($pet); break;
             default: $this->doNothing($pet); break;
         }
@@ -531,6 +541,17 @@ class PetService
     }
 
     public function generateHackingDesire(Pet $pet): int
+    {
+        $desire = $pet->getIntelligence() + $pet->getComputer() + \mt_rand(1, 4);
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getIntelligence() + $pet->getTool()->getItem()->getTool()->getComputer();
+
+        return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
+    }
+
+    public function generateProgrammingDesire(Pet $pet): int
     {
         $desire = $pet->getIntelligence() + $pet->getComputer() + \mt_rand(1, 4);
 
