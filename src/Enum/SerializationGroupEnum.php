@@ -24,4 +24,5 @@ final class SerializationGroupEnum
     const PET_SHELTER_PET = 'petShelterPet';
     const MARKET_ITEM = 'marketItem';
     const KNOWN_RECIPE = 'knownRecipe';
+    const PARK_EVENT = 'parkEvent';
 }

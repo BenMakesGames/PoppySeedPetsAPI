@@ -19,7 +19,7 @@ class Pet
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent"})
      */
     private $id;
 
@@ -31,7 +31,7 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "petShelterPet"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "petShelterPet", "parkEvent"})
      */
     private $name;
 
@@ -67,13 +67,13 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "parkEvent"})
      */
     private $colorA;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "parkEvent"})
      */
     private $colorB;
 
@@ -118,7 +118,7 @@ class Pet
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\PetSpecies")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "parkEvent"})
      */
     private $species;
 

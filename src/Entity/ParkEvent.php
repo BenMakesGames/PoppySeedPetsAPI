@@ -6,9 +6,14 @@ use App\Enum\ParkEventTypeEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ParkEventRepository")
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="ran_on_idx", columns={"ran_on"}),
+ *     @ORM\Index(name="is_full_idx", columns={"is_full"})
+ * })
  */
 class ParkEvent
 {
@@ -16,38 +21,50 @@ class ParkEvent
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"parkEvent"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=40)
+     * @Groups({"parkEvent"})
      */
     private $type;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Pet", inversedBy="parkEvents")
+     * @Groups({"parkEvent"})
      */
     private $participants;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"parkEvent"})
      */
     private $seats;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"parkEvent"})
      */
     private $ranOn;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Groups({"parkEvent"})
      */
     private $results;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\ParkEventPrize", mappedBy="event", orphanRemoval=true)
+     * @Groups({"parkEvent"})
      */
     private $prizes;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isFull = false;
 
     public function __construct()
     {
@@ -89,6 +106,8 @@ class ParkEvent
             $this->participants[] = $participant;
         }
 
+        $this->isFull = $this->participants->count() >= $this->seats;
+
         return $this;
     }
 
@@ -97,6 +116,8 @@ class ParkEvent
         if ($this->participants->contains($participant)) {
             $this->participants->removeElement($participant);
         }
+
+        $this->isFull = $this->participants->count() >= $this->seats;
 
         return $this;
     }
@@ -166,5 +187,10 @@ class ParkEvent
         }
 
         return $this;
+    }
+
+    public function getIsFull(): ?bool
+    {
+        return $this->isFull;
     }
 }

@@ -23,7 +23,7 @@ class Inventory
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Item")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "parkEvent"})
      */
     private $item;
 
