@@ -154,6 +154,17 @@ class User implements UserInterface
      */
     private $unlockedMerchant;
 
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"myAccount"})
+     */
+    private $unlockedPark;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\PassphraseResetRequest", mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $passphraseResetRequest;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -541,6 +552,35 @@ class User implements UserInterface
     public function setUnlockedMerchant(): self
     {
         $this->unlockedMerchant = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getUnlockedPark(): ?\DateTimeImmutable
+    {
+        return $this->unlockedPark;
+    }
+
+    public function setUnlockedPark(?\DateTimeImmutable $unlockedPark): self
+    {
+        $this->unlockedPark = $unlockedPark;
+
+        return $this;
+    }
+
+    public function getPasswordResetRequest(): ?PassphraseResetRequest
+    {
+        return $this->passwordResetRequest;
+    }
+
+    public function setPasswordResetRequest(PassphraseResetRequest $passwordResetRequest): self
+    {
+        $this->passwordResetRequest = $passwordResetRequest;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $passwordResetRequest->getUser()) {
+            $passwordResetRequest->setUser($this);
+        }
 
         return $this;
     }

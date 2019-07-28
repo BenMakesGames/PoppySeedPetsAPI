@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Inventory;
+use App\Entity\PassphraseResetRequest;
 use App\Entity\Pet;
 use App\Entity\PetSkills;
 use App\Entity\User;
@@ -9,6 +10,8 @@ use App\Entity\UserNotificationPreferences;
 use App\Enum\FlavorEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\StringFunctions;
+use App\Repository\PassphraseResetRequestRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserNotificationPreferencesRepository;
 use App\Repository\UserQuestRepository;
@@ -16,6 +19,7 @@ use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\Filter\UserFilterService;
 use App\Service\InventoryService;
+use App\Service\PassphraseResetService;
 use App\Service\ResponseService;
 use App\Service\SessionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,6 +30,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -363,6 +368,58 @@ class AccountController extends PsyPetsController
         $gotBox->setValue(true);
 
         $inventoryService->receiveItem('4th of July Box', $user, $user, 'Received on the ' . $now->format('jS') . ' of July, ' . $now->format('Y'));
+
+        $em->flush();
+
+        return $responseService->success();
+    }
+
+    /**
+     * @Route("/requestPassphraseReset", methods={"POST"})
+     */
+    public function requestPasswordReset(
+        Request $request, UserRepository $userRepository, ResponseService $responseService,
+        PassphraseResetService $passphraseResetService
+    )
+    {
+        $email = trim($request->request->get('email', ''));
+
+        if($email === '')
+            throw new UnprocessableEntityHttpException('E-mail address is required.');
+
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+            throw new UnprocessableEntityHttpException('E-mail address is invalid.');
+
+        $user = $userRepository->findOneBy([ 'email' => $email ]);
+
+        $passphraseResetService->requestReset($user);
+
+        return $responseService->success();
+    }
+
+    /**
+     * @Route("/requestPassphraseReset/{code}", methods={"POST"})
+     */
+    public function resetPassword(
+        string $code, Request $request, PassphraseResetRequestRepository $passwordResetRequestRepository,
+        UserPasswordEncoderInterface $userPasswordEncoder, EntityManagerInterface $em, ResponseService $responseService
+    )
+    {
+        $passphrase = trim($request->request->get('passphrase', ''));
+
+        if(strlen($passphrase) < 10)
+            return new UnprocessableEntityHttpException('Passphrase must be at least 10 characters long. (Pro tip: try using an actual phrase, or short sentence!)');
+
+        $resetRequest = $passwordResetRequestRepository->findOneBy([ 'code' => $code ]);
+
+        if(!$resetRequest || $resetRequest->getExpiresOn() <= new \DateTimeImmutable())
+            throw new NotFoundHttpException('This passphrase ');
+
+        $user = $resetRequest->getUser();
+
+        $user->setPassword($userPasswordEncoder->encodePassword($user, $passphrase));
+
+        $em->remove($resetRequest);
 
         $em->flush();
 

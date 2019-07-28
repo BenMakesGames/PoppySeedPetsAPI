@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Functions\StringFunctions;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -9,7 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class ResetPasswordCommand extends Command
+class ResetPassphraseCommand extends Command
 {
     private $em;
     private $userRepository;
@@ -27,8 +28,8 @@ class ResetPasswordCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('app:reset-password')
-            ->setDescription('Resets a user\'s password, given their e-mail address.')
+            ->setName('app:reset-passphrase')
+            ->setDescription('Resets a user\'s passphrase, given their e-mail address.')
             ->addArgument('email')
         ;
     }
@@ -48,14 +49,11 @@ class ResetPasswordCommand extends Command
         if(!$user)
             throw new \InvalidArgumentException('There is no user with that e-mail address.');
 
-        $length = mt_rand(8, 12);
-
-        $password = $terminalCharacters[mt_rand(0, strlen($terminalCharacters) - 1)];
-
-        for($i = 0; $i < $length; $i++)
-            $password .= $allCharacters[mt_rand(0, strlen($allCharacters) - 1)];
-
-        $password .= $terminalCharacters[mt_rand(0, strlen($terminalCharacters) - 1)];
+        $password =
+            $terminalCharacters[mt_rand(0, strlen($terminalCharacters) - 1)] .
+            StringFunctions::randomString($allCharacters, mt_rand(8, 12)) .
+            $terminalCharacters[mt_rand(0, strlen($terminalCharacters) - 1)]
+        ;
 
         $user->setPassword($this->passwordEncoder->encodePassword($user, $password));
 
