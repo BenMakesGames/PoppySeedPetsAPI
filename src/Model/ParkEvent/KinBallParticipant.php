@@ -14,7 +14,7 @@ class KinBallParticipant
     /** @var integer */
     public $team;
 
-    public function __construct(Pet $pet, integer $team)
+    public function __construct(Pet $pet, int $team)
     {
         $this->pet = $pet;
         $this->team = $team;

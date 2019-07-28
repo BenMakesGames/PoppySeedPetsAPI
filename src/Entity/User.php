@@ -568,18 +568,18 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getPasswordResetRequest(): ?PassphraseResetRequest
+    public function getPassphraseResetRequest(): ?PassphraseResetRequest
     {
-        return $this->passwordResetRequest;
+        return $this->passphraseResetRequest;
     }
 
-    public function setPasswordResetRequest(PassphraseResetRequest $passwordResetRequest): self
+    public function setPassphraseResetRequest(PassphraseResetRequest $passphraseResetRequest): self
     {
-        $this->passwordResetRequest = $passwordResetRequest;
+        $this->passphraseResetRequest = $passphraseResetRequest;
 
         // set the owning side of the relation if necessary
-        if ($this !== $passwordResetRequest->getUser()) {
-            $passwordResetRequest->setUser($this);
+        if ($this !== $passphraseResetRequest->getUser()) {
+            $passphraseResetRequest->setUser($this);
         }
 
         return $this;

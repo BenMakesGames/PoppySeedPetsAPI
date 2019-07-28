@@ -85,7 +85,7 @@ class KinBallService
         $this->designatedTeam = $this->getRandomTeamHavingScore($defendingScore);
     }
 
-    private function getRandomTeamHavingScore(integer $score)
+    private function getRandomTeamHavingScore(int $score)
     {
         $teams = [];
 
@@ -126,7 +126,7 @@ class KinBallService
         return $lowest;
     }
 
-    private function getGameWinningTeam(): ?integer
+    private function getGameWinningTeam(): ?int
     {
         for($i = 0; $i < count($this->teams); $i++)
         {
@@ -144,7 +144,7 @@ class KinBallService
             return;
 
         // if none of the teams have reached a critical score, then there's nothing to do
-        if(!ArrayFunctions::any($this->teamPoints, function(integer $score) { return $score >= self::CRITICAL_SCORE; }))
+        if(!ArrayFunctions::any($this->teamPoints, function(int $score) { return $score >= self::CRITICAL_SCORE; }))
             return;
 
         $lowestScore = $this->getLowestScore();
@@ -164,14 +164,14 @@ class KinBallService
         $this->eliminateTeam($lowestScoringTeams[0]);
     }
 
-    private function eliminateTeam(integer $team)
+    private function eliminateTeam(int $team)
     {
-        $this->activeTeams = array_filter($this->activeTeams, function(integer $t) use($team) { return $t !== $team; });
+        $this->activeTeams = array_filter($this->activeTeams, function(int $t) use($team) { return $t !== $team; });
 
         $this->results .= '* ' . $this->teams[$team]->color . ' Team has been eliminated this Period!' . "\n";
     }
 
-    private function getPeriodWinningTeam(): ?integer
+    private function getPeriodWinningTeam(): ?int
     {
         $winners = [];
 
@@ -187,7 +187,7 @@ class KinBallService
         return null;
     }
 
-    private function playPeriod(integer $period)
+    private function playPeriod(int $period)
     {
         $this->results .=
             'Period ' . $period . "\n---\n\n"
@@ -205,7 +205,7 @@ class KinBallService
         }
     }
 
-    private function playRound(integer $round)
+    private function playRound(int $round)
     {
         $callingPet = $this->getRandomPetFromTeam($this->attackingTeam);
         $this->assignDesignatedTeam();
@@ -240,7 +240,7 @@ class KinBallService
         $this->attackingTeam = $this->designatedTeam;
     }
 
-    private function givePointToOtherTeams(integer $team)
+    private function givePointToOtherTeams(int $team)
     {
         foreach($this->activeTeams as $activeTeam)
         {
@@ -251,7 +251,7 @@ class KinBallService
         }
     }
 
-    private function getRandomPetFromTeam(integer $team): KinBallParticipant
+    private function getRandomPetFromTeam(int $team): KinBallParticipant
     {
         return ArrayFunctions::pick_one($this->teams[$team]->pets);
     }

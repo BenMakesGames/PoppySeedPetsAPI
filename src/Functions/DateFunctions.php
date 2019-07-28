@@ -50,7 +50,7 @@ final class DateFunctions
             return MoonPhaseEnum::NEW_MOON;
     }
 
-    public static function moonStrength(\DateTimeInterface $dt): integer
+    public static function moonStrength(\DateTimeInterface $dt): int
     {
         $year = (int)$dt->format('Y');
         $month = (int)$dt->format('n');

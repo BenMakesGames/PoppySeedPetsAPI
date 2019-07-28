@@ -27,19 +27,19 @@ class PassphraseResetService
 
         $now = new \DateTimeImmutable();
 
-        if($user->getPasswordResetRequest())
+        if($user->getPassphraseResetRequest())
         {
-            if($user->getPasswordResetRequest()->getExpiresOn() >= $now)
+            if($user->getPassphraseResetRequest()->getExpiresOn() >= $now)
                 return false;
 
-            $user->getPasswordResetRequest()
+            $user->getPassphraseResetRequest()
                 ->setExpiresOn($now->modify('+8 hours'))
                 ->setCode(StringFunctions::randomLettersAndNumbers(40))
             ;
 
             $this->em->flush();
 
-            $this->sendPasswordResetEmail($user->getPasswordResetRequest());
+            $this->sendPasswordResetEmail($user->getPassphraseResetRequest());
 
             return true;
         }

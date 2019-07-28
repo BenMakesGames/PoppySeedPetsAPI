@@ -13,12 +13,12 @@ final class StringFunctions
         return implode(' ', $words);
     }
 
-    public static function randomLettersAndNumbers(integer $length): string
+    public static function randomLettersAndNumbers(int $length): string
     {
         return self::randomString('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', $length);
     }
 
-    public static function randomString(string $characters, integer $length): string
+    public static function randomString(string $characters, int $length): string
     {
         $string = '';
 
