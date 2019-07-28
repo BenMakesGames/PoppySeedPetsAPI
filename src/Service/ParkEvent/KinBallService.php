@@ -26,14 +26,11 @@ class KinBallService
     private $designatedTeam;
 
     /** @var integer */
-    private $hitIn;
+    private $round;
 
     private $teamWins = [ 0, 0, 0 ];
     private $activeTeams;
     private $teamPoints;
-    private $totalPetSkill;
-    private $highestPetSkill = null;
-    private $lowestPetSkill = null;
 
     public function play(ParkEvent $event)
     {
@@ -45,6 +42,7 @@ class KinBallService
         ];
 
         $this->totalPetSkill = 0;
+        $this->totalPetAntiSkill = 0;
 
         for($i = 0; $i < 12; $i++)
         {
@@ -53,19 +51,11 @@ class KinBallService
             $participant = new KinBallParticipant($event->getParticipants()[$i], $team);
 
             $this->teams[$team]->pets[] = $participant;
-
-            $this->totalPetSkill += $participant->skill;
-
-            if($this->highestPetSkill === null || $participant->skill > $this->highestPetSkill)
-                $this->highestPetSkill = $participant->skill;
-
-            if($this->lowestPetSkill === null || $participant->skill < $this->lowestPetSkill)
-                $this->lowestPetSkill = $participant->skill;
         }
 
         $this->attackingTeam = mt_rand(0, 2);
 
-        $this->results .= 'The die has been thrown! ' . ucfirst($this->teams[$this->attackingTeam]->color) . ' Team will be the attacking team in round 1!' . "\n\n";
+        $this->results .= 'The die has been thrown! ' . ucfirst($this->teams[$this->attackingTeam]->color) . ' Team will be the first attacking team of the game!' . "\n\n";
 
         $period = 0;
 
@@ -123,6 +113,19 @@ class KinBallService
         return $highest;
     }
 
+    private function getLowestScore()
+    {
+        $lowest = $this->teamPoints[0];
+
+        for($i = 1; $i < count($this->teams); $i++)
+        {
+            if($this->teamPoints[$i] < $lowest)
+                $lowest = $this->teamPoints[$i];
+        }
+
+        return $lowest;
+    }
+
     private function getGameWinningTeam(): ?integer
     {
         for($i = 0; $i < count($this->teams); $i++)
@@ -132,6 +135,40 @@ class KinBallService
         }
 
         return null;
+    }
+
+    private function checkForCriticalScores()
+    {
+        // if we already eliminated a team, then there's nothing to do
+        if(count($this->activeTeams) < 3)
+            return;
+
+        // if none of the teams have reached a critical score, then there's nothing to do
+        if(!ArrayFunctions::any($this->teamPoints, function(integer $score) { return $score >= self::CRITICAL_SCORE; }))
+            return;
+
+        $lowestScore = $this->getLowestScore();
+
+        $lowestScoringTeams = [];
+
+        for($i = 0; $i < count($this->teams); $i++)
+        {
+            if($this->teamPoints[$i] === $lowestScore)
+                $lowestScoringTeams[] = $i;
+        }
+
+        // if multiple teams are tied for lowest, none are eliminated
+        if(count($lowestScoringTeams) > 1)
+            return;
+
+        $this->eliminateTeam($lowestScoringTeams[0]);
+    }
+
+    private function eliminateTeam(integer $team)
+    {
+        $this->activeTeams = array_filter($this->activeTeams, function(integer $t) use($team) { return $t !== $team; });
+
+        $this->results .= '* ' . $this->teams[$team]->color . ' Team has been eliminated this Period!' . "\n";
     }
 
     private function getPeriodWinningTeam(): ?integer
@@ -159,48 +196,63 @@ class KinBallService
         $this->teamPoints = [ 0, 0, 0 ];
         $this->activeTeams = [ 0, 1, 2 ];
 
+        $round = 0;
+
         while($this->getPeriodWinningTeam() === null)
         {
-            $this->playRound();
+            $round++;
+            $this->playRound($round);
         }
     }
 
-    private function playRound()
+    private function playRound(integer $round)
     {
         $callingPet = $this->getRandomPetFromTeam($this->attackingTeam);
         $this->assignDesignatedTeam();
 
-        $this->results .= $callingPet->getName() . ' designates '  . ucfirst($this->teams[$this->designatedTeam]->color) . ' to defend, and hits the ball!' . "\n\n";
+        $this->results .= $callingPet->pet->getName() . ' designates '  . ucfirst($this->teams[$this->designatedTeam]->color) . ' to defend, and hits the ball!' . "\n";
 
-        $controllingPet = $this->getRandomBestPet();
-        $foulingPet = $this->getRandomWorstPet();
-    }
+        $defendingPet = $this->getRandomPetFromTeam($this->designatedTeam);
 
-    private function getRandomPetFromTeam(integer $team): Pet
-    {
-        return ArrayFunctions::pick_one($this->teams[$team]->pets);
-    }
-
-    private function getRandomBestPet(): KinBallParticipant
-    {
-        $rng = mt_rand(0, $this->totalPetSkill - 1);
-
-        foreach($this->teams as $team)
+        if(mt_rand(1, $callingPet->skill) === 1)
         {
-            foreach($team->pets as $pet)
-            {
-                if($rng < $pet->skill)
-                    return $pet;
-                else
-                    $rng -= $pet->skill;
-            }
+            $this->results .= '* ' . $callingPet->pet->getName() . ' didn\'t hit the ball hard enough!' . "\n";
+            $this->givePointToOtherTeams($this->attackingTeam);
+        }
+        else if(mt_rand(1, $defendingPet->skill) >= mt_rand(1, $callingPet->skill))
+        {
+            $this->results .= '* ' . ucfirst($this->teams[$this->designatedTeam]->color) . ' catches the ball successfully.';
+        }
+        else
+        {
+            $foul = mt_rand(1, 3);
+
+            if($foul === 1)
+                $this->results .= '* ' . $defendingPet->pet->getName() . ' tried to catch the ball, but it hit below the hips!' . "\n";
+            else if($foul === 2)
+                $this->results .= '* ' . ucfirst($this->teams[$this->designatedTeam]->color) . ' failed to catch the ball before it went out of bounds!' . "\n";
+            else // 3
+                $this->results .= '* The ball hit the ground before anyone from ' . ucfirst($this->teams[$this->designatedTeam]->color) . ' could catch it!' . "\n";
+
+            $this->givePointToOtherTeams($this->attackingTeam);
         }
 
-        return null;
+        $this->attackingTeam = $this->designatedTeam;
     }
 
-    private function getRandomWorstPet(): Pet
+    private function givePointToOtherTeams(integer $team)
     {
+        foreach($this->activeTeams as $activeTeam)
+        {
+            if($activeTeam === $team) continue;
 
+            $this->results .= '* ' . ucfirst($this->teams[$team]->color) . ' Team gets a point.' . "\n";
+            $this->teamPoints[$team]++;
+        }
+    }
+
+    private function getRandomPetFromTeam(integer $team): KinBallParticipant
+    {
+        return ArrayFunctions::pick_one($this->teams[$team]->pets);
     }
 }

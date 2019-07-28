@@ -211,7 +211,7 @@ class TraderService
             $offers[] = [
                 'id' => 'sunflower',
                 'cost' => [
-                    [ 'type' => 'item', 'item' => $this->itemRepository->findOneByName($askingItem), 'quantity' => $askingQuantity ]
+                    [ 'type' => 'item', 'item' => $this->itemRepository->findOneByName($askingItem), 'quantity' => ceil($askingQuantity) ]
                 ],
                 'yield' => [
                     [ 'type' => 'item', 'item' => $this->itemRepository->findOneByName('Sunflower'), 'quantity' => 1 ]
