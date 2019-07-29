@@ -78,12 +78,6 @@ class Pet
     private $colorB;
 
     /**
-     * @ORM\Column(type="boolean")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
-     */
-    private $isDead = false;
-
-    /**
      * @ORM\Column(type="integer")
      */
     private $junk = 0;
@@ -373,18 +367,6 @@ class Pet
     public function setColorB(string $color): self
     {
         $this->colorB = $color;
-
-        return $this;
-    }
-
-    public function getIsDead(): ?bool
-    {
-        return $this->isDead;
-    }
-
-    public function setIsDead(bool $isDead): self
-    {
-        $this->isDead = $isDead;
 
         return $this;
     }

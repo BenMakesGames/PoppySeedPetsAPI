@@ -123,9 +123,6 @@ class PetService
     {
         $now = new \DateTimeImmutable();
 
-        if($pet->getIsDead())
-            throw new \InvalidArgumentException($pet->getName() . ' is dead :|');
-
         $changes = new PetChanges($pet);
 
         if($pet->getLastInteracted() < $now->modify('-48 hours'))
@@ -159,9 +156,6 @@ class PetService
     public function doPraise(Pet $pet)
     {
         $now = new \DateTimeImmutable();
-
-        if($pet->getIsDead())
-            throw new \InvalidArgumentException($pet->getName() . ' is dead :|');
 
         $changes = new PetChanges($pet);
 
@@ -198,9 +192,6 @@ class PetService
      */
     public function doFeed(Pet $pet, array $inventory): PetActivityLog
     {
-        if($pet->getIsDead())
-            throw new \InvalidArgumentException($pet->getName() . ' is dead :|');
-
         if(ArrayFunctions::any($inventory, function(Inventory $i) { return $i->getItem()->getFood() === null; }))
             throw new \InvalidArgumentException('At least one of the items selected is not edible!');
 
