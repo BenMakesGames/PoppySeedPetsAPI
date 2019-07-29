@@ -68,7 +68,7 @@ class PassphraseResetService
             ->setBody(
                 'Ah! You lost your password? Sorry! That sucks! Let\'s get that fixed up!' . "\n\n" .
                 'To reset your password, use this link:' . "\n\n" .
-                "\t" . 'https://poppyseedpets.com/resetPassphrase/' . $request->getCode() . "\n"
+                'https://poppyseedpets.com/resetPassphrase/' . $request->getCode() . "\n"
             )
         ;
 
