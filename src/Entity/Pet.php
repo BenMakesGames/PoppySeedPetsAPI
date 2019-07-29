@@ -706,13 +706,6 @@ class Pet
         return $this->affectionPoints;
     }
 
-    public function setAffectionPoints(int $affectionPoints): self
-    {
-        $this->affectionPoints = $affectionPoints;
-
-        return $this;
-    }
-
     public function getAffectionLevel(): int
     {
         return $this->affectionLevel;
@@ -722,12 +715,11 @@ class Pet
     {
         $this->affectionPoints += $amount;
 
-        return $this;
-    }
-
-    public function decreaseAffectionPoints(int $amount): self
-    {
-        $this->affectionPoints -= $amount;
+        while($this->affectionPoints >= $this->getAffectionPointsToLevel())
+        {
+            $this->affectionPoints -= $this->getAffectionPointsToLevel();
+            $this->affectionLevel++;
+        }
 
         return $this;
     }

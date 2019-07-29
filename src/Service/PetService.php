@@ -117,11 +117,6 @@ class PetService
         if($points === 0) return;
 
         $pet->increaseAffectionPoints($points);
-
-        while($pet->getAffectionPoints() >= $pet->getAffectionPointsToLevel())
-        {
-            $pet->decreaseAffectionPoints($pet->getAffectionPointsToLevel());
-        }
     }
 
     public function doPet(Pet $pet)
