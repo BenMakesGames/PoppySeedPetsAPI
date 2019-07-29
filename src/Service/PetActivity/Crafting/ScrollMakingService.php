@@ -64,7 +64,7 @@ class ScrollMakingService
             $this->inventoryService->loseItem('Paper', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ 'crafts, dexterity, intelligence' ]);
             $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried create a ' . $scroll . ', but accidentally tore the Paper in the process :(');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried create a ' . $scroll . ', but accidentally tore the Paper in the process :(', '');
         }
         else if($umbraCheck <= 3)
         {
@@ -72,13 +72,13 @@ class ScrollMakingService
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ 'intelligence', 'umbra' ]);
             $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried create a ' . $scroll . ', but mishandled the Quintessence; it evaporated back into the fabric of the universe :(');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried create a ' . $scroll . ', but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
         }
         else if($craftsCheck < 15)
         {
             $pet->spendTime(\mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ 'crafts', 'dexterity', 'intelligence', 'umbra' ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried create a ' . $scroll . ', but couldn\'t quite remember the steps.');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried create a ' . $scroll . ', but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
         }
         else // success!
         {
@@ -89,7 +89,7 @@ class ScrollMakingService
             $this->inventoryService->petCollectsItem($scroll, $pet, $pet->getName() . ' bound this.');
             $this->petService->gainExp($pet, 2, [ 'crafts', 'dexterity', 'intelligence', 'umbra' ]);
             $pet->increaseEsteem(2);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' created a ' . $scroll . '.');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' created a ' . $scroll . '.', '');
         }
     }
 

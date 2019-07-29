@@ -77,7 +77,7 @@ class Protocol7Service
 
         $pet->spendTime(\mt_rand(45, 75));
 
-        return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, but got lost.');
+        return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, but got lost.', 'icons/activity-logs/confused');
     }
 
     private function foundLayer01(Pet $pet): PetActivityLog
@@ -96,18 +96,18 @@ class Protocol7Service
             {
                 $moneys = mt_rand(2, 4);
                 $pet->getOwner()->increaseMoneys($moneys);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took ' . $moneys . '~~m~~!');
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took ' . $moneys . '~~m~~!', 'icons/activity-logs/moneys');
             }
             else
             {
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.');
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took its ' . $loot . '!');
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took its ' . $loot . '!', '');
             }
         }
         else
         {
             $this->petService->gainExp($pet, 1, [ 'computer', 'intelligence' ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 01 of Project-E, but their avatar was disrupted by ' . $baddie . '.');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 01 of Project-E, but their avatar was disrupted by ' . $baddie . '.', '');
         }
     }
 
@@ -123,12 +123,12 @@ class Protocol7Service
             $pet->increaseEsteem(1);
             $this->petService->gainExp($pet, 1, [ 'computer', 'intelligence' ]);
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.');
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took its ' . $loot . '!');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took its ' . $loot . '!', '');
         }
         else
         {
             $this->petService->gainExp($pet, 1, [ 'computer', 'intelligence' ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 02 of Project-E, but their avatar was disrupted by ' . $baddie . '.');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 02 of Project-E, but their avatar was disrupted by ' . $baddie . '.', '');
         }
     }
 
@@ -145,13 +145,13 @@ class Protocol7Service
             $pet->increaseEsteem(1);
             $this->petService->gainExp($pet, 2, [ 'computer', 'intelligence' ]);
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.');
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took its ' . $loot . '!');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took its ' . $loot . '!', '');
         }
         else
         {
             $pet->increaseSafety(-1);
             $this->petService->gainExp($pet, 1, [ 'computer', 'intelligence' ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 03 of Project-E, but their avatar was disrupted by ' . $baddie . '.');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 03 of Project-E, but their avatar was disrupted by ' . $baddie . '.', '');
         }
     }
 

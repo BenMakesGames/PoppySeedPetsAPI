@@ -42,6 +42,12 @@ class PetActivityLog
      */
     private $changes;
 
+    /**
+     * @ORM\Column(type="string", length=40)
+     * @Groups({"petActivityLogs"})
+     */
+    private $icon;
+
     public function __construct()
     {
         $this->createdOn = new \DateTimeImmutable();
@@ -89,6 +95,18 @@ class PetActivityLog
     public function setChanges(?PetChangesSummary $changes): self
     {
         $this->changes = $changes;
+
+        return $this;
+    }
+
+    public function getIcon(): ?string
+    {
+        return $this->icon;
+    }
+
+    public function setIcon(string $icon): self
+    {
+        $this->icon = $icon;
 
         return $this;
     }

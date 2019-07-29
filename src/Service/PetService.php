@@ -157,7 +157,7 @@ class PetService
         else
             throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
 
-        $this->responseService->createActivityLog($pet, 'You pet ' . $pet->getName(). '.', $changes->compare($pet));
+        $this->responseService->createActivityLog($pet, 'You pet ' . $pet->getName(). '.', 'ui/affection', $changes->compare($pet));
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PETTED_A_PET);
     }
 
@@ -194,7 +194,7 @@ class PetService
         else
             throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
 
-        $this->responseService->createActivityLog($pet, 'You praised ' . $pet->getName(). '.', $changes->compare($pet));
+        $this->responseService->createActivityLog($pet, 'You praised ' . $pet->getName(). '.', 'ui/affection', $changes->compare($pet));
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PRAISED_A_PET);
     }
 
@@ -264,9 +264,9 @@ class PetService
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
 
         if(count($favorites) > 0)
-            return $this->responseService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '. ' . $pet->getName() . ' really liked the ' . ArrayFunctions::pick_one($favorites)->getName() . '!', $petChanges->compare($pet));
+            return $this->responseService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '. ' . $pet->getName() . ' really liked the ' . ArrayFunctions::pick_one($favorites)->getName() . '!', 'ui/affection', $petChanges->compare($pet));
         else
-            return $this->responseService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.', $petChanges->compare($pet));
+            return $this->responseService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.', '', $petChanges->compare($pet));
     }
 
     public function doEat(Pet $pet, Item $item)
@@ -287,7 +287,7 @@ class PetService
 
         $pet->increaseEsteem($favoriteFlavorStrength + $food->getLove());
 
-        $this->responseService->createActivityLog($pet, $pet->getName() . ' immediately ate the ' . $item->getName() . '.', $petChanges->compare($pet));
+        $this->responseService->createActivityLog($pet, $pet->getName() . ' immediately ate the ' . $item->getName() . '.', '', $petChanges->compare($pet));
 
     }
 
@@ -359,14 +359,14 @@ class PetService
 
                 $pet->spendTime(\mt_rand(15, 45));
 
-                $this->responseService->createActivityLog($pet, $pet->getName() . ' threw up :(', $changes->compare($pet));
+                $this->responseService->createActivityLog($pet, $pet->getName() . ' threw up :(', '', $changes->compare($pet));
 
                 return;
             }
 
             if($this->randomService->roll(1, 12) < $pet->getWhack())
             {
-                $this->responseService->createActivityLog($pet, $pet->getName() . ' is feeling loopy, so took some time to rest.');
+                $this->responseService->createActivityLog($pet, $pet->getName() . ' is feeling loopy, so took some time to rest.', '');
                 $pet->spendTime(\mt_rand(45, 75));
 
                 return;
@@ -374,7 +374,7 @@ class PetService
 
             if($this->randomService->roll(1, $junkDie) < $pet->getJunk())
             {
-                $this->responseService->createActivityLog($pet, $pet->getName() . ' couldn\'t muster the energy to do anything.');
+                $this->responseService->createActivityLog($pet, $pet->getName() . ' couldn\'t muster the energy to do anything.', '');
                 $pet->spendTime(\mt_rand(45, 75));
 
                 return;
@@ -412,7 +412,7 @@ class PetService
             {
                 $pet->spendTime(\mt_rand(45, 60));
 
-                $this->responseService->createActivityLog($pet, $description . ' ' . $pet->getName() . ' wanted to make something, but couldn\'t find any materials to work with.');
+                $this->responseService->createActivityLog($pet, $description . ' ' . $pet->getName() . ' wanted to make something, but couldn\'t find any materials to work with.', '');
             }
             else
             {
@@ -471,7 +471,7 @@ class PetService
     private function doNothing(Pet $pet)
     {
         $pet->spendTime(\mt_rand(30, 60));
-        $this->responseService->createActivityLog($pet, $pet->getName() . ' hung around the house.');
+        $this->responseService->createActivityLog($pet, $pet->getName() . ' hung around the house.', '');
     }
 
     private function pickDesire(array $petDesires)

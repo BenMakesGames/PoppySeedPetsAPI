@@ -42,12 +42,12 @@ class TreasureMapService
         {
             $pet->spendTime(mt_rand(30, 90));
             $this->petService->gainExp($pet, 1, [ 'perception', 'nature', 'intelligence' ]);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to decipher Cetgueli\'s Treasure Map, but couldn\'t make sense of it.');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to decipher Cetgueli\'s Treasure Map, but couldn\'t make sense of it.', 'icons/activity-logs/confused');
             $pet->increaseEsteem(-1);
 
             if(mt_rand(1, 3) === 1)
             {
-                $this->responseService->createActivityLog($pet, $pet->getName() . ' put the treasure map down.');
+                $this->responseService->createActivityLog($pet, $pet->getName() . ' put the treasure map down.', 'icons/activity-logs/confused');
                 $pet->setTool(null);
             }
         }
@@ -62,7 +62,7 @@ class TreasureMapService
             else
                 $prize = 'Very Strongbox';
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' followed Cetgueli\'s Treasure Map, and found a ' . $prize . '! (Also, the map was lost, because video games.)');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' followed Cetgueli\'s Treasure Map, and found a ' . $prize . '! (Also, the map was lost, because video games.)', 'items/map/cetgueli');
 
             $this->em->remove($pet->getTool());
             $pet->setTool(null);

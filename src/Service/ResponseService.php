@@ -101,12 +101,13 @@ class ResponseService
             $responseData['user'] = $this->normalizer->normalize($user, null, [ 'groups' => [ SerializationGroupEnum::MY_ACCOUNT ] ]);
     }
 
-    public function createActivityLog(Pet $pet, string $entry, ?PetChangesSummary $changes = null): PetActivityLog
+    public function createActivityLog(Pet $pet, string $entry, string $icon, ?PetChangesSummary $changes = null): PetActivityLog
     {
         $log = (new PetActivityLog())
             ->setPet($pet)
             ->setEntry($entry)
             ->setChanges($changes)
+            ->setIcon($icon)
         ;
 
         $this->activityLogs[] = $log;

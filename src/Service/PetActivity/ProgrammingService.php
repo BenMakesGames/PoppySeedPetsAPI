@@ -76,7 +76,7 @@ class ProgrammingService
             $pet->spendTime(\mt_rand(30, 60));
             $this->inventoryService->loseItem('Pointer', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ 'intelligence', 'computer' ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to dereference a String from a Pointer, but encountered a null exception :(');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to dereference a String from a Pointer, but encountered a null exception :(', 'icons/activity-logs/null');
         }
         else if($roll >= 10)
         {
@@ -85,13 +85,13 @@ class ProgrammingService
             $this->inventoryService->petCollectsItem('String', $pet, $pet->getName() . ' dereferenced this from a Pointer.');
             $this->petService->gainExp($pet, 1, [ 'intelligence', 'computer' ]);
             $pet->increaseEsteem(1);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' dereferenced a String from a Pointer.');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' dereferenced a String from a Pointer.', 'items/resource/string');
         }
         else
         {
             $pet->spendTime(\mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ 'intelligence', 'computer' ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to dereference a Pointer, but couldn\'t figure out all the syntax errors.');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to dereference a Pointer, but couldn\'t figure out all the syntax errors.', 'icons/activity-logs/confused');
         }
     }
 
@@ -106,12 +106,12 @@ class ProgrammingService
             if(mt_rand(1, 2) === 1)
             {
                 $this->inventoryService->loseItem('Pointer', $pet->getOwner(), 1);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a Regex, but mis-scoped a Pointer :(');
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a Regex, but mis-scoped a Pointer :(', 'icons/activity-logs/null');
             }
             else
             {
                 $this->inventoryService->loseItem('Finite State Machine', $pet->getOwner(), 1);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a Regex, but lost a Finite State Machine to a stack overflow :(');
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a Regex, but lost a Finite State Machine to a stack overflow :(', 'icons/activity-logs/null');
             }
         }
         else if($roll >= 14)
@@ -122,13 +122,13 @@ class ProgrammingService
             $this->inventoryService->petCollectsItem('Regex', $pet, $pet->getName() . ' build this from a Finite State Machine.');
             $this->petService->gainExp($pet, 2, [ 'intelligence', 'computer' ]);
             $pet->increaseEsteem(1);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' upgraded a Finite State Machine into a Regex.');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' upgraded a Finite State Machine into a Regex.', '');
         }
         else
         {
             $pet->spendTime(\mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ 'intelligence', 'computer' ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to create a Regex, but all the documentation they found online was too old.');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to create a Regex, but all the documentation they found online was too old.', 'icons/activity-logs/confused');
         }
     }
 }
