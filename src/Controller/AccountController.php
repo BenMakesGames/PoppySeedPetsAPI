@@ -413,7 +413,7 @@ class AccountController extends PsyPetsController
         $resetRequest = $passwordResetRequestRepository->findOneBy([ 'code' => $code ]);
 
         if(!$resetRequest || $resetRequest->getExpiresOn() <= new \DateTimeImmutable())
-            throw new NotFoundHttpException('This passphrase ');
+            throw new NotFoundHttpException('This reset URL is invalid, or expired.');
 
         $user = $resetRequest->getUser();
 

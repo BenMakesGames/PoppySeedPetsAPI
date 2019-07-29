@@ -17,7 +17,7 @@ class PassphraseResetRequest
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="passphraseResetRequest", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="passphraseResetRequest", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
