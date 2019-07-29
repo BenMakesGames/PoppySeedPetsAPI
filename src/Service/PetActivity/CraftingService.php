@@ -292,7 +292,7 @@ class CraftingService
                 $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), 1);
                 $this->petService->gainExp($pet, 1, [ 'intelligence', 'dexterity', 'crafts' ]);
                 $pet->increaseEsteem(-1);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Stereotypical Torch, but accidentally tore the White Cloth into useless shapes :(', '');
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Stereotypical Torch, but accidentally tore the White Cloth into useless shapes :(', 'icons/activity-logs/torn-to-bits');
             }
             else
             {

@@ -64,7 +64,7 @@ class ScrollMakingService
             $this->inventoryService->loseItem('Paper', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ 'crafts, dexterity, intelligence' ]);
             $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried create a ' . $scroll . ', but accidentally tore the Paper in the process :(', '');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried create a ' . $scroll . ', but accidentally tore the Paper in the process :(', 'icons/activity-logs/torn-to-bits');
         }
         else if($umbraCheck <= 3)
         {
