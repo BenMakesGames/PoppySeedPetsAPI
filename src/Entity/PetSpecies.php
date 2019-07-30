@@ -25,7 +25,7 @@ class PetSpecies
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet", "userPublicProfile", "petEncyclopedia", "petPublicProfile", "petShelterPet", "parkEvent"})
+     * @Groups({"myPet", "userPublicProfile", "petEncyclopedia", "petPublicProfile", "petShelterPet"})
      */
     private $image;
 

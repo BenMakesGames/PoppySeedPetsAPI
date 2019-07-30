@@ -1,7 +1,6 @@
 <?php
 namespace App\Service\ParkEvent;
 
-use App\Entity\ParkEvent;
 use App\Entity\Pet;
 use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\KinBallParticipant;

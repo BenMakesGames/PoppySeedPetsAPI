@@ -23,7 +23,7 @@ class Inventory
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Item")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "parkEvent"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem"})
      */
     private $item;
 
@@ -74,7 +74,6 @@ class Inventory
     {
         $this->createdOn = new \DateTimeImmutable();
         $this->modifiedOn = new \DateTimeImmutable();
-        $this->parkEventPrize = new ArrayCollection();
     }
 
     public function getId(): ?int

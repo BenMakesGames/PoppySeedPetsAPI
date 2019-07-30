@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
+use App\Enum\ParkEventTypeEnum;
 use App\Functions\DateFunctions;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,6 +13,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PetRepository")
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="park_event_type_idx", columns={"park_event_type"})
+ * })
  */
 class Pet
 {
@@ -19,7 +23,7 @@ class Pet
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory"})
      */
     private $id;
 
@@ -31,7 +35,7 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "petShelterPet", "parkEvent"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "petShelterPet"})
      */
     private $name;
 
@@ -67,13 +71,13 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "parkEvent"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet"})
      */
     private $colorA;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "parkEvent"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet"})
      */
     private $colorB;
 
@@ -112,7 +116,7 @@ class Pet
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\PetSpecies")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "parkEvent"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet"})
      */
     private $species;
 
@@ -164,21 +168,22 @@ class Pet
     private $spiritCompanion;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\ParkEvent", mappedBy="participants")
+     * @ORM\Column(type="date_immutable", nullable=true)
+     * @Groups({"myPet"})
      */
-    private $parkEvents;
+    private $lastParkEvent;
 
     /**
-     * @ORM\Column(type="date_immutable", nullable=true)
+     * @ORM\Column(type="string", length=40, nullable=true)
+     * @Groups({"myPet"})
      */
-    private $lastParkEventJoinedOn;
+    private $parkEventType;
 
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
         $this->lastInteracted = (new \DateTimeImmutable())->modify('-3 days');
         $this->stomachSize = mt_rand(12, 24);
-        $this->parkEvents = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -758,42 +763,29 @@ class Pet
         return $this;
     }
 
-    /**
-     * @return Collection|ParkEvent[]
-     */
-    public function getParkEvents(): Collection
+    public function getLastParkEvent(): ?\DateTimeImmutable
     {
-        return $this->parkEvents;
+        return $this->lastParkEvent;
     }
 
-    public function addParkEvent(ParkEvent $parkEvent): self
+    public function setLastParkEvent(?\DateTimeImmutable $lastParkEvent): self
     {
-        if (!$this->parkEvents->contains($parkEvent)) {
-            $this->parkEvents[] = $parkEvent;
-            $parkEvent->addParticipant($this);
-        }
+        $this->lastParkEvent = $lastParkEvent;
 
         return $this;
     }
 
-    public function removeParkEvent(ParkEvent $parkEvent): self
+    public function getParkEventType(): ?string
     {
-        if ($this->parkEvents->contains($parkEvent)) {
-            $this->parkEvents->removeElement($parkEvent);
-            $parkEvent->removeParticipant($this);
-        }
-
-        return $this;
+        return $this->parkEventType;
     }
 
-    public function getLastParkEventJoinedOn(): ?\DateTimeImmutable
+    public function setParkEventType(?string $parkEventType): self
     {
-        return $this->lastParkEventJoinedOn;
-    }
+        if($parkEventType !== null && !ParkEventTypeEnum::isAValue($parkEventType))
+            throw new \InvalidArgumentException('"' . $parkEventType . '" is not a valid park event type.');
 
-    public function setLastParkEventJoinedOn(): self
-    {
-        $this->lastParkEventJoinedOn = new \DateTimeImmutable();
+        $this->parkEventType = $parkEventType;
 
         return $this;
     }
