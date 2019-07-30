@@ -14,7 +14,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PetRepository")
  * @ORM\Table(indexes={
- *     @ORM\Index(name="park_event_type_idx", columns={"park_event_type"})
+ *     @ORM\Index(name="park_event_type_idx", columns={"park_event_type"}),
+ *     @ORM\Index(name="park_event_order_idx", columns={"park_event_order"})
  * })
  */
 class Pet
@@ -178,6 +179,11 @@ class Pet
      * @Groups({"myPet"})
      */
     private $parkEventType;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $parkEventOrder = 0;
 
     public function __construct()
     {
@@ -786,6 +792,7 @@ class Pet
             throw new \InvalidArgumentException('"' . $parkEventType . '" is not a valid park event type.');
 
         $this->parkEventType = $parkEventType;
+        $this->parkEventOrder = mt_rand(0, 2147483647);
 
         return $this;
     }

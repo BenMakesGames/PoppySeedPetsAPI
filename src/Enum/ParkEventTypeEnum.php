@@ -7,6 +7,7 @@ class ParkEventTypeEnum
 
     public const KIN_BALL = 'Kin-Ball';
 
+    /*
     public const SEPAK_TAKRAW = 'Sepak Takraw';
     public const CTF = 'Capture the Flag';
     public const BADMINTON_TOURNAMENT = 'Badminton Tournament';
@@ -16,4 +17,5 @@ class ParkEventTypeEnum
     public const HANDBALL = 'Handball';
     public const POLE_VAULTING = 'Pole Vaulting';
     public const JOUSTING = 'Jousting';
+    */
 }

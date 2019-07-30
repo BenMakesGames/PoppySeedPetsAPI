@@ -24,14 +24,14 @@ class KinBallService
     /** @var integer */
     private $designatedTeam;
 
-    /** @var integer */
-    private $round;
-
     private $teamWins = [ 0, 0, 0 ];
     private $activeTeams;
     private $teamPoints;
 
-    public function play(ParkEvent $event)
+    /**
+     * @param Pet[] $pets
+     */
+    public function play($pets)
     {
         // set up teams
         $this->teams = [
@@ -47,7 +47,7 @@ class KinBallService
         {
             $team = $i % 3;
 
-            $participant = new KinBallParticipant($event->getParticipants()[$i], $team);
+            $participant = new KinBallParticipant($pets[$i], $team);
 
             $this->teams[$team]->pets[] = $participant;
         }

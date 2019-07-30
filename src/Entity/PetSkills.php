@@ -69,7 +69,7 @@ class PetSkills
     /**
      * @ORM\Column(type="integer")
      */
-    private $music;
+    private $music = 0;
 
     /**
      * @ORM\Column(type="integer")
