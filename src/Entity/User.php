@@ -561,9 +561,9 @@ class User implements UserInterface
         return $this->unlockedPark;
     }
 
-    public function setUnlockedPark(?\DateTimeImmutable $unlockedPark): self
+    public function setUnlockedPark(): self
     {
-        $this->unlockedPark = $unlockedPark;
+        $this->unlockedPark = new \DateTimeImmutable();
 
         return $this;
     }

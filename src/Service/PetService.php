@@ -116,7 +116,13 @@ class PetService
 
         if($points === 0) return;
 
+        $previousAffectionLevel = $pet->getAffectionLevel();
+
         $pet->increaseAffectionPoints($points);
+
+        // if a pet's affection level increased, and you haven't unlocked the park, now you get the park!
+        if($pet->getAffectionLevel() > $previousAffectionLevel && $pet->getOwner()->getUnlockedPark() === null)
+            $pet->getOwner()->setUnlockedPark();
     }
 
     public function doPet(Pet $pet)

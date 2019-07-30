@@ -23,6 +23,9 @@ final class Version20190729234105 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE pet DROP is_dead');
+
+        // also, unlock the park for people who have increased a pet's affection level
+        $this->addSql('UPDATE user SET unlocked_park=NOW() WHERE id IN (SELECT owner_id FROM pet WHERE merits NOT LIKE "[]" OR affection_level>0 GROUP BY owner_id)');
     }
 
     public function down(Schema $schema) : void
