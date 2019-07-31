@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\PetSkillEnum;
 use App\Enum\UserStatEnum;
 use App\Model\PetChanges;
 use App\Repository\UserStatsRepository;
@@ -41,7 +42,7 @@ class TreasureMapService
         if($followMapCheck < 15)
         {
             $pet->spendTime(mt_rand(30, 90));
-            $this->petService->gainExp($pet, 1, [ 'perception', 'nature', 'intelligence' ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::INTELLIGENCE ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to decipher Cetgueli\'s Treasure Map, but couldn\'t make sense of it.', 'icons/activity-logs/confused');
             $pet->increaseEsteem(-1);
 
@@ -54,7 +55,7 @@ class TreasureMapService
         else
         {
             $pet->spendTime(mt_rand(60, 90));
-            $this->petService->gainExp($pet, 3, [ 'perception', 'nature', 'intelligence' ]);
+            $this->petService->gainExp($pet, 3, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::INTELLIGENCE ]);
             $pet->increaseEsteem(5);
 
             if(mt_rand(1, 5) === 1)

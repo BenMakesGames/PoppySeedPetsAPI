@@ -3,6 +3,7 @@ namespace App\Service\PetActivity\Crafting;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\PetSkillEnum;
 use App\Service\InventoryService;
 use App\Service\PetService;
 use App\Service\ResponseService;
@@ -62,7 +63,7 @@ class ScrollMakingService
         {
             $pet->spendTime(\mt_rand(30, 60));
             $this->inventoryService->loseItem('Paper', $pet->getOwner(), 1);
-            $this->petService->gainExp($pet, 1, [ 'crafts, dexterity, intelligence' ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::DEXTERITY, PetSkillEnum::INTELLIGENCE ]);
             $pet->increaseEsteem(-1);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried create a ' . $scroll . ', but accidentally tore the Paper in the process :(', 'icons/activity-logs/torn-to-bits');
         }
@@ -70,14 +71,14 @@ class ScrollMakingService
         {
             $pet->spendTime(\mt_rand(30, 60));
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
-            $this->petService->gainExp($pet, 1, [ 'intelligence', 'umbra' ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(-1);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried create a ' . $scroll . ', but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
         }
         else if($craftsCheck < 15)
         {
             $pet->spendTime(\mt_rand(30, 60));
-            $this->petService->gainExp($pet, 1, [ 'crafts', 'dexterity', 'intelligence', 'umbra' ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::DEXTERITY, PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried create a ' . $scroll . ', but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
         }
         else // success!
@@ -87,7 +88,7 @@ class ScrollMakingService
             $this->inventoryService->loseItem('Paper', $pet->getOwner(), 1);
             $this->inventoryService->loseItem($uniqueIngredient, $pet->getOwner(), 1);
             $this->inventoryService->petCollectsItem($scroll, $pet, $pet->getName() . ' bound this.');
-            $this->petService->gainExp($pet, 2, [ 'crafts', 'dexterity', 'intelligence', 'umbra' ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::DEXTERITY, PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(2);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' created a ' . $scroll . '.', '');
         }
