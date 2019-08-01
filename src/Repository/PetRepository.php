@@ -19,6 +19,22 @@ class PetRepository extends ServiceEntityRepository
         parent::__construct($registry, Pet::class);
     }
 
+    public function findPetsEligibleForParkEvent(string $eventType, int $number)
+    {
+        $today = new \DateTimeImmutable();
+
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.parkEventType=:eventType')
+            ->andWhere('p.lastParkEvent<:today OR p.lastParkEvent IS NULL')
+            ->orderBy('p.parkEventOrder', 'ASC')
+            ->setMaxResults($number)
+            ->setParameter('eventType', $eventType)
+            ->setParameter('today', $today->format('Y-m-d'))
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // /**
     //  * @return Pet[] Returns an array of Pet objects
     //  */

@@ -51,11 +51,7 @@ class RunParkEventsCommand extends Command
 
         $output->writeln('Looking for pets to run a ' . $eventType . ' event.');
 
-        $pets = $this->petRepository->findBy(
-            [ 'parkEventType' => $eventType ],
-            [ 'parkEventOrder' => 'ASC' ],
-            self::PARK_EVENT_SIZES[$eventType]
-        );
+        $pets = $this->petRepository->findPetsEligibleForParkEvent($eventType, self::PARK_EVENT_SIZES[$eventType]);
 
         // not enough interested pets? get outta' here!
         if(count($pets) < self::PARK_EVENT_SIZES[$eventType])
