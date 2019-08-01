@@ -7,7 +7,7 @@ trait Enum
 {
     public static function getValues(): array
     {
-        return (new \ReflectionClass(__CLASS__))->getConstants();
+        return array_values((new \ReflectionClass(__CLASS__))->getConstants());
     }
 
     public static function isAValue(string $value): bool

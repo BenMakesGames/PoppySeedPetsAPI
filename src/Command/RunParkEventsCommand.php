@@ -49,23 +49,28 @@ class RunParkEventsCommand extends Command
 
         $eventType = $eventTypes[$minuteOfTheDay % count($eventTypes)];
 
+        $output->writeln('Looking for pets to run a ' . $eventType . ' event.');
+
         $pets = $this->petRepository->findBy(
             [ 'parkEventType' => $eventType ],
             [ 'parkEventOrder' => 'ASC' ],
             self::PARK_EVENT_SIZES[$eventType]
         );
 
+        // not enough interested pets? get outta' here!
         if(count($pets) < self::PARK_EVENT_SIZES[$eventType])
-            
+            return;
 
         switch($eventType)
         {
             case ParkEventTypeEnum::KIN_BALL:
-                $this->kinBallService->play($pets);
+                $parkEvent = $this->kinBallService->play($pets);
                 break;
             default:
                 throw new \Exception('oops: support for events of type "' . $eventType . '" has not been coded!');
         }
+
+        $this->em->persist($parkEvent);
 
         /*
         foreach($pets as $pet)
