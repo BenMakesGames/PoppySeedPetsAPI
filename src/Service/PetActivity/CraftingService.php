@@ -4,6 +4,7 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\PetSkillEnum;
+use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
@@ -120,7 +121,7 @@ class CraftingService
         if(count($possibilities) === 0)
             throw new \InvalidArgumentException('possibilities must contain at least one item.');
 
-        $method = $possibilities[\mt_rand(0, count($possibilities) - 1)];
+        $method = ArrayFunctions::pick_one($possibilities);
 
         $activityLog = null;
         $changes = new PetChanges($pet);

@@ -248,6 +248,8 @@ class KinBallService
             $this->results .= '* ' . ucfirst($this->teams[$team]->color) . ' Team gets a point.' . "\n";
             $this->teamPoints[$team]++;
         }
+
+        $this->checkForCriticalScores();
     }
 
     private function getRandomPetFromTeam(int $team): KinBallParticipant

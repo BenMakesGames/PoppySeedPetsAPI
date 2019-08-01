@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Functions\StringFunctions;
 use App\Repository\UserRepository;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -17,25 +18,11 @@ class SessionService
         $this->tokenStorage = $tokenStorage;
     }
 
-    private function generateSessionId(): string
-    {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-        $string = '';
-
-        for($i = 0; $i < 40; $i++)
-        {
-            $string .= $characters[mt_rand(0, strlen($characters) - 1)];
-        }
-
-        return $string;
-    }
-
     public function getSessionId(): string
     {
         do
         {
-            $sessionId = $this->generateSessionId();
+            $sessionId = StringFunctions::randomLettersAndNumbers(40);
         } while($this->userRepository->findOneBySessionId($sessionId) !== null);
 
         return $sessionId;

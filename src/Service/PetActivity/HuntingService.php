@@ -6,6 +6,7 @@ use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
@@ -290,7 +291,7 @@ class HuntingService
             }
             else
             {
-                $item = [ 'Egg', 'String', 'Rice', 'Plastic' ][mt_rand(0, 3)];
+                $item = ArrayFunctions::pick_one([ 'Egg', 'String', 'Rice', 'Plastic' ]);
                 $this->inventoryService->petCollectsItem($item, $pet, 'Liberated from a Thieving Magpie.');
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' pounced on a Thieving Magpie, and liberated ' . ($item === 'Egg' ? 'an' : 'some') . ' ' . $item . '.', '');
             }

@@ -5,6 +5,7 @@ namespace App\Command;
 use App\Enum\ParkEventTypeEnum;
 use App\Repository\PetRepository;
 use App\Service\ParkEvent\KinBallService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,15 +15,15 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class RunParkEventsCommand extends Command
 {
-    protected static $defaultName = 'RunParkEvents';
-
     private $kinBallService;
     private $petRepository;
+    private $em;
 
-    public function __construct(KinBallService $kinBallService, PetRepository $petRepository)
+    public function __construct(KinBallService $kinBallService, PetRepository $petRepository, EntityManagerInterface $em)
     {
         $this->kinBallService = $kinBallService;
         $this->petRepository = $petRepository;
+        $this->em = $em;
 
         parent::__construct();
     }
@@ -30,6 +31,7 @@ class RunParkEventsCommand extends Command
     protected function configure()
     {
         $this
+            ->setName('app:run-park-events')
             ->setDescription('Runs park events. Intended to be run every minute of the day (ex: via crontab)')
         ;
     }
@@ -53,6 +55,9 @@ class RunParkEventsCommand extends Command
             self::PARK_EVENT_SIZES[$eventType]
         );
 
+        if(count($pets) < self::PARK_EVENT_SIZES[$eventType])
+            
+
         switch($eventType)
         {
             case ParkEventTypeEnum::KIN_BALL:
@@ -61,5 +66,17 @@ class RunParkEventsCommand extends Command
             default:
                 throw new \Exception('oops: support for events of type "' . $eventType . '" has not been coded!');
         }
+
+        /*
+        foreach($pets as $pet)
+        {
+            $pet
+                ->setLastParkEvent()
+                ->setParkEventType(null)
+            ;
+        }
+        */
+
+        $this->em->flush();
     }
 }

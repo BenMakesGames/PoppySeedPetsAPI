@@ -774,9 +774,9 @@ class Pet
         return $this->lastParkEvent;
     }
 
-    public function setLastParkEvent(?\DateTimeImmutable $lastParkEvent): self
+    public function setLastParkEvent(): self
     {
-        $this->lastParkEvent = $lastParkEvent;
+        $this->lastParkEvent = new \DateTimeImmutable();
 
         return $this;
     }
