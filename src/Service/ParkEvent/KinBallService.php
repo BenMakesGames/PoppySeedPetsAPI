@@ -3,12 +3,13 @@ namespace App\Service\ParkEvent;
 
 use App\Entity\ParkEvent;
 use App\Entity\Pet;
+use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\KinBallTeam;
 
-class KinBallService
+class KinBallService implements ParkEventInterface
 {
     public const ROUNDS_TO_WIN = 2;
     public const TARGET_SCORE = 5;
@@ -30,11 +31,19 @@ class KinBallService
     private $activeTeams;
     private $teamPoints;
 
+    public function isGoodNumberOfPets(int $petCount): bool
+    {
+        return $petCount === 12;
+    }
+
     /**
      * @param Pet[] $pets
      */
     public function play($pets): ParkEvent
     {
+        if(!$this->isGoodNumberOfPets(count($pets)))
+            throw new \InvalidArgumentException('Exactly 12 pets are required to play Kin-Ball.');
+
         $parkEvent = (new ParkEvent())
             ->addParticipants($pets)
             ->setType(ParkEventTypeEnum::KIN_BALL)
@@ -248,14 +257,26 @@ class KinBallService
         {
             $foul = mt_rand(1, 3);
 
-            if($foul === 1)
-                $this->results .= '* ' . $defendingPet->pet->getName() . ' tried to catch the ball, but it hit below the hips!' . "\n";
-            else if($foul === 2)
-                $this->results .= '* ' . ucfirst($this->teams[$this->designatedTeam]->color) . ' failed to catch the ball before it went out of bounds!' . "\n";
-            else // 3
-                $this->results .= '* The ball hit the ground before anyone from ' . ucfirst($this->teams[$this->designatedTeam]->color) . ' could catch it!' . "\n";
+            if($defendingPet->pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 20) === 1)
+            {
+                if($foul === 1)
+                    $this->results .= '* ' . $defendingPet->pet->getName() . ' tried to catch the ball, and it was totally going to hit below the hips, but ' . $defendingPet->pet->getName() . ' happened to stumble in such a way that made them dip juuuust low enough for it to be a legal touch! Lucky~!' . "\n";
+                else if($foul === 2)
+                    $this->results .= '* ' . ucfirst($this->teams[$this->designatedTeam]->color) . ' would have failed to catch the ball before it went out of bounds, but ' . $defendingPet->pet->getName() . ' happened to be completely out of position, and right where the ball was headed! Lucky~!' . "\n";
+                else // 3
+                    $this->results .= '* The ball almost hit the ground before anyone from ' . ucfirst($this->teams[$this->designatedTeam]->color) . ' could catch it, but ' . $defendingPet->pet->getName() . ' tripped while chasing the ball, and happened to catch it just in time! Lucky~!' . "\n";
+            }
+            else
+            {
+                if($foul === 1)
+                    $this->results .= '* ' . $defendingPet->pet->getName() . ' tried to catch the ball, but it hit below the hips!' . "\n";
+                else if($foul === 2)
+                    $this->results .= '* ' . ucfirst($this->teams[$this->designatedTeam]->color) . ' failed to catch the ball before it went out of bounds!' . "\n";
+                else // 3
+                    $this->results .= '* The ball hit the ground before anyone from ' . ucfirst($this->teams[$this->designatedTeam]->color) . ' could catch it!' . "\n";
 
-            $this->givePointToOtherTeams($this->designatedTeam);
+                $this->givePointToOtherTeams($this->designatedTeam);
+            }
         }
 
         $this->results .= "\n";

@@ -25,7 +25,7 @@ class PetRepository extends ServiceEntityRepository
 
         return $this->createQueryBuilder('p')
             ->andWhere('p.parkEventType=:eventType')
-            ->andWhere('p.lastParkEvent<:today OR p.lastParkEvent IS NULL')
+            ->andWhere('(p.lastParkEvent<:today OR p.lastParkEvent IS NULL)')
             ->orderBy('p.parkEventOrder', 'ASC')
             ->setMaxResults($number)
             ->setParameter('eventType', $eventType)
