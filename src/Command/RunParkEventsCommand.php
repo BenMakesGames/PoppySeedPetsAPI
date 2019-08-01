@@ -2,7 +2,10 @@
 
 namespace App\Command;
 
+use App\Entity\Pet;
 use App\Enum\ParkEventTypeEnum;
+use App\Functions\ArrayFunctions;
+use App\Functions\StringFunctions;
 use App\Repository\PetRepository;
 use App\Service\ParkEvent\KinBallService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -59,7 +62,14 @@ class RunParkEventsCommand extends Command
 
         // not enough interested pets? get outta' here!
         if(count($pets) < self::PARK_EVENT_SIZES[$eventType])
+        {
+            $output->writeln('Not enough interested pets.');
             return;
+        }
+
+        $petNames = array_map(function(Pet $p) { return $p->getName(); }, $pets);
+
+        $output->writeln('These pets will play: ' . ArrayFunctions::list_nice($petNames));
 
         switch($eventType)
         {

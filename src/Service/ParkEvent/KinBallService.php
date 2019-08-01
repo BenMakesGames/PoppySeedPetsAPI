@@ -4,9 +4,11 @@ namespace App\Service\ParkEvent;
 use App\Entity\ParkEvent;
 use App\Entity\Pet;
 use App\Enum\ParkEventTypeEnum;
+use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\KinBallTeam;
+use App\Service\PetService;
 
 class KinBallService
 {
@@ -29,6 +31,13 @@ class KinBallService
     private $teamWins = [ 0, 0, 0 ];
     private $activeTeams;
     private $teamPoints;
+
+    private $petService;
+
+    public function __construct(PetService $petService)
+    {
+        $this->petService = $petService;
+    }
 
     /**
      * @param Pet[] $pets
@@ -70,6 +79,7 @@ class KinBallService
             $this->results .= "\n";
         }
 
+        $this->results .= 'The first team to win ' . self::ROUNDS_TO_WIN . ' Periods will win the game.' . "\n\n---\n";
         $this->results .= 'The die has been thrown! ' . ucfirst($this->teams[$this->attackingTeam]->color) . ' Team will be the first attacking team of the game!' . "\n\n";
 
         $period = 0;
@@ -80,9 +90,54 @@ class KinBallService
             $this->playPeriod($period);
         }
 
+        $winningTeamIndex = $this->getGameWinningTeam();
+
+        $this->results .= '**' . ucfirst($this->teams[$winningTeamIndex]->color) . ' Team wins the game!**' . "\n\n---\n";
+
+        $this->awardExp();
+
         $parkEvent->setResults($this->results);
 
         return $parkEvent;
+    }
+
+    private function awardExp()
+    {
+        $skillTotal = 0;
+
+        foreach($this->teams as $teamIndex=>$team)
+        {
+            foreach($team->pets as $participant)
+                $skillTotal += $participant->skill;
+        }
+
+        $skillAverage = ceil($skillTotal / 12);
+
+        $winningTeamIndex = $this->getGameWinningTeam();
+
+        foreach($this->teams as $teamIndex=>$team)
+        {
+            foreach($team->pets as $participant)
+            {
+                $expGain = ceil($participant->skill / 12);
+
+                if($winningTeamIndex === $teamIndex)
+                {
+                    $expGain++;
+                    $participant->pet->getOwner()->increaseMoneys($skillAverage);
+                }
+
+                $this->petService->gainExp(
+                    $participant->pet,
+                    $expGain,
+                    [ PetSkillEnum::STRENGTH, PetSkillEnum::DEXTERITY, PetSkillEnum::PERCEPTION ]
+                );
+            }
+        }
+
+        $this->results .= 'Members of the winning team each receive ' . $skillAverage . ' ~~m~~:' . "\n";
+        foreach($this->teams[$winningTeamIndex]->pets as $participant)
+            $this->results .= '* ' . $participant->pet->getName() . "\n";
     }
 
     private function assignDesignatedTeam()
@@ -187,7 +242,7 @@ class KinBallService
     {
         $this->activeTeams = array_filter($this->activeTeams, function(int $t) use($team) { return $t !== $team; });
 
-        $this->results .= '* ' . $this->teams[$team]->color . ' Team has been eliminated this Period!' . "\n";
+        $this->results .= "\n" . ucfirst($this->teams[$team]->color) . ' Team (' . $this->teamWins[$team] . ' points) has been eliminated this Period!' . "\n\n";
     }
 
     private function getPeriodWinningTeam(): ?int
@@ -208,9 +263,7 @@ class KinBallService
 
     private function playPeriod(int $period)
     {
-        $this->results .=
-            'Period ' . $period . "\n---\n\n"
-        ;
+        $this->results .= 'Period ' . $period . "\n---\n\n";
 
         $this->teamPoints = [ 0, 0, 0 ];
         $this->activeTeams = [ 0, 1, 2 ];
@@ -223,7 +276,13 @@ class KinBallService
             $this->playRound($round);
         }
 
-        $this->teamWins[$this->getPeriodWinningTeam()]++;
+        $winningTeamIndex = $this->getPeriodWinningTeam();
+
+        $winningTeam = $this->teams[$winningTeamIndex];
+
+        $this->results .= ucfirst($winningTeam->color) . ' Team wins a round!' . "\n\n";
+
+        $this->teamWins[$winningTeamIndex]++;
     }
 
     private function playRound(int $round)
@@ -231,16 +290,18 @@ class KinBallService
         $callingPet = $this->getRandomPetFromTeam($this->attackingTeam);
         $this->assignDesignatedTeam();
 
-        $this->results .= $callingPet->pet->getName() . ' designates '  . ucfirst($this->teams[$this->designatedTeam]->color) . ' to defend, and hits the ball!' . "\n";
+        $this->results .= $callingPet->pet->getName() . ' (' . ucfirst($this->teams[$this->attackingTeam]->color) . ') designates '  . ucfirst($this->teams[$this->designatedTeam]->color) . ' to defend, and hits the ball!' . "\n";
 
         $defendingPet = $this->getRandomPetFromTeam($this->designatedTeam);
 
-        if(mt_rand(1, $callingPet->skill) === 1)
+        $attackRoll = mt_rand(1, 3 + $callingPet->skill);
+
+        if($attackRoll === 1)
         {
             $this->results .= '* ' . $callingPet->pet->getName() . ' didn\'t hit the ball hard enough!' . "\n";
             $this->givePointToOtherTeams($this->attackingTeam);
         }
-        else if(mt_rand(1, $defendingPet->skill) >= mt_rand(1, $callingPet->skill))
+        else if(mt_rand(1, 3 + $defendingPet->skill) >= $attackRoll)
         {
             $this->results .= '* ' . $defendingPet->pet->getName() . ' catches the ball.' . "\n";
         }
@@ -269,8 +330,8 @@ class KinBallService
         {
             if($activeTeam === $team) continue;
 
-            $this->results .= '* ' . ucfirst($this->teams[$activeTeam]->color) . ' Team gets a point.' . "\n";
             $this->teamPoints[$activeTeam]++;
+            $this->results .= '* ' . ucfirst($this->teams[$activeTeam]->color) . ' Team gets a point (' . $this->teamPoints[$activeTeam] . ')' . "\n";
         }
 
         $this->checkForCriticalScores();
