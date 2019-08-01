@@ -2,9 +2,10 @@
 
 namespace App\Command;
 
-use App\Entity\ParkEvent;
+use App\Entity\Pet;
 use App\Enum\ParkEventTypeEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\StringFunctions;
 use App\Repository\PetRepository;
 use App\Service\ParkEvent\KinBallService;
 use App\Service\ParkEvent\TriDChessService;
@@ -58,6 +59,10 @@ class RunParkEventsCommand extends Command
         $eventType = $eventTypes[$minuteOfTheDay % count($eventTypes)];
 
         $output->writeln('Looking for pets to run a ' . $eventType . ' event.');
+
+        $petNames = array_map(function(Pet $p) { return $p->getName(); }, $pets);
+
+        $output->writeln('These pets will play: ' . ArrayFunctions::list_nice($petNames));
 
         switch($eventType)
         {

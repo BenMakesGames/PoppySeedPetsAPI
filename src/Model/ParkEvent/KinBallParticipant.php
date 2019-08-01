@@ -18,6 +18,6 @@ class KinBallParticipant
     {
         $this->pet = $pet;
         $this->team = $team;
-        $this->skill = 1 + floor($pet->getSkills()->getDexterity() * 2.5 + $pet->getSkills()->getStrength() * 2 + $pet->getSkills()->getPerception() * 1.5);
+        $this->skill = floor($pet->getSkills()->getDexterity() * 2.5 + $pet->getSkills()->getStrength() * 2 + $pet->getSkills()->getPerception() * 1.5);
     }
 }
