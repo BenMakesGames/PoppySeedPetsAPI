@@ -3,13 +3,16 @@ namespace App\Service\ParkEvent;
 
 use App\Entity\ParkEvent;
 use App\Entity\Pet;
+use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\KinBallTeam;
+use App\Model\PetChanges;
 use App\Service\PetService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class KinBallService implements ParkEventInterface
 {
@@ -34,10 +37,12 @@ class KinBallService implements ParkEventInterface
     private $teamPoints;
 
     private $petService;
+    private $em;
 
-    public function __construct(PetService $petService)
+    public function __construct(PetService $petService, EntityManagerInterface $em)
     {
         $this->petService = $petService;
+        $this->em = $em;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -130,17 +135,35 @@ class KinBallService implements ParkEventInterface
             {
                 $expGain = ceil($participant->skill / 12);
 
+                $state = new PetChanges($participant->pet);
+
                 if($winningTeamIndex === $teamIndex)
                 {
                     $expGain++;
                     $participant->pet->getOwner()->increaseMoneys($skillAverage);
+                    $activityLogEntry = $participant->pet->getName() . ' played a game of Kin-Ball, and was on the winning team! They received ' . $skillAverage . '~~m~~!';
                 }
+                else
+                    $activityLogEntry = $participant->pet->getName() . ' played a game of Kin-Ball. ' . $participant->pet->getName() . ' wasn\'t on the winning team, but it was still a good game!';
 
                 $this->petService->gainExp(
                     $participant->pet,
                     $expGain,
                     [ PetSkillEnum::STRENGTH, PetSkillEnum::DEXTERITY, PetSkillEnum::PERCEPTION ]
                 );
+
+                $participant->pet->increaseSafety(3);
+                $participant->pet->increaseLove(3);
+                $participant->pet->increaseEsteem(3);
+
+                $log = (new PetActivityLog())
+                    ->setPet($participant->pet)
+                    ->setEntry($activityLogEntry)
+                    ->setChanges($state->compare($participant->pet))
+                    ->setIcon('icons/menu/park')
+                ;
+
+                $this->em->persist($log);
             }
         }
 

@@ -70,19 +70,21 @@ class RunParkEventsCommand extends Command
         }
 
         if($parkEvent)
+        {
             $this->em->persist($parkEvent);
+
+            foreach($parkEvent->getParticipants() as $pet)
+            {
+                $pet
+                    ->setLastParkEvent()
+                    ->setParkEventType(null)
+                ;
+            }
+
+            $this->em->flush();
+        }
         else
             $output->writeln('No park event was run.');
-
-        foreach($parkEvent->getParticipants() as $pet)
-        {
-            $pet
-                ->setLastParkEvent()
-                ->setParkEventType(null)
-            ;
-        }
-
-        $this->em->flush();
     }
 
     private function playKinBall(): ?ParkEvent

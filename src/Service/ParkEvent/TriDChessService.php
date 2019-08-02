@@ -3,15 +3,35 @@ namespace App\Service\ParkEvent;
 
 use App\Entity\ParkEvent;
 use App\Entity\Pet;
+use App\Entity\PetActivityLog;
 use App\Enum\ParkEventTypeEnum;
+use App\Enum\PetSkillEnum;
 use App\Model\ParkEvent\TriDChessParticipant;
+use App\Model\PetChanges;
+use App\Service\PetService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class TriDChessService implements ParkEventInterface
 {
     /** @var TriDChessParticipant[] */
     private $participants;
+    private $winners;
+
+    private $wins = [];
+    private $defeatedBy = [];
 
     private $results = '';
+
+    private $round = 0;
+
+    private $petService;
+    private $em;
+
+    public function __construct(PetService $petService, EntityManagerInterface $em)
+    {
+        $this->petService = $petService;
+        $this->em = $em;
+    }
 
     public function isGoodNumberOfPets(int $petCount): bool
     {
@@ -27,16 +47,20 @@ class TriDChessService implements ParkEventInterface
             throw new \InvalidArgumentException('The number of pets must be 8, 16, or 32.');
 
         $this->participants = array_map(function(Pet $pet) { return new TriDChessParticipant($pet); }, $pets);
+        $this->winners = array_map(function(Pet $pet) { return new TriDChessParticipant($pet); }, $pets);
 
-        $round = 0;
+        foreach($this->participants as $p)
+            $this->wins[$p->pet->getId()] = 0;
 
-        while(count($this->participants) > 1)
+        $this->round = 0;
+
+        while(count($this->winners) > 1)
         {
-            $round++;
-            $this->doRound($round);
+            $this->round++;
+            $this->doRound();
         }
 
-        $this->results .= '**' . $this->participants[0]->pet->getName() . ' wins the tournament!**';
+        $this->awardExp();
 
         return (new ParkEvent())
             ->setType(ParkEventTypeEnum::TRI_D_CHESS)
@@ -45,26 +69,34 @@ class TriDChessService implements ParkEventInterface
         ;
     }
 
-    private function doRound(int $round)
+    private function doRound()
     {
-        $this->results .= 'Round ' . $round . "\n---\n\n";
+        $this->results .= 'Round ' . $this->round . "\n---\n\n";
 
         $winners = [];
 
-        for($i = 0; $i < count($this->participants); $i += 2)
+        for($i = 0; $i < count($this->winners); $i += 2)
         {
-            $pet1 = $this->participants[$i];
-            $pet2 = $this->participants[$i + 1];
+            $pet1 = $this->winners[$i];
+            $pet2 = $this->winners[$i + 1];
 
             $winner = $this->doMatch($pet1, $pet2);
 
             if($winner === 1)
+            {
                 $winners[] = $pet1;
+                $this->wins[$pet1->pet->getId()]++;
+                $this->defeatedBy[$pet2->pet->getId()] = $pet1->pet;
+            }
             else
+            {
                 $winners[] = $pet2;
+                $this->wins[$pet2->pet->getId()]++;
+                $this->defeatedBy[$pet1->pet->getId()] = $pet2->pet;
+            }
         }
 
-        $this->participants = $winners;
+        $this->winners = $winners;
     }
 
     private function doMatch(TriDChessParticipant $p1, TriDChessParticipant $p2)
@@ -134,4 +166,55 @@ class TriDChessService implements ParkEventInterface
 
         return max(mt_rand(1, 3), $damage);
     }
+
+
+    private function awardExp()
+    {
+        $skillTotal = 0;
+
+        foreach($this->participants as $participant)
+            $skillTotal += $participant->skill;
+
+        $moneys = ceil($skillTotal * $this->round / 12);
+
+        $this->results .= '**' . $this->participants[0]->pet->getName() . ' wins the tournament, and ' . $moneys . '~~m~~!**';
+
+        foreach($this->participants as $participant)
+        {
+            $expGain = ceil($participant->skill / 12);
+
+            $state = new PetChanges($participant->pet);
+
+            $wins = $this->wins[$participant->pet->getId()];
+
+            if($wins === $this->round)
+            {
+                $expGain++;
+                $participant->pet->getOwner()->increaseMoneys($moneys);
+                $activityLogEntry = $participant->pet->getName() . ' played in a Tri-D chess tournament, and won! The whole thing!';
+            }
+            else if($wins === 0)
+                $activityLogEntry = $participant->pet->getName() . ' played in a Tri-D chess tournament, but lost in the first round to ' . $this->defeatedBy[$participant->pet->getId()]->getName() . '. (Next time, ' . $this->defeatedBy[$participant->pet->getId()]->getName() . '!)';
+            else
+                $activityLogEntry = $participant->pet->getName() . ' played in a Tri-D chess tournament, won ' . $wins . ' ' . ($wins === 1 ? 'round' : 'rounds') . ', and lost to ' . $this->defeatedBy[$participant->pet->getId()]->getName() . ' in round ' . ($wins + 1) . '.';
+
+            $this->petService->gainExp(
+                $participant->pet,
+                $expGain,
+                [ PetSkillEnum::INTELLIGENCE ]
+            );
+
+            $participant->pet->increaseEsteem(2 * $wins);
+
+            $log = (new PetActivityLog())
+                ->setPet($participant->pet)
+                ->setEntry($activityLogEntry)
+                ->setChanges($state->compare($participant->pet))
+                ->setIcon('icons/menu/park')
+            ;
+
+            $this->em->persist($log);
+        }
+    }
+
 }
