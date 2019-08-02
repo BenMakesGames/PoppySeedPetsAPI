@@ -25,7 +25,7 @@ class PetActivityLogsFilterService
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
             [
-                'id' => [ 'l.id', 'desc' ], // first one is the default
+                'id' => [ 'l.id' => 'desc' ], // first one is the default
             ],
             [
                 'pet' => [ $this, 'filterPet' ],

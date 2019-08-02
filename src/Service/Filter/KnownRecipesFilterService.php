@@ -26,7 +26,7 @@ class KnownRecipesFilterService
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
             [
-                'name' => [ 'r.name', 'ASC' ], // first one is the default
+                'name' => [ 'r.name' => 'ASC' ], // first one is the default
             ],
             [
                 'user' => [ $this, 'filterUser' ],

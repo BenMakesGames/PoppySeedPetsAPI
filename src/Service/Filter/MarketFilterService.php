@@ -25,12 +25,13 @@ class MarketFilterService
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
             [
-                'price' => [ 'i.sellPrice', 'asc' ], // first one is the default
-                'name' => [ 'item.name', 'asc' ],
+                'name' => [ 'item.name' => 'asc', 'i.sellPrice' => 'asc' ], // first one is the default
+                'price' => [ 'i.sellPrice' => 'asc', 'item.name' => 'asc' ],
             ],
             [
                 'name' => array($this, 'filterName'),
                 'edible' => array($this, 'filterEdible'),
+                'equipable' => array($this, 'filterEquipable'),
             ]
         );
     }
@@ -60,11 +61,17 @@ class MarketFilterService
 
     public function filterEdible(QueryBuilder $qb, $value)
     {
-        if($value)
-            $qb->andWhere('item.food != :foodNull');
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('item.food IS NULL');
         else
-            $qb->andWhere('item.food = :foodNull');
+            $qb->andWhere('item.food IS NOT NULL');
+    }
 
-        $qb->setParameter('foodNull', 'N;');
+    public function filterEquipable(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('item.tool IS NULL');
+        else
+            $qb->andWhere('item.tool IS NOT NULL');
     }
 }

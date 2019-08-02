@@ -50,13 +50,19 @@ class Filterer
         if(!array_key_exists($orderBy, $this->orderByMap))
             $orderBy = array_key_first($this->orderByMap);
 
-        if($orderDir !== 'asc' && $orderDir !== 'desc') $orderDir = $this->orderByMap[$orderBy][1];
+        if($orderDir !== '' && $orderDir !== 'reverse') $orderDir = '';
 
         $filters = array_filter($filters, function($filter) { return array_key_exists($filter, $this->filterMap); }, ARRAY_FILTER_USE_KEY);
 
         // assemble query:
 
-        $qb->orderBy($this->orderByMap[$orderBy][0], $orderDir);
+        foreach($this->orderByMap[$orderBy] as $by=>$dir)
+        {
+            if($orderDir === 'reverse')
+                $dir = $dir === 'asc' ? 'desc' : 'asc';
+
+            $qb->addOrderBy($by, $dir);
+        }
 
         foreach($filters as $filter=>$value)
             $this->filterMap[$filter]($qb, $value);

@@ -19,8 +19,8 @@ class ItemFilterService
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
             [
-                'name' => [ 'i.name', 'asc' ], // first one is the default
-                'id' => [ 'i.id', 'asc' ],
+                'name' => [ 'i.name' => 'asc' ], // first one is the default
+                'id' => [ 'i.id' => 'asc' ],
             ],
             [
                 'name' => array($this, 'filterName'),
@@ -45,19 +45,17 @@ class ItemFilterService
 
     public function filterEdible(QueryBuilder $qb, $value)
     {
-        if($value)
-            $qb->andWhere('i.food != :foodNull');
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('i.food IS NULL');
         else
-            $qb->andWhere('i.food = :foodNull');
-
-        $qb->setParameter('foodNull', 'N;');
+            $qb->andWhere('i.food IS NOT NULL');
     }
 
     public function filterEquipable(QueryBuilder $qb, $value)
     {
-        if($value)
-            $qb->andWhere('i.tool IS NOT NULL');
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('i.tool IS NULL');
         else
-            $qb->andWhere('i.food IS NULL');
+            $qb->andWhere('i.tool IS NOT NULL');
     }
 }

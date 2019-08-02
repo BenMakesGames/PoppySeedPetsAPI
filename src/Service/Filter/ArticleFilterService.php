@@ -19,7 +19,7 @@ class ArticleFilterService
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
             [
-                'createdOn' => [ 'a.createdOn', 'desc' ], // first one is the default
+                'createdOn' => [ 'a.createdOn' => 'desc' ], // first one is the default
             ],
             [
             ]

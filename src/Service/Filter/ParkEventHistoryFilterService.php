@@ -25,7 +25,7 @@ class ParkEventHistoryFilterService
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
             [
-                'id' => [ 'e.id', 'desc' ], // first one is the default
+                'id' => [ 'e.id' => 'desc' ], // first one is the default
             ],
             [
             ]

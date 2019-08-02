@@ -29,10 +29,10 @@ class UserFilterService
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
             [
-                'lastActivity' => [ 'u.lastActivity', 'desc' ], // first one is the default
-                'registeredOn' => [ 'u.registeredOn', 'asc' ],
-                'name' => [ 'u.name', 'asc' ],
-                'id' => [ 'u.id', 'asc' ],
+                'lastActivity' => [ 'u.lastActivity' => 'desc' ], // first one is the default
+                'registeredOn' => [ 'u.registeredOn' => 'asc' ],
+                'name' => [ 'u.name' => 'asc' ],
+                'id' => [ 'u.id' => 'asc' ],
             ],
             [
                 'name' => [ $this, 'filterName' ],
