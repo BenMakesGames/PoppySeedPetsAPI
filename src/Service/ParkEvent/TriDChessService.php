@@ -30,13 +30,6 @@ class TriDChessService implements ParkEventInterface
 
         $round = 0;
 
-        $this->results .= 'Participants in this event:' . "\n";
-
-        foreach($this->participants as $participant)
-            $this->results .= '* ' . $participant->pet->getName() . "\n";
-
-        $this->results .= "\n";
-
         while(count($this->participants) > 1)
         {
             $round++;
