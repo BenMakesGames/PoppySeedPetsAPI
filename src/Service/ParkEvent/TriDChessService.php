@@ -46,7 +46,7 @@ class TriDChessService implements ParkEventInterface
         $this->results .= '**' . $this->participants[0]->pet->getName() . ' wins the tournament!**';
 
         return (new ParkEvent())
-            ->setType(ParkEventTypeEnum::TRI_D_TOURNAMENT)
+            ->setType(ParkEventTypeEnum::TRI_D_CHESS)
             ->addParticipants($pets)
             ->setResults($this->results)
         ;

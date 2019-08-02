@@ -2,20 +2,17 @@
 
 namespace App\Command;
 
+use App\Entity\ParkEvent;
 use App\Entity\Pet;
 use App\Enum\ParkEventTypeEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\StringFunctions;
 use App\Repository\PetRepository;
 use App\Service\ParkEvent\KinBallService;
 use App\Service\ParkEvent\TriDChessService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 class RunParkEventsCommand extends Command
 {
@@ -58,18 +55,14 @@ class RunParkEventsCommand extends Command
 
         $eventType = $eventTypes[$minuteOfTheDay % count($eventTypes)];
 
-        $output->writeln('Looking for pets to run a ' . $eventType . ' event.');
-
-        $petNames = array_map(function(Pet $p) { return $p->getName(); }, $pets);
-
-        $output->writeln('These pets will play: ' . ArrayFunctions::list_nice($petNames));
+        $output->writeln('Looking for pets for a ' . $eventType . '.');
 
         switch($eventType)
         {
             case ParkEventTypeEnum::KIN_BALL:
                 $parkEvent = $this->playKinBall();
                 break;
-            case ParkEventTypeEnum::TRI_D_TOURNAMENT:
+            case ParkEventTypeEnum::TRI_D_CHESS:
                 $parkEvent = $this->playTriDChess();
                 break;
             default:
@@ -82,7 +75,7 @@ class RunParkEventsCommand extends Command
             $output->writeln('No park event was run.');
 
         /*
-        foreach($pets as $pet)
+        foreach($parkEvent->getParticipants() as $pet)
         {
             $pet
                 ->setLastParkEvent()
@@ -109,11 +102,11 @@ class RunParkEventsCommand extends Command
 
     private function playTriDChess(): ?ParkEvent
     {
-        $idealNumberOfPets = ArrayFunctions::pick_one([ 8, 16, 16, 16, 32 ]);
+        $idealNumberOfPets = ArrayFunctions::pick_one([ 8, 16, 16 ]);
 
-        $pets = $this->petRepository->findPetsEligibleForParkEvent(ParkEventTypeEnum::TRI_D_TOURNAMENT, $idealNumberOfPets);
+        $pets = $this->petRepository->findPetsEligibleForParkEvent(ParkEventTypeEnum::TRI_D_CHESS, $idealNumberOfPets);
 
-        echo 'Found ' . count($pets) . ' pets.' . "\n";
+        echo 'Found ' . count($pets) . ' ' . (count($pets) === 1 ? 'pet' : 'pets') . '.' . "\n";
 
         if(count($pets) > 32)
             $pets = array_slice($pets, 0, 32);
@@ -121,7 +114,7 @@ class RunParkEventsCommand extends Command
             $pets = array_slice($pets, 0, 16);
         else if(count($pets) < 16 && count($pets) > 8)
             $pets = array_slice($pets, 0, 8);
-        else
+        else if(count($pets) < 8)
             return null;
 
         return $this->triDChessService->play($pets);

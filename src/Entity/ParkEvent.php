@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -15,26 +16,31 @@ class ParkEvent
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"parkEvent"})
      */
     private $id;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Pet")
+     * @Groups({"parkEvent"})
      */
     private $participants;
 
     /**
      * @ORM\Column(type="string", length=40)
+     * @Groups({"parkEvent"})
      */
     private $type;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"parkEvent"})
      */
     private $results;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"parkEvent"})
      */
     private $date;
 

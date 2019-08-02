@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\Pet;
 use App\Enum\ParkEventTypeEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Service\Filter\ParkEventHistoryFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,5 +41,21 @@ class ParkController extends PsyPetsController
         $em->flush();
 
         return $responseService->success();
+    }
+
+    /**
+     * @Route("/history", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getEventHistory(
+        Request $request, ResponseService $responseService, ParkEventHistoryFilterService $parkEventHistoryFilterService
+    )
+    {
+        $parkEventHistoryFilterService->setUser($this->getUser());
+
+        return $responseService->success(
+            $parkEventHistoryFilterService->getResults($request->query),
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::PARK_EVENT ]
+        );
     }
 }

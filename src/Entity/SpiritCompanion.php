@@ -61,7 +61,7 @@ class SpiritCompanion
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet"})
+     * @Groups({"myPet", "parkEvent"})
      */
     private $image;
 
