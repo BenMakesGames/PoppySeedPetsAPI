@@ -75,8 +75,11 @@ class CraftingService
             if(array_key_exists('Toadstool', $quantities) && array_key_exists('Quintessence', $quantities))
                 $possibilities[] = [ $this, 'createChampignon' ];
 
-            if($quantities['Crooked Stick']->quantity >= 2 && array_key_exists('String', $quantities))
+            if(array_key_exists('String', $quantities))
                 $possibilities[] = [ $this, 'createWoodenSword' ];
+
+            if(array_key_exists('Glass', $quantities))
+                $possibilities[] = [ $this, 'createRusticMagnifyingGlass' ];
 
             if(array_key_exists('Talon', $quantities) && array_key_exists('String', $quantities))
                 $possibilities[] = [ $this, 'createHuntingSpear' ];
@@ -379,7 +382,7 @@ class CraftingService
             {
                 $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
                 $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Wooden Sword, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Wooden Sword, but broke the Crooked Stick :( Like, more than the one time needed.', 'icons/activity-logs/broke-stick');
 
             }
         }
@@ -387,7 +390,7 @@ class CraftingService
         {
             $pet->spendTime(\mt_rand(45, 60));
             $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
-            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 2);
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
             $this->inventoryService->petCollectsItem('Wooden Sword', $pet, $pet->getName() . ' created this from some String and two Crooked Sticks.');
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
             $pet->increaseEsteem(2);
@@ -398,6 +401,55 @@ class CraftingService
             $pet->spendTime(\mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Wooden Sword, but couldn\'t quite figure it out.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createRusticMagnifyingGlass(Pet $pet)
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 3)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+
+            if(mt_rand(1, 20 + $pet->getDexterity() + $pet->getStamina()) >= 18)
+            {
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::STAMINA ]);
+                $pet->increaseEsteem(2);
+                $pet->increaseSafety(-4);
+
+                if(mt_rand(1, 4) === 1)
+                {
+                    $pet->increaseEsteem(2);
+                    return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make a lens from a piece of glass, and cut themselves! :( They managed to save the glass, though! ' . $pet->getName() . ' is kind of proud of that.', 'icons/activity-logs/wounded');
+                }
+                else
+                    return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make a lens from a piece of glass, and cut themselves! :( They managed to save the glass, though!', 'icons/activity-logs/wounded');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Glass', $pet->getOwner(), 1);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::STAMINA ]);
+                $pet->increaseEsteem(-2);
+                $pet->increaseSafety(-4);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make a lens from a piece of glass, but cut themselves, and dropped the glass :(', 'icons/activity-logs/broke-glass');
+            }
+        }
+        else if($roll >= 13)
+        {
+            $pet->spendTime(\mt_rand(45, 75));
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Glass', $pet->getOwner(), 1);
+            $this->inventoryService->petCollectsItem('"Rustic" Magnifying Glass', $pet, $pet->getName() . ' created this.');
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' created a "Rustic" Magnifying Glass.', '');
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a magnifying glass, but almost broke the glass, and gave up.', 'icons/activity-logs/confused');
         }
     }
 

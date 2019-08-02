@@ -215,7 +215,7 @@ class FishingService
         $nothingBiting = $this->nothingBiting($pet, 20, 'in a Waterfall Basin');
         if($nothingBiting !== null) return $nothingBiting;
 
-        if(\mt_rand(1, 100) === 1 && $pet->hasMerit(MeritEnum::LUCKY))
+        if(\mt_rand(1, 80) === 1 && $pet->hasMerit(MeritEnum::LUCKY))
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Waterfall Basin, and reeled in a Little Strongbox! Lucky~!', '');
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
@@ -223,7 +223,7 @@ class FishingService
 
             $pet->spendTime(mt_rand(45, 75));
         }
-        else if(\mt_rand(1, 100) === 1)
+        else if(\mt_rand(1, 80) === 1)
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Waterfall Basin, and reeled in a Little Strongbox!', '');
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
