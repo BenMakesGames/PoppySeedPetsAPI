@@ -74,7 +74,6 @@ class RunParkEventsCommand extends Command
         else
             $output->writeln('No park event was run.');
 
-        /*
         foreach($parkEvent->getParticipants() as $pet)
         {
             $pet
@@ -82,7 +81,6 @@ class RunParkEventsCommand extends Command
                 ->setParkEventType(null)
             ;
         }
-        */
 
         $this->em->flush();
     }
