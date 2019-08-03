@@ -250,7 +250,9 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        $this->food = max(-24, min($this->food + $amount, $this->getStomachSize()));
+        $this->food += min($amount, max(0, $this->getStomachSize() - $this->food - $this->junk));
+
+        if($this->food < -24) $this->food = -24;
 
         return $this;
     }
@@ -391,7 +393,9 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        $this->junk = max(0, min($this->junk + $amount, $this->getStomachSize()));
+        $this->junk +=  min($amount, max(0, $this->getStomachSize() - $this->food - $this->junk));
+
+        if($this->junk < 0) $this->junk = 0;
 
         return $this;
     }
@@ -427,7 +431,7 @@ class Pet
      */
     public function getFull(): string
     {
-        $fullness = ($this->getFood() + $this->getJunk() + $this->getWhack()) / $this->getStomachSize();
+        $fullness = ($this->getFood() + $this->getJunk()) / $this->getStomachSize();
 
         if($fullness >= 0.75)
         {

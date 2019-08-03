@@ -209,6 +209,10 @@ class PetService
 
         foreach($inventory as $i)
         {
+
+            if($pet->getJunk() + $pet->getFood() >= $pet->getStomachSize())
+                break;
+
             $food = $i->getItem()->getFood();
 
             $pet->increaseWhack($food->getWhack());
@@ -232,9 +236,6 @@ class PetService
             $this->em->remove($i);
 
             $foodsEaten[] = $i->getItem()->getName();
-
-            if($pet->getJunk() + $pet->getWhack() + $pet->getFood() >= $pet->getStomachSize())
-                break;
         }
 
         // gain love & safety equal to 1/8 food gained, when hand-fed
@@ -250,21 +251,23 @@ class PetService
 
             $pet->increaseSafety($gain);
             $this->gainAffection($pet, $gain);
+
+            $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
         }
 
-
-        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
-
-        if(count($favorites) > 0)
-            return $this->responseService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '. ' . $pet->getName() . ' really liked the ' . ArrayFunctions::pick_one($favorites)->getName() . '!', 'ui/affection', $petChanges->compare($pet));
+        if(count($foodsEaten) > 0)
+        {
+            if(count($favorites) > 0)
+                return $this->responseService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '. ' . $pet->getName() . ' really liked the ' . ArrayFunctions::pick_one($favorites)->getName() . '!', 'ui/affection', $petChanges->compare($pet));
+            else
+                return $this->responseService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.', '', $petChanges->compare($pet));
+        }
         else
-            return $this->responseService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.', '', $petChanges->compare($pet));
+            return $this->responseService->createActivityLog($pet, 'You tried to feed ' . $pet->getName() . ', but they\'re too full to eat anymore.', '', $petChanges->compare($pet));
     }
 
-    public function doEat(Pet $pet, Item $item)
+    public function doEat(Pet $pet, Item $item, ?PetActivityLog $activityLog)
     {
-        $petChanges = new PetChanges($pet);
-
         $food = $item->getFood();
 
         $pet->increaseWhack($food->getWhack());
@@ -279,8 +282,8 @@ class PetService
 
         $pet->increaseEsteem($favoriteFlavorStrength + $food->getLove());
 
-        $this->responseService->createActivityLog($pet, $pet->getName() . ' immediately ate the ' . $item->getName() . '.', '', $petChanges->compare($pet));
-
+        if($activityLog)
+            $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $item->getName() . '.');
     }
 
     public function runHour(Pet $pet)
@@ -316,29 +319,29 @@ class PetService
             if($this->calculateAgeInDays($pet) > 365 * 2)
             {
                 // elderly tolerance
-                $junkDie = 8;
-                $whackDie = 12;
+                $minWhack = 4;
+                $maxWhack = 12;
             }
             else if($this->calculateAgeInDays($pet) > 365)
             {
                 // adult tolerance
-                $junkDie = 12;
-                $whackDie = 20;
+                $minWhack = 6;
+                $maxWhack = 20;
             }
             else if($this->calculateAgeInDays($pet) > 365 / 2)
             {
                 // young adult tolerance
-                $junkDie = 20;
-                $whackDie = 10;
+                $minWhack = 4;
+                $maxWhack = 10;
             }
             else
             {
                 // kid tolerance
-                $junkDie = 12;
-                $whackDie = 6;
+                $minWhack = 1;
+                $maxWhack = 6;
             }
 
-            if($this->randomService->roll(1, $whackDie) + $this->randomService->roll(1, $junkDie) < $pet->getWhack() + $pet->getJunk())
+            if($this->randomService->roll($minWhack, $maxWhack) < $pet->getWhack() + $pet->getJunk() / 2)
             {
                 $changes = new PetChanges($pet);
 
@@ -352,22 +355,6 @@ class PetService
                 $pet->spendTime(\mt_rand(15, 45));
 
                 $this->responseService->createActivityLog($pet, $pet->getName() . ' threw up :(', '', $changes->compare($pet));
-
-                return;
-            }
-
-            if($this->randomService->roll(1, 12) < $pet->getWhack())
-            {
-                $this->responseService->createActivityLog($pet, $pet->getName() . ' is feeling loopy, so took some time to rest.', '');
-                $pet->spendTime(\mt_rand(45, 75));
-
-                return;
-            }
-
-            if($this->randomService->roll(1, $junkDie) < $pet->getJunk())
-            {
-                $this->responseService->createActivityLog($pet, $pet->getName() . ' couldn\'t muster the energy to do anything.', '');
-                $pet->spendTime(\mt_rand(45, 75));
 
                 return;
             }

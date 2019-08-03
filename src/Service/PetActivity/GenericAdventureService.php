@@ -92,7 +92,7 @@ class GenericAdventureService
         if($reward[1] === 'moneys')
             $pet->getOwner()->increaseMoneys($reward[0]);
         else
-            $this->inventoryService->petCollectsItem($reward[1], $pet, $comment);
+            $this->inventoryService->petCollectsItem($reward[1], $pet, $comment, $activityLog);
 
         $activityLog->setChanges($changes->compare($pet));
 

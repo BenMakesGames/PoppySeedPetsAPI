@@ -101,8 +101,9 @@ class Protocol7Service
             }
             else
             {
-                $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.');
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took its ' . $loot . '!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took its ' . $loot . '!', '');
+                $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.', $activityLog);
+                return $activityLog;
             }
         }
         else
@@ -123,8 +124,9 @@ class Protocol7Service
         {
             $pet->increaseEsteem(1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
-            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.');
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took its ' . $loot . '!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took its ' . $loot . '!', '');
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.', $activityLog);
+            return $activityLog;
         }
         else
         {
@@ -145,8 +147,9 @@ class Protocol7Service
             $pet->increaseSafety(1);
             $pet->increaseEsteem(1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
-            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.');
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took its ' . $loot . '!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took its ' . $loot . '!', '');
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.', $activityLog);
+            return $activityLog;
         }
         else
         {

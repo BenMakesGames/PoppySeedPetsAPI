@@ -84,10 +84,11 @@ class ProgrammingService
         {
             $pet->spendTime(\mt_rand(45, 60));
             $this->inventoryService->loseItem('Pointer', $pet->getOwner(), 1);
-            $this->inventoryService->petCollectsItem('String', $pet, $pet->getName() . ' dereferenced this from a Pointer.');
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
             $pet->increaseEsteem(1);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' dereferenced a String from a Pointer.', 'items/resource/string');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' dereferenced a String from a Pointer.', 'items/resource/string');
+            $this->inventoryService->petCollectsItem('String', $pet, $pet->getName() . ' dereferenced this from a Pointer.', $activityLog);
+            return $activityLog;
         }
         else
         {
@@ -121,10 +122,11 @@ class ProgrammingService
             $pet->spendTime(\mt_rand(45, 60));
             $this->inventoryService->loseItem('Pointer', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Finite State Machine', $pet->getOwner(), 1);
-            $this->inventoryService->petCollectsItem('Regex', $pet, $pet->getName() . ' build this from a Finite State Machine.');
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
             $pet->increaseEsteem(1);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' upgraded a Finite State Machine into a Regex.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' upgraded a Finite State Machine into a Regex.', '');
+            $this->inventoryService->petCollectsItem('Regex', $pet, $pet->getName() . ' build this from a Finite State Machine.', $activityLog);
+            return $activityLog;
         }
         else
         {

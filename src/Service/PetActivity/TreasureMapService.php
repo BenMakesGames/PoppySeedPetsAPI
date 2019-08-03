@@ -68,7 +68,7 @@ class TreasureMapService
             $this->em->remove($pet->getTool());
             $pet->setTool(null);
 
-            $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' found this by following Cetgueli\'s Treasure Map!');
+            $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' found this by following Cetgueli\'s Treasure Map!', $activityLog);
         }
 
         if($activityLog)

@@ -85,7 +85,7 @@ class RefiningService
             else
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' melted Silica Grounds and Limestone into Glass. (There\'s plenty of Limestone left over, though!)', 'items/mineral/silica-glass');
 
-            $this->inventoryService->petCollectsItem('Glass', $pet, $pet->getName() . ' created this from Silica Grounds and Limestone.');
+            $this->inventoryService->petCollectsItem('Glass', $pet, $pet->getName() . ' created this from Silica Grounds and Limestone.', $activityLog);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
@@ -123,11 +123,12 @@ class RefiningService
             $this->inventoryService->loseItem('Glass', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), 1);
 
-            $this->inventoryService->petCollectsItem('Fiberglass', $pet, $pet->getName() . ' created this from Glass and Plastic.');
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' made Fiberglass from Glass and Plastic.', 'items/resource/fiberglass');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made Fiberglass from Glass and Plastic.', 'items/resource/fiberglass');
+            $this->inventoryService->petCollectsItem('Fiberglass', $pet, $pet->getName() . ' created this from Glass and Plastic.', $activityLog);
+            return $activityLog;
         }
         else
         {
@@ -155,11 +156,12 @@ class RefiningService
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), 1);
 
-            $this->inventoryService->petCollectsItem('Scythe', $pet, $pet->getName() . ' created this from a Crooked Stick, and Iron Bar.');
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Scythe from a Crooked Stick, and Iron Bar.', 'items/tool/scythe');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Scythe from a Crooked Stick, and Iron Bar.', 'items/tool/scythe');
+            $this->inventoryService->petCollectsItem('Scythe', $pet, $pet->getName() . ' created this from a Crooked Stick, and Iron Bar.', $activityLog);
+            return $activityLog;
         }
         else
         {
@@ -185,10 +187,11 @@ class RefiningService
         {
             $pet->spendTime(\mt_rand(60, 75));
             $this->inventoryService->loseItem('Iron Ore', $pet->getOwner(), 1);
-            $this->inventoryService->petCollectsItem('Iron Bar', $pet, $pet->getName() . ' refined this from Iron Ore.');
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' refined some Iron Ore into an Iron Bar.', 'items/element/iron-pure');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' refined some Iron Ore into an Iron Bar.', 'items/element/iron-pure');
+            $this->inventoryService->petCollectsItem('Iron Bar', $pet, $pet->getName() . ' refined this from Iron Ore.', $activityLog);
+            return $activityLog;
         }
         else
         {
@@ -214,10 +217,11 @@ class RefiningService
         {
             $pet->spendTime(\mt_rand(60, 75));
             $this->inventoryService->loseItem('Silver Ore', $pet->getOwner(), 1);
-            $this->inventoryService->petCollectsItem('Silver Bar', $pet, $pet->getName() . ' refined this from Silver Ore.');
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' refined some Silver Ore into a Silver Bar.', 'items/element/silver-pure');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' refined some Silver Ore into a Silver Bar.', 'items/element/silver-pure');
+            $this->inventoryService->petCollectsItem('Silver Bar', $pet, $pet->getName() . ' refined this from Silver Ore.', $activityLog);
+            return $activityLog;
         }
         else
         {
@@ -243,10 +247,11 @@ class RefiningService
         {
             $pet->spendTime(\mt_rand(60, 75));
             $this->inventoryService->loseItem('Gold Ore', $pet->getOwner(), 1);
-            $this->inventoryService->petCollectsItem('Gold Bar', $pet, $pet->getName() . ' refined this from Gold Ore.');
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' refined some Gold Ore into a Gold Bar.', 'items/element/gold-pure');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' refined some Gold Ore into a Gold Bar.', 'items/element/gold-pure');
+            $this->inventoryService->petCollectsItem('Gold Bar', $pet, $pet->getName() . ' refined this from Gold Ore.', $activityLog);
+            return $activityLog;
         }
         else
         {
@@ -275,18 +280,20 @@ class RefiningService
 
             $keys = mt_rand(1, 5) === 1 ? 2 : 1;
 
-            $this->inventoryService->petCollectsItem('Iron Key', $pet, $pet->getName() . ' forged this from an Iron Bar.');
+            if($keys === 2)
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' forged *two* Iron Keys from an Iron Bar!', 'items/key/iron');
+            else
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' forged an Iron Key from an Iron Bar.', 'items/key/iron');
+
+            $this->inventoryService->petCollectsItem('Iron Key', $pet, $pet->getName() . ' forged this from an Iron Bar.', $activityLog);
 
             if($keys === 2)
-                $this->inventoryService->petCollectsItem('Iron Key', $pet, $pet->getName() . ' forged this from an Iron Bar.');
+                $this->inventoryService->petCollectsItem('Iron Key', $pet, $pet->getName() . ' forged this from an Iron Bar.', $activityLog);
 
             $this->petService->gainExp($pet, $keys, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem($keys === 1 ? 1 : 4);
 
-            if($keys === 2)
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' forged *two* Iron Keys from an Iron Bar!', 'items/key/iron');
-            else
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' forged an Iron Key from an Iron Bar.', 'items/key/iron');
+            return $activityLog;
         }
         else
         {
@@ -317,18 +324,20 @@ class RefiningService
 
             $keys = mt_rand(1, 7) === 1 ? 2 : 1;
 
-            $this->inventoryService->petCollectsItem('Silver Key', $pet, $pet->getName() . ' forged this from a Silver Bar.');
+            if($keys === 2)
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' forged *two* Silver Keys from a Silver Bar!', 'items/key/silver');
+            else
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' forged a Silver Key from a Silver Bar.', 'items/key/silver');
+
+            $this->inventoryService->petCollectsItem('Silver Key', $pet, $pet->getName() . ' forged this from a Silver Bar.', $activityLog);
 
             if($keys === 2)
-                $this->inventoryService->petCollectsItem('Silver Key', $pet, $pet->getName() . ' forged this from a Silver Bar.');
+                $this->inventoryService->petCollectsItem('Silver Key', $pet, $pet->getName() . ' forged this from a Silver Bar.', $activityLog);
 
             $this->petService->gainExp($pet, $keys, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem($keys === 1 ? 1 : 6);
 
-            if($keys === 2)
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' forged *two* Silver Keys from a Silver Bar!', 'items/key/silver');
-            else
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' forged a Silver Key from a Silver Bar.', 'items/key/silver');
+            return $activityLog;
         }
         else if($reRoll >= 12)
         {
@@ -370,18 +379,20 @@ class RefiningService
 
             $keys = mt_rand(1, 10) === 1 ? 2 : 1;
 
-            $this->inventoryService->petCollectsItem('Gold Key', $pet, $pet->getName() . ' forged this from a Gold Bar.');
+            if($keys === 2)
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' forged *two* Gold Keys from a Gold Bar!', 'items/key/gold');
+            else
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' forged a Gold Key from a Gold Bar.', 'items/key/gold');
+
+            $this->inventoryService->petCollectsItem('Gold Key', $pet, $pet->getName() . ' forged this from a Gold Bar.', $activityLog);
 
             if($keys === 2)
-                $this->inventoryService->petCollectsItem('Gold Key', $pet, $pet->getName() . ' forged this from a Gold Bar.');
+                $this->inventoryService->petCollectsItem('Gold Key', $pet, $pet->getName() . ' forged this from a Gold Bar.', $activityLog);
 
             $this->petService->gainExp($pet, $keys, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem($keys === 1 ? 1 : 10);
 
-            if($keys === 2)
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' forged *two* Gold Keys from a Gold Bar!', 'items/key/gold');
-            else
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' forged a Gold Key from a Gold Bar.', 'items/key/gold');
+            return $activityLog;
         }
         else if($reRoll >= 12)
         {

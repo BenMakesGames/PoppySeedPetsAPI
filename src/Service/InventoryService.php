@@ -5,6 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Entity\ItemFood;
 use App\Entity\Pet;
+use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
@@ -162,13 +163,13 @@ class InventoryService
     /**
      * @param Item|string $item
      */
-    public function petCollectsItem($item, Pet $pet, string $comment): ?Inventory
+    public function petCollectsItem($item, Pet $pet, string $comment, ?PetActivityLog $activityLog): ?Inventory
     {
         if(is_string($item)) $item = $this->itemRepository->findOneByName($item);
 
         if($item->getFood() !== null && \mt_rand(1, 20) < 10 - $pet->getFood())
         {
-            $this->petService->doEat($pet, $item);
+            $this->petService->doEat($pet, $item, $activityLog);
             return null;
         }
 

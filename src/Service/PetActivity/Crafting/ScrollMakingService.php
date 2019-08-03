@@ -87,10 +87,11 @@ class ScrollMakingService
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Paper', $pet->getOwner(), 1);
             $this->inventoryService->loseItem($uniqueIngredient, $pet->getOwner(), 1);
-            $this->inventoryService->petCollectsItem($scroll, $pet, $pet->getName() . ' bound this.');
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::DEXTERITY, PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(2);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' created a ' . $scroll . '.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a ' . $scroll . '.', '');
+            $this->inventoryService->petCollectsItem($scroll, $pet, $pet->getName() . ' bound this.', $activityLog);
+            return $activityLog;
         }
     }
 
