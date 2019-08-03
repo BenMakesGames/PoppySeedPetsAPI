@@ -58,7 +58,7 @@ class GenericAdventureService
             $possibleRewards[] = [ '', 'Gold Ore' ];
 
         if($level >= 40)
-            $possibleRewards[] = [ mt_rand(10, 20), 'moneys 4' ];
+            $possibleRewards[] = [ mt_rand(10, 20), 'moneys' ];
 
         $reward = ArrayFunctions::pick_one($possibleRewards);
 

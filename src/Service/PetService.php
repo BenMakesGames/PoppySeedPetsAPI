@@ -225,11 +225,17 @@ class PetService
 
             $favoriteFlavorStrength = $food->{'get' . $pet->getFavoriteFlavor()}();
 
+            $bonusLoveAndEsteem = $food->getLove() + $favoriteFlavorStrength;
+
+            $pet
+                ->increaseLove($bonusLoveAndEsteem)
+                ->increaseEsteem($bonusLoveAndEsteem)
+            ;
+
             if($favoriteFlavorStrength > 0)
             {
-                $pet->increaseLove($favoriteFlavorStrength + $food->getLove());
-                $pet->increaseEsteem($favoriteFlavorStrength + $food->getLove());
                 $this->gainAffection($pet, $favoriteFlavorStrength);
+
                 $favorites[] = $i->getItem();
             }
 
