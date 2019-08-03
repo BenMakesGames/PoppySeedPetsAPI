@@ -471,7 +471,6 @@ class CraftingService
                 $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
                 $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
                 return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Hunting Spear, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-
             }
         }
         else if($roll >= 13)

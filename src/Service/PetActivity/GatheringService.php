@@ -393,7 +393,7 @@ class GatheringService
             else if(\mt_rand(1, 100) == 1)
                 $loot[] = 'Honeydont';
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found an Overgrown Garden, and harvested ' . ArrayFunctions::list_nice($loot) . '.');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found an Overgrown Garden, and harvested ' . ArrayFunctions::list_nice($loot) . '.', '');
 
             if($lucky)
                 $activityLog->setEntry($activityLog->getEntry() . ' (Honeydont?! Lucky~!)');
