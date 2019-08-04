@@ -94,33 +94,33 @@ class ItemTool
     private $smithing = 0;
 
     /**
-     * @ORM\Column(type="float")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
+     * @ORM\Column(type="integer")
      */
-    private $gripX;
+    private $computer = 0;
 
     /**
      * @ORM\Column(type="float")
      * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
      */
-    private $gripY;
+    private $gripX = 0.5;
+
+    /**
+     * @ORM\Column(type="float")
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
+     */
+    private $gripY = 0.5;
 
     /**
      * @ORM\Column(type="integer")
      * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
      */
-    private $gripAngle;
+    private $gripAngle = 0;
 
     /**
      * @ORM\Column(type="float")
      * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
      */
-    private $gripScale;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $computer;
+    private $gripScale = 1;
 
     public function getId(): ?int
     {
@@ -271,54 +271,6 @@ class ItemTool
         return $this;
     }
 
-    public function getGripX(): ?float
-    {
-        return $this->gripX;
-    }
-
-    public function setGripX(float $gripX): self
-    {
-        $this->gripX = $gripX;
-
-        return $this;
-    }
-
-    public function getGripY(): ?float
-    {
-        return $this->gripY;
-    }
-
-    public function setGripY(float $gripY): self
-    {
-        $this->gripY = $gripY;
-
-        return $this;
-    }
-
-    public function getGripAngle(): ?int
-    {
-        return $this->gripAngle;
-    }
-
-    public function setGripAngle(int $gripAngle): self
-    {
-        $this->gripAngle = $gripAngle;
-
-        return $this;
-    }
-
-    public function getGripScale(): ?float
-    {
-        return $this->gripScale;
-    }
-
-    public function setGripScale(float $gripScale): self
-    {
-        $this->gripScale = $gripScale;
-
-        return $this;
-    }
-
     public function getMusic(): int
     {
         return $this->music;
@@ -339,6 +291,66 @@ class ItemTool
     public function setSmithing(int $smithing): self
     {
         $this->smithing = $smithing;
+
+        return $this;
+    }
+
+    public function getComputer(): ?int
+    {
+        return $this->computer;
+    }
+
+    public function setComputer(int $computer): self
+    {
+        $this->computer = $computer;
+
+        return $this;
+    }
+
+    public function getGripX(): float
+    {
+        return $this->gripX;
+    }
+
+    public function setGripX(float $gripX): self
+    {
+        $this->gripX = $gripX;
+
+        return $this;
+    }
+
+    public function getGripY(): float
+    {
+        return $this->gripY;
+    }
+
+    public function setGripY(float $gripY): self
+    {
+        $this->gripY = $gripY;
+
+        return $this;
+    }
+
+    public function getGripAngle(): int
+    {
+        return $this->gripAngle;
+    }
+
+    public function setGripAngle(int $gripAngle): self
+    {
+        $this->gripAngle = $gripAngle;
+
+        return $this;
+    }
+
+    public function getGripScale(): float
+    {
+        return $this->gripScale;
+    }
+
+    public function setGripScale(float $gripScale): self
+    {
+        $this->gripScale = $gripScale;
 
         return $this;
     }
@@ -383,17 +395,4 @@ class ItemTool
         else
             return null;
     }
-
-    public function getComputer(): ?int
-    {
-        return $this->computer;
-    }
-
-    public function setComputer(int $computer): self
-    {
-        $this->computer = $computer;
-
-        return $this;
-    }
-
 }

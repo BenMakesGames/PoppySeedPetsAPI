@@ -163,7 +163,12 @@ class InventoryController extends PsyPetsController
             throw new UnprocessableEntityHttpException('Some of the items could not be found??');
 
         foreach($inventory as $i)
+        {
+            if($i->getItem()->hasUseAction('bug/#/putOutside'))
+                $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_PUT_OUTSIDE);
+
             $em->remove($i);
+        }
 
         $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_THROWN_AWAY, count($inventory));
 

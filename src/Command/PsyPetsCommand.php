@@ -41,12 +41,29 @@ abstract class PsyPetsCommand extends Command
 
         $question->setValidator(function($answer) use($constraint) {
             if((int)$answer != $answer)
-                throw new \RuntimeException('Must be a number.');
+                throw new \RuntimeException('Must be an integer.');
 
             if($constraint && !$constraint((int)$answer))
                 throw new \RuntimeException('Number is out of range.');
 
             return (int)$answer;
+        });
+
+        return $this->ask($question);
+    }
+
+    protected function askFloat(string $prompt, float $defaultValue, callable $constraint = null): int
+    {
+        $question = new Question($prompt . ' (' . $defaultValue . ') ', $defaultValue);
+
+        $question->setValidator(function($answer) use($constraint) {
+            if((float)$answer != $answer)
+                throw new \RuntimeException('Must be a real number.');
+
+            if($constraint && !$constraint((float)$answer))
+                throw new \RuntimeException('Number is out of range.');
+
+            return (float)$answer;
         });
 
         return $this->ask($question);

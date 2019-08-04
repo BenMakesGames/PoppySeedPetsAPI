@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Entity\Item;
 use App\Entity\ItemFood;
+use App\Entity\ItemTool;
 use App\Enum\FlavorEnum;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -52,7 +53,9 @@ class UpsertItemCommand extends PsyPetsCommand
 
         $this->name($item, $name);
         $this->image($item);
+        $this->elements($item);
         $this->food($item);
+        $this->tool($item);
 
         $this->em->flush();
     }
@@ -120,5 +123,49 @@ class UpsertItemCommand extends PsyPetsCommand
 
             $item->setFood(null);
         }
+    }
+
+    private function tool(Item $item)
+    {
+        $equipable = $item->getTool() !== null;
+
+        $equipable = $this->confirm('Is it equipable?', $equipable);
+
+        if($equipable)
+        {
+            if($item->getTool() !== null)
+                $tool = $item->getTool();
+            else
+            {
+                $tool = new ItemTool();
+                $this->em->persist($tool);
+
+                $item->setTool($tool);
+            }
+
+            $tool->setGripX($this->askFloat('Grip X', $tool->getGripX()));
+            $tool->setGripY($this->askFloat('Grip Y', $tool->getGripY()));
+            $tool->setGripAngle($this->askInt('Grip angle', $tool->getGripAngle()));
+            $tool->setGripScale($this->askFloat('Grip scale', $tool->getGripScale()));
+
+            foreach(ItemTool::MODIFIERS as $modifier)
+                $tool->{'set' . $modifier}($this->askInt(ucfirst($modifier) . '', $tool->{'get' . $modifier}()));
+        }
+        else
+        {
+            if($item->getTool())
+                $this->em->remove($item->getTool());
+
+            $item->setTool(null);
+        }
+    }
+
+    private function elements(Item $item)
+    {
+        $item->setEarth($this->askInt('Earth hours', $item->getEarth()));
+        $item->setFire($this->askInt('Fire hours', $item->getFire()));
+        $item->setWater($this->askInt('Water hours', $item->getWater()));
+        $item->setWind($this->askInt('Wind hours', $item->getWind()));
+        $item->setSpirit($this->askInt('Spirit hours', $item->getSpirit()));
     }
 }

@@ -53,6 +53,7 @@ class BugController extends PsyPetsItemController
         $em->remove($inventory);
 
         $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_PUT_OUTSIDE);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_THROWN_AWAY);
 
         $em->flush();
 

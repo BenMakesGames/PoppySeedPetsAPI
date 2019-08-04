@@ -54,6 +54,31 @@ class Item
      */
     private $food;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $earth = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $water = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $fire = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $wind = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $spirit = 0;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -140,6 +165,66 @@ class Item
     public function setFood(?ItemFood $food): self
     {
         $this->food = $food;
+
+        return $this;
+    }
+
+    public function getEarth(): ?int
+    {
+        return $this->earth;
+    }
+
+    public function setEarth(int $earth): self
+    {
+        $this->earth = $earth;
+
+        return $this;
+    }
+
+    public function getWater(): ?int
+    {
+        return $this->water;
+    }
+
+    public function setWater(int $water): self
+    {
+        $this->water = $water;
+
+        return $this;
+    }
+
+    public function getFire(): ?int
+    {
+        return $this->fire;
+    }
+
+    public function setFire(int $fire): self
+    {
+        $this->fire = $fire;
+
+        return $this;
+    }
+
+    public function getWind(): ?int
+    {
+        return $this->wind;
+    }
+
+    public function setWind(int $wind): self
+    {
+        $this->wind = $wind;
+
+        return $this;
+    }
+
+    public function getSpirit(): ?int
+    {
+        return $this->spirit;
+    }
+
+    public function setSpirit(int $spirit): self
+    {
+        $this->spirit = $spirit;
 
         return $this;
     }
