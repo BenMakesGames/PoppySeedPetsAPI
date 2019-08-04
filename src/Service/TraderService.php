@@ -18,14 +18,18 @@ class TraderService
     private $inventoryService;
     private $userStatsRepository;
 
+    // to count item quantities:
     public const TOO_MANY = [
-        'Fish' => 3,
         'Aging Powder' => 4,
+        'Fish' => 3,
         'Black Tea' => 3,
         'Toadstool' => 2,
-        'Painted Fishing Rod' => 0.6666,
+        'String' => 2,
+        'Onion' => 1.3333,
+        'Egg' => 1.3333,
         'Mermaid Egg' => 1,
-        'Plastic' => 1,
+        'Painted Fishing Rod' => 0.6666,
+        'Fiberglass' => 0.5,
     ];
 
     public const NOT_ENOUGH = [
@@ -37,7 +41,6 @@ class TraderService
         'Iron Ore' => 0.25,
         'Smallish Pumpkin' => 0.5,
         'Cream of Tartar' => 2,
-        'Onion' => 1,
         'Naner' => 1,
         'Quintessence' => 0.15,
         'Plain Yogurt' => 0.6666,
@@ -186,6 +189,9 @@ class TraderService
 
             $offeringQuantity = round($offeringQuantity);
             $askingQuantity = round($askingQuantity);
+
+            if($askingQuantity > 20)
+                continue;
 
             unset($asking[$askingItem]);
             unset($offering[$offeringItem]);
