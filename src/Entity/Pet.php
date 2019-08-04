@@ -5,7 +5,10 @@ namespace App\Entity;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
+use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
+use App\Functions\NumberFunctions;
+use App\Service\PetRelationshipService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -185,11 +188,23 @@ class Pet
      */
     private $parkEventOrder = 0;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\PetRelationship", mappedBy="pet", orphanRemoval=true)
+     */
+    private $petRelationships;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $wouldBangFraction;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
         $this->lastInteracted = (new \DateTimeImmutable())->modify('-3 days');
-        $this->stomachSize = mt_rand(12, 24);
+        $this->stomachSize = mt_rand(16, 30);
+        $this->wouldBangFraction = mt_rand(mt_rand(4, 8), 12);
+        $this->petRelationships = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -221,7 +236,7 @@ class Pet
         return $this;
     }
 
-    public function getTime(): ?int
+    public function getTime(): int
     {
         return $this->time;
     }
@@ -241,7 +256,7 @@ class Pet
         return $this;
     }
 
-    public function getFood(): ?int
+    public function getFood(): int
     {
         return $this->food;
     }
@@ -250,14 +265,16 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        $this->food += min($amount, max(0, $this->getStomachSize() - $this->food - $this->junk));
-
-        if($this->food < -24) $this->food = -24;
+        $this->food = NumberFunctions::constrain(
+            $this->food + $amount,
+            -16,                                            // minimum
+            $this->getStomachSize() - max(0, $this->junk)   // maximum
+        );
 
         return $this;
     }
 
-    public function getSafety(): ?int
+    public function getSafety(): int
     {
         return $this->safety;
     }
@@ -274,9 +291,14 @@ class Pet
 
         if($amount === 0) return $this;
 
-        $this->safety = max(-$this->getMaxSafety(), min($this->safety + $amount, $this->getMaxSafety()));
+        $this->safety = NumberFunctions::constrain($this->safety + $amount, $this->getMinSafety(), $this->getMaxSafety());
 
         return $this;
+    }
+
+    public function getMinSafety(): int
+    {
+        return -16;
     }
 
     public function getMaxSafety(): int
@@ -284,7 +306,7 @@ class Pet
         return 24;
     }
 
-    public function getLove(): ?int
+    public function getLove(): int
     {
         return $this->love;
     }
@@ -302,9 +324,14 @@ class Pet
 
         if($amount === 0) return $this;
 
-        $this->love = max(-$this->getMaxLove(), min($this->love + $amount, $this->getMaxLove()));
+        $this->love = NumberFunctions::constrain($this->love + $amount, $this->getMinLove(), $this->getMaxLove());
 
         return $this;
+    }
+
+    public function getMinLove(): int
+    {
+        return -16;
     }
 
     public function getMaxLove(): int
@@ -312,7 +339,7 @@ class Pet
         return 24;
     }
 
-    public function getEsteem(): ?int
+    public function getEsteem(): int
     {
         return $this->esteem;
     }
@@ -331,9 +358,14 @@ class Pet
 
         if($amount === 0) return $this;
 
-        $this->esteem = max(-$this->getMaxEsteem(), min($this->esteem + $amount, $this->getMaxEsteem()));
+        $this->esteem = NumberFunctions::constrain($this->esteem + $amount, $this->getMinEsteem(), $this->getMaxEsteem());
 
         return $this;
+    }
+
+    public function getMinEsteem(): int
+    {
+        return -16;
     }
 
     public function getMaxEsteem(): int
@@ -341,7 +373,7 @@ class Pet
         return 24;
     }
 
-    public function getExperience(): ?int
+    public function getExperience(): int
     {
         return $this->experience;
     }
@@ -384,7 +416,7 @@ class Pet
         return $this;
     }
 
-    public function getJunk(): ?int
+    public function getJunk(): int
     {
         return $this->junk;
     }
@@ -393,14 +425,12 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        $this->junk +=  min($amount, max(0, $this->getStomachSize() - $this->food - $this->junk));
-
-        if($this->junk < 0) $this->junk = 0;
+        $this->junk += NumberFunctions::constrain($this->junk + $amount, 0, $this->getStomachSize() - max(0, $this->food));
 
         return $this;
     }
 
-    public function getWhack(): ?int
+    public function getWhack(): int
     {
         return $this->whack;
     }
@@ -409,7 +439,7 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        $this->whack = max(0, min($this->whack + $amount, $this->getStomachSize()));
+        $this->whack = NumberFunctions::constrain($this->whack + $amount, -16, 16);
 
         return $this;
     }
@@ -509,10 +539,10 @@ class Pet
 
     public function getStomachSize(): int
     {
-        return $this->stomachSize + $this->hasMerit(MeritEnum::LARGE_STOMACH) ? 12 : 0;
+        return $this->stomachSize + $this->hasMerit(MeritEnum::LARGE_STOMACH) ? 6 : 0;
     }
 
-    public function getLastInteracted(): ?\DateTimeImmutable
+    public function getLastInteracted(): \DateTimeImmutable
     {
         return $this->lastInteracted;
     }
@@ -799,5 +829,60 @@ class Pet
         $this->parkEventOrder = mt_rand(0, 2147483647);
 
         return $this;
+    }
+
+    /**
+     * @return Collection|PetRelationship[]
+     */
+    public function getPetRelationships(): Collection
+    {
+        return $this->petRelationships;
+    }
+
+    public function addPetRelationship(PetRelationship $petRelationship): self
+    {
+        if (!$this->petRelationships->contains($petRelationship)) {
+            $this->petRelationships[] = $petRelationship;
+            $petRelationship->setPet($this);
+        }
+
+        return $this;
+    }
+
+    public function removePetRelationship(PetRelationship $petRelationship): self
+    {
+        if ($this->petRelationships->contains($petRelationship)) {
+            $this->petRelationships->removeElement($petRelationship);
+            // set the owning side to null (unless already changed)
+            if ($petRelationship->getPet() === $this) {
+                $petRelationship->setPet(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function hasRelationshipWith(Pet $otherPet): bool
+    {
+        return ArrayFunctions::any($this->getPetRelationships(), function(PetRelationship $r) use($otherPet) {
+            return $r->getRelationship()->getId() === $otherPet->getId();
+        });
+    }
+
+    public function getWouldBangFraction(): ?int
+    {
+        return $this->wouldBangFraction;
+    }
+
+    public function setWouldBangFraction(int $wouldBangFraction): self
+    {
+        $this->wouldBangFraction = $wouldBangFraction;
+
+        return $this;
+    }
+
+    public function wouldBang(Pet $otherPet): int
+    {
+        return ($this->getId() * 127 + $otherPet->getId() * 31 - 157) % $this->wouldBangFraction === 0;
     }
 }

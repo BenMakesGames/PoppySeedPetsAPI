@@ -11,6 +11,7 @@ use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\KinBallTeam;
 use App\Model\PetChanges;
+use App\Service\PetRelationshipService;
 use App\Service\PetService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -38,11 +39,13 @@ class KinBallService implements ParkEventInterface
 
     private $petService;
     private $em;
+    private $petRelationshipService;
 
-    public function __construct(PetService $petService, EntityManagerInterface $em)
+    public function __construct(PetService $petService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService)
     {
         $this->petService = $petService;
         $this->em = $em;
+        $this->petRelationshipService = $petRelationshipService;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -111,6 +114,15 @@ class KinBallService implements ParkEventInterface
         $this->awardExp();
 
         $parkEvent->setResults($this->results);
+
+        // finally, give pets a chance to meet each other:
+        foreach($this->teams as $team)
+        {
+            $teamMembers = array_map(function(KinBallParticipant $p) { return $p->pet; }, $team->pets);
+            $this->petRelationshipService->groupGathering($teamMembers, 2);
+        }
+
+        $this->petRelationshipService->groupGathering($pets, 3);
 
         return $parkEvent;
     }

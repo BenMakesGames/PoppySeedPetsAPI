@@ -8,6 +8,7 @@ use App\Enum\ParkEventTypeEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\ParkEvent\TriDChessParticipant;
 use App\Model\PetChanges;
+use App\Service\PetRelationshipService;
 use App\Service\PetService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -26,11 +27,13 @@ class TriDChessService implements ParkEventInterface
 
     private $petService;
     private $em;
+    private $petRelationshipService;
 
-    public function __construct(PetService $petService, EntityManagerInterface $em)
+    public function __construct(PetService $petService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService)
     {
         $this->petService = $petService;
         $this->em = $em;
+        $this->petRelationshipService = $petRelationshipService;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -61,6 +64,8 @@ class TriDChessService implements ParkEventInterface
         }
 
         $this->awardExp();
+
+        $this->petRelationshipService->groupGathering($pets, 2);
 
         return (new ParkEvent())
             ->setType(ParkEventTypeEnum::TRI_D_CHESS)
@@ -126,6 +131,8 @@ class TriDChessService implements ParkEventInterface
                 $p1Health -= $p2Attack;
             }
         }
+
+        $this->petRelationshipService->seeAtGroupGathering($p1->pet, $p2->pet, 3);
 
         if($p1Health <= -5)
         {
