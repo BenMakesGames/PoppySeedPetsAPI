@@ -203,7 +203,7 @@ class Pet
         $this->birthDate = new \DateTimeImmutable();
         $this->lastInteracted = (new \DateTimeImmutable())->modify('-3 days');
         $this->stomachSize = mt_rand(16, 30);
-        $this->wouldBangFraction = mt_rand(mt_rand(4, 8), 12);
+        $this->wouldBangFraction = mt_rand(mt_rand(4, 8), 10);
         $this->petRelationships = new ArrayCollection();
     }
 
@@ -883,6 +883,17 @@ class Pet
 
     public function wouldBang(Pet $otherPet): int
     {
-        return ($this->getId() * 127 + $otherPet->getId() * 31 - 157) % $this->wouldBangFraction === 0;
+        // a pet "would bang" another pet if:
+        return
+            // straight-up 1 in every 12-30 pets, averaging 1 in 24
+            $this->getId() * 197 % ($this->wouldBangFraction * 3) === 0 ||
+            (
+                // 1 in every 2-5, averaging 1 in 4
+                ($this->getId() * 127 + $otherPet->getId() * 31 - 157) % ceil($this->wouldBangFraction / 2) === 0 &&
+                // AND 1 in every 2-5, averaging 1 in 4
+                // (since this is an "and", the total odds are 1 in every 4-25, averaging 1 in 16)
+                ($otherPet->getId() * 127 + $this->getId() * 31 - 157) % ceil($otherPet->getWouldBangFraction() / 2) === 0
+            )
+        ;
     }
 }

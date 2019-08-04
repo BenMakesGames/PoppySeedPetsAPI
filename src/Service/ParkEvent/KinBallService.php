@@ -119,10 +119,10 @@ class KinBallService implements ParkEventInterface
         foreach($this->teams as $team)
         {
             $teamMembers = array_map(function(KinBallParticipant $p) { return $p->pet; }, $team->pets);
-            $this->petRelationshipService->groupGathering($teamMembers, 2);
+            $this->petRelationshipService->groupGathering($teamMembers, 'at a game of Kin-Ball', 2);
         }
 
-        $this->petRelationshipService->groupGathering($pets, 3);
+        $this->petRelationshipService->groupGathering($pets, 'at a game of Kin-Ball', 3);
 
         return $parkEvent;
     }
