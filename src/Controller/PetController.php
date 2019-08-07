@@ -37,11 +37,21 @@ class PetController extends PsyPetsController
     /**
      * @Route("/{pet}", methods={"GET"}, requirements={"pet"="\d+"})
      */
-    public function profile(
-        Pet $pet, ResponseService $responseService
-    )
+    public function profile(Pet $pet, ResponseService $responseService)
     {
         return $responseService->success($pet, SerializationGroupEnum::PET_PUBLIC_PROFILE);
+    }
+
+    /**
+     * @Route("/{pet}/friends", methods={"GET"}, requirements={"pet"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getPetFriends(Pet $pet, ResponseService $responseService)
+    {
+        if($pet->getOwner()->getId() !== $this->getUser()->getId())
+            throw new AccessDeniedHttpException('This isn\'t your pet.');
+
+        return $responseService->success($pet->getPetRelationships(), SerializationGroupEnum::PET_FRIEND);
     }
 
     /**

@@ -320,7 +320,7 @@ class PetService
         else if($pet->getEsteem() < 0 && mt_rand(1, 2) === 1)
             $pet->increaseEsteem(1);
 
-        if($pet->getWhack() > 0 || $pet->getJunk() > 0)
+        if($pet->getWhack() > 0)
         {
             if($this->calculateAgeInDays($pet) > 365 * 2)
             {
@@ -347,16 +347,18 @@ class PetService
                 $maxWhack = 6;
             }
 
-            if($this->randomService->roll($minWhack, $maxWhack) < $pet->getWhack() + $pet->getJunk() / 2)
+            if($this->randomService->roll($minWhack, $maxWhack) < $pet->getWhack())
             {
                 $changes = new PetChanges($pet);
 
-                $pet->increaseWhack(-mt_rand(1, max(1, $pet->getWhack() / 2)));
-                $pet->increaseJunk(-mt_rand(1, max(1, $pet->getJunk() / 2)));
-                $pet->increaseFood(-mt_rand(1, max(1, $pet->getFood() / 2)));
+                $pet->increaseWhack(-round(-mt_rand(1, max(1, $pet->getWhack() / 2))));
+                $pet->increaseJunk(-round(mt_rand(1, max(1, $pet->getJunk() / 2))));
 
-                $pet->increaseSafety(-round(mt_rand(1, max(1, $pet->getWhack() + $pet->getJunk()) / 2)));
-                $pet->increaseEsteem(-round(mt_rand(1, max(1, $pet->getWhack() + $pet->getJunk()) / 2)));
+                if($pet->getFood() > 0)
+                    $pet->increaseFood(-round(mt_rand(1, max(1, $pet->getFood() / 2))));
+
+                $pet->increaseSafety(-round(mt_rand(1, max(1, $pet->getWhack() / 2))));
+                $pet->increaseEsteem(-round(mt_rand(1, max(1, $pet->getWhack() / 2))));
 
                 $pet->spendTime(\mt_rand(15, 45));
 

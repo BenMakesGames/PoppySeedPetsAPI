@@ -33,7 +33,7 @@ class SandDollarController extends PsyPetsItemController
         if(mt_rand(1, 10) === 1)
         {
             $inventoryService->receiveItem('String', $user, $user, $user->getName() . ' found this inside a Sand Dollar.');
-            $message = 'You rummage around inside the Sand Dollar. There was 1 dollar - er, I mean, moneys - and also a bit of sand - er, I mean, Silica Grounds - and oh! What\'s this? Oh, it\'s a soggy bit of String. Well, it\'ll dry out, eventually.';
+            $message = 'You rummage around inside the Sand Dollar. There was 1 dollar - er, I mean, moneys - and also a bit of sand - er, I mean, Silica Grounds - and oh! What\'s this? Oh, it\'s a soggy bit of String. Well, it\'ll dry out.';
         }
         else if(mt_rand(1, 10) === 1)
         {

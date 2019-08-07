@@ -27,7 +27,7 @@ class Pet
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent", "petFriend"})
      */
     private $id;
 
@@ -39,7 +39,7 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "petShelterPet", "parkEvent"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "petShelterPet", "parkEvent", "petFriend"})
      */
     private $name;
 
@@ -75,13 +75,13 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "parkEvent"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend"})
      */
     private $colorA;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "parkEvent"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend"})
      */
     private $colorB;
 
@@ -120,7 +120,7 @@ class Pet
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\PetSpecies")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "parkEvent"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend"})
      */
     private $species;
 
@@ -425,7 +425,7 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        $this->junk += NumberFunctions::constrain($this->junk + $amount, 0, $this->getStomachSize() - max(0, $this->food));
+        $this->junk = NumberFunctions::constrain($this->junk + $amount, 0, $this->getStomachSize() - max(0, $this->food));
 
         return $this;
     }
@@ -860,6 +860,14 @@ class Pet
         }
 
         return $this;
+    }
+
+    /**
+     * @Groups({"myPet"})
+     */
+    public function getHasRelationships(): bool
+    {
+        return count($this->petRelationships) > 0;
     }
 
     public function hasRelationshipWith(Pet $otherPet): bool

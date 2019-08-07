@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
+use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PetRelationshipRepository")
@@ -26,31 +28,34 @@ class PetRelationship
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Pet")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"petFriend"})
      */
     private $relationship;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $intimacy;
+    private $intimacy = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $passion;
+    private $passion = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $commitment;
+    private $commitment = 0;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"petFriend"})
      */
     private $metDescription;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"petFriend"})
      */
     private $metOn;
 
@@ -139,5 +144,36 @@ class PetRelationship
     public function getMetOn(): \DateTimeImmutable
     {
         return $this->metOn;
+    }
+
+    /**
+     * @Groups({"petFriend"})
+     */
+    public function getSummary(): string
+    {
+        $descriptions = array();
+
+        if($this->getPassion() >= 750)
+            $descriptions[] = 'hot';
+        else if($this->getPassion() >= 500)
+            $descriptions[] = 'attractive';
+        else if($this->getPassion() >= 250)
+            $descriptions[] = 'cute';
+
+        if($this->getIntimacy() >= 750)
+            $descriptions[] = 'best friend';
+        else if($this->getIntimacy() >= 500)
+            $descriptions[] = 'awesome';
+        else if($this->getIntimacy() >= 250)
+            $descriptions[] = 'fun';
+
+        if($this->getCommitment() >= 750)
+            $descriptions[] = 'irreplaceable';
+        else if($this->getCommitment() >= 500)
+            $descriptions[] = 'greatly valued';
+        else if($this->getCommitment() >= 250)
+            $descriptions[] = 'valued';
+
+        return ArrayFunctions::list_nice($descriptions);
     }
 }

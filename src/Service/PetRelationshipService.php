@@ -78,13 +78,14 @@ class PetRelationshipService
                 ->setPet($pet)
                 ->setRelationship($otherPet)
                 ->setMetDescription('Met ' . $howMet . '.')
-                ->increaseIntimacy(mt_rand(50, 100))
+                ->increaseIntimacy(250)
+                ->increaseCommitment(50)
             ;
 
             if($pet->wouldBang($otherPet))
             {
                 $relationship
-                    ->increasePassion(mt_rand(50, mt_rand(100, 200)))
+                    ->increasePassion(mt_rand(250 + $pet->getWouldBangFraction() * 5, 600 + $pet->getWouldBangFraction() * 20))
                     ->increaseIntimacy(mt_rand(10, 20) + $pet->getWouldBangFraction() * 2)
                     ->increaseCommitment(mt_rand(0, 10) + $pet->getWouldBangFraction() * 4)
                 ;
@@ -132,6 +133,10 @@ class PetRelationshipService
 
     public function meetOtherPetPrivately(PetRelationship $p1, PetRelationship $p2)
     {
+        // TODO: each pet decides on a couple goals of the hang-out
+        // overlap boosts relevant stats?
+        // disagreement causes a loss?
+
         // effects for pet 1
         $p1
             ->increaseCommitment(mt_rand(20, 40))   // they're hanging out, so there's commitment
