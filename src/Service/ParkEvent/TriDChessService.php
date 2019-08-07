@@ -16,6 +16,8 @@ class TriDChessService implements ParkEventInterface
 {
     /** @var TriDChessParticipant[] */
     private $participants;
+
+    /** @var TriDChessParticipant[] */
     private $winners;
 
     private $wins = [];
@@ -184,7 +186,7 @@ class TriDChessService implements ParkEventInterface
 
         $moneys = ceil($skillTotal * $this->round / 12);
 
-        $this->results .= '**' . $this->participants[0]->pet->getName() . ' wins the tournament, and ' . $moneys . '~~m~~!**';
+        $this->results .= '**' . $this->winners[0]->pet->getName() . ' wins the tournament, and ' . $moneys . '~~m~~!**';
 
         foreach($this->participants as $participant)
         {
