@@ -351,7 +351,7 @@ class PetService
             {
                 $changes = new PetChanges($pet);
 
-                $pet->increaseWhack(-round(-mt_rand(1, max(1, $pet->getWhack() / 2))));
+                $pet->increaseWhack(-round(mt_rand(1, max(1, $pet->getWhack() / 2))));
                 $pet->increaseJunk(-round(mt_rand(1, max(1, $pet->getJunk() / 2))));
 
                 if($pet->getFood() > 0)
