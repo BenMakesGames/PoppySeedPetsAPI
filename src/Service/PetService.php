@@ -351,14 +351,15 @@ class PetService
             {
                 $changes = new PetChanges($pet);
 
-                $pet->increaseWhack(-round(mt_rand(1, max(1, $pet->getWhack() / 2))));
-                $pet->increaseJunk(-round(mt_rand(1, max(1, $pet->getJunk() / 2))));
+                $halfWhack = ceil($pet->getWhack() / 2);
+                $quarterWhack = ceil($pet->getWhack() / 4);
 
-                if($pet->getFood() > 0)
-                    $pet->increaseFood(-round(mt_rand(1, max(1, $pet->getFood() / 2))));
+                $pet->increaseWhack(-mt_rand(1, $halfWhack));
+                if($pet->getJunk() > 0) $pet->increaseJunk(-mt_rand(1, ceil($pet->getJunk() / 2)));
+                if($pet->getFood() > 0) $pet->increaseFood(-mt_rand(1, ceil($pet->getFood() / 2)));
 
-                $pet->increaseSafety(-round(mt_rand(1, max(1, $pet->getWhack() / 2))));
-                $pet->increaseEsteem(-round(mt_rand(1, max(1, $pet->getWhack() / 2))));
+                $pet->increaseSafety(-mt_rand(1, $quarterWhack));
+                $pet->increaseEsteem(-mt_rand(1, $quarterWhack));
 
                 $pet->spendTime(\mt_rand(15, 45));
 
