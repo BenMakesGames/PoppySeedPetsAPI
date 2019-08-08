@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Repository\PetRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class HouseService
@@ -12,12 +13,16 @@ class HouseService
     private $petService;
     private $petRepository;
     private $cache;
+    private $em;
 
-    public function __construct(PetService $petService, PetRepository $petRepository, AdapterInterface $cache)
+    public function __construct(
+        PetService $petService, PetRepository $petRepository, AdapterInterface $cache, EntityManagerInterface $em
+    )
     {
         $this->petService = $petService;
         $this->petRepository = $petRepository;
         $this->cache = $cache;
+        $this->em = $em;
     }
 
     public function run(User $user)
@@ -47,6 +52,8 @@ class HouseService
                     if($petsWithTime[$i]->getTime() >= 60)
                     {
                         $this->petService->runHour($petsWithTime[$i]);
+
+                        $this->em->flush();
 
                         if($petsWithTime[$i]->getTime() < 60)
                             unset($petsWithTime[$i]);
