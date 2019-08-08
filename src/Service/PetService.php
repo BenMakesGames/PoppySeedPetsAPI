@@ -27,6 +27,7 @@ class PetService
     private $em;
     private $randomService;
     private $responseService;
+    private $petRelationshipService;
     private $fishingService;
     private $huntingService;
     private $gatheringService;
@@ -40,6 +41,7 @@ class PetService
 
     public function __construct(
         EntityManagerInterface $em, RandomService $randomService, ResponseService $responseService,
+        PetRelationshipService $petRelationshipService,
         FishingService $fishingService, HuntingService $huntingService, GatheringService $gatheringService,
         CraftingService $craftingService, UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
         TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService,
@@ -49,6 +51,7 @@ class PetService
         $this->em = $em;
         $this->randomService = $randomService;
         $this->responseService = $responseService;
+        $this->petRelationshipService = $petRelationshipService;
         $this->fishingService = $fishingService;
         $this->huntingService = $huntingService;
         $this->gatheringService = $gatheringService;
@@ -376,6 +379,12 @@ class PetService
 
         }
 
+        if($this->meetRoommates($pet))
+        {
+            $pet->spendTime(\mt_rand(45, 60));
+            return;
+        }
+
         $itemsInHouse = (int)$this->inventoryRepository->createQueryBuilder('i')
             ->select('COUNT(i.id)')
             ->andWhere('i.owner=:user')
@@ -454,6 +463,31 @@ class PetService
             case 'hack': $this->protocol7Service->adventure($pet); break;
             default: $this->doNothing($pet); break;
         }
+    }
+
+    private function meetRoommates(Pet $pet): bool
+    {
+        /** @var Pet[] $otherPets */
+        $otherPets = $pet->getOwner()->getPets()->filter(function(Pet $p) use($pet) { return $p->getId() !== $pet->getId(); });
+
+        $metNewPet = false;
+
+        foreach($otherPets as $otherPet)
+        {
+            if(!$pet->hasRelationshipWith($otherPet))
+            {
+                $metNewPet = true;
+                $this->petRelationshipService->meetRoommate($pet, $otherPet);
+            }
+
+            if(!$otherPet->hasRelationshipWith($pet))
+            {
+                $metNewPet = true;
+                $this->petRelationshipService->meetRoommate($otherPet, $pet);
+            }
+        }
+
+        return $metNewPet;
     }
 
     private function doNothing(Pet $pet)

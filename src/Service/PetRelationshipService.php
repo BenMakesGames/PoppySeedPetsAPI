@@ -65,6 +65,73 @@ class PetRelationshipService
 
     }
 
+    public function meetRoommate(Pet $pet, Pet $otherPet)
+    {
+        $relationship = $this->petRelationshipRepository->findOneBy([
+            'pet' => $pet->getId(),
+            'relationship' => $otherPet->getId()
+        ]);
+
+        if($relationship === null)
+        {
+            $relationship = (new PetRelationship())
+                ->setPet($pet)
+                ->setRelationship($otherPet)
+                ->setMetDescription('Are living together.')
+                ->increaseIntimacy(mt_rand(100, 200))
+                ->increaseCommitment(mt_rand(200, 350))
+            ;
+
+            if($pet->wouldBang($otherPet))
+            {
+                $relationship
+                    ->increasePassion(mt_rand(250 + $pet->getWouldBangFraction() * 5, 600 + $pet->getWouldBangFraction() * 20))
+                    ->increaseIntimacy(mt_rand(10, 20) + $pet->getWouldBangFraction() * 2)
+                    ->increaseCommitment(mt_rand(0, 10) + $pet->getWouldBangFraction() * 4)
+                ;
+
+                $this->responseService->createActivityLog($pet, $pet->getName() . ' met ' . $otherPet->getName() . '. (And what a cutie!)', 'icons/activity-log/friend-cute');
+            }
+            else
+            {
+                $this->responseService->createActivityLog($pet, $pet->getName() . ' met ' . $otherPet->getName() . '.', 'icons/activity-log/friend');
+            }
+
+            $pet
+                ->increaseSafety(2)
+                ->increaseLove(4)
+                ->increaseEsteem(2)
+            ;
+
+            $this->em->persist($relationship);
+        }
+        else
+        {
+            $relationship
+                ->increaseCommitment(mt_rand(150, 300) + mt_rand(10, 20))
+                ->increaseIntimacy(mt_rand(10, 20))
+            ;
+
+            $pet
+                ->increaseSafety(2)
+                ->increaseLove(4)
+                ->increaseEsteem(2)
+            ;
+
+            if($pet->wouldBang($otherPet))
+                $relationship->increasePassion(mt_rand(5, 15));     // averages 10
+            else if($relationship->getPassion() > 100)
+                $relationship->increasePassion(mt_rand(1, 9));      // averages 5
+            else if(mt_rand(1, $pet->getWouldBangFraction() * 5) === 1 || $relationship->getPassion() > 0)
+                $relationship->increasePassion(mt_rand(1, 3));      // averages 2
+
+            $this->responseService->createActivityLog($pet, $pet->getName() . ' and ' . $otherPet->getName() . ' are living together, now! What a surprise!', 'icons/activity-log/friend');
+        }
+
+        return $relationship;
+
+    }
+
     public function meetOtherPetAtGroupGathering(Pet $pet, Pet $otherPet, string $howMet)
     {
         $relationship = $this->petRelationshipRepository->findOneBy([
