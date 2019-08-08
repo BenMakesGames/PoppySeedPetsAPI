@@ -279,7 +279,7 @@ class HuntingService
         }
         else if(\mt_rand(1, $dexSkill) >= 9)
         {
-            $this->petService->gainExp($pet, 2, [ [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::BRAWL ] ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::BRAWL ]);
             $pet->increaseEsteem(2);
             $pet->increaseSafety(2);
 
