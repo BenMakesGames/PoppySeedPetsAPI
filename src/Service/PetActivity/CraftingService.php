@@ -83,6 +83,12 @@ class CraftingService
 
             if(array_key_exists('Talon', $quantities) && array_key_exists('String', $quantities))
                 $possibilities[] = [ $this, 'createHuntingSpear' ];
+
+            if(array_key_exists('Hunting Spear', $quantities) && array_key_exists('String', $quantities))
+                $possibilities[] = [ $this, 'createVeryLongSpear' ];
+
+            if(array_key_exists('Overly-long Spear', $quantities) && array_key_exists('String', $quantities))
+                $possibilities[] = [ $this, 'createRidiculouslyLongSpear' ];
         }
 
         if(array_key_exists('Glue', $quantities) && array_key_exists('White Cloth', $quantities))
@@ -552,6 +558,84 @@ class CraftingService
             $pet->spendTime(\mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Hunting Spear, but couldn\'t quite figure it out.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createVeryLongSpear(Pet $pet)
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + \max($pet->getCrafts(), $pet->getBrawl()));
+
+        if($roll <= 3)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            if(\mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extend a Hunting Spear, but broke the String :(', 'icons/activity-logs/broke-string');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extend a Hunting Spear, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
+            }
+        }
+        else if($roll >= 14)
+        {
+            $pet->spendTime(\mt_rand(45, 60));
+            $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Hunting Spear', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created an Overly-long Spear.', '');
+            return $this->inventoryService->petCollectsItem('Overly-long Spear', $pet, $pet->getName() . ' created this.', $activityLog);
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extend a Hunting Spear, but couldn\'t quite figure it out.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createRidiculouslyLongSpear(Pet $pet)
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + \max($pet->getCrafts(), $pet->getBrawl()));
+
+        if($roll <= 3)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            if(\mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extend an Overly-long Spear, but broke the String :(', 'icons/activity-logs/broke-string');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extend an Overly-long Spear, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
+            }
+        }
+        else if($roll >= 16)
+        {
+            $pet->spendTime(\mt_rand(45, 60));
+            $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Overly-long Spear', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a - like - CRAZY-long Spear. It\'s really rather silly.', '');
+            return $this->inventoryService->petCollectsItem('This is Getting Ridiculous', $pet, $pet->getName() . ' created this.', $activityLog);
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' considered extending an Overly-long Spear, but then thought that maybe that was going a bit overboard.', 'icons/activity-logs/confused');
         }
     }
 

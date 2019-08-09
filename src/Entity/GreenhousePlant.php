@@ -22,7 +22,7 @@ class GreenhousePlant
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Item")
+     * @ORM\ManyToOne(targetEntity="App\Entity\ItemPlant")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"greenhousePlant"})
      */
@@ -55,12 +55,12 @@ class GreenhousePlant
         return $this->id;
     }
 
-    public function getPlant(): ?Item
+    public function getPlant(): ?ItemPlant
     {
         return $this->plant;
     }
 
-    public function setPlant(?Item $plant): self
+    public function setPlant(ItemPlant $plant): self
     {
         $this->plant = $plant;
 

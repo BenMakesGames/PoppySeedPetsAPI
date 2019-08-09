@@ -152,6 +152,7 @@ class TraderService
             ];
         }
 
+        /*
         if($dayOfTheYear % 3 === 0 || $leapDay)
         {
             $offers[] = [
@@ -165,6 +166,7 @@ class TraderService
                 'comment' => 'Oh, cool! Have fun with that!'
             ];
         }
+        */
 
         if($leapDay)
         {

@@ -90,7 +90,12 @@ class Item
     /**
      * @ORM\Column(type="boolean")
      */
-    private $nonTransferable;
+    private $nonTransferable = false;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\ItemPlant", inversedBy="item", cascade={"persist", "remove"})
+     */
+    private $plant;
 
     public function getId(): ?int
     {
@@ -262,6 +267,18 @@ class Item
     public function setNonTransferable(bool $nonTransferable): self
     {
         $this->nonTransferable = $nonTransferable;
+
+        return $this;
+    }
+
+    public function getPlant(): ?ItemPlant
+    {
+        return $this->plant;
+    }
+
+    public function setPlant(?ItemPlant $plant): self
+    {
+        $this->plant = $plant;
 
         return $this;
     }

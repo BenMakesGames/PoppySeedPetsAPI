@@ -52,7 +52,7 @@ abstract class PsyPetsCommand extends Command
         return $this->ask($question);
     }
 
-    protected function askFloat(string $prompt, float $defaultValue, callable $constraint = null): int
+    protected function askFloat(string $prompt, float $defaultValue, callable $constraint = null): float
     {
         $question = new Question($prompt . ' (' . $defaultValue . ') ', $defaultValue);
 
