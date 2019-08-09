@@ -117,6 +117,13 @@ class ItemTool
     private $gripAngle = 0;
 
     /**
+     * A fixed grip angle means that the item will ALWAYS be rendered at this angle, regardless of the attributes of the pet that holds it
+     * @ORM\Column(type="boolean")
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
+     */
+    private $gripAngleFixed = false;
+
+    /**
      * @ORM\Column(type="float")
      * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
      */
@@ -339,6 +346,18 @@ class ItemTool
     public function setGripAngle(int $gripAngle): self
     {
         $this->gripAngle = $gripAngle;
+
+        return $this;
+    }
+
+    public function getGripAngleFixed(): bool
+    {
+        return $this->gripAngleFixed;
+    }
+
+    public function setGripAngleFixed(bool $gripAngleFixed): self
+    {
+        $this->gripAngleFixed = $gripAngleFixed;
 
         return $this;
     }

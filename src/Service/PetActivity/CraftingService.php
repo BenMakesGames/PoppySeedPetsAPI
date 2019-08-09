@@ -58,7 +58,7 @@ class CraftingService
         if(array_key_exists('Scales', $quantities))
         {
             if($quantities['Scales']->quantity >= 2)
-                $possibilities[] = [ $this, 'createGreenDyeFromScales' ];
+                $possibilities[] = [ $this, 'extractFromScales' ];
 
             if(array_key_exists('Talon', $quantities) && array_key_exists('Wooden Sword', $quantities))
                 $possibilities[] = [ $this, 'createSnakebite' ];
@@ -84,6 +84,9 @@ class CraftingService
             if(array_key_exists('Talon', $quantities) && array_key_exists('String', $quantities))
                 $possibilities[] = [ $this, 'createHuntingSpear' ];
         }
+
+        if(array_key_exists('Glue', $quantities) && array_key_exists('White Cloth', $quantities))
+            $possibilities[] = [ $this, 'createFabricMache' ];
 
         if(array_key_exists('Hunting Spear', $quantities) && array_key_exists('Feathers', $quantities))
             $possibilities[] = [ $this, 'createDecoratedSpear' ];
@@ -194,15 +197,32 @@ class CraftingService
         }
     }
 
-    private function createGreenDyeFromScales(Pet $pet): PetActivityLog
+    private function extractFromScales(Pet $pet): PetActivityLog
     {
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getNature() + $pet->getCrafts());
+        $itemName = mt_rand(1, 2) === 1 ? 'Green Dye' : 'Glue';
+
         if($roll <= 2)
         {
             $pet->spendTime(\mt_rand(45, 60));
             $this->inventoryService->loseItem('Scales', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extract Green Dye from Scales, but messed it up, ruining the Scales :(', '');
+            return $this->responseService->createActivityLog(
+                $pet,
+                $pet->getName() . ' tried to extract ' . $itemName . ' from Scales, but messed it up, ruining the Scales :(',
+                ''
+            );
+        }
+        else if($roll >= 20)
+        {
+            $pet->spendTime(\mt_rand(60, 90));
+            $this->inventoryService->loseItem('Scales', $pet->getOwner(), 2);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' extracted Green Dye _and_ Glue from some Scales!', 'items/animal/scales');
+            $this->inventoryService->petCollectsItem('Green Dye', $pet, $pet->getName() . ' extracted this from Scales.', $activityLog);
+            $this->inventoryService->petCollectsItem('Glue', $pet, $pet->getName() . ' extracted this from Scales.', $activityLog);
+            return $activityLog;
         }
         else if($roll >= 12)
         {
@@ -210,15 +230,15 @@ class CraftingService
             $this->inventoryService->loseItem('Scales', $pet->getOwner(), 2);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' extracted Green Dye from some Scales.', 'items/resource/dye-green');
-            $this->inventoryService->petCollectsItem('Green Dye', $pet, $pet->getName() . ' extracted this from Scales.', $activityLog);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' extracted ' . $itemName . ' from some Scales.', 'items/resource/scales');
+            $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' extracted this from Scales.', $activityLog);
             return $activityLog;
         }
         else
         {
             $pet->spendTime(\mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to extract Green Dye from some Scales, but wasn\'t sure how to start.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to extract ' . $itemName . ' from some Scales, but wasn\'t sure how to start.', 'icons/activity-logs/confused');
         }
     }
 
@@ -327,6 +347,41 @@ class CraftingService
             $pet->spendTime(\mt_rand(15, 45));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Stereotypical Torch, but couldn\'t figure it out.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createFabricMache(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 2)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->inventoryService->loseItem('Glue', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-2);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make some Fabric Mâché, but messed it all up, ruining the White Cloth and wasting the Glue :(', 'icons/activity-logs/torn-to-bits');
+        }
+        else if($roll >= 14)
+        {
+            $possibleItems = [ 'Fabric Mâché Basket' ];
+            $item = ArrayFunctions::pick_one($possibleItems);
+
+            $pet->spendTime(\mt_rand(60, 75));
+            $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Glue', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a ' . $item . '.', '');
+            $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from White Cloth and Glue.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make some Fabric Mâché, but couldn\'t come up with a good pattern.', 'icons/activity-logs/confused');
         }
     }
 

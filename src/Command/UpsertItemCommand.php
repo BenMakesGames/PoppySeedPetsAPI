@@ -143,10 +143,11 @@ class UpsertItemCommand extends PsyPetsCommand
                 $item->setTool($tool);
             }
 
+            $tool->setGripScale($this->askFloat('Grip scale', $tool->getGripScale()));
             $tool->setGripX($this->askFloat('Grip X', $tool->getGripX()));
             $tool->setGripY($this->askFloat('Grip Y', $tool->getGripY()));
             $tool->setGripAngle($this->askInt('Grip angle', $tool->getGripAngle()));
-            $tool->setGripScale($this->askFloat('Grip scale', $tool->getGripScale()));
+            $tool->setGripAngleFixed($this->confirm('Grip angle fixed?', $tool->getGripAngleFixed()));
 
             foreach(ItemTool::MODIFIERS as $modifier)
                 $tool->{'set' . $modifier}($this->askInt(ucfirst($modifier) . '', $tool->{'get' . $modifier}()));

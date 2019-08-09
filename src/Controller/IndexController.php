@@ -23,9 +23,14 @@ class IndexController extends PsyPetsController
             'thanks' => [
                 'Hector Lee',
                 'Katie Stanonik',
-                'Shirley Farrow',
+                'Mothnox',
                 'pericarditis',
+                'Shirley Farrow',
+                'Tomi',
                 'All my friends in college',
+            ],
+            'madeWith' => [
+                'Symfony', 'PHPStorm', 'existential nihilism', 'absurdism', 'humanism', 'candy'
             ]
         ]);
     }
