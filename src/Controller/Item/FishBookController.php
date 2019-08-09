@@ -1,0 +1,91 @@
+<?php
+namespace App\Controller\Item;
+
+use App\Entity\Inventory;
+use App\Service\ResponseService;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
+/**
+ * @Route("/item/fishBook")
+ */
+class FishBookController extends PsyPetsItemController
+{
+    /**
+     * @Route("/{inventory}/read", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function read(Inventory $inventory, ResponseService $responseService)
+    {
+        $this->validateInventory($inventory, 'fishBook/#/read');
+
+        return $responseService->itemActionSuccess('# Fish Book
+
+## Table of Contents
+
+#### Crafts
+
+* Fishing Rod
+* Painted Fishing Rod
+
+#### Recipes
+
+* Baked Fish Fingers
+* Fermented Fish
+* Gefilte Fish
+* Grilled Fish
+
+## Crafts
+
+Your pets can craft these things, if the materials are available.
+
+For some reason, only pets can make these?
+
+Life as a human truly isn\'t fair.
+
+#### Fishing Rod
+
+1. Attach a bit of String to a Crooked Stick
+1. Somehow, that\'s all it takes! (Where does the hook come from?)
+
+#### Painted Fishing Rod
+
+1. Prepare a palette of Yellow and Green Dye
+1. Alternate painting splotchy patches (technical term!) of green and yellow on the rod
+
+## Recipes
+
+Your can cook these things, if the ingredients are available.
+
+For some reason, only humans can make these?
+
+Life as a pet truly isn\'t fair.
+
+#### Baked Fish Fingers
+
+1. Cut up some Fish into finger sizes
+1. Brush Fish with Egg
+1. Roll Fish in Wheat Flour and crumbs from a Slice of Bread
+1. Bake!
+
+#### Fermented Fish
+
+Just age some Fish with Aging Powder!
+
+An acquired taste!
+
+#### Gefilte Fish
+
+* Carrot
+* Onion
+* Egg
+* Fish
+* Matzah Bread
+* Celery (optional)
+
+#### Grilled Fish
+
+Just grill some Fish with Charcoal!
+');
+    }
+}
