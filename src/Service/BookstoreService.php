@@ -29,14 +29,16 @@ class BookstoreService
 
         $cookedSomething = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => 'Cooked Something' ]);
 
-        if($cookedSomething && $cookedSomething->getValue() >= 5)
+        if($cookedSomething)
         {
-            $bookPrices['Candy-maker\'s Cookbook'] = 20;
-        }
+            if($cookedSomething->getValue() >= 5)
+                $bookPrices['Candy-maker\'s Cookbook'] = 20;
 
-        if($cookedSomething && $cookedSomething->getValue() >= 10)
-        {
-            $bookPrices['Big Book of Baking'] = 25;
+            if($cookedSomething->getValue() >= 10)
+                $bookPrices['Big Book of Baking'] = 25;
+
+            if($cookedSomething->getValue() >= 20)
+                $bookPrices['Fish Book'] = 20;
         }
 
         ksort($bookPrices);
