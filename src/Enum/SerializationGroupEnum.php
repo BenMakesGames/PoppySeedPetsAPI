@@ -26,4 +26,5 @@ final class SerializationGroupEnum
     const KNOWN_RECIPE = 'knownRecipe';
     const PARK_EVENT = 'parkEvent';
     const PET_FRIEND = 'petFriend';
+    const GREENHOUSE_PLANT = 'greenhousePlant';
 }

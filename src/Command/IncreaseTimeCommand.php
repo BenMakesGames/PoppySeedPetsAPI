@@ -32,5 +32,6 @@ class IncreaseTimeCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->em->getConnection()->executeQuery('UPDATE pet SET `time`=`time`+1 WHERE `time`<4320');
+        $this->em->getConnection()->executeQuery('UPDATE greenhouse_plant SET `weeds`=`weeds`+1 WHERE `weeds`<10080'); // 10080 is the number of minutes in a week
     }
 }

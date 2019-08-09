@@ -7,6 +7,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ItemRepository")
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="fertilizer_idx", columns={"fertilizer"})
+ * })
  */
 class Item
 {
@@ -20,7 +23,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=40, unique=true)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe", "greenhousePlant"})
      */
     private $name;
 
@@ -32,7 +35,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe", "greenhousePlant"})
      */
     private $image;
 
@@ -78,6 +81,16 @@ class Item
      * @ORM\Column(type="integer")
      */
     private $spirit = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $fertilizer = 0;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $nonTransferable;
 
     public function getId(): ?int
     {
@@ -225,6 +238,30 @@ class Item
     public function setSpirit(int $spirit): self
     {
         $this->spirit = $spirit;
+
+        return $this;
+    }
+
+    public function getFertilizer(): int
+    {
+        return $this->fertilizer;
+    }
+
+    public function setFertilizer(int $fertilizer): self
+    {
+        $this->fertilizer = $fertilizer;
+
+        return $this;
+    }
+
+    public function getNonTransferable(): ?bool
+    {
+        return $this->nonTransferable;
+    }
+
+    public function setNonTransferable(bool $nonTransferable): self
+    {
+        $this->nonTransferable = $nonTransferable;
 
         return $this;
     }

@@ -29,6 +29,13 @@ class IndexController extends PsyPetsController
                 'Tomi',
                 'All my friends in college',
             ],
+            'inspirations' => [
+                'PsyPets',
+                'The Sims',
+                'Dwarf Fortress',
+                'Dofus',
+                'Kingdom of Loathing',
+            ],
             'madeWith' => [
                 'Symfony', 'PHPStorm', 'existential nihilism', 'absurdism', 'humanism', 'candy'
             ]

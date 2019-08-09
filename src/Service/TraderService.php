@@ -13,6 +13,7 @@ class TraderService
     private const ID_PROOF_OF_ADVENTURING = 'proofOfAdventuring';
     private const ID_LEVEL_2_SWORD = 'level2Sword';
     private const ID_RUSTY_RAPIER = 'rustyRapier';
+    private const ID_GREENHOUSE_DEED = 'greenhouseDeed';
 
     private $itemRepository;
     private $inventoryService;
@@ -148,6 +149,20 @@ class TraderService
                     [ 'type' => 'item', 'item' => $this->itemRepository->findOneByName('Level 2 Sword'), 'quantity' => 1 ],
                 ],
                 'comment' => 'It\'s dangerous to go alone. Take this.'
+            ];
+        }
+
+        if($dayOfTheYear % 3 === 0 || $leapDay)
+        {
+            $offers[] = [
+                'id' => self::ID_GREENHOUSE_DEED,
+                'cost' => [
+                    [ 'type' => 'money', 'quantity' => 100 ],
+                ],
+                'yield' => [
+                    [ 'type' => 'item', 'item' => $this->itemRepository->findOneByName('Deed for Greenhouse Plot'), 'quantity' => 1 ],
+                ],
+                'comment' => 'Oh, cool! Have fun with that!'
             ];
         }
 

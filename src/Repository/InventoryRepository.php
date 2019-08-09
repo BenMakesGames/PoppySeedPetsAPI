@@ -35,32 +35,16 @@ class InventoryRepository extends ServiceEntityRepository
         ;
     }
 
-    // /**
-    //  * @return Inventory[] Returns an array of Inventory objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findFertilizers(User $user)
     {
         return $this->createQueryBuilder('i')
-            ->andWhere('i.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('i.id', 'ASC')
-            ->setMaxResults(10)
+            ->andWhere('i.owner=:owner')
+            ->leftJoin('i.item', 'item')
+            ->andWhere('item.fertilizer>0')
+            ->addOrderBy('item.name', 'ASC')
+            ->setParameter('owner', $user->getId())
             ->getQuery()
             ->getResult()
         ;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Inventory
-    {
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

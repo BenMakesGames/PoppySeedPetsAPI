@@ -18,7 +18,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass="App\Repository\PetRepository")
  * @ORM\Table(indexes={
  *     @ORM\Index(name="park_event_type_idx", columns={"park_event_type"}),
- *     @ORM\Index(name="park_event_order_idx", columns={"park_event_order"})
+ *     @ORM\Index(name="park_event_order_idx", columns={"park_event_order"}),
+ *     @ORM\Index(name="time_idx", columns={"time"}),
  * })
  */
 class Pet

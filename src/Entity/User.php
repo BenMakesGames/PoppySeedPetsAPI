@@ -161,9 +161,20 @@ class User implements UserInterface
     private $unlockedPark;
 
     /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"myAccount"})
+     */
+    private $unlockedGreenhouse;
+
+    /**
      * @ORM\OneToOne(targetEntity="App\Entity\PassphraseResetRequest", mappedBy="user", cascade={"persist", "remove"})
      */
     private $passphraseResetRequest;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\GreenhousePlant", mappedBy="owner", orphanRemoval=true)
+     */
+    private $greenhousePlants;
 
     public function __construct()
     {
@@ -172,6 +183,7 @@ class User implements UserInterface
         $this->lastAllowanceCollected = (new \DateTimeImmutable())->modify('-7 days');
         $this->friends = new ArrayCollection();
         $this->stats = new ArrayCollection();
+        $this->greenhousePlants = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -580,6 +592,49 @@ class User implements UserInterface
         // set the owning side of the relation if necessary
         if ($this !== $passphraseResetRequest->getUser()) {
             $passphraseResetRequest->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function getUnlockedGreenhouse(): ?\DateTimeImmutable
+    {
+        return $this->unlockedGreenhouse;
+    }
+
+    public function setUnlockedGreenhouse(): self
+    {
+        $this->unlockedGreenhouse = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GreenhousePlant[]
+     */
+    public function getGreenhousePlants(): Collection
+    {
+        return $this->greenhousePlants;
+    }
+
+    public function addGreenhousePlant(GreenhousePlant $greenhousePlant): self
+    {
+        if (!$this->greenhousePlants->contains($greenhousePlant)) {
+            $this->greenhousePlants[] = $greenhousePlant;
+            $greenhousePlant->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGreenhousePlant(GreenhousePlant $greenhousePlant): self
+    {
+        if ($this->greenhousePlants->contains($greenhousePlant)) {
+            $this->greenhousePlants->removeElement($greenhousePlant);
+            // set the owning side to null (unless already changed)
+            if ($greenhousePlant->getOwner() === $this) {
+                $greenhousePlant->setOwner(null);
+            }
         }
 
         return $this;
