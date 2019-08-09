@@ -33,6 +33,7 @@ class BakingBookController extends PsyPetsItemController
 
 #### Recipes
 
+* Melon Pan
 * Meringues
 * Pancakes
 * Plain Bread
@@ -61,6 +62,18 @@ Can be found as a byproduct of wine-making. (As an example, you can age some Blu
 Simply grind some Wheat into a fine powder.
 
 ## Recipes
+
+#### Melon Pan
+
+A simple bread with a cracked, cookie crust. It\'s melon-like appearance gives it its name.
+
+* Wheat Flour
+* Sugar
+* Yeast
+* Egg
+* Milk
+* Butter
+* Baking Powder
 
 #### Meringues
 
