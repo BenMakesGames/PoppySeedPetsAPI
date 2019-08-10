@@ -391,7 +391,7 @@ class CraftingService
         }
     }
 
-    private function createChampignon(Pet $pet)
+    private function createChampignon(Pet $pet): PetActivityLog
     {
         $quintessenceHandling = \mt_rand(1, 10 + $pet->getUmbra());
 
@@ -423,6 +423,7 @@ class CraftingService
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Champignon.', '');
             $this->inventoryService->petCollectsItem('Champignon', $pet, $pet->getName() . ' created this from a Crooked Stick, Toadstool, and bit of Quintessence.', $activityLog);
+            return $activityLog;
         }
         else
         {
@@ -432,7 +433,7 @@ class CraftingService
         }
     }
 
-    private function createWoodenSword(Pet $pet)
+    private function createWoodenSword(Pet $pet): PetActivityLog
     {
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + \max($pet->getCrafts(), $pet->getBrawl()));
 
@@ -472,7 +473,7 @@ class CraftingService
         }
     }
 
-    private function createRusticMagnifyingGlass(Pet $pet)
+    private function createRusticMagnifyingGlass(Pet $pet): PetActivityLog
     {
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
 
@@ -522,7 +523,7 @@ class CraftingService
         }
     }
 
-    private function createHuntingSpear(Pet $pet)
+    private function createHuntingSpear(Pet $pet): PetActivityLog
     {
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + \max($pet->getCrafts(), $pet->getBrawl()));
 
@@ -551,7 +552,8 @@ class CraftingService
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Hunting Spear.', '');
-            return $this->inventoryService->petCollectsItem('Hunting Spear', $pet, $pet->getName() . ' created this.', $activityLog);
+            $this->inventoryService->petCollectsItem('Hunting Spear', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
         }
         else
         {
@@ -561,7 +563,7 @@ class CraftingService
         }
     }
 
-    private function createVeryLongSpear(Pet $pet)
+    private function createVeryLongSpear(Pet $pet): PetActivityLog
     {
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + \max($pet->getCrafts(), $pet->getBrawl()));
 
@@ -590,7 +592,8 @@ class CraftingService
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created an Overly-long Spear.', '');
-            return $this->inventoryService->petCollectsItem('Overly-long Spear', $pet, $pet->getName() . ' created this.', $activityLog);
+            $this->inventoryService->petCollectsItem('Overly-long Spear', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
         }
         else
         {
@@ -600,7 +603,7 @@ class CraftingService
         }
     }
 
-    private function createRidiculouslyLongSpear(Pet $pet)
+    private function createRidiculouslyLongSpear(Pet $pet): PetActivityLog
     {
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + \max($pet->getCrafts(), $pet->getBrawl()));
 
@@ -629,7 +632,8 @@ class CraftingService
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a - like - CRAZY-long Spear. It\'s really rather silly.', '');
-            return $this->inventoryService->petCollectsItem('This is Getting Ridiculous', $pet, $pet->getName() . ' created this.', $activityLog);
+            $this->inventoryService->petCollectsItem('This is Getting Ridiculous', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
         }
         else
         {
@@ -661,7 +665,7 @@ class CraftingService
         }
     }
 
-    private function createSnakebite(Pet $pet)
+    private function createSnakebite(Pet $pet): PetActivityLog
     {
         $roll = \mt_rand(1, 20 + $pet->getDexterity() + $pet->getCrafts());
 
@@ -693,7 +697,7 @@ class CraftingService
         }
     }
 
-    private function createVeilPiercer(Pet $pet)
+    private function createVeilPiercer(Pet $pet): PetActivityLog
     {
         $umbraCheck = \mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence());
         $craftsCheck = \mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
@@ -725,7 +729,7 @@ class CraftingService
         }
     }
 
-    private function createPaintedFishingRod(Pet $pet)
+    private function createPaintedFishingRod(Pet $pet): PetActivityLog
     {
         $pet->spendTime(\mt_rand(45, 90));
         $this->inventoryService->loseItem('Crooked Fishing Rod', $pet->getOwner(), 1);
@@ -738,7 +742,7 @@ class CraftingService
         return $activityLog;
     }
 
-    private function repairRustyBlunderbuss(Pet $pet)
+    private function repairRustyBlunderbuss(Pet $pet): PetActivityLog
     {
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
 
@@ -768,7 +772,7 @@ class CraftingService
         }
     }
 
-    private function repairRustyRapier(Pet $pet)
+    private function repairRustyRapier(Pet $pet): PetActivityLog
     {
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + \max($pet->getCrafts(), $pet->getBrawl()));
 

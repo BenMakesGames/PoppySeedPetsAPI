@@ -78,12 +78,13 @@ class PetRelationshipService
         if($relationship === null)
         {
             $relationship = (new PetRelationship())
-                ->setPet($pet)
                 ->setRelationship($otherPet)
                 ->setMetDescription('Are living together.')
                 ->increaseIntimacy(mt_rand(100, 200))
                 ->increaseCommitment(mt_rand(200, 350))
             ;
+
+            $pet->addPetRelationship($relationship);
 
             if($pet->wouldBang($otherPet))
             {
@@ -93,11 +94,11 @@ class PetRelationshipService
                     ->increaseCommitment(mt_rand(0, 10) + $pet->getWouldBangFraction() * 4)
                 ;
 
-                $this->responseService->createActivityLog($pet, $pet->getName() . ' met ' . $otherPet->getName() . '. (And what a cutie!)', 'icons/activity-log/friend-cute');
+                $this->responseService->createActivityLog($pet, $pet->getName() . ' met ' . $otherPet->getName() . '. (And what a cutie!)', 'icons/activity-logs/friend-cute');
             }
             else
             {
-                $this->responseService->createActivityLog($pet, $pet->getName() . ' met ' . $otherPet->getName() . '.', 'icons/activity-log/friend');
+                $this->responseService->createActivityLog($pet, $pet->getName() . ' met ' . $otherPet->getName() . '.', 'icons/activity-logs/friend');
             }
 
             $pet
@@ -128,7 +129,7 @@ class PetRelationshipService
             else if(mt_rand(1, $pet->getWouldBangFraction() * 5) === 1 || $relationship->getPassion() > 0)
                 $relationship->increasePassion(mt_rand(1, 3));      // averages 2
 
-            $this->responseService->createActivityLog($pet, $pet->getName() . ' and ' . $otherPet->getName() . ' are living together, now! What a surprise!', 'icons/activity-log/friend');
+            $this->responseService->createActivityLog($pet, $pet->getName() . ' and ' . $otherPet->getName() . ' are living together, now! What a surprise!', 'icons/activity-logs/friend');
         }
 
         return $relationship;
@@ -145,12 +146,13 @@ class PetRelationshipService
         if($relationship === null)
         {
             $relationship = (new PetRelationship())
-                ->setPet($pet)
                 ->setRelationship($otherPet)
                 ->setMetDescription('Met ' . $howMet . '.')
                 ->increaseIntimacy(250)
                 ->increaseCommitment(50)
             ;
+
+            $pet->addPetRelationship($relationship);
 
             if($pet->wouldBang($otherPet))
             {
@@ -160,11 +162,11 @@ class PetRelationshipService
                     ->increaseCommitment(mt_rand(0, 10) + $pet->getWouldBangFraction() * 4)
                 ;
 
-                $this->responseService->createActivityLog($pet, $pet->getName() . ' met ' . $otherPet->getName() . ' ' . $howMet . '. (And what a cutie!)', 'icons/activity-log/friend-cute');
+                $this->responseService->createActivityLog($pet, $pet->getName() . ' met ' . $otherPet->getName() . ' ' . $howMet . '. (And what a cutie!)', 'icons/activity-logs/friend-cute');
             }
             else
             {
-                $this->responseService->createActivityLog($pet, $pet->getName() . ' met ' . $otherPet->getName() . ' ' . $howMet . '.', 'icons/activity-log/friend');
+                $this->responseService->createActivityLog($pet, $pet->getName() . ' met ' . $otherPet->getName() . ' ' . $howMet . '.', 'icons/activity-logs/friend');
             }
 
             $pet
@@ -195,7 +197,7 @@ class PetRelationshipService
             else if(mt_rand(1, $pet->getWouldBangFraction() * 5) === 1 || $relationship->getPassion() > 0)
                 $relationship->increasePassion(mt_rand(1, 3));      // averages 2
 
-            $this->responseService->createActivityLog($pet, $pet->getName() . ' and ' . $otherPet->getName() . ' hung out a little ' . $howMet . '.', 'icons/activity-log/friend');
+            $this->responseService->createActivityLog($pet, $pet->getName() . ' and ' . $otherPet->getName() . ' hung out a little ' . $howMet . '.', 'icons/activity-logs/friend');
         }
 
         return $relationship;
@@ -351,7 +353,7 @@ class PetRelationshipService
         }
         else if($petLowestNeed === 'love')
         {
-            $message = $pet->getName() . ' was feeling lonely, so came to hang out with ' . $friend->getName() . '. They had fun :)';
+            $message = $pet->getName() . ' was feeling lonely, so hung out with ' . $friend->getName() . '. They had fun :)';
             $pet
                 ->increaseSafety(mt_rand(2, 4))
                 ->increaseLove(mt_rand(2, 4))
@@ -428,7 +430,7 @@ class PetRelationshipService
         $p1Log = (new PetActivityLog())
             ->setPet($pet)
             ->setEntry($message)
-            ->setIcon('icons/activity-log/friend')
+            ->setIcon('icons/activity-logs/friend')
         ;
 
         $this->em->persist($p1Log);
@@ -436,7 +438,7 @@ class PetRelationshipService
         $p2Log = (new PetActivityLog())
             ->setPet($friend)
             ->setEntry($message)
-            ->setIcon('icons/activity-log/friend')
+            ->setIcon('icons/activity-logs/friend')
         ;
 
         $this->em->persist($p2Log);

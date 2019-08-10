@@ -392,8 +392,8 @@ class PetService
             \mt_rand(1, max(10, 20 + min(0, $pet->getLove()) + min(0, $pet->getSafety()) + min(0, $pet->getEsteem()))) <= 5
         )
         {
-            $this->hangOutWithFriend($pet);
-            return;
+            if($this->hangOutWithFriend($pet))
+                return;
         }
 
         if($this->meetRoommates($pet))
@@ -482,13 +482,16 @@ class PetService
         }
     }
 
-    private function hangOutWithFriend(Pet $pet)
+    private function hangOutWithFriend(Pet $pet): bool
     {
         /** @var PetRelationship[] $friends */
         $relationships = $pet->getPetRelationships()->filter(function(PetRelationship $p) { return $p->getRelationship()->getFood() > 0; })->toArray();
 
         if($pet->hasMerit(MeritEnum::SPIRIT_COMPANION))
             $relationships[] = MeritEnum::SPIRIT_COMPANION;
+
+        if(count($relationships) === 0)
+            return false;
 
         /** @var PetRelationship $relationship */
         $relationship = ArrayFunctions::pick_one($relationships);
@@ -497,9 +500,45 @@ class PetService
             $this->hangOutWithSpiritCompanion($pet);
         else
         {
-            $friendRelationship = $relationship->getRelationship()->getPetRelationships()->filter(function(PetRelationship $p) use($pet) { return $p->getRelationship()->getId() === $pet->getId(); })->first();
+            $friend = $relationship->getRelationship();
+
+            $friendRelationship = $friend->getPetRelationships()->filter(function(PetRelationship $p) use($pet) { return $p->getRelationship()->getId() === $pet->getId(); })->first();
+
+            if($friendRelationship === false)
+            {
+                $friendRelationship = (new PetRelationship())
+                    ->increaseIntimacy(mt_rand(20, 50))
+                    ->increaseCommitment(mt_rand(10, 25))
+                    ->increasePassion($friend->wouldBang($pet) ? mt_rand(150 + $pet->getWouldBangFraction() * 5, 500 + $pet->getWouldBangFraction() * 20) : mt_rand(0, 20))
+                ;
+
+                if($friend->wouldBang($pet))
+                    $friendRelationship->setMetDescription($pet->getName() . ' popped by; ' . $friend->getName() . ' had totally noticed them earlier, but was too shy to say anything at the time. (What a cutie!)');
+                else
+                {
+                    switch(mt_rand(1, 3))
+                    {
+                        case 1:
+                            $friendRelationship->setMetDescription($pet->getName() . ' popped by; ' . $friend->getName() . ' had met them earlier, but kind of forgot.');
+                            break;
+                        case 2:
+                            $friendRelationship->setMetDescription($pet->getName() . ' popped by; ' . $friend->getName() . ' had met them earlier, but figured they\'d never see each other again.');
+                            break;
+                        case 3:
+                            $friendRelationship->setMetDescription($pet->getName() . ' popped by; ' . $friend->getName() . ' had met them earlier, but didn\'t think ' . $pet->getName() . ' was interested.');
+                            break;
+                    }
+                }
+
+                $friend->addPetRelationship($friendRelationship);
+
+                $this->em->persist($friendRelationship);
+            }
+
             $this->hangOutWithOtherPet($relationship, $friendRelationship);
         }
+
+        return true;
     }
 
     private function hangOutWithSpiritCompanion(Pet $pet)
