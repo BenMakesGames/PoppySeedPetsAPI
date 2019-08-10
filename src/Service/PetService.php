@@ -385,9 +385,6 @@ class PetService
             // has food
             $pet->getFood() > 0 &&
 
-            // has a friend
-            (count($pet->getPetRelationships()) > 0 || $pet->hasMerit(MeritEnum::SPIRIT_COMPANION)) &&
-
             // a random factor
             \mt_rand(1, max(10, 20 + min(0, $pet->getLove()) + min(0, $pet->getSafety()) + min(0, $pet->getEsteem()))) <= 5
         )
@@ -507,6 +504,7 @@ class PetService
             if($friendRelationship === false)
             {
                 $friendRelationship = (new PetRelationship())
+                    ->setRelationship($pet)
                     ->increaseIntimacy(mt_rand(20, 50))
                     ->increaseCommitment(mt_rand(10, 25))
                     ->increasePassion($friend->wouldBang($pet) ? mt_rand(150 + $pet->getWouldBangFraction() * 5, 500 + $pet->getWouldBangFraction() * 20) : mt_rand(0, 20))

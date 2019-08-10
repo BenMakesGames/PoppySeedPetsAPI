@@ -313,7 +313,7 @@ class PetRelationshipService
             }
             else
             {
-                $message = $pet->getName() . ' was feeling nervous, so came to hang out with ' . $friend->getName() . '. They huddled up together, and kept each other safe.';
+                $message = $pet->getName() . ' was feeling nervous, so hung out with ' . $friend->getName() . '. They huddled up together, and kept each other safe.';
 
                 $pet
                     ->increaseSafety(mt_rand(4, 8))
