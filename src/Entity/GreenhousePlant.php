@@ -31,12 +31,12 @@ class GreenhousePlant
     /**
      * @ORM\Column(type="integer")
      */
-    private $growth;
+    private $growth = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $weeds;
+    private $weeds = 0;
 
     /**
      * @ORM\Column(type="datetime_immutable")
@@ -49,6 +49,17 @@ class GreenhousePlant
      * @ORM\JoinColumn(nullable=false)
      */
     private $owner;
+
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"greenhousePlant"})
+     */
+    private $isAdult = false;
+
+    public function __construct()
+    {
+        $this->lastInteraction = (new \DateTimeImmutable())->modify('-1 day');
+    }
 
     public function getId(): ?int
     {
@@ -113,5 +124,49 @@ class GreenhousePlant
         $this->owner = $owner;
 
         return $this;
+    }
+
+    public function getIsAdult(): ?bool
+    {
+        return $this->isAdult;
+    }
+
+    public function setIsAdult(bool $isAdult): self
+    {
+        $this->isAdult = $isAdult;
+
+        return $this;
+    }
+
+    /**
+     * @Groups({"greenhousePlant"})
+     */
+    public function getProgress(): float
+    {
+        if($this->isAdult)
+            return round($this->growth / $this->getPlant()->getTimeToFruit(), 1);
+        else
+            return round($this->growth / $this->getPlant()->getTimeToAdult(), 1);
+    }
+
+    /**
+     * @Groups({"greenhousePlant"})
+     */
+    public function getImage()
+    {
+        if($this->isAdult)
+        {
+            if($this->getProgress() >= 1)
+                return $this->getPlant()->getHarvestableImage();
+            else
+                return $this->getPlant()->getAdultImage();
+        }
+        else
+        {
+            if($this->getProgress() >= 0.5)
+                return $this->getPlant()->getMediumImage();
+            else
+                return $this->getPlant()->getSproutImage();
+        }
     }
 }

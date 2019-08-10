@@ -19,25 +19,21 @@ class ItemPlant
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"greenhousePlant"})
      */
     private $sproutImage;
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"greenhousePlant"})
      */
     private $mediumImage;
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"greenhousePlant"})
      */
     private $adultImage;
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"greenhousePlant"})
      */
     private $harvestableImage;
 
