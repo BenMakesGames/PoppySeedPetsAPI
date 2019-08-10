@@ -905,4 +905,24 @@ class Pet
             )
         ;
     }
+
+    public function getLowestNeed(): string
+    {
+        if($this->getSafety() >= mt_rand(0, 4) && $this->getLove() >= mt_rand(0, 4) && $this->getEsteem() >= mt_rand(0, 4))
+        {
+            return '';
+        }
+        else if($this->getSafety() <= $this->getLove() + mt_rand(0, 4) && $this->getSafety() <= $this->getEsteem() + mt_rand(0, 4))
+        {
+            return 'safety';
+        }
+        else if($this->getSafety() <= $this->getEsteem() + mt_rand(2, 4))
+        {
+            return 'love';
+        }
+        else // esteem, probably
+        {
+            return 'esteem';
+        }
+    }
 }

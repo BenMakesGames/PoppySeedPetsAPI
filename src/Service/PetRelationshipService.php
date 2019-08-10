@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\Pet;
+use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
 use App\Repository\PetRelationshipRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,7 +29,7 @@ class PetRelationshipService
     {
         for($i = 0; $i < count($pets) - 1; $i++)
         {
-            for($j = $i; $j < count($pets); $j++)
+            for($j = $i + 1; $j < count($pets); $j++)
             {
                 $this->seeAtGroupGathering($pets[$i], $pets[$j], $howMet, $meetChance);
             }
@@ -37,6 +38,8 @@ class PetRelationshipService
 
     public function seeAtGroupGathering(Pet $p1, Pet $p2, string $howMet, int $meetChance = 5)
     {
+        if($p1->getId() === $p2->getId()) return;
+
         $alreadyKnow = $p1->hasRelationshipWith($p2) || $p2->hasRelationshipWith($p1);
 
         $meet =
@@ -198,55 +201,246 @@ class PetRelationshipService
         return $relationship;
     }
 
+    /**
+     * @return PetActivityLog[]
+     */
     public function meetOtherPetPrivately(PetRelationship $p1, PetRelationship $p2)
     {
-        // TODO: each pet decides on a couple goals of the hang-out
-        // overlap boosts relevant stats?
-        // disagreement causes a loss?
+        $pet = $p1->getPet();
+        $friend = $p2->getPet();
 
-        // effects for pet 1
-        $p1
-            ->increaseCommitment(mt_rand(20, 40))   // they're hanging out, so there's commitment
-            ->increaseIntimacy(mt_rand(10, 20))
+        $petLowestNeed = $pet->getLowestNeed();
+        $friendLowestNeed = $friend->getLowestNeed();
+
+        if($petLowestNeed === '')
+        {
+            if($friendLowestNeed === '')
+            {
+                // TODO: describe activity
+                $message = $pet->getName() . ' hung out with ' . $friend->getName() . '. They had fun! :)';
+
+                $pet
+                    ->increaseLove(mt_rand(2, 4))
+                    ->increaseSafety(mt_rand(2, 4))
+                    ->increaseEsteem(mt_rand(2, 4))
+                ;
+
+                $p1
+                    ->increaseCommitment(mt_rand(2, 12))
+                    ->increaseIntimacy(mt_rand(2, 12))
+                ;
+
+                $friend
+                    ->increaseLove(mt_rand(2, 4))
+                    ->increaseSafety(mt_rand(2, 4))
+                    ->increaseEsteem(mt_rand(2, 4))
+                ;
+
+                $p2
+                    ->increaseCommitment(mt_rand(2, 12))
+                    ->increaseIntimacy(mt_rand(2, 12))
+                ;
+
+                if($p1->getPet()->wouldBang($p2->getPet()))
+                    $p1->increasePassion(mt_rand(10, 20));  // averages 15
+                else if($p1->getPassion() > 100)
+                    $p1->increasePassion(mt_rand(2, 12));   // averages 7
+                else if(mt_rand(1, $p1->getPet()->getWouldBangFraction() * 5) === 1 || $p1->getPassion() > 0)
+                    $p1->increasePassion(mt_rand(1, 5));    // averages 3
+
+                if($p2->getPet()->wouldBang($p1->getPet()))
+                    $p2->increasePassion(mt_rand(10, 20));  // averages 15
+                else if($p2->getPassion() > 100)
+                    $p2->increasePassion(mt_rand(2, 12));   // averages 7
+                else if(mt_rand(1, $p2->getPet()->getWouldBangFraction() * 5) === 1 || $p2->getPassion() > 0)
+                    $p2->increasePassion(mt_rand(1, 5));    // averages 3
+            }
+            else
+            {
+                $message = $pet->getName() . ' hung out with ' . $friend->getName() . ' who wasn\'t actually feeling that great :| ' . $pet->getName() . ' comforted them for a while.';
+
+                $pet
+                    ->increaseLove(mt_rand(2, 4))
+                    ->increaseEsteem(mt_rand(4, 8))
+                ;
+
+                $p1
+                    ->increaseCommitment(mt_rand(2, 12))
+                    ->increaseIntimacy(mt_rand(1, 5))
+                ;
+
+                $friend
+                    ->increaseSafety(mt_rand(2, 4))
+                    ->increaseLove(mt_rand(2, 4))
+                    ->increaseEsteem(mt_rand(2, 4))
+                ;
+
+                $p2
+                    ->increaseCommitment(mt_rand(5, 20))
+                    ->increaseIntimacy(mt_rand(5, 20))
+                ;
+            }
+        }
+        else if($petLowestNeed === 'safety')
+        {
+            if($friendLowestNeed === 'safety')
+            {
+                $message = $pet->getName() . ' was feeling nervous, so came to hang out with ' . $friend->getName() . '... who was also feeling a little nervous! They huddled up together, and kept each other safe.';
+
+                $pet
+                    ->increaseSafety(mt_rand(2, 4))
+                    ->increaseLove(mt_rand(4, 8))
+                ;
+
+                $p1
+                    ->increaseCommitment(mt_rand(5, 20))
+                    ->increaseIntimacy(mt_rand(5, 20))
+                    ->increasePassion(mt_rand(5, 20))
+                ;
+
+                $friend
+                    ->increaseSafety(mt_rand(2, 4))
+                    ->increaseLove(mt_rand(4, 8))
+                ;
+
+                $p2
+                    ->increaseCommitment(mt_rand(5, 20))
+                    ->increaseIntimacy(mt_rand(5, 20))
+                    ->increasePassion(mt_rand(5, 20))
+                ;
+            }
+            else
+            {
+                $message = $pet->getName() . ' was feeling nervous, so came to hang out with ' . $friend->getName() . '. They huddled up together, and kept each other safe.';
+
+                $pet
+                    ->increaseSafety(mt_rand(4, 8))
+                    ->increaseLove(mt_rand(2, 4))
+                ;
+
+                $p1
+                    ->increaseCommitment(mt_rand(5, 20))
+                    ->increaseIntimacy(mt_rand(5, 20))
+                    ->increasePassion(mt_rand(5, 20))
+                ;
+
+                $friend
+                    ->increaseEsteem(mt_rand(4, 8))
+                    ->increaseLove(mt_rand(2, 4))
+                ;
+
+                if($friendLowestNeed === '')
+                {
+                    $p2
+                        ->increaseCommitment(mt_rand(1, 5))
+                        ->increaseIntimacy(mt_rand(1, 5))
+                        ->increasePassion(mt_rand(1, 5))
+                    ;
+                }
+                else
+                {
+                    $p2
+                        ->increaseCommitment(mt_rand(2, 12))
+                        ->increaseIntimacy(mt_rand(2, 12))
+                        ->increasePassion(mt_rand(2, 12))
+                    ;
+
+                }
+
+            }
+        }
+        else if($petLowestNeed === 'love')
+        {
+            $message = $pet->getName() . ' was feeling lonely, so came to hang out with ' . $friend->getName() . '. They had fun :)';
+            $pet
+                ->increaseSafety(mt_rand(2, 4))
+                ->increaseLove(mt_rand(2, 4))
+            ;
+
+            $p1
+                ->increaseCommitment(mt_rand(5, 15))
+                ->increaseIntimacy(mt_rand(5, 15))
+            ;
+
+            if($friendLowestNeed !== 'esteem')
+                $friend->increaseSafety(mt_rand(2, 4));
+
+            $friend->increaseLove(mt_rand(2, 4));
+
+            if($friendLowestNeed === 'esteem')
+                $friend->increaseEsteem(mt_rand(2, 4));
+
+            $p2
+                ->increaseCommitment(mt_rand(5, 15))
+                ->increaseIntimacy(mt_rand(5, 15))
+            ;
+        }
+        else //if($petLowestNeed === 'esteem')
+        {
+            if($friendLowestNeed === '' || $friendLowestNeed === 'safety')
+            {
+                $message = $pet->getName() . ' was feeling down, and talked to ' . $friend->getName() . ' about it. ' . $friend->getName() . ' listened patiently, which made ' . $pet->getName() . ' feel a little better.';
+
+                $pet
+                    ->increaseLove(mt_rand(2, 4))
+                    ->increaseEsteem(mt_rand(2, 4))
+                ;
+
+                $p1
+                    ->increaseCommitment(mt_rand(2, 12))
+                    ->increaseIntimacy(mt_rand(5, 20))
+                ;
+
+                if($friendLowestNeed === 'safety')
+                    $friend->increaseSafety(mt_rand(2, 4));
+
+                $p2
+                    ->increaseCommitment(mt_rand(1, 5))
+                    ->increaseIntimacy(mt_rand(2, 12))
+                ;
+            }
+            else
+            {
+                $message = $pet->getName() . ' and ' . $friend->getName() . ' were both feeling down. They complained about other people, and the world. It was kind of negative, but sharing their feelings made them both feel a little better.';
+
+                $pet
+                    ->increaseLove(mt_rand(2, 4))
+                    ->increaseEsteem(mt_rand(2, 4))
+                ;
+
+                $p1
+                    ->increaseCommitment(mt_rand(2, 12))
+                    ->increaseIntimacy(mt_rand(5, 20))
+                ;
+
+                $friend
+                    ->increaseLove(mt_rand(2, 4))
+                    ->increaseEsteem(mt_rand(2, 4))
+                ;
+
+                $p2
+                    ->increaseCommitment(mt_rand(2, 12))
+                    ->increaseIntimacy(mt_rand(5, 20))
+                ;
+            }
+        }
+
+        $p1Log = (new PetActivityLog())
+            ->setPet($pet)
+            ->setEntry($message)
+            ->setIcon('icons/activity-log/friend')
         ;
 
-        $p1->getPet()
-            ->increaseSafety(2)
-            ->increaseLove(4)
-            ->increaseEsteem(2)
+        $this->em->persist($p1Log);
+
+        $p2Log = (new PetActivityLog())
+            ->setPet($friend)
+            ->setEntry($message)
+            ->setIcon('icons/activity-log/friend')
         ;
 
-        if($p1->getPet()->wouldBang($p2->getPet()))
-            $p1->increasePassion(mt_rand(10, 20));  // averages 15
-        else if($p1->getPassion() > 100)
-            $p1->increasePassion(mt_rand(2, 12));   // averages 7
-        else if(mt_rand(1, $p1->getPet()->getWouldBangFraction() * 5) === 1 || $p1->getPassion() > 0)
-            $p1->increasePassion(mt_rand(1, 5));    // averages 3
+        $this->em->persist($p2Log);
 
-        // effects for pet 2
-        $p2
-            ->increaseCommitment(mt_rand(20, 40))   // they're hanging out, so there's commitment
-            ->increaseIntimacy(mt_rand(10, 20))
-        ;
-
-        $p2->getPet()
-            ->increaseSafety(2)
-            ->increaseLove(4)
-            ->increaseEsteem(2)
-        ;
-
-        if($p2->getPet()->wouldBang($p1->getPet()))
-            $p2->increasePassion(mt_rand(10, 20));  // averages 15
-        else if($p2->getPassion() > 100)
-            $p2->increasePassion(mt_rand(2, 12));   // averages 7
-        else if(mt_rand(1, $p2->getPet()->getWouldBangFraction() * 5) === 1 || $p2->getPassion() > 0)
-            $p2->increasePassion(mt_rand(1, 5));    // averages 3
-
-        // TODO: what happens during this outing?
-        // if pets are flirty, increase passion further, or maybe have sexy fun times (increasing intimacy and commitment)
-        // chance that pets do something they mutually enjoy (increasing intimacy), depending on mutual commitment
-
-        $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' and ' . $p2->getPet()->getName() . ' hung out.', 'icons/activity-log/friend');
-        $this->responseService->createActivityLog($p2->getPet(), $p2->getPet()->getName() . ' and ' . $p1->getPet()->getName() . ' hung out.', 'icons/activity-log/friend');
+        return [ $p1Log, $p2Log ];
     }
 }

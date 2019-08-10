@@ -116,4 +116,9 @@ class ResponseService
 
         return $log;
     }
+
+    public function addActivityLog(PetActivityLog $log)
+    {
+        $this->activityLogs[] = $log;
+    }
 }

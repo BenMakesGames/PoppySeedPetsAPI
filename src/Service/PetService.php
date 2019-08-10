@@ -5,6 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\PetRelationship;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Enum\SpiritCompanionStarEnum;
@@ -381,8 +382,14 @@ class PetService
         }
 
         if(
+            // has food
+            $pet->getFood() > 0 &&
+
+            // has a friend
             (count($pet->getPetRelationships()) > 0 || $pet->hasMerit(MeritEnum::SPIRIT_COMPANION)) &&
-            \mt_rand(1, max(10, 20 + $pet->getLove() + $pet->getSafety() + $pet->getEsteem())) <= 5
+
+            // a random factor
+            \mt_rand(1, max(10, 20 + min(0, $pet->getLove()) + min(0, $pet->getSafety()) + min(0, $pet->getEsteem()))) <= 5
         )
         {
             $this->hangOutWithFriend($pet);
@@ -477,17 +484,22 @@ class PetService
 
     private function hangOutWithFriend(Pet $pet)
     {
-        $friends = $pet->getPetRelationships();
+        /** @var PetRelationship[] $friends */
+        $relationships = $pet->getPetRelationships()->filter(function(PetRelationship $p) { return $p->getRelationship()->getFood() > 0; })->toArray();
 
         if($pet->hasMerit(MeritEnum::SPIRIT_COMPANION))
-            $friends[] = MeritEnum::SPIRIT_COMPANION;
+            $relationships[] = MeritEnum::SPIRIT_COMPANION;
 
-        $friend = ArrayFunctions::pick_one($friends);
+        /** @var PetRelationship $relationship */
+        $relationship = ArrayFunctions::pick_one($relationships);
 
-        if($friend === MeritEnum::SPIRIT_COMPANION)
+        if($relationship === MeritEnum::SPIRIT_COMPANION)
             $this->hangOutWithSpiritCompanion($pet);
         else
-            $this->hangOutWithOtherPet($pet, $friend);
+        {
+            $friendRelationship = $relationship->getRelationship()->getPetRelationships()->filter(function(PetRelationship $p) use($pet) { return $p->getRelationship()->getId() === $pet->getId(); })->first();
+            $this->hangOutWithOtherPet($relationship, $friendRelationship);
+        }
     }
 
     private function hangOutWithSpiritCompanion(Pet $pet)
@@ -500,7 +512,16 @@ class PetService
 
         $adjectives = [ 'bizarre', 'impressive', 'surprisingly-graphic', 'whirlwind' ];
 
-        if($pet->getSafety() < 0)
+        if(mt_rand(1, 3) !== 1 || ($pet->getSafety() > 0 && $pet->getLove() > 0 && $pet->getEsteem() > 0))
+        {
+            $pet
+                ->increaseSafety(mt_rand(2, 4))
+                ->increaseLove(mt_rand(2, 4))
+                ->increaseEsteem(mt_rand(2, 4))
+            ;
+            $message = $pet->getName() . ' wasn\'t feeling great, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' listened patiently; in the end, ' . $pet->getName() . ' felt a little better.';
+        }
+        else if($pet->getSafety() <= 0)
         {
             switch($companion->getStar())
             {
@@ -544,7 +565,7 @@ class PetService
                     throw new \Exception('Unknown Spirit Companion Star "' . $companion->getStar() . '"');
             }
         }
-        else if($pet->getLove() < 0)
+        else if($pet->getLove() <= 0)
         {
             switch($companion->getStar())
             {
@@ -573,9 +594,10 @@ class PetService
                 case SpiritCompanionStarEnum::SAGITTARIUS:
                     $pet
                         ->increaseSafety(mt_rand(2, 4))
-                        ->increaseLove(mt_rand(2, 4))
+                        ->increaseLove(mt_rand(4, 8))
+                        ->increaseEsteem(mt_rand(2, 4))
                     ;
-                    $message = $pet->getName() . ' was feeling lonely, so talked to ' . $companion->getName() . '. They hosted a party for themselves, ';
+                    $message = $pet->getName() . ' was feeling lonely, so talked to ' . $companion->getName() . '. The two hosted a party for themselves; ' . $pet->getName() . ' had a lot of fun.';
                     break;
                 case SpiritCompanionStarEnum::HYDRA:
                     $pet
@@ -588,16 +610,68 @@ class PetService
                     throw new \Exception('Unknown Spirit Companion Star "' . $companion->getStar() . '"');
             }
         }
+        else // low on esteem
+        {
+            switch($companion->getStar())
+            {
+                case SpiritCompanionStarEnum::ALTAIR:
+                case SpiritCompanionStarEnum::CEPHEUS:
+                    $pet
+                        ->increaseSafety(mt_rand(2, 4))
+                        ->increaseLove(mt_rand(2, 4))
+                        ->increaseEsteem(mt_rand(2, 4))
+                    ;
+                    $message = $pet->getName() . ' was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' listened patiently; in the end, ' . $pet->getName() . ' felt a little better.';
+                    break;
+                case SpiritCompanionStarEnum::CASSIOPEIA:
+                    $pet
+                        ->increaseEsteem(mt_rand(4, 8))
+                    ;
+                    $message = $pet->getName() . ' was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' whispered odd prophecies, then stared at ' . $pet->getName() . ' expectantly. Somehow, that actually helped!';
+                    break;
+                case SpiritCompanionStarEnum::GEMINI:
+                    $pet
+                        ->increaseLove(mt_rand(2, 4))
+                    ;
+                    $message = $pet->getName() . ' was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' tried to entertain ' . $pet->getName() . ' by splitting into copies and dancing around, but it didn\'t really help...';
+                    break;
+                case SpiritCompanionStarEnum::SAGITTARIUS:
+                    $pet
+                        ->increaseSafety(mt_rand(2, 4))
+                        ->increaseLove(mt_rand(2, 4))
+                        ->increaseEsteem(mt_rand(4, 8))
+                    ;
+                    $message = $pet->getName() . ' was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' empathized completely, having been in similar situations themselves. It was really nice to hear!';
+                    break;
+                case SpiritCompanionStarEnum::HYDRA:
+                    $pet
+                        ->increaseSafety(mt_rand(2, 4))
+                        ->increaseLove(mt_rand(2, 4))
+                        ->increaseEsteem(mt_rand(4, 8))
+                    ;
+                    $message = $pet->getName() . ' was feeling down, so talked to ' . $companion->getName() . '. Sensing ' . $pet->getName() . '\'s unease, ' . $companion->getName() . ' settled into ' . $pet->getName() . '\'s lap.';
+                    break;
+                default:
+                    throw new \Exception('Unknown Spirit Companion Star "' . $companion->getStar() . '"');
+            }
+
+        }
 
         $this->responseService->createActivityLog($pet, $message, 'companions/' . $companion->getImage(), $changes->compare($pet));
     }
 
-    private function hangOutWithOtherPet(Pet $pet, Pet $friend)
+    private function hangOutWithOtherPet(PetRelationship $pet, PetRelationship $friend)
     {
-        $pet->spendTime(\mt_rand(45, 60));
-        $friend->spendTime(mt_rand(5, 10));
+        $changes = new PetChanges($pet->getPet());
 
+        $pet->getPet()->spendTime(\mt_rand(45, 60));
+        $friend->getPet()->spendTime(mt_rand(5, 10));
 
+        list($petLog, $friendLog) = $this->petRelationshipService->meetOtherPetPrivately($pet, $friend);
+
+        $petLog->setChanges($changes->compare($pet->getPet()));
+
+        $this->responseService->addActivityLog($petLog);
     }
 
     private function meetRoommates(Pet $pet): bool
