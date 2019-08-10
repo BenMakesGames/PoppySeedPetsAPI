@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DoctrineMigrations;
 
 use App\Entity\SpiritCompanion;
+use App\Enum\SpiritCompanionStarEnum;
 use App\Functions\ArrayFunctions;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
@@ -39,7 +40,7 @@ final class Version20190724202334 extends AbstractMigration
                 'UPDATE spirit_companion SET star=:star WHERE id=:id LIMIT 1',
                 [
                     'id' => $companion['id'],
-                    'star' => ArrayFunctions::pick_one(SpiritCompanion::STARS)
+                    'star' => SpiritCompanionStarEnum::getRandomValue()
                 ]
             );
         }

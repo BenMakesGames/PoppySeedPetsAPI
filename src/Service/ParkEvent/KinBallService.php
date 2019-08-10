@@ -200,10 +200,15 @@ class KinBallService implements ParkEventInterface
 
         $defendingScore = $this->getHighestNonAttackingScore();
 
-        $this->designatedTeam = $this->getRandomTeamHavingScore($defendingScore);
+        $possibleTeams = array_filter(
+            $this->getTeamsHavingScore($defendingScore),
+            function($t) { return $t !== $this->attackingTeam; }
+        );
+
+        $this->designatedTeam = ArrayFunctions::pick_one($possibleTeams);
     }
 
-    private function getRandomTeamHavingScore(int $score)
+    private function getTeamsHavingScore(int $score)
     {
         $teams = [];
 
@@ -213,7 +218,7 @@ class KinBallService implements ParkEventInterface
                 $teams[] = $i;
         }
 
-        return ArrayFunctions::pick_one($teams);
+        return $teams;
     }
 
     private function getHighestNonAttackingScore()

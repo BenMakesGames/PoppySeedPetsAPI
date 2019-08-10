@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\SpiritCompanionStarEnum;
 use App\Functions\ArrayFunctions;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -37,15 +38,6 @@ class SpiritCompanion
         'Tien',
     ];
 
-    const STARS = [
-        'Altair',
-        'Cassiopeia',
-        'Cepheus',
-        'Gemini',
-        'Hydra',
-        'Sagittarius'
-    ];
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -78,7 +70,7 @@ class SpiritCompanion
 
     public function __construct()
     {
-        $this->star = ArrayFunctions::pick_one(self::STARS);
+        $this->star = SpiritCompanionStarEnum::getRandomValue();
         $this->name = ArrayFunctions::pick_one(self::NAMES);
     }
 
