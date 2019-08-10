@@ -176,6 +176,12 @@ class User implements UserInterface
      */
     private $greenhousePlants;
 
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"myAccount"})
+     */
+    private $maxPlants = 3;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -636,6 +642,18 @@ class User implements UserInterface
                 $greenhousePlant->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMaxPlants(): int
+    {
+        return $this->maxPlants;
+    }
+
+    public function setMaxPlants(int $maxPlants): self
+    {
+        $this->maxPlants = $maxPlants;
 
         return $this;
     }

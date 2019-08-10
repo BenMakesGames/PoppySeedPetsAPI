@@ -18,16 +18,6 @@ class ItemPlant
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $timeToGrow;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $yield;
-
-    /**
      * @ORM\Column(type="string", length=40)
      * @Groups({"greenhousePlant"})
      */
@@ -57,33 +47,29 @@ class ItemPlant
      */
     private $item;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $minYield;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $maxYield;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $timeToAdult;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $timeToFruit;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getTimeToGrow(): ?int
-    {
-        return $this->timeToGrow;
-    }
-
-    public function setTimeToGrow(int $timeToGrow): self
-    {
-        $this->timeToGrow = $timeToGrow;
-
-        return $this;
-    }
-
-    public function getYield(): ?int
-    {
-        return $this->yield;
-    }
-
-    public function setYield(int $yield): self
-    {
-        $this->yield = $yield;
-
-        return $this;
     }
 
     public function getSproutImage(): ?string
@@ -148,6 +134,54 @@ class ItemPlant
         if ($newPlant !== $item->getPlant()) {
             $item->setPlant($newPlant);
         }
+
+        return $this;
+    }
+
+    public function getMinYield(): ?int
+    {
+        return $this->minYield;
+    }
+
+    public function setMinYield(int $minYield): self
+    {
+        $this->minYield = $minYield;
+
+        return $this;
+    }
+
+    public function getMaxYield(): ?int
+    {
+        return $this->maxYield;
+    }
+
+    public function setMaxYield(int $maxYield): self
+    {
+        $this->maxYield = $maxYield;
+
+        return $this;
+    }
+
+    public function getTimeToAdult(): ?int
+    {
+        return $this->timeToAdult;
+    }
+
+    public function setTimeToAdult(int $timeToAdult): self
+    {
+        $this->timeToAdult = $timeToAdult;
+
+        return $this;
+    }
+
+    public function getTimeToFruit(): ?int
+    {
+        return $this->timeToFruit;
+    }
+
+    public function setTimeToFruit(int $timeToFruit): self
+    {
+        $this->timeToFruit = $timeToFruit;
 
         return $this;
     }

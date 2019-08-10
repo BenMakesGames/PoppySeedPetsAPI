@@ -27,4 +27,5 @@ final class SerializationGroupEnum
     const PARK_EVENT = 'parkEvent';
     const PET_FRIEND = 'petFriend';
     const GREENHOUSE_PLANT = 'greenhousePlant';
+    const MY_SEEDS = 'mySeeds';
 }

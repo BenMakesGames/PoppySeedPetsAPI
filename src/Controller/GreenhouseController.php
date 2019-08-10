@@ -36,4 +36,25 @@ class GreenhouseController extends PsyPetsController
             [ SerializationGroupEnum::GREENHOUSE_PLANT ]
         );
     }
+
+    /**
+     * @Route("/seeds", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getSeeds(ResponseService $responseService, InventoryRepository $inventoryRepository)
+    {
+        $user = $this->getUser();
+
+        $seeds = $inventoryRepository->createQueryBuilder('i')
+            ->andWhere('i.owner=:owner')
+            ->leftJoin('i.item', 'item')
+            ->andWhere('item.plant IS NOT NULL')
+            ->addOrderBy('item.name', 'ASC')
+            ->setParameter('owner', $user->getId())
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $responseService->success($seeds, [ SerializationGroupEnum::MY_SEEDS ]);
+    }
 }
