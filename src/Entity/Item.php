@@ -35,7 +35,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe", "mySeeds"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe", "mySeeds", "greenhousePlant"})
      */
     private $image;
 

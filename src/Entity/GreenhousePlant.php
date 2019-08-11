@@ -78,9 +78,16 @@ class GreenhousePlant
         return $this;
     }
 
-    public function getGrowth(): ?int
+    public function getGrowth(): int
     {
         return $this->growth;
+    }
+
+    public function clearGrowth(): self
+    {
+        $this->growth = 0;
+
+        return $this;
     }
 
     public function increaseGrowth(int $growth): self

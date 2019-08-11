@@ -3,8 +3,10 @@ namespace App\Controller;
 
 use App\Entity\GreenhousePlant;
 use App\Enum\SerializationGroupEnum;
+use App\Model\ItemQuantity;
 use App\Repository\GreenhousePlantRepository;
 use App\Repository\InventoryRepository;
+use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,6 +45,37 @@ class GreenhouseController extends PsyPetsController
     }
 
     /**
+     * @Route("/{plant}/harvest", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function harvestPlant(
+        GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em,
+        InventoryService $inventoryService
+    )
+    {
+        $user = $this->getUser();
+
+        if($plant->getOwner()->getId() !== $user->getId())
+            throw new NotFoundHttpException();
+
+        if(!$plant->getIsAdult() || $plant->getProgress() < 1)
+            throw new UnprocessableEntityHttpException('This plant is not yet ready to be harvested.');
+
+        $plant->clearGrowth();
+
+        $quantity = new ItemQuantity();
+
+        $quantity->item = $plant->getPlant()->getItem();
+        $quantity->quantity = mt_rand($plant->getPlant()->getMinYield(), $plant->getPlant()->getMaxYield());
+
+        $inventoryService->giveInventory($quantity, $user, $user, $user->getName() . ' grew this in their greenhouse.');
+
+        $em->flush();
+
+        return $responseService->success([ 'item' => $quantity->item->getName(), 'quantity' => $quantity->quantity ]);
+    }
+
+    /**
      * @Route("/{plant}/fertilize", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -63,7 +96,7 @@ class GreenhouseController extends PsyPetsController
 
         $fertilizer = $inventoryRepository->findOneBy([ 'id' => $fertilizerId, 'owner' => $user->getId() ]);
 
-        if(!$fertilizer || $fertilizer->getItem()->getFertilizer() !== 0)
+        if(!$fertilizer || $fertilizer->getItem()->getFertilizer() === 0)
             throw new UnprocessableEntityHttpException('A fertilizer must be selected.');
 
         $plant->increaseGrowth($fertilizer->getItem()->getFertilizer());
