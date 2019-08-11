@@ -43,6 +43,38 @@ class GreenhouseController extends PsyPetsController
     }
 
     /**
+     * @Route("/{plant}/fertilize", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function fertilizePlant(
+        GreenhousePlant $plant, ResponseService $responseService, Request $request, EntityManagerInterface $em,
+        InventoryRepository $inventoryRepository
+    )
+    {
+        $user = $this->getUser();
+
+        if($plant->getOwner()->getId() !== $user->getId())
+            throw new NotFoundHttpException();
+
+        if($plant->getLastInteraction() >= (new \DateTimeImmutable())->modify('-12 hours'))
+            throw new UnprocessableEntityHttpException('This plant is not yet ready to feed.');
+
+        $fertilizerId = $request->request->getInt('fertilizer', 0);
+
+        $fertilizer = $inventoryRepository->findOneBy([ 'id' => $fertilizerId, 'owner' => $user->getId() ]);
+
+        if(!$fertilizer || $fertilizer->getItem()->getFertilizer() !== 0)
+            throw new UnprocessableEntityHttpException('A fertilizer must be selected.');
+
+        $plant->increaseGrowth($fertilizer->getItem()->getFertilizer());
+
+        $em->remove($fertilizer);
+        $em->flush();
+
+        return $responseService->success();
+    }
+
+    /**
      * @Route("/seeds", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */

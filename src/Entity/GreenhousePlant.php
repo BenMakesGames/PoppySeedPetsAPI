@@ -83,9 +83,23 @@ class GreenhousePlant
         return $this->growth;
     }
 
-    public function setGrowth(int $growth): self
+    public function increaseGrowth(int $growth): self
     {
-        $this->growth = $growth;
+        $this->growth += $growth;
+
+        if(!$this->getIsAdult())
+        {
+            if($this->growth >= $this->getPlant()->getTimeToAdult())
+            {
+                $this->growth -= $this->getPlant()->getTimeToAdult();
+                $this->setIsAdult(true);
+            }
+        }
+
+        if($this->getIsAdult() && $this->growth >= $this->getPlant()->getTimeToFruit())
+            $this->growth = $this->getPlant()->getTimeToFruit();
+
+        $this->setLastInteraction();
 
         return $this;
     }
@@ -95,9 +109,9 @@ class GreenhousePlant
         return $this->weeds;
     }
 
-    public function setWeeds(int $weeds): self
+    public function removeWeeds(): self
     {
-        $this->weeds = $weeds;
+        $this->weeds = 0;
 
         return $this;
     }
@@ -107,9 +121,9 @@ class GreenhousePlant
         return $this->lastInteraction;
     }
 
-    public function setLastInteraction(\DateTimeImmutable $lastInteraction): self
+    public function setLastInteraction(): self
     {
-        $this->lastInteraction = $lastInteraction;
+        $this->lastInteraction = new \DateTimeImmutable();
 
         return $this;
     }
