@@ -6,6 +6,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Repository\ArticleRepository;
 use App\Service\Filter\ArticleFilterService;
 use App\Service\ResponseService;
+use App\Service\TwitterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -53,6 +54,9 @@ class ArticleController extends PsyPetsController
         if($title === '' || $body === '')
             throw new UnprocessableEntityHttpException('title and body are both required.');
 
+        if(strlen($title) > 255)
+            throw new UnprocessableEntityHttpException('title may not be longer than 255 characters.');
+
         $article = (new Article())
             ->setTitle($title)
             ->setBody($body)
@@ -87,6 +91,28 @@ class ArticleController extends PsyPetsController
         ;
 
         $em->flush();
+
+        return $responseService->success();
+    }
+
+    /**
+     * @Route("/{article}/tweet", methods={"POST"}, requirements={"article"="\d+"})
+     * @IsGranted("ROLE_ADMIN")
+     */
+    public function tweetArticle(
+        Article $article, ResponseService $responseService, TwitterService $twitterService, Request $request
+    )
+    {
+        $this->adminIPsOnly($request);
+
+        try
+        {
+            $twitterService->postArticle($article);
+        }
+        catch(\Exception $e)
+        {
+            return $responseService->error(500, [ $e->getMessage() ]);
+        }
 
         return $responseService->success();
     }

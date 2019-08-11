@@ -31,3 +31,10 @@ services:
     App\Service\PetActivity\:
         resource: '../src/Service/PetActivity'
         lazy: true
+
+    App\Service\TwitterService:
+        arguments:
+            $apiConsumerKey: '%env(TWITTER_API_CONSUMER_KEY)%'
+            $apiConsumerSecret: '%env(TWITTER_API_CONSUMER_SECRET)%'
+            $apiAccessToken: '%env(TWITTER_API_ACCESS_TOKEN)%'
+            $apiAccessTokenSecret: '%env(TWITTER_API_ACCESS_SECRET)%'
