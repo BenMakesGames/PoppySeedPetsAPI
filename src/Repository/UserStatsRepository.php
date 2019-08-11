@@ -51,6 +51,11 @@ class UserStatsRepository extends ServiceEntityRepository
                 $user->setUnlockedBookstore();
         }
 
+        if($user->getMaxPlants() === 3 && $name === UserStatEnum::HARVESTED_PLANT && $stat->getValue() === 3)
+        {
+            $user->setMaxPlants(6);
+        }
+
         return $stat;
     }
 

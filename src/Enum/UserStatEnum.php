@@ -20,4 +20,6 @@ final class UserStatEnum
     const RECIPES_LEARNED_BY_COOKING_BUDDY = 'Reciped Learned by Cooking Buddy';
     const BUGS_SQUISHED = 'Bugs Squished';
     const BUGS_PUT_OUTSIDE = 'Bugs Put Outside';
+    const FERTILIZED_PLANT = 'Fertilized a Plant';
+    const HARVESTED_PLANT = 'Harvested a Plant';
 }

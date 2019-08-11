@@ -3,9 +3,11 @@ namespace App\Controller;
 
 use App\Entity\GreenhousePlant;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UserStatEnum;
 use App\Model\ItemQuantity;
 use App\Repository\GreenhousePlantRepository;
 use App\Repository\InventoryRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -50,7 +52,7 @@ class GreenhouseController extends PsyPetsController
      */
     public function harvestPlant(
         GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService
+        InventoryService $inventoryService, UserStatsRepository $userStatsRepository
     )
     {
         $user = $this->getUser();
@@ -70,6 +72,8 @@ class GreenhouseController extends PsyPetsController
 
         $inventoryService->giveInventory($quantity, $user, $user, $user->getName() . ' grew this in their greenhouse.');
 
+        $userStatsRepository->incrementStat($user, UserStatEnum::HARVESTED_PLANT);
+
         $em->flush();
 
         return $responseService->success([ 'item' => $quantity->item->getName(), 'quantity' => $quantity->quantity ]);
@@ -81,7 +85,7 @@ class GreenhouseController extends PsyPetsController
      */
     public function fertilizePlant(
         GreenhousePlant $plant, ResponseService $responseService, Request $request, EntityManagerInterface $em,
-        InventoryRepository $inventoryRepository
+        InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository
     )
     {
         $user = $this->getUser();
@@ -100,6 +104,8 @@ class GreenhouseController extends PsyPetsController
             throw new UnprocessableEntityHttpException('A fertilizer must be selected.');
 
         $plant->increaseGrowth($fertilizer->getItem()->getFertilizer());
+
+        $userStatsRepository->incrementStat($user, UserStatEnum::FERTILIZED_PLANT);
 
         $em->remove($fertilizer);
         $em->flush();
