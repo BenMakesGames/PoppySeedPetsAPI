@@ -34,6 +34,7 @@ class FishBookController extends PsyPetsItemController
 * Fermented Fish
 * Gefilte Fish
 * Grilled Fish
+* Sushi
 
 ## Crafts
 
@@ -86,6 +87,13 @@ An acquired taste!
 #### Grilled Fish
 
 Just grill some Fish with Charcoal!
+
+#### Sushi
+
+1. Lay out a sheet of Seaweed
+1. Place a bed of sushi rice on the seaweed (Rice, Sugar, Vinegar)
+1. Place pieces of Fish on the sushi rice, in a line about 1-2 inches away from one edge 
+1. Roll!
 ');
     }
 }
