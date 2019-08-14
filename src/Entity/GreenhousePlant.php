@@ -7,9 +7,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\GreenhousePlantRepository")
- * @ORM\Table(indexes={
- *     @ORM\Index(name="weeds_idx", columns={"weeds"})
- * })
  */
 class GreenhousePlant
 {
@@ -34,13 +31,7 @@ class GreenhousePlant
     private $growth = 0;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $weeds = 0;
-
-    /**
      * @ORM\Column(type="datetime_immutable")
-     * @Groups({"greenhousePlant"})
      */
     private $lastInteraction;
 
@@ -55,6 +46,11 @@ class GreenhousePlant
      * @Groups({"greenhousePlant"})
      */
     private $isAdult = false;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $previousGrowth = 0;
 
     public function __construct()
     {
@@ -85,6 +81,7 @@ class GreenhousePlant
 
     public function clearGrowth(): self
     {
+        $this->previousGrowth = 0;
         $this->growth = 0;
 
         return $this;
@@ -92,12 +89,15 @@ class GreenhousePlant
 
     public function increaseGrowth(int $growth): self
     {
+        $this->previousGrowth = $this->growth;
+
         $this->growth += $growth;
 
         if(!$this->getIsAdult())
         {
             if($this->growth >= $this->getPlant()->getTimeToAdult())
             {
+                $this->previousGrowth = 0;
                 $this->growth -= $this->getPlant()->getTimeToAdult();
                 $this->setIsAdult(true);
             }
@@ -111,19 +111,15 @@ class GreenhousePlant
         return $this;
     }
 
-    public function getWeeds(): ?int
+    /**
+     * @Groups({"greenhousePlant"})
+     */
+    public function getCanNextInteract(): \DateTimeImmutable
     {
-        return $this->weeds;
+        return $this->getLastInteraction()->modify('+12 hours');
     }
 
-    public function removeWeeds(): self
-    {
-        $this->weeds = 0;
-
-        return $this;
-    }
-
-    public function getLastInteraction(): ?\DateTimeImmutable
+    public function getLastInteraction(): \DateTimeImmutable
     {
         return $this->lastInteraction;
     }
@@ -173,6 +169,17 @@ class GreenhousePlant
     /**
      * @Groups({"greenhousePlant"})
      */
+    public function getPreviousProgress(): float
+    {
+        if($this->isAdult)
+            return round($this->previousGrowth / $this->getPlant()->getTimeToFruit(), 1);
+        else
+            return round($this->previousGrowth / $this->getPlant()->getTimeToAdult(), 1);
+    }
+
+    /**
+     * @Groups({"greenhousePlant"})
+     */
     public function getImage()
     {
         if($this->isAdult)
@@ -189,5 +196,10 @@ class GreenhousePlant
             else
                 return $this->getPlant()->getSproutImage();
         }
+    }
+
+    public function getPreviousGrowth(): int
+    {
+        return $this->previousGrowth;
     }
 }

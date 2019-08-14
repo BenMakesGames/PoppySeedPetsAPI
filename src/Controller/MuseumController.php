@@ -125,7 +125,8 @@ class MuseumController extends PsyPetsController
             ->select('u AS user,s.value AS itemsDonated')
             ->leftJoin('App:UserStats', 's', Expr\Join::WITH, 's.user = u.id')
             ->andWhere('s.stat = :statName')
-            ->orderBy('s.value', 'DESC')
+            ->addOrderBy('s.value', 'DESC')
+            ->addOrderBy('s.lastTime', 'ASC')
             ->setParameter('statName', 'Items Donated to Museum')
         ;
 

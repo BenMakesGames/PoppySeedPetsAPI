@@ -60,8 +60,11 @@ class GreenhouseController extends PsyPetsController
         if($plant->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException();
 
+        if(new \DateTimeImmutable() < $plant->getCanNextInteract())
+            throw new UnprocessableEntityHttpException('This plant is not yet ready to harvest.');
+
         if(!$plant->getIsAdult() || $plant->getProgress() < 1)
-            throw new UnprocessableEntityHttpException('This plant is not yet ready to be harvested.');
+            throw new UnprocessableEntityHttpException('This plant is not yet ready to harvest.');
 
         $plant->clearGrowth();
 
@@ -93,8 +96,8 @@ class GreenhouseController extends PsyPetsController
         if($plant->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException();
 
-        if($plant->getLastInteraction() >= (new \DateTimeImmutable())->modify('-12 hours'))
-            throw new UnprocessableEntityHttpException('This plant is not yet ready to feed.');
+        if(new \DateTimeImmutable() < $plant->getCanNextInteract())
+            throw new UnprocessableEntityHttpException('This plant is not yet ready to fertilize.');
 
         $fertilizerId = $request->request->getInt('fertilizer', 0);
 
