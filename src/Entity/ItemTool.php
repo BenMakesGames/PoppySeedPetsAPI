@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class ItemTool
 {
-    public const MODIFIERS = [
+    public const MODIFIER_FIELDS = [
         'strength', 'dexterity', 'stamina', 'intelligence', 'perception',
         'stealth', 'nature', 'brawl', 'umbra', 'crafts', 'fishing', 'gathering',
         'music', 'smithing', 'computer'
@@ -381,7 +381,7 @@ class ItemTool
     {
         $modifiers = [];
 
-        foreach(self::MODIFIERS as $modifier)
+        foreach(self::MODIFIER_FIELDS as $modifier)
         {
             $value = $this->{'get' . $modifier}();
 

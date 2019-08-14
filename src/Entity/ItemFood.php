@@ -11,6 +11,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class ItemFood
 {
+    public const FLAVOR_FIELDS = [
+        ''
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

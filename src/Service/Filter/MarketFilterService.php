@@ -1,7 +1,9 @@
 <?php
 namespace App\Service\Filter;
 
+use App\Entity\ItemTool;
 use App\Entity\User;
+use App\Enum\FlavorEnum;
 use App\Repository\InventoryRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -31,7 +33,9 @@ class MarketFilterService
             [
                 'name' => array($this, 'filterName'),
                 'edible' => array($this, 'filterEdible'),
+                'foodFlavors' => array($this, 'filterFoodFlavors'),
                 'equipable' => array($this, 'filterEquipable'),
+                'equipStats' => array($this, 'filterEquipStats')
             ]
         );
     }
@@ -67,11 +71,55 @@ class MarketFilterService
             $qb->andWhere('item.food IS NOT NULL');
     }
 
+    public function filterFoodFlavors(QueryBuilder $qb, $value)
+    {
+        if(!is_array($value)) $value = [ $value ];
+
+        $value = array_map('strtolower', $value);
+        $value = array_intersect($value, FlavorEnum::getValues());
+
+        if(count($value) === 0) return;
+
+        if(!in_array('food', $qb->getAllAliases()))
+            $qb->leftJoin('item.food', 'food');
+
+        $qb
+            ->andWhere('item.food IS NOT NULL')
+        ;
+
+        foreach($value as $stat)
+        {
+            $qb->andWhere('food.' . $stat . ' > 0');
+        }
+    }
+
     public function filterEquipable(QueryBuilder $qb, $value)
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.tool IS NULL');
         else
             $qb->andWhere('item.tool IS NOT NULL');
+    }
+
+    public function filterEquipStats(QueryBuilder $qb, $value)
+    {
+        if(!is_array($value)) $value = [ $value ];
+
+        $value = array_map('strtolower', $value);
+        $value = array_intersect($value, ItemTool::MODIFIER_FIELDS);
+
+        if(count($value) === 0) return;
+
+        if(!in_array('tool', $qb->getAllAliases()))
+            $qb->leftJoin('item.tool', 'tool');
+
+        $qb
+            ->andWhere('item.tool IS NOT NULL')
+        ;
+
+        foreach($value as $stat)
+        {
+            $qb->andWhere('tool.' . $stat . ' > 0');
+        }
     }
 }

@@ -149,7 +149,7 @@ class UpsertItemCommand extends PsyPetsCommand
             $tool->setGripAngle($this->askInt('Grip angle', $tool->getGripAngle()));
             $tool->setGripAngleFixed($this->confirm('Grip angle fixed?', $tool->getGripAngleFixed()));
 
-            foreach(ItemTool::MODIFIERS as $modifier)
+            foreach(ItemTool::MODIFIER_FIELDS as $modifier)
                 $tool->{'set' . $modifier}($this->askInt(ucfirst($modifier) . '', $tool->{'get' . $modifier}()));
         }
         else

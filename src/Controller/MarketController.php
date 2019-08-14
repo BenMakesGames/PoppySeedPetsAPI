@@ -66,11 +66,11 @@ class MarketController extends PsyPetsController
         {
             $inventory->getOwner()->increaseMoneys($inventory->getSellPrice());
             $userStatsRepository->incrementStat($inventory->getOwner(), UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $inventory->getSellPrice());
-            $userStatsRepository->incrementStat($inventory->getOwner(), UserStatEnum::ITEMS_SOLD_IN_MARKET, $inventory->getSellPrice());
+            $userStatsRepository->incrementStat($inventory->getOwner(), UserStatEnum::ITEMS_SOLD_IN_MARKET, 1);
 
             $user->increaseMoneys(-$inventory->getBuyPrice());
             $userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, $inventory->getBuyPrice());
-            $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_BOUGHT_IN_MARKET, $inventory->getBuyPrice());
+            $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_BOUGHT_IN_MARKET, 1);
 
             $inventory
                 ->setOwner($user)
