@@ -18,7 +18,7 @@ class Recipe
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=40, unique=true)
+     * @ORM\Column(type="string", length=45, unique=true)
      * @Groups({"knownRecipe"})
      */
     private $name;

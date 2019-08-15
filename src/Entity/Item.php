@@ -22,7 +22,7 @@ class Item
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=40, unique=true)
+     * @ORM\Column(type="string", length=45, unique=true)
      * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe", "mySeeds", "greenhousePlant"})
      */
     private $name;
