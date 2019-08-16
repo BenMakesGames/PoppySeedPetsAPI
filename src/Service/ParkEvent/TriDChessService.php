@@ -166,7 +166,7 @@ class TriDChessService implements ParkEventInterface
         {
             $this->results .= '* ' . $participant->pet->getName() . ' made a brilliant play!' . "\n";
 
-            return -10;
+            return 10;
         }
 
         $lowerBounds = min(ceil($participant->skill / 2), $participant->skill + $healthAdvantage - 1);
@@ -184,9 +184,10 @@ class TriDChessService implements ParkEventInterface
         foreach($this->participants as $participant)
             $skillTotal += $participant->skill;
 
-        $moneys = ceil($skillTotal * $this->round / 12);
+        $firstPlaceMoneys = ceil($skillTotal * $this->round / 10);
+        $secondPlaceMoneys = ceil($firstPlaceMoneys * 3 / 4);
 
-        $this->results .= '**' . $this->winners[0]->pet->getName() . ' wins the tournament, and ' . $moneys . '~~m~~!**';
+        $this->results .= '**' . $this->winners[0]->pet->getName() . ' wins the tournament, and ' . $firstPlaceMoneys . '~~m~~!**' . "<br>\n";
 
         foreach($this->participants as $participant)
         {
@@ -199,13 +200,20 @@ class TriDChessService implements ParkEventInterface
             if($wins === $this->round)
             {
                 $expGain++;
-                $participant->pet->getOwner()->increaseMoneys($moneys);
+                $participant->pet->getOwner()->increaseMoneys($firstPlaceMoneys);
                 $activityLogEntry = $participant->pet->getName() . ' played in a Tri-D chess tournament, and won! The whole thing!';
             }
             else if($wins === 0)
                 $activityLogEntry = $participant->pet->getName() . ' played in a Tri-D chess tournament, but lost in the first round to ' . $this->defeatedBy[$participant->pet->getId()]->getName() . '. (Next time, ' . $this->defeatedBy[$participant->pet->getId()]->getName() . '!)';
             else
                 $activityLogEntry = $participant->pet->getName() . ' played in a Tri-D chess tournament, won ' . $wins . ' ' . ($wins === 1 ? 'round' : 'rounds') . ', and lost to ' . $this->defeatedBy[$participant->pet->getId()]->getName() . ' in round ' . ($wins + 1) . '.';
+
+            if($wins === $this->round - 1)
+            {
+                $expGain++;
+                $participant->pet->getOwner()->increaseMoneys($secondPlaceMoneys);
+                $this->results .= $participant->pet->getName() . ' got 2nd place, and ' . $secondPlaceMoneys . '~~m~~!';
+            }
 
             $this->petService->gainExp(
                 $participant->pet,
