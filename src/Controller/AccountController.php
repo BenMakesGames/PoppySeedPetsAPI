@@ -111,7 +111,10 @@ class AccountController extends PsyPetsController
             ->setColorB($petColorB)
             ->setNeeds(mt_rand(10, 12), -9)
             ->setSkills($petSkills)
-            ->setFavoriteFlavor(FlavorEnum::getRandomValue())
+            ->setFavoriteFlavor(ArrayFunctions::pick_one([
+                FlavorEnum::EARTHY, FlavorEnum::FRUITY, FlavorEnum::CREAMY, FlavorEnum::MEATY, FlavorEnum::PLANTY,
+                FlavorEnum::FISHY, FlavorEnum::FATTY,
+            ]))
         ;
 
         $em->persist($pet);
