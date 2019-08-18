@@ -411,7 +411,7 @@ class AccountController extends PsyPetsController
         $passphrase = trim($request->request->get('passphrase', ''));
 
         if(strlen($passphrase) < 10)
-            return new UnprocessableEntityHttpException('Passphrase must be at least 10 characters long. (Pro tip: try using an actual phrase, or short sentence!)');
+            throw new UnprocessableEntityHttpException('Passphrase must be at least 10 characters long. (Pro tip: try using an actual phrase, or short sentence!)');
 
         $resetRequest = $passwordResetRequestRepository->findOneBy([ 'code' => $code ]);
 

@@ -519,7 +519,7 @@ class GatheringService
     private function foundWildHedgemaze(Pet $pet): PetActivityLog
     {
         $possibleLoot = [
-            'Pumpkin', 'Crooked Stick', 'Sweet Beet', 'String', 'Grandpa Root', 'Pamplemousse',
+            'Smallish Pumpkin', 'Crooked Stick', 'Sweet Beet', 'String', 'Grandpa Root', 'Pamplemousse',
         ];
 
         $loot = [];
