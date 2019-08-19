@@ -384,6 +384,8 @@ class ItemFood
         else if($this->junk < 0) $modifiers[] = 'a healthy food';
 
         if($this->alcohol > 0) $modifiers[] = 'alcoholic';
+        if($this->caffeine > 0) $modifiers[] = 'caffeinated';
+        if($this->psychedelic > 0) $modifiers[] = 'trippy';
 
         foreach(FlavorEnum::getValues() as $flavor)
             if($this->$flavor > 0) $modifiers[] = $flavor;
