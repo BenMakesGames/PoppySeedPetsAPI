@@ -110,7 +110,7 @@ class PetService
 
         $divideBy = 1;
 
-        if($pet->getFood() + $pet->getAlcohol() - $pet->getJunk() < 0) $divideBy++;
+        if($pet->getFood() + $pet->getAlcohol() < 0) $divideBy++;
         if($pet->getSafety() + $pet->getAlcohol() < 0) $divideBy++;
         if($pet->getLove() + $pet->getAlcohol() < 0) $divideBy++;
         if($pet->getEsteem() + $pet->getAlcohol() < 0) $divideBy++;
@@ -329,21 +329,21 @@ class PetService
         else if($pet->getEsteem() < 0 && mt_rand(1, 2) === 1)
             $pet->increaseEsteem(1);
 
-        if($pet->getAlcohol() > 0)
+        if($pet->getAlcohol() + $pet->getPsychedelic() > 0)
         {
-            if($this->randomService->roll(4, 12) < $pet->getAlcohol())
+            if($this->randomService->roll(6, 24) < $pet->getAlcohol() + $pet->getPsychedelic())
             {
                 $changes = new PetChanges($pet);
 
-                $halfAlcohol = ceil($pet->getAlcohol() / 2);
-                $quarterAlcohol = ceil($pet->getAlcohol() / 4);
+                $safetyVom = ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 4);
 
-                $pet->increaseAlcohol(-mt_rand(1, $halfAlcohol));
+                if($pet->getAlcohol() > 0) $pet->increaseAlcohol(-mt_rand(1, ceil($pet->getAlcohol() / 2)));
+                if($pet->getPsychedelic() > 0) $pet->increasePsychedelic(-mt_rand(1, ceil($pet->getPsychedelic() / 2)));
                 if($pet->getJunk() > 0) $pet->increaseJunk(-mt_rand(1, ceil($pet->getJunk() / 2)));
                 if($pet->getFood() > 0) $pet->increaseFood(-mt_rand(1, ceil($pet->getFood() / 2)));
 
-                $pet->increaseSafety(-mt_rand(1, $quarterAlcohol));
-                $pet->increaseEsteem(-mt_rand(1, $quarterAlcohol));
+                $pet->increaseSafety(-mt_rand(1, $safetyVom));
+                $pet->increaseEsteem(-mt_rand(1, $safetyVom));
 
                 $pet->spendTime(\mt_rand(15, 45));
 

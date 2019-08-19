@@ -27,7 +27,7 @@ class GatheringService
 
     public function adventure(Pet $pet)
     {
-        $maxSkill = 10 + $pet->getPerception() + $pet->getNature() + $pet->getGathering() - $pet->getAlcohol() - $pet->getJunk();
+        $maxSkill = 10 + $pet->getPerception() + $pet->getNature() + $pet->getGathering() - $pet->getAlcohol() - $pet->getPsychedelic();
 
         if($maxSkill > 18) $maxSkill = 18;
         else if($maxSkill < 1) $maxSkill = 1;

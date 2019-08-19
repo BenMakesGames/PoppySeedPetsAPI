@@ -28,7 +28,7 @@ class Protocol7Service
 
     public function adventure(Pet $pet)
     {
-        $maxSkill = 10 + $pet->getIntelligence() + $pet->getComputer() - $pet->getAlcohol() - $pet->getJunk();
+        $maxSkill = 10 + $pet->getIntelligence() + $pet->getComputer() - $pet->getAlcohol();
 
         if($maxSkill > 13) $maxSkill = 13;
         else if($maxSkill < 1) $maxSkill = 1;
