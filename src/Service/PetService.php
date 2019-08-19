@@ -81,7 +81,7 @@ class PetService
 
         $divideBy = 1;
 
-        if($pet->getFood() + $pet->getAlcohol() - $pet->getJunk() < 0) $divideBy++;
+        if($pet->getFood() + $pet->getAlcohol() < 0) $divideBy++;
         if($pet->getSafety() + $pet->getAlcohol() < 0) $divideBy++;
         if($pet->getLove() + $pet->getAlcohol() < 0) $divideBy++;
         if($pet->getEsteem() + $pet->getAlcohol() < 0) $divideBy++;
@@ -307,6 +307,12 @@ class PetService
 
         if($pet->getAlcohol() > 0)
             $pet->increaseAlcohol(-1);
+
+        if($pet->getCaffeine() > 0)
+            $pet->increaseCaffeine(-1);
+
+        if($pet->getPsychedelic() > 0)
+            $pet->increasePsychedelic()(-1);
 
         if($pet->getSafety() > 0 && mt_rand(1, 2) === 1)
             $pet->increaseSafety(-1);

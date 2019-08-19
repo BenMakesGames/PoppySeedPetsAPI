@@ -202,12 +202,12 @@ class Pet
     /**
      * @ORM\Column(type="integer")
      */
-    private $caffeine;
+    private $caffeine = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $psychedelic;
+    private $psychedelic = 0;
 
     public function __construct()
     {
@@ -450,7 +450,25 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        $this->alcohol = NumberFunctions::constrain($this->alcohol + $amount, -16, 16);
+        $this->alcohol = NumberFunctions::constrain($this->alcohol + $amount, 0, 16);
+
+        return $this;
+    }
+
+    public function increaseCaffeine(int $amount): self
+    {
+        if($amount === 0) return $this;
+
+        $this->caffeine = NumberFunctions::constrain($this->caffeine + $amount, 0, 16);
+
+        return $this;
+    }
+
+    public function increasePsychedelic(int $amount): self
+    {
+        if($amount === 0) return $this;
+
+        $this->psychedelic = NumberFunctions::constrain($this->psychedelic + $amount, 0, 16);
 
         return $this;
     }
@@ -936,27 +954,13 @@ class Pet
         }
     }
 
-    public function getCaffeine(): ?int
+    public function getCaffeine(): int
     {
         return $this->caffeine;
     }
 
-    public function setCaffeine(int $caffeine): self
-    {
-        $this->caffeine = $caffeine;
-
-        return $this;
-    }
-
-    public function getPsychedelic(): ?int
+    public function getPsychedelic(): int
     {
         return $this->psychedelic;
-    }
-
-    public function setPsychedelic(int $psychedelic): self
-    {
-        $this->psychedelic = $psychedelic;
-
-        return $this;
     }
 }
