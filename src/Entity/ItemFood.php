@@ -45,6 +45,16 @@ class ItemFood
     /**
      * @ORM\Column(type="integer")
      */
+    private $caffeine = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $psychedelic = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
     private $earthy = 0;
 
     /**
@@ -151,6 +161,30 @@ class ItemFood
     public function setAlcohol(int $alcohol): self
     {
         $this->alcohol = $alcohol;
+
+        return $this;
+    }
+
+    public function getCaffeine(): int
+    {
+        return $this->caffeine;
+    }
+
+    public function setCaffeine(int $caffeine): self
+    {
+        $this->caffeine = $caffeine;
+
+        return $this;
+    }
+
+    public function getPsychedelic(): int
+    {
+        return $this->psychedelic;
+    }
+
+    public function setPsychedelic(int $psychedelic): self
+    {
+        $this->psychedelic = $psychedelic;
 
         return $this;
     }

@@ -4,8 +4,11 @@ namespace App\Service\ParkEvent;
 use App\Entity\ParkEvent;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\SpiritCompanionStarEnum;
+use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\TriDChessParticipant;
 use App\Model\PetChanges;
 use App\Service\PetRelationshipService;
@@ -14,6 +17,10 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class TriDChessService implements ParkEventInterface
 {
+    public const CHESS_PIECES = [
+        'a pawn', 'a rook', 'a knight', 'a bishop', 'the queen', 'the king',
+    ];
+
     /** @var TriDChessParticipant[] */
     private $participants;
 
@@ -162,18 +169,31 @@ class TriDChessService implements ParkEventInterface
 
     private function doPlay(TriDChessParticipant $participant, int $healthAdvantage, int $move)
     {
+        $bonus = 0;
+
         if(mt_rand(1, 400) < $participant->skill && $move > 5)
         {
             $this->results .= '* ' . $participant->pet->getName() . ' made a brilliant play!' . "\n";
 
             return 10;
         }
+        else if($participant->pet->hasMerit(MeritEnum::SPIRIT_COMPANION) && $participant->pet->getSpiritCompanion()->getStar() === SpiritCompanionStarEnum::CASSIOPEIA && mt_rand(1, 100) <= 3 && $move > 3)
+        {
+            $this->results .= '* ' . $participant->pet->getName() . '\'s spirit companion nudged ' . ArrayFunctions::pick_one(self::CHESS_PIECES) . ' forward.';
+
+            switch(mt_rand(1, 3))
+            {
+                case 1: $this->results .= ' ' . $participant->pet->getName() . ' is confused, but it\'s too late now. Hopefully it works out...' . "\n"; break;
+                case 2: $this->results .= ' It\'s a surprisingly-good play!' . "\n"; $bonus = 2; break;
+                default: $this->results .= ' Well spotted!' . "\n"; $bonus = 1; break;
+            }
+        }
 
         $lowerBounds = min(ceil($participant->skill / 2), $participant->skill + $healthAdvantage - 1);
 
         $damage = mt_rand($lowerBounds, $participant->skill + $healthAdvantage);
 
-        return max(mt_rand(1, 3), $damage);
+        return max(mt_rand(1, 3), $damage) + $bonus;
     }
 
 

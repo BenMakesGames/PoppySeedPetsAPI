@@ -49,6 +49,7 @@ class TraderService
         'Bag of Beans' =>  0.1,
         'Tomato' => 1,
         'Sweet Beet' => 1,
+        '5~~m~~' => 1,
     ];
 
     public function __construct(
@@ -64,7 +65,7 @@ class TraderService
     {
         mt_srand($user->getDailySeed());
 
-        $numOffers = mt_rand(3, 5);
+        $numOffers = 5;
 
         $now = new \DateTimeImmutable();
 
@@ -211,14 +212,32 @@ class TraderService
             unset($asking[$askingItem]);
             unset($offering[$offeringItem]);
 
+            $cost = [
+                'type' => 'item',
+                'item' => $this->itemRepository->findOneByName($askingItem),
+                'quantity' => $askingQuantity
+            ];
+
+            if(preg_match('/^[0-9]+~~m~~$/', $offeringItem))
+            {
+                $yield = [
+                    'type' => 'money',
+                    'quantity' => (int)$offeringItem,
+                ];
+            }
+            else
+            {
+                $yield = [
+                    'type' => 'item',
+                    'item' => $this->itemRepository->findOneByName($offeringItem),
+                    'quantity' => $offeringQuantity
+                ];
+            }
+
             $offers[] = [
                 'id' => 'dailyOffer' . ($i + $offerOffset) . $now->format('d'),
-                'cost' => [
-                    [ 'type' => 'item', 'item' => $this->itemRepository->findOneByName($askingItem), 'quantity' => $askingQuantity ]
-                ],
-                'yield' => [
-                    [ 'type' => 'item', 'item' => $this->itemRepository->findOneByName($offeringItem), 'quantity' => $offeringQuantity ]
-                ],
+                'cost' => [ $cost ],
+                'yield' => [ $yield ],
                 'comment' => 'Great! Enjoy the ' . $offeringItem . '!',
             ];
         }

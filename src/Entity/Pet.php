@@ -199,6 +199,16 @@ class Pet
      */
     private $wouldBangFraction;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $caffeine;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $psychedelic;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -924,5 +934,29 @@ class Pet
         {
             return 'esteem';
         }
+    }
+
+    public function getCaffeine(): ?int
+    {
+        return $this->caffeine;
+    }
+
+    public function setCaffeine(int $caffeine): self
+    {
+        $this->caffeine = $caffeine;
+
+        return $this;
+    }
+
+    public function getPsychedelic(): ?int
+    {
+        return $this->psychedelic;
+    }
+
+    public function setPsychedelic(int $psychedelic): self
+    {
+        $this->psychedelic = $psychedelic;
+
+        return $this;
     }
 }
