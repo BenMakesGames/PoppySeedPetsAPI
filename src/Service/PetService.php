@@ -81,12 +81,12 @@ class PetService
 
         $divideBy = 1;
 
-        if($pet->getFood() + $pet->getWhack() - $pet->getJunk() < 0) $divideBy++;
-        if($pet->getSafety() + $pet->getWhack() < 0) $divideBy++;
-        if($pet->getLove() + $pet->getWhack() < 0) $divideBy++;
-        if($pet->getEsteem() + $pet->getWhack() < 0) $divideBy++;
+        if($pet->getFood() + $pet->getAlcohol() - $pet->getJunk() < 0) $divideBy++;
+        if($pet->getSafety() + $pet->getAlcohol() < 0) $divideBy++;
+        if($pet->getLove() + $pet->getAlcohol() < 0) $divideBy++;
+        if($pet->getEsteem() + $pet->getAlcohol() < 0) $divideBy++;
 
-        $divideBy += $pet->getWhack() / $pet->getStomachSize();
+        $divideBy += 1 + ($pet->getAlcohol() / $pet->getStomachSize());
 
         $exp = \ceil($exp / $divideBy);
 
@@ -110,12 +110,10 @@ class PetService
 
         $divideBy = 1;
 
-        if($pet->getFood() + $pet->getWhack() - $pet->getJunk() < 0) $divideBy++;
-        if($pet->getSafety() + $pet->getWhack() < 0) $divideBy++;
-        if($pet->getLove() + $pet->getWhack() < 0) $divideBy++;
-        if($pet->getEsteem() + $pet->getWhack() < 0) $divideBy++;
-
-        $divideBy += $pet->getWhack() / $pet->getStomachSize();
+        if($pet->getFood() + $pet->getAlcohol() - $pet->getJunk() < 0) $divideBy++;
+        if($pet->getSafety() + $pet->getAlcohol() < 0) $divideBy++;
+        if($pet->getLove() + $pet->getAlcohol() < 0) $divideBy++;
+        if($pet->getEsteem() + $pet->getAlcohol() < 0) $divideBy++;
 
         $points = \ceil($points / $divideBy);
 
@@ -220,7 +218,7 @@ class PetService
 
             $food = $i->getItem()->getFood();
 
-            $pet->increaseWhack($food->getWhack());
+            $pet->increaseAlcohol($food->getAlcohol());
             $pet->increaseFood($food->getFood());
             $pet->increaseJunk($food->getJunk());
 
@@ -281,7 +279,7 @@ class PetService
     {
         $food = $item->getFood();
 
-        $pet->increaseWhack($food->getWhack());
+        $pet->increaseAlcohol($food->getAlcohol());
         $pet->increaseFood($food->getFood());
         $pet->increaseJunk($food->getJunk());
 
@@ -307,8 +305,8 @@ class PetService
         if($pet->getJunk() > 0)
             $pet->increaseJunk(-1);
 
-        if($pet->getWhack() > 0)
-            $pet->increaseWhack(-1);
+        if($pet->getAlcohol() > 0)
+            $pet->increaseAlcohol(-1);
 
         if($pet->getSafety() > 0 && mt_rand(1, 2) === 1)
             $pet->increaseSafety(-1);
@@ -325,46 +323,21 @@ class PetService
         else if($pet->getEsteem() < 0 && mt_rand(1, 2) === 1)
             $pet->increaseEsteem(1);
 
-        if($pet->getWhack() > 0)
+        if($pet->getAlcohol() > 0)
         {
-            if($this->calculateAgeInDays($pet) > 365 * 2)
-            {
-                // elderly tolerance
-                $minWhack = 4;
-                $maxWhack = 12;
-            }
-            else if($this->calculateAgeInDays($pet) > 365)
-            {
-                // adult tolerance
-                $minWhack = 6;
-                $maxWhack = 20;
-            }
-            else if($this->calculateAgeInDays($pet) > 365 / 2)
-            {
-                // young adult tolerance
-                $minWhack = 4;
-                $maxWhack = 10;
-            }
-            else
-            {
-                // kid tolerance
-                $minWhack = 1;
-                $maxWhack = 6;
-            }
-
-            if($this->randomService->roll($minWhack, $maxWhack) < $pet->getWhack())
+            if($this->randomService->roll(4, 12) < $pet->getAlcohol())
             {
                 $changes = new PetChanges($pet);
 
-                $halfWhack = ceil($pet->getWhack() / 2);
-                $quarterWhack = ceil($pet->getWhack() / 4);
+                $halfAlcohol = ceil($pet->getAlcohol() / 2);
+                $quarterAlcohol = ceil($pet->getAlcohol() / 4);
 
-                $pet->increaseWhack(-mt_rand(1, $halfWhack));
+                $pet->increaseAlcohol(-mt_rand(1, $halfAlcohol));
                 if($pet->getJunk() > 0) $pet->increaseJunk(-mt_rand(1, ceil($pet->getJunk() / 2)));
                 if($pet->getFood() > 0) $pet->increaseFood(-mt_rand(1, ceil($pet->getFood() / 2)));
 
-                $pet->increaseSafety(-mt_rand(1, $quarterWhack));
-                $pet->increaseEsteem(-mt_rand(1, $quarterWhack));
+                $pet->increaseSafety(-mt_rand(1, $quarterAlcohol));
+                $pet->increaseEsteem(-mt_rand(1, $quarterAlcohol));
 
                 $pet->spendTime(\mt_rand(15, 45));
 

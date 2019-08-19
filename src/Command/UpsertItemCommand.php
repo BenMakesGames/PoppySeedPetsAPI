@@ -111,7 +111,7 @@ class UpsertItemCommand extends PsyPetsCommand
             $food->setFood($this->askInt('Food hours', $food->getFood()));
             $food->setLove($this->askInt('Love hours', $food->getLove()));
             $food->setJunk($this->askInt('Junk hours', $food->getJunk()));
-            $food->setWhack($this->askInt('Whack hours', $food->getWhack()));
+            $food->setAlcohol($this->askInt('Alcohol hours', $food->getAlcohol()));
 
             foreach(FlavorEnum::getValues() as $flavor)
                 $food->{'set' . $flavor}($this->askInt(ucfirst($flavor) . ' hours', $food->{'get' . $flavor}()));

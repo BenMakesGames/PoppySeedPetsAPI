@@ -26,7 +26,7 @@ class FishingService
 
     public function adventure(Pet $pet)
     {
-        $maxSkill = 5 + $pet->getDexterity() + $pet->getNature() + $pet->getFishing() - $pet->getWhack();
+        $maxSkill = 5 + $pet->getDexterity() + $pet->getNature() + $pet->getFishing() - $pet->getAlcohol();
 
         if($maxSkill > 13) $maxSkill = 13;
         else if($maxSkill < 1) $maxSkill = 1;

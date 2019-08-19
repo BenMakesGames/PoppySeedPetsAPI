@@ -94,7 +94,7 @@ class Pet
     /**
      * @ORM\Column(type="integer")
      */
-    private $whack = 0;
+    private $alcohol = 0;
 
     /**
      * @ORM\Column(type="datetime_immutable")
@@ -286,7 +286,7 @@ class Pet
 
         $divisor = 1;
 
-        if($this->getFood() + $this->getWhack() < 0) $divisor++;
+        if($this->getFood() + $this->getAlcohol() < 0) $divisor++;
 
         $amount = floor($amount / $divisor);
 
@@ -318,8 +318,8 @@ class Pet
 
         $divisor = 1;
 
-        if($this->getFood() + $this->getWhack() < 0) $divisor++;
-        if($this->getSafety() + $this->getWhack() < 0) $divisor++;
+        if($this->getFood() + $this->getAlcohol() < 0) $divisor++;
+        if($this->getSafety() + $this->getAlcohol() < 0) $divisor++;
 
         $amount = floor($amount / $divisor);
 
@@ -351,9 +351,9 @@ class Pet
 
         $divisor = 1;
 
-        if($this->getFood() + $this->getWhack() < 0) $divisor++;
-        if($this->getSafety() + $this->getWhack() < 0) $divisor++;
-        if($this->getLove() + $this->getWhack() < 0) $divisor++;
+        if($this->getFood() + $this->getAlcohol() < 0) $divisor++;
+        if($this->getSafety() + $this->getAlcohol() < 0) $divisor++;
+        if($this->getLove() + $this->getAlcohol() < 0) $divisor++;
 
         $amount = floor($amount / $divisor);
 
@@ -431,16 +431,16 @@ class Pet
         return $this;
     }
 
-    public function getWhack(): int
+    public function getAlcohol(): int
     {
-        return $this->whack;
+        return $this->alcohol;
     }
 
-    public function increaseWhack(int $amount): self
+    public function increaseAlcohol(int $amount): self
     {
         if($amount === 0) return $this;
 
-        $this->whack = NumberFunctions::constrain($this->whack + $amount, -16, 16);
+        $this->alcohol = NumberFunctions::constrain($this->alcohol + $amount, -16, 16);
 
         return $this;
     }

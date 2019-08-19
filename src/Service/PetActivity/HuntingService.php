@@ -33,7 +33,7 @@ class HuntingService
 
     public function adventure(Pet $pet)
     {
-        $maxSkill = 10 + $pet->getStrength() + $pet->getBrawl() - $pet->getWhack() - $pet->getJunk();
+        $maxSkill = 10 + $pet->getStrength() + $pet->getBrawl() - $pet->getAlcohol() - $pet->getJunk();
 
         if($maxSkill > 17) $maxSkill = 17;
         else if($maxSkill < 1) $maxSkill = 1;

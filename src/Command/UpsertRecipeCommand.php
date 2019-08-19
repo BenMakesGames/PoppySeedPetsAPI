@@ -72,13 +72,13 @@ class UpsertRecipeCommand extends PsyPetsCommand
         $this->output->writeln('  Food: ' . $ingredientFood->getFood());
         $this->output->writeln('  Love: ' . $ingredientFood->getLove());
         $this->output->writeln('  Junk: ' . $ingredientFood->getJunk());
-        $this->output->writeln('  Whack: ' . $ingredientFood->getWhack());
+        $this->output->writeln('  Alcohol: ' . $ingredientFood->getAlcohol());
 
         $this->output->writeln('Product food value totals:');
         $this->output->writeln('  Food: ' . $makesFood->getFood());
         $this->output->writeln('  Love: ' . $makesFood->getLove());
         $this->output->writeln('  Junk: ' . $makesFood->getJunk());
-        $this->output->writeln('  Whack: ' . $makesFood->getWhack());
+        $this->output->writeln('  Alcohol: ' . $makesFood->getAlcohol());
     }
 
     private function askName(string $prompt, Recipe $recipe, string $name)

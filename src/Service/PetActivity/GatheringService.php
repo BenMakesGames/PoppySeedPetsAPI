@@ -27,7 +27,7 @@ class GatheringService
 
     public function adventure(Pet $pet)
     {
-        $maxSkill = 10 + $pet->getPerception() + $pet->getNature() + $pet->getGathering() - $pet->getWhack() - $pet->getJunk();
+        $maxSkill = 10 + $pet->getPerception() + $pet->getNature() + $pet->getGathering() - $pet->getAlcohol() - $pet->getJunk();
 
         if($maxSkill > 18) $maxSkill = 18;
         else if($maxSkill < 1) $maxSkill = 1;
@@ -501,7 +501,6 @@ class GatheringService
         {
             $pet->increaseFood(-1);
             $pet->increaseSafety(-mt_rand(1, 2));
-            $pet->increaseWhack(mt_rand(2, 4));
 
             if(mt_rand(1, 10) === 1 && count($pet->getOwner()->getPets()) > 1)
                 $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and I don\'t mean in a sexy way; ' . $pet->getName() . ' got a bit light-headed.');

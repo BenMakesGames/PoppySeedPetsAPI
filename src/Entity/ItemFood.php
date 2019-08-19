@@ -40,7 +40,7 @@ class ItemFood
     /**
      * @ORM\Column(type="integer")
      */
-    private $whack = 0;
+    private $alcohol = 0;
 
     /**
      * @ORM\Column(type="integer")
@@ -143,14 +143,14 @@ class ItemFood
         return $this;
     }
 
-    public function getWhack(): ?int
+    public function getAlcohol(): ?int
     {
-        return $this->whack;
+        return $this->alcohol;
     }
 
-    public function setWhack(int $whack): self
+    public function setAlcohol(int $alcohol): self
     {
-        $this->whack = $whack;
+        $this->alcohol = $alcohol;
 
         return $this;
     }
@@ -308,7 +308,7 @@ class ItemFood
         $added->food += $f->food;
         $added->love += $f->love;
         $added->junk += $f->junk;
-        $added->whack += $f->whack;
+        $added->alcohol += $f->alcohol;
 
         return $added;
     }
@@ -320,7 +320,7 @@ class ItemFood
         $multiplied->food *= $f;
         $multiplied->love *= $f;
         $multiplied->junk *= $f;
-        $multiplied->whack *= $f;
+        $multiplied->alcohol *= $f;
 
         return $multiplied;
     }
@@ -349,7 +349,7 @@ class ItemFood
         if($this->junk > 0) $modifiers[] = 'a junk food';
         else if($this->junk < 0) $modifiers[] = 'a healthy food';
 
-        if($this->whack > 0) $modifiers[] = 'makes pets feel a little whacky';
+        if($this->alcohol > 0) $modifiers[] = 'alcoholic';
 
         foreach(FlavorEnum::getValues() as $flavor)
             if($this->$flavor > 0) $modifiers[] = $flavor;
