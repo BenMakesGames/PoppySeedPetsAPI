@@ -16,12 +16,13 @@ monolog:
             max_files: 7
         deduplicated:
             type: deduplication
+            action_level: critical
             handler: swift
         swift:
             type: swift_mailer
-            from_email: 'api@maslowspets.com'
-            to_email: 'ben@benmakesgames.com'
-            subject: "Maslow's Pets Exception: %%message%%"
+            from_email: 'api@poppyseedpets.com'
+            to_email: 'ben@poppyseedpets.com'
+            subject: "Poppy Seed Pets Exception: %%message%%"
             level: debug
             formatter: monolog.formatter.html
             content_type: text/html
