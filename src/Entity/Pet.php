@@ -473,9 +473,14 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        $this->psychedelic = NumberFunctions::constrain($this->psychedelic + $amount, 0, 16);
+        $this->psychedelic = NumberFunctions::constrain($this->psychedelic + $amount, 0, $this->getMaxPsychedelic());
 
         return $this;
+    }
+
+    public function getMaxPsychedelic(): int
+    {
+        return 16;
     }
 
     public function getBirthDate(): ?\DateTimeImmutable
@@ -704,7 +709,11 @@ class Pet
 
     public function getUmbra(): int
     {
-        return $this->getSkills()->getUmbra() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getUmbra() : 0);
+        return
+            $this->getSkills()->getUmbra() +
+            ($this->getTool() ? $this->getTool()->getItem()->getTool()->getUmbra() : 0) +
+            ceil($this->getPsychedelic() * 5 / $this->getMaxPsychedelic())
+        ;
     }
 
     public function getFishing(): int
