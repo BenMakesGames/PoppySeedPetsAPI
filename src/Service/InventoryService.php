@@ -169,8 +169,8 @@ class InventoryService
 
         if($item->getFood() !== null && \mt_rand(1, 20) < 10 - $pet->getFood())
         {
-            $this->petService->doEat($pet, $item, $activityLog);
-            return null;
+            if($this->petService->doEat($pet, $item, $activityLog))
+                return null;
         }
 
         $i = (new Inventory())

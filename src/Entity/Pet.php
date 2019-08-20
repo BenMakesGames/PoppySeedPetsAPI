@@ -209,6 +209,11 @@ class Pet
      */
     private $psychedelic = 0;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $poison = 0;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -962,5 +967,17 @@ class Pet
     public function getPsychedelic(): int
     {
         return $this->psychedelic;
+    }
+
+    public function getPoison(): int
+    {
+        return $this->poison;
+    }
+
+    public function increasePoison(int $poison): self
+    {
+        $this->poison = NumberFunctions::constrain($this->poison + $poison, 0, 24);
+
+        return $this;
     }
 }

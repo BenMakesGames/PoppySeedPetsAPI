@@ -209,16 +209,28 @@ class PetService
         $petChanges = new PetChanges($pet);
         $foodsEaten = [];
         $favorites = [];
+        $tooFull = [];
+        $tooPoisonous = [];
 
         foreach($inventory as $i)
         {
-
             if($pet->getJunk() + $pet->getFood() >= $pet->getStomachSize())
-                break;
+            {
+                $tooFull[] = $i->getItem()->getName();
+                continue;
+            }
 
             $food = $i->getItem()->getFood();
 
+            if($pet->getPoison() > 6 && ($food->getAlcohol() > 0 || $food->getCaffeine() > 0 || $food->getPsychedelic() > 0))
+            {
+                $tooPoisonous[] = $i->getItem()->getName();
+                continue;
+            }
+
             $pet->increaseAlcohol($food->getAlcohol());
+            $pet->increaseCaffeine($food->getCaffeine());
+            $pet->increasePsychedelic($food->getPsychedelic());
             $pet->increaseFood($food->getFood());
             $pet->increaseJunk($food->getJunk());
 
@@ -272,14 +284,27 @@ class PetService
                 return $this->responseService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.', '', $petChanges->compare($pet));
         }
         else
-            return $this->responseService->createActivityLog($pet, 'You tried to feed ' . $pet->getName() . ', but they\'re too full to eat anymore.', '', $petChanges->compare($pet));
+        {
+            if(count($tooPoisonous) > 0)
+                return $this->responseService->createActivityLog($pet, 'You tried to feed ' . $pet->getName() . ', but ' . ArrayFunctions::pick_one($tooPoisonous) . ' really isn\'t appealing right now.', '');
+            else
+                return $this->responseService->createActivityLog($pet, 'You tried to feed ' . $pet->getName() . ', but they\'re too full to eat anymore.', '');
+        }
     }
 
-    public function doEat(Pet $pet, Item $item, ?PetActivityLog $activityLog)
+    public function doEat(Pet $pet, Item $item, ?PetActivityLog $activityLog): bool
     {
+        if($pet->getJunk() + $pet->getFood() >= $pet->getStomachSize())
+            return false;
+
         $food = $item->getFood();
 
+        if($pet->getPoison() > 6 && ($food->getAlcohol() > 0 || $food->getCaffeine() > 0 || $food->getPsychedelic() > 0))
+            return false;
+
         $pet->increaseAlcohol($food->getAlcohol());
+        $pet->increaseCaffeine($food->getCaffeine());
+        $pet->increasePsychedelic($food->getPsychedelic());
         $pet->increaseFood($food->getFood());
         $pet->increaseJunk($food->getJunk());
 
@@ -293,6 +318,8 @@ class PetService
 
         if($activityLog)
             $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $item->getName() . '.');
+
+        return true;
     }
 
     public function runHour(Pet $pet)
@@ -305,14 +332,28 @@ class PetService
         if($pet->getJunk() > 0)
             $pet->increaseJunk(-1);
 
+        if($pet->getPoison() > 0 && $pet->getAlcohol() === 0 && $pet->getCaffeine() === 0 && $pet->getPsychedelic() === 0)
+            $pet->increasePoison(-1);
+
         if($pet->getAlcohol() > 0)
+        {
             $pet->increaseAlcohol(-1);
+            $pet->increasePoison(1);
+        }
 
         if($pet->getCaffeine() > 0)
+        {
             $pet->increaseCaffeine(-1);
 
+            if(mt_rand(1, 2) === 1)
+                $pet->increasePoison(1);
+        }
+
         if($pet->getPsychedelic() > 0)
-            $pet->increasePsychedelic()(-1);
+        {
+            $pet->increasePsychedelic(-1);
+            $pet->increasePoison(2);
+        }
 
         if($pet->getSafety() > 0 && mt_rand(1, 2) === 1)
             $pet->increaseSafety(-1);
@@ -329,16 +370,18 @@ class PetService
         else if($pet->getEsteem() < 0 && mt_rand(1, 2) === 1)
             $pet->increaseEsteem(1);
 
-        if($pet->getAlcohol() + $pet->getPsychedelic() > 0)
+        if($pet->getPoison() > 0)
         {
-            if($this->randomService->roll(6, 24) < $pet->getAlcohol() + $pet->getPsychedelic())
+            if($this->randomService->roll(6, 24) < $pet->getPoison())
             {
                 $changes = new PetChanges($pet);
 
-                $safetyVom = ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 4);
+                $safetyVom = ceil($pet->getPoison() / 4);
 
+                $pet->increasePoison(-mt_rand(1, ceil($pet->getPoison() / 2)));
                 if($pet->getAlcohol() > 0) $pet->increaseAlcohol(-mt_rand(1, ceil($pet->getAlcohol() / 2)));
                 if($pet->getPsychedelic() > 0) $pet->increasePsychedelic(-mt_rand(1, ceil($pet->getPsychedelic() / 2)));
+                if($pet->getCaffeine() > 0) $pet->increaseFood(-mt_rand(1, ceil($pet->getCaffeine() / 2)));
                 if($pet->getJunk() > 0) $pet->increaseJunk(-mt_rand(1, ceil($pet->getJunk() / 2)));
                 if($pet->getFood() > 0) $pet->increaseFood(-mt_rand(1, ceil($pet->getFood() / 2)));
 
