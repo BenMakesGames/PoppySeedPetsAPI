@@ -22,6 +22,7 @@ use App\Service\PetActivity\HuntingService;
 use App\Service\PetActivity\ProgrammingService;
 use App\Service\PetActivity\Protocol7Service;
 use App\Service\PetActivity\TreasureMapService;
+use App\Service\PetActivity\UmbraService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetService
@@ -40,6 +41,7 @@ class PetService
     private $treasureMapService;
     private $genericAdventureService;
     private $protocol7Service;
+    private $umbraService;
 
     public function __construct(
         EntityManagerInterface $em, RandomService $randomService, ResponseService $responseService,
@@ -47,7 +49,7 @@ class PetService
         FishingService $fishingService, HuntingService $huntingService, GatheringService $gatheringService,
         CraftingService $craftingService, UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
         TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService,
-        Protocol7Service $protocol7Service, ProgrammingService $programmingService
+        Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService
     )
     {
         $this->em = $em;
@@ -64,6 +66,7 @@ class PetService
         $this->genericAdventureService = $genericAdventureService;
         $this->protocol7Service = $protocol7Service;
         $this->programmingService = $programmingService;
+        $this->umbraService = $umbraService;
     }
 
     /**
@@ -479,6 +482,7 @@ class PetService
             'fish' => $this->generateFishingDesire($pet),
             'hunt' => $this->generateMonsterHuntingDesire($pet),
             'gather' => $this->generateGatheringDesire($pet),
+            'umbra' => $this->generateExploreUmbraDesire($pet),
         ];
 
         if($pet->hasMerit(MeritEnum::PROTOCOL_7))
@@ -497,6 +501,7 @@ class PetService
             case 'craft': $this->craftingService->adventure($pet, $craftingPossibilities); break;
             case 'program': $this->programmingService->adventure($pet, $programmingPossibilities); break;
             case 'hack': $this->protocol7Service->adventure($pet); break;
+            case 'umbra': $this->umbraService->adventure($pet); break;
             default: $this->doNothing($pet); break;
         }
     }
@@ -817,6 +822,28 @@ class PetService
             $desire += $pet->getTool()->getItem()->getTool()->getIntelligence() + $pet->getTool()->getItem()->getTool()->getCrafts();
 
         return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
+    }
+
+    public function generateExploreUmbraDesire(Pet $pet): int
+    {
+        $desire = $pet->getStamina() + $pet->getIntelligence() + $pet->getUmbra() + \mt_rand(1, 4);
+
+        if($pet->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getStamina() + $pet->getTool()->getItem()->getTool()->getIntelligence() + $pet->getTool()->getItem()->getTool()->getUmbra();
+
+        if($pet->hasMerit(MeritEnum::NATURAL_CHANNEL))
+        {
+            if($pet->getPsychedelic() > $pet->getMaxPsychedelic() / 2)
+                return ceil($desire * $pet->getPsychedelic() * 2 / $pet->getMaxPsychedelic());
+            else
+                return $desire;
+        }
+        else if($pet->getPsychedelic() > 0)
+        {
+            return ceil($desire * $pet->getPsychedelic() * 2 / $pet->getMaxPsychedelic());
+        }
+        else
+            return 0;
     }
 
     public function generateGatheringDesire(Pet $pet): int

@@ -83,6 +83,12 @@ class FishingService
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to fish, but couldn\'t find a quiet place to do so.', 'icons/activity-logs/confused');
     }
 
+    private function creditLackOfReflection(PetActivityLog $activityLog)
+    {
+        if($activityLog->getPet()->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION) && mt_rand(1, 4) === 1)
+            $activityLog->setEntry($activityLog->getEntry() . ' (Having no reflection is pretty useful!)');
+    }
+
     private function nothingBiting(Pet $pet, int $percentChance, string $atLocationName): ?PetActivityLog
     {
         if($pet->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION)) $percentChance /= 2;
@@ -109,6 +115,8 @@ class FishingService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Small Lake, and caught a Mini Minnow.', 'items/tool/fishing-rod/crooked');
             $this->inventoryService->petCollectsItem('Fish', $pet, 'From a Mini Minnow that ' . $pet->getName() . ' fished at a Small Lake.', $activityLog);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::DEXTERITY, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
+
+            $this->creditLackOfReflection($activityLog);
         }
         else if(mt_rand(1, 15) === 1)
         {
@@ -139,6 +147,8 @@ class FishingService
                 $this->inventoryService->petCollectsItem('Scales', $pet, 'From a Muscly Trout that ' . $pet->getName() . ' fished Under a Bridge.', $activityLog);
 
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::DEXTERITY, PetSkillEnum::NATURE, PetSkillEnum::STRENGTH ]);
+
+            $this->creditLackOfReflection($activityLog);
 
             $pet->spendTime(mt_rand(45, 60));
         }
@@ -171,6 +181,8 @@ class FishingService
 
                 $this->petService->gainExp($pet, 2, [ PetSkillEnum::DEXTERITY, PetSkillEnum::NATURE, PetSkillEnum::STAMINA, PetSkillEnum::STRENGTH ]);
 
+                $this->creditLackOfReflection($activityLog);
+
                 $pet->spendTime(mt_rand(45, 75));
             }
             else
@@ -193,6 +205,8 @@ class FishingService
 
                 if($gotMusic)
                     $this->inventoryService->petCollectsItem('Music Note', $pet, 'From a Singing Fish that ' . $pet->getName() . ' fished at a Roadside Creek.', $activityLog);
+
+                $this->creditLackOfReflection($activityLog);
 
                 $this->petService->gainExp($pet, 2, [ PetSkillEnum::DEXTERITY, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
 
@@ -264,6 +278,8 @@ class FishingService
                 if(\mt_rand(1, 20 + $pet->getNature()) >= 10)
                     $this->inventoryService->petCollectsItem('Fish', $pet, 'From a Medium Minnow that ' . $pet->getName() . ' fished in a Waterfall Basin.', $activityLog);
 
+                $this->creditLackOfReflection($activityLog);
+
                 $pet->spendTime(mt_rand(45, 60));
             }
             else
@@ -318,6 +334,8 @@ class FishingService
 
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::DEXTERITY, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
 
+            $this->creditLackOfReflection($activityLog);
+
             $pet->spendTime(mt_rand(45, 60));
         }
         else
@@ -368,6 +386,8 @@ class FishingService
                 $this->inventoryService->petCollectsItem('Beans', $pet, $pet->getName() . ' got this from a Mung Fish at a Foggy Lake.', $activityLog);
                 $this->petService->gainExp($pet, 2, [ PetSkillEnum::DEXTERITY, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
             }
+
+            $this->creditLackOfReflection($activityLog);
 
             $pet->spendTime(mt_rand(45, 60));
         }
