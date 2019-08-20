@@ -70,7 +70,7 @@ class PetController extends PsyPetsController
         $note = trim($request->request->get('note', ''));
 
         if(strlen($note) > 1000)
-            return new UnprocessableEntityHttpException('Note cannot be longer than 1000 characters.');
+            throw new UnprocessableEntityHttpException('Note cannot be longer than 1000 characters.');
 
         $pet->setNote($note);
 
