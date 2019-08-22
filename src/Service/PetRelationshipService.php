@@ -44,7 +44,7 @@ class PetRelationshipService
 
         $meet =
             $alreadyKnow ||
-            mt_rand(1, 100) <= $meetChance ||
+            mt_rand(1, 100 + ($p1->getRelationshipCount() + $p2->getRelationshipCount()) * 10) <= $meetChance ||
             (($p1->wouldBang($p2) || $p2->wouldBang($p1)) && mt_rand(1, 100) <= $meetChance * 5)
         ;
 

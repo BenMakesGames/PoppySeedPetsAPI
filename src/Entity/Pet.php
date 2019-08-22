@@ -925,6 +925,11 @@ class Pet
         });
     }
 
+    public function getRelationshipCount(): int
+    {
+        return count($this->getPetRelationships());
+    }
+
     public function getWouldBangFraction(): ?int
     {
         return $this->wouldBangFraction;
