@@ -869,7 +869,7 @@ class Pet
             throw new \InvalidArgumentException('"' . $parkEventType . '" is not a valid park event type.');
 
         $this->parkEventType = $parkEventType;
-        $this->parkEventOrder = mt_rand(0, 2147483647);
+        $this->parkEventOrder = mt_rand(0, 2000000000);
 
         return $this;
     }

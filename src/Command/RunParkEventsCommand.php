@@ -71,6 +71,11 @@ class RunParkEventsCommand extends Command
 
         if($parkEvent)
         {
+            $this->em->getConnection()->executeQuery(
+                'UPDATE pet SET park_event_order=FLOOR(RAND() * 2000000000) WHERE park_event_type=:parkEventType',
+                [ 'parkEventType' => $eventType ]
+            );
+
             $this->em->persist($parkEvent);
 
             foreach($parkEvent->getParticipants() as $pet)
