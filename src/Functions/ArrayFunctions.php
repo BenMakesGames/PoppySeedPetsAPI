@@ -3,7 +3,10 @@ namespace App\Functions;
 
 final class ArrayFunctions
 {
-    public static function any(\Traversable $array, callable $delegate)
+    /**
+     * @param array|\Traversable $array
+     */
+    public static function any($array, callable $delegate)
     {
         foreach($array as $item)
         {
@@ -14,7 +17,10 @@ final class ArrayFunctions
         return false;
     }
 
-    public static function all(\Traversable $array, callable $delegate)
+    /**
+     * @param array|\Traversable $array
+     */
+    public static function all($array, callable $delegate)
     {
         foreach($array as $item)
         {
@@ -26,9 +32,10 @@ final class ArrayFunctions
     }
 
     /**
+     * @param array|\Traversable $array
      * @return mixed|null
      */
-    public static function find_one(\Traversable $array, callable $delegate)
+    public static function find_one($array, callable $delegate)
     {
         foreach($array as $item)
         {
