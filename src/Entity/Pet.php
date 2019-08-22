@@ -915,7 +915,12 @@ class Pet
 
     public function hasRelationshipWith(Pet $otherPet): bool
     {
-        return ArrayFunctions::any($this->getPetRelationships(), function(PetRelationship $r) use($otherPet) {
+        return $this->getRelationshipWith($otherPet) !== null;
+    }
+
+    public function getRelationshipWith(Pet $otherPet): ?PetRelationship
+    {
+        return ArrayFunctions::find_one($this->getPetRelationships(), function(PetRelationship $r) use($otherPet) {
             return $r->getRelationship()->getId() === $otherPet->getId();
         });
     }

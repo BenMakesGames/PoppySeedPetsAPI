@@ -70,10 +70,7 @@ class PetRelationshipService
 
     public function meetRoommate(Pet $pet, Pet $otherPet)
     {
-        $relationship = $this->petRelationshipRepository->findOneBy([
-            'pet' => $pet->getId(),
-            'relationship' => $otherPet->getId()
-        ]);
+        $relationship = $pet->getRelationshipWith($otherPet);
 
         if($relationship === null)
         {
@@ -138,10 +135,7 @@ class PetRelationshipService
 
     public function meetOtherPetAtGroupGathering(Pet $pet, Pet $otherPet, string $howMet)
     {
-        $relationship = $this->petRelationshipRepository->findOneBy([
-            'pet' => $pet->getId(),
-            'relationship' => $otherPet->getId()
-        ]);
+        $relationship = $pet->getRelationshipWith($otherPet);
 
         if($relationship === null)
         {
