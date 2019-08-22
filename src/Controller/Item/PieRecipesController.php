@@ -63,9 +63,9 @@ I was once told "there as many types of pie filling as there are people who have
 
 ### Eating
 
-You\'ve made your crust; your filling. You\'ve baked. There\'s only one step left. The hardest, but perhaps most important: where, and with whom, will you eat it?
+You\'ve made your crust; your filling. You\'ve baked. There\'s only one step left - the hardest, but perhaps most important: where, and with whom, will you eat it?
 
-These are questions I cannot answer, but I believe - without a doubt - that with pie and questions, you can and will find your own answers. And when you do, consider leaving this book for some future human to find. Place it in the nook of a tree and post its coordinates online, anonymously, without explanation; give it to a niece still too young to read; or just sell it to a used bookstore. Share the slice of life you\'ve experienced as you would a slice of pie.
+These are questions I cannot answer, but I believe, without a doubt, that with pie and questions in hand and in mind, you can and will find your own answers. And when you do, consider leaving this book for some future human to find. Place it in the nook of a tree and post its coordinates online, anonymously, without explanation; give it to a niece still too young to read; or just sell it to a used bookstore. Share the slice of life you\'ve experienced through this book as you would a slice of pie.
 ');
     }
 }
