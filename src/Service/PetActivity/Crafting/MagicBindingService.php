@@ -58,7 +58,7 @@ class MagicBindingService
         return $possibilities;
     }
 
-    private function createCrazyHotTorch(Pet $pet): PetActivityLog
+    public function createCrazyHotTorch(Pet $pet): PetActivityLog
     {
         $umbraCheck = \mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence());
         $craftsCheck = \mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
