@@ -87,6 +87,17 @@ For shame! You can use that the next time you want to grill! (Don\'t even talk t
 
 If you\'re looking for Charcoal in a pinch, set some wood on fire, place it in something that can withstand the temperature of burning wood, and sprinkle some Aging Powder in!
 
+### Century Egg
+
+Ah! The ever-divisive Century Egg! You either hate it, or you love it; there\'s really no inbetween.
+
+It\'s a bit difficult to prepare. Besides aging, it\'s important that the right chemicals be available, to prevent the egg from spoiling. A Century Egg is not a Rotten Egg!
+
+Besides the Egg and Aging Powder, you will need:
+* Charcoal
+* Limestone
+* Rice (husks)
+
 ### Kombucha
 
 I hadn\'t tried Kombucha until I started experimenting with Aging Root; it\'s a very refreshing drink, but ordinarily takes a few days to make.

@@ -9,6 +9,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\InventoryRepository")
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="modified_on_idx", columns={"modified_on"})
+ * })
  */
 class Inventory
 {
@@ -105,26 +108,19 @@ class Inventory
         return $this;
     }
 
-    public function getCreatedOn(): ?\DateTimeImmutable
+    public function getCreatedOn(): \DateTimeImmutable
     {
         return $this->createdOn;
     }
 
-    public function setCreatedOn(\DateTimeImmutable $createdOn): self
-    {
-        $this->createdOn = $createdOn;
-
-        return $this;
-    }
-
-    public function getModifiedOn(): ?\DateTimeImmutable
+    public function getModifiedOn(): \DateTimeImmutable
     {
         return $this->modifiedOn;
     }
 
-    public function setModifiedOn(\DateTimeImmutable $modifiedOn): self
+    public function setModifiedOn(): self
     {
-        $this->modifiedOn = $modifiedOn;
+        $this->modifiedOn = new \DateTimeImmutable();
 
         return $this;
     }

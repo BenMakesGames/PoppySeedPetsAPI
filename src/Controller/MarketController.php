@@ -75,6 +75,7 @@ class MarketController extends PsyPetsController
             $inventory
                 ->setOwner($user)
                 ->setSellPrice(null)
+                ->setModifiedOn()
             ;
 
             if($inventory->getPet())
