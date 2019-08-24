@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\Inventory;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Repository\InventoryRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\Filter\MarketFilterService;
 use App\Service\ResponseService;
@@ -11,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -35,57 +37,82 @@ class MarketController extends PsyPetsController
     }
 
     /**
-     * @Route("/{inventory}/buy", methods={"POST"})
+     * @Route("/buy", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function buy(
-        Inventory $inventory, ResponseService $responseService, AdapterInterface $cache, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository
+        Request $request, ResponseService $responseService, AdapterInterface $cache, EntityManagerInterface $em,
+        UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository
     )
     {
         $user = $this->getUser();
 
-        if($inventory->getOwner()->getId() === $user->getId())
-            throw new UnprocessableEntityHttpException('You cannot buy your own items. That would be silly.');
+        $itemId = $request->request->getInt('item', 0);
+        $price = $request->request->getInt('sellPrice', 0);
 
-        if($inventory->getSellPrice() === null)
-            throw new UnprocessableEntityHttpException('That item does not exist.');
+        if($itemId === 0 || $price === 0)
+            throw new UnprocessableEntityHttpException('Item and price are both required.');
 
-        if($inventory->getBuyPrice() > $user->getMoneys())
-            throw new UnprocessableEntityHttpException('You do not have enough money to buy that item.');
+        if(Inventory::calculateBuyPrice($price) > $user->getMoneys())
+            throw new UnprocessableEntityHttpException('You do not have enough moneys.');
 
-        $item = $cache->getItem('Trading Inventory #' . $inventory->getId());
+        /** @var Inventory[] $forSale */
+        $forSale = $inventoryRepository->createQueryBuilder('i')
+            ->andWhere('i.owner!=:user')
+            ->andWhere('i.sellPrice=:price')
+            ->andWhere('i.item=:item')
+            ->addOrderBy('i.sellListDate', 'ASC')
+            ->setParameter('user', $user->getId())
+            ->setParameter('price', $price)
+            ->setParameter('item', $itemId)
+            ->getQuery()
+            ->getResult()
+        ;
 
-        if($item->isHit())
-            throw new ConflictHttpException('This item is currently being exchanged with another player; unless the exchange failed, it is probably no longer available. Sorry :(');
+        $buy = null;
 
-        $item->set(true)->expiresAfter(\DateInterval::createFromDateString('5 minutes'));
-        $cache->save($item);
+        foreach($forSale as $inventory)
+        {
+            $item = $cache->getItem('Trading Inventory #' . $inventory->getId());
+
+            if($item->isHit())
+                continue;
+            else
+            {
+                $item->set(true)->expiresAfter(\DateInterval::createFromDateString('2 minutes'));
+                $cache->save($item);
+                $buy = $inventory;
+                break;
+            }
+        }
+
+        if($buy === null)
+            throw new NotFoundHttpException('An item for that price could not be found on the market. Someone may have bought it up just for you did! Sorry :|');
 
         try
         {
-            $inventory->getOwner()->increaseMoneys($inventory->getSellPrice());
-            $userStatsRepository->incrementStat($inventory->getOwner(), UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $inventory->getSellPrice());
-            $userStatsRepository->incrementStat($inventory->getOwner(), UserStatEnum::ITEMS_SOLD_IN_MARKET, 1);
+            $buy->getOwner()->increaseMoneys($buy->getSellPrice());
+            $userStatsRepository->incrementStat($buy->getOwner(), UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $buy->getSellPrice());
+            $userStatsRepository->incrementStat($buy->getOwner(), UserStatEnum::ITEMS_SOLD_IN_MARKET, 1);
 
-            $user->increaseMoneys(-$inventory->getBuyPrice());
-            $userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, $inventory->getBuyPrice());
+            $user->increaseMoneys(-$buy->getBuyPrice());
+            $userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, $buy->getBuyPrice());
             $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_BOUGHT_IN_MARKET, 1);
 
-            $inventory
+            $buy
                 ->setOwner($user)
                 ->setSellPrice(null)
                 ->setModifiedOn()
             ;
 
-            if($inventory->getPet())
-                $inventory->getPet()->setTool(null);
+            if($buy->getPet())
+                $buy->getPet()->setTool(null);
 
             $em->flush();
         }
         finally
         {
-            $cache->deleteItem('Trading Inventory #' . $inventory->getId());
+            $cache->deleteItem('Trading Inventory #' . $buy->getId());
         }
 
         return $responseService->success();

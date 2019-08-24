@@ -43,9 +43,12 @@ class MarketFilterService
     public function createQueryBuilder(): QueryBuilder
     {
         return $this->repository->createQueryBuilder('i')
+            ->select('i,MIN(i.sellPrice) AS HIDDEN minSellPrice')
             ->leftJoin('i.item', 'item')
             ->andWhere('i.sellPrice IS NOT NULL')
+            ->andHaving('i.sellPrice = minSellPrice')
             ->andWhere('i.owner != :user')
+            ->addGroupBy('item.name')
             ->setParameter('user', $this->user->getId())
         ;
     }

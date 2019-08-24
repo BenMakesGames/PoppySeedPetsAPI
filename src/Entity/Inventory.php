@@ -10,7 +10,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\InventoryRepository")
  * @ORM\Table(indexes={
- *     @ORM\Index(name="modified_on_idx", columns={"modified_on"})
+ *     @ORM\Index(name="modified_on_idx", columns={"modified_on"}),
+ *     @ORM\Index(name="sell_price_idx", columns={"sell_price"})
  * })
  */
 class Inventory
@@ -33,7 +34,6 @@ class Inventory
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"marketItem"})
      */
     private $owner;
 
@@ -69,9 +69,14 @@ class Inventory
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"myInventory"})
+     * @Groups({"myInventory", "marketItem"})
      */
     private $sellPrice;
+
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     */
+    private $sellListDate;
 
     public function __construct()
     {
@@ -174,6 +179,11 @@ class Inventory
 
     public function setSellPrice(?int $sellPrice): self
     {
+        if($sellPrice === null)
+            $this->sellListDate = null;
+        else if($sellPrice !== $this->sellPrice)
+            $this->sellListDate = new \DateTimeImmutable();
+
         $this->sellPrice = $sellPrice;
 
         return $this;
@@ -186,6 +196,16 @@ class Inventory
     {
         if($this->sellPrice === null || $this->sellPrice <= 0) return null;
 
-        return \ceil($this->sellPrice * 1.02);
+        return self::calculateBuyPrice($this->sellPrice);
+    }
+
+    public function getSellListDate(): ?\DateTimeImmutable
+    {
+        return $this->sellListDate;
+    }
+
+    public static function calculateBuyPrice(int $sellPrice): int
+    {
+        return \ceil($sellPrice * 1.02);
     }
 }
