@@ -118,7 +118,7 @@ class UmbraService
         {
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::UMBRA, PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA ]);
             $pet->spendTime(\mt_rand(45, 60));
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' found an outcropping of rocks where the full force of the Storm could not reach. Some weeds were growing there, but nothing of value.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, 'In the Umbra, ' . $pet->getName() . ' found an outcropping of rocks where the full force of the Storm could not reach. Some weeds were growing there, but nothing of value.', 'icons/activity-logs/confused');
         }
     }
 

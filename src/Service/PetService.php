@@ -509,21 +509,24 @@ class PetService
     private function hangOutWithFriend(Pet $pet): bool
     {
         /** @var PetRelationship[] $friends */
-        $relationships = $pet->getPetRelationships()->filter(function(PetRelationship $p) { return $p->getRelationship()->getFood() > 0; })->toArray();
+        $relationships = $pet->getPetRelationships()->filter(function(PetRelationship $p) {
+            return $p->getRelationship()->getFood() > 0; // starving pets don't have time to hang out
+        })->toArray();
 
-        if($pet->hasMerit(MeritEnum::SPIRIT_COMPANION))
-            $relationships[] = MeritEnum::SPIRIT_COMPANION;
-
-        if(count($relationships) === 0)
+        // no friends available? no spirit companion? GIT OUTTA' HE'E!
+        if(count($relationships) === 0 && !$pet->hasMerit(MeritEnum::SPIRIT_COMPANION))
             return false;
 
-        /** @var PetRelationship $relationship */
-        $relationship = ArrayFunctions::pick_one($relationships);
-
-        if($relationship === MeritEnum::SPIRIT_COMPANION)
+        // if there are no friends available OR if we randomly select the spirit companion, then hang with the spirit companion!
+        if(count($relationships) === 0 || mt_rand(1, count($relationships) + 1) === 1)
             $this->hangOutWithSpiritCompanion($pet);
         else
         {
+            /** @var PetRelationship $relationship */
+            $relationship = ArrayFunctions::pick_one_weighted($relationships, function(PetRelationship $r) {
+                return $r->getCommitment() * 2 + $r->getIntimacy() + $r->getPassion();
+            });
+
             $friend = $relationship->getRelationship();
 
             $friendRelationship = $friend->getPetRelationships()->filter(function(PetRelationship $p) use($pet) { return $p->getRelationship()->getId() === $pet->getId(); })->first();
@@ -560,7 +563,21 @@ class PetService
                 $this->em->persist($friendRelationship);
             }
 
+            // hang out with selected pet
             $this->hangOutWithOtherPet($relationship, $friendRelationship);
+
+            // reduce feelings for pets NOT hung out with
+            foreach($relationships as $r)
+            {
+                /** @var PetRelationship $r */
+                if($r->getId() !== $relationship->getId())
+                {
+                    $r->increaseCommitment(-mt_rand(1, 3));
+
+                    if(mt_rand(1, 3) === 1) $r->increaseIntimacy(-1);
+                    if(mt_rand(1, 3) === 1) $r->increasePassion(-1);
+                }
+            }
         }
 
         return true;

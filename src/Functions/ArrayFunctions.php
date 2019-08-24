@@ -39,6 +39,39 @@ final class ArrayFunctions
         return null;
     }
 
+    public static function pick_one_weighted(iterable $array, callable $weightingDelegate)
+    {
+        $items = [];
+        $total = 0;
+
+        foreach($array as $item)
+        {
+            $weight = $weightingDelegate($item);
+
+            if($weight < 0)
+                throw new \InvalidArgumentException('An item\'s weight was less than 0. This is not allowed.');
+
+            $items[] = [
+                'item' => $item,
+                'weight' => $weight
+            ];
+
+            $total += $weight;
+        }
+
+        $index = mt_rand(0, $total - 1);
+
+        foreach($items as $item)
+        {
+            if($index < $item['weight'])
+                return $item['item'];
+            else
+                $index -= $item['weight'];
+        }
+
+        throw new \Exception('This should not be possible.');
+    }
+
     public static function pick_one(array $array)
     {
         return $array[array_rand($array)];
