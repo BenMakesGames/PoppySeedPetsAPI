@@ -11,7 +11,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(indexes={
- *     @ORM\Index(name="name_index", columns={"name"})
+ *     @ORM\Index(name="name_idx", columns={"name"}),
+ *     @ORM\Index(name="last_activity_idx", columns={"last_activity"}),
  * })
  */
 class User implements UserInterface
