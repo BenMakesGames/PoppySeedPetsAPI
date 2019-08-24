@@ -46,8 +46,9 @@ class RefiningService
         {
             if(array_key_exists('Iron Bar', $quantities))
             {
-                $possibilities[] = [$this, 'createIronKey'];
-                $possibilities[] = [$this, 'createDumbbell'];
+                $possibilities[] = [ $this, 'createIronKey' ];
+                $possibilities[] = [ $this, 'createDumbbell' ];
+                $possibilities[] = [ $this, 'createIronTongs' ];
             }
 
             if(array_key_exists('Silver Bar', $quantities))
@@ -323,7 +324,7 @@ class RefiningService
             $pet->spendTime(\mt_rand(60, 75));
             $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' forged a Dumbbell from an Iron Bar.', 'items/key/iron');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' forged a Dumbbell from an Iron Bar.', 'items/tool/dumbbell');
 
             $this->inventoryService->petCollectsItem('Dumbbell', $pet, $pet->getName() . ' forged this from an Iron Bar.', $activityLog);
 
@@ -337,6 +338,40 @@ class RefiningService
             $pet->spendTime(\mt_rand(45, 75));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge a Dumbbell from an Iron Bar, but couldn\'t get the shape right.', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createIronTongs(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+        if($roll <= 2)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), 1);
+            $pet->increaseEsteem(-1);
+            $pet->increaseSafety(-\mt_rand(2, 24));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge Iron Tongs, but got burned while trying! :(', 'icons/activity-logs/burn');
+        }
+        else if($roll >= 14)
+        {
+            $pet->spendTime(\mt_rand(60, 75));
+            $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), 1);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' forged Iron Tongs from an Iron Bar.', 'items/tool/tongs');
+
+            $this->inventoryService->petCollectsItem('Iron Tongs', $pet, $pet->getName() . ' forged this from an Iron Bar.', $activityLog);
+
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(1);
+
+            return $activityLog;
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(45, 75));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge Iron Tongs from an Iron Bar, but couldn\'t get the shape right.', 'icons/activity-logs/confused');
         }
     }
 

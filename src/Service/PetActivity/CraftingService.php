@@ -97,6 +97,9 @@ class CraftingService
         if(array_key_exists('Glue', $quantities) && array_key_exists('White Cloth', $quantities))
             $possibilities[] = [ $this, 'createFabricMache' ];
 
+        if(array_key_exists('String', $quantities) && array_key_exists('Glass', $quantities))
+            $possibilities[] = [ $this, 'createGlassPendulum' ];
+
         if(array_key_exists('Hunting Spear', $quantities) && array_key_exists('Feathers', $quantities))
             $possibilities[] = [ $this, 'createDecoratedSpear' ];
 
@@ -514,6 +517,57 @@ class CraftingService
             $pet->spendTime(\mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Wooden Sword, but couldn\'t quite figure it out.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createGlassPendulum(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 3)
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+
+            if(mt_rand(1, 20 + $pet->getDexterity() + $pet->getStamina()) >= 18)
+            {
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::STAMINA ]);
+                $pet->increaseEsteem(2);
+                $pet->increaseSafety(-4);
+
+                if(mt_rand(1, 4) === 1)
+                {
+                    $pet->increaseEsteem(2);
+                    return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to cut a piece of glass, but cut themselves, instead! :( They managed to save the glass, though! ' . $pet->getName() . ' is kind of proud of that.', 'icons/activity-logs/wounded');
+                }
+                else
+                    return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to cut a piece of glass, but cut themselves, instead! :( They managed to save the glass, though!', 'icons/activity-logs/wounded');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Glass', $pet->getOwner(), 1);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::STAMINA ]);
+                $pet->increaseEsteem(-2);
+                $pet->increaseSafety(-4);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to cut a piece of glass, but cut themselves, instead, and dropped the glass :(', 'icons/activity-logs/wounded');
+            }
+        }
+        else if($roll >= 15)
+        {
+            $pet->spendTime(\mt_rand(45, 75));
+            $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Glass', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' cut some Glass to look like a gem, and made a Glass Pendulum.', '');
+            $this->inventoryService->petCollectsItem('Glass Pendulum', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $pet->increaseSafety(-1);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Glass Pendulum, but almost cut themselves on the glass, and gave up.', 'icons/activity-logs/confused');
         }
     }
 
