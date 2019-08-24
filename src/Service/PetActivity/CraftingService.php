@@ -89,6 +89,9 @@ class CraftingService
 
             if(array_key_exists('Overly-long Spear', $quantities) && array_key_exists('String', $quantities))
                 $possibilities[] = [ $this, 'createRidiculouslyLongSpear' ];
+
+            if(array_key_exists('Sweet Beet', $quantities) && array_key_exists('Glue', $quantities))
+                $possibilities[] = [ $this, 'createSweetBeat' ];
         }
 
         if(array_key_exists('Glue', $quantities) && array_key_exists('White Cloth', $quantities))
@@ -145,6 +148,47 @@ class CraftingService
             $activityLog->setChanges($changes->compare($pet));
 
         return $activityLog;
+    }
+
+    private function createSweetBeat(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        if($roll <= 2)
+        {
+            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+
+            if(mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('Glue', $pet->getOwner(), 1);
+                $this->inventoryService->loseItem('Sweet Beet', $pet->getOwner(), 1);
+                $pet->increaseEsteem(-1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Sweet Beat, but the Glue got all over the beet, wasting both :(', '');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Sweet Beat, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
+            }
+        }
+        else if($roll >= 15)
+        {
+            $pet->spendTime(\mt_rand(45, 75));
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+            $this->inventoryService->loseItem('Glue', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Sweet Beet', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Sweet Beat.', 'items/resource/string');
+            $this->inventoryService->petCollectsItem('Sweet Beat', $pet, $pet->getName() . ' created this by gluing a Sweet Beet to a Stick. Because that makes sense.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to create a Sweet Beat, but wasn\'t able to make any meaningful progress.', 'icons/activity-logs/confused');
+        }
     }
 
     private function createStringFromFluff(Pet $pet): PetActivityLog
@@ -236,7 +280,7 @@ class CraftingService
             $this->inventoryService->loseItem('Scales', $pet->getOwner(), 2);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' extracted ' . $itemName . ' from some Scales.', 'items/resource/scales');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' extracted ' . $itemName . ' from some Scales.', 'items/animal/scales');
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' extracted this from Scales.', $activityLog);
             return $activityLog;
         }
