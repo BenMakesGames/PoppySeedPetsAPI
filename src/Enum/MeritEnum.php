@@ -6,7 +6,7 @@ final class MeritEnum
     use Enum;
 
     public const EIDETIC_MEMORY = 'Eidetic Memory';
-    public const LARGE_STOMACH = 'Large Stomach';
+    public const BLACK_HOLE_TUM = 'Black Hole Tum';
     public const LUCKY = 'Lucky';
     public const MOON_BOUND = 'Moon-bound';
     public const NATURAL_CHANNEL = 'Natural Channel';

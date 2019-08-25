@@ -578,7 +578,7 @@ class Pet
 
     public function getStomachSize(): int
     {
-        return $this->stomachSize + $this->hasMerit(MeritEnum::LARGE_STOMACH) ? 6 : 0;
+        return $this->stomachSize + $this->hasMerit(MeritEnum::BLACK_HOLE_TUM) ? 6 : 0;
     }
 
     public function getLastInteracted(): \DateTimeImmutable
