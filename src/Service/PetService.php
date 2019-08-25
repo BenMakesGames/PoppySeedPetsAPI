@@ -19,6 +19,7 @@ use App\Service\PetActivity\FishingService;
 use App\Service\PetActivity\GatheringService;
 use App\Service\PetActivity\GenericAdventureService;
 use App\Service\PetActivity\HuntingService;
+use App\Service\PetActivity\PoopingService;
 use App\Service\PetActivity\ProgrammingService;
 use App\Service\PetActivity\Protocol7Service;
 use App\Service\PetActivity\TreasureMapService;
@@ -42,6 +43,7 @@ class PetService
     private $genericAdventureService;
     private $protocol7Service;
     private $umbraService;
+    private $poopingService;
 
     public function __construct(
         EntityManagerInterface $em, RandomService $randomService, ResponseService $responseService,
@@ -49,7 +51,8 @@ class PetService
         FishingService $fishingService, HuntingService $huntingService, GatheringService $gatheringService,
         CraftingService $craftingService, UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
         TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService,
-        Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService
+        Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
+        PoopingService $poopingService
     )
     {
         $this->em = $em;
@@ -67,6 +70,7 @@ class PetService
         $this->protocol7Service = $protocol7Service;
         $this->programmingService = $programmingService;
         $this->umbraService = $umbraService;
+        $this->poopingService = $poopingService;
     }
 
     /**
@@ -406,24 +410,10 @@ class PetService
 
         }
 
-        /*
         if($pet->hasMerit(MeritEnum::BLACK_HOLE_TUM) && mt_rand(1, 200) === 1)
         {
-            if(mt_rand(1, 20) === 1)
-            {
-                $this->inventoryService->receiveItem('Dark Matter', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' ' . ArrayFunctions::pick_one([
-                    'pooped this. Yay?',
-                    'pooped this. Neat?',
-                    'pooped this. Yep.',
-                    'pooped this. Hooray. Poop.'
-                ]));
-            }
-            else
-            {
-                $this->inventoryService->receiveItem('Dark Matter', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' pooped this.');
-            }
+            $this->poopingService->poopDarkMatter($pet);
         }
-        */
 
         if(
             // has food
