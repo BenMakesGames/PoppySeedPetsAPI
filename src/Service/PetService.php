@@ -517,8 +517,8 @@ class PetService
         if(count($relationships) === 0 && !$pet->hasMerit(MeritEnum::SPIRIT_COMPANION))
             return false;
 
-        // if there are no friends available OR if we randomly select the spirit companion, then hang with the spirit companion!
-        if(count($relationships) === 0 || mt_rand(1, count($relationships) + 1) === 1)
+        // maybe hang out with a spirit companion, if you have one
+        if($pet->hasMerit(MeritEnum::SPIRIT_COMPANION) && (count($relationships) === 0 || mt_rand(1, count($relationships) + 1) === 1))
             $this->hangOutWithSpiritCompanion($pet);
         else
         {
