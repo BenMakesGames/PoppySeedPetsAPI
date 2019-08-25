@@ -42,7 +42,6 @@ class PetService
     private $genericAdventureService;
     private $protocol7Service;
     private $umbraService;
-    private $inventoryService;
 
     public function __construct(
         EntityManagerInterface $em, RandomService $randomService, ResponseService $responseService,
@@ -50,8 +49,7 @@ class PetService
         FishingService $fishingService, HuntingService $huntingService, GatheringService $gatheringService,
         CraftingService $craftingService, UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
         TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService,
-        Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
-        InventoryService $inventoryService
+        Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService
     )
     {
         $this->em = $em;
@@ -69,7 +67,6 @@ class PetService
         $this->protocol7Service = $protocol7Service;
         $this->programmingService = $programmingService;
         $this->umbraService = $umbraService;
-        $this->inventoryService = $inventoryService;
     }
 
     /**
@@ -409,6 +406,7 @@ class PetService
 
         }
 
+        /*
         if($pet->hasMerit(MeritEnum::BLACK_HOLE_TUM) && mt_rand(1, 200) === 1)
         {
             if(mt_rand(1, 20) === 1)
@@ -425,6 +423,7 @@ class PetService
                 $this->inventoryService->receiveItem('Dark Matter', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' pooped this.');
             }
         }
+        */
 
         if(
             // has food
