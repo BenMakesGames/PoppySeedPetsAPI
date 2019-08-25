@@ -214,6 +214,12 @@ class Pet
      */
     private $poison = 0;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\StatusEffect", mappedBy="pet", orphanRemoval=true)
+     * @Groups({"myPet"})
+     */
+    private $statusEffects;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -221,6 +227,7 @@ class Pet
         $this->stomachSize = mt_rand(16, 30);
         $this->wouldBangFraction = mt_rand(mt_rand(4, 8), 10);
         $this->petRelationships = new ArrayCollection();
+        $this->statusEffects = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -996,6 +1003,37 @@ class Pet
     public function increasePoison(int $poison): self
     {
         $this->poison = NumberFunctions::constrain($this->poison + $poison, 0, 24);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|StatusEffect[]
+     */
+    public function getStatusEffects(): Collection
+    {
+        return $this->statusEffects;
+    }
+
+    public function addStatusEffect(StatusEffect $statusEffect): self
+    {
+        if (!$this->statusEffects->contains($statusEffect)) {
+            $this->statusEffects[] = $statusEffect;
+            $statusEffect->setPet($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStatusEffect(StatusEffect $statusEffect): self
+    {
+        if ($this->statusEffects->contains($statusEffect)) {
+            $this->statusEffects->removeElement($statusEffect);
+            // set the owning side to null (unless already changed)
+            if ($statusEffect->getPet() === $this) {
+                $statusEffect->setPet(null);
+            }
+        }
 
         return $this;
     }
