@@ -9,6 +9,7 @@ use App\Entity\PetRelationship;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Enum\SpiritCompanionStarEnum;
+use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
@@ -789,9 +790,23 @@ class PetService
         return $metNewPet;
     }
 
+    public function spendTime(Pet $pet, int $time)
+    {
+        $pet->spendTime($time);
+
+        $statusEffects = $pet->getStatusEffects();
+
+        for($i = count($statusEffects) - 1; $i >= 0; $i--)
+        {
+            $statusEffects[$i]->spendTime($time);
+            if($statusEffects[$i]->getTimeRemaining() <= 0)
+                $pet->removeStatusEffect($statusEffects[$i]);
+        }
+    }
+
     private function doNothing(Pet $pet)
     {
-        $pet->spendTime(\mt_rand(30, 60));
+        $this->spendTime($pet, \mt_rand(30, 60));
         $this->responseService->createActivityLog($pet, $pet->getName() . ' hung around the house.', '');
     }
 

@@ -33,13 +33,5 @@ class IncreaseTimeCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->em->getConnection()->executeQuery('UPDATE pet SET `time` = `time` + 1 WHERE `time` < 4320');
-
-        //
-        $this->em->getConnection()->executeQuery('UPDATE status_effect SET status=:newStatus,time_remaining=total_duration WHERE time_remaining = 1 AND status=:oldStatus', [
-            'oldStatus' => StatusEffectEnum::CAFFEINATED,
-            'newStatus' => StatusEffectEnum::TIRED
-        ]);
-        $this->em->getConnection()->executeQuery('DELETE FROM status_effect WHERE time_remaining = 1');
-        $this->em->getConnection()->executeQuery('UPDATE status_effect SET time_remaining = time_remaining - 1');
     }
 }
