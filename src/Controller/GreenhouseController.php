@@ -117,6 +117,25 @@ class GreenhouseController extends PsyPetsController
     }
 
     /**
+     * @Route("/{plant}/pullUp", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function pullUpPlant(
+        GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        if($plant->getOwner()->getId() !== $user->getId())
+            throw new NotFoundHttpException();
+
+        $em->remove($plant);
+        $em->flush();
+
+        return $responseService->success();
+    }
+
+    /**
      * @Route("/seeds", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
