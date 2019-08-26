@@ -161,9 +161,9 @@ class GreenhousePlant
     public function getProgress(): float
     {
         if($this->isAdult)
-            return round($this->growth / $this->getPlant()->getTimeToFruit(), 1);
+            return round($this->growth / $this->getPlant()->getTimeToFruit(), 2);
         else
-            return round($this->growth / $this->getPlant()->getTimeToAdult(), 1);
+            return round($this->growth / $this->getPlant()->getTimeToAdult(), 2);
     }
 
     /**
