@@ -158,7 +158,7 @@ class CraftingService
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
         if($roll <= 2)
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
 
             if(mt_rand(1, 2) === 1)
@@ -176,7 +176,7 @@ class CraftingService
         }
         else if($roll >= 15)
         {
-            $pet->spendTime(\mt_rand(45, 75));
+            $this->petService->spendTime($pet, \mt_rand(45, 75));
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             $this->inventoryService->loseItem('Glue', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Sweet Beet', $pet->getOwner(), 1);
@@ -188,7 +188,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to create a Sweet Beat, but wasn\'t able to make any meaningful progress.', 'icons/activity-logs/confused');
         }
@@ -199,14 +199,14 @@ class CraftingService
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
         if($roll <= 2)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->inventoryService->loseItem('Fluff', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spin some Fluff into String, but messed it up; the Fluff was wasted :(', '');
         }
         else if($roll >= 10)
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('Fluff', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
@@ -216,7 +216,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spin some Fluff into String, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
@@ -227,14 +227,14 @@ class CraftingService
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getNature() + $pet->getCrafts());
         if($roll <= 2)
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('Tea Leaves', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extract Yellow Dye from Tea Leaves, but messed it up, ruining the Tea Leaves :(', '');
         }
         else if($roll >= 12)
         {
-            $pet->spendTime(\mt_rand(60, 75));
+            $this->petService->spendTime($pet, \mt_rand(60, 75));
             $this->inventoryService->loseItem('Tea Leaves', $pet->getOwner(), 2);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
@@ -244,7 +244,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to extract Yellow Dye from some Tea Leaves, but wasn\'t sure how to start.', 'icons/activity-logs/confused');
         }
@@ -257,7 +257,7 @@ class CraftingService
 
         if($roll <= 2)
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('Scales', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog(
@@ -268,7 +268,7 @@ class CraftingService
         }
         else if($roll >= 20)
         {
-            $pet->spendTime(\mt_rand(60, 90));
+            $this->petService->spendTime($pet, \mt_rand(60, 90));
             $this->inventoryService->loseItem('Scales', $pet->getOwner(), 2);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
@@ -279,7 +279,7 @@ class CraftingService
         }
         else if($roll >= 12)
         {
-            $pet->spendTime(\mt_rand(60, 75));
+            $this->petService->spendTime($pet, \mt_rand(60, 75));
             $this->inventoryService->loseItem('Scales', $pet->getOwner(), 2);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
@@ -289,7 +289,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to extract ' . $itemName . ' from some Scales, but wasn\'t sure how to start.', 'icons/activity-logs/confused');
         }
@@ -300,14 +300,14 @@ class CraftingService
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
         if($roll <= 2)
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('Fluff', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spin some Fluff into String, but messed it up; a Fluff was wasted :(', '');
         }
         else if($roll >= 15)
         {
-            $pet->spendTime(\mt_rand(60, 75));
+            $this->petService->spendTime($pet, \mt_rand(60, 75));
             $this->inventoryService->loseItem('Fluff', $pet->getOwner(), 2);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
@@ -317,7 +317,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to weave some Fluff into White Cloth, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
@@ -329,7 +329,7 @@ class CraftingService
 
         if($roll <= 3)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             if(\mt_rand(1, 2) === 1)
             {
                 $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
@@ -346,7 +346,7 @@ class CraftingService
         }
         else if($roll >= 12)
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
@@ -357,7 +357,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Crooked Fishing Rod, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
@@ -369,7 +369,7 @@ class CraftingService
 
         if($roll <= 2)
         {
-            $pet->spendTime(\mt_rand(15, 30));
+            $this->petService->spendTime($pet, \mt_rand(15, 30));
             if(\mt_rand(1, 2) === 1)
             {
                 $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), 1);
@@ -386,7 +386,7 @@ class CraftingService
         }
         else if($roll >= 8)
         {
-            $pet->spendTime(\mt_rand(30, 45));
+            $this->petService->spendTime($pet, \mt_rand(30, 45));
             $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
@@ -397,7 +397,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(15, 45));
+            $this->petService->spendTime($pet, \mt_rand(15, 45));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Stereotypical Torch, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
@@ -409,7 +409,7 @@ class CraftingService
 
         if($roll <= 2)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->inventoryService->loseItem('Glue', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
@@ -421,7 +421,7 @@ class CraftingService
             $possibleItems = [ 'Fabric Mâché Basket' ];
             $item = ArrayFunctions::pick_one($possibleItems);
 
-            $pet->spendTime(\mt_rand(60, 75));
+            $this->petService->spendTime($pet, \mt_rand(60, 75));
             $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Glue', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
@@ -432,7 +432,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make some Fabric Mâché, but couldn\'t come up with a good pattern.', 'icons/activity-logs/confused');
         }
@@ -444,7 +444,7 @@ class CraftingService
 
         if($quintessenceHandling <= 2)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Champignon, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
@@ -454,7 +454,7 @@ class CraftingService
 
         if($roll <= 3)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
 
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
@@ -462,7 +462,7 @@ class CraftingService
         }
         else if($roll >= 15)
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Toadstool', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
@@ -474,7 +474,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS,  PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Champignon, but couldn\'t quite figure it out.', 'icons/activity-logs/confused');
         }
@@ -486,7 +486,7 @@ class CraftingService
 
         if($roll <= 3)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             if(\mt_rand(1, 2) === 1)
             {
                 $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
@@ -503,7 +503,7 @@ class CraftingService
         }
         else if($roll >= 12)
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
@@ -514,7 +514,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Wooden Sword, but couldn\'t quite figure it out.', 'icons/activity-logs/confused');
         }
@@ -526,7 +526,7 @@ class CraftingService
 
         if($roll <= 3)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
 
             if(mt_rand(1, 20 + $pet->getDexterity() + $pet->getStamina()) >= 18)
             {
@@ -553,7 +553,7 @@ class CraftingService
         }
         else if($roll >= 15)
         {
-            $pet->spendTime(\mt_rand(45, 75));
+            $this->petService->spendTime($pet, \mt_rand(45, 75));
             $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Glass', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
@@ -564,7 +564,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $pet->increaseSafety(-1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Glass Pendulum, but almost cut themselves on the glass, and gave up.', 'icons/activity-logs/confused');
@@ -577,7 +577,7 @@ class CraftingService
 
         if($roll <= 3)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
 
             if(mt_rand(1, 20 + $pet->getDexterity() + $pet->getStamina()) >= 18)
             {
@@ -604,7 +604,7 @@ class CraftingService
         }
         else if($roll >= 13)
         {
-            $pet->spendTime(\mt_rand(45, 75));
+            $this->petService->spendTime($pet, \mt_rand(45, 75));
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Glass', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
@@ -615,7 +615,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a magnifying glass, but almost broke the glass, and gave up.', 'icons/activity-logs/confused');
         }
@@ -627,7 +627,7 @@ class CraftingService
 
         if($roll <= 3)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             if(\mt_rand(1, 2) === 1)
             {
                 $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
@@ -643,7 +643,7 @@ class CraftingService
         }
         else if($roll >= 13)
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Talon', $pet->getOwner(), 1);
@@ -655,7 +655,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Hunting Spear, but couldn\'t quite figure it out.', 'icons/activity-logs/confused');
         }
@@ -667,7 +667,7 @@ class CraftingService
 
         if($roll <= 3)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             if(\mt_rand(1, 2) === 1)
             {
                 $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
@@ -683,7 +683,7 @@ class CraftingService
         }
         else if($roll >= 14)
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Hunting Spear', $pet->getOwner(), 1);
@@ -695,7 +695,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extend a Hunting Spear, but couldn\'t quite figure it out.', 'icons/activity-logs/confused');
         }
@@ -707,7 +707,7 @@ class CraftingService
 
         if($roll <= 3)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             if(\mt_rand(1, 2) === 1)
             {
                 $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
@@ -723,7 +723,7 @@ class CraftingService
         }
         else if($roll >= 16)
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Overly-long Spear', $pet->getOwner(), 1);
@@ -735,7 +735,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' considered extending an Overly-long Spear, but then thought that maybe that was going a bit overboard.', 'icons/activity-logs/confused');
         }
@@ -747,7 +747,7 @@ class CraftingService
 
         if($roll >= 12)
         {
-            $pet->spendTime(\mt_rand(15, 30));
+            $this->petService->spendTime($pet, \mt_rand(15, 30));
             $this->inventoryService->loseItem('Feathers', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Hunting Spear', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
@@ -757,7 +757,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(15, 30));
+            $this->petService->spendTime($pet, \mt_rand(15, 30));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to decorate a Hunting Spear with Feathers, but couldn\'t get the look just right.', 'icons/activity-logs/confused');
         }
@@ -769,7 +769,7 @@ class CraftingService
 
         if($roll <= 2)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-2);
             $pet->increaseSafety(-4);
@@ -777,7 +777,7 @@ class CraftingService
         }
         else if($roll >= 15)
         {
-            $pet->spendTime(\mt_rand(45, 75));
+            $this->petService->spendTime($pet, \mt_rand(45, 75));
             $this->inventoryService->loseItem('Talon', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Scales', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Wooden Sword', $pet->getOwner(), 1);
@@ -789,7 +789,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to improve a Wooden Sword into Snakebite, but failed.', 'icons/activity-logs/confused');
         }
@@ -802,7 +802,7 @@ class CraftingService
 
         if($umbraCheck <= 3)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(-1);
@@ -810,13 +810,13 @@ class CraftingService
         }
         else if($craftsCheck < 15)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::DEXTERITY, PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried enchant a Decorated Spear, but couldn\'t get an enchantment to stick.', 'icons/activity-logs/confused');
         }
         else // success!
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Decorated Spear', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::DEXTERITY, PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
@@ -829,7 +829,7 @@ class CraftingService
 
     private function createPaintedFishingRod(Pet $pet): PetActivityLog
     {
-        $pet->spendTime(\mt_rand(45, 90));
+        $this->petService->spendTime($pet, \mt_rand(45, 90));
         $this->inventoryService->loseItem('Crooked Fishing Rod', $pet->getOwner(), 1);
         $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), 1);
         $this->inventoryService->loseItem('Green Dye', $pet->getOwner(), 1);
@@ -846,7 +846,7 @@ class CraftingService
 
         if($roll <= 5)
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('Rusty Blunderbuss', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-2);
@@ -854,7 +854,7 @@ class CraftingService
         }
         else if($roll >= 18)
         {
-            $pet->spendTime(\mt_rand(60, 75));
+            $this->petService->spendTime($pet, \mt_rand(60, 75));
             $this->inventoryService->loseItem('Rusty Blunderbuss', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
@@ -864,7 +864,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(60, 75));
+            $this->petService->spendTime($pet, \mt_rand(60, 75));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' spent a while trying to repair a Rusty Blunderbuss, but wasn\'t able to make any progress.', 'icons/activity-logs/confused');
         }
@@ -876,7 +876,7 @@ class CraftingService
 
         if($roll <= 5)
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('Rusty Rapier', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
             $pet->increaseEsteem(-2);
@@ -884,7 +884,7 @@ class CraftingService
         }
         else if($roll >= 14)
         {
-            $pet->spendTime(\mt_rand(60, 75));
+            $this->petService->spendTime($pet, \mt_rand(60, 75));
             $this->inventoryService->loseItem('Rusty Rapier', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
             $pet->increaseEsteem(2);
@@ -894,7 +894,7 @@ class CraftingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(60, 75));
+            $this->petService->spendTime($pet, \mt_rand(60, 75));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' spent a while trying to repair a Rusty Rapier, but wasn\'t able to make any progress.', 'icons/activity-logs/confused');
         }

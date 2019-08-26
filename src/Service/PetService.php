@@ -396,7 +396,7 @@ class PetService
                 $pet->increaseSafety(-mt_rand(1, $safetyVom));
                 $pet->increaseEsteem(-mt_rand(1, $safetyVom));
 
-                $pet->spendTime(\mt_rand(15, 45));
+                $this->spendTime($pet, \mt_rand(15, 45));
 
                 $this->responseService->createActivityLog($pet, $pet->getName() . ' threw up :(', '', $changes->compare($pet));
 
@@ -430,7 +430,7 @@ class PetService
 
         if($this->meetRoommates($pet))
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->spendTime($pet, \mt_rand(45, 60));
             return;
         }
 
@@ -456,7 +456,7 @@ class PetService
 
             if(count($craftingPossibilities) === 0 && count($programmingPossibilities) === 0)
             {
-                $pet->spendTime(\mt_rand(45, 60));
+                $this->spendTime($pet, \mt_rand(45, 60));
 
                 $this->responseService->createActivityLog($pet, $description . ' ' . $pet->getName() . ' wanted to make something, but couldn\'t find any materials to work with.', '');
             }
@@ -597,7 +597,7 @@ class PetService
     {
         $changes = new PetChanges($pet);
 
-        $pet->spendTime(\mt_rand(45, 60));
+        $this->spendTime($pet, \mt_rand(45, 60));
 
         $companion = $pet->getSpiritCompanion();
 
@@ -755,8 +755,8 @@ class PetService
     {
         $changes = new PetChanges($pet->getPet());
 
-        $pet->getPet()->spendTime(\mt_rand(45, 60));
-        $friend->getPet()->spendTime(mt_rand(5, 10));
+        $this->spendTime($pet->getPet(), \mt_rand(45, 60));
+        $this->spendTime($friend->getPet(), mt_rand(5, 10));
 
         list($petLog, $friendLog) = $this->petRelationshipService->meetOtherPetPrivately($pet, $friend);
 
@@ -799,6 +799,22 @@ class PetService
         for($i = count($statusEffects) - 1; $i >= 0; $i--)
         {
             $statusEffects[$i]->spendTime($time);
+
+            // some status effects TRANSFORM when they run out (like caffeinated -> tired)
+            if($statusEffects[$i]->getTimeRemaining() <= 0)
+            {
+                if($statusEffects[$i]->getStatus() === StatusEffectEnum::CAFFEINATED)
+                {
+                    $newTotal = ceil($statusEffects[$i]->getTotalDuration() / 2);
+                    $statusEffects[$i]
+                        ->setStatus(StatusEffectEnum::TIRED)
+                        ->setTimeRemaining($statusEffects[$i]->getTimeRemaining() + $newTotal)
+                        ->setTotalDuration($newTotal)
+                    ;
+                }
+            }
+
+            // if the status effect didn't transform (or was still out of time AFTER transforming), then delete it
             if($statusEffects[$i]->getTimeRemaining() <= 0)
                 $pet->removeStatusEffect($statusEffects[$i]);
         }

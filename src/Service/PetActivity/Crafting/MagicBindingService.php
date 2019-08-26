@@ -65,7 +65,7 @@ class MagicBindingService
 
         if($umbraCheck === 1)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Stereotypical Torch', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
@@ -76,7 +76,7 @@ class MagicBindingService
         }
         else if($umbraCheck === 2)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(-1);
@@ -84,13 +84,13 @@ class MagicBindingService
         }
         else if($craftsCheck < 13)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::DEXTERITY, PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Stereotypical Torch, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
         }
         else // success!
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Stereotypical Torch', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::DEXTERITY, PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
@@ -108,7 +108,7 @@ class MagicBindingService
 
         if($craftsCheck <= 2)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->inventoryService->loseItem('Paper', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::DEXTERITY, PetSkillEnum::INTELLIGENCE ]);
             $pet->increaseEsteem(-1);
@@ -116,7 +116,7 @@ class MagicBindingService
         }
         else if($umbraCheck <= 3)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(-1);
@@ -124,13 +124,13 @@ class MagicBindingService
         }
         else if($craftsCheck < 15)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::DEXTERITY, PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a ' . $scroll . ', but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
         }
         else // success!
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Paper', $pet->getOwner(), 1);
             $this->inventoryService->loseItem($uniqueIngredient, $pet->getOwner(), 1);

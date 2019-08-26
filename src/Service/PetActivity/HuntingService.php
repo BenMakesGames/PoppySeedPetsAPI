@@ -93,7 +93,7 @@ class HuntingService
 
     private function failedToHunt(Pet $pet): PetActivityLog
     {
-        $pet->spendTime(mt_rand(30, 60));
+        $this->petService->spendTime($pet, mt_rand(30, 60));
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' went out hunting, but couldn\'t find anything to hunt.', 'icons/activity-logs/confused');
     }
 
@@ -102,7 +102,7 @@ class HuntingService
         $skill = 10 + $pet->getDexterity() + $pet->getBrawl();
 
         $pet->increaseFood(-1);
-        $pet->spendTime(mt_rand(30, 60));
+        $this->petService->spendTime($pet, mt_rand(30, 60));
 
         if(\mt_rand(1, $skill) >= 6)
         {
@@ -124,7 +124,7 @@ class HuntingService
         $skill = 10 + $pet->getStrength() + $pet->getBrawl();
 
         $pet->increaseFood(-1);
-        $pet->spendTime(mt_rand(45, 60));
+        $this->petService->spendTime($pet, mt_rand(45, 60));
 
         if(\mt_rand(1, $skill) >= 6)
         {
@@ -162,7 +162,7 @@ class HuntingService
 
         $pet->increaseFood(-1);
 
-        $pet->spendTime(mt_rand(45, 60));
+        $this->petService->spendTime($pet, mt_rand(45, 60));
 
         if(\mt_rand(1, $skill) >= 6)
         {
@@ -195,7 +195,7 @@ class HuntingService
 
         $pet->increaseFood(-1);
 
-        $pet->spendTime(mt_rand(45, 60));
+        $this->petService->spendTime($pet, mt_rand(45, 60));
 
         if(\mt_rand(1, $skill) >= 7)
         {
@@ -242,7 +242,7 @@ class HuntingService
     {
         $skill = 10 + $pet->getStamina();
 
-        $pet->spendTime(mt_rand(30, 60));
+        $this->petService->spendTime($pet, mt_rand(30, 60));
 
         if(\mt_rand(1, $skill) >= 7)
         {
@@ -265,7 +265,7 @@ class HuntingService
         $intSkill = 10 + $pet->getIntelligence();
         $dexSkill = 10 + $pet->getDexterity() + $pet->getBrawl();
 
-        $pet->spendTime(mt_rand(45, 60));
+        $this->petService->spendTime($pet, mt_rand(45, 60));
 
         if(\mt_rand(1, $intSkill) <= 2 && $pet->getOwner()->getMoneys() >= 2)
         {
@@ -323,7 +323,7 @@ class HuntingService
             else
                 $prize = 'Quintessence';
 
-            $pet->spendTime(mt_rand(45, 60));
+            $this->petService->spendTime($pet, mt_rand(45, 60));
             $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt ' . $pet->getName() . ', but ' . $pet->getName() . ' was able to dispel it (and got its ' . $prize . ')!', '');
             $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' collected this from the remains of a Pirate Ghost.', $activityLog);
             $pet->increaseSafety(3);
@@ -332,7 +332,7 @@ class HuntingService
         }
         else
         {
-            $pet->spendTime(mt_rand(60, 75));
+            $this->petService->spendTime($pet, mt_rand(60, 75));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went out hunting, and got haunted by a Pirate Ghost! After harassing ' . $pet->getName() . ' for a while, the ghost became bored, and left.', '');
             $pet->increaseSafety(-3);
@@ -347,7 +347,7 @@ class HuntingService
         $musicSkill = mt_rand(1, 10 + $pet->getIntelligence() + $pet->getMusic());
 
         $pet->increaseFood(-1);
-        $pet->spendTime(mt_rand(45, 60));
+        $this->petService->spendTime($pet, mt_rand(45, 60));
 
         if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY) && $pet->hasMerit(MeritEnum::SOOTHING_VOICE))
         {
@@ -429,7 +429,7 @@ class HuntingService
         $skill = 10 + $pet->getDexterity() + $pet->getStamina() + \max($pet->getCrafts(), $pet->getBrawl());
 
         $pet->increaseFood(-1);
-        $pet->spendTime(mt_rand(45, 60));
+        $this->petService->spendTime($pet, \mt_rand(45, 60));
 
         if(\mt_rand(1, $skill) >= 17)
         {

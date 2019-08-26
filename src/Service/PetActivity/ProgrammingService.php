@@ -74,14 +74,14 @@ class ProgrammingService
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
         if($roll <= 2)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->inventoryService->loseItem('Pointer', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to dereference a String from a Pointer, but encountered a null exception :(', 'icons/activity-logs/null');
         }
         else if($roll >= 10)
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('Pointer', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
             $pet->increaseEsteem(1);
@@ -91,7 +91,7 @@ class ProgrammingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to dereference a Pointer, but couldn\'t figure out all the syntax errors.', 'icons/activity-logs/confused');
         }
@@ -102,7 +102,7 @@ class ProgrammingService
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
         if($roll <= 2)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
 
             if(mt_rand(1, 2) === 1)
@@ -118,7 +118,7 @@ class ProgrammingService
         }
         else if($roll >= 14)
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('Pointer', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Finite State Machine', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
@@ -129,7 +129,7 @@ class ProgrammingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to create a Regex, but all the documentation they found online was too old.', 'icons/activity-logs/confused');
         }
@@ -140,7 +140,7 @@ class ProgrammingService
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
         if($roll <= 2)
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
 
             if(mt_rand(1, 2) === 1)
@@ -158,7 +158,7 @@ class ProgrammingService
         }
         else if($roll >= 16)
         {
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('Hash Table', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('Finite State Machine', $pet->getOwner(), 1);
             $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
@@ -170,7 +170,7 @@ class ProgrammingService
         }
         else
         {
-            $pet->spendTime(\mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to bootstrap a Compiler, but only got so far.', 'icons/activity-logs/confused');
         }

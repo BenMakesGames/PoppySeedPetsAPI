@@ -6,17 +6,20 @@ use App\Entity\PetActivityLog;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
+use App\Service\PetService;
 use App\Service\ResponseService;
 
 class GenericAdventureService
 {
     private $responseService;
     private $inventoryService;
+    private $petService;
 
-    public function __construct(ResponseService $responseService, InventoryService $inventoryService)
+    public function __construct(ResponseService $responseService, InventoryService $inventoryService, PetService $petService)
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
+        $this->petService = $petService;
     }
 
     public function adventure(Pet $pet): PetActivityLog
@@ -25,7 +28,7 @@ class GenericAdventureService
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        $pet->spendTime(mt_rand(30, 60));
+        $this->petService->spendTime($pet, \mt_rand(30, 60));
 
         $possibleRewards = [
             [ 'a ', 'Crooked Stick' ],

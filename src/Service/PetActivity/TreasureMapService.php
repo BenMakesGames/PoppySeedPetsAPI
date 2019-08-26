@@ -41,7 +41,7 @@ class TreasureMapService
 
         if($followMapCheck < 15)
         {
-            $pet->spendTime(mt_rand(30, 90));
+            $this->petService->spendTime($pet, \mt_rand(30, 90));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::INTELLIGENCE ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to decipher Cetgueli\'s Treasure Map, but couldn\'t make sense of it.', 'icons/activity-logs/confused');
             $pet->increaseEsteem(-1);
@@ -54,7 +54,7 @@ class TreasureMapService
         }
         else
         {
-            $pet->spendTime(mt_rand(60, 90));
+            $this->petService->spendTime($pet, \mt_rand(60, 90));
             $this->petService->gainExp($pet, 3, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::INTELLIGENCE ]);
             $pet->increaseEsteem(5);
 

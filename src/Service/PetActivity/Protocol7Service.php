@@ -75,8 +75,7 @@ class Protocol7Service
         $exp = \ceil($roll / 10);
 
         $this->petService->gainExp($pet, $exp, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
-
-        $pet->spendTime(\mt_rand(45, 75));
+        $this->petService->spendTime($pet, \mt_rand(45, 75));
 
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, but got lost.', 'icons/activity-logs/confused');
     }

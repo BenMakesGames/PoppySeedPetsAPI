@@ -80,7 +80,7 @@ class UmbraService
 
         $this->petService->gainExp($pet, $exp, [ PetSkillEnum::UMBRA, PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA ]);
 
-        $pet->spendTime(\mt_rand(45, 60));
+        $this->petService->spendTime($pet, \mt_rand(45, 60));
 
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' crossed into the Umbra, but the Storm was too harsh; ' . $pet->getName() . ' retreated before finding anything.', 'icons/activity-logs/confused');
     }
@@ -110,14 +110,14 @@ class UmbraService
             }
 
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::UMBRA, PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA ]);
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
 
             return $activityLog;
         }
         else
         {
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::UMBRA, PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA ]);
-            $pet->spendTime(\mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             return $this->responseService->createActivityLog($pet, 'In the Umbra, ' . $pet->getName() . ' found an outcropping of rocks where the full force of the Storm could not reach. Some weeds were growing there, but nothing of value.', 'icons/activity-logs/confused');
         }
     }
@@ -128,7 +128,7 @@ class UmbraService
 
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getUmbra());
 
-        $pet->spendTime(\mt_rand(45, 60));
+        $this->petService->spendTime($pet, \mt_rand(45, 60));
 
         $rewards = [ 'Quintessence' => 'some', 'Music Note' => 'a', 'Ginger' => 'some', 'Oil' => 'some', 'Silica Grounds' => 'some' ];
         $reward = array_rand($rewards);

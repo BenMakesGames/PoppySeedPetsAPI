@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\NumberFunctions;
@@ -682,7 +683,12 @@ class Pet
 
     public function getIntelligence(): int
     {
-        return $this->getSkills()->getIntelligence() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getIntelligence() : 0);
+        return
+            $this->getSkills()->getIntelligence() +
+            ($this->getTool() ? $this->getTool()->getItem()->getTool()->getIntelligence() : 0) +
+            ($this->hasStatusEffect(StatusEffectEnum::TIRED) ? -2 : 0) +
+            ($this->hasStatusEffect(StatusEffectEnum::CAFFEINATED) ? 2 : 0)
+        ;
     }
 
     public function getPerception(): int
@@ -1036,5 +1042,14 @@ class Pet
         }
 
         return $this;
+    }
+
+    public function hasStatusEffect(string $statusEffect)
+    {
+        if(!StatusEffectEnum::isAValue($statusEffect)) throw new \InvalidArgumentException('"' . $statusEffect . '" is not a known StatusEffectEnum value.');
+
+        return ArrayFunctions::any($this->statusEffects, function(StatusEffect $se) use($statusEffect) {
+            return $se->getStatus() === $statusEffect;
+        });
     }
 }
