@@ -80,7 +80,7 @@ final class ArrayFunctions
     /**
      * @param string[] $strings
      */
-    public static function list_nice($strings, string $separator = ', ', string $lastSeparator = ', and ')
+    public static function list_nice(iterable $strings, string $separator = ', ', string $lastSeparator = ', and ')
     {
         if(count($strings) === 0)
             return '';

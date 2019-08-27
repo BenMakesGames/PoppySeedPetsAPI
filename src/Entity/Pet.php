@@ -217,7 +217,6 @@ class Pet
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\StatusEffect", mappedBy="pet", orphanRemoval=true)
-     * @Groups({"myPet"})
      */
     private $statusEffects;
 
@@ -1044,12 +1043,25 @@ class Pet
         return $this;
     }
 
-    public function hasStatusEffect(string $statusEffect)
+    public function getStatusEffect(string $statusEffect): ?StatusEffect
     {
         if(!StatusEffectEnum::isAValue($statusEffect)) throw new \InvalidArgumentException('"' . $statusEffect . '" is not a known StatusEffectEnum value.');
 
-        return ArrayFunctions::any($this->statusEffects, function(StatusEffect $se) use($statusEffect) {
+        return ArrayFunctions::find_one($this->statusEffects, function(StatusEffect $se) use($statusEffect) {
             return $se->getStatus() === $statusEffect;
         });
+    }
+
+    public function hasStatusEffect(string $statusEffect): bool
+    {
+        return $this->getStatusEffect($statusEffect) !== null;
+    }
+
+    /**
+     * @Groups({"myPet"})
+     */
+    public function getStatuses(): array
+    {
+        return array_map(function(StatusEffect $se) { return $se->getStatus(); }, $this->statusEffects->toArray());
     }
 }

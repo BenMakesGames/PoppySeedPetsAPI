@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\StatusEffectRepository")
@@ -27,6 +28,7 @@ class StatusEffect
 
     /**
      * @ORM\Column(type="string", length=40)
+     * @Groups({"myPet"})
      */
     private $status;
 
@@ -50,7 +52,7 @@ class StatusEffect
         return $this->pet;
     }
 
-    public function setPet(?Pet $pet): self
+    public function setPet(Pet $pet): self
     {
         $this->pet = $pet;
 
@@ -89,6 +91,13 @@ class StatusEffect
     public function setTimeRemaining(int $timeRemaining): self
     {
         $this->timeRemaining = $timeRemaining;
+
+        return $this;
+    }
+
+    public function spendTime(int $time): self
+    {
+        $this->timeRemaining -= $time;
 
         return $this;
     }

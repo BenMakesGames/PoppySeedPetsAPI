@@ -3,9 +3,11 @@ namespace App\Service;
 
 use App\Entity\Inventory;
 use App\Entity\Item;
+use App\Entity\ItemFood;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
+use App\Entity\StatusEffect;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Enum\SpiritCompanionStarEnum;
@@ -236,11 +238,7 @@ class PetService
                 continue;
             }
 
-            $pet->increaseAlcohol($food->getAlcohol());
-            $pet->increaseCaffeine($food->getCaffeine());
-            $pet->increasePsychedelic($food->getPsychedelic());
-            $pet->increaseFood($food->getFood());
-            $pet->increaseJunk($food->getJunk());
+            $this->applyFoodEffects($pet, $food);
 
             // consider favorite flavor:
             if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
@@ -310,11 +308,7 @@ class PetService
         if($pet->getPoison() > 6 && ($food->getAlcohol() > 0 || $food->getCaffeine() > 0 || $food->getPsychedelic() > 0))
             return false;
 
-        $pet->increaseAlcohol($food->getAlcohol());
-        $pet->increaseCaffeine($food->getCaffeine());
-        $pet->increasePsychedelic($food->getPsychedelic());
-        $pet->increaseFood($food->getFood());
-        $pet->increaseJunk($food->getJunk());
+        $this->applyFoodEffects($pet, $food);
 
         // consider favorite flavor:
         if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
@@ -328,6 +322,42 @@ class PetService
             $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $item->getName() . '.');
 
         return true;
+    }
+
+    private function applyFoodEffects(Pet $pet, ItemFood $food)
+    {
+        $pet->increaseAlcohol($food->getAlcohol());
+
+        $caffeine = $food->getCaffeine();
+
+        if($caffeine > 0)
+        {
+            $pet->increaseCaffeine($caffeine);
+
+            $statusEffect = $pet->getStatusEffect(StatusEffectEnum::CAFFEINATED);
+
+            if(!$statusEffect)
+            {
+                $statusEffect = (new StatusEffect())
+                    ->setStatus(StatusEffectEnum::CAFFEINATED)
+                ;
+
+                $pet->addStatusEffect($statusEffect);
+
+                $this->em->persist($statusEffect);
+            }
+
+            $statusEffect
+                ->setTotalDuration(min(8 * 60, $statusEffect->getTotalDuration() + $caffeine * 60))
+                ->setTimeRemaining(min($statusEffect->getTotalDuration(), $statusEffect->getTimeRemaining() + $caffeine * 60))
+            ;
+        }
+        else if($caffeine < 0)
+            $pet->increaseCaffeine($caffeine);
+
+        $pet->increasePsychedelic($food->getPsychedelic());
+        $pet->increaseFood($food->getFood());
+        $pet->increaseJunk($food->getJunk());
     }
 
     public function runHour(Pet $pet)
