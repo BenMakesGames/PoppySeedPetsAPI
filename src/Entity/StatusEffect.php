@@ -52,7 +52,7 @@ class StatusEffect
         return $this->pet;
     }
 
-    public function setPet(Pet $pet): self
+    public function setPet(?Pet $pet): self
     {
         $this->pet = $pet;
 
