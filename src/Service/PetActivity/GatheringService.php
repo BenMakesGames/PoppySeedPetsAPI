@@ -42,8 +42,10 @@ class GatheringService
             case 1:
             case 2:
             case 3:
-            case 4:
                 $activityLog = $this->foundNothing($pet, $roll);
+                break;
+            case 4:
+                $activityLog = $this->foundPaperBag($pet);
                 break;
             case 5:
                 $activityLog = $this->foundTeaBush($pet);
@@ -136,6 +138,18 @@ class GatheringService
         $this->petService->spendTime($pet, \mt_rand(45, 75));
 
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' went out gathering, but couldn\'t find anything.', 'icons/activity-logs/confused');
+    }
+
+    private function foundPaperBag(Pet $pet): PetActivityLog
+    {
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Paper Bag just, like, lyin\' around.', 'items/bag/paper');
+
+        $this->inventoryService->petCollectsItem('Paper Bag', $pet, $pet->getName() . ' found this just lyin\' around.', $activityLog);
+
+        $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE ]);
+        $this->petService->spendTime($pet, \mt_rand(45, 60));
+
+        return $activityLog;
     }
 
     private function foundTeaBush(Pet $pet): PetActivityLog
