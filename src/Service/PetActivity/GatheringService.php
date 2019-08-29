@@ -516,7 +516,8 @@ class GatheringService
             $pet->increaseFood(-1);
             $pet->increaseSafety(-mt_rand(1, 2));
 
-            if(mt_rand(1, 10) === 1 && count($pet->getOwner()->getPets()) > 1)
+            // why need to have unlocked the greenhouse? just testing that you've been playing for a while
+            if(mt_rand(1, 10) === 1 && $pet->getOwner()->getUnlockedGreenhouse() !== null)
                 $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and I don\'t mean in a sexy way; ' . $pet->getName() . ' got a bit light-headed.');
             else
                 $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and ' . $pet->getName() . ' got a bit light-headed.');

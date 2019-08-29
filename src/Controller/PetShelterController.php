@@ -10,7 +10,9 @@ use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
+use App\Service\PetService;
 use App\Service\ResponseService;
+use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -28,12 +30,12 @@ class PetShelterController extends PsyPetsController
      */
     public function getAvailablePets(
         PetSpeciesRepository $petSpeciesRepository, ResponseService $responseService, PetRepository $petRepository,
-        UserQuestRepository $userQuestRepository
+        UserQuestRepository $userQuestRepository, UserService $userService
     )
     {
         $now = date('Y-m-d');
         $user = $this->getUser();
-        $costToAdopt = 50 * pow(2, count($user->getPets()) - 1);
+        $costToAdopt = $userService->getAdoptionFee($user);
 
         if(date('H') == 23)
         {
@@ -108,7 +110,9 @@ class PetShelterController extends PsyPetsController
             ;
         }
 
-        if(count($user->getPets()) >= $user->getMaxPets())
+        $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
+
+        if($numberOfPetsAtHome >= $user->getMaxPets())
             $dialog = 'You already have the maximum allowed number of pets.';
         else
             $dialog = "Hello! Here to adopt a new friend?\n\nIf no one catches your eye today, come back tomorrow. We get newcomers every day!";
@@ -123,7 +127,7 @@ class PetShelterController extends PsyPetsController
     public function adoptPet(
         int $id, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository, Request $request,
         ResponseService $responseService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
-        UserQuestRepository $userQuestRepository
+        UserQuestRepository $userQuestRepository, UserService $userService
     )
     {
         if(date('H') == 23)
@@ -131,10 +135,12 @@ class PetShelterController extends PsyPetsController
 
         $user = $this->getUser();
 
-        if(count($user->getPets()) >= $user->getMaxPets())
-            throw new UnprocessableEntityHttpException('You cannot adopt any more pets.');
+        $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
 
-        $costToAdopt = 50 * pow(2, count($user->getPets()) - 1);
+        if($numberOfPetsAtHome >= $user->getMaxPets())
+            throw new UnprocessableEntityHttpException('Your house has too many pets as-is.');
+
+        $costToAdopt = $userService->getAdoptionFee($user);
 
         if($user->getMoneys() < $costToAdopt)
             throw new UnprocessableEntityHttpException('It costs ' . $costToAdopt . ' moneys to adopt a pet, but you only have ' . $user->getMoneys() . '.');
@@ -202,11 +208,12 @@ class PetShelterController extends PsyPetsController
 
         $user->increaseMoneys(-$costToAdopt);
         $userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, $costToAdopt);
+        $userStatsRepository->incrementStat($user, UserStatEnum::PETS_ADOPTED, 1);
         $userQuestRepository->findOrCreate($user, 'Last Adopted a Pet', $now);
 
         $em->flush();
 
-        $costToAdopt = 50 * pow(2, count($user->getPets()) - 1);
+        $costToAdopt = $userService->getAdoptionFee($user);
 
         return $responseService->success([ 'pets' => [], 'costToAdopt' => $costToAdopt ]);
     }

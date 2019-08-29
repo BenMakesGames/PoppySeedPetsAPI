@@ -22,4 +22,5 @@ final class UserStatEnum
     const BUGS_PUT_OUTSIDE = 'Bugs Put Outside';
     const FERTILIZED_PLANT = 'Fertilized a Plant';
     const HARVESTED_PLANT = 'Harvested a Plant';
+    const PETS_ADOPTED = 'Pets Adopted';
 }

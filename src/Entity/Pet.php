@@ -21,6 +21,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     @ORM\Index(name="park_event_type_idx", columns={"park_event_type"}),
  *     @ORM\Index(name="park_event_order_idx", columns={"park_event_order"}),
  *     @ORM\Index(name="time_idx", columns={"time"}),
+ *     @ORM\Index(name="in_daycare_idx", columns={"in_daycare"}),
  * })
  */
 class Pet
@@ -219,6 +220,11 @@ class Pet
      * @ORM\OneToMany(targetEntity="App\Entity\StatusEffect", mappedBy="pet", orphanRemoval=true)
      */
     private $statusEffects;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $inDaycare = false;
 
     public function __construct()
     {
@@ -1063,5 +1069,17 @@ class Pet
     public function getStatuses(): array
     {
         return array_map(function(StatusEffect $se) { return $se->getStatus(); }, $this->statusEffects->toArray());
+    }
+
+    public function getInDaycare(): ?bool
+    {
+        return $this->inDaycare;
+    }
+
+    public function setInDaycare(bool $inDaycare): self
+    {
+        $this->inDaycare = $inDaycare;
+
+        return $this;
     }
 }

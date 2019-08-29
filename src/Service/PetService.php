@@ -81,6 +81,8 @@ class PetService
      */
     public function gainExp(Pet $pet, int $exp, array $stats)
     {
+        if($pet->getInDaycare()) throw new \InvalidArgumentException('Pets in daycare cannot be interacted with.');
+
         if($exp === 0) return;
 
         $possibleStats = array_filter($stats, function($stat) use($pet) {
@@ -116,6 +118,8 @@ class PetService
      */
     public function gainAffection(Pet $pet, int $points)
     {
+        if($pet->getInDaycare()) throw new \InvalidArgumentException('Pets in daycare cannot be interacted with.');
+
         if($points === 0) return;
 
         $divideBy = 1;
@@ -140,6 +144,8 @@ class PetService
 
     public function doPet(Pet $pet)
     {
+        if($pet->getInDaycare()) throw new \InvalidArgumentException('Pets in daycare cannot be interacted with.');
+
         $now = new \DateTimeImmutable();
 
         $changes = new PetChanges($pet);
@@ -174,6 +180,8 @@ class PetService
 
     public function doPraise(Pet $pet)
     {
+        if($pet->getInDaycare()) throw new \InvalidArgumentException('Pets in daycare cannot be interacted with.');
+
         $now = new \DateTimeImmutable();
 
         $changes = new PetChanges($pet);
@@ -211,6 +219,8 @@ class PetService
      */
     public function doFeed(Pet $pet, array $inventory): PetActivityLog
     {
+        if($pet->getInDaycare()) throw new \InvalidArgumentException('Pets in daycare cannot be interacted with.');
+
         if(ArrayFunctions::any($inventory, function(Inventory $i) { return $i->getItem()->getFood() === null; }))
             throw new \InvalidArgumentException('At least one of the items selected is not edible!');
 
@@ -362,6 +372,9 @@ class PetService
 
     public function runHour(Pet $pet)
     {
+        if($pet->getInDaycare())
+            throw new \InvalidArgumentException('Pets in daycare cannot be interacted with.');
+
         if($pet->getTime() < 60)
             throw new \InvalidArgumentException('Pet does not have enough Time.');
 

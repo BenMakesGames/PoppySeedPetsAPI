@@ -9,6 +9,8 @@ use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\PetActivityLogRepository;
+use App\Repository\PetRepository;
+use App\Service\Filter\DaycareFilterService;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\PetService;
 use App\Service\ResponseService;
@@ -29,9 +31,34 @@ class PetController extends PsyPetsController
      * @Route("/my", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function getMyPets(ResponseService $responseService)
+    public function getMyPets(ResponseService $responseService, PetRepository $petRepository)
     {
-        return $responseService->success($this->getUser()->getPets(), SerializationGroupEnum::MY_PET);
+        $petsAtHome = $petRepository->findBy([
+            'owner' => $this->getUser()->getId(),
+            'inDaycare' => false,
+        ]);
+
+        return $responseService->success($petsAtHome, SerializationGroupEnum::MY_PET);
+    }
+
+    /**
+     * @Route("/daycare", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getMyDaycarePets(
+        ResponseService $responseService, DaycareFilterService $daycareFilterService, Request $request
+    )
+    {
+        $user = $this->getUser();
+
+        $daycareFilterService->addRequiredFilter('user', $user->getId());
+
+        $petsInDaycare = $daycareFilterService->getResults($request->request);
+
+        return $responseService->success(
+            $petsInDaycare,
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MY_PET ]
+        );
     }
 
     /**
@@ -40,6 +67,57 @@ class PetController extends PsyPetsController
     public function profile(Pet $pet, ResponseService $responseService)
     {
         return $responseService->success($pet, SerializationGroupEnum::PET_PUBLIC_PROFILE);
+    }
+
+    /**
+     * @Route("/{pet}/putInDaycare", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function putPetInDaycare(Pet $pet, ResponseService $responseService, EntityManagerInterface $em)
+    {
+        if($pet->getOwner()->getId() !== $this->getUser()->getId())
+            throw new AccessDeniedHttpException('This isn\'t your pet.');
+
+        if($pet->getInDaycare())
+            throw new UnprocessableEntityHttpException($pet->getName() . ' is already in Daycare.');
+
+        $pet
+            ->setTool(null) // unequip pet before putting into daycare
+            ->setParkEventType(null) // unregister from park events
+            ->setInDaycare(true)
+        ;
+
+        $em->flush();
+
+        return $responseService->success();
+    }
+
+    /**
+     * @Route("/{pet}/takeOutOfDaycare", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function takePetOutOfDaycare(
+        Pet $pet, ResponseService $responseService, PetRepository $petRepository, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        if($pet->getOwner()->getId() !== $user->getId())
+            throw new AccessDeniedHttpException('This isn\'t your pet.');
+
+        if(!$pet->getInDaycare())
+            throw new UnprocessableEntityHttpException($pet->getName() . ' isn\'t in Daycare...');
+
+        $petsAtHome = $petRepository->getNumberAtHome($user);
+
+        if($petsAtHome >= $user->getMaxPets())
+            throw new UnprocessableEntityHttpException('Your house has too many pets as-is.');
+
+        $pet->setInDaycare(false);
+
+        $em->flush();
+
+        return $responseService->success();
     }
 
     /**
@@ -95,6 +173,9 @@ class PetController extends PsyPetsController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException();
 
+        if($pet->getInDaycare())
+            throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');
+
         if($inventory->getPet())
         {
             $inventory->getPet()->setTool(null);
@@ -117,6 +198,9 @@ class PetController extends PsyPetsController
 
         if($pet->getOwner()->getId() !== $user->getId())
             throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
+
+        if($pet->getInDaycare())
+            throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');
 
         if(!$pet->getTool())
             throw new UnprocessableEntityHttpException($pet->getName() . ' is not currently equipped.');
@@ -205,6 +289,9 @@ class PetController extends PsyPetsController
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
             throw new AccessDeniedHttpException('You can\'t pet that pet.');
 
+        if($pet->getInDaycare())
+            throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');
+
         try
         {
             $petService->doPet($pet);
@@ -230,6 +317,9 @@ class PetController extends PsyPetsController
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
             throw new AccessDeniedHttpException('You can\'t praise that pet.');
 
+        if($pet->getInDaycare())
+            throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');
+
         try
         {
             $petService->doPraise($pet);
@@ -254,6 +344,12 @@ class PetController extends PsyPetsController
     )
     {
         $user = $this->getUser();
+
+        if($pet->getOwner()->getId() !== $this->getUser()->getId())
+            throw new AccessDeniedHttpException('You can\'t feed that pet.');
+
+        if($pet->getInDaycare())
+            throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');
 
         $items = $request->request->get('items');
 

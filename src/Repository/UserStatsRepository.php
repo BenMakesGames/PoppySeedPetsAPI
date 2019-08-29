@@ -21,7 +21,7 @@ class UserStatsRepository extends ServiceEntityRepository
         parent::__construct($registry, UserStats::class);
     }
 
-    public function incrementStat(User $user, string $name, int $change = 1): UserStats
+    public function getStat(User $user, string $name): UserStats
     {
         $stat = $this->findOneBy([
             'user' => $user,
@@ -33,15 +33,19 @@ class UserStatsRepository extends ServiceEntityRepository
             $stat = (new UserStats())
                 ->setUser($user)
                 ->setStat($name)
-                ->increaseValue($change)
             ;
 
             $this->getEntityManager()->persist($stat);
         }
-        else
-        {
-            $stat->increaseValue($change);
-        }
+
+        return $stat;
+    }
+
+    public function incrementStat(User $user, string $name, int $change = 1): UserStats
+    {
+        $stat = $this->getStat($user, $name)
+            ->increaseValue($change)
+        ;
 
         if($user->getUnlockedBookstore() === null && ($name === UserStatEnum::ITEMS_THROWN_AWAY || $name === UserStatEnum::ITEMS_DONATED_TO_MUSEUM))
         {
@@ -58,33 +62,4 @@ class UserStatsRepository extends ServiceEntityRepository
 
         return $stat;
     }
-
-    // /**
-    //  * @return UserStats[] Returns an array of UserStats objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?UserStats
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

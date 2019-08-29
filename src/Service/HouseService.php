@@ -38,6 +38,7 @@ class HouseService
             $petsWithTime = $this->petRepository->createQueryBuilder('p')
                 ->andWhere('p.owner=:user')
                 ->andWhere('p.time>=60')
+                ->andWhere('p.inDaycare=0')
                 ->setParameter('user', $user->getId())
                 ->getQuery()
                 ->execute()

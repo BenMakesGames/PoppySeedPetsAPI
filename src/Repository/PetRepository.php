@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Pet;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -26,6 +27,7 @@ class PetRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->andWhere('p.parkEventType=:eventType')
             ->andWhere('(p.lastParkEvent<:today OR p.lastParkEvent IS NULL)')
+            ->andWhere('p.inDaycare=0')
             ->orderBy('p.parkEventOrder', 'ASC')
             ->setMaxResults($number)
             ->setParameter('eventType', $eventType)
@@ -35,32 +37,16 @@ class PetRepository extends ServiceEntityRepository
         ;
     }
 
-    // /**
-    //  * @return Pet[] Returns an array of Pet objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Pet
+    public function getNumberAtHome(User $user): int
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
+        return $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->andWhere('p.owner=:owner')
+            ->andWhere('p.inDaycare=0')
+            ->setParameter('owner', $user->getId())
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getSingleScalarResult()
         ;
     }
-    */
 }
