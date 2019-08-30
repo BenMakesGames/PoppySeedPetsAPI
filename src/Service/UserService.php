@@ -22,15 +22,11 @@ class UserService
             return 50;
         else if($stat->getValue() <= 2)
             return 100;
-        else if($stat->getValue() <= 10)
-            return 150;
         else if($stat->getValue() <= 50)
-            return 200;
+            return 150;
         else if($stat->getValue() <= 200)
-            return 300;
-        else if($stat->getValue() <= 1000)
-            return 500;
+            return 125;
         else
-            return 1000;
+            return 100;
     }
 }
