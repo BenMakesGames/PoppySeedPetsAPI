@@ -18,15 +18,15 @@ class UserService
     {
         $stat = $this->userStatsRepository->getStat($user, UserStatEnum::PETS_ADOPTED);
 
-        if($stat->getValue() === 0)
+        else if($stat->getValue() <= 6)
             return 50;
-        else if($stat->getValue() <= 2)
+        else if($stat->getValue() <= 28)
+            return 75;
+        else if($stat->getValue() <= 496)
             return 100;
-        else if($stat->getValue() <= 50)
-            return 150;
-        else if($stat->getValue() <= 200)
-            return 125;
+        else if($stat->getValue() <= 8128)
+            return 50;
         else
-            return 100;
+            return 10;
     }
 }
