@@ -18,7 +18,7 @@ class UserService
     {
         $stat = $this->userStatsRepository->getStat($user, UserStatEnum::PETS_ADOPTED);
 
-        else if($stat->getValue() <= 6)
+        if($stat->getValue() <= 6)
             return 50;
         else if($stat->getValue() <= 28)
             return 75;
