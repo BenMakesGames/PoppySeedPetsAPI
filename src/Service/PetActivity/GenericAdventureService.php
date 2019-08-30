@@ -58,7 +58,10 @@ class GenericAdventureService
         }
 
         if($level >= 30)
+        {
             $possibleRewards[] = [ '', 'Gold Ore' ];
+            $possibleRewards[] = [ 'a', 'Fruit Basket' ];
+        }
 
         if($level >= 40)
             $possibleRewards[] = [ mt_rand(10, 20), 'moneys' ];
