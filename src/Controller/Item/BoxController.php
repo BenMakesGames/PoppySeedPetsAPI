@@ -223,7 +223,7 @@ class BoxController extends PsyPetsItemController
         for($i = 0; $i < $numItems; $i++)
             $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleItems), $user, $user, $comment);
 
-        if(mt_rand(1, 5) === 1)
+        if(mt_rand(1, 4) > 1)
             $newInventory[] = $inventoryService->receiveItem('Piece of Cetgueli\'s Map', $user, $user, $comment);
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
