@@ -113,11 +113,20 @@ class PetShelterController extends PsyPetsController
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
-            $dialog = 'You already have the maximum allowed number of pets.';
+            $dialog = "Hello! Here to adopt a new friend?\n\nIf no one catches your eye today, come back tomorrow. We get newcomers every day!\n\nSince you have so many pets in your house already, a pet you adopt will be placed into Daycare.";
         else
             $dialog = "Hello! Here to adopt a new friend?\n\nIf no one catches your eye today, come back tomorrow. We get newcomers every day!";
 
-        return $responseService->success([ 'dialog' => $dialog, 'pets' => $pets, 'costToAdopt' => $costToAdopt ], SerializationGroupEnum::PET_SHELTER_PET);
+        return $responseService->success(
+            [
+                'dialog' => $dialog,
+                'pets' => $pets,
+                'costToAdopt' => $costToAdopt,
+                'petsAtHome' => $numberOfPetsAtHome,
+                'maxPets' => $user->getMaxPets(),
+            ],
+            SerializationGroupEnum::PET_SHELTER_PET
+        );
     }
 
     /**
@@ -136,9 +145,6 @@ class PetShelterController extends PsyPetsController
         $user = $this->getUser();
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
-
-        if($numberOfPetsAtHome >= $user->getMaxPets())
-            throw new UnprocessableEntityHttpException('Your house has too many pets as-is.');
 
         $costToAdopt = $userService->getAdoptionFee($user);
 
@@ -203,6 +209,9 @@ class PetShelterController extends PsyPetsController
             ->setNeeds(mt_rand(10, 12), -9)
             ->setSkills($petSkills)
         ;
+
+        if($numberOfPetsAtHome >= $user->getMaxPets())
+            $petToAdopt->setInDaycare(true);
 
         $em->persist($petToAdopt);
 
