@@ -53,6 +53,7 @@ class UserStats
     public function __construct()
     {
         $this->firstTime = new \DateTimeImmutable();
+        $this->lastTime = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -102,7 +103,7 @@ class UserStats
         return $this->firstTime;
     }
 
-    public function getLastTime(): ?\DateTimeImmutable
+    public function getLastTime(): \DateTimeImmutable
     {
         return $this->lastTime;
     }

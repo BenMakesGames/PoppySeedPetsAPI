@@ -33,7 +33,7 @@ class PetShelterController extends PsyPetsController
         UserQuestRepository $userQuestRepository, UserService $userService
     )
     {
-        $now = date('Y-m-d');
+        $now = (new \DateTimeImmutable())->format('Y-m-d');
         $user = $this->getUser();
         $costToAdopt = $userService->getAdoptionFee($user);
 
@@ -218,7 +218,10 @@ class PetShelterController extends PsyPetsController
         $user->increaseMoneys(-$costToAdopt);
         $userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, $costToAdopt);
         $userStatsRepository->incrementStat($user, UserStatEnum::PETS_ADOPTED, 1);
-        $userQuestRepository->findOrCreate($user, 'Last Adopted a Pet', $now);
+
+        $userQuestRepository->findOrCreate($user, 'Last Adopted a Pet', $now)
+            ->setValue($now)
+        ;
 
         $em->flush();
 
