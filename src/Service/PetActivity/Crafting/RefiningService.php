@@ -56,6 +56,9 @@ class RefiningService
 
             if(array_key_exists('Gold Bar', $quantities))
                 $possibilities[] = [ $this, 'createGoldKey' ];
+
+            if(array_key_exists('Fiberglass', $quantities) && array_key_exists('Moon Pearl', $quantities) && array_key_exists('Gold Bar', $quantities))
+                $possibilities[] = [ $this, 'createMoonhammer' ];
         }
 
         if(array_key_exists('Crooked Stick', $quantities) && array_key_exists('Iron Bar', $quantities))
@@ -172,6 +175,40 @@ class RefiningService
             $this->petService->spendTime($pet, \mt_rand(45, 75));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Scythe, but couldn\'t figure it out.', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createMoonhammer(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 3)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+
+            $this->inventoryService->loseItem('Fiberglass', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Moonhammer, but splintered the Fiberglass! :(', '');
+        }
+        else if($roll >= 20)
+        {
+            $this->petService->spendTime($pet, \mt_rand(60, 75));
+            $this->inventoryService->loseItem('Fiberglass', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Moon Pearl', $pet->getOwner(), 1);
+
+            $this->petService->gainExp($pet, 3, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(3);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Moonhammer!', 'items/tool/scythe');
+            $this->inventoryService->petCollectsItem('Moonhammer', $pet, $pet->getName() . ' created this from Fiberglass, gold, and a Moon Pearl.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 75));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make something out of Fiberglass, but wasn\'t happy with how it was turning out.', 'icons/activity-logs/confused');
         }
     }
 
