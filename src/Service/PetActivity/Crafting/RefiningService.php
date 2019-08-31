@@ -59,6 +59,15 @@ class RefiningService
 
             if(array_key_exists('Fiberglass', $quantities) && array_key_exists('Moon Pearl', $quantities) && array_key_exists('Gold Bar', $quantities))
                 $possibilities[] = [ $this, 'createMoonhammer' ];
+
+            if(array_key_exists('Iron Bar', $quantities) && array_key_exists('Plastic', $quantities))
+            {
+                if(array_key_exists('Yellow Dye', $quantities))
+                    $possibilities[] = [ $this, 'createYellowScissors' ];
+
+                if(array_key_exists('Green Dye', $quantities))
+                    $possibilities[] = [ $this, 'createGreenScissors' ];
+            }
         }
 
         if(array_key_exists('Crooked Stick', $quantities) && array_key_exists('Iron Bar', $quantities))
@@ -142,6 +151,94 @@ class RefiningService
             $this->petService->spendTime($pet, \mt_rand(45, 75));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Fiberglass, but couldn\'t figure it out.', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createYellowScissors(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            $pet->increaseEsteem(-1);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+
+            if(mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('Plastic', $pet->getOwner(), 1);
+                $pet->increaseSafety(-1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Yellow Scissors, but burnt the Plastic! :(', '');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Yellow Scissors, but accidentally spilled the Yellow Dye all over the place! :(', '');
+            }
+        }
+        else if($roll >= 13)
+        {
+            $this->petService->spendTime($pet, \mt_rand(60, 75));
+            $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), 1);
+
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(1);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made Yellow Scissors.', 'items/tool/scissors/yellow');
+            $this->inventoryService->petCollectsItem('Yellow Scissors', $pet, $pet->getName() . ' created.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 75));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make scissors, but getting the handle shape right is apparently frickin\' impossible >:(', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createGreenScissors(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            $pet->increaseEsteem(-1);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+
+            if(mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('Plastic', $pet->getOwner(), 1);
+                $pet->increaseSafety(-1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Green Scissors, but burnt the Plastic! :(', '');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Green Dye', $pet->getOwner(), 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Green Scissors, but accidentally spilled the Green Dye all over the place! :(', '');
+            }
+        }
+        else if($roll >= 13)
+        {
+            $this->petService->spendTime($pet, \mt_rand(60, 75));
+            $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Green Dye', $pet->getOwner(), 1);
+
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(1);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made Green Scissors.', 'items/tool/scissors/green');
+            $this->inventoryService->petCollectsItem('Green Scissors', $pet, $pet->getName() . ' created.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 75));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make scissors, but getting the handle shape right is apparently frickin\' impossible >:(', 'icons/activity-logs/confused');
         }
     }
 
