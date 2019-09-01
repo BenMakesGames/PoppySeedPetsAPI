@@ -25,7 +25,7 @@ class MuseumItem
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Item")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Item", inversedBy="museumDonations")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"museum"})
      */

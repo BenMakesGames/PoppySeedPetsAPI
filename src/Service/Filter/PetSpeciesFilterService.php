@@ -24,7 +24,7 @@ class PetSpeciesFilterService
                 'id' => [ 'i.id' => 'asc' ],
             ],
             [
-                'name' => array($this, 'filterName'),
+                'name' => [ $this, 'filterName' ],
             ]
         );
     }

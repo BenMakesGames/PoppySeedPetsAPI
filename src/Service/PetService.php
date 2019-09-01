@@ -838,7 +838,8 @@ class PetService
     {
         $pet->spendTime($time);
 
-        $statusEffects = $pet->getStatusEffects();
+        /** @var StatusEffect[] $statusEffects */
+        $statusEffects = $pet->getStatusEffects()->toArray();
 
         for($i = count($statusEffects) - 1; $i >= 0; $i--)
         {

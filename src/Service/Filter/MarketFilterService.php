@@ -31,11 +31,11 @@ class MarketFilterService
                 'price' => [ 'i.sellPrice' => 'asc', 'item.name' => 'asc' ],
             ],
             [
-                'name' => array($this, 'filterName'),
-                'edible' => array($this, 'filterEdible'),
-                'foodFlavors' => array($this, 'filterFoodFlavors'),
-                'equipable' => array($this, 'filterEquipable'),
-                'equipStats' => array($this, 'filterEquipStats')
+                'name' => [ $this, 'filterName' ],
+                'edible' => [ $this, 'filterEdible' ],
+                'foodFlavors' => [ $this, 'filterFoodFlavors' ],
+                'equipable' => [ $this, 'filterEquipable' ],
+                'equipStats' => [ $this, 'filterEquipStats' ]
             ]
         );
     }

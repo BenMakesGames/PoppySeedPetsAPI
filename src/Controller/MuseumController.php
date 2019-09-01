@@ -14,6 +14,7 @@ use App\Repository\MuseumItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
+use App\Service\Filter\ItemFilterService;
 use App\Service\Filter\MuseumFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -36,7 +37,7 @@ class MuseumController extends PsyPetsController
      * @Route("/{user}/items", methods={"GET"}, requirements={"user"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function userItems(
+    public function userDonatedItems(
         User $user,
         Request $request, ResponseService $responseService, MuseumFilterService $museumFilterService
     )
@@ -46,6 +47,23 @@ class MuseumController extends PsyPetsController
         return $responseService->success(
             $museumFilterService->getResults($request->query),
             [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MUSEUM ]
+        );
+    }
+
+    /**
+     * @Route("/{user}/nonItems", methods={"GET"}, requirements={"user"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function userNonDonatedItems(
+        User $user,
+        Request $request, ResponseService $responseService, ItemFilterService $itemFilterService
+    )
+    {
+        $itemFilterService->addRequiredFilter('notDonatedBy', $user->getId());
+
+        return $responseService->success(
+            $itemFilterService->getResults($request->query),
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::ITEM_ENCYCLOPEDIA ]
         );
     }
 

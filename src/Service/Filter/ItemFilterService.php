@@ -5,6 +5,7 @@ use App\Entity\ItemFood;
 use App\Entity\ItemTool;
 use App\Enum\FlavorEnum;
 use App\Repository\ItemRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 class ItemFilterService
@@ -26,11 +27,12 @@ class ItemFilterService
                 'id' => [ 'i.id' => 'asc' ],
             ],
             [
-                'name' => array($this, 'filterName'),
-                'edible' => array($this, 'filterEdible'),
-                'foodFlavors' => array($this, 'filterFoodFlavors'),
-                'equipable' => array($this, 'filterEquipable'),
-                'equipStats' => array($this, 'filterEquipStats')
+                'name' => [ $this, 'filterName' ],
+                'edible' => [ $this, 'filterEdible' ],
+                'foodFlavors' => [ $this, 'filterFoodFlavors' ],
+                'equipable' => [ $this, 'filterEquipable' ],
+                'equipStats' => [ $this, 'filterEquipStats' ],
+                'notDonatedBy' => [ $this, 'filterNotDonatedBy' ],
             ]
         );
     }
@@ -45,6 +47,15 @@ class ItemFilterService
         $qb
             ->andWhere('i.name LIKE :nameLike')
             ->setParameter('nameLike', '%' . $value . '%')
+        ;
+    }
+
+    public function filterNotDonatedBy(QueryBuilder $qb, $value)
+    {
+        $qb
+            ->leftJoin('i.museumDonations', 'm', Join::WITH, 'm.user=:user')
+            ->andWhere('m.id IS NULL')
+            ->setParameter('user', $value)
         ;
     }
 
