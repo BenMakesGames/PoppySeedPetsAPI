@@ -41,14 +41,16 @@ class MagicHourglassController extends PsyPetsItemController
 
         $userStatsRepository->incrementStat($user, UserStatEnum::MAGIC_HOURGLASSES_SMASHED);
 
-        $em->flush();
-
         $em->getConnection()->executeQuery(
             'UPDATE pet SET `time` = `time` + 600 WHERE owner_id=:ownerId AND in_daycare=0 AND `time` < 4320',
             [ 'ownerId' => $user->getId() ]
         );
 
+        $em->flush();
+
         $houseService->run($user);
+
+        $em->flush();
 
         return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }

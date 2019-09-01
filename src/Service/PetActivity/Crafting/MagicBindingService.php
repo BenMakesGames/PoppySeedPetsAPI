@@ -27,32 +27,38 @@ class MagicBindingService
     {
         $possibilities = [];
 
-        if(array_key_exists('Quintessence', $quantities) && array_key_exists('Stereotypical Torch', $quantities))
-            $possibilities[] = [ $this, 'createCrazyHotTorch' ];
-
-        // magic scrolls
-        if(array_key_exists('Paper', $quantities) && array_key_exists('Quintessence', $quantities))
+        if(array_key_exists('Quintessence', $quantities))
         {
-            if(array_key_exists('Red', $quantities))
-                $possibilities[] = [ $this, 'createFruitScroll' ];
+            if(array_key_exists('Stereotypical Torch', $quantities))
+                $possibilities[] = [ $this, 'createCrazyHotTorch' ];
 
-            if(array_key_exists('Wheat Flower', $quantities))
-                $possibilities[] = [ $this, 'createFarmerScroll' ];
+            if(array_key_exists('Hourglass', $quantities))
+                $possibilities[] = [ $this, 'createMagicHourglass' ];
 
-            if(array_key_exists('Rice Flower', $quantities))
-                $possibilities[] = [ $this, 'createFlowerScroll' ];
+            // magic scrolls
+            if(array_key_exists('Paper', $quantities))
+            {
+                if(array_key_exists('Red', $quantities))
+                    $possibilities[] = [ $this, 'createFruitScroll' ];
 
-            if(array_key_exists('Seaweed', $quantities))
-                $possibilities[] = [ $this, 'createSeaScroll' ];
+                if(array_key_exists('Wheat Flower', $quantities))
+                    $possibilities[] = [ $this, 'createFarmerScroll' ];
 
-            if(array_key_exists('Silver Bar', $quantities))
-                $possibilities[] = [ $this, 'createSilverScroll' ];
+                if(array_key_exists('Rice Flower', $quantities))
+                    $possibilities[] = [ $this, 'createFlowerScroll' ];
 
-            if(array_key_exists('Gold Bar', $quantities))
-                $possibilities[] = [ $this, 'createGoldScroll' ];
+                if(array_key_exists('Seaweed', $quantities))
+                    $possibilities[] = [ $this, 'createSeaScroll' ];
 
-            if(array_key_exists('Musical Scales', $quantities))
-                $possibilities[] = [ $this, 'createMusicScroll' ];
+                if(array_key_exists('Silver Bar', $quantities))
+                    $possibilities[] = [ $this, 'createSilverScroll' ];
+
+                if(array_key_exists('Gold Bar', $quantities))
+                    $possibilities[] = [ $this, 'createGoldScroll' ];
+
+                if(array_key_exists('Musical Scales', $quantities))
+                    $possibilities[] = [ $this, 'createMusicScroll' ];
+            }
         }
 
         return $possibilities;
@@ -97,6 +103,37 @@ class MagicBindingService
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' enchanted a Stereotypical Torch into a Crazy-hot Torch.', '');
             $this->inventoryService->petCollectsItem('Crazy-hot Torch', $pet, $pet->getName() . ' enchanted this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createMagicHourglass(Pet $pet): PetActivityLog
+    {
+        $umbraCheck = \mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(-1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant an Hourglass, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+        }
+        else if($umbraCheck < 15)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant an Hourglass, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Hourglass', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' enchanted a Stereotypical Torch into a Crazy-hot Torch.', '');
+            $this->inventoryService->petCollectsItem('Magic Hourglass', $pet, $pet->getName() . ' enchanted this.', $activityLog);
             return $activityLog;
         }
     }

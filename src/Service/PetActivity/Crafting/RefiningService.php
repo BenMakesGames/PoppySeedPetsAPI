@@ -68,12 +68,49 @@ class RefiningService
                 if(array_key_exists('Green Dye', $quantities))
                     $possibilities[] = [ $this, 'createGreenScissors' ];
             }
+
+            if(array_key_exists('Silver Bar', $quantities) && array_key_exists('Glass', $quantities) && array_key_exists('Silica Grounds', $quantities))
+                $possibilities[] = [ $this, 'createHourglass' ];
         }
 
         if(array_key_exists('Crooked Stick', $quantities) && array_key_exists('Iron Bar', $quantities))
             $possibilities[] = [ $this, 'createScythe' ];
 
         return $possibilities;
+    }
+
+    public function createHourglass(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + max($pet->getStamina(), $pet->getDexterity()) + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 3)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+
+            $this->inventoryService->loseItem('Glass', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::STAMINA ]);
+            $pet->increaseEsteem(-2);
+            $pet->increaseSafety(-4);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried blowing Glass, but burnt themselves, and dropped the glass :(', 'icons/activity-logs/wounded');
+        }
+        else if($roll >= 15)
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 75));
+            $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Glass', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Silica Grounds', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::STAMINA ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created an Hourglass.', '');
+            $this->inventoryService->petCollectsItem('Hourglass', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::STAMINA ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a n Hourglass, but it\'s so detailed and fiddly! Ugh!', 'icons/activity-logs/confused');
+        }
     }
 
     public function createGlass(Pet $pet): PetActivityLog
