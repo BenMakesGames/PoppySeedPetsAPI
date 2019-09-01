@@ -2,7 +2,10 @@
 namespace App\Security;
 
 use App\Repository\UserRepository;
+use App\Repository\UserSessionRepository;
 use App\Service\HouseService;
+use App\Service\ResponseService;
+use App\Service\SessionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,14 +22,21 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
     private $userRepository;
     private $em;
     private $houseService;
+    private $userSessionRepository;
+    private $responseService;
+    private $sessionService;
 
     public function __construct(
-        UserRepository $userRepository, EntityManagerInterface $em, HouseService $houseService
+        UserRepository $userRepository, EntityManagerInterface $em, HouseService $houseService,
+        UserSessionRepository $userSessionRepository, ResponseService $responseService, SessionService $sessionService
     )
     {
         $this->userRepository = $userRepository;
         $this->em = $em;
         $this->houseService = $houseService;
+        $this->userSessionRepository = $userSessionRepository;
+        $this->responseService = $responseService;
+        $this->sessionService = $sessionService;
     }
 
     public function supports(Request $request)
@@ -49,18 +59,24 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
             return null;
         }
 
-        $user = $this->userRepository->findOneBySessionId($sessionId);
+        $session = $this->userSessionRepository->findOneBySessionId($sessionId);
 
-        if(!$user || $user->getSessionExpiration() < new \DateTimeImmutable() || $user->getIsLocked())
+        if(!$session || $session->getSessionExpiration() < new \DateTimeImmutable() || $session->getUser()->getIsLocked())
+        {
+            $this->responseService->setSessionId(null);
             throw new AccessDeniedHttpException('You have been logged out due to inactivity. Please log in again.');
+        }
 
-        $user->setLastActivity(null);
+        $this->sessionService->setCurrentSession($session);
+
+        $session->setSessionExpiration();
+        $session->getUser()->setLastActivity();
         $this->em->flush();
 
-        $this->houseService->run($user);
+        $this->houseService->run($session->getUser());
         $this->em->flush();
 
-        return $user;
+        return $session->getUser();
     }
 
     public function checkCredentials($credentials, UserInterface $user)

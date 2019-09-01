@@ -33,5 +33,10 @@ class IncreaseTimeCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->em->getConnection()->executeQuery('UPDATE pet SET `time` = `time` + 1 WHERE in_daycare=0 AND `time` < 4320');
+
+        $this->em->getConnection()->executeQuery(
+            'DELETE FROM user_session WHERE session_expiration<:now',
+            [ 'now' => (new \DateTimeImmutable())->format('Y-m-d') ]
+        );
     }
 }

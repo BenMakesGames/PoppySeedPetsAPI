@@ -95,7 +95,9 @@ class AccountController extends PsyPetsController
 
         $user->setPassword($userPasswordEncoder->encodePassword($user, $password));
 
-        $sessionService->logIn($user);
+        $session = $sessionService->logIn($user);
+
+        $responseService->setSessionId($session->getSessionId());
 
         $em->persist($user);
 
@@ -155,15 +157,16 @@ class AccountController extends PsyPetsController
         if($user->getIsLocked())
             throw new AccessDeniedHttpException('This account has been locked.');
 
-        $sessionService->logIn($user, $sessionHours);
+        $session = $sessionService->logIn($user, $sessionHours);
 
-        $user = $this->getUser();
+        $user = $session->getUser();
 
         if($user->getUnlockedMerchant() === null && $user->getRegisteredOn() <= (new \DateTimeImmutable())->modify('-5 days'))
             $user->setUnlockedMerchant();
 
         $em->flush();
 
+        $responseService->setSessionId($session->getSessionId());
         return $responseService->success();
     }
 
@@ -300,11 +303,9 @@ class AccountController extends PsyPetsController
      * @Route("/logOut", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function logOut(EntityManagerInterface $em, ResponseService $responseService)
+    public function logOut(EntityManagerInterface $em, ResponseService $responseService, SessionService $sessionService)
     {
-        $user = $this->getUser();
-
-        $user->logOut();
+        $sessionService->logOut();
 
         $em->flush();
 

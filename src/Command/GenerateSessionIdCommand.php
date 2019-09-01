@@ -32,6 +32,6 @@ class GenerateSessionIdCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln($this->sessionService->getSessionId());
+        $output->writeln($this->sessionService->generateSessionId());
     }
 }

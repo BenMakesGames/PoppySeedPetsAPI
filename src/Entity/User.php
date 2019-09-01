@@ -55,17 +55,6 @@ class User implements UserInterface
     private $lastActivity;
 
     /**
-     * @ORM\Column(type="string", length=40, unique=true)
-     * @Groups({"myAccount"})
-     */
-    private $sessionId;
-
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     */
-    private $sessionExpiration;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Pet", mappedBy="owner")
      * @Groups({"userPublicProfile"})
      */
@@ -183,6 +172,11 @@ class User implements UserInterface
      */
     private $maxPlants = 3;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserSession", mappedBy="user", orphanRemoval=true)
+     */
+    private $userSessions;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -191,6 +185,7 @@ class User implements UserInterface
         $this->friends = new ArrayCollection();
         $this->stats = new ArrayCollection();
         $this->greenhousePlants = new ArrayCollection();
+        $this->userSessions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -306,38 +301,11 @@ class User implements UserInterface
         return $this->lastActivity;
     }
 
-    public function setLastActivity(?int $sessionHours): self
+    public function setLastActivity(): self
     {
         $this->lastActivity = new \DateTimeImmutable();
 
-        if(!$sessionHours)
-            $sessionHours = $this->getDefaultSessionLengthInHours();
-
-        $this->sessionExpiration = (new \DateTimeImmutable())->modify('+' . $sessionHours . ' hours');
-
         return $this;
-    }
-
-    public function getSessionId(): ?string
-    {
-        return $this->sessionId;
-    }
-
-    public function setSessionId(string $sessionId): self
-    {
-        $this->sessionId = $sessionId;
-
-        return $this;
-    }
-
-    public function getSessionExpiration(): ?\DateTimeImmutable
-    {
-        return $this->sessionExpiration;
-    }
-
-    public function logOut()
-    {
-        $this->sessionExpiration = new \DateTimeImmutable();
     }
 
     /**
@@ -655,6 +623,37 @@ class User implements UserInterface
     public function setMaxPlants(int $maxPlants): self
     {
         $this->maxPlants = $maxPlants;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserSession[]
+     */
+    public function getUserSessions(): Collection
+    {
+        return $this->userSessions;
+    }
+
+    public function addUserSession(UserSession $userSession): self
+    {
+        if (!$this->userSessions->contains($userSession)) {
+            $this->userSessions[] = $userSession;
+            $userSession->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserSession(UserSession $userSession): self
+    {
+        if ($this->userSessions->contains($userSession)) {
+            $this->userSessions->removeElement($userSession);
+            // set the owning side to null (unless already changed)
+            if ($userSession->getUser() === $this) {
+                $userSession->setUser(null);
+            }
+        }
 
         return $this;
     }

@@ -21,6 +21,7 @@ class ResponseService
     private $serializer;
     private $security;
     private $normalizer;
+    private $sessionId = 0;
 
     public function __construct(
         SerializerInterface $serializer, NormalizerInterface $normalizer, EntityManagerInterface $em, Security $security
@@ -30,6 +31,11 @@ class ResponseService
         $this->normalizer = $normalizer;
         $this->em = $em;
         $this->security = $security;
+    }
+
+    public function setSessionId(?string $sessionId)
+    {
+        $this->sessionId = $sessionId;
     }
 
     public function itemActionSuccess($markdown, $data = []): JsonResponse
@@ -59,9 +65,10 @@ class ResponseService
             $responseData['data'] = $this->normalizer->normalize($data, null, [ 'groups' => $groups ]);
 
         if(count($this->activityLogs) > 0)
-        {
             $responseData['activity'] = $this->normalizer->normalize($this->activityLogs, null, [ 'groups' => [ SerializationGroupEnum::PET_ACTIVITY_LOGS ] ]);
-        }
+
+        if($this->sessionId !== 0)
+            $responseData['sessionId'] = $this->sessionId;
 
         $this->injectUserData($responseData);
 
