@@ -42,6 +42,9 @@ class BookstoreService
 
             if($cookedSomething->getValue() >= 35)
                 $bookPrices['Pie Recipes'] = 15;
+
+            if($cookedSomething->getValue() >= 50)
+                $bookPrices['Milk: The Book'] = 30;
         }
 
         ksort($bookPrices);
