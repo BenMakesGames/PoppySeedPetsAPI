@@ -259,6 +259,7 @@ class PetController extends PsyPetsController
 
     /**
      * @Route("/{pet}/logs", methods={"GET"}, requirements={"pet"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function logs(
         Pet $pet, ResponseService $responseService, PetActivityLogsFilterService $petActivityLogsFilterService,
