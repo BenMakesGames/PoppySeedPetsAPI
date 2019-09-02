@@ -5,6 +5,8 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\ArrayFunctions;
+use App\Functions\NumberFunctions;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetService;
@@ -28,8 +30,7 @@ class FishingService
     {
         $maxSkill = 5 + $pet->getDexterity() + $pet->getNature() + $pet->getFishing() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2);
 
-        if($maxSkill > 13) $maxSkill = 13;
-        else if($maxSkill < 1) $maxSkill = 1;
+        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 17);
 
         $roll = \mt_rand(1, $maxSkill);
 
@@ -59,7 +60,7 @@ class FishingService
                 break;
             case 10:
             case 11:
-                $activityLog = $this->fishedPlazaFountain($pet);
+                $activityLog = $this->fishedPlazaFountain($pet, 0);
                 break;
             case 12:
                 $activityLog = $this->fishedFloodedPaddyField($pet);
@@ -67,7 +68,16 @@ class FishingService
             case 13:
                 $activityLog = $this->fishedFoggyLake($pet);
                 break;
-            // case 15: boxfish
+            case 14:
+            case 15:
+                $activityLog = $this->fishedGhoti($pet);
+                break;
+            case 16:
+                $activityLog = $this->fishedCoralReef($pet);
+                break;
+            case 17:
+                $activityLog = $this->fishedPlazaFountain($pet, 2);
+                break;
         }
 
         if($activityLog)
@@ -294,17 +304,17 @@ class FishingService
         return $activityLog;
     }
 
-    private function fishedPlazaFountain(Pet $pet): PetActivityLog
+    private function fishedPlazaFountain(Pet $pet, int $bonusMoney): PetActivityLog
     {
         if($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 7) === 1)
         {
-            $moneys = \mt_rand(10, 15);
+            $moneys = \mt_rand(10, 15) + $bonusMoney;
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fished around in the Plaza Fountain, and grabbed ' . $moneys . ' moneys! Lucky~!', 'icons/activity-logs/moneys');
             $pet->getOwner()->increaseMoneys($moneys);
         }
         else
         {
-            $moneys = \mt_rand(2, 9);
+            $moneys = \mt_rand(2, 9) + $bonusMoney;
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fished around in the Plaza Fountain, and grabbed ' . $moneys . ' moneys.', 'icons/activity-logs/moneys');
             $pet->getOwner()->increaseMoneys($moneys);
         }
@@ -406,6 +416,98 @@ class FishingService
             }
 
             $this->petService->spendTime($pet, mt_rand(45, 60));
+        }
+
+        return $activityLog;
+    }
+
+    public function fishedGhoti(Pet $pet)
+    {
+        $nothingBiting = $this->nothingBiting($pet, 20, 'at the foot of the Volcano');
+        if($nothingBiting !== null) return $nothingBiting;
+
+        if(mt_rand(1, 100) === 1 || ($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 100) === 1))
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at the foot of the Volcano; nothing was biting, but ' . $pet->getName() . ' found a piece of Firestone while they were out!', '');
+            $this->inventoryService->petCollectsItem('Firestone', $pet, $pet->getName() . ' found this at the foot of the Volcano.', $activityLog);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::DEXTERITY, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
+        }
+        else if(\mt_rand(1, 10 + $pet->getDexterity() + $pet->getNature() + $pet->getPerception() + $pet->getFishing()) >= 10)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at the foot of the Volcano, and caught a Ghoti!', 'items/tool/fishing-rod/crooked');
+            $this->inventoryService->petCollectsItem('Fish', $pet, 'From a Ghoti that ' . $pet->getName() . ' fished at the foot of the Volcano.', $activityLog);
+
+            $extraItem = ArrayFunctions::pick_one([ 'Fish', 'Scales', 'Oil' ]);
+
+            $this->inventoryService->petCollectsItem($extraItem, $pet, 'From a Ghoti that ' . $pet->getName() . ' fished at the foot of the Volcano.', $activityLog);
+
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::DEXTERITY, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
+
+            $this->creditLackOfReflection($activityLog);
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at the foot of the Volcano, and almost caught a Ghoti, but it got away.', '');
+
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::DEXTERITY, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
+        }
+
+        return $activityLog;
+    }
+
+    public function fishedCoralReef(Pet $pet)
+    {
+        // no chance of nothing biting at the coral reef!
+
+        $possibleItems = [
+            'Fish',
+            'Fish',
+            'Fish',
+            'Seaweed',
+            'Seaweed',
+            'Silica Grounds',
+            'Sand Dollar',
+            'Scales',
+            'Iron Ore',
+            'Silver Ore',
+        ];
+
+        if(mt_rand(1, 50) === 1 || ($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 50) === 1))
+        {
+            $item = ArrayFunctions::pick_one([
+                'Gold Bar', 'Very Strongbox', 'Rusty Rapier',
+            ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at the Coral Reef, and spotted a ' . $item . '!', '');
+            $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this at the Coral Reef.', $activityLog);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::DEXTERITY, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
+        }
+        else if(\mt_rand(1, 10 + $pet->getDexterity() + $pet->getNature() + $pet->getPerception() + $pet->getFishing()) >= 24)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at the Coral Reef, and caught all kinds of stuff!', 'items/tool/fishing-rod/crooked');
+
+            for($x = 0; $x < 3; $x++)
+                $this->inventoryService->petCollectsItem(ArrayFunctions::pick_one($possibleItems), $pet, $pet->getName() . ' got this while fishing at the Coral Reef.', $activityLog);
+
+            $this->petService->gainExp($pet, 3, [ PetSkillEnum::DEXTERITY, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
+        }
+        else if(\mt_rand(1, 10 + $pet->getDexterity() + $pet->getNature() + $pet->getPerception() + $pet->getFishing()) >= 12)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at the Coral Reef, and caught a couple things!', 'items/tool/fishing-rod/crooked');
+
+            for($x = 0; $x < 2; $x++)
+                $this->inventoryService->petCollectsItem(ArrayFunctions::pick_one($possibleItems), $pet, $pet->getName() . ' got this while fishing at the Coral Reef.', $activityLog);
+
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::DEXTERITY, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
+        }
+        else
+        {
+            if(mt_rand(1, 2) === 1)
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at the Coral Reef, but there were a bunch of Hammerheads around.', '');
+            else
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at the Coral Reef, but there were a bunch of Jellyfish around.', '');
+
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::DEXTERITY, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
         }
 
         return $activityLog;

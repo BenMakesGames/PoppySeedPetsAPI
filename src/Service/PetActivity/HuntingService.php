@@ -7,6 +7,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\NumberFunctions;
 use App\Model\PetChanges;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
@@ -35,8 +36,7 @@ class HuntingService
     {
         $maxSkill = 10 + $pet->getStrength() + $pet->getBrawl() - $pet->getAlcohol() - $pet->getPsychedelic();
 
-        if($maxSkill > 17) $maxSkill = 17;
-        else if($maxSkill < 1) $maxSkill = 1;
+        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 19);
 
         $roll = \mt_rand(1, $maxSkill);
 
@@ -81,6 +81,10 @@ class HuntingService
                 break;
             case 17:
                 $activityLog = $this->huntedPaperGolem($pet);
+                break;
+            case 18:
+            case 19:
+                $activityLog = $this->huntedLeshyDemon($pet);
                 break;
         }
 
@@ -448,6 +452,58 @@ class HuntingService
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::DEXTERITY, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to unfold a Paper Golem, but got a nasty paper cut!', '');
+        }
+
+        return $activityLog;
+    }
+
+    private function huntedLeshyGolem(Pet $pet): PetActivityLog
+    {
+        $skill = 10 + $pet->getDexterity() + $pet->getStamina() + \max($pet->getCrafts(), $pet->getBrawl());
+
+        $pet->increaseFood(-1);
+        $this->petService->spendTime($pet, \mt_rand(45, 60));
+
+        $getExtraItem = mt_rand(1, 20 + $pet->getNature() + $pet->getPerception() + $pet->getGathering()) >= 15;
+
+        if(\mt_rand(1, $skill) >= 18)
+        {
+            $pet->increaseSafety(1);
+            $pet->increaseEsteem(2);
+            $this->petService->gainExp($pet, 3, [ PetSkillEnum::DEXTERITY, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL, PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Leshy Demon, but was able to defeat it.', '');
+
+            $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' plucked this from a Leshy Demon.', $activityLog);
+
+            if($getExtraItem)
+            {
+                $extraItem = ArrayFunctions::pick_one([
+                    'Crooked Stick',
+                    'Tea Leaves',
+                    'Quintessence',
+                    'Witch-hazel'
+                ]);
+
+                $this->inventoryService->petCollectsItem($extraItem, $pet, $pet->getName() . ' pulled this out of a Leshy Demon\'s root cage.', $activityLog);
+            }
+        }
+        else
+        {
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::DEXTERITY, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
+
+            if($getExtraItem)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Leshy Demon! ' . $pet->getName() . ' was able to break off one of its many Crooked Sticks, but was eventually forced to flee.', '');
+
+                $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' broke this off of a Leshy Demon before running from it.', $activityLog);
+            }
+            else
+            {
+                $pet->increaseSafety(-1);
+                $pet->increaseEsteem(-1);
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Leshy Demon, and forced to flee!', '');
+            }
         }
 
         return $activityLog;

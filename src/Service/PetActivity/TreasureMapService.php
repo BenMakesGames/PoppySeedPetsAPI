@@ -58,10 +58,7 @@ class TreasureMapService
             $this->petService->gainExp($pet, 3, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::INTELLIGENCE ]);
             $pet->increaseEsteem(5);
 
-            if(mt_rand(1, 5) === 1)
-                $prize = 'Outrageously Strongbox';
-            else
-                $prize = 'Very Strongbox';
+            $prize = 'Outrageously Strongbox';
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' followed Cetgueli\'s Treasure Map, and found a ' . $prize . '! (Also, the map was lost, because video games.)', 'items/map/cetgueli');
 

@@ -227,7 +227,7 @@ class GatheringService
         {
             if(\mt_rand(1, 2) === 1)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' broke a Crooked Branch off of a Hollow Log.', 'items/plant/stick-crooked');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' broke a Crooked Stick off of a Hollow Log.', 'items/plant/stick-crooked');
                 $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' broke this off of a Hollow Log.', $activityLog);
             }
             else
