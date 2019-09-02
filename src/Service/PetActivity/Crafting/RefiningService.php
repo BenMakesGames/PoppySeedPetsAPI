@@ -4,6 +4,7 @@ namespace App\Service\PetActivity\Crafting;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\PetSkillEnum;
+use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\PetService;
 use App\Service\ResponseService;
@@ -283,13 +284,15 @@ class RefiningService
     {
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
 
+        $item = ArrayFunctions::pick_one([ 'Scythe', 'Garden Shovel' ]);
+
         if($roll <= 3)
         {
             $this->petService->spendTime($pet, \mt_rand(30, 60));
 
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Scythe, but broke the Crooked Stick! :(', 'icons/activity-logs/broke-stick');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $item . ', but broke the Crooked Stick! :(', 'icons/activity-logs/broke-stick');
         }
         else if($roll >= 13)
         {
@@ -300,15 +303,15 @@ class RefiningService
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Scythe from a Crooked Stick, and Iron Bar.', 'items/tool/scythe');
-            $this->inventoryService->petCollectsItem('Scythe', $pet, $pet->getName() . ' created this from a Crooked Stick, and Iron Bar.', $activityLog);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a ' . $item . ' from a Crooked Stick, and Iron Bar.', 'items/tool/scythe');
+            $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from a Crooked Stick, and Iron Bar.', $activityLog);
             return $activityLog;
         }
         else
         {
             $this->petService->spendTime($pet, \mt_rand(45, 75));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Scythe, but couldn\'t figure it out.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $item . ', but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
 
