@@ -35,6 +35,9 @@ class MagicBindingService
             if(array_key_exists('Hourglass', $quantities))
                 $possibilities[] = [ $this, 'createMagicHourglass' ];
 
+            if(array_key_exists('Straw Broom', $quantities))
+                $possibilities[] = [ $this, 'createWitchsBroom' ];
+
             // magic scrolls
             if(array_key_exists('Paper', $quantities))
             {
@@ -134,6 +137,48 @@ class MagicBindingService
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' enchanted a Stereotypical Torch into a Crazy-hot Torch.', '');
             $this->inventoryService->petCollectsItem('Magic Hourglass', $pet, $pet->getName() . ' enchanted this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createWitchsBroom(Pet $pet): PetActivityLog
+    {
+        $umbraCheck = \mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
+
+            if(mt_rand(1, 2) === 1)
+            {
+                $pet->increaseEsteem(-1);
+                $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Witch\'s Broom, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+            }
+            else
+            {
+                $pet->increaseEsteem(-1);
+                $this->inventoryService->loseItem('Witch-hazel', $pet->getOwner(), 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Witch\'s Broom, but snapped the Witch-hazel in half :(', '');
+            }
+        }
+        else if($umbraCheck < 14)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Witch\'s Broom, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Straw Broom', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Witch-hazel', $pet->getOwner(), 1);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' enchanted a broom into a Witch\'s Broom!', '');
+            $this->inventoryService->petCollectsItem('Witch\'s Broom', $pet, $pet->getName() . ' enchanted this.', $activityLog);
             return $activityLog;
         }
     }

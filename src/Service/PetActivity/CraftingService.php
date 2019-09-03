@@ -67,7 +67,21 @@ class CraftingService
         if(array_key_exists('Crooked Stick', $quantities))
         {
             if(array_key_exists('String', $quantities))
+            {
                 $possibilities[] = [ $this, 'createCrookedFishingRod' ];
+
+                if(array_key_exists('Talon', $quantities))
+                    $possibilities[] = [ $this, 'createHuntingSpear' ];
+
+                if(array_key_exists('Hunting Spear', $quantities))
+                    $possibilities[] = [ $this, 'createVeryLongSpear' ];
+
+                if(array_key_exists('Overly-long Spear', $quantities))
+                    $possibilities[] = [ $this, 'createRidiculouslyLongSpear' ];
+
+                if(array_key_exists('Wheat', $quantities) || array_key_exists('Rice', $quantities))
+                    $possibilities[] = [ $this, 'createStrawBroom' ];
+            }
 
             if(array_key_exists('White Cloth', $quantities))
                 $possibilities[] = [ $this, 'createStereotypicalTorch' ];
@@ -80,15 +94,6 @@ class CraftingService
 
             if(array_key_exists('Glass', $quantities))
                 $possibilities[] = [ $this, 'createRusticMagnifyingGlass' ];
-
-            if(array_key_exists('Talon', $quantities) && array_key_exists('String', $quantities))
-                $possibilities[] = [ $this, 'createHuntingSpear' ];
-
-            if(array_key_exists('Hunting Spear', $quantities) && array_key_exists('String', $quantities))
-                $possibilities[] = [ $this, 'createVeryLongSpear' ];
-
-            if(array_key_exists('Overly-long Spear', $quantities) && array_key_exists('String', $quantities))
-                $possibilities[] = [ $this, 'createRidiculouslyLongSpear' ];
 
             if(array_key_exists('Sweet Beet', $quantities) && array_key_exists('Glue', $quantities))
                 $possibilities[] = [ $this, 'createSweetBeat' ];
@@ -658,6 +663,49 @@ class CraftingService
             $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Hunting Spear, but couldn\'t quite figure it out.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createStrawBroom(Pet $pet): PetActivityLog
+    {
+        $craftsCheck = \mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
+
+        if($craftsCheck <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            if(\mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a broom, but broke the String :(', 'icons/activity-logs/broke-string');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a broom, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
+            }
+        }
+        else if($craftsCheck >= 13)
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
+            $this->inventoryService->loseItem('String', $pet->getOwner(), 1);
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), 1);
+
+            if($this->inventoryService->loseItem('Rice', $pet->getOwner(), 1) === 0)
+                $this->inventoryService->loseItem('Wheat', $pet->getOwner(), 1);
+
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Straw Broom.', '');
+            $this->inventoryService->petCollectsItem('Straw Broom', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a broom, but couldn\'t quite figure it out.', 'icons/activity-logs/confused');
         }
     }
 
