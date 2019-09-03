@@ -53,6 +53,12 @@ class PetSpecies
      */
     private $handAngle;
 
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
+     */
+    private $handFlipX;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -126,6 +132,18 @@ class PetSpecies
     public function setHandAngle(float $handAngle): self
     {
         $this->handAngle = $handAngle;
+
+        return $this;
+    }
+
+    public function getHandFlipX(): ?bool
+    {
+        return $this->handFlipX;
+    }
+
+    public function setHandFlipX(bool $handFlipX): self
+    {
+        $this->handFlipX = $handFlipX;
 
         return $this;
     }
