@@ -226,6 +226,11 @@ class Pet
      */
     private $inDaycare = false;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $curiosity;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -1079,6 +1084,18 @@ class Pet
     public function setInDaycare(bool $inDaycare): self
     {
         $this->inDaycare = $inDaycare;
+
+        return $this;
+    }
+
+    public function getCuriosity(): ?int
+    {
+        return $this->curiosity;
+    }
+
+    public function setCuriosity(int $curiosity): self
+    {
+        $this->curiosity = $curiosity;
 
         return $this;
     }

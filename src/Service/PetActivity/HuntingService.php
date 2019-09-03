@@ -457,7 +457,7 @@ class HuntingService
         return $activityLog;
     }
 
-    private function huntedLeshyGolem(Pet $pet): PetActivityLog
+    private function huntedLeshyDemon(Pet $pet): PetActivityLog
     {
         $skill = 10 + $pet->getDexterity() + $pet->getStamina() + \max($pet->getCrafts(), $pet->getBrawl());
 
