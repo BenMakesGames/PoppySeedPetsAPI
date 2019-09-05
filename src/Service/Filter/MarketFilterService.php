@@ -45,7 +45,6 @@ class MarketFilterService
         return $this->repository->createQueryBuilder('i')
             ->select('i,MIN(i.sellPrice) AS HIDDEN minSellPrice')
             ->leftJoin('i.item', 'item')
-            ->andWhere('i.sellPrice IS NOT NULL')
             ->andHaving('i.sellPrice = minSellPrice')
             ->andWhere('i.owner != :user')
             ->addGroupBy('item.name')
@@ -60,9 +59,13 @@ class MarketFilterService
 
     public function filterName(QueryBuilder $qb, $value)
     {
+        $name = trim($value);
+
+        if(!$name) return;
+
         $qb
             ->andWhere('item.name LIKE :nameLike')
-            ->setParameter('nameLike', '%' . $value . '%')
+            ->setParameter('nameLike', '%' . $name . '%')
         ;
     }
 

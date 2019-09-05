@@ -92,9 +92,14 @@ class Filterer
         $results->resultCount = $numResults;
         $results->results = $paginator->getQuery()->execute();
 
+        $parameters = [];
+
+        foreach($paginator->getQuery()->getParameters() as $parameter)
+            $parameters[$parameter->getName()] = $parameter->getValue();
+
         $results->query = [
             'sql' => $paginator->getQuery()->getSQL(),
-            'parameters' => $paginator->getQuery()->getParameters()->toArray()
+            'parameters' => $parameters
         ];
 
         return $results;
