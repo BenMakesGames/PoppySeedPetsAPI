@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use Doctrine\ORM\Mapping as ORM;
@@ -33,21 +34,6 @@ class PetRelationship
     private $relationship;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $intimacy = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $passion = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $commitment = 0;
-
-    /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"petFriend"})
      */
@@ -59,6 +45,22 @@ class PetRelationship
      */
     private $metOn;
 
+    /**
+     * @ORM\Column(type="string", length=40)
+     * @Groups({"petFriend"})
+     */
+    private $currentRelationship;
+
+    /**
+     * @ORM\Column(type="string", length=40)
+     */
+    private $relationshipGoal;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $timeUntilChange;
+
     public function __construct()
     {
         $this->metOn = new \DateTimeImmutable();
@@ -69,62 +71,26 @@ class PetRelationship
         return $this->id;
     }
 
-    public function getPet(): ?Pet
+    public function getPet(): Pet
     {
         return $this->pet;
     }
 
-    public function setPet(?Pet $pet): self
+    public function setPet(Pet $pet): self
     {
         $this->pet = $pet;
 
         return $this;
     }
 
-    public function getRelationship(): ?Pet
+    public function getRelationship(): Pet
     {
         return $this->relationship;
     }
 
-    public function setRelationship(?Pet $relationship): self
+    public function setRelationship(Pet $relationship): self
     {
         $this->relationship = $relationship;
-
-        return $this;
-    }
-
-    public function getIntimacy(): int
-    {
-        return $this->intimacy;
-    }
-
-    public function increaseIntimacy(int $intimacy): self
-    {
-        $this->intimacy = NumberFunctions::constrain($this->intimacy + $intimacy, 0, 1000);
-
-        return $this;
-    }
-
-    public function getPassion(): int
-    {
-        return $this->passion;
-    }
-
-    public function increasePassion(int $passion): self
-    {
-        $this->passion = NumberFunctions::constrain($this->passion + $passion, 0, 1000);
-
-        return $this;
-    }
-
-    public function getCommitment(): int
-    {
-        return $this->commitment;
-    }
-
-    public function increaseCommitment(int $commitment): self
-    {
-        $this->commitment = NumberFunctions::constrain($this->commitment + $commitment, 0, 1000);
 
         return $this;
     }
@@ -146,34 +112,64 @@ class PetRelationship
         return $this->metOn;
     }
 
-    /**
-     * @Groups({"petFriend"})
-     */
-    public function getSummary(): string
+    public function getCurrentRelationship(): string
     {
-        $descriptions = array();
+        return $this->currentRelationship;
+    }
 
-        if($this->getPassion() >= 750)
-            $descriptions[] = 'hot';
-        else if($this->getPassion() >= 500)
-            $descriptions[] = 'attractive';
-        else if($this->getPassion() >= 250)
-            $descriptions[] = 'cute';
+    public function setCurrentRelationship(string $currentRelationship): self
+    {
+        if(!RelationshipEnum::isAValue($currentRelationship)) throw new \InvalidArgumentException('currentRelationship is not a valid RelationshipEnum value.');
 
-        if($this->getIntimacy() >= 750)
-            $descriptions[] = 'best friend';
-        else if($this->getIntimacy() >= 500)
-            $descriptions[] = 'awesome';
-        else if($this->getIntimacy() >= 250)
-            $descriptions[] = 'fun';
+        $this->currentRelationship = $currentRelationship;
 
-        if($this->getCommitment() >= 750)
-            $descriptions[] = 'irreplaceable';
-        else if($this->getCommitment() >= 500)
-            $descriptions[] = 'greatly valued';
-        else if($this->getCommitment() >= 250)
-            $descriptions[] = 'valued';
+        return $this;
+    }
 
-        return ArrayFunctions::list_nice($descriptions);
+    public function getRelationshipGoal(): string
+    {
+        return $this->relationshipGoal;
+    }
+
+    public function setRelationshipGoal(string $relationshipGoal): self
+    {
+        if(!RelationshipEnum::isAValue($relationshipGoal)) throw new \InvalidArgumentException('relationshipGoal is not a valid RelationshipEnum value.');
+
+        $this->relationshipGoal = $relationshipGoal;
+
+        return $this;
+    }
+
+    public function getTimeUntilChange(): ?int
+    {
+        return $this->timeUntilChange;
+    }
+
+    public function setTimeUntilChange(int $timeUntilChange): self
+    {
+        $this->timeUntilChange = $timeUntilChange;
+
+        return $this;
+    }
+
+    public function getCommitment(): int
+    {
+        $commitment = 0;
+
+        switch($this->currentRelationship)
+        {
+            case RelationshipEnum::BROKE_UP: $commitment = 0; break;
+            case RelationshipEnum::DISLIKE: $commitment = 0; break;
+            case RelationshipEnum::FRIEND: $commitment = 2; break;
+            case RelationshipEnum::FRIENDLY_RIVAL: $commitment = 3; break;
+            case RelationshipEnum::BFF: $commitment = 5; break;
+            case RelationshipEnum::FWB: $commitment = 5; break;
+            case RelationshipEnum::MATE: $commitment = 8; break;
+        }
+
+        if($this->currentRelationship === $this->relationshipGoal)
+            $commitment += round($commitment / 4);
+
+        return $commitment;
     }
 }

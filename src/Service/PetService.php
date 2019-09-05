@@ -452,7 +452,7 @@ class PetService
 
         if(\mt_rand(1, $pet->getStomachSize()) <= $eatDesire)
         {
-
+            // TODO: eat food from house??
         }
 
         if($pet->hasMerit(MeritEnum::BLACK_HOLE_TUM) && mt_rand(1, 200) === 1)
@@ -578,7 +578,7 @@ class PetService
         {
             /** @var PetRelationship $relationship */
             $relationship = ArrayFunctions::pick_one_weighted($relationships, function(PetRelationship $r) {
-                return $r->getCommitment() * 2 + $r->getIntimacy() + $r->getPassion();
+                return $r->getCommitment();
             });
 
             $friend = $relationship->getRelationship();

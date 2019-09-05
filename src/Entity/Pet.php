@@ -199,11 +199,6 @@ class Pet
     /**
      * @ORM\Column(type="integer")
      */
-    private $wouldBangFraction;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
     private $caffeine = 0;
 
     /**
@@ -231,14 +226,36 @@ class Pet
      */
     private $curiosity;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $poly;
+
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $sexDrive;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
         $this->lastInteracted = (new \DateTimeImmutable())->modify('-3 days');
         $this->stomachSize = mt_rand(16, 30);
-        $this->wouldBangFraction = mt_rand(mt_rand(4, 8), 10);
         $this->petRelationships = new ArrayCollection();
         $this->statusEffects = new ArrayCollection();
+        $this->curiosity = mt_rand(-1, 1);
+
+        // 10% poly; 10% flexible; 80% monogamous
+        if(mt_rand(1, 10) === 1)
+            $this->poly = 1;
+        else
+            $this->poly = mt_rand(1, 9) === 1 ? 0 : -1;
+
+        // 10% asexual; 10% flexible; 80% sexual
+        if(mt_rand(1, 10) === 1)
+            $this->sexDrive = -1;
+        else
+            $this->sexDrive = mt_rand(1, 9) === 1 ? 0 : 1;
     }
 
     public function getId(): ?int
@@ -953,34 +970,6 @@ class Pet
         return count($this->getPetRelationships());
     }
 
-    public function getWouldBangFraction(): ?int
-    {
-        return $this->wouldBangFraction;
-    }
-
-    public function setWouldBangFraction(int $wouldBangFraction): self
-    {
-        $this->wouldBangFraction = $wouldBangFraction;
-
-        return $this;
-    }
-
-    public function wouldBang(Pet $otherPet): int
-    {
-        // a pet "would bang" another pet if:
-        return
-            // straight-up 1 in every 12-30 pets, averaging 1 in 24
-            $this->getId() * 197 % ($this->wouldBangFraction * 3) === 0 ||
-            (
-                // 1 in every 2-5, averaging 1 in 4
-                ($this->getId() * 127 + $otherPet->getId() * 31 - 157) % ceil($this->wouldBangFraction / 2) === 0 &&
-                // AND 1 in every 2-5, averaging 1 in 4
-                // (since this is an "and", the total odds are 1 in every 4-25, averaging 1 in 16)
-                ($otherPet->getId() * 127 + $this->getId() * 31 - 157) % ceil($otherPet->getWouldBangFraction() / 2) === 0
-            )
-        ;
-    }
-
     public function getLowestNeed(): string
     {
         if($this->getSafety() >= mt_rand(0, 4) && $this->getLove() >= mt_rand(0, 4) && $this->getEsteem() >= mt_rand(0, 4))
@@ -1096,6 +1085,30 @@ class Pet
     public function setCuriosity(int $curiosity): self
     {
         $this->curiosity = $curiosity;
+
+        return $this;
+    }
+
+    public function getPoly(): ?bool
+    {
+        return $this->poly;
+    }
+
+    public function setPoly(bool $poly): self
+    {
+        $this->poly = $poly;
+
+        return $this;
+    }
+
+    public function getSexDrive(): ?int
+    {
+        return $this->sexDrive;
+    }
+
+    public function setSexDrive(int $sexDrive): self
+    {
+        $this->sexDrive = $sexDrive;
 
         return $this;
     }
