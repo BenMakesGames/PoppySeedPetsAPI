@@ -5,6 +5,7 @@ use App\Entity\ItemTool;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Repository\InventoryRepository;
+use App\Repository\ItemRepository;
 use Doctrine\ORM\QueryBuilder;
 
 class MarketFilterService
@@ -20,15 +21,15 @@ class MarketFilterService
 
     private $repository;
 
-    public function __construct(InventoryRepository $inventoryRepository)
+    public function __construct(ItemRepository $itemRepository)
     {
-        $this->repository = $inventoryRepository;
+        $this->repository = $itemRepository;
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
             [
-                'name' => [ 'item.name' => 'asc', 'i.sellPrice' => 'asc' ], // first one is the default
-                'price' => [ 'i.sellPrice' => 'asc', 'item.name' => 'asc' ],
+                'name' => [ 'i.name' => 'asc' ], // first one is the default
+                //'price' => [ 'inventory.sellPrice' => 'asc', 'i.name' => 'asc' ],
             ],
             [
                 'name' => [ $this, 'filterName' ],
@@ -43,11 +44,11 @@ class MarketFilterService
     public function createQueryBuilder(): QueryBuilder
     {
         return $this->repository->createQueryBuilder('i')
-            ->select('i,MIN(i.sellPrice) AS HIDDEN minSellPrice')
-            ->leftJoin('i.item', 'item')
-            ->andHaving('i.sellPrice = minSellPrice')
-            ->andWhere('i.owner != :user')
-            ->addGroupBy('item.name')
+            ->select('i AS item,MIN(inventory.sellPrice) AS minSellPrice')
+            ->leftJoin('i.inventory', 'inventory')
+            ->andWhere('inventory.sellPrice IS NOT NULL')
+            ->andWhere('inventory.owner != :user')
+            ->addGroupBy('i.name')
             ->setParameter('user', $this->user->getId())
         ;
     }
@@ -64,7 +65,7 @@ class MarketFilterService
         if(!$name) return;
 
         $qb
-            ->andWhere('item.name LIKE :nameLike')
+            ->andWhere('i.name LIKE :nameLike')
             ->setParameter('nameLike', '%' . $name . '%')
         ;
     }
@@ -72,9 +73,9 @@ class MarketFilterService
     public function filterEdible(QueryBuilder $qb, $value)
     {
         if(strtolower($value) === 'false' || !$value)
-            $qb->andWhere('item.food IS NULL');
+            $qb->andWhere('i.food IS NULL');
         else
-            $qb->andWhere('item.food IS NOT NULL');
+            $qb->andWhere('i.food IS NOT NULL');
     }
 
     public function filterFoodFlavors(QueryBuilder $qb, $value)
@@ -87,10 +88,10 @@ class MarketFilterService
         if(count($value) === 0) return;
 
         if(!in_array('food', $qb->getAllAliases()))
-            $qb->leftJoin('item.food', 'food');
+            $qb->leftJoin('i.food', 'food');
 
         $qb
-            ->andWhere('item.food IS NOT NULL')
+            ->andWhere('i.food IS NOT NULL')
         ;
 
         foreach($value as $stat)
@@ -102,9 +103,9 @@ class MarketFilterService
     public function filterEquipable(QueryBuilder $qb, $value)
     {
         if(strtolower($value) === 'false' || !$value)
-            $qb->andWhere('item.tool IS NULL');
+            $qb->andWhere('i.tool IS NULL');
         else
-            $qb->andWhere('item.tool IS NOT NULL');
+            $qb->andWhere('i.tool IS NOT NULL');
     }
 
     public function filterEquipStats(QueryBuilder $qb, $value)
@@ -117,10 +118,10 @@ class MarketFilterService
         if(count($value) === 0) return;
 
         if(!in_array('tool', $qb->getAllAliases()))
-            $qb->leftJoin('item.tool', 'tool');
+            $qb->leftJoin('i.tool', 'tool');
 
         $qb
-            ->andWhere('item.tool IS NOT NULL')
+            ->andWhere('i.tool IS NOT NULL')
         ;
 
         foreach($value as $stat)

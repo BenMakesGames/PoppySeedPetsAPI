@@ -25,7 +25,7 @@ class Inventory
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Item")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Item", inversedBy="inventory")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "greenhousePlant", "mySeeds"})
      */
