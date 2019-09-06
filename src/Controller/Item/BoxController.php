@@ -237,4 +237,59 @@ class BoxController extends PsyPetsItemController
 
         return $responseService->itemActionSuccess('Opening the box revealed ' . $moneys . '~~m~~, ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
+
+    /**
+     * @Route("/very-strongbox/{inventory}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openVeryStrongbox(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/very-strongbox/#/open');
+
+        $key = $inventoryRepository->findOneByName($user, 'Silver Key');
+
+        if(!$key)
+            throw new UnprocessableEntityHttpException('You need a Silver Key to do that.');
+
+        $comment = $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.';
+
+        $moneys = mt_rand(15, mt_rand(45, mt_rand(100, mt_rand(200, 300)))); // averages 50?
+
+        $user->increaseMoneys($moneys);
+
+        $possibleItems = [
+            'Silver Bar',
+            'Gold Bar', 'Gold Bar',
+            'Rusty Blunderbuss',
+            'Rusty Rapier',
+            'Minor Scroll of Riches',
+            'Magic Hourglass',
+        ];
+
+        $numItems = mt_rand(2, 4);
+        $newInventory = [];
+
+        for($i = 0; $i < $numItems; $i++)
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleItems), $user, $user, $comment);
+
+        $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([
+            'Scroll of Fruit', 'Scroll of the Sea', 'Minor Scroll of Riches'
+        ]), $user, $user, $comment);
+
+        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
+
+        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
+        sort($itemList);
+
+        $em->remove($inventory);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess('Opening the box revealed ' . $moneys . '~~m~~, ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+    }
 }
