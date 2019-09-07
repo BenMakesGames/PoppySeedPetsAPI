@@ -59,6 +59,12 @@ class PetSpecies
      */
     private $handFlipX;
 
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
+     */
+    private $handBehind;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -144,6 +150,18 @@ class PetSpecies
     public function setHandFlipX(bool $handFlipX): self
     {
         $this->handFlipX = $handFlipX;
+
+        return $this;
+    }
+
+    public function getHandBehind(): ?bool
+    {
+        return $this->handBehind;
+    }
+
+    public function setHandBehind(bool $hand_behind): self
+    {
+        $this->handBehind = $hand_behind;
 
         return $this;
     }
