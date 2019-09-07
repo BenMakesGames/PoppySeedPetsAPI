@@ -96,10 +96,16 @@ class Item
      * @ORM\OneToOne(targetEntity="App\Entity\ItemPlant", inversedBy="item", cascade={"persist", "remove"})
      */
     private $plant;
+
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\MuseumItem", mappedBy="item")
      */
     private $museumDonations;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Inventory", mappedBy="item")
+     */
+    private $inventory;
 
     public function getId(): ?int
     {

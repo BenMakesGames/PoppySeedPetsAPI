@@ -61,10 +61,16 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
 
         $session = $this->userSessionRepository->findOneBySessionId($sessionId);
 
-        if(!$session || $session->getSessionExpiration() < new \DateTimeImmutable() || $session->getUser()->getIsLocked())
+        if(!$session || $session->getSessionExpiration() < new \DateTimeImmutable())
         {
             $this->responseService->setSessionId(null);
             throw new AccessDeniedHttpException('You have been logged out due to inactivity. Please log in again.');
+        }
+
+        if($session->getUser()->getIsLocked())
+        {
+            $this->responseService->setSessionId(null);
+            throw new AccessDeniedHttpException('This account has been locked.');
         }
 
         $this->sessionService->setCurrentSession($session);

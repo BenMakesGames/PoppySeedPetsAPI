@@ -601,11 +601,16 @@ class PetService
                     switch(mt_rand(1, 3))
                     {
                         case 1:
-                            $friendRelationship->setMetDescription($pet->getName() . ' popped by; ' . $friend->getName() . ' had met them earlier, but kind of forgot.');
+                            if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
+                                $friendRelationship->setMetDescription($pet->getName() . ' popped by; ' . $friend->getName() . ' had met them earlier, but figured they\'d never see each other again.');
+                            else
+                                $friendRelationship->setMetDescription($pet->getName() . ' popped by; ' . $friend->getName() . ' had met them earlier, but kind of forgot.');
                             break;
+
                         case 2:
                             $friendRelationship->setMetDescription($pet->getName() . ' popped by; ' . $friend->getName() . ' had met them earlier, but figured they\'d never see each other again.');
                             break;
+
                         case 3:
                             $friendRelationship->setMetDescription($pet->getName() . ' popped by; ' . $friend->getName() . ' had met them earlier, but didn\'t think ' . $pet->getName() . ' was interested.');
                             break;

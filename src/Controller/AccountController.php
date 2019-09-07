@@ -396,6 +396,9 @@ class AccountController extends PsyPetsController
 
         $user = $userRepository->findOneBy([ 'email' => $email ]);
 
+        if(!$user)
+            throw new UnprocessableEntityHttpException('There is no user with that e-mail address.');
+
         $passphraseResetService->requestReset($user);
 
         return $responseService->success();

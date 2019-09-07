@@ -802,6 +802,7 @@ class CraftingService
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Decorated Spear.', '');
             $this->inventoryService->petCollectsItem('Decorated Spear', $pet, $pet->getName() . ' decorated a Hunting Spear with Feathers to make this.', $activityLog);
+            return $activityLog;
         }
         else
         {
