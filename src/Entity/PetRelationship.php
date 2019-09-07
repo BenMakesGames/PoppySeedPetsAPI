@@ -122,6 +122,7 @@ class PetRelationship
         if(!RelationshipEnum::isAValue($currentRelationship)) throw new \InvalidArgumentException('currentRelationship is not a valid RelationshipEnum value.');
 
         $this->currentRelationship = $currentRelationship;
+        $this->timeUntilChange = \mt_rand(\mt_rand(20, 30), \mt_rand(50, 80));
 
         return $this;
     }
@@ -145,11 +146,17 @@ class PetRelationship
         return $this->timeUntilChange;
     }
 
-    public function setTimeUntilChange(int $timeUntilChange): self
+    public function decrementTimeUntilChange(): self
     {
-        $this->timeUntilChange = $timeUntilChange;
+        if($this->wantsDifferentRelationship())
+            $this->timeUntilChange--;
 
         return $this;
+    }
+
+    public function wantsDifferentRelationship(): bool
+    {
+        return $this->currentRelationship !== $this->relationshipGoal;
     }
 
     public function getCommitment(): int

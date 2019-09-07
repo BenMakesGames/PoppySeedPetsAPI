@@ -74,7 +74,12 @@ class TriDChessService implements ParkEventInterface
 
         $this->awardExp();
 
-        $this->petRelationshipService->groupGathering($pets, 'at a Tri-D Chess tournament', 2);
+        $this->petRelationshipService->groupGathering(
+            $pets,
+            'Met at a Tri-D Chess tournament.',
+            '%p1% met %p2% at a Tri-D Chess tournament.',
+            2
+        );
 
         return (new ParkEvent())
             ->setType(ParkEventTypeEnum::TRI_D_CHESS)
@@ -141,7 +146,15 @@ class TriDChessService implements ParkEventInterface
             }
         }
 
-        $this->petRelationshipService->seeAtGroupGathering($p1->pet, $p2->pet, 'playing a match at a Tri-D Chess tournament', 3);
+        $this->petRelationshipService->seeAtGroupGathering(
+            $p1->pet,
+            $p2->pet,
+            '%p1% and %p2% chatted a little during their Tri-D Chess tournament match.',
+            '%p1% and %p2% ended up having to play a game of Tri-D Chess together...',
+            'Met during a match at a Tri-D Chess tournament.',
+            '%p1% and %p2% met during a match at a Tri-D Chess tournament.',
+            3
+        );
 
         if($p1Health <= -5)
         {

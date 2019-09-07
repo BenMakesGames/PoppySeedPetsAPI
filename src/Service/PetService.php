@@ -807,7 +807,7 @@ class PetService
         $this->spendTime($pet->getPet(), \mt_rand(45, 60));
         $this->spendTime($friend->getPet(), mt_rand(5, 10));
 
-        list($petLog, $friendLog) = $this->petRelationshipService->meetOtherPetPrivately($pet, $friend);
+        list($petLog, $friendLog) = $this->petRelationshipService->hangOutPrivately($pet, $friend);
 
         $petLog->setChanges($changes->compare($pet->getPet()));
 
