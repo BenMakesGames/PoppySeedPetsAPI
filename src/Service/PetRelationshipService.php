@@ -298,17 +298,17 @@ class PetRelationshipService
                 $p1->setCurrentRelationship(RelationshipEnum::DISLIKE);
                 $p2->setCurrentRelationship(RelationshipEnum::DISLIKE);
 
-                $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s shennanigans! They are no longer friendly rivals.', '')
+                $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s shennanigans! They are no longer friendly rivals.', '');
 
                 if($p2->getRelationshipGoal() === RelationshipEnum::DISLIKE)
                 {
-                    $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s shennanigans! The feeling is mutual! They are no longer friendly rivals!', '')
+                    $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s shennanigans! The feeling is mutual! They are no longer friendly rivals!', '');
                 }
                 else
                 {
                     $p2->setRelationshipGoal(RelationshipEnum::DISLIKE);
 
-                    $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s shennanigans! They don\'t want to be friendly rivals any more! (How rude!)', '')
+                    $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s shennanigans! They don\'t want to be friendly rivals any more! (How rude!)', '');
                 }
             }
             else
@@ -317,7 +317,9 @@ class PetRelationshipService
                 {
                     $p1
                         ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                        ->setRelationshipGoal(ArrayFunctions::pick_one([ RelationshipEnum::FRIENDLY_RIVAL, RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE ]);
+                        ->setRelationshipGoal(ArrayFunctions::pick_one([
+                            RelationshipEnum::FRIENDLY_RIVAL, RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE
+                        ]))
                     ;
 
                     $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
