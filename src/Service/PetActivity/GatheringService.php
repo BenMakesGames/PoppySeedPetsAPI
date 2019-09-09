@@ -299,7 +299,7 @@ class GatheringService
                 $loot[] = ArrayFunctions::pick_one([ 'Fish', 'Crooked Stick', 'Egg' ]);
 
                 if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature()) >= 25)
-                    $loot[] = ArrayFunctions::pick_one([ 'Feather', 'Talon' ]);
+                    $loot[] = ArrayFunctions::pick_one([ 'Feathers', 'Talon' ]);
 
                 $this->petService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::DEXTERITY, PetSkillEnum::STRENGTH, PetSkillEnum::BRAWL, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
                 $this->petService->gainExp($pet, 1, [ PetSkillEnum::STRENGTH, PetSkillEnum::BRAWL ]);
