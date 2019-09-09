@@ -187,7 +187,7 @@ class InventoryService
 
     public function petAttractsRandomBug(Pet $pet): Inventory
     {
-        $bugName  = ArrayFunctions::pick_one([ 'Spider', 'Centipede', 'Cockroach', 'Line of Ants', 'Fruit Fly', 'Stink Bug' ]);
+        $bugName  = ArrayFunctions::pick_one([ 'Spider', 'Centipede', 'Cockroach', 'Line of Ants', 'Fruit Fly', 'Stink Bug', 'Moth' ]);
 
         $bug = $this->itemRepository->findOneByName($bugName);
 
