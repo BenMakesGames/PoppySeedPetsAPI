@@ -235,10 +235,11 @@ class Pet
     {
         $this->birthDate = new \DateTimeImmutable();
         $this->lastInteracted = (new \DateTimeImmutable())->modify('-3 days');
-        $this->stomachSize = mt_rand(16, 30);
-        $this->wouldBangFraction = mt_rand(mt_rand(4, 8), 10);
+        $this->stomachSize = \mt_rand(16, 30);
+        $this->wouldBangFraction = \mt_rand(\mt_rand(4, 8), 10);
         $this->petRelationships = new ArrayCollection();
         $this->statusEffects = new ArrayCollection();
+        $this->curiosity = \mt_rand(-1, 1);
     }
 
     public function getId(): ?int
