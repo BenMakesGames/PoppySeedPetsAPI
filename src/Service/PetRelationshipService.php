@@ -291,72 +291,70 @@ class PetRelationshipService
      */
     private function hangOutPrivatelySuggestingRelationshipChange(PetRelationship $p1, PetRelationship $p2): array
     {
-        if($p1->getCurrentRelationship() === RelationshipEnum::FRIENDLY_RIVAL)
+        switch($p1->getCurrentRelationship())
         {
-            if($p1->getRelationshipGoal() === RelationshipEnum::DISLIKE)
+            case RelationshipEnum::FRIENDLY_RIVAL:
+                return $this->hangOutPrivatelySuggestingRelationshipChangeAsDislike($p1, $p2);
+            case RelationshipEnum::FRIEND:
+                break;
+            case RelationshipEnum::BFF:
+                break;
+            case RelationshipEnum::FWB:
+                break;
+            case RelationshipEnum::MATE:
+                break;
+        }
+    }
+
+    private function hangOutPrivatelySuggestingRelationshipChangeAsDislike(PetRelationship $p1, PetRelationship $p2): array
+    {
+        if($p1->getRelationshipGoal() === RelationshipEnum::DISLIKE)
+        {
+            $p1->setCurrentRelationship(RelationshipEnum::DISLIKE);
+            $p2->setCurrentRelationship(RelationshipEnum::DISLIKE);
+
+            $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s shennanigans! They are no longer friendly rivals.', '');
+
+            if($p2->getRelationshipGoal() === RelationshipEnum::DISLIKE)
             {
-                $p1->setCurrentRelationship(RelationshipEnum::DISLIKE);
-                $p2->setCurrentRelationship(RelationshipEnum::DISLIKE);
-
-                $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s shennanigans! They are no longer friendly rivals.', '');
-
-                if($p2->getRelationshipGoal() === RelationshipEnum::DISLIKE)
-                {
-                    $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s shennanigans! The feeling is mutual! They are no longer friendly rivals!', '');
-                }
-                else
-                {
-                    $p2->setRelationshipGoal(RelationshipEnum::DISLIKE);
-
-                    $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s shennanigans! They don\'t want to be friendly rivals any more! (How rude!)', '');
-                }
+                $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s shennanigans! The feeling is mutual! They are no longer friendly rivals!', '');
             }
             else
             {
-                if($p2->getRelationshipGoal() === RelationshipEnum::DISLIKE)
-                {
-                    $p1
-                        ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                        ->setRelationshipGoal(ArrayFunctions::pick_one([
-                            RelationshipEnum::FRIENDLY_RIVAL, RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE
-                        ]))
-                    ;
+                $p2->setRelationshipGoal(RelationshipEnum::DISLIKE);
 
-                    $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
-
-                    $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' apparently wants nothing to do with ' . $p1->getPet()->getName() . ' anymore! :(', '');
-                    $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' wanted to be friends; ' . $p2->getPet()->getName() . ' rejected, wanting nothing to do with with ' . $p2->getPet()->getName() . '!', '');
-                }
-                else
-                {
-                    $p1->setCurrentRelationship(RelationshipEnum::FRIEND);
-                    $p2->setCurrentRelationship(RelationshipEnum::FRIEND);
-
-                    if(mt_rand(1, 3) === 1)
-                        $mostly = ' (Well, mostly!)';
-                    else
-                        $mostly = '';
-
-                    $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' happily accepted! No more of this silly rivalry stuff!' . $mostly, '');
-                    $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . '; they happily accepted! No more of this silly rivalry stuff!' . $mostly, '');
-                }
+                $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s shennanigans! They don\'t want to be friendly rivals any more! (How rude!)', '');
             }
         }
-        else if($p1->getCurrentRelationship() === RelationshipEnum::FRIEND)
+        else
         {
+            if($p2->getRelationshipGoal() === RelationshipEnum::DISLIKE)
+            {
+                $p1
+                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
+                    ->setRelationshipGoal(ArrayFunctions::pick_one([
+                        RelationshipEnum::FRIENDLY_RIVAL, RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE
+                    ]))
+                ;
 
-        }
-        else if($p1->getCurrentRelationship() === RelationshipEnum::BFF)
-        {
+                $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
 
-        }
-        else if($p1->getCurrentRelationship() === RelationshipEnum::FWB)
-        {
+                $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' apparently wants nothing to do with ' . $p1->getPet()->getName() . ' anymore! :(', '');
+                $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' wanted to be friends; ' . $p2->getPet()->getName() . ' rejected, wanting nothing to do with with ' . $p2->getPet()->getName() . '!', '');
+            }
+            else
+            {
+                $p1->setCurrentRelationship(RelationshipEnum::FRIEND);
+                $p2->setCurrentRelationship(RelationshipEnum::FRIEND);
 
-        }
-        else if($p1->getCurrentRelationship() === RelationshipEnum::MATE)
-        {
+                if(mt_rand(1, 3) === 1)
+                    $mostly = ' (Well, mostly!)';
+                else
+                    $mostly = '';
 
+                $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' happily accepted! No more of this silly rivalry stuff!' . $mostly, '');
+                $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . '; they happily accepted! No more of this silly rivalry stuff!' . $mostly, '');
+            }
         }
 
         return [ $log1, $log2 ];
