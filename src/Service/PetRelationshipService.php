@@ -554,6 +554,7 @@ class PetRelationshipService
                 break;
 
             case RelationshipEnum::FRIEND:
+                return $this->hangOutPrivatelySuggestingRelationshipChangeWithChanceForDrama($p1, $p2, 45, 45);
                 break;
 
             case RelationshipEnum::FRIENDLY_RIVAL:
@@ -571,6 +572,26 @@ class PetRelationshipService
 
             case RelationshipEnum::MATE:
                 break;
+        }
+
+        return [ $log1, $log2 ];
+    }
+
+    private function hangOutPrivatelySuggestingRelationshipChangeWithChanceForDrama(PetRelationship $p1, PetRelationship $p2, $chanceP1ChangesMind, $chanceP2ChangesMind)
+    {
+        $r = \mt_rand(1, 100);
+
+        if($r <= $chanceP1ChangesMind)
+        {
+
+        }
+        else if($r < $chanceP1ChangesMind + $chanceP2ChangesMind)
+        {
+
+        }
+        else // break up
+        {
+            
         }
 
         return [ $log1, $log2 ];
