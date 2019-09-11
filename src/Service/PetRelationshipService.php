@@ -272,7 +272,22 @@ class PetRelationshipService
         if(mt_rand(1, 2) === 1)
             return $this->hangOutPrivatelyAsBFFs($p1, $p2);
 
+        $p1->getPet()
+            ->increaseSafety(mt_rand(2, 4))
+            ->increaseLove(mt_rand(2, 4))
+            ->increaseEsteem(mt_rand(1, 2))
+        ;
 
+        $p2->getPet()
+            ->increaseSafety(mt_rand(2, 4))
+            ->increaseLove(mt_rand(2, 4))
+            ->increaseEsteem(mt_rand(1, 2))
+        ;
+
+        $p1Log = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' hung out with ' . $p2->getPet()->getName() . '. They had fun! ;)', '');
+        $p2Log = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' hung out with ' . $p2->getPet()->getName() . '. They had fun! ;)', '');
+
+        return [ $p1Log, $p2Log ];
     }
 
     /**
