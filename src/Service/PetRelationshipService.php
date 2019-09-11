@@ -253,7 +253,141 @@ class PetRelationshipService
         if(mt_rand(1, 5) === 1)
             return $this->hangOutPrivatelyAsFriendlyRivals($p1, $p2);
 
+        $pet = $p1->getPet();
+        $friend = $p2->getPet();
 
+        $petLowestNeed = $pet->getLowestNeed();
+        $friendLowestNeed = $friend->getLowestNeed();
+
+        if($petLowestNeed === '')
+        {
+            if($friendLowestNeed === '')
+            {
+                // TODO: describe activity
+                $message = $pet->getName() . ' hung out with ' . $friend->getName() . '. They had fun! :)';
+
+                $pet
+                    ->increaseLove(mt_rand(2, 4))
+                    ->increaseSafety(mt_rand(2, 4))
+                    ->increaseEsteem(mt_rand(2, 4))
+                ;
+
+                $friend
+                    ->increaseLove(mt_rand(2, 4))
+                    ->increaseSafety(mt_rand(2, 4))
+                    ->increaseEsteem(mt_rand(2, 4))
+                ;
+            }
+            else
+            {
+                $message = $pet->getName() . ' hung out with ' . $friend->getName() . ' who wasn\'t actually feeling that great :| ' . $pet->getName() . ' comforted them for a while.';
+
+                $pet
+                    ->increaseLove(mt_rand(2, 4))
+                    ->increaseEsteem(mt_rand(4, 8))
+                ;
+
+                $friend
+                    ->increaseSafety(mt_rand(2, 4))
+                    ->increaseLove(mt_rand(2, 4))
+                    ->increaseEsteem(mt_rand(2, 4))
+                ;
+            }
+        }
+        else if($petLowestNeed === 'safety')
+        {
+            if($friendLowestNeed === 'safety')
+            {
+                $message = $pet->getName() . ' was feeling nervous, so came to hang out with ' . $friend->getName() . '... who was also feeling a little nervous! They huddled up together, and kept each other safe.';
+
+                $pet
+                    ->increaseSafety(mt_rand(2, 4))
+                    ->increaseLove(mt_rand(4, 8))
+                ;
+
+                $friend
+                    ->increaseSafety(mt_rand(2, 4))
+                    ->increaseLove(mt_rand(4, 8))
+                ;
+            }
+            else
+            {
+                $message = $pet->getName() . ' was feeling nervous, so hung out with ' . $friend->getName() . '. They huddled up together, and kept each other safe.';
+
+                $pet
+                    ->increaseSafety(mt_rand(4, 8))
+                    ->increaseLove(mt_rand(2, 4))
+                ;
+
+                $friend
+                    ->increaseEsteem(mt_rand(4, 8))
+                    ->increaseLove(mt_rand(2, 4))
+                ;
+            }
+        }
+        else if($petLowestNeed === 'love')
+        {
+            $message = $pet->getName() . ' was feeling lonely, so hung out with ' . $friend->getName() . '. They had fun :)';
+            $pet
+                ->increaseSafety(mt_rand(2, 4))
+                ->increaseLove(mt_rand(2, 4))
+            ;
+
+            if($friendLowestNeed !== 'esteem')
+                $friend->increaseSafety(mt_rand(2, 4));
+
+            $friend->increaseLove(mt_rand(2, 4));
+
+            if($friendLowestNeed === 'esteem')
+                $friend->increaseEsteem(mt_rand(2, 4));
+        }
+        else //if($petLowestNeed === 'esteem')
+        {
+            if($friendLowestNeed === '' || $friendLowestNeed === 'safety')
+            {
+                $message = $pet->getName() . ' was feeling down, and talked to ' . $friend->getName() . ' about it. ' . $friend->getName() . ' listened patiently, which made ' . $pet->getName() . ' feel a little better.';
+
+                $pet
+                    ->increaseLove(mt_rand(2, 4))
+                    ->increaseEsteem(mt_rand(2, 4))
+                ;
+
+                if($friendLowestNeed === 'safety')
+                    $friend->increaseSafety(mt_rand(2, 4));
+            }
+            else
+            {
+                $message = $pet->getName() . ' and ' . $friend->getName() . ' were both feeling down. They complained about other people, and the world. It was kind of negative, but sharing their feelings made them both feel a little better.';
+
+                $pet
+                    ->increaseLove(mt_rand(2, 4))
+                    ->increaseEsteem(mt_rand(2, 4))
+                ;
+
+                $friend
+                    ->increaseLove(mt_rand(2, 4))
+                    ->increaseEsteem(mt_rand(2, 4))
+                ;
+            }
+        }
+
+        $p1Log = (new PetActivityLog())
+            ->setPet($pet)
+            ->setEntry($message)
+            ->setIcon('icons/activity-logs/friend')
+        ;
+
+        $this->em->persist($p1Log);
+
+        $p2Log = (new PetActivityLog())
+            ->setPet($friend)
+            ->setEntry($message)
+            ->setIcon('icons/activity-logs/friend')
+        ;
+
+        $this->em->persist($p2Log);
+
+        return [ $p1Log, $p2Log ];
     }
 
     /**
