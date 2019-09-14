@@ -377,7 +377,8 @@ class ItemFood
         else
             $modifiers[] = 'no food value';
 
-        if($this->love > 0) $modifiers[] = 'all pets love to eat this food';
+        if($this->love > 2) $modifiers[] = 'all pets love to eat this food';
+        else if($this->love > 0) $modifiers[] = 'all pets like to eat this food';
         else if($this->love < 0) $modifiers[] = 'all pets hate to eat this food';
 
         if($this->junk > 0) $modifiers[] = 'a junk food';
@@ -388,7 +389,10 @@ class ItemFood
         if($this->psychedelic > 0) $modifiers[] = 'trippy';
 
         foreach(FlavorEnum::getValues() as $flavor)
-            if($this->$flavor > 0) $modifiers[] = $flavor;
+        {
+            if($this->$flavor > 2) $modifiers[] = 'very ' . $flavor;
+            else if($this->$flavor > 0) $modifiers[] = $flavor;
+        }
 
         return $modifiers;
     }
