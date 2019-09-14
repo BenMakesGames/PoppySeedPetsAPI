@@ -377,9 +377,9 @@ class ItemFood
         else
             $modifiers[] = 'no food value';
 
-        if($this->love > 2) $modifiers[] = 'all pets love to eat this food';
-        else if($this->love > 0) $modifiers[] = 'all pets like to eat this food';
-        else if($this->love < 0) $modifiers[] = 'all pets hate to eat this food';
+        if($this->love > 2) $modifiers[] = 'all pets love this food';
+        else if($this->love > 0) $modifiers[] = 'all pets like this food';
+        else if($this->love < 0) $modifiers[] = 'all pets hate this food';
 
         if($this->junk > 0) $modifiers[] = 'a junk food';
         else if($this->junk < 0) $modifiers[] = 'a healthy food';
