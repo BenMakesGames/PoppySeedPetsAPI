@@ -16,6 +16,7 @@ use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
+use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\CraftingService;
 use App\Service\PetActivity\FishingService;
@@ -32,6 +33,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class PetService
 {
     private $em;
+    private $petRepository;
     private $randomService;
     private $responseService;
     private $petRelationshipService;
@@ -50,7 +52,7 @@ class PetService
 
     public function __construct(
         EntityManagerInterface $em, RandomService $randomService, ResponseService $responseService,
-        PetRelationshipService $petRelationshipService,
+        PetRelationshipService $petRelationshipService, PetRepository $petRepository,
         FishingService $fishingService, HuntingService $huntingService, GatheringService $gatheringService,
         CraftingService $craftingService, UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
         TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService,
@@ -59,6 +61,7 @@ class PetService
     )
     {
         $this->em = $em;
+        $this->petRepository = $petRepository;
         $this->randomService = $randomService;
         $this->responseService = $responseService;
         $this->petRelationshipService = $petRelationshipService;
@@ -810,7 +813,7 @@ class PetService
     private function meetRoommates(Pet $pet): bool
     {
         /** @var Pet[] $otherPets */
-        $otherPets = $pet->getOwner()->getPets()->filter(function(Pet $p) use($pet) { return $p->getId() !== $pet->getId(); });
+        $otherPets = $this->petRepository->getRoommates($pet);
 
         $metNewPet = false;
 
