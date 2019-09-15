@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ReminderRepository")
@@ -13,6 +14,7 @@ class Reminder
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"reminder"})
      */
     private $id;
 
@@ -24,16 +26,19 @@ class Reminder
 
     /**
      * @ORM\Column(type="string", length=120)
+     * @Groups({"reminder"})
      */
     private $text;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"reminder"})
      */
     private $nextReminder;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"reminder"})
      */
     private $reminderInterval;
 

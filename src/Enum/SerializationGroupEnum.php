@@ -28,4 +28,5 @@ final class SerializationGroupEnum
     const PET_FRIEND = 'petFriend';
     const GREENHOUSE_PLANT = 'greenhousePlant';
     const MY_SEEDS = 'mySeeds';
+    const REMINDER = 'reminder';
 }
