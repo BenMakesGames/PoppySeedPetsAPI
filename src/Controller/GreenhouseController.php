@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\GreenhousePlant;
+use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Model\ItemQuantity;
@@ -73,7 +74,7 @@ class GreenhouseController extends PsyPetsController
         $quantity->item = $plant->getPlant()->getItem();
         $quantity->quantity = mt_rand($plant->getPlant()->getMinYield(), $plant->getPlant()->getMaxYield());
 
-        $inventoryService->giveInventory($quantity, $user, $user, $user->getName() . ' grew this in their greenhouse.');
+        $inventoryService->giveInventory($quantity, $user, $user, $user->getName() . ' grew this in their greenhouse.', LocationEnum::HOME);
 
         $userStatsRepository->incrementStat($user, UserStatEnum::HARVESTED_PLANT);
 

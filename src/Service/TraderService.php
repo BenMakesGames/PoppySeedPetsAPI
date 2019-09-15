@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 use App\Entity\User;
+use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\InventoryRepository;
@@ -298,7 +299,7 @@ class TraderService
             switch($cost['type'])
             {
                 case 'item':
-                    $quantity = $this->inventoryService->loseItem($cost['item'], $user, $cost['quantity']);
+                    $quantity = $this->inventoryService->loseItem($cost['item'], $user, LocationEnum::HOME, $cost['quantity']);
 
                     if($quantity < $cost['quantity'])
                         throw new \InvalidArgumentException('You do not have the items needed to make this exchange.');
@@ -322,7 +323,7 @@ class TraderService
             {
                 case 'item':
                     for($i = 0; $i < $yield['quantity']; $i++)
-                        $this->inventoryService->receiveItem($yield['item'], $user, null, 'Received by trading with the Trader.');
+                        $this->inventoryService->receiveItem($yield['item'], $user, null, 'Received by trading with the Trader.', LocationEnum::HOME);
                     break;
 
                 case 'money':

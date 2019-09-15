@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Inventory;
 use App\Entity\User;
+use App\Enum\LocationEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -45,6 +46,19 @@ class InventoryRepository extends ServiceEntityRepository
             ->setParameter('owner', $user->getId())
             ->getQuery()
             ->getResult()
+        ;
+    }
+
+    public function countItemsInHouse(User $user)
+    {
+        return (int)$this->createQueryBuilder('i')
+            ->select('COUNT(i.id)')
+            ->andWhere('i.owner=:user')
+            ->andWhere('i.location=:houseLocation')
+            ->setParameter('user', $user)
+            ->setParameter('houseLocation', LocationEnum::HOME)
+            ->getQuery()
+            ->getSingleScalarResult()
         ;
     }
 }

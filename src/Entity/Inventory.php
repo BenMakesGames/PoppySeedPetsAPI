@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\LocationEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,7 +12,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass="App\Repository\InventoryRepository")
  * @ORM\Table(indexes={
  *     @ORM\Index(name="modified_on_idx", columns={"modified_on"}),
- *     @ORM\Index(name="sell_price_idx", columns={"sell_price"})
+ *     @ORM\Index(name="sell_price_idx", columns={"sell_price"}),
+ *     @ORM\Index(name="location_idx", columns={"location"})
  * })
  */
 class Inventory
@@ -77,6 +79,11 @@ class Inventory
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
     private $sellListDate;
+
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $location = LocationEnum::HOME;
 
     public function __construct()
     {
@@ -207,5 +214,20 @@ class Inventory
     public static function calculateBuyPrice(int $sellPrice): int
     {
         return \ceil($sellPrice * 1.02);
+    }
+
+    public function getLocation(): int
+    {
+        return $this->location;
+    }
+
+    public function setLocation(int $location): self
+    {
+        if(!LocationEnum::isAValue($location))
+            throw new \InvalidArgumentException('$location is not a valid LocationEnum value.');
+
+        $this->location = $location;
+
+        return $this;
     }
 }

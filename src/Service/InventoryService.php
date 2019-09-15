@@ -7,6 +7,7 @@ use App\Entity\ItemFood;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
+use App\Enum\LocationEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Model\ItemQuantity;
@@ -134,7 +135,7 @@ class InventoryService
      * @param ItemQuantity|ItemQuantity[] $quantities
      * @return Inventory[]
      */
-    public function giveInventory($quantities, User $owner, User $creator, string $comment)
+    public function giveInventory($quantities, User $owner, User $creator, string $comment, int $location)
     {
         if(!is_array($quantities)) $quantities = [ $quantities ];
 
@@ -149,6 +150,7 @@ class InventoryService
                     ->setCreatedBy($creator)
                     ->setItem($itemQuantity->item)
                     ->addComment($comment)
+                    ->setLocation($location)
                 ;
 
                 $this->em->persist($i);
@@ -178,6 +180,7 @@ class InventoryService
             ->setCreatedBy($pet->getOwner())
             ->setItem($item)
             ->addComment($comment)
+            ->setLocation(LocationEnum::HOME)
         ;
 
         $this->em->persist($i);
@@ -198,6 +201,9 @@ class InventoryService
             ->addComment('Ah! How\'d this get inside?!')
         ;
 
+        if($pet->getOwner()->getUnlockedBasement() && mt_rand(1, 4) === 1)
+            $i->setLocation(LocationEnum::BASEMENT);
+
         $this->em->persist($i);
 
         return $i;
@@ -206,7 +212,7 @@ class InventoryService
     /**
      * @param Item|string $item
      */
-    public function receiveItem($item, User $owner, ?User $creator, string $comment): Inventory
+    public function receiveItem($item, User $owner, ?User $creator, string $comment, int $location): Inventory
     {
         if(is_string($item))
         {
@@ -228,14 +234,18 @@ class InventoryService
         return $i;
     }
 
-    public function loseItem($item, User $owner, int $quantity = 1): int
+    /**
+     * @param Item|string $item
+     */
+    public function loseItem($item, User $owner, int $location, int $quantity = 1): int
     {
         if(is_string($item)) $item = $this->itemRepository->findOneByName($item);
 
-        $statement = $this->em->getConnection()->prepare('DELETE FROM inventory WHERE owner_id=:user AND item_id=:item LIMIT ' . $quantity);
+        $statement = $this->em->getConnection()->prepare('DELETE FROM inventory WHERE owner_id=:user AND item_id=:item AND location=:location LIMIT ' . $quantity);
         $statement->execute([
             'user' => $owner->getId(),
-            'item' => $item->getId()
+            'item' => $item->getId(),
+            'location' => $location
         ]);
 
         return $statement->rowCount();

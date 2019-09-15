@@ -37,9 +37,10 @@ class ScrollController extends PsyPetsItemController
             $userStatsRepository->incrementStat($user, 'Misread a Scroll');
 
             $pectin = \mt_rand(\mt_rand(3, 5), \mt_rand(6, 10));
+            $location = $inventory->getLocation();
 
             for($i = 0; $i < $pectin; $i++)
-                $inventoryService->receiveItem('Pectin', $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.');
+                $inventoryService->receiveItem('Pectin', $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
 
             $em->flush();
 
@@ -57,9 +58,10 @@ class ScrollController extends PsyPetsItemController
             $items = \mt_rand(5, mt_rand(6, mt_rand(7, 15)));
 
             $newInventory = [];
+            $location = $inventory->getLocation();
 
             for($i = 0; $i < $items; $i++)
-                $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleItems), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.');
+                $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleItems), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
 
             $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
             sort($itemList);
@@ -92,9 +94,10 @@ class ScrollController extends PsyPetsItemController
         ];
 
         $newInventory = [];
+        $location = $inventory->getLocation();
 
         foreach($items as $item)
-            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.');
+            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
 
         $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
         sort($itemList);
@@ -132,9 +135,10 @@ class ScrollController extends PsyPetsItemController
         if(mt_rand(1, 25) === 1) $items[] = 'Little Strongbox';
 
         $newInventory = [];
+        $location = $inventory->getLocation();
 
         foreach($items as $item)
-            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.');
+            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
 
         $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
         sort($itemList);
@@ -164,8 +168,9 @@ class ScrollController extends PsyPetsItemController
         $moneys = \mt_rand(30, 50);
 
         $item = ArrayFunctions::pick_one([ 'Little Strongbox', 'Bag of Beans' ]);
+        $location = $inventory->getLocation();
 
-        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.');
+        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
 
         $em->flush();
 
@@ -192,8 +197,9 @@ class ScrollController extends PsyPetsItemController
         $moneys = \mt_rand(60, 100);
 
         $item = ArrayFunctions::pick_one([ 'Striped Microcline', 'Firestone', 'Moon Pearl', 'Blackonite' ]);
+        $location = $inventory->getLocation();
 
-        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.');
+        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
 
         $em->flush();
 

@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\KnownRecipes;
+use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Repository\InventoryRepository;
@@ -105,7 +106,7 @@ class CookingBuddyController extends PsyPetsController
 
         $makes = $inventoryService->deserializeItemList($recipe->getMakes());
 
-        $newInventory = $inventoryService->giveInventory($makes, $user, $user, $user->getName() . ' prepared this.');
+        $newInventory = $inventoryService->giveInventory($makes, $user, $user, $user->getName() . ' prepared this.', LocationEnum::HOME);
 
         $userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING);
 

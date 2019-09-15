@@ -8,6 +8,7 @@ use App\Entity\PetSkills;
 use App\Entity\User;
 use App\Entity\UserNotificationPreferences;
 use App\Enum\FlavorEnum;
+use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\StringFunctions;
@@ -121,7 +122,7 @@ class AccountController extends PsyPetsController
 
         $em->persist($pet);
 
-        $inventoryService->receiveItem('Welcome Note', $user, null, 'This Welcome Note was waiting for ' . $user->getName() . ' in their house.');
+        $inventoryService->receiveItem('Welcome Note', $user, null, 'This Welcome Note was waiting for ' . $user->getName() . ' in their house.', LocationEnum::HOME);
 
         $preferences = (new UserNotificationPreferences())
             ->setUser($user)
@@ -332,11 +333,11 @@ class AccountController extends PsyPetsController
 
         if($type === 1)
         {
-            $newInventory = $inventoryService->receiveItem('Fruits & Veggies Box', $user, $user, $user->getName() . ' got this from a weekly Care Package.');
+            $newInventory = $inventoryService->receiveItem('Fruits & Veggies Box', $user, $user, $user->getName() . ' got this from a weekly Care Package.', LocationEnum::HOME);
         }
         else if($type === 2)
         {
-            $newInventory = $inventoryService->receiveItem('Baker\'s Box', $user, $user, $user->getName() . ' got this from a weekly Care Package.');
+            $newInventory = $inventoryService->receiveItem('Baker\'s Box', $user, $user, $user->getName() . ' got this from a weekly Care Package.', LocationEnum::HOME);
         }
         else
             throw new UnprocessableEntityHttpException('Must specify a Care Package "type".');
@@ -371,7 +372,7 @@ class AccountController extends PsyPetsController
 
         $gotBox->setValue(true);
 
-        $inventoryService->receiveItem('4th of July Box', $user, $user, 'Received on the ' . $now->format('jS') . ' of July, ' . $now->format('Y'));
+        $inventoryService->receiveItem('4th of July Box', $user, $user, 'Received on the ' . $now->format('jS') . ' of July, ' . $now->format('Y'), LocationEnum::HOME);
 
         $em->flush();
 

@@ -177,6 +177,12 @@ class User implements UserInterface
      */
     private $userSessions;
 
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"myAccount"})
+     */
+    private $unlockedBasement;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -654,6 +660,18 @@ class User implements UserInterface
                 $userSession->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUnlockedBasement(): ?\DateTimeImmutable
+    {
+        return $this->unlockedBasement;
+    }
+
+    public function setUnlockedBasement(): self
+    {
+        $this->unlockedBasement = new \DateTimeImmutable();
 
         return $this;
     }

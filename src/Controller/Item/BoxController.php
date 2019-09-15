@@ -32,11 +32,13 @@ class BoxController extends PsyPetsItemController
 
         $newInventory = [];
 
+        $location = $inventory->getLocation();
+
         for($i = 0; $i < 5; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Egg', 'Wheat Flour', 'Sugar', 'Creamy Milk' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Egg', 'Wheat Flour', 'Sugar', 'Creamy Milk' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location);
 
         for($i = 0; $i < 4; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Corn Syrup', 'Baker\'s Yeast', 'Cocoa Beans', 'Baking Soda', 'Cream of Tartar' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.');
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Corn Syrup', 'Baker\'s Yeast', 'Cocoa Beans', 'Baking Soda', 'Cream of Tartar' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location);
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
@@ -65,11 +67,13 @@ class BoxController extends PsyPetsItemController
 
         $newInventory = [];
 
+        $location = $inventory->getLocation();
+
         for($i = 0; $i < 5; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Orange', 'Red', 'Blackberries', 'Blueberries']), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.');
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Orange', 'Red', 'Blackberries', 'Blueberries']), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
 
         for($i = 0; $i < 4; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Carrot', 'Onion', 'Celery', 'Carrot', 'Sweet Beet']), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.');
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Carrot', 'Onion', 'Celery', 'Carrot', 'Sweet Beet']), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
@@ -100,8 +104,11 @@ class BoxController extends PsyPetsItemController
 
         $beans = \mt_rand(6, \mt_rand(7, 12));
 
+        $description = $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.';
+        $location = $inventory->getLocation();
+
         for($i = 0; $i < $beans; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Coffee Beans', 'Cocoa Beans', 'Beans' ]), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.');
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Coffee Beans', 'Cocoa Beans', 'Beans' ]), $user, $user, $description, $location);
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
@@ -137,7 +144,7 @@ class BoxController extends PsyPetsItemController
             'World\'s Best Sugar Cookie',
         ]);
 
-        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.');
+        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $inventory->getLocation());
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
@@ -163,13 +170,15 @@ class BoxController extends PsyPetsItemController
 
         $comment = $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.';
 
+        $location = $inventory->getLocation();
+
         $newInventory = [
-            $inventoryService->receiveItem('Hot Dog', $user, $user, $comment),
-            $inventoryService->receiveItem('Hot Dog', $user, $user, $comment),
-            $inventoryService->receiveItem('Sunscreen', $user, $user, $comment),
-            $inventoryService->receiveItem('Red Firework', $user, $user, $comment),
-            $inventoryService->receiveItem('White Firework', $user, $user, $comment),
-            $inventoryService->receiveItem('Blue Firework', $user, $user, $comment),
+            $inventoryService->receiveItem('Hot Dog', $user, $user, $comment, $location),
+            $inventoryService->receiveItem('Hot Dog', $user, $user, $comment, $location),
+            $inventoryService->receiveItem('Sunscreen', $user, $user, $comment, $location),
+            $inventoryService->receiveItem('Red Firework', $user, $user, $comment, $location),
+            $inventoryService->receiveItem('White Firework', $user, $user, $comment, $location),
+            $inventoryService->receiveItem('Blue Firework', $user, $user, $comment, $location),
         ];
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
@@ -220,11 +229,13 @@ class BoxController extends PsyPetsItemController
         $numItems = mt_rand(2, 4);
         $newInventory = [];
 
+        $location = $inventory->getLocation();
+
         for($i = 0; $i < $numItems; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleItems), $user, $user, $comment);
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleItems), $user, $user, $comment, $location);
 
         if(mt_rand(1, 4) > 1)
-            $newInventory[] = $inventoryService->receiveItem('Piece of Cetgueli\'s Map', $user, $user, $comment);
+            $newInventory[] = $inventoryService->receiveItem('Piece of Cetgueli\'s Map', $user, $user, $comment, $location);
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
@@ -273,13 +284,14 @@ class BoxController extends PsyPetsItemController
 
         $numItems = mt_rand(2, 4);
         $newInventory = [];
+        $location = $inventory->getLocation();
 
         for($i = 0; $i < $numItems; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleItems), $user, $user, $comment);
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleItems), $user, $user, $comment, $location);
 
         $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([
             'Scroll of Fruit', 'Scroll of the Sea', 'Minor Scroll of Riches'
-        ]), $user, $user, $comment);
+        ]), $user, $user, $comment, $location);
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 

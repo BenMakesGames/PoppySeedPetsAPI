@@ -478,14 +478,7 @@ class PetService
             return;
         }
 
-        $itemsInHouse = (int)$this->inventoryRepository->createQueryBuilder('i')
-            ->select('COUNT(i.id)')
-            ->andWhere('i.owner=:user')
-            ->setParameter('user', $pet->getOwner())
-            ->getQuery()
-            ->getSingleScalarResult()
-        ;
-
+        $itemsInHouse = (int)$this->inventoryRepository->countItemsInHouse($pet->getOwner());
         $craftingPossibilities = $this->craftingService->getCraftingPossibilities($pet);
         $programmingPossibilities = $this->programmingService->getCraftingPossibilities($pet);
 
