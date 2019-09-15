@@ -258,20 +258,6 @@ class AccountController extends PsyPetsController
     }
 
     /**
-     * @Route("/notificationPreferences", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function getNotificationPreferences(
-        UserNotificationPreferencesRepository $notificationPreferencesRepository, ResponseService $responseService
-    )
-    {
-        return $responseService->success(
-            $notificationPreferencesRepository->findOneBy([ 'user' => $this->getUser() ]),
-            SerializationGroupEnum::NOTIFICATION_PREFERENCES
-        );
-    }
-
-    /**
      * @Route("/rename", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */

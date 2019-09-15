@@ -183,6 +183,11 @@ class User implements UserInterface
      */
     private $unlockedBasement;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\PushSubscription", mappedBy="user")
+     */
+    private $pushSubscriptions;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -192,6 +197,7 @@ class User implements UserInterface
         $this->stats = new ArrayCollection();
         $this->greenhousePlants = new ArrayCollection();
         $this->userSessions = new ArrayCollection();
+        $this->pushSubscriptions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -674,5 +680,13 @@ class User implements UserInterface
         $this->unlockedBasement = new \DateTimeImmutable();
 
         return $this;
+    }
+
+    /**
+     * @return Collection|PushSubscription[]
+     */
+    public function getPushSubscriptions(): Collection
+    {
+        return $this->pushSubscriptions;
     }
 }
