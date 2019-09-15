@@ -26,13 +26,13 @@ class IncreaseTimeCommand extends Command
     {
         $this
             ->setName('app:increase-time')
-            ->setDescription('Increases Time of all Pets by 1.')
+            ->setDescription('Increases Time of all Pets by 1, to a maximum of 2880 minutes (48 hours).')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->em->getConnection()->executeQuery('UPDATE pet SET `time` = `time` + 1 WHERE in_daycare=0 AND `time` < 4320');
+        $this->em->getConnection()->executeQuery('UPDATE pet SET `time` = `time` + 1 WHERE in_daycare=0 AND `time` < 2880');
 
         $this->em->getConnection()->executeQuery(
             'DELETE FROM user_session WHERE session_expiration<:now',
