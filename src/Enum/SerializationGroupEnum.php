@@ -23,6 +23,7 @@ final class SerializationGroupEnum
     const QUERY_ADMIN = 'queryAdmin';
     const PET_SHELTER_PET = 'petShelterPet';
     const MARKET_ITEM = 'marketItem';
+    const TRADER_OFFER = 'traderOffer';
     const KNOWN_RECIPE = 'knownRecipe';
     const PARK_EVENT = 'parkEvent';
     const PET_FRIEND = 'petFriend';

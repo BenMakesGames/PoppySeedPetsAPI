@@ -118,7 +118,7 @@ class InventoryController extends PsyPetsController
 
         $userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING);
 
-        if($inventoryService->countInventory($user, 'Cooking Buddy') > 0)
+        if($inventoryService->countInventory($user, 'Cooking Buddy', $locationOfFirstItem) > 0)
         {
             $alreadyKnownRecipe = $knownRecipesRepository->findOneBy([
                 'user' => $user,

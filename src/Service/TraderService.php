@@ -1,9 +1,12 @@
 <?php
 namespace App\Service;
 use App\Entity\User;
+use App\Enum\CostOrYieldTypeEnum;
 use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\TraderOffer;
+use App\Model\TraderOfferCostOrYield;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
@@ -76,6 +79,7 @@ class TraderService
             'Different day, different deals!',
         ]);
 
+        /** @var TraderOffer[] $offers */
         $offers = [];
 
         $date = $now->format('M j');
@@ -105,18 +109,18 @@ class TraderService
         // talk like a pirate day
         if($date === 'Sep 19')
         {
-            $offers[] = [
-                'id' => self::ID_RUSTY_RAPIER,
-                'cost' => [
-                    [ 'type' => 'item', 'item' => $this->itemRepository->findOneByName('Scales'), 'quantity' => 1 ],
-                    [ 'type' => 'item', 'item' => $this->itemRepository->findOneByName('Seaweed'), 'quantity' => 1 ],
-                    [ 'type' => 'money', 'quantity' => 10 ]
+            $offers[] = new TraderOffer(
+                self::ID_RUSTY_RAPIER,
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Scales'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Seaweed'), 1),
+                    TraderOfferCostOrYield::createMoney(10),
                 ],
-                'yield' => [
-                    [ 'item' => $this->itemRepository->findOneByName('Rusty Rapier'), 'quantity' => 1 ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Rusty Rapier'), 1),
                 ],
-                'comment' => 'Yarr!'
-            ];
+                'Yarr!'
+            );
         }
 
         if($dayOfWeek === 'Mon' || $leapDay)
@@ -142,30 +146,22 @@ class TraderService
 
         if($dayOfTheYear % 5 === 0 || $leapDay)
         {
-            $offers[] = [
-                'id' => self::ID_LEVEL_2_SWORD,
-                'cost' => [
-                    [ 'type' => 'item', 'item' => $this->itemRepository->findOneByName('Secret Seashell'), 'quantity' => 20 ],
-                ],
-                'yield' => [
-                    [ 'type' => 'item', 'item' => $this->itemRepository->findOneByName('Level 2 Sword'), 'quantity' => 1 ],
-                ],
-                'comment' => 'It\'s dangerous to go alone. Take this.'
-            ];
+            $offers[] = new TraderOffer(
+                self::ID_LEVEL_2_SWORD,
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Secret Seashell'), 20) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Level 2 Sword'), 1) ],
+                'It\'s dangerous to go alone. Take this.'
+            );
         }
 
         if($dayOfTheYear % 3 === 0 || $leapDay)
         {
-            $offers[] = [
-                'id' => self::ID_GREENHOUSE_DEED,
-                'cost' => [
-                    [ 'type' => 'money', 'quantity' => 100 ],
-                ],
-                'yield' => [
-                    [ 'type' => 'item', 'item' => $this->itemRepository->findOneByName('Deed for Greenhouse Plot'), 'quantity' => 1 ],
-                ],
-                'comment' => 'Oh, cool! Have fun with that!'
-            ];
+            $offers[] = new TraderOffer(
+                self::ID_GREENHOUSE_DEED,
+                [ TraderOfferCostOrYield::createMoney(100) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Deed for Greenhouse Plot'), 1) ],
+                'Oh, cool! Have fun with that!'
+            );
         }
 
         if($leapDay)
@@ -213,34 +209,19 @@ class TraderService
             unset($asking[$askingItem]);
             unset($offering[$offeringItem]);
 
-            $cost = [
-                'type' => 'item',
-                'item' => $this->itemRepository->findOneByName($askingItem),
-                'quantity' => $askingQuantity
-            ];
+            $cost = TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName($askingItem), $askingQuantity);
 
             if(preg_match('/^[0-9]+~~m~~$/', $offeringItem))
-            {
-                $yield = [
-                    'type' => 'money',
-                    'quantity' => (int)$offeringItem,
-                ];
-            }
+                $yield = TraderOfferCostOrYield::createMoney((int)$offeringItem);
             else
-            {
-                $yield = [
-                    'type' => 'item',
-                    'item' => $this->itemRepository->findOneByName($offeringItem),
-                    'quantity' => $offeringQuantity
-                ];
-            }
+                $yield = TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName($offeringItem), $offeringQuantity);
 
-            $offers[] = [
-                'id' => 'dailyOffer' . ($i + $offerOffset) . $now->format('d'),
-                'cost' => [ $cost ],
-                'yield' => [ $yield ],
-                'comment' => 'Great! Enjoy the ' . $offeringItem . '!',
-            ];
+            $offers[] = new TraderOffer(
+                'dailyOffer' . ($i + $offerOffset) . $now->format('d'),
+                [ $cost ],
+                [ $yield ],
+                'Great! Enjoy the ' . $offeringItem . '!'
+            );
         }
 
         if($dayOfWeek === 'Sun')
@@ -249,16 +230,12 @@ class TraderService
             $askingQuantity = $asking[$askingItem];
             unset($asking[$askingItem]);
 
-            $offers[] = [
-                'id' => 'sunflower',
-                'cost' => [
-                    [ 'type' => 'item', 'item' => $this->itemRepository->findOneByName($askingItem), 'quantity' => ceil($askingQuantity) ]
-                ],
-                'yield' => [
-                    [ 'type' => 'item', 'item' => $this->itemRepository->findOneByName('Sunflower'), 'quantity' => 1 ]
-                ],
-                'comment' => 'Have a nice Sunday!',
-            ];
+            $offers[] = new TraderOffer(
+                'sunflower',
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName($askingItem), ceil($askingQuantity)) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Sunflower'), 1) ],
+                'Have a nice Sunday!'
+            );
         }
 
         return [
@@ -267,67 +244,73 @@ class TraderService
         ];
     }
 
-    public function userCanMakeExchange(User $user, $exchange): bool
+    public function userCanMakeExchange(User $user, TraderOffer $exchange): bool
     {
-        foreach($exchange['cost'] as $cost)
+        foreach($exchange->cost as $cost)
         {
-            switch($cost['type'])
+            switch($cost->type)
             {
-                case 'item':
-                    $quantity = $this->inventoryService->countInventory($user, $cost['item']);
+                case CostOrYieldTypeEnum::ITEM:
+                    $quantity = $this->inventoryService->countInventory($user, $cost->item, LocationEnum::HOME);
 
-                    if($quantity < $cost['quantity'])
+                    if($quantity < $cost->quantity)
                         return false;
 
                     break;
 
-                case 'money':
-                    if($user->getMoneys() < $cost['quantity'])
+                case CostOrYieldTypeEnum::MONEY:
+                    if($user->getMoneys() < $cost->quantity)
                         return false;
 
                     break;
+
+                default:
+                    throw new \InvalidArgumentException('Unexpected cost type "' . $cost->type . '".');
             }
         }
 
         return true;
     }
 
-    public function makeExchange(User $user, $exchange)
+    public function makeExchange(User $user, TraderOffer $exchange)
     {
-        foreach($exchange['cost'] as $cost)
+        foreach($exchange->cost as $cost)
         {
-            switch($cost['type'])
+            switch($cost->type)
             {
-                case 'item':
-                    $quantity = $this->inventoryService->loseItem($cost['item'], $user, LocationEnum::HOME, $cost['quantity']);
+                case CostOrYieldTypeEnum::ITEM:
+                    $quantity = $this->inventoryService->loseItem($cost->item, $user, LocationEnum::HOME, $cost->quantity);
 
-                    if($quantity < $cost['quantity'])
-                        throw new \InvalidArgumentException('You do not have the items needed to make this exchange.');
+                    if($quantity < $cost->quantity)
+                        throw new \InvalidArgumentException('You do not have the items needed to make this exchange. (Expected ' . $cost['quantity'] . ' items; only found ' . $quantity . '.)');
 
                     break;
 
-                case 'money':
-                    if($cost['quantity'] > $user->getMoneys())
+                case CostOrYieldTypeEnum::MONEY:
+                    if($user->getMoneys() < $cost->quantity)
                         throw new \InvalidArgumentException('You do not have the moneys needed to make this exchange.');
 
-                    $user->increaseMoneys(-$cost['quantity']);
-                    $this->userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, $cost['quantity']);
+                    $user->increaseMoneys(-$cost->quantity);
+                    $this->userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, $cost->quantity);
 
                     break;
+
+                default:
+                    throw new \InvalidArgumentException('Unexpected cost type "' . $cost->type . '".');
             }
         }
 
-        foreach($exchange['yield'] as $yield)
+        foreach($exchange->yield as $yield)
         {
-            switch($yield['type'])
+            switch($yield->type)
             {
-                case 'item':
-                    for($i = 0; $i < $yield['quantity']; $i++)
-                        $this->inventoryService->receiveItem($yield['item'], $user, null, 'Received by trading with the Trader.', LocationEnum::HOME);
+                case CostOrYieldTypeEnum::ITEM:
+                    for($i = 0; $i < $yield->quantity; $i++)
+                        $this->inventoryService->receiveItem($yield->item, $user, null, 'Received by trading with the Trader.', LocationEnum::HOME);
                     break;
 
-                case 'money':
-                    $user->increaseMoneys($yield['quantity']);
+                case CostOrYieldTypeEnum::MONEY:
+                    $user->increaseMoneys($yield->quantity);
                     break;
             }
         }
