@@ -60,6 +60,8 @@ class GivingTreeGatheringService
                 ]
             );
 
+            $pet->spendTime(mt_rand(10, 20));
+
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' visited The Giving Tree, and picked up several items that other players had discarded.', '');
         }
     }
