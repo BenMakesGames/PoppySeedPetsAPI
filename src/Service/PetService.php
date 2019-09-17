@@ -22,6 +22,7 @@ use App\Service\PetActivity\CraftingService;
 use App\Service\PetActivity\FishingService;
 use App\Service\PetActivity\GatheringService;
 use App\Service\PetActivity\GenericAdventureService;
+use App\Service\PetActivity\GivingTreeGatheringService;
 use App\Service\PetActivity\HuntingService;
 use App\Service\PetActivity\PoopingService;
 use App\Service\PetActivity\ProgrammingService;
@@ -49,6 +50,7 @@ class PetService
     private $protocol7Service;
     private $umbraService;
     private $poopingService;
+    private $givingTreeGatheringService;
 
     public function __construct(
         EntityManagerInterface $em, RandomService $randomService, ResponseService $responseService,
@@ -57,7 +59,7 @@ class PetService
         CraftingService $craftingService, UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
         TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService,
         Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
-        PoopingService $poopingService
+        PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService
     )
     {
         $this->em = $em;
@@ -77,6 +79,7 @@ class PetService
         $this->programmingService = $programmingService;
         $this->umbraService = $umbraService;
         $this->poopingService = $poopingService;
+        $this->givingTreeGatheringService = $givingTreeGatheringService;
     }
 
     /**
@@ -526,6 +529,13 @@ class PetService
         {
             $this->treasureMapService->doCetguelisTreasureMap($pet);
             return;
+        }
+
+        if(mt_rand(1, 50) === 1)
+        {
+            $activityLog = $this->givingTreeGatheringService->gatherFromGivingTree($pet);
+            if($activityLog)
+                return;
         }
 
         $petDesires = [

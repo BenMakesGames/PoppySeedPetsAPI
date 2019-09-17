@@ -3,17 +3,21 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
+use App\Repository\UserRepository;
 use App\Service\InventoryService;
 use App\Service\PetService;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class GatheringService
 {
     private $responseService;
+    private $inventoryService;
     private $petService;
 
     public function __construct(

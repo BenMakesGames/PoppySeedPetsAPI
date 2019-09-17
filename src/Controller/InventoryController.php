@@ -11,6 +11,7 @@ use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\KnownRecipesRepository;
 use App\Repository\RecipeRepository;
+use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\Filter\InventoryFilterService;
 use App\Service\InventoryService;
@@ -177,7 +178,7 @@ class InventoryController extends PsyPetsController
      */
     public function throwAway(
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, UserRepository $userRepository
     )
     {
         $user = $this->getUser();
@@ -193,12 +194,32 @@ class InventoryController extends PsyPetsController
         if(\count($inventory) !== \count($inventoryIds))
             throw new UnprocessableEntityHttpException('Some of the items could not be found??');
 
+        $givingTree = $userRepository->findOneByEmail('giving-tree@poppyseedpets.com');
+
+        if(!$givingTree)
+            throw new \Exception('The "Giving Tree" NPC does not exist in the database!');
+
         foreach($inventory as $i)
         {
             if($i->getItem()->hasUseAction('bug/#/putOutside'))
+            {
                 $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_PUT_OUTSIDE);
+                $em->remove($i);
+            }
+            else if(mt_rand(1, 10) === 1)
+            {
+                $i
+                    ->setOwner($givingTree)
+                    ->setLocation(LocationEnum::HOME)
+                    ->setSellPrice(null)
+                    ->addComment($user->getName() . ' threw this item away, but it found its way to The Giving Tree.')
+                ;
 
-            $em->remove($i);
+                if($i->getPet())
+                    $i->getPet()->setTool(null);
+            }
+            else
+                $em->remove($i);
         }
 
         $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_THROWN_AWAY, count($inventory));
@@ -242,7 +263,10 @@ class InventoryController extends PsyPetsController
 
         foreach($inventory as $i)
         {
-            $i->setLocation($location);
+            $i
+                ->setLocation($location)
+                ->setModifiedOn()
+            ;
 
             if($location !== LocationEnum::HOME && $i->getPet())
             {

@@ -66,6 +66,26 @@ class InventoryService
     }
 
     /**
+     * @param User $user
+     */
+    public function countTotalInventory(User $user, int $location): int
+    {
+        if(!LocationEnum::isAValue($location))
+            throw new \InvalidArgumentException('location must be a valid LocationEnum value.');
+
+        return (int)$this->em->createQueryBuilder()
+            ->select('COUNT(i.id)')
+            ->from(Inventory::class, 'i')
+            ->andWhere('i.owner=:owner')
+            ->andWhere('i.location=:location')
+            ->setParameter('owner', $user->getId())
+            ->setParameter('location', $location)
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+    }
+
+    /**
      * @return ItemQuantity[]
      */
     public function deserializeItemList(string $list)
