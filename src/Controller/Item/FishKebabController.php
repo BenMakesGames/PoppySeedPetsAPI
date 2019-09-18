@@ -26,10 +26,12 @@ class FishKebabController extends PsyPetsItemController
 
         $user = $this->getUser();
 
-        $inventoryService->receiveItem('Fish', $user, $user, $user->getName() . ' got this from a Fishkebab.');
-        $inventoryService->receiveItem('Fish', $user, $user, $user->getName() . ' got this from a Fishkebab.');
-        $inventoryService->receiveItem('Fish', $user, $user, $user->getName() . ' got this from a Fishkebab.');
-        $inventoryService->receiveItem('Crooked Stick', $user, $user, $user->getName() . ' got this from a Fishkebab.');
+        $location = $inventory->getLocation();
+
+        $inventoryService->receiveItem('Fish', $user, $user, $user->getName() . ' got this from a Fishkebab.', $location);
+        $inventoryService->receiveItem('Fish', $user, $user, $user->getName() . ' got this from a Fishkebab.', $location);
+        $inventoryService->receiveItem('Fish', $user, $user, $user->getName() . ' got this from a Fishkebab.', $location);
+        $inventoryService->receiveItem('Crooked Stick', $user, $user, $user->getName() . ' got this from a Fishkebab.', $location);
 
         $em->remove($inventory);
 

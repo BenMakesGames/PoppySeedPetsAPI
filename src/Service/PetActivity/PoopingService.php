@@ -2,6 +2,7 @@
 namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
+use App\Enum\LocationEnum;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 
@@ -24,11 +25,11 @@ class PoopingService
                 'pooped this. Neat?',
                 'pooped this. Yep.',
                 'pooped this. Hooray. Poop.'
-            ]));
+            ]), LocationEnum::HOME);
         }
         else
         {
-            $this->inventoryService->receiveItem('Dark Matter', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' pooped this.');
+            $this->inventoryService->receiveItem('Dark Matter', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' pooped this.', LocationEnum::HOME);
         }
     }
 }

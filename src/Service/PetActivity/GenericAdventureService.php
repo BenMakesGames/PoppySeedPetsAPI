@@ -32,7 +32,7 @@ class GenericAdventureService
 
         $possibleRewards = [
             [ 'a ', 'Crooked Stick' ],
-            [ 'a ', 'Red' ],
+            [ 'some ', 'Spicy Peps' ],
             [ mt_rand(2, 5), 'moneys' ],
         ];
 

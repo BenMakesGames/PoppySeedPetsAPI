@@ -49,4 +49,17 @@ class PetRepository extends ServiceEntityRepository
             ->getSingleScalarResult()
         ;
     }
+
+    public function getRoommates(Pet $pet)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.owner = :owner')
+            ->andWhere('p.inDaycare = 0')
+            ->andWhere('p.id != :thisPet')
+            ->setParameter('owner', $pet->getOwner())
+            ->setParameter('thisPet', $pet->getId())
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

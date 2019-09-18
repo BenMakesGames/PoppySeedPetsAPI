@@ -27,25 +27,13 @@ class UserNotificationPreferences
      * @ORM\Column(type="boolean")
      * @Groups({"notificationPreferences"})
      */
-    private $emailNewNews = false;
+    private $pushNewNews = false;
 
     /**
      * @ORM\Column(type="boolean")
      * @Groups({"notificationPreferences"})
      */
-    private $pushNewNews = false;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"notificationPreferences"})
-     */
-    private $emailPetReminders = null;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"notificationPreferences"})
-     */
-    private $pushPetReminders = null;
+    private $pushReminders = false;
 
     public function getId(): ?int
     {
@@ -64,19 +52,7 @@ class UserNotificationPreferences
         return $this;
     }
 
-    public function getEmailNewNews(): ?bool
-    {
-        return $this->emailNewNews;
-    }
-
-    public function setEmailNewNews(bool $emailNewNews): self
-    {
-        $this->emailNewNews = $emailNewNews;
-
-        return $this;
-    }
-
-    public function getPushNewNews(): ?bool
+    public function getPushNewNews(): bool
     {
         return $this->pushNewNews;
     }
@@ -88,26 +64,14 @@ class UserNotificationPreferences
         return $this;
     }
 
-    public function getEmailPetReminders(): ?int
+    public function getPushReminders(): bool
     {
-        return $this->emailPetReminders;
+        return $this->pushReminders;
     }
 
-    public function setEmailPetReminders(?int $emailPetReminders): self
+    public function setPushReminders(bool $pushReminders): self
     {
-        $this->emailPetReminders = $emailPetReminders;
-
-        return $this;
-    }
-
-    public function getPushPetReminders(): ?int
-    {
-        return $this->pushPetReminders;
-    }
-
-    public function setPushPetReminders(?int $pushPetReminders): self
-    {
-        $this->pushPetReminders = $pushPetReminders;
+        $this->pushReminders = $pushReminders;
 
         return $this;
     }

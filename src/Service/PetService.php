@@ -16,11 +16,13 @@ use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
+use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\CraftingService;
 use App\Service\PetActivity\FishingService;
 use App\Service\PetActivity\GatheringService;
 use App\Service\PetActivity\GenericAdventureService;
+use App\Service\PetActivity\GivingTreeGatheringService;
 use App\Service\PetActivity\HuntingService;
 use App\Service\PetActivity\PoopingService;
 use App\Service\PetActivity\ProgrammingService;
@@ -32,6 +34,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class PetService
 {
     private $em;
+    private $petRepository;
     private $randomService;
     private $responseService;
     private $petRelationshipService;
@@ -47,18 +50,20 @@ class PetService
     private $protocol7Service;
     private $umbraService;
     private $poopingService;
+    private $givingTreeGatheringService;
 
     public function __construct(
         EntityManagerInterface $em, RandomService $randomService, ResponseService $responseService,
-        PetRelationshipService $petRelationshipService,
+        PetRelationshipService $petRelationshipService, PetRepository $petRepository,
         FishingService $fishingService, HuntingService $huntingService, GatheringService $gatheringService,
         CraftingService $craftingService, UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
         TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService,
         Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
-        PoopingService $poopingService
+        PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService
     )
     {
         $this->em = $em;
+        $this->petRepository = $petRepository;
         $this->randomService = $randomService;
         $this->responseService = $responseService;
         $this->petRelationshipService = $petRelationshipService;
@@ -74,6 +79,7 @@ class PetService
         $this->programmingService = $programmingService;
         $this->umbraService = $umbraService;
         $this->poopingService = $poopingService;
+        $this->givingTreeGatheringService = $givingTreeGatheringService;
     }
 
     /**
@@ -478,14 +484,7 @@ class PetService
             return;
         }
 
-        $itemsInHouse = (int)$this->inventoryRepository->createQueryBuilder('i')
-            ->select('COUNT(i.id)')
-            ->andWhere('i.owner=:user')
-            ->setParameter('user', $pet->getOwner())
-            ->getQuery()
-            ->getSingleScalarResult()
-        ;
-
+        $itemsInHouse = (int)$this->inventoryRepository->countItemsInHouse($pet->getOwner());
         $craftingPossibilities = $this->craftingService->getCraftingPossibilities($pet);
         $programmingPossibilities = $this->programmingService->getCraftingPossibilities($pet);
 
@@ -530,6 +529,13 @@ class PetService
         {
             $this->treasureMapService->doCetguelisTreasureMap($pet);
             return;
+        }
+
+        if(mt_rand(1, 50) === 1)
+        {
+            $activityLog = $this->givingTreeGatheringService->gatherFromGivingTree($pet);
+            if($activityLog)
+                return;
         }
 
         $petDesires = [
@@ -817,7 +823,7 @@ class PetService
     private function meetRoommates(Pet $pet): bool
     {
         /** @var Pet[] $otherPets */
-        $otherPets = $pet->getOwner()->getPets()->filter(function(Pet $p) use($pet) { return $p->getId() !== $pet->getId(); });
+        $otherPets = $this->petRepository->getRoommates($pet);
 
         $metNewPet = false;
 

@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
+use App\Enum\LocationEnum;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
@@ -48,7 +49,7 @@ class HouseService
                 if($fruitBasket->getValue() === false)
                 {
                     $fruitBasket->setValue(true);
-                    $this->inventoryService->receiveItem('Fruit Basket', $user, $user, 'There\'s a note attached. It says "Are you settling in alright? Here\'s a little something to help get you started. And don\'t throw away the basket! Equip it to your pet!"');
+                    $this->inventoryService->receiveItem('Fruit Basket', $user, $user, 'There\'s a note attached. It says "Are you settling in alright? Here\'s a little something to help get you started. And don\'t throw away the basket! Equip it to your pet!"', LocationEnum::HOME);
                     $this->em->flush();
                 }
             }

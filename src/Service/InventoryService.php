@@ -7,6 +7,7 @@ use App\Entity\ItemFood;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
+use App\Enum\LocationEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Model\ItemQuantity;
@@ -36,15 +37,18 @@ class InventoryService
      * @param User $user
      * @param Item|string|integer $item
      */
-    public function countInventory(User $user, $item): int
+    public function countInventory(User $user, $item, int $location): int
     {
+        if(!LocationEnum::isAValue($location))
+            throw new \InvalidArgumentException('location must be a valid LocationEnum value.');
+
         if(is_string($item))
-            $item = $this->itemRepository->findOneByName($item);
-
-        if($item instanceof Item)
-            $item = $item->getId();
-
-        if(!is_integer($item))
+            $itemId = $this->itemRepository->findOneByName($item)->getId();
+        else if(is_object($item) && $item instanceof Item)
+            $itemId = $item->getId();
+        else if(is_integer($item))
+            $itemId = $item;
+        else
             throw new \InvalidArgumentException('item must be an Item, string, or integer.');
 
         return (int)$this->em->createQueryBuilder()
@@ -52,8 +56,30 @@ class InventoryService
             ->from(Inventory::class, 'i')
             ->andWhere('i.owner=:owner')
             ->andWhere('i.item=:item')
+            ->andWhere('i.location=:location')
             ->setParameter('owner', $user->getId())
-            ->setParameter('item', $item)
+            ->setParameter('item', $itemId)
+            ->setParameter('location', $location)
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function countTotalInventory(User $user, int $location): int
+    {
+        if(!LocationEnum::isAValue($location))
+            throw new \InvalidArgumentException('location must be a valid LocationEnum value.');
+
+        return (int)$this->em->createQueryBuilder()
+            ->select('COUNT(i.id)')
+            ->from(Inventory::class, 'i')
+            ->andWhere('i.owner=:owner')
+            ->andWhere('i.location=:location')
+            ->setParameter('owner', $user->getId())
+            ->setParameter('location', $location)
             ->getQuery()
             ->getSingleScalarResult()
         ;
@@ -134,7 +160,7 @@ class InventoryService
      * @param ItemQuantity|ItemQuantity[] $quantities
      * @return Inventory[]
      */
-    public function giveInventory($quantities, User $owner, User $creator, string $comment)
+    public function giveInventory($quantities, User $owner, User $creator, string $comment, int $location)
     {
         if(!is_array($quantities)) $quantities = [ $quantities ];
 
@@ -149,6 +175,7 @@ class InventoryService
                     ->setCreatedBy($creator)
                     ->setItem($itemQuantity->item)
                     ->addComment($comment)
+                    ->setLocation($location)
                 ;
 
                 $this->em->persist($i);
@@ -178,6 +205,7 @@ class InventoryService
             ->setCreatedBy($pet->getOwner())
             ->setItem($item)
             ->addComment($comment)
+            ->setLocation(LocationEnum::HOME)
         ;
 
         $this->em->persist($i);
@@ -198,6 +226,9 @@ class InventoryService
             ->addComment('Ah! How\'d this get inside?!')
         ;
 
+        if($pet->getOwner()->getUnlockedBasement() && mt_rand(1, 4) === 1)
+            $i->setLocation(LocationEnum::BASEMENT);
+
         $this->em->persist($i);
 
         return $i;
@@ -206,7 +237,7 @@ class InventoryService
     /**
      * @param Item|string $item
      */
-    public function receiveItem($item, User $owner, ?User $creator, string $comment): Inventory
+    public function receiveItem($item, User $owner, ?User $creator, string $comment, int $location): Inventory
     {
         if(is_string($item))
         {
@@ -228,14 +259,18 @@ class InventoryService
         return $i;
     }
 
-    public function loseItem($item, User $owner, int $quantity = 1): int
+    /**
+     * @param Item|string $item
+     */
+    public function loseItem($item, User $owner, int $location, int $quantity = 1): int
     {
         if(is_string($item)) $item = $this->itemRepository->findOneByName($item);
 
-        $statement = $this->em->getConnection()->prepare('DELETE FROM inventory WHERE owner_id=:user AND item_id=:item LIMIT ' . $quantity);
+        $statement = $this->em->getConnection()->prepare('DELETE FROM inventory WHERE owner_id=:user AND item_id=:item AND location=:location LIMIT ' . $quantity);
         $statement->execute([
             'user' => $owner->getId(),
-            'item' => $item->getId()
+            'item' => $item->getId(),
+            'location' => $location
         ]);
 
         return $statement->rowCount();

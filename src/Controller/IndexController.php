@@ -26,8 +26,10 @@ class IndexController extends PsyPetsController
                 'Mothnox',
                 'pericarditis',
                 'Shirley Farrow',
-                'Tomi',
                 'All my friends in college',
+                'Tomi',
+                'Vicious Ruff',
+                'Onyx',
             ],
             'inspirations' => [
                 'PsyPets',
@@ -40,14 +42,5 @@ class IndexController extends PsyPetsController
                 'Symfony', 'PHPStorm', 'existential nihilism', 'absurdism', 'humanism', 'candy'
             ]
         ]);
-    }
-
-    /**
-     * @Route("/myIp")
-     * @IsGranted("ROLE_ADMIN")
-     */
-    public function clientIP(ResponseService $responseService, Request $request)
-    {
-        return $responseService->success($request->getClientIp());
     }
 }

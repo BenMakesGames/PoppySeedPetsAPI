@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\TraderOffer;
 use App\Repository\ItemRepository;
 use App\Service\ResponseService;
 use App\Service\TraderService;
@@ -34,7 +35,7 @@ class TraderController extends PsyPetsController
         if(count($offers['offers']) === 0)
             throw new NotFoundHttpException();
 
-        return $responseService->success($offers, [ SerializationGroupEnum::MARKET_ITEM ]);
+        return $responseService->success($offers, [ SerializationGroupEnum::TRADER_OFFER, SerializationGroupEnum::MARKET_ITEM ]);
     }
 
     /**
@@ -53,7 +54,7 @@ class TraderController extends PsyPetsController
         $offers = $travelingMerchantService->getOffers($user);
         $exchange = null;
 
-        $exchange = ArrayFunctions::find_one($offers['offers'], function($o) use($id) { return $o['id'] === $id; });
+        $exchange = ArrayFunctions::find_one($offers['offers'], function(TraderOffer $o) use($id) { return $o->id === $id; });
 
         if(!$exchange)
             throw new NotFoundHttpException('There is no such exchange available.');

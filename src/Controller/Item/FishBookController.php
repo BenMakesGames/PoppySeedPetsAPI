@@ -34,6 +34,7 @@ class FishBookController extends PsyPetsItemController
 * Fermented Fish
 * Gefilte Fish
 * Grilled Fish
+* Orange Fish
 * Sushi
 
 ## Crafts
@@ -87,6 +88,12 @@ An acquired taste!
 #### Grilled Fish
 
 Just grill some Fish with Charcoal!
+
+#### Orange Fish
+
+* Orange
+* Fish
+* Sugar (not optional!)
 
 #### Sushi
 

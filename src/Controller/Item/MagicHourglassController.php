@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
 use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
@@ -28,9 +29,14 @@ class MagicHourglassController extends PsyPetsItemController
     {
         $this->validateInventory($inventory, 'magicHourglass/#/shatter');
 
+        if($inventory->getLocation() !== LocationEnum::HOME)
+        {
+            return $responseService->success('Somehow you get the feeling that your pets would like to watch this happen.');
+        }
+
         $user = $this->getUser();
 
-        $inventoryService->receiveItem('Silica Grounds', $user, $user, $user->getName() . ' smashed a ' . $inventory->getItem()->getName() . ', spilling these Silica Grounds on the floor.');
+        $inventoryService->receiveItem('Silica Grounds', $user, $user, $user->getName() . ' smashed a ' . $inventory->getItem()->getName() . ', spilling these Silica Grounds on the floor.', $inventory->getLocation());
 
         $message = 'Crazy-magic energies flow through the house, swirling and dancing with chaotic shapes that you\'re pretty sure are fractal in nature.\n\nAlso, you got Silica Grounds all over the floor.';
 

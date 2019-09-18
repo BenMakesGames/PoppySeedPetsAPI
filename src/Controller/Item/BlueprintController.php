@@ -9,34 +9,37 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
- * @Route("/item/greenhouseDeed")
+ * @Route("/item/blueprint")
  */
-class GreenhouseDeedController extends PsyPetsItemController
+class BlueprintController extends PsyPetsItemController
 {
     /**
-     * @Route("/{inventory}/claim", methods={"POST"})
+     * @Route("/basement/{inventory}/read", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function claim(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
-        $this->validateInventory($inventory, 'greenhouseDeed/#/claim');
+        $this->validateInventory($inventory, 'blueprint/basement/#/read');
 
         $user = $this->getUser();
 
-        if($user->getUnlockedGreenhouse())
+        if($user->getUnlockedBasement())
         {
-            return $responseService->itemActionSuccess('You\'ve already claimed a plot in the Greenhouse.');
+            return $responseService->itemActionSuccess('You\'ve already got a Basement!');
         }
         else
         {
-            $user->setUnlockedGreenhouse();
+            $user->setUnlockedBasement();
             $em->remove($inventory);
 
             $em->flush();
 
-            return $responseService->itemActionSuccess('You now own a plot in the Greenhouse!', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess(
+                'You now have a Basement! (Somehow?? (Shh, just accept it...))',
+                [ 'reloadInventory' => true, 'itemDeleted' => true ]
+            );
         }
     }
 }
