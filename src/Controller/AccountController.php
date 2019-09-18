@@ -69,7 +69,7 @@ class AccountController extends PsyPetsController
 
         $species = $petSpeciesRepository->findOneBy([ 'image' => $petImage ]);
 
-        if(!$species)
+        if(!$species || $species->getId() > 16)
             throw new UnprocessableEntityHttpException('Must choose your pet\'s appearance.');
 
         if(!\preg_match('/[A-Fa-f0-9]{6}/', $petColorA))
