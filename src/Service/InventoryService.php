@@ -252,6 +252,7 @@ class InventoryService
             ->setCreatedBy($creator)
             ->setItem($item)
             ->addComment($comment)
+            ->setLocation($location)
         ;
 
         $this->em->persist($i);

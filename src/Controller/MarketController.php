@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Inventory;
+use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Repository\InventoryRepository;
@@ -102,6 +103,7 @@ class MarketController extends PsyPetsController
             $buy
                 ->setOwner($user)
                 ->setSellPrice(null)
+                ->setLocation(LocationEnum::HOME)
                 ->setModifiedOn()
             ;
 
