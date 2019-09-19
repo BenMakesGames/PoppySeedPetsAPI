@@ -6,6 +6,7 @@ use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Repository\UserRepository;
 use App\Service\InventoryService;
+use App\Service\PetService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -14,16 +15,18 @@ class GivingTreeGatheringService
     private $userRepository;
     private $inventoryService;
     private $responseService;
+    private $petService;
     private $em;
 
     public function __construct(
         UserRepository $userRepository, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService
+        ResponseService $responseService, PetService $petService
     )
     {
         $this->responseService = $responseService;
         $this->userRepository = $userRepository;
         $this->inventoryService = $inventoryService;
+        $this->petService = $petService;
         $this->em = $em;
     }
 
@@ -60,7 +63,7 @@ class GivingTreeGatheringService
                 ]
             );
 
-            $pet->spendTime(mt_rand(10, 20));
+            $this->petService->spendTime($pet, mt_rand(10, 20));
 
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' visited The Giving Tree, and picked up several items that other players had discarded.', '');
         }
