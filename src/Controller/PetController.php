@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\SpiritCompanion;
+use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
@@ -358,7 +359,8 @@ class PetController extends PsyPetsController
 
         $inventory = $inventoryRepository->findBy([
             'owner' => $user,
-            'id' => $items
+            'id' => $items,
+            'location' => LocationEnum::HOME,
         ]);
 
         if(\count($items) !== \count($inventory))
