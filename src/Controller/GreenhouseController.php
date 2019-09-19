@@ -5,9 +5,11 @@ use App\Entity\GreenhousePlant;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\ArrayFunctions;
 use App\Model\ItemQuantity;
 use App\Repository\GreenhousePlantRepository;
 use App\Repository\InventoryRepository;
+use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -30,7 +32,7 @@ class GreenhouseController extends PsyPetsController
      */
     public function getGreenhouse(
         ResponseService $responseService, GreenhousePlantRepository $greenhousePlantRepository,
-        InventoryRepository $inventoryRepository
+        InventoryRepository $inventoryRepository, UserQuestRepository $userQuestRepository, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -38,13 +40,72 @@ class GreenhouseController extends PsyPetsController
         if($user->getUnlockedGreenhouse() === null)
             throw new AccessDeniedHttpException('You haven\'t purchased a Greenhouse plot yet.');
 
+        $weeds = $userQuestRepository->findOrCreate($user, 'Greenhouse Weeds', (new \DateTimeImmutable())->modify('+8 hours')->format('Y-m-d H:i:s'));
+
+        $weedTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $weeds->getValue());
+
+        if($weedTime > new \DateTimeImmutable())
+            $weedText = null;
+        else
+        {
+            $weedText = ArrayFunctions::pick_one([
+                'Don\'t need \'em; don\'t want \'em!',
+                'Get outta\' here, weeds!',
+                'Weeds can gtfo!',
+                'WEEEEEEDS!! *shakes fist*',
+                'Exterminate! EXTERMINATE!',
+                'Destroy all weeds!',
+            ]);
+        }
+
+        if(!$weeds->getId())
+            $em->flush();
+
         return $responseService->success(
             [
+                'weeds' => $weedText,
                 'plants' => $greenhousePlantRepository->findBy([ 'owner' => $user->getId() ]),
                 'fertilizer' => $inventoryRepository->findFertilizers($user),
             ],
             [ SerializationGroupEnum::GREENHOUSE_PLANT ]
         );
+    }
+
+    /**
+     * @Route("/weed", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function weedPlants(
+        ResponseService $responseService, UserQuestRepository $userQuestRepository, EntityManagerInterface $em,
+        InventoryService $inventoryService
+    )
+    {
+        $user = $this->getUser();
+
+        $weeds = $userQuestRepository->findOrCreate($user, 'Greenhouse Weeds', (new \DateTimeImmutable())->modify('+8 hours')->format('Y-m-d H:i:s'));
+
+        $weedTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $weeds->getValue());
+
+        if($weedTime > new \DateTimeImmutable())
+            throw new UnprocessableEntityHttpException('Your garden\'s doin\' just fine right now, weed-wise.');
+
+        $weeds->setValue((new \DateTimeImmutable())->modify('+18 hours')->format('Y-m-d H:i:s'));
+
+        if(mt_rand(1, 4) === 1)
+            $itemName = null;
+        else
+        {
+            if(mt_rand(1, 3) === 1)
+                $itemName = ArrayFunctions::pick_one([ 'Red Clover', 'Fluff', 'Talon' ]);
+            else
+                $itemName = 'Crooked Stick';
+
+            $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this while weeding their Greenhouse.', LocationEnum::HOME);
+        }
+
+        $em->flush();
+
+        return $responseService->success($itemName);
     }
 
     /**
