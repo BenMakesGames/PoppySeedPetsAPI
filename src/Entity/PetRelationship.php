@@ -36,6 +36,21 @@ class PetRelationship
     private $relationship;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $intimacy = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $passion = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $commitment = 0;
+
+    /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"petFriend"})
      */
@@ -106,6 +121,21 @@ class PetRelationship
         $this->relationship = $relationship;
 
         return $this;
+    }
+
+    public function getIntimacy(): int
+    {
+        return $this->intimacy;
+    }
+
+    public function getPassion(): int
+    {
+        return $this->passion;
+    }
+
+    public function getCommitment(): int
+    {
+        return $this->commitment;
     }
 
     public function getMetDescription(): ?string
