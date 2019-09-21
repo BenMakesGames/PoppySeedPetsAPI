@@ -24,7 +24,6 @@ class PetRelationship
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Pet", inversedBy="petRelationships")
      * @ORM\JoinColumn(nullable=false)
-     * @var Pet
      */
     private $pet;
 
@@ -93,7 +92,7 @@ class PetRelationship
      */
     public function getRelationshipWanted(): ?string
     {
-        if($this->pet->hasMerit(MeritEnum::INTROSPECTIVE))
+        if($this->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
             return $this->relationshipGoal;
         else
             return null;
