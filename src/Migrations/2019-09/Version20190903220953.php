@@ -23,7 +23,7 @@ final class Version20190903220953 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE pet_relationship ADD current_relationship VARCHAR(40) NOT NULL, ADD relationship_goal VARCHAR(40) NOT NULL, ADD time_until_change INT NOT NULL');
-        $this->addSql('ALTER TABLE pet ADD poly TINYINT(1) NOT NULL, ADD sex_drive SMALLINT NOT NULL');
+        $this->addSql('ALTER TABLE pet ADD poly TINYINT(1) NOT NULL');
     }
 
     public function down(Schema $schema) : void
@@ -31,7 +31,7 @@ final class Version20190903220953 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE pet DROP poly, DROP sex_drive');
+        $this->addSql('ALTER TABLE pet DROP poly');
         $this->addSql('ALTER TABLE pet_relationship DROP current_relationship, DROP relationship_goal, DROP time_until_change');
     }
 }

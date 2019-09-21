@@ -970,6 +970,22 @@ class Pet
         return count($this->getPetRelationships());
     }
 
+    public function getOldWouldBang(Pet $otherPet): int
+    {
+        // a pet "would bang" another pet if:
+        return
+            // straight-up 1 in every 12-30 pets, averaging 1 in 24
+            $this->getId() * 197 % ($this->wouldBangFraction * 3) === 0 ||
+            (
+                // 1 in every 2-5, averaging 1 in 4
+                ($this->getId() * 127 + $otherPet->getId() * 31 - 157) % ceil($this->wouldBangFraction / 2) === 0 &&
+                // AND 1 in every 2-5, averaging 1 in 4
+                // (since this is an "and", the total odds are 1 in every 4-25, averaging 1 in 16)
+                ($otherPet->getId() * 127 + $this->getId() * 31 - 157) % ceil($otherPet->getWouldBangFraction() / 2) === 0
+            )
+        ;
+    }
+
     public function getLowestNeed(): string
     {
         if($this->getSafety() >= mt_rand(0, 4) && $this->getLove() >= mt_rand(0, 4) && $this->getEsteem() >= mt_rand(0, 4))
