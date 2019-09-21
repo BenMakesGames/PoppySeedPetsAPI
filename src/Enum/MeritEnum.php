@@ -14,6 +14,7 @@ final class MeritEnum
     public const SOOTHING_VOICE = 'Soothing Voice';
     public const SPIRIT_COMPANION = 'Spirit Companion';
     public const PROTOCOL_7 = 'Protocol 7';
+    public const INTROSPECTIVE = 'Introspective';
 
     // not yet implemented
     public const PAST_LIFE = 'Past Life';

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\MeritEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
@@ -23,6 +24,7 @@ class PetRelationship
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Pet", inversedBy="petRelationships")
      * @ORM\JoinColumn(nullable=false)
+     * @var Pet
      */
     private $pet;
 
@@ -69,6 +71,17 @@ class PetRelationship
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @Groups({"petFriend"})
+     */
+    public function getRelationshipWanted(): ?string
+    {
+        if($this->pet->hasMerit(MeritEnum::INTROSPECTIVE))
+            return $this->relationshipGoal;
+        else
+            return null;
     }
 
     public function getPet(): Pet
