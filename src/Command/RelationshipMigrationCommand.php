@@ -13,7 +13,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class TestRelationshipMigrationCommand extends Command
+class RelationshipMigrationCommand extends Command
 {
     private $em;
     private $petRelationshipRepository;
@@ -29,8 +29,8 @@ class TestRelationshipMigrationCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('app:test-relationship-migration')
-            ->setDescription('For testing relationship migration logic')
+            ->setName('app:relationship-migration')
+            ->setDescription('Migrates relationships to new system.')
         ;
     }
 
@@ -54,6 +54,8 @@ class TestRelationshipMigrationCommand extends Command
                         mt_rand(ceil($relationship->getOldCommitment() / 2), $relationship->getOldCommitment())
                     )
                 ;
+
+                $this->em->persist($otherSide);
             }
 
             // each value will range from 0 to 2000
@@ -151,10 +153,24 @@ class TestRelationshipMigrationCommand extends Command
                 $tallies[$key]++;
             else
                 $tallies[$key] = 1;
+
+            $relationship
+                ->setCurrentRelationship($currentRelationship)
+                ->setRelationshipGoal($relationshipGoal);
+            ;
+
+            $otherSide->setCurrentRelationship($currentRelationship);
         }
 
         $output->writeln(count($relationships) . ' total relationships!');
         foreach($tallies as $key=>$tally)
             $output->writeln($key . ' = ' . $tally . ' (' . round($tally * 100 / count($relationships), 1) . '%)');
+
+        $output->writeln('');
+        $output->writeln('Writing to DB...');
+
+        $this->em->flush();
+
+        $output->writeln('Done!');
     }
 }

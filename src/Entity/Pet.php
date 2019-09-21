@@ -1122,6 +1122,11 @@ class Pet
         return $this;
     }
 
+    public function getWouldBangFraction(): int
+    {
+        return $this->wouldBangFraction;
+    }
+
     public function getSexDrive(): ?int
     {
         return $this->sexDrive;
