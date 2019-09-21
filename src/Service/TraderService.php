@@ -203,17 +203,17 @@ class TraderService
                 self::ID_GET_YOGURT,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('String'), 2) ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Yogurt'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Plain Yogurt'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Aging Powder'), 1)
                 ],
-                'I\'m not sure what this deal is about. Those Satyrs put me up to it. They also told me to tell anyone who made this trade that you can combine Yogurt, Creamy Milk, and Aging Powder to make _more_ Yogurt? So... yeah. There you go.'
+                'I\'m not sure what this deal is about. Those Satyrs put me up to it. They also told me to tell anyone who made this trade that you can combine Plain Yogurt, Creamy Milk, and Aging Powder to make _more_ Plain Yogurt. I told them that that\'s basically common knowledge at this point, but they insisted, so... yeah. There you go.'
             );
 
             $offers[] = new TraderOffer(
                 self::ID_SELL_YOGURT,
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Yogurt'), 2) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Plain Yogurt'), 2) ],
                 [ TraderOfferCostOrYield::createMoney(5) ],
-                'I\'m not sure what this deal is about. Those Satyrs put me up to it. I guess they like Yogurt?'
+                'I\'m not sure what this deal is about. Those Satyrs put me up to it. I guess they like yogurt?'
             );
         }
 
