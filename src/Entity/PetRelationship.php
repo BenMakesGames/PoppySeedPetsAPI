@@ -174,7 +174,11 @@ class PetRelationship
         if(!RelationshipEnum::isAValue($currentRelationship)) throw new \InvalidArgumentException('currentRelationship is not a valid RelationshipEnum value.');
 
         $this->currentRelationship = $currentRelationship;
-        $this->timeUntilChange = \mt_rand(\mt_rand(20, 30), \mt_rand(50, 80));
+
+        if($this->pet->hasMerit(MeritEnum::INTROSPECTIVE))
+            $this->timeUntilChange = \mt_rand(\mt_rand(15, 20), \mt_rand(35, 50));
+        else
+            $this->timeUntilChange = \mt_rand(\mt_rand(20, 30), \mt_rand(50, 80));
 
         return $this;
     }

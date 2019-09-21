@@ -39,8 +39,12 @@ class RelationshipMigrationCommand extends Command
         $tallies = [];
         $relationships = $this->petRelationshipRepository->findAll();
 
-        foreach($relationships as $relationship)
+        $relationshipCount = count($relationships);
+
+        for($i = 0; $i < $relationshipCount; $i++)
         {
+            $relationship = $relationships[$i];
+
             $otherSide = $relationship->getRelationship()->getRelationshipWith($relationship->getPet());
 
             if($otherSide === null)
@@ -48,6 +52,7 @@ class RelationshipMigrationCommand extends Command
                 $otherSide = (new PetRelationship())
                     ->setPet($relationship->getRelationship())
                     ->setRelationship($relationship->getPet())
+                    ->setMetDescription($relationship->getMetDescription())
                     ->setOldTriangleStats(
                         mt_rand(ceil($relationship->getOldIntimacy() * 3 / 4), $relationship->getOldIntimacy()),
                         $relationship->getRelationship()->getOldWouldBang($relationship->getPet()) ? 750 : 250,
@@ -56,6 +61,9 @@ class RelationshipMigrationCommand extends Command
                 ;
 
                 $this->em->persist($otherSide);
+
+                $relationships[] = $otherSide;
+                $relationshipCount++;
             }
 
             // each value will range from 0 to 2000
