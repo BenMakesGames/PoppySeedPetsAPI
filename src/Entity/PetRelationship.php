@@ -123,19 +123,28 @@ class PetRelationship
         return $this;
     }
 
-    public function getIntimacy(): int
+    public function getOldIntimacy(): int
     {
         return $this->intimacy;
     }
 
-    public function getPassion(): int
+    public function getOldPassion(): int
     {
         return $this->passion;
     }
 
-    public function getCommitment(): int
+    public function getOldCommitment(): int
     {
         return $this->commitment;
+    }
+
+    public function setOldTriangleStats($intimacy, $passion, $commitment): self
+    {
+        $this->intimacy = $intimacy;
+        $this->passion = $passion;
+        $this->commitment = $commitment;
+
+        return $this;
     }
 
     public function getMetDescription(): ?string
