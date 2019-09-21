@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\PushSubscription;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\PushSubscriptionRepository;
+use App\Repository\ReminderRepository;
 use App\Repository\UserNotificationPreferencesRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,7 +25,7 @@ class NotificationController extends PsyPetsController
      */
     public function getNotificationSettings(
         ResponseService $responseService, UserNotificationPreferencesRepository $userNotificationPreferencesRepository,
-        PushSubscriptionRepository $pushSubscriptionRepository
+        PushSubscriptionRepository $pushSubscriptionRepository, ReminderRepository $reminderRepository
     )
     {
         $user = $this->getUser();
@@ -37,13 +38,18 @@ class NotificationController extends PsyPetsController
             'user' => $user->getId(),
         ]);
 
+        $reminders = $reminderRepository->findBy([
+            'user' => $user->getId(),
+        ]);
+
         return $responseService->success(
             [
                 'preferences' => $preferences,
+                'reminders' => $reminders,
                 'pushSubscriptions' => $subscriptions
             ],
             [
-                SerializationGroupEnum::NOTIFICATION_PREFERENCES
+                SerializationGroupEnum::NOTIFICATION_PREFERENCES, SerializationGroupEnum::REMINDER
             ]
         );
     }

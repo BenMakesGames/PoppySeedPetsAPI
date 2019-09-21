@@ -30,7 +30,7 @@ class FishingService
     {
         $maxSkill = 5 + $pet->getDexterity() + $pet->getNature() + $pet->getFishing() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2);
 
-        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 17);
+        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 18);
 
         $roll = \mt_rand(1, $maxSkill);
 
@@ -77,6 +77,9 @@ class FishingService
                 break;
             case 17:
                 $activityLog = $this->fishedPlazaFountain($pet, 2);
+                break;
+            case 18:
+                $activityLog = $this->fishedGallopingOctopus($pet);
                 break;
         }
 
@@ -168,6 +171,59 @@ class FishingService
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::DEXTERITY, PetSkillEnum::NATURE, PetSkillEnum::STRENGTH ]);
 
             $this->petService->spendTime($pet, mt_rand(45, 60));
+        }
+
+        return $activityLog;
+    }
+
+    private function fishedGallopingOctopus(Pet $pet): PetActivityLog
+    {
+        $fightSkill = mt_rand(1, 10 + $pet->getDexterity() + $pet->getFishing() + $pet->getBrawl() + $pet->getStrength());
+
+        if($fightSkill <= 3)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing, and started to reel something in, only to realize it was a huge Galloping Octopus! ' . $pet->getName() . ' was caught unawares, and took a tentacle slap to the face before running away! :(', '');
+            $this->petService->spendTime($pet, mt_rand(30, 45));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::DEXTERITY, PetSkillEnum::BRAWL, PetSkillEnum::STRENGTH ]);
+
+            $pet
+                ->increaseSafety(-mt_rand(4, 8))
+                ->increaseEsteem(-mt_rand(2, 4))
+            ;
+        }
+        else if($fightSkill >= 18)
+        {
+            if(mt_rand(1, 2) === 1)
+            {
+                $this->petService->spendTime($pet, mt_rand(45, 60));
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing, and started to reel something in, only to realize it was a huge Galloping Octopus! ' . $pet->getName() . ' beat the creature back into the sea, but not before discerping one of its Tentacles!', '');
+                $this->inventoryService->petCollectsItem('Tentacle', $pet, $pet->getName() . ' received this from a fight with a Galloping Octopus.', $activityLog);
+
+                $pet
+                    ->increaseSafety(mt_rand(1, 4))
+                    ->increaseEsteem(mt_rand(1, 4))
+                ;
+            }
+            else
+            {
+                $this->petService->spendTime($pet, mt_rand(60, 75));
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing, and started to reel something in, only to realize it was a huge Galloping Octopus! ' . $pet->getName() . ' beat the creature back into the sea, but not before discerping two of its Tentacles!', '');
+                $this->inventoryService->petCollectsItem('Tentacle', $pet, $pet->getName() . ' received this from a fight with a Galloping Octopus.', $activityLog);
+                $this->inventoryService->petCollectsItem('Tentacle', $pet, $pet->getName() . ' received this from a fight with a Galloping Octopus.', $activityLog);
+
+                $pet
+                    ->increaseSafety(mt_rand(1, 4))
+                    ->increaseEsteem(mt_rand(2, 6))
+                ;
+            }
+
+            $this->petService->gainExp($pet, 3, [ PetSkillEnum::DEXTERITY, PetSkillEnum::BRAWL, PetSkillEnum::STRENGTH ]);
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing, and started to reel something in, only to realize it was a huge Galloping Octopus! The two tussled for a while before breaking apart and cautiously retreating...', '');
+            $this->petService->spendTime($pet, mt_rand(45, 75));
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::DEXTERITY, PetSkillEnum::BRAWL, PetSkillEnum::STRENGTH ]);
         }
 
         return $activityLog;
