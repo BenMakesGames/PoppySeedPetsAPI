@@ -83,7 +83,7 @@ class PetRelationshipService
     {
         $r = \mt_rand(1, 100);
 
-        if($r === 1)
+        if($r <= $pet->getSexDrive() + $otherPet->getSexDrive())
         {
             $initialRelationship = RelationshipEnum::FWB;
             $possibleRelationships = [
@@ -107,10 +107,13 @@ class PetRelationshipService
                 RelationshipEnum::BFF,
                 RelationshipEnum::BFF,
                 RelationshipEnum::BFF,
-                RelationshipEnum::FWB,
                 RelationshipEnum::MATE,
                 RelationshipEnum::MATE
             ];
+
+            if($pet->getSexDrive() + $otherPet->getSexDrive() >= 1)
+                $possibleRelationships[] = RelationshipEnum::FWB;
+
         }
         else if($r <= 15)
         {
@@ -126,11 +129,13 @@ class PetRelationshipService
                 RelationshipEnum::BFF,
                 RelationshipEnum::BFF,
                 RelationshipEnum::FRIENDLY_RIVAL,
-                RelationshipEnum::FWB,
                 RelationshipEnum::MATE,
                 RelationshipEnum::MATE,
                 RelationshipEnum::MATE,
             ];
+
+            if($pet->getSexDrive() + $otherPet->getSexDrive() >= 1)
+                $possibleRelationships[] = RelationshipEnum::FWB;
         }
 
         // pet

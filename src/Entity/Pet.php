@@ -199,6 +199,11 @@ class Pet
     /**
      * @ORM\Column(type="integer")
      */
+    private $wouldBangFraction;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
     private $caffeine = 0;
 
     /**
@@ -251,7 +256,7 @@ class Pet
         else
             $this->poly = \mt_rand(1, 9) === 1 ? 0 : -1;
 
-        // 10% asexual; 10% flexible; 80% sexual
+        // 2% asexual; 18% flexible; 80% sexual
         if(\mt_rand(1, 10) === 1)
             $this->sexDrive = -1;
         else

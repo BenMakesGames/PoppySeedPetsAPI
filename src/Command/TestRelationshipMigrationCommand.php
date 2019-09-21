@@ -50,7 +50,7 @@ class TestRelationshipMigrationCommand extends Command
                     ->setRelationship($relationship->getPet())
                     ->setOldTriangleStats(
                         mt_rand(ceil($relationship->getOldIntimacy() * 3 / 4), $relationship->getOldIntimacy()),
-                        $relationship->getRelationship()->wouldBang($relationship->getPet()) ? 750 : 250,
+                        $relationship->getRelationship()->getOldWouldBang($relationship->getPet()) ? 750 : 250,
                         mt_rand(ceil($relationship->getOldCommitment() / 2), $relationship->getOldCommitment())
                     )
                 ;
@@ -90,7 +90,7 @@ class TestRelationshipMigrationCommand extends Command
 
             $possibleGoals = [];
 
-            if($relationship->getPet()->wouldBang($otherSide->getPet()))
+            if($relationship->getPet()->getOldWouldBang($otherSide->getPet()))
             {
                 $possibleGoals[] = RelationshipEnum::FWB;
                 $possibleGoals[] = RelationshipEnum::MATE;
