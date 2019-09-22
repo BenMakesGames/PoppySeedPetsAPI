@@ -30,7 +30,7 @@ class PetShelterController extends PsyPetsController
      */
     public function getAvailablePets(
         PetSpeciesRepository $petSpeciesRepository, ResponseService $responseService, PetRepository $petRepository,
-        UserQuestRepository $userQuestRepository, UserService $userService
+        UserQuestRepository $userQuestRepository, UserService $userService, EntityManagerInterface $em
     )
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
@@ -116,6 +116,8 @@ class PetShelterController extends PsyPetsController
             $dialog = "Hello! Here to adopt a new friend?\n\nIf no one catches your eye today, come back tomorrow. We get newcomers every day!\n\nSince you have so many pets in your house already, a pet you adopt will be placed into Daycare.";
         else
             $dialog = "Hello! Here to adopt a new friend?\n\nIf no one catches your eye today, come back tomorrow. We get newcomers every day!";
+
+        $em->flush();
 
         return $responseService->success(
             [
