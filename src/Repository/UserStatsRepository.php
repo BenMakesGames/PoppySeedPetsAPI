@@ -21,7 +21,17 @@ class UserStatsRepository extends ServiceEntityRepository
         parent::__construct($registry, UserStats::class);
     }
 
-    public function getStat(User $user, string $name): UserStats
+    public function getStatValue(User $user, string $name): int
+    {
+        $stat = $this->findOneBy([
+            'user' => $user,
+            'stat' => $name
+        ]);
+
+        return $stat ? $stat->getValue() : 0;
+    }
+
+    public function incrementStat(User $user, string $name, int $change = 1): UserStats
     {
         $stat = $this->findOneBy([
             'user' => $user,
@@ -38,14 +48,7 @@ class UserStatsRepository extends ServiceEntityRepository
             $this->getEntityManager()->persist($stat);
         }
 
-        return $stat;
-    }
-
-    public function incrementStat(User $user, string $name, int $change = 1): UserStats
-    {
-        $stat = $this->getStat($user, $name)
-            ->increaseValue($change)
-        ;
+        $stat->increaseValue($change);
 
         if($user->getUnlockedBookstore() === null && ($name === UserStatEnum::ITEMS_THROWN_AWAY || $name === UserStatEnum::ITEMS_DONATED_TO_MUSEUM))
         {

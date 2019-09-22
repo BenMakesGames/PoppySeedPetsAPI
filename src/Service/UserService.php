@@ -16,15 +16,15 @@ class UserService
 
     public function getAdoptionFee(User $user): int
     {
-        $stat = $this->userStatsRepository->getStat($user, UserStatEnum::PETS_ADOPTED);
+        $statValue = $this->userStatsRepository->getStatValue($user, UserStatEnum::PETS_ADOPTED);
 
-        if($stat->getValue() <= 6)
+        if($statValue <= 6)
             return 50;
-        else if($stat->getValue() <= 28)
+        else if($statValue <= 28)
             return 75;
-        else if($stat->getValue() <= 496)
+        else if($statValue <= 496)
             return 100;
-        else if($stat->getValue() <= 8128)
+        else if($statValue <= 8128)
             return 50;
         else
             return 10;
