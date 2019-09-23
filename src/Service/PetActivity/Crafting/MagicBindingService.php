@@ -63,6 +63,18 @@ class MagicBindingService
                 if(array_key_exists('Musical Scales', $quantities))
                     $possibilities[] = [ $this, 'createMusicScroll' ];
             }
+
+            if(array_key_exists('Ceremonial Trident', $quantities))
+            {
+                if(array_key_exists('Seaweed', $quantities) && array_key_exists('Sand Dollar', $quantities))
+                    $possibilities[] = [ $this, 'createCeremonyOfSandAndSea' ];
+
+                if(array_key_exists('Blackonite', $quantities))
+                    $possibilities[] = [ $this, 'createCeremonyOfShadows' ];
+
+                if(array_key_exists('Firestone', $quantities))
+                    $possibilities[] = [ $this, 'createCeremonyOfFire' ];
+            }
         }
 
         return $possibilities;
@@ -140,6 +152,56 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Magic Hourglass', $pet, $pet->getName() . ' enchanted this.', $activityLog);
             return $activityLog;
         }
+    }
+
+    private function bindCeremonialTrident(Pet $pet, array $otherMaterials, string $makes)
+    {
+        $umbraCheck = \mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence());
+        $craftsCheck = \mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(-1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Ceremonial Trident, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+        }
+        else if($craftsCheck < 20)
+        {
+            $this->petService->spendTime($pet, \mt_rand(46, 60));
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA, PetSkillEnum::CRAFTS, PetSkillEnum::DEXTERITY ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant an Ceremonial Trident, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petService->spendTime($pet, \mt_rand(60, 75));
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            foreach($otherMaterials as $material)
+                $this->inventoryService->loseItem($material, $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Ceremonial Trident', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 3, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA, PetSkillEnum::CRAFTS, PetSkillEnum::DEXTERITY ]);
+            $pet->increaseEsteem(3);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' used a Ceremonial Trident to materialize the ' . $makes . '!', '');
+            $this->inventoryService->petCollectsItem($makes, $pet, $pet->getName() . ' made this real.', $activityLog);
+            return $activityLog;
+        }
+
+    }
+
+    public function createCeremonyOfShadows(Pet $pet): PetActivityLog
+    {
+        return $this->bindCeremonialTrident($pet, [ 'Blackonite' ], 'Ceremony of Shadows');
+    }
+
+    public function createCeremonyOfFire(Pet $pet): PetActivityLog
+    {
+        return $this->bindCeremonialTrident($pet, [ 'Firestone' ], 'Ceremony of Fire');
+    }
+
+    public function createCeremonyOfSandAndSea(Pet $pet): PetActivityLog
+    {
+        return $this->bindCeremonialTrident($pet, [ 'Seaweed', 'Sand Dollar' ], 'Ceremony of Sand and Sea');
     }
 
     public function createWitchsBroom(Pet $pet): PetActivityLog
