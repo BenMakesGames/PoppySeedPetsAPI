@@ -52,10 +52,10 @@ class BookstoreService
         if($itemsDonatedToMuseum)
         {
             if($itemsDonatedToMuseum->getValue() >= 100)
+            {
                 $bookPrices['Basement Blueprint'] = 100;
-
-            if($itemsDonatedToMuseum->getValue() >= 150)
                 $bookPrices['The Umbra'] = 25;
+            }
         }
 
         ksort($bookPrices);
