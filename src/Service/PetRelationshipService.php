@@ -622,8 +622,8 @@ class PetRelationshipService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' said that they consider ' . $p2->getPet()->getName() . ' a best friend; ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :|', '');
-                $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' said that they consider ' . $p2->getPet()->getName() . ' a best friend; ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :|', '');
+                $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' wanted to date ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :(', '');
+                $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' wanted to date ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends!', '');
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
                 $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
                 $p1->setRelationshipGoal(RelationshipEnum::DISLIKE);
@@ -634,6 +634,44 @@ class PetRelationshipService
                     return $this->hangOutPrivatelyFromFriendsToBFFs($p1, $p2);
                 else
                     return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 25, 45);
+
+            case RelationshipEnum::FRIENDLY_RIVAL:
+                return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 10, 10);
+
+            case RelationshipEnum::BFF:
+                return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 45, 45);
+
+            case RelationshipEnum::FWB:
+                return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 25, 45);
+
+            case RelationshipEnum::MATE:
+                $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' wants to date ' . $p2->getPet()->getName() . '! ' . $p2->getPet()->getName() . ' feels the same way! The two are now dating! :)', '');
+                $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' wants to date ' . $p2->getPet()->getName() . '! ' . $p2->getPet()->getName() . ' feels the same way! The two are now dating! :)', '');
+                $p1->setCurrentRelationship(RelationshipEnum::MATE);
+                $p2->setCurrentRelationship(RelationshipEnum::MATE);
+                break;
+
+            default:
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+        }
+
+        return [ $log1, $log2 ];
+    }
+
+    private function hangOutPrivatelyFromBFFsToMates(PetRelationship $p1, PetRelationship $p2): array
+    {
+        switch($p2->getRelationshipGoal())
+        {
+            case RelationshipEnum::DISLIKE:
+                $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' wanted to date ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :(', '');
+                $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' wanted to date ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends!', '');
+                $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
+                $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
+                $p1->setRelationshipGoal(RelationshipEnum::DISLIKE);
+                break;
+
+            case RelationshipEnum::FRIEND:
+                return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p2, $p1, 5, 30);
 
             case RelationshipEnum::FRIENDLY_RIVAL:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 10, 10);
