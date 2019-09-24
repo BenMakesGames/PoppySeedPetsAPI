@@ -28,7 +28,7 @@ Whatever the circumstances that lead to your overabundance of milk, fret not! Th
 * Chocolate Cream Pie
 * Chocomlik
 * Creamed Corn
-* Hanuna Frittata
+* Hakuna Frittata
 * Lassi
 * Melonpan (Melonbun)
 * Naner Puddin\'
