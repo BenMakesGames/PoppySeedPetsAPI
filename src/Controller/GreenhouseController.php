@@ -96,7 +96,7 @@ class GreenhouseController extends PsyPetsController
         else
         {
             if(mt_rand(1, 3) === 1)
-                $itemName = ArrayFunctions::pick_one([ 'Red Clover', 'Fluff', 'Talon' ]);
+                $itemName = ArrayFunctions::pick_one([ 'Fluff', 'Fluff', 'Red Clover', 'Talon', 'Feathers' ]);
             else
                 $itemName = 'Crooked Stick';
 
