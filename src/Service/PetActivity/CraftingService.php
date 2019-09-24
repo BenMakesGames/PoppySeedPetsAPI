@@ -9,6 +9,7 @@ use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
+use App\Service\PetActivity\Crafting\PlasticPrinterService;
 use App\Service\PetActivity\Crafting\SmithingService;
 use App\Service\PetActivity\Crafting\MagicBindingService;
 use App\Service\PetService;
@@ -22,10 +23,12 @@ class CraftingService
     private $itemRepository;
     private $smithingService;
     private $magicBindingService;
+    private $plasticPrinterService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetService $petService,
-        ItemRepository $itemRepository, SmithingService $smithingService, MagicBindingService $magicBindingService
+        ItemRepository $itemRepository, SmithingService $smithingService, MagicBindingService $magicBindingService,
+        PlasticPrinterService $plasticPrinterService
     )
     {
         $this->responseService = $responseService;
@@ -34,6 +37,7 @@ class CraftingService
         $this->itemRepository = $itemRepository;
         $this->smithingService = $smithingService;
         $this->magicBindingService = $magicBindingService;
+        $this->plasticPrinterService = $plasticPrinterService;
     }
 
     public function getCraftingPossibilities(Pet $pet): array
@@ -127,6 +131,9 @@ class CraftingService
         // pets won't try any smithing tasks if they don't feel sufficiently safe
         if($pet->getSafety() > 0)
             $possibilities = array_merge($possibilities, $this->smithingService->getCraftingPossibilities($pet, $quantities));
+
+        if(array_key_exists('3D Printer', $quantities) && array_key_exists('Plastic', $quantities))
+            $possibilities = array_merge($possibilities, $this->plasticPrinterService->getCraftingPossibilities($pet, $quantities));
 
         if(array_key_exists('Rusty Blunderbuss', $quantities) && $pet->getCrafts() >= 5)
             $possibilities[] = [ $this, 'repairRustyBlunderbuss' ];
