@@ -7,6 +7,7 @@ use App\Entity\PetRelationship;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\PetRelationshipRepository;
+use App\Repository\PetRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
@@ -969,6 +970,21 @@ class PetRelationshipService
         }
     }
 
+    private function hangOutPrivatelyFromBFFsToFriends(PetRelationship $p1, PetRelationship $p2): array
+    {
+
+    }
+
+    private function hangOutPrivatelyFromBFFsToFriendlyRivals(PetRelationship $p1, PetRelationship $p2): array
+    {
+
+    }
+
+    private function hangOutPrivatelyFromBFFsToFWBs(PetRelationship $p1, PetRelationship $p2): array
+    {
+
+    }
+
     private function hangOutPrivatelyFromBFFsToDisliked(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -1064,6 +1080,26 @@ class PetRelationshipService
         }
     }
 
+    private function hangOutPrivatelyFromFWBsToMates(PetRelationship $p1, PetRelationship $p2): array
+    {
+
+    }
+
+    private function hangOutPrivatelyFromFWBsToBFFs(PetRelationship $p1, PetRelationship $p2): array
+    {
+
+    }
+
+    private function hangOutPrivatelyFromFWBsToFriends(PetRelationship $p1, PetRelationship $p2): array
+    {
+
+    }
+
+    private function hangOutPrivatelyFromFWBsToFriendlyRivals(PetRelationship $p1, PetRelationship $p2): array
+    {
+
+    }
+
     private function hangOutPrivatelyFromFWBsToDisliked(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -1141,6 +1177,21 @@ class PetRelationshipService
             default:
                 throw new \InvalidArgumentException('p1 relationship goal is of an unexpected type, "' . $p1->getRelationshipGoal() . '"');
         }
+    }
+
+    private function hangOutPrivatelyFromMatesToFriendlyRivals(PetRelationship $p1, PetRelationship $p2): array
+    {
+
+    }
+
+    private function hangOutPrivatelyFromMatesToBFFs(PetRelationship $p1, PetRelationship $p2): array
+    {
+
+    }
+
+    private function hangOutPrivatelyFromMatesToFWBs(PetRelationship $p1, PetRelationship $p2): array
+    {
+
     }
 
     private function hangOutPrivatelyFromMatesToFriends(PetRelationship $p1, PetRelationship $p2): array
