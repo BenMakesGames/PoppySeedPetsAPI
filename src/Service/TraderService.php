@@ -36,6 +36,8 @@ class TraderService
     private const ID_LIMESTONE_FOR_ROOTS = 'limestoneForRoots';
     private const ID_TOMATO_FOR_WHITE_CLOTH = 'tomatoForWhiteCloth';
     private const ID_BAG_FOR_PAINTED_ROD = 'bagForPaintedRod';
+    private const ID_3D_PRINTER = '3DPrinterPlz';
+    private const ID_BLUE_CANDY_FOR_WITCH_HAZEL = 'blueCandyForWitchHazel';
 
     private $itemRepository;
     private $inventoryService;
@@ -227,7 +229,7 @@ class TraderService
             );
         }
 
-        if($dayOfTheYear % 11 === 0)
+        if($dayOfTheYear % 11 === 0 || $leapDay)
         {
             $offers[] = new TraderOffer(
                 self::ID_MUSICAL_SCALES,
@@ -272,7 +274,7 @@ class TraderService
             );
         }
 
-        if(($dayOfTheYear + 2) % 5 === 0 || ($dayOfTheYear + 4) % 5 === 0)
+        if(($dayOfTheYear + 2) % 5 === 0 || ($dayOfTheYear + 4) % 5 === 0 || $leapDay)
         {
             $offers[] = new TraderOffer(
                 self::ID_LIMESTONE_FOR_ROOTS,
@@ -285,6 +287,19 @@ class TraderService
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Carrot'), 1),
                 ],
                 "I just really need Limestone.\n\nDon't ask."
+            );
+        }
+
+        if(($dayOfTheYear + 4) % 5 === 0 || $leapDay)
+        {
+            $offers[] = new TraderOffer(
+                self::ID_3D_PRINTER,
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Plastic'), 5),
+                    TraderOfferCostOrYield::createMoney(25),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('3D Printer'), 1) ],
+                'Too many 3D Printers; not enough Plastic. It\'s a weird problem to have, I know. Thanks for helping me solve it.'
             );
         }
 
@@ -321,7 +336,7 @@ class TraderService
         if(($dayOfTheYear + 3) % 4 === 0 || $leapDay)
         {
             $offers[] = new TraderOffer(
-                self::ID_TOMATO_FOR_WHITE_CLOTH,
+                self::ID_BLUE_CANDY_FOR_WITCH_HAZEL,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Blue Hard Candy'), 1 ) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Witch-hazel'), 1) ],
                 'Blue\'s my favorite flavor!'
