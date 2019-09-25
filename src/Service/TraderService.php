@@ -237,17 +237,7 @@ class TraderService
             );
         }
 
-        if($dayOfTheYear % 11 === 0 || $leapDay)
-        {
-            $offers[] = new TraderOffer(
-                self::ID_MUSICAL_SCALES,
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Music Note'), 7) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Musical Scales'), 1) ],
-                'You can do this yourself at home, by the way. Combine 7 Music Notes into Musical Scales, I mean. It\'s true. Try it out sometime.'
-            );
-        }
-
-        if(($dayOfTheYear + 1) % 11 === 0 || ($dayOfTheYear + 6) % 11 === 0 || $leapDay)
+        if($dayOfTheYear % 17 === 0 || $dayOfTheYear % 17 === 6 || $dayOfTheYear % 17 === 12 || $leapDay)
         {
             $offers[] = new TraderOffer(
                 self::ID_GOLD_TO_SILVER_1,
@@ -262,6 +252,10 @@ class TraderService
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Ore'), 1) ],
                 'Thank you kindly.'
             );
+        }
+
+        if($dayOfTheYear % 17 === 1 || $dayOfTheYear % 17 === 8 || $dayOfTheYear % 17 === 13 || $leapDay)
+        {
 
             $offers[] = new TraderOffer(
                 self::ID_IRON_TO_SILVER_1,
@@ -288,11 +282,11 @@ class TraderService
             );
         }
 
-        if(($dayOfTheYear + 2) % 11 === 0 || ($dayOfTheYear + 7) % 11 === 0 || $leapDay)
+        if($dayOfTheYear % 17 === 2 || $dayOfTheYear % 17 === 9 || $dayOfTheYear % 17 === 15 || $leapDay)
         {
             $offers[] = new TraderOffer(
                 self::ID_SILVER_TO_IRON_1,
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Bar'), 1) ],
+                [TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Bar'), 1)],
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Iron Bar'), 1),
                     TraderOfferCostOrYield::createMoney(3),
@@ -302,14 +296,17 @@ class TraderService
 
             $offers[] = new TraderOffer(
                 self::ID_SILVER_TO_IRON_2,
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Ore'), 1) ],
+                [TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Ore'), 1)],
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Iron Ore'), 1),
                     TraderOfferCostOrYield::createMoney(2),
                 ],
                 'Thank you kindly.'
             );
+        }
 
+        if($dayOfTheYear % 17 === 4 || $dayOfTheYear % 17 === 11 || $dayOfTheYear % 17 === 16 || $leapDay)
+        {
             $offers[] = new TraderOffer(
                 self::ID_SILVER_TO_GOLD_1,
                 [
@@ -332,6 +329,16 @@ class TraderService
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Ore'), 1),
                 ],
                 'Thank you kindly.'
+            );
+        }
+
+        if($dayOfTheYear % 11 === 0 || $leapDay)
+        {
+            $offers[] = new TraderOffer(
+                self::ID_MUSICAL_SCALES,
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Music Note'), 7) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Musical Scales'), 1) ],
+                'You can do this yourself at home, by the way. Combine 7 Music Notes into Musical Scales, I mean. It\'s true. Try it out sometime.'
             );
         }
 
