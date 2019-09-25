@@ -38,6 +38,14 @@ class TraderService
     private const ID_BAG_FOR_PAINTED_ROD = 'bagForPaintedRod';
     private const ID_3D_PRINTER = '3DPrinterPlz';
     private const ID_BLUE_CANDY_FOR_WITCH_HAZEL = 'blueCandyForWitchHazel';
+    private const ID_GOLD_TO_SILVER_1 = 'goldToSilver1';
+    private const ID_GOLD_TO_SILVER_2 = 'goldToSilver2';
+    private const ID_IRON_TO_SILVER_1 = 'ironToSilver1';
+    private const ID_IRON_TO_SILVER_2 = 'ironToSilver2';
+    private const ID_SILVER_TO_IRON_1 = 'silverToIron1';
+    private const ID_SILVER_TO_IRON_2 = 'silverToIron2';
+    private const ID_SILVER_TO_GOLD_1 = 'silverToGold1';
+    private const ID_SILVER_TO_GOLD_2 = 'silverToGold2';
 
     private $itemRepository;
     private $inventoryService;
@@ -236,6 +244,94 @@ class TraderService
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Music Note'), 7) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Musical Scales'), 1) ],
                 'You can do this yourself at home, by the way. Combine 7 Music Notes into Musical Scales, I mean. It\'s true. Try it out sometime.'
+            );
+        }
+
+        if(($dayOfTheYear + 1) % 11 === 0 || ($dayOfTheYear + 6) % 11 === 0 || $leapDay)
+        {
+            $offers[] = new TraderOffer(
+                self::ID_GOLD_TO_SILVER_1,
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Bar'), 1) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Bar'), 1) ],
+                'Thank you kindly.'
+            );
+
+            $offers[] = new TraderOffer(
+                self::ID_GOLD_TO_SILVER_2,
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Ore'), 1) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Ore'), 1) ],
+                'Thank you kindly.'
+            );
+
+            $offers[] = new TraderOffer(
+                self::ID_IRON_TO_SILVER_1,
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Iron Bar'), 1),
+                    TraderOfferCostOrYield::createMoney(10),
+                ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Bar'), 1),
+                ],
+                'Thank you kindly.'
+            );
+
+            $offers[] = new TraderOffer(
+                self::ID_IRON_TO_SILVER_2,
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Iron Ore'), 1),
+                    TraderOfferCostOrYield::createMoney(8),
+                ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Ore'), 1),
+                ],
+                'Thank you kindly.'
+            );
+        }
+
+        if(($dayOfTheYear + 2) % 11 === 0 || ($dayOfTheYear + 7) % 11 === 0 || $leapDay)
+        {
+            $offers[] = new TraderOffer(
+                self::ID_SILVER_TO_IRON_1,
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Bar'), 1) ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Iron Bar'), 1),
+                    TraderOfferCostOrYield::createMoney(3),
+                ],
+                'Thank you kindly.'
+            );
+
+            $offers[] = new TraderOffer(
+                self::ID_SILVER_TO_IRON_2,
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Ore'), 1) ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Iron Ore'), 1),
+                    TraderOfferCostOrYield::createMoney(2),
+                ],
+                'Thank you kindly.'
+            );
+
+            $offers[] = new TraderOffer(
+                self::ID_SILVER_TO_GOLD_1,
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Bar'), 1),
+                    TraderOfferCostOrYield::createMoney(5),
+                ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Bar'), 1),
+                ],
+                'Thank you kindly.'
+            );
+
+            $offers[] = new TraderOffer(
+                self::ID_SILVER_TO_GOLD_2,
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Ore'), 1),
+                    TraderOfferCostOrYield::createMoney(4),
+                ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Ore'), 1),
+                ],
+                'Thank you kindly.'
             );
         }
 
