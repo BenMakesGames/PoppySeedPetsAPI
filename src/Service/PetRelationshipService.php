@@ -618,17 +618,27 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    private function hangOutPrivatelySuggestingMatesWithCompleteRejection(PetRelationship $p1, PetRelationship $p2): array
+    {
+        $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' wanted to date ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :\'(', '');
+        $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' wanted to date ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends!', '');
+
+        $p1
+            ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
+            ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+        ;
+
+        $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
+
+        return [ $log1, $log2 ];
+    }
+
     private function hangOutPrivatelyFromFriendsToMates(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' wanted to date ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :(', '');
-                $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' wanted to date ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends!', '');
-                $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
-                $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
-                $p1->setRelationshipGoal(RelationshipEnum::DISLIKE);
-                break;
+                return $this->hangOutPrivatelySuggestingMatesWithCompleteRejection($p1, $p2);
 
             case RelationshipEnum::FRIEND:
                 if(mt_rand(1, 4) === 1)
@@ -664,12 +674,7 @@ class PetRelationshipService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' wanted to date ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :(', '');
-                $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' wanted to date ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends!', '');
-                $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
-                $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
-                $p1->setRelationshipGoal(RelationshipEnum::DISLIKE);
-                break;
+                return $this->hangOutPrivatelySuggestingMatesWithCompleteRejection($p1, $p2);
 
             case RelationshipEnum::FRIEND:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p2, $p1, 5, 30);
@@ -972,7 +977,54 @@ class PetRelationshipService
 
     private function hangOutPrivatelyFromBFFsToFriends(PetRelationship $p1, PetRelationship $p2): array
     {
+        switch($p2->getRelationshipGoal())
+        {
+            case RelationshipEnum::DISLIKE:
+                $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' wanted to just be friends; ' . $p2->getPet()->getName() . ' has had enough of ' . $p1->getPet()->getName() . '\'s nonsense, and breaks up entirely! :(', '');
+                $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' wanted to just be friends; ' . $p2->getPet()->getName() . ' has had enough of ' . $p1->getPet()->getName() . '\'s nonsense, and breaks up entirely! >:(', '');
 
+                $p1
+                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
+                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                ;
+
+                $p2
+                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
+                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                ;
+                break;
+
+            case RelationshipEnum::FRIENDLY_RIVAL:
+                if(mt_rand(1, 4) === 1)
+                {
+                    $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' wants a little more time to theirself; ' . $p2->getPet()->getName() . ' feels the same way. The two are now friends, instead of BFFs.', '');
+                    $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' wants a little more time to theirself; ' . $p2->getPet()->getName() . ' feels the same way. The two are now friends, instead of BFFs.', '');
+                    $p1->setCurrentRelationship(RelationshipEnum::FRIEND);
+                    $p2->setCurrentRelationship(RelationshipEnum::FRIEND);
+                }
+                else
+                {
+
+                }
+
+                break;
+
+            case RelationshipEnum::FRIEND:
+                $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' wants a little more time to theirself; ' . $p2->getPet()->getName() . ' feels the same way. The two are now friends, instead of BFFs.', '');
+                $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' wants a little more time to theirself; ' . $p2->getPet()->getName() . ' feels the same way. The two are now friends, instead of BFFs.', '');
+                $p1->setCurrentRelationship(RelationshipEnum::FRIEND);
+                $p2->setCurrentRelationship(RelationshipEnum::FRIEND);
+                break;
+
+            case RelationshipEnum::BFF:
+            case RelationshipEnum::FWB:
+                return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 15, 65);
+
+            case RelationshipEnum::MATE:
+                return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 10, 50);
+        }
+
+        return [ $log1, $log2 ];
     }
 
     private function hangOutPrivatelyFromBFFsToFriendlyRivals(PetRelationship $p1, PetRelationship $p2): array
@@ -1082,6 +1134,31 @@ class PetRelationshipService
 
     private function hangOutPrivatelyFromFWBsToMates(PetRelationship $p1, PetRelationship $p2): array
     {
+        switch($p2->getRelationshipGoal())
+        {
+            case RelationshipEnum::DISLIKE:
+                return $this->hangOutPrivatelySuggestingMatesWithCompleteRejection($p1, $p2);
+
+            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FRIEND:
+                return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 10, 25);
+
+            case RelationshipEnum::BFF:
+                return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 20, 40);
+
+            case RelationshipEnum::FWB:
+                return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 30, 60);
+
+            case RelationshipEnum::MATE:
+                $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' wants to date ' . $p2->getPet()->getName() . '! ' . $p2->getPet()->getName() . ' feels the same way! The two are now dating! :)', '');
+                $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' wants to date ' . $p2->getPet()->getName() . '! ' . $p2->getPet()->getName() . ' feels the same way! The two are now dating! :)', '');
+                $p1->setCurrentRelationship(RelationshipEnum::MATE);
+                $p2->setCurrentRelationship(RelationshipEnum::MATE);
+                break;
+
+        }
+
+        return [ $log1, $log2 ];
 
     }
 
