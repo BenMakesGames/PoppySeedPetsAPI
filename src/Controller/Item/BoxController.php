@@ -30,29 +30,49 @@ class BoxController extends PsyPetsItemController
 
         $this->validateInventory($inventory, 'box/box/#/open');
 
+        $location = $inventory->getLocation();
+
         if(mt_rand(1, 50) === 1)
         {
-            $itemName = 'Box Box';
-
-            $message = "What kind of box will be in _this_ Box Box, I wonder?\n\nWait, what? It's _another_ Box Box?";
+            $message = "What boxes will be in _this_ Box Box, I wonder?\n\nWait, what? It's _another_ Box Box?";
 
             $userStatsRepository->incrementStat($user, 'Found a Box Box Inside a Box Box');
+
+            $inventoryService->receiveItem('Box Box', $user, $user, $user->getName() . ' found this in a Box Box... huh...', $location);
         }
         else
         {
-            $itemName = ArrayFunctions::pick_one([
+            $possibleItems = [
                 'Baker\'s Box',
                 'Fruits & Veggies Box',
                 'Handicrafts Supply Box',
                 'Little Strongbox',
-            ]);
+            ];
 
-            $message = "What kind of box will be in _this_ Box Box, I wonder?\n\nOh: the " . $itemName . " kind, apparently!";
+            if(mt_rand(1, 3) === 0)
+            {
+                $possibleItems[] = ArrayFunctions::pick_one([
+                    'Sandbox',
+                    'Jukebox',
+                    'Pepperbox',
+                ]);
+            }
+
+            if(mt_rand(1, 20) === 0)
+            {
+                $possibleItems[] = ArrayFunctions::pick_one([
+                    '4th of July Box',
+                    // TODO: other holiday boxes
+                ]);
+            }
+
+            shuffle($possibleItems);
+
+            $message = "What boxes will be in _this_ Box Box, I wonder?\n\nOh: " . $possibleItems[0] . " and " . $possibleItems[1] . ", apparently!";
+
+            $inventoryService->receiveItem($possibleItems[0], $user, $user, $user->getName() . ' found this in a Box Box.', $location);
+            $inventoryService->receiveItem($possibleItems[1], $user, $user, $user->getName() . ' found this in a Box Box.', $location);
         }
-
-        $location = $inventory->getLocation();
-
-        $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in a Box Box.', $location);
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 

@@ -390,7 +390,7 @@ class TraderService
                 self::ID_BOX_BOX_FOR_RIDICULOUS,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('This is Getting Ridiculous'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Box Box'), 1) ],
-                'I don\'t remember what exactly is in here, but I\'m pretty sure it\'s just another box.'
+                'I don\'t remember what exactly is in here, but I\'m pretty sure it\'s just more boxes.'
             );
         }
 

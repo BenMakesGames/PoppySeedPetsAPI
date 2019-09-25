@@ -10,6 +10,7 @@ use App\Entity\UserNotificationPreferences;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\StringFunctions;
 use App\Repository\PassphraseResetRequestRepository;
@@ -305,7 +306,7 @@ class AccountController extends PsyPetsController
      */
     public function collectWeeklyBox(
         Request $request, EntityManagerInterface $em, ResponseService $responseService,
-        InventoryService $inventoryService
+        InventoryService $inventoryService, UserStatsRepository $userStatsRepository
     )
     {
         $user = $this->getUser();
@@ -317,13 +318,19 @@ class AccountController extends PsyPetsController
         if($days < 7)
             throw new UnprocessableEntityHttpException('It\'s too early to collect your weekly Care Package.');
 
+        $canGetHandicraftsBox = $user->getUnlockedPark() && $user->getMaxPlants() >= 6;
+
         if($type === 1)
         {
-            $newInventory = $inventoryService->receiveItem('Fruits & Veggies Box', $user, $user, $user->getName() . ' got this from a weekly Care Package.', LocationEnum::HOME);
+            $newInventory = $inventoryService->receiveItem('Fruits & Veggies Box', $user, $user, $user->getName() . ' got this as a weekly Care Package.', LocationEnum::HOME);
         }
         else if($type === 2)
         {
-            $newInventory = $inventoryService->receiveItem('Baker\'s Box', $user, $user, $user->getName() . ' got this from a weekly Care Package.', LocationEnum::HOME);
+            $newInventory = $inventoryService->receiveItem('Baker\'s Box', $user, $user, $user->getName() . ' got this as a weekly Care Package.', LocationEnum::HOME);
+        }
+        else if($type === 3 && $canGetHandicraftsBox)
+        {
+            $newInventory = $inventoryService->receiveItem('Handicrafts Supply Box', $user, $user, $user->getName() . ' got this as a weekly Care Package.', LocationEnum::HOME);
         }
         else
             throw new UnprocessableEntityHttpException('Must specify a Care Package "type".');
