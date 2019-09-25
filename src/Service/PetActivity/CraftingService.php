@@ -119,6 +119,9 @@ class CraftingService
         if(array_key_exists('Crooked Fishing Rod', $quantities) && array_key_exists('Yellow Dye', $quantities) && array_key_exists('Green Dye', $quantities))
             $possibilities[] = [ $this, 'createPaintedFishingRod' ];
 
+        if(array_key_exists('Plastic Idol', $quantities) && array_key_exists('Yellow Dye', $quantities))
+            $possibilities[] = [ $this, 'createGoldIdol' ];
+
         // TODO: fiberglass stuff!
         /*
         if(array_key_exists('Fiberglass', $quantities) && array_key_exists('String', $quantities))
@@ -894,6 +897,18 @@ class CraftingService
         $pet->increaseEsteem(1);
         $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Painted Fishing Rod.', '');
         $this->inventoryService->petCollectsItem('Painted Fishing Rod', $pet, $pet->getName() . ' painted this, using Yellow and Green Dye.', $activityLog);
+        return $activityLog;
+    }
+
+    private function createGoldIdol(Pet $pet): PetActivityLog
+    {
+        $this->petService->spendTime($pet, \mt_rand(45, 90));
+        $this->inventoryService->loseItem('Plastic Idol', $pet->getOwner(), LocationEnum::HOME, 1);
+        $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), LocationEnum::HOME, 1);
+        $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+        $pet->increaseEsteem(1);
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a "Gold" Idol.', '');
+        $this->inventoryService->petCollectsItem('"Gold" Idol', $pet, $pet->getName() . ' painted this, using Yellow Dye.', $activityLog);
         return $activityLog;
     }
 

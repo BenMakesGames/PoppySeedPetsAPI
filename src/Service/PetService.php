@@ -531,6 +531,12 @@ class PetService
             return;
         }
 
+        if($pet->getTool() && $pet->getTool()->getItem()->getName() === '"Gold" Idol')
+        {
+            $this->treasureMapService->doGoldIdol($pet);
+            return;
+        }
+
         if(mt_rand(1, 50) === 1)
         {
             $activityLog = $this->givingTreeGatheringService->gatherFromGivingTree($pet);

@@ -30,10 +30,13 @@ class PlasticPrinterService
 
         if(array_key_exists('3D Printer', $quantities) && array_key_exists('Plastic', $quantities))
         {
-            $possibilities[] = [$this, 'createPlasticBucket'];
+            $possibilities[] = [ $this, 'createPlasticBucket' ];
+
+            if(mt_rand(1, 3) === 1)
+                $possibilities[] = [ $this, 'createPlasticIdol' ];
 
             if(array_key_exists('String', $quantities))
-                $possibilities[] = [$this, 'createPlasticFishingRod'];
+                $possibilities[] = [ $this, 'createPlasticFishingRod' ];
         }
 
         return $possibilities;
@@ -104,6 +107,34 @@ class PlasticPrinterService
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Small Plastic Bucket.', '');
             $this->inventoryService->petCollectsItem('Small Plastic Bucket', $pet, $pet->getName() . ' created this from Plastic.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            return $this->printerActingUp($pet);
+        }
+    }
+
+    public function createPlasticIdol(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer() + $pet->getCrafts());
+
+        if($roll <= 3)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+
+            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Plastic Idol, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
+        }
+        else if($roll >= 13)
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
+            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Plastic Idol.', '');
+            $this->inventoryService->petCollectsItem('Plastic Idol', $pet, $pet->getName() . ' created this from Plastic.', $activityLog);
             return $activityLog;
         }
         else
