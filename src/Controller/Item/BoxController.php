@@ -18,6 +18,38 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class BoxController extends PsyPetsItemController
 {
     /**
+     * @Route("/box/{inventory}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openBoxBox(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/box/#/open');
+
+        $itemName = ArrayFunctions::pick_one([
+            'Baker\'s Box',
+            'Fruits & Veggies Box',
+            'Handicrafts Supply Box',
+            'Little Strongbox',
+        ]);
+
+        $location = $inventory->getLocation();
+
+        $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location);
+
+        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
+
+        $em->remove($inventory);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess("What kind of box will be in _this_ Box Box, I wonder?\n\nOh: the " . $itemName . " kind, apparently!", [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+    }
+    /**
      * @Route("/bakers/{inventory}/open", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -74,6 +106,43 @@ class BoxController extends PsyPetsItemController
 
         for($i = 0; $i < 4; $i++)
             $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Carrot', 'Onion', 'Celery', 'Carrot', 'Sweet Beet']), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
+
+        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
+
+        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
+        sort($itemList);
+
+        $em->remove($inventory);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess('Opening the box revealed ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+    }
+
+    /**
+     * @Route("/handicrafts/{inventory}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openHandicrafts(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/handicrafts/#/open');
+
+        $location = $inventory->getLocation();
+
+        $newInventory = [
+            $inventoryService->receiveItem('Crooked Stick', $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location)
+        ];
+
+        for($i = 0; $i < 5; $i++)
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Fluff', 'Plastic', 'Green Dye', 'Yellow Dye', 'Paper', 'Glue']), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
+
+        for($i = 0; $i < 3; $i++)
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Limestone', 'Glass', 'Iron Bar', 'Iron Ore', 'Silver Ore']), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
