@@ -30,16 +30,29 @@ class BoxController extends PsyPetsItemController
 
         $this->validateInventory($inventory, 'box/box/#/open');
 
-        $itemName = ArrayFunctions::pick_one([
-            'Baker\'s Box',
-            'Fruits & Veggies Box',
-            'Handicrafts Supply Box',
-            'Little Strongbox',
-        ]);
+        if(mt_rand(1, 50) === 1)
+        {
+            $itemName = 'Box Box';
+
+            $message = "What kind of box will be in _this_ Box Box, I wonder?\n\nWait, what? It's _another_ Box Box?";
+
+            $userStatsRepository->incrementStat($user, 'Found a Box Box Inside a Box Box');
+        }
+        else
+        {
+            $itemName = ArrayFunctions::pick_one([
+                'Baker\'s Box',
+                'Fruits & Veggies Box',
+                'Handicrafts Supply Box',
+                'Little Strongbox',
+            ]);
+
+            $message = "What kind of box will be in _this_ Box Box, I wonder?\n\nOh: the " . $itemName . " kind, apparently!";
+        }
 
         $location = $inventory->getLocation();
 
-        $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location);
+        $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in a Box Box.', $location);
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
@@ -47,7 +60,7 @@ class BoxController extends PsyPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess("What kind of box will be in _this_ Box Box, I wonder?\n\nOh: the " . $itemName . " kind, apparently!", [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
     /**
      * @Route("/bakers/{inventory}/open", methods={"POST"})
