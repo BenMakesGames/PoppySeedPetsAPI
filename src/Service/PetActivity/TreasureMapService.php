@@ -74,4 +74,26 @@ class TreasureMapService
         if(mt_rand(1, 5) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);
     }
+
+    public function doGoldIdol(Pet $pet)
+    {
+        $activityLog = null;
+        $changes = new PetChanges($pet);
+
+        $this->petService->spendTime($pet, \mt_rand(30, 45));
+        $pet->increaseEsteem(5);
+
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found that Thieving Magpie, and offered it a "Gold" Idol in exchange for something else. The magpie eagerly accepted.', 'items/treasure/magpie-deal');
+
+        $this->em->remove($pet->getTool());
+        $pet->setTool(null);
+
+        $this->inventoryService->petCollectsItem('Magpie\'s Deal', $pet, $pet->getName() . ' got this from a Thieving Magpie in exchange for a "Gold" Idol!', $activityLog);
+
+        if($activityLog)
+            $activityLog->setChanges($changes->compare($pet));
+
+        if(mt_rand(1, 20) === 1)
+            $this->inventoryService->petAttractsRandomBug($pet);
+    }
 }

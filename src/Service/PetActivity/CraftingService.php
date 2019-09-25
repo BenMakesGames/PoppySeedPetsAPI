@@ -9,6 +9,7 @@ use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
+use App\Service\PetActivity\Crafting\PlasticPrinterService;
 use App\Service\PetActivity\Crafting\SmithingService;
 use App\Service\PetActivity\Crafting\MagicBindingService;
 use App\Service\PetService;
@@ -22,10 +23,12 @@ class CraftingService
     private $itemRepository;
     private $smithingService;
     private $magicBindingService;
+    private $plasticPrinterService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetService $petService,
-        ItemRepository $itemRepository, SmithingService $smithingService, MagicBindingService $magicBindingService
+        ItemRepository $itemRepository, SmithingService $smithingService, MagicBindingService $magicBindingService,
+        PlasticPrinterService $plasticPrinterService
     )
     {
         $this->responseService = $responseService;
@@ -34,6 +37,7 @@ class CraftingService
         $this->itemRepository = $itemRepository;
         $this->smithingService = $smithingService;
         $this->magicBindingService = $magicBindingService;
+        $this->plasticPrinterService = $plasticPrinterService;
     }
 
     public function getCraftingPossibilities(Pet $pet): array
@@ -115,6 +119,9 @@ class CraftingService
         if(array_key_exists('Crooked Fishing Rod', $quantities) && array_key_exists('Yellow Dye', $quantities) && array_key_exists('Green Dye', $quantities))
             $possibilities[] = [ $this, 'createPaintedFishingRod' ];
 
+        if(array_key_exists('Plastic Idol', $quantities) && array_key_exists('Yellow Dye', $quantities))
+            $possibilities[] = [ $this, 'createGoldIdol' ];
+
         // TODO: fiberglass stuff!
         /*
         if(array_key_exists('Fiberglass', $quantities) && array_key_exists('String', $quantities))
@@ -127,6 +134,9 @@ class CraftingService
         // pets won't try any smithing tasks if they don't feel sufficiently safe
         if($pet->getSafety() > 0)
             $possibilities = array_merge($possibilities, $this->smithingService->getCraftingPossibilities($pet, $quantities));
+
+        if(array_key_exists('3D Printer', $quantities) && array_key_exists('Plastic', $quantities))
+            $possibilities = array_merge($possibilities, $this->plasticPrinterService->getCraftingPossibilities($pet, $quantities));
 
         if(array_key_exists('Rusty Blunderbuss', $quantities) && $pet->getCrafts() >= 5)
             $possibilities[] = [ $this, 'repairRustyBlunderbuss' ];
@@ -887,6 +897,18 @@ class CraftingService
         $pet->increaseEsteem(1);
         $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Painted Fishing Rod.', '');
         $this->inventoryService->petCollectsItem('Painted Fishing Rod', $pet, $pet->getName() . ' painted this, using Yellow and Green Dye.', $activityLog);
+        return $activityLog;
+    }
+
+    private function createGoldIdol(Pet $pet): PetActivityLog
+    {
+        $this->petService->spendTime($pet, \mt_rand(45, 90));
+        $this->inventoryService->loseItem('Plastic Idol', $pet->getOwner(), LocationEnum::HOME, 1);
+        $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), LocationEnum::HOME, 1);
+        $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+        $pet->increaseEsteem(1);
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a "Gold" Idol.', '');
+        $this->inventoryService->petCollectsItem('"Gold" Idol', $pet, $pet->getName() . ' painted this, using Yellow Dye.', $activityLog);
         return $activityLog;
     }
 
