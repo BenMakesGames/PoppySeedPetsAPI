@@ -225,6 +225,64 @@ class BoxController extends PsyPetsItemController
     }
 
     /**
+     * @Route("/sandbox/{inventory}/raid", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function raidSandbox(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/sandbox/#/raid');
+
+        $newInventory = [];
+
+        $sand = \mt_rand(6, \mt_rand(7, 12));
+
+        $description = $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.';
+        $location = $inventory->getLocation();
+
+        $a = mt_rand(1, 100);
+
+        if($a === 0 || $a === 1)
+        {
+            $newInventory[] = $inventoryService->receiveItem('Striped Microcline', $user, $user, $description, $location);
+            $sand--;
+        }
+        else if($a === 2)
+        {
+            $newInventory[] = $inventoryService->receiveItem('Hash Table', $user, $user, $description, $location);
+            $sand--;
+        }
+        else if($a === 3)
+        {
+            $newInventory[] = $inventoryService->receiveItem('Garden Shovel', $user, $user, $description, $location);
+            $sand -= 3;
+        }
+        else if($a === 4)
+        {
+            $newInventory[] = $inventoryService->receiveItem('Plastic Idol', $user, $user, $description, $location);
+            $sand--;
+        }
+
+        for($i = 0; $i < $sand; $i++)
+            $newInventory[] = $inventoryService->receiveItem('Silica Grounds', $user, $user, $description, $location);
+
+        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
+
+        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
+        sort($itemList);
+
+        $em->remove($inventory);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess('You upturn the bag, finding ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+    }
+
+    /**
      * @Route("/paperBag/{inventory}/open", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
