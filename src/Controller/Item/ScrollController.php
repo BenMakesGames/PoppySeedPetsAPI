@@ -170,6 +170,8 @@ class ScrollController extends PsyPetsItemController
         $item = ArrayFunctions::pick_one([ 'Little Strongbox', 'Bag of Beans' ]);
         $location = $inventory->getLocation();
 
+        $user->increaseMoneys($moneys);
+
         $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
 
         $em->flush();
@@ -198,6 +200,8 @@ class ScrollController extends PsyPetsItemController
 
         $item = ArrayFunctions::pick_one([ 'Striped Microcline', 'Firestone', 'Moon Pearl', 'Blackonite' ]);
         $location = $inventory->getLocation();
+
+        $user->increaseMoneys($moneys);
 
         $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
 

@@ -37,7 +37,6 @@ class PetRepository extends ServiceEntityRepository
         ;
     }
 
-
     public function getNumberAtHome(User $user): int
     {
         return $this->createQueryBuilder('p')

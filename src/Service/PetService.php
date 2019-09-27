@@ -512,6 +512,7 @@ class PetService
 
                 $do = ArrayFunctions::pick_one($possibilities);
 
+                /** @var PetActivityLog $activityLog */
                 $activityLog = $do[0]->adventure($pet, $do[1]);
                 $activityLog->setEntry($description . ' ' . $activityLog->getEntry());
             }

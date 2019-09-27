@@ -2,10 +2,18 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\PetActivityLog;
+use App\Enum\LocationEnum;
+use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\StringFunctions;
+use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
+use App\Repository\PetRepository;
+use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\PetService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -175,7 +183,16 @@ class BoxController extends PsyPetsItemController
             $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Fluff', 'Plastic', 'Green Dye', 'Yellow Dye', 'Paper', 'Glue']), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
 
         for($i = 0; $i < 3; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Limestone', 'Glass', 'Iron Bar', 'Iron Ore', 'Silver Ore']), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
+        {
+            $itemName = ArrayFunctions::pick_one(['Limestone', 'Glass', 'Iron Bar', 'Iron Ore', 'Silver Ore']);
+
+            if($itemName === 'Limestone')
+                $description = $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '. I don\'t know how it fit in there, either. Your guess is as good as mine.';
+            else
+                $description = $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.';
+
+            $newInventory[] = $inventoryService->receiveItem($itemName, $user, $user, $description, $location);
+        }
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
@@ -225,6 +242,85 @@ class BoxController extends PsyPetsItemController
     }
 
     /**
+     * @Route("/pepperbox/{inventory}/disassemble", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function disassemblePepperbox(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/pepperbox/#/disassemble');
+
+        $newInventory = [];
+
+        $peppers = \mt_rand(4, \mt_rand(6, 10));
+
+        $description = $user->getName() . ' got this by taking apart a ' . $inventory->getItem()->getName() . '.';
+        $location = $inventory->getLocation();
+
+        for($i = 0; $i < $peppers; $i++)
+            $newInventory[] = $inventoryService->receiveItem('Spicy Peps', $user, $user, $description, $location);
+
+        $userStatsRepository->incrementStat($user, 'Disassembled a ' . $inventory->getItem()->getName());
+
+        $em->remove($inventory);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess('You take apart the Pepperbox into its constituent pieces...', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+    }
+
+    /**
+     * @Route("/jukebox/{inventory}/listen", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function listenToJukebox(
+        Inventory $inventory, ResponseService $responseService, PetRepository $petRepository, PetService $petService,
+        EntityManagerInterface $em, UserQuestRepository $userQuestRepository
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/jukebox/#/listen');
+
+        $today = (new \DateTimeImmutable())->format('Y-m-d');
+        $listenedToJukebox = $userQuestRepository->findOrCreate($user, 'Listened to Jukebox', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
+
+        if($today === $listenedToJukebox->getValue())
+            return $responseService->itemActionSuccess('You already listened to the Jukebox today. Everyone knows that Jukeboxes can only be listened to once per day.');
+
+        if($inventory->getLocation() !== LocationEnum::HOME)
+            return $responseService->itemActionSuccess('This game doesn\'t have sound, so there wouldn\'t be much sense in playing the Jukebox for yourself. Try playing it at home, where your pets can hear. (It\'s not that there\'s no sound in Poppy Seed Pets, it\'s just that it\'s not manifested in the game interface. (Is this making sense?))');
+
+        $listenedToJukebox->setValue($today);
+
+        $pets = $petRepository->findBy([
+            'owner' => $user->getId(),
+            'inDaycare' => 0
+        ]);
+
+        $petNames = [];
+
+        foreach($pets as $pet)
+        {
+            $petNames[] = $pet->getName();
+            $changes = new PetChanges($pet);
+
+            $petService->gainExp($pet, 1, [ PetSkillEnum::MUSIC ]);
+            $pet->increaseSafety(2);
+
+            $responseService->createActivityLog($pet, $pet->getName() . ' listened to the Jukebox.', '', $changes->compare($pet));
+        }
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess(ArrayFunctions::list_nice($petNames) . ' enjoyed listening to the Jukebox!');
+    }
+
+    /**
      * @Route("/sandbox/{inventory}/raid", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -237,49 +333,54 @@ class BoxController extends PsyPetsItemController
 
         $this->validateInventory($inventory, 'box/sandbox/#/raid');
 
-        $newInventory = [];
-
         $sand = \mt_rand(6, \mt_rand(7, 12));
 
         $description = $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.';
         $location = $inventory->getLocation();
 
         $a = mt_rand(1, 100);
+        $extraItem = null;
 
         if($a === 0 || $a === 1)
         {
-            $newInventory[] = $inventoryService->receiveItem('Striped Microcline', $user, $user, $description, $location);
+            $extraItem = [ 'name' => 'Striped Microcline', 'description' => 'a pretty, striped rock' ];
             $sand--;
         }
         else if($a === 2)
         {
-            $newInventory[] = $inventoryService->receiveItem('Hash Table', $user, $user, $description, $location);
-            $sand--;
+            // TODO: password
+            /*$extraItem = 'Password';
+            $sand--;*/
         }
         else if($a === 3)
         {
-            $newInventory[] = $inventoryService->receiveItem('Garden Shovel', $user, $user, $description, $location);
+            $extraItem = [ 'name' => 'Garden Shovel', 'description' => 'a shovel' ];
             $sand -= 3;
         }
         else if($a === 4)
         {
-            $newInventory[] = $inventoryService->receiveItem('Plastic Idol', $user, $user, $description, $location);
+            $extraItem = [ 'name' => 'Plastic Idol', 'description' => 'a plastic figurine of some kind' ];
             $sand--;
         }
 
+        if($extraItem)
+        {
+            $inventoryService->receiveItem($extraItem['name'], $user, $user, $description, $location);
+            $itemActionMessage = 'You raid the Sandbox, finding ' . $sand . ' batches, or piles, or whatever of Silica Grounds, _but also_ ' . $extraItem['description'] . '!';
+        }
+        else
+            $itemActionMessage = 'You raid the Sandbox, finding ' . $sand . ' batches, or piles, or whatever of Silica Grounds.';
+
         for($i = 0; $i < $sand; $i++)
-            $newInventory[] = $inventoryService->receiveItem('Silica Grounds', $user, $user, $description, $location);
+            $inventoryService->receiveItem('Silica Grounds', $user, $user, $description, $location);
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
-
-        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
-        sort($itemList);
 
         $em->remove($inventory);
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You upturn the bag, finding ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess($itemActionMessage, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
 
     /**

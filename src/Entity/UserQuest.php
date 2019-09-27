@@ -30,7 +30,7 @@ class UserQuest
     /**
      * @ORM\Column(type="json")
      */
-    private $value = [];
+    private $value;
 
     /**
      * @ORM\Column(type="datetime_immutable")
