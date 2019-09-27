@@ -390,7 +390,14 @@ class TraderService
                 self::ID_BOX_BOX_FOR_RIDICULOUS,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('This is Getting Ridiculous'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Box Box'), 1) ],
-                'I don\'t remember what exactly is in here, but I\'m pretty sure it\'s just more boxes.'
+                'I don\'t remember what exactly is in here; I\'m pretty sure more-different boxes?'
+            );
+
+            $offers[] = new TraderOffer(
+                self::ID_BOX_BOX_FOR_RIDICULOUS,
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Snakebite'), 2) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Box Box'), 1) ],
+                'I don\'t remember what exactly is in here; I\'m pretty sure more-different boxes?'
             );
         }
 
