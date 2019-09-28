@@ -1156,6 +1156,8 @@ class PetRelationshipService
                 $p2->setCurrentRelationship(RelationshipEnum::MATE);
                 break;
 
+            default:
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
 
         return [ $log1, $log2 ];
@@ -1258,7 +1260,50 @@ class PetRelationshipService
 
     private function hangOutPrivatelyFromMatesToFriendlyRivals(PetRelationship $p1, PetRelationship $p2): array
     {
+        switch($p2->getRelationshipGoal())
+        {
+            case RelationshipEnum::DISLIKE:
+                $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' wanted to just be Friendly Rivals; ' . $p2->getPet()->getName() . ' has doesn\'t actually want to hang out at all anymore, and breaks up entirely! :(', '');
+                $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' wanted to just be Friendly Rivals; ' . $p2->getPet()->getName() . ' has doesn\'t actually want to hang out at all anymore, and breaks up entirely! >:(', '');
 
+                $p1
+                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
+                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                ;
+
+                $p2
+                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
+                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                ;
+
+                break;
+
+            case RelationshipEnum::FRIENDLY_RIVAL:
+                $log1 = $this->responseService->createActivityLog($p1->getPet(), $p1->getPet()->getName() . ' wanted to just be Friendly Rivals; ' . $p2->getPet()->getName() . ' actually feels the same way! :)', '');
+                $log2 = $this->responseService->createActivityLog($p2->getPet(), $p1->getPet()->getName() . ' wanted to just be Friendly Rivals; ' . $p2->getPet()->getName() . ' actually feels the same way! :)', '');
+
+                $p1->setCurrentRelationship(RelationshipEnum::FRIENDLY_RIVAL);
+                $p2->setCurrentRelationship(RelationshipEnum::FRIENDLY_RIVAL);
+
+                break;
+
+            case RelationshipEnum::FRIEND:
+                return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 50, 40);
+
+            case RelationshipEnum::BFF:
+                return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 40, 25);
+
+            case RelationshipEnum::FWB:
+                return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 30, 10);
+
+            case RelationshipEnum::MATE:
+                return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 5);
+
+            default:
+                throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
+        }
+
+        return [ $log1, $log2 ];
     }
 
     private function hangOutPrivatelyFromMatesToBFFs(PetRelationship $p1, PetRelationship $p2): array
