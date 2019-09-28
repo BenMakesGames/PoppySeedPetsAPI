@@ -222,8 +222,8 @@ class PetRelationship
         {
             case RelationshipEnum::BROKE_UP: $commitment = 0; break;
             case RelationshipEnum::DISLIKE: $commitment = 0; break;
-            case RelationshipEnum::FRIEND: $commitment = 2; break;
-            case RelationshipEnum::FRIENDLY_RIVAL: $commitment = 3; break;
+            case RelationshipEnum::FRIENDLY_RIVAL: $commitment = 2; break;
+            case RelationshipEnum::FRIEND: $commitment = 3; break;
             case RelationshipEnum::BFF: $commitment = 5; break;
             case RelationshipEnum::FWB: $commitment = 5; break;
             case RelationshipEnum::MATE: $commitment = 8; break;

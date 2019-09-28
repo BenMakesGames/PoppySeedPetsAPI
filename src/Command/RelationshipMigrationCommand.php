@@ -110,10 +110,20 @@ class RelationshipMigrationCommand extends Command
             }
             else
             {
+                if(mt_rand(1, 10) === 1)
+                    $possibleGoals[] = RelationshipEnum::FRIENDLY_RIVAL;
+
+                if($currentRelationship === RelationshipEnum::FRIENDLY_RIVAL)
+                    $possibleGoals[] = RelationshipEnum::FRIENDLY_RIVAL;
+
+                if(mt_rand(1, 2) === 1)
+                    $possibleGoals[] = RelationshipEnum::FRIEND;
+
                 $possibleGoals[] = RelationshipEnum::FRIEND;
 
                 if($relationship->getOldIntimacy() >= 333)
                 {
+                    $possibleGoals[] = RelationshipEnum::BFF;
                     $possibleGoals[] = RelationshipEnum::BFF;
 
                     if($relationship->getOldCommitment() >= 333)
@@ -142,7 +152,6 @@ class RelationshipMigrationCommand extends Command
                     if($relationship->getOldPassion() >= 333)
                         $possibleGoals[] = RelationshipEnum::FWB;
                 }
-
 
                 if(count($possibleGoals) <= 1 && mt_rand(1, 4) === 1)
                     $possibleGoals[] = RelationshipEnum::FRIENDLY_RIVAL;

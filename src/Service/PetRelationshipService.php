@@ -873,7 +873,7 @@ class PetRelationshipService
             RelationshipEnum::BFF => 'be BFFs',
             RelationshipEnum::FWB => 'be FWBs',
             RelationshipEnum::FRIENDLY_RIVAL => 'be friendly rivals',
-            RelationshipEnum::FRIENDLY_RIVAL => 'date',
+            RelationshipEnum::MATE => 'date',
         ];
 
         $downgradeDescription = [
