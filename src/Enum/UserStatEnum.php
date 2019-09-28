@@ -24,4 +24,5 @@ final class UserStatEnum
     const HARVESTED_PLANT = 'Harvested a Plant';
     const PETS_ADOPTED = 'Pets Adopted';
     const MAGIC_HOURGLASSES_SMASHED = 'Magic Hourglasses Smashed';
+    const READ_A_SCROLL = 'Read a Scroll';
 }

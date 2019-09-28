@@ -137,7 +137,10 @@ class GreenhouseController extends PsyPetsController
 
         $inventoryService->giveInventory($quantity, $user, $user, $user->getName() . ' grew this in their greenhouse.', LocationEnum::HOME);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::HARVESTED_PLANT);
+        $plantsHarvested = $userStatsRepository->incrementStat($user, UserStatEnum::HARVESTED_PLANT);
+
+        if($plantsHarvested->getValue() === 3)
+            $user->increaseMaxPlants(3);
 
         $em->flush();
 

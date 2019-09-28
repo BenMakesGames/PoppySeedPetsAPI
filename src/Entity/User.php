@@ -609,9 +609,9 @@ class User implements UserInterface
         return $this->maxPlants;
     }
 
-    public function setMaxPlants(int $maxPlants): self
+    public function increaseMaxPlants(int $amount): self
     {
-        $this->maxPlants = $maxPlants;
+        $this->maxPlants += $amount;
 
         return $this;
     }

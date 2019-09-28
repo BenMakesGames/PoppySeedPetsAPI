@@ -2,8 +2,10 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\InventoryRepository;
+use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -48,11 +50,11 @@ class ScrollController extends PsyPetsItemController
         }
         else
         {
-            $userStatsRepository->incrementStat($user, 'Read a Scroll');
+            $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
             $possibleItems = [
                 'Fruits & Veggies Box', 'Pamplemousse', 'Blackberries', 'Naner', 'Blueberries',
-                'Red', 'Orange', 'Apricot', 'Melowatern', 'Honeydont', 'Tomato'
+                'Red', 'Orange', 'Apricot', 'Melowatern', 'Honeydont', 'Tomato', 'Spicy Peps'
             ];
 
             $items = \mt_rand(5, mt_rand(6, mt_rand(7, 15)));
@@ -78,7 +80,7 @@ class ScrollController extends PsyPetsItemController
      */
     public function invokeFarmerScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository
     )
     {
         $user = $this->getUser();
@@ -87,7 +89,23 @@ class ScrollController extends PsyPetsItemController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, 'Read a Scroll');
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+
+        if($user->getUnlockedGreenhouse())
+        {
+            $expandedGreenhouseWithFarmerScroll = $userQuestRepository->findOrCreate($user, 'Expanded Greenhouse with Farmer Scroll', false);
+
+            if(!$expandedGreenhouseWithFarmerScroll->getValue())
+            {
+                $expandedGreenhouseWithFarmerScroll->setValue(true);
+
+                $user->increaseMaxPlants(1);
+
+                $em->flush();
+
+                return $responseService->itemActionSuccess('You read the scroll; another plot of space in your Greenhouse appears, as if by magic! In fact, thinking about it, it was _100%_ by magic!', [ 'itemDeleted' => true ]);
+            }
+        }
 
         $items = [
             'Wheat', 'Wheat', 'Wheat', 'Scythe', 'Creamy Milk', 'Egg', 'Grandparoot', 'Crooked Stick'
@@ -122,7 +140,7 @@ class ScrollController extends PsyPetsItemController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, 'Read a Scroll');
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $items = [
             'Fish', 'Fish', 'Seaweed', 'Seaweed', 'Seaweed', 'Silica Grounds', 'Silica Grounds', 'Silica Grounds'
@@ -163,7 +181,7 @@ class ScrollController extends PsyPetsItemController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, 'Read a Scroll');
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $moneys = \mt_rand(30, 50);
 
@@ -194,7 +212,7 @@ class ScrollController extends PsyPetsItemController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, 'Read a Scroll');
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $moneys = \mt_rand(60, 100);
 

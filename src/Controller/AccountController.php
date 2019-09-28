@@ -306,7 +306,7 @@ class AccountController extends PsyPetsController
      */
     public function collectWeeklyBox(
         Request $request, EntityManagerInterface $em, ResponseService $responseService,
-        InventoryService $inventoryService, UserStatsRepository $userStatsRepository
+        InventoryService $inventoryService
     )
     {
         $user = $this->getUser();
@@ -318,7 +318,7 @@ class AccountController extends PsyPetsController
         if($days < 7)
             throw new UnprocessableEntityHttpException('It\'s too early to collect your weekly Care Package.');
 
-        $canGetHandicraftsBox = $user->getUnlockedPark() && $user->getMaxPlants() >= 6;
+        $canGetHandicraftsBox = $user->getUnlockedPark() && $user->getMaxPlants() > 3;
 
         if($type === 1)
         {

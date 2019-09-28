@@ -7,9 +7,7 @@ use App\Entity\PetRelationship;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\PetRelationshipRepository;
-use App\Repository\PetRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Config\Definition\Exception\Exception;
 
 class PetRelationshipService
 {
