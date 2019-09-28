@@ -600,56 +600,11 @@ class PetService
 
             if($friendRelationship === false)
             {
-                $friendRelationship = (new PetRelationship())
-                    ->setRelationship($pet)
-                    ->increaseIntimacy(mt_rand(20, 50))
-                    ->increaseCommitment(mt_rand(10, 25))
-                    ->increasePassion($friend->wouldBang($pet) ? mt_rand(150 + $pet->getWouldBangFraction() * 5, 500 + $pet->getWouldBangFraction() * 20) : mt_rand(0, 20))
-                ;
-
-                if($friend->wouldBang($pet))
-                    $friendRelationship->setMetDescription($pet->getName() . ' popped by; ' . $friend->getName() . ' had totally noticed them earlier, but was too shy to say anything at the time. (What a cutie!)');
-                else
-                {
-                    switch(mt_rand(1, 3))
-                    {
-                        case 1:
-                            if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
-                                $friendRelationship->setMetDescription($pet->getName() . ' popped by; ' . $friend->getName() . ' had met them earlier, but figured they\'d never see each other again.');
-                            else
-                                $friendRelationship->setMetDescription($pet->getName() . ' popped by; ' . $friend->getName() . ' had met them earlier, but kind of forgot.');
-                            break;
-
-                        case 2:
-                            $friendRelationship->setMetDescription($pet->getName() . ' popped by; ' . $friend->getName() . ' had met them earlier, but figured they\'d never see each other again.');
-                            break;
-
-                        case 3:
-                            $friendRelationship->setMetDescription($pet->getName() . ' popped by; ' . $friend->getName() . ' had met them earlier, but didn\'t think ' . $pet->getName() . ' was interested.');
-                            break;
-                    }
-                }
-
-                $friend->addPetRelationship($friendRelationship);
-
-                $this->em->persist($friendRelationship);
+                throw new \Exception($pet->getName() . ' knows ' . $friend->getName() . ', but not the other way around! This is a bug, and should never happen! Make Ben fix it!');
             }
 
             // hang out with selected pet
             $this->hangOutWithOtherPet($relationship, $friendRelationship);
-
-            // reduce feelings for pets NOT hung out with
-            foreach($relationships as $r)
-            {
-                /** @var PetRelationship $r */
-                if($r->getId() !== $relationship->getId())
-                {
-                    $r->increaseCommitment(-mt_rand(1, 3));
-
-                    if(mt_rand(1, 3) === 1) $r->increaseIntimacy(-1);
-                    if(mt_rand(1, 3) === 1) $r->increasePassion(-1);
-                }
-            }
         }
 
         return true;
