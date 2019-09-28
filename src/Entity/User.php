@@ -328,29 +328,6 @@ class User implements UserInterface
         return $this->pets;
     }
 
-    public function addPet(Pet $pet): self
-    {
-        if (!$this->pets->contains($pet)) {
-            $this->pets[] = $pet;
-            $pet->setOwner($this);
-        }
-
-        return $this;
-    }
-
-    public function removePet(Pet $pet): self
-    {
-        if ($this->pets->contains($pet)) {
-            $this->pets->removeElement($pet);
-            // set the owning side to null (unless already changed)
-            if ($pet->getOwner() === $this) {
-                $pet->setOwner(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getRegisteredOn(): ?\DateTimeImmutable
     {
         return $this->registeredOn;
