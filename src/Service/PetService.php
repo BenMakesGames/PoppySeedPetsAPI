@@ -770,14 +770,39 @@ class PetService
 
     private function hangOutWithOtherPet(PetRelationship $pet, PetRelationship $friend)
     {
-        $changes = new PetChanges($pet->getPet());
+        $petChanges = new PetChanges($pet->getPet());
+        $friendChanges = new PetChanges($friend->getPet());
 
         $this->spendTime($pet->getPet(), \mt_rand(45, 60));
         $this->spendTime($friend->getPet(), mt_rand(5, 10));
 
+        $petPreviousRelationship = $pet->getCurrentRelationship();
+        $friendPreviousRelationship = $friend->getCurrentRelationship();
+
         list($petLog, $friendLog) = $this->petRelationshipService->hangOutPrivately($pet, $friend);
 
-        $petLog->setChanges($changes->compare($pet->getPet()));
+        if($petPreviousRelationship !== $pet->getCurrentRelationship())
+        {
+            $relationshipMovement = $this->petRelationshipService->calculateRelationshipDistance($petPreviousRelationship, $pet->getCurrentRelationship());
+
+            $pet->getPet()
+                ->increaseLove($relationshipMovement * 2)
+                ->increaseEsteem($relationshipMovement)
+            ;
+        }
+
+        if($friendPreviousRelationship !== $friend->getCurrentRelationship())
+        {
+            $relationshipMovement = $this->petRelationshipService->calculateRelationshipDistance($friendPreviousRelationship, $friend->getCurrentRelationship());
+
+            $friend->getPet()
+                ->increaseLove($relationshipMovement * 2)
+                ->increaseEsteem($relationshipMovement)
+            ;
+        }
+
+        $petLog->setChanges($petChanges->compare($pet->getPet()));
+        $friendLog->setChanges($friendChanges->compare($friend->getPet()));
 
         $this->responseService->addActivityLog($petLog);
     }

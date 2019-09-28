@@ -46,7 +46,7 @@ class PetActivityLog
      * @ORM\Column(type="string", length=40)
      * @Groups({"petActivityLogs"})
      */
-    private $icon;
+    private $icon = '';
 
     public function __construct()
     {
