@@ -320,6 +320,14 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * @return Collection|Pet[]
+     */
+    public function getPets(): Collection
+    {
+        return $this->pets;
+    }
+
     public function getRegisteredOn(): ?\DateTimeImmutable
     {
         return $this->registeredOn;
