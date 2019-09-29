@@ -822,10 +822,10 @@ class PetRelationshipService
         $r = \mt_rand(1, 100);
 
         if($p1->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
-            $chanceP1ChangesMind = 0;
+            $chanceP1ChangesMind = ceil($chanceP1ChangesMind / 4);
 
         if($p2->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
-            $chanceP2ChangesMind = 0;
+            $chanceP2ChangesMind = ceil($chanceP2ChangesMind / 4);
 
         if($r <= $chanceP1ChangesMind)
         {
