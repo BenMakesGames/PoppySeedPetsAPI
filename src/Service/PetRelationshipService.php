@@ -147,6 +147,8 @@ class PetRelationshipService
             ->setRelationshipGoal(ArrayFunctions::pick_one($possibleRelationships))
         ;
 
+        $pet->addPetRelationship($petRelationship);
+
         $this->em->persist($petRelationship);
 
         $meetDescription = str_replace([ '%p1%', '%p2%'], [ $pet->getName(), $otherPet->getName() ], $howMetDescription);
@@ -166,6 +168,8 @@ class PetRelationshipService
             ->setCurrentRelationship($initialRelationship)
             ->setRelationshipGoal(ArrayFunctions::pick_one($possibleRelationships))
         ;
+
+        $otherPet->addPetRelationship($otherPetRelationship);
 
         $this->em->persist($otherPetRelationship);
 
