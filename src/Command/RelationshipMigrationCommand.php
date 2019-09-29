@@ -179,10 +179,14 @@ class RelationshipMigrationCommand extends Command
 
             $relationship
                 ->setCurrentRelationship($currentRelationship)
-                ->setRelationshipGoal($relationshipGoal);
+                ->setRelationshipGoal($relationshipGoal)
+                ->setTimeUntilChange()
             ;
 
-            $otherSide->setCurrentRelationship($currentRelationship);
+            $otherSide
+                ->setCurrentRelationship($currentRelationship)
+                ->setTimeUntilChange()
+            ;
         }
 
         $output->writeln(count($relationships) . ' total relationships!');
