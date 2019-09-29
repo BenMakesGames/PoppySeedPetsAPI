@@ -537,18 +537,33 @@ class PetRelationshipService
         switch($p1->getCurrentRelationship())
         {
             case RelationshipEnum::FRIENDLY_RIVAL:
-                return $this->hangOutPrivatelySuggestingRelationshipChangeAsFriendlyRival($p1, $p2);
+                $logs = $this->hangOutPrivatelySuggestingRelationshipChangeAsFriendlyRival($p1, $p2);
+                break;
+
             case RelationshipEnum::FRIEND:
-                return $this->hangOutPrivatelySuggestingRelationshipChangeAsFriends($p1, $p2);
+                $logs = $this->hangOutPrivatelySuggestingRelationshipChangeAsFriends($p1, $p2);
+                break;
+
             case RelationshipEnum::BFF:
-                return $this->hangOutPrivatelySuggestingRelationshipChangeAsBFFs($p1, $p2);
+                $logs = $this->hangOutPrivatelySuggestingRelationshipChangeAsBFFs($p1, $p2);
+                break;
+
             case RelationshipEnum::FWB:
-                return $this->hangOutPrivatelySuggestingRelationshipChangeAsFWBs($p1, $p2);
+                $logs = $this->hangOutPrivatelySuggestingRelationshipChangeAsFWBs($p1, $p2);
+                break;
+
             case RelationshipEnum::MATE:
-                return $this->hangOutPrivatelySuggestingRelationshipChangeAsMates($p1, $p2);
+                $logs = $this->hangOutPrivatelySuggestingRelationshipChangeAsMates($p1, $p2);
+                break;
+
             default:
                 throw new \Exception('Current relationship is of an unexpected type, "' . $p1->getCurrentRelationship() . '"');
         }
+
+        $p1->setTimeUntilChange();
+        $p2->setTimeUntilChange();
+
+        return $logs;
     }
 
     private function hangOutPrivatelySuggestingRelationshipChangeAsFriendlyRival(PetRelationship $p1, PetRelationship $p2): array

@@ -174,11 +174,6 @@ class PetRelationship
 
         $this->currentRelationship = $currentRelationship;
 
-        if($this->pet->hasMerit(MeritEnum::INTROSPECTIVE))
-            $this->timeUntilChange = \mt_rand(\mt_rand(15, 20), \mt_rand(35, 50));
-        else
-            $this->timeUntilChange = \mt_rand(\mt_rand(20, 30), \mt_rand(50, 80));
-
         return $this;
     }
 
@@ -199,6 +194,14 @@ class PetRelationship
     public function getTimeUntilChange(): ?int
     {
         return $this->timeUntilChange;
+    }
+
+    public function setTimeUntilChange()
+    {
+        if($this->pet->hasMerit(MeritEnum::INTROSPECTIVE))
+            $this->timeUntilChange = \mt_rand(\mt_rand(15, 20), \mt_rand(35, 50));
+        else
+            $this->timeUntilChange = \mt_rand(\mt_rand(20, 30), \mt_rand(50, 80));
     }
 
     public function decrementTimeUntilChange(): self
