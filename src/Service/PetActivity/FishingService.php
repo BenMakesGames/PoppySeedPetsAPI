@@ -112,7 +112,7 @@ class FishingService
 
             $this->petService->spendTime($pet, mt_rand(45, 60));
 
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing ' . $atLocationName . ', but nothing was biting.', '');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing ' . $atLocationName . ', but nothing was biting.', 'icons/activity-logs/nothing-biting');
         }
 
         return null;
