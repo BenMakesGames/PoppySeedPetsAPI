@@ -2,7 +2,12 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\Pet;
+use App\Entity\User;
+use App\Enum\LocationEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\ColorFunctions;
+use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -19,9 +24,9 @@ class WandOfWonderController extends PsyPetsItemController
      * @Route("/{inventory}/point", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function read(
+    public function pointWandOfWonder(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
-        EntityManagerInterface $em, InventoryService $inventoryService
+        EntityManagerInterface $em, InventoryService $inventoryService, PetRepository $petRepository
     )
     {
         $this->validateInventory($inventory, 'wandOfWonder/#/point');
@@ -39,6 +44,8 @@ class WandOfWonderController extends PsyPetsItemController
             'featherStorm',
             'butterflies',
             'oneMoney',
+            'yellowDye',
+            'recolorAPet',
         ];
 
         if($user->getUnlockedGreenhouse() && !$expandedGreenhouseWithWand->getValue())
@@ -84,6 +91,31 @@ class WandOfWonderController extends PsyPetsItemController
                 $itemActionDescription = 'The wand begins to glow and shake violently. You hold on with all your might until, at last, it coughs up a single ~~m~~. (Lame!)';
                 $user->increaseMoneys(1);
                 break;
+
+            case 'yellowDye':
+                $dye = mt_rand(4, mt_rand(6, 10));
+                $itemActionDescription = "Is that-- oh god! The wand is peeing!?\n\nWait, no... it\'s... Yellow Dye??!\n\nYou find some small jars to catch the stuff; in the end, you get " . $dyes . " Yellow Dye.";
+
+                for($x = 0; $x < $dye; $x++)
+                    $inventoryService->receiveItem('Yellow Dye', $user, $user, 'A Wand of Wonder, uh, _summoned_ this Yellow Dye.', $location);
+
+                break;
+
+            case 'recolorAPet':
+                $petToRecolor = $this->pickRandomPetAtLocation($petRepository, $location, $user);
+
+                if($petToRecolor)
+                {
+                    $this->recolorPet($petToRecolor);
+
+                    $itemActionDescription = "A rainbow of colors swirl out of the wand and around " . $petToRecolor->getName() . ", whose colors change before your eyes!";
+                }
+                else
+                {
+                    $itemActionDescription = "A rainbow of colors swirl out of the wand and around the room, as if looking for something. After a moment, the colors fade away.\n\nIf the colors really were looking for something, it seems like they didn't find it.";
+                }
+
+                break;
         }
 
         if(mt_rand(1, 10) === 1)
@@ -92,15 +124,22 @@ class WandOfWonderController extends PsyPetsItemController
 
             $itemActionDescription .= "\n\n";
 
-            if(mt_rand(1, 2) === 1)
+            $remains = mt_rand(1, 4);
+
+            if($remains === 1)
             {
-                $itemActionDescription .= 'Afterwards, the wand snapped in two and crumbled to dust. Well, actually, it crumbled to Silica Grounds.';
+                $itemActionDescription .= 'Then, the wand snaps in two and crumbles to dust. Well, actually, it crumbles to Silica Grounds.';
                 $inventoryService->receiveItem('Silica Grounds', $user, $user, 'These Silica Grounds were once a Wand of Wonder. Now they\'re just Silica Grounds. (Sorry, I guess that was a little redundant...)', $location);
             }
-            else
+            else if($remains === 2)
             {
-                $itemActionDescription .= 'Afterwards, the wand burst into flames, as was reduced to Charcoal.';
+                $itemActionDescription .= 'Then, the wand burst into flames, and is reduced to Charcoal.';
                 $inventoryService->receiveItem('Charcoal', $user, $user, 'The charred remains of a Wand of Wonder :|', $location);
+            }
+            else // $remains 3 || 4
+            {
+                $itemActionDescription .= 'You feel the last bits of magic drain from the wand. It\'s now nothing more than a common, Crooked Stick.';
+                $inventoryService->receiveItem('Crooked Stick', $user, $user, 'The mundane remains of a Wand of Wonder...', $location);
             }
 
             $itemActionEffects['itemDeleted'] = true;
@@ -110,5 +149,83 @@ class WandOfWonderController extends PsyPetsItemController
         $em->flush();
 
         return $responseService->itemActionSuccess($itemActionDescription, $itemActionEffects);
+    }
+
+    private function pickRandomPetAtLocation(PetRepository $petRepository, string $location, User $user): ?Pet
+    {
+        $pet = null;
+
+        if($location === LocationEnum::HOME)
+        {
+            $pets = $petRepository->findBy([
+                'owner' => $user->getId(),
+                'inDaycare' => false
+            ]);
+
+            if(count($pets) > 0)
+                $pet = ArrayFunctions::pick_one($pets);
+        }
+
+        return $pet;
+    }
+
+    private function recolorPet(Pet $pet)
+    {
+        $h = mt_rand(0, 1000) / 1000.0;
+        $s = mt_rand(mt_rand(0, 500), 1000) / 1000.0;
+        $l = mt_rand(mt_rand(0, 500), mt_rand(750, 1000)) / 1000.0;
+
+        $strategy = mt_rand(1, 100);
+
+        $h2 = $h;
+        $s2 = $s;
+        $l2 = $l;
+
+        if($strategy <= 35)
+        {
+            // complementary color
+            $h2 = $h2 + 0.5;
+            if($h2 > 1) $h2 -= 1;
+
+            if(mt_rand(1, 2) === 1)
+            {
+                if($s < 0.5)
+                    $s2 = $s * 2;
+                else
+                    $s2 = $s / 2;
+            }
+        }
+        else if($strategy <= 70)
+        {
+            // different luminosity
+            if($l2 <= 0.5)
+                $l2 += 0.5;
+            else
+                $l2 -= 0.5;
+        }
+        else if($strategy <= 90)
+        {
+            // black & white
+            if($l < 0.3333)
+                $l2 = mt_rand(850, 1000) / 1000.0;
+            else if($l > 0.6666)
+                $l2 = mt_rand(0, 150) / 1000.0;
+            else if(mt_rand(1, 2) === 1)
+                $l2 = mt_rand(850, 1000) / 1000.0;
+            else
+                $l2 = mt_rand(0, 150) / 1000.0;
+        }
+        else
+        {
+            // RANDOM!
+            $h2 = mt_rand(0, 1000) / 1000.0;
+            $s2 = mt_rand(mt_rand(0, 500), 1000) / 1000.0;
+            $l2 = mt_rand(mt_rand(0, 500), mt_rand(750, 1000)) / 1000.0;
+        }
+
+        $pet
+            ->setColorA(ColorFunctions::HSL2Hex($h, $s, $l))
+            ->setColorB(ColorFunctions::HSL2Hex($h2, $s2, $l2))
+        ;
     }
 }

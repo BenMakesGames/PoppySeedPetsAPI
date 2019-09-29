@@ -430,7 +430,7 @@ class PetService
 
         if($pet->getPoison() > 0)
         {
-            if($this->randomService->roll(6, 24) < $pet->getPoison())
+            if(\mt_rand(6, 24) < $pet->getPoison())
             {
                 $changes = new PetChanges($pet);
 

@@ -60,4 +60,11 @@ final class ColorFunctions
     {
         return \str_pad(\dechex(($r << 16) + ($g << 8) + $b), 6, '0', STR_PAD_LEFT);
     }
+
+    public static function HSL2Hex(float $h, float $s, float $l): string
+    {
+        $rgb = self::HSL2RGB($h, $s, $l);
+
+        return ColorFunctions::RGB2Hex((int)$rgb['r'], (int)$rgb['g'], (int)$rgb['b']);
+    }
 }

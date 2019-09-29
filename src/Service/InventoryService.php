@@ -277,22 +277,6 @@ class InventoryService
         return $statement->rowCount();
     }
 
-    public function generateColorFromRange(string $range): string
-    {
-        $hsl = explode(',', $range);
-        $hRange = explode('-', $hsl[0]);
-        $sRange = explode('-', $hsl[1]);
-        $lRange = explode('-', $hsl[2]);
-
-        $rgb = ColorFunctions::HSL2RGB(
-            mt_rand($hRange[0], $hRange[1]) / 360,
-            mt_rand($sRange[0], $sRange[1]) / 100,
-            mt_rand($lRange[0], $lRange[1]) / 100
-        );
-
-        return ColorFunctions::RGB2Hex((int)$rgb['r'], (int)$rgb['g'], (int)$rgb['b']);
-    }
-
     /**
      * @param ItemQuantity[] $quantities
      */
