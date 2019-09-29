@@ -112,7 +112,7 @@ class WandOfWonderController extends PsyPetsItemController
                 }
                 else
                 {
-                    $itemActionDescription = "A rainbow of colors swirl out of the wand and around the room, as if looking for something. After a moment, the colors fade away.\n\nIf the colors really were looking for something, it seems like they didn't find it.";
+                    $itemActionDescription = "A rainbow of colors swirl out of the wand and around the room, as if looking for something.\n\nAfter a moment, the colors fade away. If they really were looking for something, it seems they didn't find it.";
                 }
 
                 break;
