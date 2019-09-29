@@ -76,6 +76,8 @@ class TriDChessService implements ParkEventInterface
 
         $this->petRelationshipService->groupGathering(
             $pets,
+            '%p1% and %p2% chatted a little after a Tri-D Chess tournament.',
+            '%p1% and %p2%, unfortunately, saw each other at a Tri-D Chess tournament...',
             'Met at a Tri-D Chess tournament.',
             '%p1% met %p2% at a Tri-D Chess tournament.',
             2

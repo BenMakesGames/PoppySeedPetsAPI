@@ -76,12 +76,16 @@ class KinBallService implements ParkEventInterface
         $this->totalPetSkill = 0;
         $this->totalPetAntiSkill = 0;
 
+        /** @var KinBallParticipant[] $participants */
+        $participants = [];
+
         for($i = 0; $i < 12; $i++)
         {
             $team = $i % 3;
 
             $participant = new KinBallParticipant($pets[$i], $team);
 
+            $participants[] = $participant;
             $this->teams[$team]->pets[] = $participant;
         }
 
@@ -116,23 +120,39 @@ class KinBallService implements ParkEventInterface
         $parkEvent->setResults($this->results);
 
         // finally, give pets a chance to meet each other:
-        foreach($this->teams as $team)
+        foreach($this->teams as $teamIndex=>$team)
         {
             $teamMembers = array_map(function(KinBallParticipant $p) { return $p->pet; }, $team->pets);
             $this->petRelationshipService->groupGathering(
                 $teamMembers,
-                'Met at a game of Kin-Ball.',
-                '%p1% met %p2% at a game of Kin-Ball.',
+                '%p1% and %p2% were on the same team for a Kin-Ball game! :)',
+                '%p1% and %p2%, unfortunately, were on the same team during a Kin-Ball game...',
+                'Met at a game of Kin-Ball. They were on the same team!',
+                '%p1% met %p2% at a game of Kin-Ball. They were on the same team!',
                 2
             );
         }
 
-        $this->petRelationshipService->groupGathering(
-            $pets,
-            'Met at a game of Kin-Ball.',
-            '%p1% met %p2% at a game of Kin-Ball.',
-            3
-        );
+        for($i = 0; $i < count($participants) - 1; $i++)
+        {
+            for($j = 1; $j < count($participants); $j++)
+            {
+                $p1 = $participants[$i];
+                $p2 = $participants[$j];
+
+                if($p1->team !== $p2->team)
+                {
+                    $this->petRelationshipService->seeAtGroupGathering(
+                        $p1->pet, $p2->pet,
+                        '%p1% and %p2% chatted a little after a Kin-Ball game! :)',
+                        '%p1% and %p2%, unfortunately, saw each other at a Kin-Ball game...',
+                        'Met at a game of Kin-Ball.',
+                        '%p1% met %p2% at a game of Kin-Ball.',
+                        1
+                    );
+                }
+            }
+        }
 
         return $parkEvent;
     }

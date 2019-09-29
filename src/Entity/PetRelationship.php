@@ -80,6 +80,7 @@ class PetRelationship
     public function __construct()
     {
         $this->metOn = new \DateTimeImmutable();
+        $this->timeUntilChange = \mt_rand(\mt_rand(20, 30), \mt_rand(50, 80));
     }
 
     public function getId(): ?int
