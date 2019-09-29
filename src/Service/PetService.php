@@ -434,7 +434,7 @@ class PetService
 
                 $safetyVom = ceil($pet->getPoison() / 4);
 
-                $pet->increasePoison(-mt_rand(1, ceil($pet->getPoison() / 2)));
+                $pet->increasePoison(-mt_rand( ceil($pet->getPoison() / 4), ceil($pet->getPoison() * 3 / 4)));
                 if($pet->getAlcohol() > 0) $pet->increaseAlcohol(-mt_rand(1, ceil($pet->getAlcohol() / 2)));
                 if($pet->getPsychedelic() > 0) $pet->increasePsychedelic(-mt_rand(1, ceil($pet->getPsychedelic() / 2)));
                 if($pet->getCaffeine() > 0) $pet->increaseFood(-mt_rand(1, ceil($pet->getCaffeine() / 2)));
@@ -444,7 +444,7 @@ class PetService
                 $pet->increaseSafety(-mt_rand(1, $safetyVom));
                 $pet->increaseEsteem(-mt_rand(1, $safetyVom));
 
-                $this->spendTime($pet, \mt_rand(15, 45));
+                $this->spendTime($pet, \mt_rand(15, 30));
 
                 $this->responseService->createActivityLog($pet, $pet->getName() . ' threw up :(', '', $changes->compare($pet));
 
