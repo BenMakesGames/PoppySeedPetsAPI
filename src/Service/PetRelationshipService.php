@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
+use App\Enum\MeritEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\PetRelationshipRepository;
@@ -819,6 +820,12 @@ class PetRelationshipService
         ];
 
         $r = \mt_rand(1, 100);
+
+        if($p1->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
+            $chanceP1ChangesMind = 0;
+
+        if($p2->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
+            $chanceP2ChangesMind = 0;
 
         if($r <= $chanceP1ChangesMind)
         {
