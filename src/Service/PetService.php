@@ -35,7 +35,6 @@ class PetService
 {
     private $em;
     private $petRepository;
-    private $randomService;
     private $responseService;
     private $petRelationshipService;
     private $fishingService;
@@ -53,7 +52,7 @@ class PetService
     private $givingTreeGatheringService;
 
     public function __construct(
-        EntityManagerInterface $em, RandomService $randomService, ResponseService $responseService,
+        EntityManagerInterface $em, ResponseService $responseService,
         PetRelationshipService $petRelationshipService, PetRepository $petRepository,
         FishingService $fishingService, HuntingService $huntingService, GatheringService $gatheringService,
         CraftingService $craftingService, UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
@@ -64,7 +63,6 @@ class PetService
     {
         $this->em = $em;
         $this->petRepository = $petRepository;
-        $this->randomService = $randomService;
         $this->responseService = $responseService;
         $this->petRelationshipService = $petRelationshipService;
         $this->fishingService = $fishingService;
