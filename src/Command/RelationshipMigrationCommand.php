@@ -37,6 +37,7 @@ class RelationshipMigrationCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tallies = [];
+        $goalTallies = [];
         $relationships = $this->petRelationshipRepository->findAll();
 
         $relationshipCount = count($relationships);
@@ -171,6 +172,11 @@ class RelationshipMigrationCommand extends Command
             else
                 $tallies[$key] = 1;
 
+            if(array_key_exists($relationshipGoal, $goalTallies))
+                $goalTallies[$relationshipGoal]++;
+            else
+                $goalTallies[$relationshipGoal] = 1;
+
             $relationship
                 ->setCurrentRelationship($currentRelationship)
                 ->setRelationshipGoal($relationshipGoal);
@@ -180,7 +186,14 @@ class RelationshipMigrationCommand extends Command
         }
 
         $output->writeln(count($relationships) . ' total relationships!');
+        $output->writeln('');
+
         foreach($tallies as $key=>$tally)
+            $output->writeln($key . ' = ' . $tally . ' (' . round($tally * 100 / count($relationships), 1) . '%)');
+
+        $output->writeln('');
+
+        foreach($goalTallies as $key=>$tally)
             $output->writeln($key . ' = ' . $tally . ' (' . round($tally * 100 / count($relationships), 1) . '%)');
 
         $output->writeln('');
