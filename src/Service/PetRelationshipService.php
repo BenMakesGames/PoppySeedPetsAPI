@@ -367,7 +367,7 @@ class PetRelationshipService
                     ($p1->getCurrentRelationship() === RelationshipEnum::MATE && mt_rand(1, 4) === 1)
                 )
                 {
-                    $message = $pet->getName() . ' hung out with ' . $friend->getName() . '. They had fun! :)';
+                    $message = $pet->getName() . ' hung out with ' . $friend->getName() . '. They had fun! ;)';
 
                     $pet
                         ->increaseLove(mt_rand(2, 4))
@@ -383,7 +383,7 @@ class PetRelationshipService
                 }
                 else
                 {
-                    $message = $pet->getName() . ' hung out with ' . $friend->getName() . '. They had fun! ;)';
+                    $message = $pet->getName() . ' hung out with ' . $friend->getName() . '. They had fun! :)';
 
                     $pet
                         ->increaseLove(mt_rand(3, 6))
