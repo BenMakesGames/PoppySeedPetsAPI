@@ -599,6 +599,7 @@ class BoxController extends PsyPetsItemController
             'Major Scroll of Riches',
             'Major Scroll of Riches',
             'Weird, Blue Egg',
+            'Dumbbell',
         ];
 
         $newInventory = [];
