@@ -65,6 +65,11 @@ class PetSpecies
      */
     private $handBehind;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $availableFromPetShelter;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -162,6 +167,18 @@ class PetSpecies
     public function setHandBehind(bool $hand_behind): self
     {
         $this->handBehind = $hand_behind;
+
+        return $this;
+    }
+
+    public function getAvailableFromPetShelter(): ?bool
+    {
+        return $this->availableFromPetShelter;
+    }
+
+    public function setAvailableFromPetShelter(bool $availableFromPetShelter): self
+    {
+        $this->availableFromPetShelter = $availableFromPetShelter;
 
         return $this;
     }

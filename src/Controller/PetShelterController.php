@@ -86,7 +86,7 @@ class PetShelterController extends PsyPetsController
 
         $pets = [];
 
-        $allSpecies = $petSpeciesRepository->findAll();
+        $allSpecies = $petSpeciesRepository->findBy([ 'availableFromPetShelter' => true ]);
 
         for($i = 0; $i < $numPets; $i++)
         {
@@ -174,7 +174,7 @@ class PetShelterController extends PsyPetsController
 
         $petToAdopt = null;
 
-        $allSpecies = $petSpeciesRepository->findAll();
+        $allSpecies = $petSpeciesRepository->findBy([ 'availableFromPetShelter' => true ]);
 
         for($i = 0; $i <= $id; $i++)
         {

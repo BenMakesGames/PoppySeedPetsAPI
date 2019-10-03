@@ -534,25 +534,33 @@ class BoxController extends PsyPetsItemController
 
         $user->increaseMoneys($moneys);
 
-        $possibleItems = [
+        $items = [
             'Silver Bar',
-            'Gold Bar', 'Gold Bar',
-            'Rusty Blunderbuss',
-            'Rusty Rapier',
-            'Minor Scroll of Riches',
-            'Magic Hourglass',
+            'Gold Bar',
+            'Gold Bar',
         ];
 
-        $numItems = mt_rand(2, 4);
+        $items[] = ArrayFunctions::pick_one([
+            'Rusty Blunderbuss',
+            'Rusty Rapier',
+            'Pepperbox'
+        ]);
+
+        $items[] = ArrayFunctions::pick_one([
+            'Minor Scroll of Riches',
+            'Magic Hourglass',
+        ]);
+
+        $items[] = ArrayFunctions::pick_one([
+            'Scroll of Fruit',
+            'Scroll of the Sea'
+        ]);
+
         $newInventory = [];
         $location = $inventory->getLocation();
 
-        for($i = 0; $i < $numItems; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleItems), $user, $user, $comment, $location);
-
-        $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([
-            'Scroll of Fruit', 'Scroll of the Sea', 'Minor Scroll of Riches'
-        ]), $user, $user, $comment, $location);
+        foreach($items as $item)
+            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location);
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
@@ -564,5 +572,50 @@ class BoxController extends PsyPetsItemController
         $em->flush();
 
         return $responseService->itemActionSuccess('Opening the box revealed ' . $moneys . '~~m~~, ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+    }
+
+    /**
+     * @Route("/outrageously-strongbox/{inventory}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openOutrageouslyStrongbox(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/outrageously-strongbox/#/open');
+
+        $key = $inventoryRepository->findOneByName($user, 'Gold Key');
+
+        if(!$key)
+            throw new UnprocessableEntityHttpException('You need a Gold Key to do that.');
+
+        $comment = $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.';
+
+        $items = [
+            'Very Strongbox',
+            'Major Scroll of Riches',
+            'Major Scroll of Riches',
+            'Adventuring Spirit',
+        ];
+
+        $newInventory = [];
+        $location = $inventory->getLocation();
+
+        foreach($items as $item)
+            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location);
+
+        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
+
+        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
+        sort($itemList);
+
+        $em->remove($inventory);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess('Opening the box revealed ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
 }
