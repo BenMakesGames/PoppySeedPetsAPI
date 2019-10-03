@@ -47,6 +47,7 @@ class TraderService
     private const ID_SILVER_TO_GOLD_1 = 'silverToGold1';
     private const ID_SILVER_TO_GOLD_2 = 'silverToGold2';
     private const ID_BOX_BOX_FOR_RIDICULOUS = 'boxBox';
+    private const ID_BOX_BOX_FOR_SNAKEBITES = 'boxBox2';
 
     private $itemRepository;
     private $inventoryService;
@@ -394,7 +395,7 @@ class TraderService
             );
 
             $offers[] = new TraderOffer(
-                self::ID_BOX_BOX_FOR_RIDICULOUS,
+                self::ID_BOX_BOX_FOR_SNAKEBITES,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Snakebite'), 2) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Box Box'), 1) ],
                 'I don\'t remember what exactly is in here; I\'m pretty sure more-different boxes?'
