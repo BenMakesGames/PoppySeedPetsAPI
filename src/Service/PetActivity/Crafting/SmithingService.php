@@ -62,6 +62,9 @@ class SmithingService
                         $possibilities[] = [ $this, 'createGreenScissors' ];
                 }
 
+                if(array_key_exists('String', $quantities))
+                    $possibilities[] = [ $this, 'createGrapplingHook' ];
+
                 // you have to be strong to use Dark Matter; pets with Eidetic Memory won't make the mistake of trying if they're not strong enough
                 if(array_key_exists('Dark Matter', $quantities) && ($pet->getStrength() >= 4 || !$pet->hasMerit(MeritEnum::EIDETIC_MEMORY)))
                     $possibilities[] = [ $this, 'createHeavyHammer' ];
@@ -198,6 +201,42 @@ class SmithingService
             $this->petService->spendTime($pet, \mt_rand(45, 75));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Fiberglass, but couldn\'t figure it out.', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createGrapplingHook(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-1);
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Grappling Hook, but burnt the String :(', 'icons/activity-logs/broke-string');
+        }
+        else if($roll >= 15)
+        {
+            $this->petService->spendTime($pet, \mt_rand(60, 75));
+            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(1);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Grappling Hook from Iron Bar and String.', 'items/tool/grappling-hook');
+            $this->inventoryService->petCollectsItem('Grappling Hook', $pet, $pet->getName() . ' created this from Iron Bar and String.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 75));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Grappling Hook, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
 
