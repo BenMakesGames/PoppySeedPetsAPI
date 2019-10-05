@@ -30,4 +30,5 @@ final class SerializationGroupEnum
     const GREENHOUSE_PLANT = 'greenhousePlant';
     const MY_SEEDS = 'mySeeds';
     const REMINDER = 'reminder';
+    const HOLLOW_EARTH = 'hollowEarth';
 }

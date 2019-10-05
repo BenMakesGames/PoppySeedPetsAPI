@@ -188,6 +188,17 @@ class User implements UserInterface
      */
     private $pushSubscriptions;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\HollowEarthPlayer", mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $hollowEarthPlayer;
+
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"myAccount"})
+     */
+    private $unlockedHollowEarth;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -665,5 +676,34 @@ class User implements UserInterface
     public function getPushSubscriptions(): Collection
     {
         return $this->pushSubscriptions;
+    }
+
+    public function getHollowEarthPlayer(): ?HollowEarthPlayer
+    {
+        return $this->hollowEarthPlayer;
+    }
+
+    public function setHollowEarthPlayer(HollowEarthPlayer $hollowEarthPlayer): self
+    {
+        $this->hollowEarthPlayer = $hollowEarthPlayer;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $hollowEarthPlayer->getUser()) {
+            $hollowEarthPlayer->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function getUnlockedHollowEarth(): ?\DateTimeImmutable
+    {
+        return $this->unlockedHollowEarth;
+    }
+
+    public function setUnlockedHollowEarth(): self
+    {
+        $this->unlockedHollowEarth = new \DateTimeImmutable();
+
+        return $this;
     }
 }
