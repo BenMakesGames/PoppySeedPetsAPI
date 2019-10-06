@@ -48,6 +48,9 @@ class TraderService
     private const ID_SILVER_TO_GOLD_2 = 'silverToGold2';
     private const ID_BOX_BOX_FOR_RIDICULOUS = 'boxBox';
     private const ID_BOX_BOX_FOR_SNAKEBITES = 'boxBox2';
+    private const ID_GLOWING_D4 = 'glowingD4';
+    private const ID_GLOWING_D6 = 'glowingD6';
+    private const ID_GLOWING_D8 = 'glowingD8';
 
     private $itemRepository;
     private $inventoryService;
@@ -375,6 +378,30 @@ class TraderService
             );
         }
 
+        if(($dayOfTheYear + 2) % 11 === 0 || ($dayOfTheYear + 7) % 11 === 0 || $leapDay)
+        {
+            $offers[] = new TraderOffer(
+                self::ID_GLOWING_D4,
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Grandparoot'), 4) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Glowing Four-sided Die'), 1) ],
+                'Ugh, take it! Those dice creep me out!'
+            );
+
+            $offers[] = new TraderOffer(
+                self::ID_GLOWING_D6,
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('White Cloth'), 3) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Glowing Six-sided Die'), 1) ],
+                'Ugh, take it! Those dice creep me out!'
+            );
+
+            $offers[] = new TraderOffer(
+                self::ID_GLOWING_D8,
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Glass Pendulum'), 1) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Glowing Eight-sided Die'), 1) ],
+                'Ugh, take it! Those dice creep me out!'
+            );
+        }
+
         if(($dayOfTheYear + 4) % 11 === 0 || ($dayOfTheYear + 5) % 11 === 0 || $leapDay)
         {
             $offers[] = new TraderOffer(
@@ -401,6 +428,8 @@ class TraderService
                 'I don\'t remember what exactly is in here; I\'m pretty sure more-different boxes?'
             );
         }
+
+        // 7 is already taken by the dice exchange
 
         if(($dayOfTheYear + 8) % 11 === 0 || $leapDay)
         {

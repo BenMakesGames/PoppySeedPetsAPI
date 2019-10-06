@@ -3,6 +3,9 @@ namespace App\Service;
 
 use App\Entity\HollowEarthPlayer;
 use App\Entity\HollowEarthTile;
+use App\Entity\Inventory;
+use App\Entity\Item;
+use App\Entity\User;
 use App\Enum\HollowEarthActionTypeEnum;
 use App\Enum\HollowEarthMoveDirectionEnum;
 use App\Enum\HollowEarthRequiredActionEnum;
@@ -16,6 +19,12 @@ class HollowEarthService
     private $em;
     private $inventoryService;
 
+    public const DICE_ITEMS = [
+        'Glowing Four-sided Die' => 4,
+        'Glowing Six-sided Die' => 6,
+        'Glowing Eight-sided Die' => 8
+    ];
+
     public function __construct(
         HollowEarthTileRepository $hollowEarthTileRepository, EntityManagerInterface $em, InventoryService $inventoryService
     )
@@ -25,12 +34,59 @@ class HollowEarthService
         $this->inventoryService = $inventoryService;
     }
 
+    public function unlockHollowEarth(User $user)
+    {
+        if($user->getUnlockedHollowEarth() === null)
+            $user->setUnlockedHollowEarth();
+
+        if($user->getHollowEarthPlayer() !== null)
+            return;
+
+        $hollowEarthPlayer = (new HollowEarthPlayer())
+            ->setCurrentTile($this->hollowEarthTileRepository->find(1))
+        ;
+
+        $user->setHollowEarthPlayer($hollowEarthPlayer);
+
+
+    }
+
+    public function getDice(User $user): array
+    {
+        $dice = $this->em->createQueryBuilder()
+            ->select('item.name,COUNT(i.id) AS quantity')
+            ->from(Inventory::class, 'i')
+            ->leftJoin('i.item', 'item')
+            ->andWhere('i.owner=:owner')
+            ->andWhere('item.name IN (:dice)')
+            ->setParameter('owner', $user->getId())
+            ->setParameter('dice', array_keys(self::DICE_ITEMS))
+            ->getQuery()
+            ->getScalarResult()
+        ;
+
+        $results = [];
+
+        foreach($dice as $die)
+        {
+            $results[] = [
+                'sides' => self::DICE_ITEMS[$die['name']],
+                'quantity' => $die['quantity'],
+            ];
+        }
+
+        return $results;
+    }
+
     public function advancePlayer(HollowEarthPlayer $player)
     {
         $moves = $player->getMovesRemaining();
 
         if($moves === 0)
             throw new \InvalidArgumentException('$player does not have any moves remaining!');
+
+        if($player->getChosenPet() === null)
+            throw new \InvalidArgumentException('A pet must be selected to lead the party.');
 
         $nextTile = $player->getCurrentTile();
 
@@ -105,5 +161,17 @@ class HollowEarthService
                 $player->getUser()->increaseMoneys($action['amount']);
                 break;
         }
+    }
+
+    public function getResponseData(User $user)
+    {
+        $dice = $this->getDice($user);
+
+        $data = [
+            'player' => $user->getHollowEarthPlayer(),
+            'dice' => $dice,
+        ];
+
+        return $data;
     }
 }

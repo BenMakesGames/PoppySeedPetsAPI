@@ -29,7 +29,7 @@ class Inventory
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Item", inversedBy="inventory")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "greenhousePlant", "mySeeds"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "greenhousePlant", "mySeeds", "hollowEarth"})
      */
     private $item;
 

@@ -7,7 +7,9 @@ use App\Entity\PetActivityLog;
 use App\Enum\HollowEarthActionTypeEnum;
 use App\Enum\HollowEarthRequiredActionEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Repository\InventoryRepository;
 use App\Service\HollowEarthService;
+use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,40 +27,41 @@ class HollowEarthController extends PsyPetsController
      * @Route("", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function getState(ResponseService $responseService)
+    public function getState(ResponseService $responseService, HollowEarthService $hollowEarthService)
     {
         $user = $this->getUser();
 
         if($user->getHollowEarthPlayer() === null)
             throw new AccessDeniedHttpException();
 
-        return $responseService->success($user->getHollowEarthPlayer(), [ SerializationGroupEnum::HOLLOW_EARTH ]);
+        return $responseService->success($hollowEarthService->getResponseData($user), [ SerializationGroupEnum::HOLLOW_EARTH ]);
     }
 
     /**
      * @Route("/changePet/{pet}", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function changePet(Pet $pet, ResponseService $responseService, EntityManagerInterface $em)
+    public function changePet(
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em, HollowEarthService $hollowEarthService
+    )
     {
         $user = $this->getUser();
+        $player = $user->getHollowEarthPlayer();
 
-        if($user->getHollowEarthPlayer() === null)
+        if($player === null)
             throw new AccessDeniedHttpException();
 
         if($pet->getOwner()->getId() !== $user->getId())
             throw new AccessDeniedHttpException();
 
-        $action = $user->getHollowEarthPlayer()->getAction();
-
-        if($action !== null)
+        if($player->getAction() !== null || $player->getMovesRemaining() > 0)
             throw new UnprocessableEntityHttpException('Pet cannot be changed at this time.');
 
-        $user->getHollowEarthPlayer()->setChosenPet($pet);
+        $player->setChosenPet($pet);
 
         $em->flush();
 
-        return $responseService->success();
+        return $responseService->success($hollowEarthService->getResponseData($user), [ SerializationGroupEnum::HOLLOW_EARTH ]);
     }
 
     /**
@@ -76,6 +79,9 @@ class HollowEarthController extends PsyPetsController
         if($player === null)
             throw new AccessDeniedHttpException();
 
+        if($player->getChosenPet() === null)
+            throw new UnprocessableEntityHttpException('You must choose a pet to lead the group.');
+
         $action = $player->getAction();
 
         if($action === null)
@@ -86,7 +92,7 @@ class HollowEarthController extends PsyPetsController
 
                 $em->flush();
 
-                return $responseService->success($player, [SerializationGroupEnum::HOLLOW_EARTH]);
+                return $responseService->success($hollowEarthService->getResponseData($user), [ SerializationGroupEnum::HOLLOW_EARTH ]);
             }
             else
                 throw new UnprocessableEntityHttpException('No moves remaining! Roll a die to continue moving.');
@@ -172,15 +178,15 @@ class HollowEarthController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success($player, [ SerializationGroupEnum::HOLLOW_EARTH ]);
+        return $responseService->success($hollowEarthService->getResponseData($user), [ SerializationGroupEnum::HOLLOW_EARTH ]);
     }
 
     /**
-     * @Route("/rollDie/{inventory}", methods={"POST"})
+     * @Route("/roll/d{sides}", methods={"POST"}, requirements={"sides"="4|6|8"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function rollDie(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        int $sides, ResponseService $responseService, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
         HollowEarthService $hollowEarthService
     )
     {
@@ -190,21 +196,23 @@ class HollowEarthController extends PsyPetsController
         if($player === null)
             throw new AccessDeniedHttpException();
 
-        if($inventory->getOwner()->getId() !== $user->getId())
-            throw new AccessDeniedHttpException();
+        if($player->getChosenPet() === null)
+            throw new UnprocessableEntityHttpException('You must choose a pet to lead the group.');
 
         if($player->getAction() !== null || $player->getMovesRemaining() > 0)
             throw new UnprocessableEntityHttpException('Cannot roll a die at this time...');
 
-        $itemName = $inventory->getItem()->getName();
+        $itemName = array_search($sides, HollowEarthService::DICE_ITEMS);
 
-        switch($itemName)
-        {
-            case 'Glowing Four-sided Die': $moves = mt_rand(1, 4); break;
-            case 'Glowing Six-sided Die': $moves = mt_rand(1, 6); break;
-            case 'Glowing Eight-sided Die': $moves = mt_rand(1, 8); break;
-            default: throw new UnprocessableEntityHttpException('Selected item is not a die!');
-        }
+        if($itemName === false)
+            throw new UnprocessableEntityHttpException('Can only roll a d4, d6, or d8.');
+
+        $inventory = $inventoryRepository->findOneByName($user, $itemName);
+
+        if(!$inventory)
+            throw new UnprocessableEntityHttpException('You do not have a ' . $itemName . '!');
+
+        $moves = mt_rand(1, $sides);
 
         $responseService->addActivityLog((new PetActivityLog())->setEntry('You rolled a ' . $moves . '!'));
 
@@ -216,6 +224,6 @@ class HollowEarthController extends PsyPetsController
 
         $em->flush();
 
-        return $responseService->success($player, [ SerializationGroupEnum::HOLLOW_EARTH ]);
+        return $responseService->success($hollowEarthService->getResponseData($user), [ SerializationGroupEnum::HOLLOW_EARTH ]);
     }
 }

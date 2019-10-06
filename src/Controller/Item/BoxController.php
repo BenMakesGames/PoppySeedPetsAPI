@@ -485,6 +485,7 @@ class BoxController extends PsyPetsItemController
             'Rusty Rapier',
             'Blackberry Wine',
             'Fluff',
+            'Glowing Six-sided Die',
         ];
 
         $numItems = mt_rand(2, 4);
@@ -538,6 +539,7 @@ class BoxController extends PsyPetsItemController
             'Silver Bar',
             'Gold Bar',
             'Gold Bar',
+            'Glowing Six-sided Die',
         ];
 
         $items[] = ArrayFunctions::pick_one([

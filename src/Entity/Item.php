@@ -35,7 +35,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe", "mySeeds", "greenhousePlant"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe", "mySeeds", "greenhousePlant", "hollowEarth"})
      */
     private $image;
 
@@ -47,7 +47,7 @@ class Item
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\ItemTool")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth"})
      */
     private $tool;
 

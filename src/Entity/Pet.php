@@ -78,13 +78,13 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend", "hollowEarth"})
      */
     private $colorA;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend", "hollowEarth"})
      */
     private $colorB;
 
@@ -123,14 +123,14 @@ class Pet
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\PetSpecies")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend", "hollowEarth"})
      */
     private $species;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Inventory", inversedBy="pet")
      * @ORM\JoinColumn(onDelete="SET NULL")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
      */
     private $tool;
 

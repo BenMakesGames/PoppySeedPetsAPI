@@ -45,7 +45,7 @@ class HollowEarthPlayer
      * @ORM\ManyToOne(targetEntity="App\Entity\Pet")
      * @Groups({"hollowEarth"})
      */
-    private $chosenPet;
+    private $chosenPet = null;
 
     public function getId(): ?int
     {

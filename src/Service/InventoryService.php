@@ -49,7 +49,7 @@ class InventoryService
         else if(is_integer($item))
             $itemId = $item;
         else
-            throw new \InvalidArgumentException('item must be an Item, string, or integer.');
+            throw new \InvalidArgumentException('$item must be an Item, string, or integer.');
 
         return (int)$this->em->createQueryBuilder()
             ->select('COUNT(i.id)')

@@ -192,7 +192,8 @@ class UmbraService
 
             return $activityLog;
         }
-        else if(mt_rand(1, 100) === 1)
+
+        if(mt_rand(1, 100) === 1)
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a Little Strongbox, and took it!', '');
 
@@ -200,12 +201,33 @@ class UmbraService
 
             return $activityLog;
         }
-        else
-        {
-            $pet->getOwner()->increaseMoneys(2);
 
-            return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted 2~~m~~. No one else was around, so...', 'icons/activity-logs/moneys');
+        if($pet->hasMerit(MeritEnum::LUCKY))
+            $die = ArrayFunctions::pick_one([ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die' ]);
+        else
+            $die = ArrayFunctions::pick_one([ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die' ]);
+
+        if($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 50) === 1)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a ' . $die . '! Lucky~!', '');
+
+            $this->inventoryService->petCollectsItem($die, $pet, $pet->getName() . ' found this on the shores of a dark river in the Umbra.', $activityLog);
+
+            return $activityLog;
         }
+
+        if(mt_rand(1, 80) === 1)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a ' . $die . ', and took it!', '');
+
+            $this->inventoryService->petCollectsItem($die, $pet, $pet->getName() . ' found this on the shores of a dark river in the Umbra.', $activityLog);
+
+            return $activityLog;
+        }
+
+        $pet->getOwner()->increaseMoneys(2);
+
+        return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted 2~~m~~. No one else was around, so...', 'icons/activity-logs/moneys');
     }
 
     private function fightEvilSpirit(Pet $pet): PetActivityLog

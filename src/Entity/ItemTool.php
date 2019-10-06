@@ -100,32 +100,32 @@ class ItemTool
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
      */
     private $gripX = 0.5;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
      */
     private $gripY = 0.5;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
      */
     private $gripAngle = 0;
 
     /**
      * A fixed grip angle means that the item will ALWAYS be rendered at this angle, regardless of the attributes of the pet that holds it
      * @ORM\Column(type="boolean")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
      */
     private $gripAngleFixed = false;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
      */
     private $gripScale = 1;
 

@@ -29,6 +29,18 @@ class HollowEarthZone
      */
     private $image;
 
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"hollowEarth"})
+     */
+    private $width;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"hollowEarth"})
+     */
+    private $height;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -54,6 +66,30 @@ class HollowEarthZone
     public function setImage(string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getWidth(): ?int
+    {
+        return $this->width;
+    }
+
+    public function setWidth(int $width): self
+    {
+        $this->width = $width;
+
+        return $this;
+    }
+
+    public function getHeight(): ?int
+    {
+        return $this->height;
+    }
+
+    public function setHeight(int $height): self
+    {
+        $this->height = $height;
 
         return $this;
     }
