@@ -23,7 +23,7 @@ class TheUmbraController extends PsyPetsItemController
 
 ## What Is It?
 
-The Umbra has been known by many names, by many people, in many times. Today, most ordinary people would call it "the land of the dead"; a few might call it "the aether"; neither is correct. The Umbra is an infinite expanse containing everything beyond the edge of human belief, but within human comprehension. The further you go, the wilder, and more chaotic the Umbra becomes. There is no hard edge, of course - no line - but as you go deep into into the Umbra, reality begins to fray; it becomes incompatible with existence as we know it. In the Deep Umbra, nothing conceivable by humans could ever exist.
+The Umbra has been known by many names, by many people, in many times. Today, most ordinary people would call it "the land of the dead"; a few might call it "the aether"; neither is correct. The Umbra is an infinite expanse containing everything beyond the edge of human belief, but within human comprehension. The further you go, the wilder, and more chaotic the Umbra becomes. There is no hard edge, of course - no line - but as you go deeper into the Umbra, reality begins to fray; it becomes incompatible with existence as we know it. In the Deep Umbra, nothing conceivable by humans could ever exist.
 
 But that is the furthest edge. Closer to us, in the Near Umbra, you will find everything that people forgot, or no longer believe in. Spirits, yes, but other things, too, from lost socks to lycanthropes to old gods no longer followed. Objects there eventually crumble into dust - a blackish sand that makes up the "earth" of the Near Umbra - upon which living creatures walk, build, and live.
 
