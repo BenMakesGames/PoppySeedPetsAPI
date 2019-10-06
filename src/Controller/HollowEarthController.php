@@ -142,7 +142,7 @@ class HollowEarthController extends PsyPetsController
 
                         if($action['ifPaid'])
                         {
-                            $hollowEarthService->doImmediateAction($player, $action['ifPaid']);
+                            $hollowEarthService->doImmediateEvent($player, $action['ifPaid']);
                             $player->setCurrentAction($action['ifPaid']);
                         }
                         else
@@ -153,7 +153,7 @@ class HollowEarthController extends PsyPetsController
 
                     if($action['ifNotPaid'])
                     {
-                        $hollowEarthService->doImmediateAction($player, $action['ifNotPaid']);
+                        $hollowEarthService->doImmediateEvent($player, $action['ifNotPaid']);
                         $player->setCurrentAction($action['ifNotPaid']);
                     }
                     else

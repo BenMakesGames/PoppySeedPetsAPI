@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\HollowEarthActionTypeEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -83,6 +84,9 @@ class HollowEarthPlayer
 
     public function setCurrentAction(?array $currentAction): self
     {
+        if($currentAction !== null && count($currentAction) === 0)
+            $currentAction = null;
+
         $this->currentAction = $currentAction;
 
         return $this;
@@ -130,7 +134,19 @@ class HollowEarthPlayer
             $action = [];
 
             if(array_key_exists('type', $this->currentAction))
+            {
                 $action['type'] = $this->currentAction['type'];
+
+                switch($action['type'])
+                {
+                    case HollowEarthActionTypeEnum::PAY_ITEM:
+                        $action['item'] = $this->currentAction['item'];
+                        break;
+                    case HollowEarthActionTypeEnum::PAY_MONEY:
+                        $action['item'] = $this->currentAction['amount'];
+                        break;
+                }
+            }
 
             if(array_key_exists('description', $this->currentAction))
                 $action['description'] = $this->currentAction['description'];

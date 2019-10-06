@@ -47,8 +47,6 @@ class HollowEarthService
         ;
 
         $user->setHollowEarthPlayer($hollowEarthPlayer);
-
-
     }
 
     public function getDice(User $user): array
@@ -61,6 +59,7 @@ class HollowEarthService
             ->andWhere('item.name IN (:dice)')
             ->setParameter('owner', $user->getId())
             ->setParameter('dice', array_keys(self::DICE_ITEMS))
+            ->groupBy('item.name')
             ->getQuery()
             ->getScalarResult()
         ;
@@ -69,9 +68,12 @@ class HollowEarthService
 
         foreach($dice as $die)
         {
+            if($die['name'] === NULL || (int)$die['quantity'] === 0) // why does this happen sometimes??
+                continue;
+
             $results[] = [
                 'sides' => self::DICE_ITEMS[$die['name']],
-                'quantity' => $die['quantity'],
+                'quantity' => (int)$die['quantity'],
             ];
         }
 
@@ -80,9 +82,7 @@ class HollowEarthService
 
     public function advancePlayer(HollowEarthPlayer $player)
     {
-        $moves = $player->getMovesRemaining();
-
-        if($moves === 0)
+        if($player->getMovesRemaining() === 0)
             throw new \InvalidArgumentException('$player does not have any moves remaining!');
 
         if($player->getChosenPet() === null)
@@ -90,7 +90,7 @@ class HollowEarthService
 
         $nextTile = $player->getCurrentTile();
 
-        while($moves > 0)
+        while($player->getMovesRemaining() > 0 && $player->getCurrentAction() === null)
         {
             $nextTile = $this->getNextTile($nextTile);
 
@@ -103,11 +103,10 @@ class HollowEarthService
 
         $player
             ->setCurrentTile($nextTile)
-            ->setMovesRemaining($moves)
             ->setCurrentAction($action)
         ;
 
-        $this->doImmediateAction($player, $action);
+        $this->doImmediateEvent($player, $action);
     }
 
     private function getNextTile(HollowEarthTile $tile): HollowEarthTile
@@ -136,29 +135,33 @@ class HollowEarthService
         $player->setCurrentTile($tile);
 
         if($player->getMovesRemaining() === 0 || $tile->getRequiredAction() === HollowEarthRequiredActionEnum::YES_AND_KEEP_MOVING)
-            $this->doImmediateAction($player, $tile->getRequiredAction());
+            $this->doImmediateEvent($player, $tile->getEvent());
         if ($tile->getRequiredAction() === HollowEarthRequiredActionEnum::YES_AND_STOP_MOVING)
         {
             $player->setMovesRemaining(0);
-            $this->doImmediateAction($player, $tile->getRequiredAction());
+            $this->doImmediateEvent($player, $tile->getEvent());
         }
     }
 
-    public function doImmediateAction(HollowEarthPlayer $player, $action)
+    public function doImmediateEvent(HollowEarthPlayer $player, $event)
     {
-        if(!array_key_exists('type', $action))
+        if(!array_key_exists('type', $event))
             return;
 
-        switch($action['type'])
+        switch($event['type'])
         {
+            case HollowEarthActionTypeEnum::PAY_MONEY:
+            case HollowEarthActionTypeEnum::PAY_ITEM:
+                $player->setCurrentAction($event);
+                break;
             case HollowEarthActionTypeEnum::MOVE_TO:
-                $this->enterTile($player, $this->hollowEarthTileRepository->find($action['id']));
+                $this->enterTile($player, $this->hollowEarthTileRepository->find($event['id']));
                 break;
             case  HollowEarthActionTypeEnum::RECEIVE_ITEM:
-                $this->inventoryService->receiveItem($action['item'], $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);
+                $this->inventoryService->receiveItem($event['item'], $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);
                 break;
             case HollowEarthActionTypeEnum::RECEIVE_MONEY:
-                $player->getUser()->increaseMoneys($action['amount']);
+                $player->getUser()->increaseMoneys($event['amount']);
                 break;
         }
     }
