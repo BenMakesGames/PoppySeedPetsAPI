@@ -14,6 +14,7 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -114,14 +115,14 @@ class HollowEarthController extends PsyPetsController
 
                     if($payUp)
                     {
-                        throw new \Exception('Not yet implemented! Sorry :(');
+                        throw new HttpException(501, 'Not yet implemented! Sorry :(');
                         // TODO: if user has the item:
                         //   spend the item
                         //   if the action has an ifPaid, execute that action, else $player->setCurrentAction(null);
                         //   break;
                     }
 
-                    throw new \Exception('Not yet implemented! Sorry :(');
+                    throw new HttpException(501, 'Not yet implemented! Sorry :(');
                     // TODO: else
                     //   if the action has an ifNotPaid, execute that action, else $player->setCurrentAction(null);
 
@@ -136,7 +137,7 @@ class HollowEarthController extends PsyPetsController
                     if($payUp)
                     {
                         if($user->getMoneys() < $action['amount'])
-                            throw new UnprocessableEntityHttpException('You don\'t  have enough moneys...');
+                            throw new UnprocessableEntityHttpException('You don\'t have enough moneys...');
 
                         $user->increaseMoneys(-$action['amount']);
 
@@ -162,10 +163,12 @@ class HollowEarthController extends PsyPetsController
                     break;
 
                 case HollowEarthActionTypeEnum::PET_CHALLENGE:
-                    throw new \Exception('Not yet implemented! Sorry :(');
+                    throw new HttpException(501, 'Not yet implemented! Sorry :(');
                     // TODO
 
                 case HollowEarthActionTypeEnum::MOVE_TO:
+                case HollowEarthActionTypeEnum::RECEIVE_ITEM:
+                case HollowEarthActionTypeEnum::RECEIVE_MONEY:
                     $player->setCurrentAction(null);
                     break;
             }

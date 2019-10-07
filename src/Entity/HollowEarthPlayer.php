@@ -151,6 +151,9 @@ class HollowEarthPlayer
             if(array_key_exists('description', $this->currentAction))
                 $action['description'] = $this->currentAction['description'];
 
+            if(array_key_exists('buttonText', $this->currentAction))
+                $action['buttonText'] = $this->currentAction['buttonText'];
+
             return $action;
         }
     }
