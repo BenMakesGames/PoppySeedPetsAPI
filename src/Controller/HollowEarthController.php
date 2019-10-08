@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\HollowEarthPlayer;
 use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
@@ -12,6 +13,7 @@ use App\Service\HollowEarthService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -71,7 +73,7 @@ class HollowEarthController extends PsyPetsController
      */
     public function continueActing(
         HollowEarthService $hollowEarthService, ResponseService $responseService, EntityManagerInterface $em,
-        Request $request
+        Request $request, InventoryRepository $inventoryRepository
     )
     {
         $user = $this->getUser();
@@ -108,63 +110,16 @@ class HollowEarthController extends PsyPetsController
             switch($action['type'])
             {
                 case HollowEarthActionTypeEnum::PAY_ITEM:
-                    if(!$request->request->has('payUp'))
-                        throw new UnprocessableEntityHttpException('Will you give up a ' . $action['item'] . ', or no?');
-
-                    $payUp = $request->request->getBoolean('payUp');
-
-                    if($payUp)
-                    {
-                        throw new HttpException(501, 'Not yet implemented! Sorry :(');
-                        // TODO: if user has the item:
-                        //   spend the item
-                        //   if the action has an ifPaid, execute that action, else $player->setCurrentAction(null);
-                        //   break;
-                    }
-
-                    throw new HttpException(501, 'Not yet implemented! Sorry :(');
-                    // TODO: else
-                    //   if the action has an ifNotPaid, execute that action, else $player->setCurrentAction(null);
-
+                    $this->continueActingPayItem($action, $player, $request->request, $hollowEarthService, $inventoryRepository, $em);
                     break;
 
                 case HollowEarthActionTypeEnum::PAY_MONEY:
-                    if(!$request->request->has('payUp'))
-                        throw new UnprocessableEntityHttpException('Will you give up ' . $action['amount'] . '~~m~~, or no?');
-
-                    $payUp = $request->request->getBoolean('payUp');
-
-                    if($payUp)
-                    {
-                        if($user->getMoneys() < $action['amount'])
-                            throw new UnprocessableEntityHttpException('You don\'t have enough moneys...');
-
-                        $user->increaseMoneys(-$action['amount']);
-
-                        if($action['ifPaid'])
-                        {
-                            $hollowEarthService->doImmediateEvent($player, $action['ifPaid']);
-                            $player->setCurrentAction($action['ifPaid']);
-                        }
-                        else
-                            $player->setCurrentAction(null);
-
-                        break;
-                    }
-
-                    if($action['ifNotPaid'])
-                    {
-                        $hollowEarthService->doImmediateEvent($player, $action['ifNotPaid']);
-                        $player->setCurrentAction($action['ifNotPaid']);
-                    }
-                    else
-                        $player->setCurrentAction(null);
-
+                    $this->continueActingPayMoney($action, $player, $request->request, $hollowEarthService);
                     break;
 
                 case HollowEarthActionTypeEnum::PET_CHALLENGE:
-                    throw new HttpException(501, 'Not yet implemented! Sorry :(');
-                    // TODO
+                    $this->continueActingPetChallenge($action, $player, $request->request, $hollowEarthService);
+                    break;
 
                 case HollowEarthActionTypeEnum::MOVE_TO:
                 case HollowEarthActionTypeEnum::RECEIVE_ITEM:
@@ -182,6 +137,107 @@ class HollowEarthController extends PsyPetsController
         $em->flush();
 
         return $responseService->success($hollowEarthService->getResponseData($user), [ SerializationGroupEnum::HOLLOW_EARTH ]);
+    }
+
+    private function continueActingPayItem(
+        array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService,
+        InventoryRepository $inventoryRepository, EntityManagerInterface $em
+    )
+    {
+        if(!$params->has('payUp'))
+            throw new UnprocessableEntityHttpException('Will you give up a ' . $action['item'] . ', or no?');
+
+        $payUp = $params->getBoolean('payUp');
+
+        if($payUp)
+        {
+            $itemToPay = $inventoryRepository->findOneByName($player->getUser(), $action['item']);
+
+            if($itemToPay)
+                throw new UnprocessableEntityHttpException('You do not have a ' . $action['item'] . '...');
+
+            $em->remove($itemToPay);
+
+            if($action['ifPaid'])
+            {
+                $hollowEarthService->doImmediateEvent($player, $action['ifPaid']);
+                $player->setCurrentAction($action['ifPaid']);
+            }
+            else
+                $player->setCurrentAction(null);
+        }
+        else if($action['ifNotPaid'])
+        {
+            $hollowEarthService->doImmediateEvent($player, $action['ifNotPaid']);
+            $player->setCurrentAction($action['ifNotPaid']);
+        }
+        else
+            $player->setCurrentAction(null);
+    }
+
+    private function continueActingPayMoney(
+        array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService
+    )
+    {
+        if(!$params->has('payUp'))
+            throw new UnprocessableEntityHttpException('Will you give up ' . $action['amount'] . '~~m~~, or no?');
+
+        $payUp = $params->getBoolean('payUp');
+
+        if($payUp)
+        {
+            if($player->getUser()->getMoneys() < $action['amount'])
+                throw new UnprocessableEntityHttpException('You don\'t have enough moneys...');
+
+            $player->getUser()->increaseMoneys(-$action['amount']);
+
+            if($action['ifPaid'])
+            {
+                $hollowEarthService->doImmediateEvent($player, $action['ifPaid']);
+                $player->setCurrentAction($action['ifPaid']);
+            }
+            else
+                $player->setCurrentAction(null);
+        }
+        else if($action['ifNotPaid'])
+        {
+            $hollowEarthService->doImmediateEvent($player, $action['ifNotPaid']);
+            $player->setCurrentAction($action['ifNotPaid']);
+        }
+        else
+            $player->setCurrentAction(null);
+    }
+
+    private function continueActingPetChallenge(
+        array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService
+    )
+    {
+        $stats = $action['stats'];
+        $score = $action['baseRoll'];
+
+        foreach($stats as $stat)
+            $score += $player->getChosenPet()->{'get' . $stat }();
+
+        if(mt_rand(1, $score) >= $action['requiredRoll'])
+        {
+            if(array_key_exists('ifSuccess', $action))
+            {
+                $hollowEarthService->doImmediateEvent($player, $action['ifSuccess']);
+                $player->setCurrentAction($action['ifSuccess']);
+            }
+            else
+                $player->setCurrentAction(null);
+        }
+        else
+        {
+            if(array_key_exists('ifFail', $action))
+            {
+                $hollowEarthService->doImmediateEvent($player, $action['ifFail']);
+                $player->setCurrentAction($action['ifFail']);
+            }
+            else
+                $player->setCurrentAction(null);
+        }
     }
 
     /**
