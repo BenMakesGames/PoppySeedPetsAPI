@@ -98,7 +98,7 @@ class HollowEarthService
 
         while($player->getMovesRemaining() > 0 && $player->getCurrentAction() === null)
         {
-            $nextTile = $this->getNextTile($nextTile);
+            $nextTile = $this->getNextTile($player);
 
             $player->decreaseMovesRemaining();
 
@@ -115,22 +115,22 @@ class HollowEarthService
         $this->doImmediateEvent($player, $action);
     }
 
-    private function getNextTile(HollowEarthTile $tile): HollowEarthTile
+    private function getNextTile(HollowEarthPlayer $player): HollowEarthTile
     {
-        $x = $tile->getX();
-        $y = $tile->getY();
+        $x = $player->getCurrentTile()->getX();
+        $y = $player->getCurrentTile()->getY();
 
-        switch($tile->getMoveDirection())
+        switch($player->getCurrentDirection())
         {
             case HollowEarthMoveDirectionEnum::NORTH: $y--; break;
             case HollowEarthMoveDirectionEnum::EAST: $x++; break;
             case HollowEarthMoveDirectionEnum::SOUTH: $y++; break;
             case HollowEarthMoveDirectionEnum::WEST: $x--; break;
-            default: throw new \InvalidArgumentException('Tile #' . $tile->getId() . ' has an unknown direction "' . $tile->getMoveDirection() . '"');
+            default: throw new \InvalidArgumentException('Player has an unknown currentDirection: "' . $tile->getMoveDirection() . '"');
         }
 
         return $this->hollowEarthTileRepository->findOneBy([
-            'zone' => $tile->getZone(),
+            'zone' => $player->getCurrentTile()->getZone(),
             'x' => $x,
             'y' => $y,
         ]);
@@ -163,6 +163,10 @@ class HollowEarthService
             case HollowEarthActionTypeEnum::PAY_MONEY:
             case HollowEarthActionTypeEnum::PAY_ITEM:
                 $player->setCurrentAction($event);
+                break;
+
+            case HollowEarthActionTypeEnum::CHANGE_DIRECTION:
+                $player->setCurrentDirection($event['direction']);
                 break;
 
             case HollowEarthActionTypeEnum::MOVE_TO:

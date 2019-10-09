@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Enum\HollowEarthActionTypeEnum;
+use App\Enum\HollowEarthMoveDirectionEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -48,6 +49,11 @@ class HollowEarthPlayer
      */
     private $chosenPet = null;
 
+    /**
+     * @ORM\Column(type="string", length=1)
+     */
+    private $currentDirection;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -73,6 +79,7 @@ class HollowEarthPlayer
     public function setCurrentTile(?HollowEarthTile $currentTile): self
     {
         $this->currentTile = $currentTile;
+        $this->currentDirection = $currentTile->getMoveDirection();
 
         return $this;
     }
@@ -156,5 +163,20 @@ class HollowEarthPlayer
 
             return $action;
         }
+    }
+
+    public function getCurrentDirection(): string
+    {
+        return $this->currentDirection;
+    }
+
+    public function setCurrentDirection(string $currentDirection): self
+    {
+        if(!HollowEarthMoveDirectionEnum::isAValue($currentDirection))
+            throw new \InvalidArgumentException('$currentDirection must be a valid HollowEarthMoveDirectionEnum value.');
+
+        $this->currentDirection = $currentDirection;
+
+        return $this;
     }
 }

@@ -57,7 +57,7 @@ class HollowEarthController extends PsyPetsController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new AccessDeniedHttpException();
 
-        if($player->getAction() !== null || $player->getMovesRemaining() > 0)
+        if($player->getCurrentAction() !== null || $player->getMovesRemaining() > 0)
             throw new UnprocessableEntityHttpException('Pet cannot be changed at this time.');
 
         $player->setChosenPet($pet);
@@ -85,7 +85,7 @@ class HollowEarthController extends PsyPetsController
         if($player->getChosenPet() === null)
             throw new UnprocessableEntityHttpException('You must choose a pet to lead the group.');
 
-        $action = $player->getAction();
+        $action = $player->getCurrentAction();
 
         if($action === null)
         {
@@ -122,6 +122,7 @@ class HollowEarthController extends PsyPetsController
                     break;
 
                 case HollowEarthActionTypeEnum::MOVE_TO:
+                case HollowEarthActionTypeEnum::CHANGE_DIRECTION:
                 case HollowEarthActionTypeEnum::RECEIVE_ITEM:
                 case HollowEarthActionTypeEnum::RECEIVE_MONEY:
                     $player->setCurrentAction(null);
@@ -258,7 +259,7 @@ class HollowEarthController extends PsyPetsController
         if($player->getChosenPet() === null)
             throw new UnprocessableEntityHttpException('You must choose a pet to lead the group.');
 
-        if($player->getAction() !== null || $player->getMovesRemaining() > 0)
+        if($player->getCurrentAction() !== null || $player->getMovesRemaining() > 0)
             throw new UnprocessableEntityHttpException('Cannot roll a die at this time...');
 
         $itemName = array_search($sides, HollowEarthService::DICE_ITEMS);
