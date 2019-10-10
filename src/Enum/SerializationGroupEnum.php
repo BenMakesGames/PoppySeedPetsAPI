@@ -31,4 +31,5 @@ final class SerializationGroupEnum
     const MY_SEEDS = 'mySeeds';
     const REMINDER = 'reminder';
     const HOLLOW_EARTH = 'hollowEarth';
+    const USER_TYPEAHEAD = 'userTypeahead';
 }

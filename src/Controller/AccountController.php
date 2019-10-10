@@ -452,7 +452,7 @@ class AccountController extends PsyPetsController
         {
             $suggestions = $userTypeaheadService->search('name', $request->query->get('search', ''), 5);
 
-            return $responseService->success($suggestions);
+            return $responseService->success($suggestions, SerializationGroupEnum::USER_TYPEAHEAD);
         }
         catch(\InvalidArgumentException $e)
         {

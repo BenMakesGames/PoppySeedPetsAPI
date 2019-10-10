@@ -399,7 +399,7 @@ class PetController extends PsyPetsController
         {
             $suggestions = $petTypeaheadService->search('name', $request->query->get('search', ''));
 
-            return $responseService->success($suggestions);
+            return $responseService->success($suggestions, SerializationGroupEnum::MY_PET);
         }
         catch(\InvalidArgumentException $e)
         {
