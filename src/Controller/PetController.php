@@ -15,6 +15,7 @@ use App\Service\Filter\DaycareFilterService;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\PetService;
 use App\Service\ResponseService;
+use App\Service\TypeaheadSearchService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -381,5 +382,26 @@ class PetController extends PsyPetsController
             $pet,
             SerializationGroupEnum::MY_PET
         );
+    }
+
+    /**
+     * @Route("/typeahead", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function typeaheadSearch(
+        Request $request, ResponseService $responseService, PetRepository $petRepository,
+        TypeaheadSearchService $typeaheadSearchService
+    )
+    {
+        try
+        {
+            $suggestions = $typeaheadSearchService->search($petRepository, 'name', 5, $request->query->get('search', ''));
+
+            return $responseService->success($suggestions);
+        }
+        catch(\InvalidArgumentException $e)
+        {
+            throw new UnprocessableEntityHttpException($e->getMessage(), $e);
+        }
     }
 }

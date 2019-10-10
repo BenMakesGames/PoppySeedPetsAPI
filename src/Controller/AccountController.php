@@ -24,6 +24,7 @@ use App\Service\InventoryService;
 use App\Service\PassphraseResetService;
 use App\Service\ResponseService;
 use App\Service\SessionService;
+use App\Service\TypeaheadSearchService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -442,42 +443,21 @@ class AccountController extends PsyPetsController
      * @Route("/typeahead", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function typeaheadSearch(Request $request, ResponseService $responseService, UserRepository $userRepository)
+    public function typeaheadSearch(
+        Request $request, ResponseService $responseService, UserRepository $userRepository,
+        TypeaheadSearchService $typeaheadSearchService
+    )
     {
-        $search = trim($request->query->get('search', ''));
-        $maxResults = 5;
-
-        if($search === '')
-            throw new UnprocessableEntityHttpException('search must contain at least one character.');
-
-        $users = $userRepository->createQueryBuilder('u')
-            ->andWhere('u.name LIKE :nameLike')
-            ->setParameter('nameLike', $search . '%')
-            ->setMaxResults($maxResults)
-            ->orderBy('u.name', 'ASC')
-            ->getQuery()
-            ->execute()
-        ;
-
-        if(count($users) < $maxResults)
+        try
         {
-            $ids = array_map(function(User $u) { return $u->getId(); }, $users);
+            $suggestions = $typeaheadSearchService->search($userRepository, 'name', 5, $request->query->get('search', ''));
 
-            $users = array_merge($users, $userRepository->createQueryBuilder('u')
-                ->andWhere('u.name LIKE :nameLike')
-                ->andWhere('u.id NOT IN (:ids)')
-                ->setParameter('nameLike', '%' . $search . '%')
-                ->setParameter('ids', $ids)
-                ->setMaxResults($maxResults - count($users))
-                ->orderBy('u.name', 'ASC')
-                ->getQuery()
-                ->execute()
-            );
+            return $responseService->success($suggestions);
         }
-
-        $suggestions = array_map(function(User $u) { return [ 'name' => $u->getName(), 'id' => $u->getId() ]; }, $users);
-
-        return $responseService->success($suggestions);
+        catch(\InvalidArgumentException $e)
+        {
+            throw new UnprocessableEntityHttpException($e->getMessage(), $e);
+        }
     }
 
     /**
