@@ -74,6 +74,8 @@ final class ArrayFunctions
 
     public static function pick_one(array $array)
     {
+        if(count($array) === 0) return null;
+
         return $array[array_rand($array)];
     }
 

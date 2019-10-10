@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\PetSkillEnum;
@@ -25,6 +26,68 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class BoxController extends PsyPetsItemController
 {
+    /**
+     * @Route("/ores/{box}/loot", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openOreBox(
+        Inventory $box, ResponseService $responseService, InventoryService $inventoryService, PetService $petService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, PetRepository $petRepository
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($box, 'box/ores/#/loot');
+
+        $location = $box->getLocation();
+
+        $possibleOres = [
+            'Iron Ore', 'Iron Ore', 'Iron Ore',
+            'Silver Ore', 'Silver Ore', 'Silver Ore',
+            'Gold Ore', 'Gold Ore',
+            'XOR',
+        ];
+
+        $stat = $userStatsRepository->incrementStat($user, 'Looted a ' . $box->getItem()->getName());
+
+        $numberOfItems = mt_rand(3, 5);
+        $containsLobster = $stat->getValue() === 1 || mt_rand(1, 4) === 1;
+
+        if($containsLobster)
+            $numberOfItems = max(3, $numberOfItems - 1);
+
+        for($i = 0; $i < $numberOfItems; $i++)
+            $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleOres), $user, $box->getCreatedBy(), 'Found inside a ' . $box->getItem()->getName() . '.', $location);
+
+        $em->remove($box);
+
+        $message = 'Sifting through the box, you found ' . $numberOfItems . ' good chunks of ore!';
+
+        if($containsLobster)
+        {
+            /** @var Pet $pet */
+            $pet = ArrayFunctions::pick_one($petRepository->findBy([ 'owner' => $user, 'inDaycare' => false ]));
+
+            $message .= "\n\nWait, what!? One of the rocks moved!";
+
+            if($pet === null)
+                $message .= "\n\nA lobster claw reached out from underneath and pinched you before scuttling away!";
+            else
+            {
+                $inventoryService->receiveItem('Fish', $user, $box->getCreatedBy(), 'Found inside a lobster inside a ' . $box->getItem()->getName() . '.', $location);
+                $changes = new PetChanges($pet);
+                $petService->gainExp($pet, 2, [ 'dexterity', 'strength', 'brawl' ]);
+                $pet->increaseEsteem(3);
+                $message .= "\n\nA lobster claw reached out from underneath and tried to pinch you, but " . $pet->getName() . " stepped in and beat it up!\n\nThat was a little scary, but hey: +1 Fish meat!";
+                $responseService->createActivityLog($pet, 'While ' . $user->getName() . ' was sifting through a box of ore, a lobster jumped out and tried to attack them! ' . $pet->getName() . ' stepped in and saved the day! It was a little scary, but hey: +1 Fish meat!', '', $changes->compare($pet));
+            }
+        }
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+    }
+
     /**
      * @Route("/box/{inventory}/open", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
