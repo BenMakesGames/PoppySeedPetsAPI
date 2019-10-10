@@ -13,9 +13,9 @@ abstract class TypeaheadService
         $this->repository = $repository;
     }
 
-    abstract public function addQueryBuilderConditions(): QueryBuilder;
+    abstract public function addQueryBuilderConditions(QueryBuilder $qb): QueryBuilder;
 
-    public function search(string $fieldToSearch, int $maxResults, string $searchString)
+    public function search(string $fieldToSearch, string $searchString, int $maxResults = 5)
     {
         $search = trim($searchString);
 
@@ -53,6 +53,5 @@ abstract class TypeaheadService
                 'id' => $e->getId()
             ];
         }, $entities);
-
     }
 }

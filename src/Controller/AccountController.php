@@ -24,6 +24,7 @@ use App\Service\InventoryService;
 use App\Service\PassphraseResetService;
 use App\Service\ResponseService;
 use App\Service\SessionService;
+use App\Service\Typeahead\UserTypeaheadService;
 use App\Service\TypeaheadSearchService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -444,13 +445,12 @@ class AccountController extends PsyPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function typeaheadSearch(
-        Request $request, ResponseService $responseService, UserRepository $userRepository,
-        TypeaheadSearchService $typeaheadSearchService
+        Request $request, ResponseService $responseService, UserTypeaheadService $userTypeaheadService
     )
     {
         try
         {
-            $suggestions = $typeaheadSearchService->search($userRepository, 'name', 5, $request->query->get('search', ''));
+            $suggestions = $userTypeaheadService->search('name', $request->query->get('search', ''), 5);
 
             return $responseService->success($suggestions);
         }

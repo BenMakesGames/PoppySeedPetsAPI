@@ -15,6 +15,7 @@ use App\Service\Filter\DaycareFilterService;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\PetService;
 use App\Service\ResponseService;
+use App\Service\Typeahead\PetTypeaheadService;
 use App\Service\TypeaheadSearchService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -389,13 +390,14 @@ class PetController extends PsyPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function typeaheadSearch(
-        Request $request, ResponseService $responseService, PetRepository $petRepository,
-        TypeaheadSearchService $typeaheadSearchService
+        Request $request, ResponseService $responseService, PetTypeaheadService $petTypeaheadService
     )
     {
+        $petTypeaheadService->setUser($this->getUser());
+
         try
         {
-            $suggestions = $typeaheadSearchService->search($petRepository, 'name', 5, $request->query->get('search', ''));
+            $suggestions = $petTypeaheadService->search('name', $request->query->get('search', ''));
 
             return $responseService->success($suggestions);
         }
