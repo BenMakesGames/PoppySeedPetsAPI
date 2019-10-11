@@ -12,4 +12,5 @@ class HollowEarthActionTypeEnum
     public const PAY_MONEY = 'payMoneys?';
     public const RECEIVE_ITEM = 'receiveItem';
     public const RECEIVE_MONEY = 'receiveMoneys';
+    public const CHOOSE_ONE = 'chooseOne';
 }

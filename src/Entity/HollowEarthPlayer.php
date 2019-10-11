@@ -152,6 +152,9 @@ class HollowEarthPlayer
                     case HollowEarthActionTypeEnum::PAY_MONEY:
                         $action['item'] = $this->currentAction['amount'];
                         break;
+                    case HollowEarthActionTypeEnum::CHOOSE_ONE:
+                        $action['buttons'] = $this->currentAction['buttons'];
+                        break;
                 }
             }
 

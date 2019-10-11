@@ -162,6 +162,7 @@ class HollowEarthService
         {
             case HollowEarthActionTypeEnum::PAY_MONEY:
             case HollowEarthActionTypeEnum::PAY_ITEM:
+            case HollowEarthActionTypeEnum::CHOOSE_ONE:
                 $player->setCurrentAction($event);
                 break;
 
@@ -174,7 +175,12 @@ class HollowEarthService
                 break;
 
             case  HollowEarthActionTypeEnum::RECEIVE_ITEM:
-                $this->inventoryService->receiveItem($event['item'], $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);
+                if(is_array($event['item']))
+                {
+                    foreach($event['item'] as $itemName)
+                        $this->inventoryService->receiveItem($itemName, $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);                }
+                else
+                    $this->inventoryService->receiveItem($event['item'], $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);
                 break;
 
             case HollowEarthActionTypeEnum::RECEIVE_MONEY:
