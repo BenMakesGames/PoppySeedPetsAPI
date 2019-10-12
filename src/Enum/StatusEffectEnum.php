@@ -8,4 +8,5 @@ final class StatusEffectEnum
     public const ALERT = 'Alert';
     public const CAFFEINATED = 'Caffeinated';
     public const TIRED = 'Tired';
+    public const INSPIRED = 'Inspired';
 }

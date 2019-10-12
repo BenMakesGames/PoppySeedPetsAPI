@@ -21,7 +21,6 @@ class HollowEarthService
     private $em;
     private $inventoryService;
     private $petService;
-    private $responseService;
 
     public const DICE_ITEMS = [
         'Glowing Four-sided Die' => 4,
@@ -31,14 +30,13 @@ class HollowEarthService
 
     public function __construct(
         HollowEarthTileRepository $hollowEarthTileRepository, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetService $petService, ResponseService $responseService
+        PetService $petService
     )
     {
         $this->hollowEarthTileRepository = $hollowEarthTileRepository;
         $this->em = $em;
         $this->inventoryService = $inventoryService;
         $this->petService = $petService;
-        $this->responseService = $responseService;
     }
 
     public function unlockHollowEarth(User $user)
@@ -143,7 +141,7 @@ class HollowEarthService
 
         if($player->getMovesRemaining() === 0 || $tile->getRequiredAction() === HollowEarthRequiredActionEnum::YES_AND_KEEP_MOVING)
             $this->doImmediateEvent($player, $tile->getEvent());
-        if ($tile->getRequiredAction() === HollowEarthRequiredActionEnum::YES_AND_STOP_MOVING)
+        else if ($tile->getRequiredAction() === HollowEarthRequiredActionEnum::YES_AND_STOP_MOVING)
         {
             $player->setMovesRemaining(0);
             $this->doImmediateEvent($player, $tile->getEvent());
@@ -152,53 +150,66 @@ class HollowEarthService
 
     public function doImmediateEvent(HollowEarthPlayer $player, $event)
     {
-        if(!array_key_exists('type', $event))
-            return;
-
+        $doLog = false;
         $pet = $player->getChosenPet();
-
         $petChanges = new PetChanges($pet);
 
-        switch($event['type'])
+        if(array_key_exists('type', $event))
         {
-            case HollowEarthActionTypeEnum::PAY_MONEY:
-            case HollowEarthActionTypeEnum::PAY_ITEM:
-            case HollowEarthActionTypeEnum::CHOOSE_ONE:
-                $player->setCurrentAction($event);
-                break;
+            switch($event['type'])
+            {
+                case HollowEarthActionTypeEnum::PAY_MONEY:
+                case HollowEarthActionTypeEnum::PAY_ITEM:
+                case HollowEarthActionTypeEnum::CHOOSE_ONE:
+                    $player->setCurrentAction($event);
+                    break;
 
-            case HollowEarthActionTypeEnum::CHANGE_DIRECTION:
-                $player->setCurrentDirection($event['direction']);
-                break;
+                case HollowEarthActionTypeEnum::CHANGE_DIRECTION:
+                    $player->setCurrentDirection($event['direction']);
+                    break;
 
-            case HollowEarthActionTypeEnum::MOVE_TO:
-                $this->enterTile($player, $this->hollowEarthTileRepository->find($event['id']));
-                break;
+                case HollowEarthActionTypeEnum::MOVE_TO:
+                    $this->enterTile($player, $this->hollowEarthTileRepository->find($event['id']));
+                    break;
 
-            case  HollowEarthActionTypeEnum::RECEIVE_ITEM:
-                if(is_array($event['item']))
-                {
-                    foreach($event['item'] as $itemName)
-                        $this->inventoryService->receiveItem($itemName, $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);                }
-                else
-                    $this->inventoryService->receiveItem($event['item'], $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);
-                break;
+                case  HollowEarthActionTypeEnum::RECEIVE_ITEM:
+                    if(is_array($event['item']))
+                    {
+                        foreach($event['item'] as $itemName)
+                            $this->inventoryService->receiveItem($itemName, $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);
+                    }
+                    else
+                        $this->inventoryService->receiveItem($event['item'], $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);
+                    break;
 
-            case HollowEarthActionTypeEnum::RECEIVE_MONEY:
-                $player->getUser()->increaseMoneys($event['amount']);
-                break;
+                case HollowEarthActionTypeEnum::RECEIVE_MONEY:
+                    $player->getUser()->increaseMoneys($event['amount']);
+                    break;
+            }
         }
 
         foreach([ 'food', 'safety', 'love', 'esteem' ] as $stat)
         {
             if (array_key_exists($stat, $event))
-                $player->getChosenPet()->{'increase' . $stat }($event[$stat]);
+            {
+                $player->getChosenPet()->{'increase' . $stat}($event[$stat]);
+                $doLog = true;
+            }
         }
 
         if(array_key_exists('exp', $event))
+        {
             $this->petService->gainExp($pet, $event['exp']['amount'], $event['exp']['stats']);
+            $doLog = true;
+        }
 
-        if($event['description'])
+        if(array_key_exists('statusEffect', $event))
+        {
+            $this->petService->applyStatusEffect($pet, $event['statusEffect']['status'], $event['statusEffect']['duration'], $event['statusEffect']['maxDuration']);
+            $doLog = true;
+        }
+
+        if($event['description'] && $doLog)
         {
             $description = $this->formatEventDescription($event['description'], $player);
 

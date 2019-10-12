@@ -85,9 +85,10 @@ class PetService
      */
     public function gainExp(Pet $pet, int $exp, array $stats)
     {
-        if($pet->getInDaycare()) throw new \InvalidArgumentException('Pets in daycare cannot be interacted with.');
+        if($pet->hasStatusEffect(StatusEffectEnum::INSPIRED))
+            $exp++;
 
-        if($exp === 0) return;
+        if($exp < 0) return;
 
         $possibleStats = array_filter($stats, function($stat) use($pet) {
             return ($pet->{'get' . $stat}() < 20);
@@ -339,6 +340,28 @@ class PetService
         return true;
     }
 
+    public function applyStatusEffect(Pet $pet, string $status, int $duration, int $maxDuration)
+    {
+        $statusEffect = $pet->getStatusEffect($status);
+
+        if(!$statusEffect)
+        {
+            $statusEffect = (new StatusEffect())
+                ->setStatus($status)
+            ;
+
+            $pet->addStatusEffect($statusEffect);
+
+            $this->em->persist($statusEffect);
+        }
+
+        $statusEffect
+            ->setTotalDuration(min($maxDuration, $statusEffect->getTotalDuration() + $duration))
+            ->setTimeRemaining(min($statusEffect->getTotalDuration(), $statusEffect->getTimeRemaining() + $duration))
+        ;
+
+    }
+
     private function applyFoodEffects(Pet $pet, ItemFood $food)
     {
         $pet->increaseAlcohol($food->getAlcohol());
@@ -348,24 +371,7 @@ class PetService
         if($caffeine > 0)
         {
             $pet->increaseCaffeine($caffeine);
-
-            $statusEffect = $pet->getStatusEffect(StatusEffectEnum::CAFFEINATED);
-
-            if(!$statusEffect)
-            {
-                $statusEffect = (new StatusEffect())
-                    ->setStatus(StatusEffectEnum::CAFFEINATED)
-                ;
-
-                $pet->addStatusEffect($statusEffect);
-
-                $this->em->persist($statusEffect);
-            }
-
-            $statusEffect
-                ->setTotalDuration(min(8 * 60, $statusEffect->getTotalDuration() + $caffeine * 60))
-                ->setTimeRemaining(min($statusEffect->getTotalDuration(), $statusEffect->getTimeRemaining() + $caffeine * 60))
-            ;
+            $this->applyStatusEffect($pet, StatusEffectEnum::CAFFEINATED, $caffeine * 60, 8 * 60);
         }
         else if($caffeine < 0)
             $pet->increaseCaffeine($caffeine);
