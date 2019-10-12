@@ -176,7 +176,7 @@ class HollowEarthController extends PsyPetsController
         {
             $itemToPay = $inventoryRepository->findOneByName($player->getUser(), $action['item']);
 
-            if($itemToPay)
+            if(!$itemToPay)
                 throw new UnprocessableEntityHttpException('You do not have a ' . $action['item'] . '...');
 
             $em->remove($itemToPay);
