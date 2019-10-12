@@ -465,7 +465,7 @@ class BoxController extends PsyPetsItemController
             'Grandparoot', 'Honeydont', 'Hot Dog', 'Iron Ore', 'Kombucha', 'Melon Bun', 'Naner', 'Oil', 'Onion',
             'Orange', 'Pamplemousse', 'Plain Yogurt', 'Quintessence', 'Red', 'Rice', 'Seaweed', 'Secret Seashell',
             'Silica Grounds', 'Smallish Pumpkin', 'Sugar', 'Toad Legs', 'Tomato', 'Wheat Flour',
-            'World\'s Best Sugar Cookie',
+            'World\'s Best Sugar Cookie', 'Glowing Four-sided Die'
         ]);
 
         $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $inventory->getLocation());

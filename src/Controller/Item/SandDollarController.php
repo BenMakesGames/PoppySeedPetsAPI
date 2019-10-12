@@ -49,6 +49,11 @@ class SandDollarController extends PsyPetsItemController
         }
         else if(mt_rand(1, 20) === 1)
         {
+            $inventoryService->receiveItem('Glowing Six-sided Die', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location);
+            $message = 'You rummage around inside the Sand Dollar. There was 1 dollar - er, I mean, moneys - and also a bit of sand - er, I mean, Silica Grounds - and hm, something... geometric? Ah: it\'s a die. And it\'s... glowing...';
+        }
+        else if(mt_rand(1, 20) === 1)
+        {
             $inventoryService->receiveItem('Plastic', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location);
             $message = 'You rummage around inside the Sand Dollar. There was 1 dollar - er, I mean, moneys - and also a bit of sand - er, I mean, Silica Grounds - and what? There\'s some... Plastic in here?? That\'s kind of sad :| Well... one less piece in the ocean, I guess...';
         }
