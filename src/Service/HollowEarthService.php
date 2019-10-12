@@ -209,7 +209,7 @@ class HollowEarthService
             $doLog = true;
         }
 
-        if($event['description'] && $doLog)
+        if(array_key_exists('description', $event) && $doLog)
         {
             $description = $this->formatEventDescription($event['description'], $player);
 
