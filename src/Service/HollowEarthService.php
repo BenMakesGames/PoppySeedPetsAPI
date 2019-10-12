@@ -110,8 +110,6 @@ class HollowEarthService
             ->setCurrentTile($nextTile)
             ->setCurrentAction($action)
         ;
-
-        $this->doImmediateEvent($player, $action);
     }
 
     private function getNextTile(HollowEarthPlayer $player): HollowEarthTile
