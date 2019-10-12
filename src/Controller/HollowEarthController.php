@@ -121,6 +121,10 @@ class HollowEarthController extends PsyPetsController
                     $this->continueActingPetChallenge($action, $player, $request->request, $hollowEarthService);
                     break;
 
+                case HollowEarthActionTypeEnum::CHOOSE_ONE:
+                    $this->continueActingChooseOne($action, $player, $request->request, $hollowEarthService);
+                    break;
+
                 case HollowEarthActionTypeEnum::MOVE_TO:
                 case HollowEarthActionTypeEnum::CHANGE_DIRECTION:
                 case HollowEarthActionTypeEnum::RECEIVE_ITEM:
@@ -138,6 +142,24 @@ class HollowEarthController extends PsyPetsController
         $em->flush();
 
         return $responseService->success($hollowEarthService->getResponseData($user), [ SerializationGroupEnum::HOLLOW_EARTH ]);
+    }
+
+    private function continueActingChooseOne(
+        array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService
+    )
+    {
+        if(!$params->has('choice') || !is_numeric($params->get('choice')))
+            throw new UnprocessableEntityHttpException('You must choose one.');
+
+        $choice = (int)$params->get('choice');
+
+        if($choice < 0 || $choice >= count($action['outcomes']))
+            throw new UnprocessableEntityHttpException('You must choose one.');
+
+        $chosenOutcome = $action['outcomes'][$choice];
+
+        $hollowEarthService->doImmediateEvent($player, $chosenOutcome);
+        $player->setCurrentAction($chosenOutcome);
     }
 
     private function continueActingPayItem(

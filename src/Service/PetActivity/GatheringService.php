@@ -9,6 +9,7 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\UserRepository;
+use App\Service\HollowEarthService;
 use App\Service\InventoryService;
 use App\Service\PetService;
 use App\Service\ResponseService;
@@ -539,6 +540,9 @@ class GatheringService
         $possibleLoot = [
             'Smallish Pumpkin', 'Crooked Stick', 'Sweet Beet', 'String', 'Grandparoot', 'Pamplemousse',
         ];
+
+        if(mt_rand(1, 20) === 1)
+            $possibleLoot[] = ArrayFunctions::pick_one(array_keys(HollowEarthService::DICE_ITEMS));
 
         $loot = [];
 
