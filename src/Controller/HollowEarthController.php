@@ -126,11 +126,11 @@ class HollowEarthController extends PsyPetsController
                     break;
 
                 case HollowEarthActionTypeEnum::MOVE_TO:
-                case HollowEarthActionTypeEnum::CHANGE_DIRECTION:
-                case HollowEarthActionTypeEnum::RECEIVE_ITEM:
-                case HollowEarthActionTypeEnum::RECEIVE_MONEY:
-                    $player->setCurrentAction(null);
+                    $hollowEarthService->moveTo($player, $action['id']);
                     break;
+
+                default:
+                    throw new \Exception('Unknown action type "' . $action['type'] . '"');
             }
         }
 

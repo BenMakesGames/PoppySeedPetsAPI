@@ -85,6 +85,21 @@ class HollowEarthService
         return $results;
     }
 
+    public function moveTo(HollowEarthPlayer $player, int $id)
+    {
+        $tile = $this->hollowEarthTileRepository->find($id);
+
+        if(!$tile)
+            throw new \InvalidArgumentException('No tile found for id #' . $id);
+
+        $this->enterTile($player, $tile);
+
+        $player
+            ->setCurrentTile($tile)
+            ->setCurrentAction($tile->getEvent())
+        ;
+    }
+
     public function advancePlayer(HollowEarthPlayer $player)
     {
         if($player->getMovesRemaining() === 0)
@@ -152,40 +167,6 @@ class HollowEarthService
         $pet = $player->getChosenPet();
         $petChanges = new PetChanges($pet);
 
-        if(array_key_exists('type', $event))
-        {
-            switch($event['type'])
-            {
-                case HollowEarthActionTypeEnum::PAY_MONEY:
-                case HollowEarthActionTypeEnum::PAY_ITEM:
-                case HollowEarthActionTypeEnum::CHOOSE_ONE:
-                    $player->setCurrentAction($event);
-                    break;
-
-                case HollowEarthActionTypeEnum::CHANGE_DIRECTION:
-                    $player->setCurrentDirection($event['direction']);
-                    break;
-
-                case HollowEarthActionTypeEnum::MOVE_TO:
-                    $this->enterTile($player, $this->hollowEarthTileRepository->find($event['id']));
-                    break;
-
-                case  HollowEarthActionTypeEnum::RECEIVE_ITEM:
-                    if(is_array($event['item']))
-                    {
-                        foreach($event['item'] as $itemName)
-                            $this->inventoryService->receiveItem($itemName, $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);
-                    }
-                    else
-                        $this->inventoryService->receiveItem($event['item'], $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);
-                    break;
-
-                case HollowEarthActionTypeEnum::RECEIVE_MONEY:
-                    $player->getUser()->increaseMoneys($event['amount']);
-                    break;
-            }
-        }
-
         foreach([ 'food', 'safety', 'love', 'esteem' ] as $stat)
         {
             if (array_key_exists($stat, $event))
@@ -220,6 +201,26 @@ class HollowEarthService
 
             $this->em->persist($activityLog);
         }
+
+        if(array_key_exists('receiveItems', $event))
+        {
+            if(is_array($event['receiveItems']))
+            {
+                foreach($event['receiveItems'] as $itemName)
+                    $this->inventoryService->receiveItem($itemName, $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);
+            }
+            else
+                $this->inventoryService->receiveItem($event['receiveItems'], $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);
+        }
+
+        if(array_key_exists('receiveMoneys', $event))
+            $player->getUser()->increaseMoneys($event['receiveMoneys']);
+
+        if(array_key_exists('changeDirection', $event))
+            $player->setCurrentDirection($event['changeDirection']);
+
+        if(array_key_exists('type', $event))
+            $player->setCurrentAction($event);
     }
 
     public function formatEventDescription(string $description, HollowEarthPlayer $player): string
