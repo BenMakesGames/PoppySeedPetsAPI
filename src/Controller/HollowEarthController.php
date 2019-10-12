@@ -159,7 +159,7 @@ class HollowEarthController extends PsyPetsController
 
             $em->remove($itemToPay);
 
-            if($action['ifPaid'])
+            if(array_key_exists('ifPaid', $action))
             {
                 $hollowEarthService->doImmediateEvent($player, $action['ifPaid']);
                 $player->setCurrentAction($action['ifPaid']);
@@ -167,7 +167,7 @@ class HollowEarthController extends PsyPetsController
             else
                 $player->setCurrentAction(null);
         }
-        else if($action['ifNotPaid'])
+        else if(array_key_exists('ifNotPaid', $action))
         {
             $hollowEarthService->doImmediateEvent($player, $action['ifNotPaid']);
             $player->setCurrentAction($action['ifNotPaid']);
@@ -192,7 +192,7 @@ class HollowEarthController extends PsyPetsController
 
             $player->getUser()->increaseMoneys(-$action['amount']);
 
-            if($action['ifPaid'])
+            if(array_key_exists('ifPaid', $action))
             {
                 $hollowEarthService->doImmediateEvent($player, $action['ifPaid']);
                 $player->setCurrentAction($action['ifPaid']);
@@ -200,7 +200,7 @@ class HollowEarthController extends PsyPetsController
             else
                 $player->setCurrentAction(null);
         }
-        else if($action['ifNotPaid'])
+        else if(array_key_exists('ifNotPaid', $action))
         {
             $hollowEarthService->doImmediateEvent($player, $action['ifNotPaid']);
             $player->setCurrentAction($action['ifNotPaid']);

@@ -5,6 +5,7 @@ use App\Entity\HollowEarthPlayer;
 use App\Entity\HollowEarthTile;
 use App\Entity\Inventory;
 use App\Entity\Item;
+use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Enum\HollowEarthActionTypeEnum;
 use App\Enum\HollowEarthMoveDirectionEnum;
@@ -194,7 +195,15 @@ class HollowEarthService
         if($event['description'])
         {
             $description = $this->formatEventDescription($event['description'], $player);
-            $this->responseService->createActivityLog($pet, $description, '', $petChanges->compare($pet));
+
+            $activityLog = (new PetActivityLog())
+                ->setPet($pet)
+                ->setEntry($description)
+                ->setIcon('')
+                ->setChanges($petChanges->compare($pet))
+            ;
+
+            $this->em->persist($activityLog);
         }
     }
 
