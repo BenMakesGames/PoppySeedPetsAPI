@@ -3,7 +3,6 @@ namespace App\Controller;
 
 use App\Entity\Inventory;
 use App\Entity\KnownRecipes;
-use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Model\ItemQuantity;
