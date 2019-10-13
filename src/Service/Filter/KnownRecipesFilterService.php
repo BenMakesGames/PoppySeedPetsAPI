@@ -29,6 +29,7 @@ class KnownRecipesFilterService
                 'name' => [ 'r.name' => 'ASC' ], // first one is the default
             ],
             [
+                'name' => [ $this, 'filterName' ],
                 'user' => [ $this, 'filterUser' ],
             ]
         );
@@ -46,6 +47,14 @@ class KnownRecipesFilterService
         $qb
             ->andWhere('kr.user=:userId')
             ->setParameter('userId', $value)
+        ;
+    }
+
+    public function filterName(QueryBuilder $qb, $value)
+    {
+        $qb
+            ->andWhere('r.name LIKE :nameLike')
+            ->setParameter('nameLike', '%' . $value . '%')
         ;
     }
 }

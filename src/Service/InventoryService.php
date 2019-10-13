@@ -86,6 +86,21 @@ class InventoryService
     }
 
     /**
+     * @param ItemQuantity[] $requirements
+     * @param ItemQuantity[] $inventory
+     */
+    public function hasRequiredItems($requirements, $inventory)
+    {
+        foreach($requirements as $requirement)
+        {
+            if(!array_key_exists($requirement->item->getName(), $inventory) || $inventory[$requirement->item->getName()]->quantity < $requirement->quantity)
+                return false;
+        }
+
+        return true;
+    }
+
+    /**
      * @return ItemQuantity[]
      */
     public function deserializeItemList(string $list)

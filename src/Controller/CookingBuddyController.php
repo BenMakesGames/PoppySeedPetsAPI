@@ -1,11 +1,14 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Inventory;
 use App\Entity\KnownRecipes;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
+use App\Repository\ItemRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\Filter\KnownRecipesFilterService;
 use App\Service\InventoryService;
@@ -23,22 +26,24 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class CookingBuddyController extends PsyPetsController
 {
     /**
-     * @Route("", methods={"GET"})
+     * @Route("/{cookingBuddy}", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getKnownRecipes(
-        KnownRecipesFilterService $knownRecipesFilterService, InventoryService $inventoryService, Request $request,
-        ResponseService $responseService
+        Inventory $cookingBuddy, KnownRecipesFilterService $knownRecipesFilterService, InventoryService $inventoryService,
+        Request $request, ResponseService $responseService, ItemRepository $itemRepository
     )
     {
         $user = $this->getUser();
 
-        /*if($inventoryService->countInventory($user, 'Cooking Buddy') === 0)
-            throw new NotFoundHttpException();*/
+        if($cookingBuddy->getOwner()->getId() !== $user->getId() || $cookingBuddy->getItem()->getName() !== 'Cooking Buddy')
+            throw new NotFoundHttpException();
 
         $knownRecipesFilterService->addRequiredFilter('user', $user->getId());
 
-        $results = $knownRecipesFilterService->getResults($request->request);
+        $results = $knownRecipesFilterService->getResults($request->query);
+
+        $quantities = $itemRepository->getInventoryQuantities($user, $cookingBuddy->getLocation(), 'name');
 
         // this feels kinda' gross, but I'm not sure how else to do it...
         $recipes = [];
@@ -54,7 +59,8 @@ class CookingBuddyController extends PsyPetsController
                 'id' => $knownRecipe->getId(),
                 'name' => $knownRecipe->getRecipe()->getName(),
                 'ingredients' => $ingredients,
-                'makes' => $makes
+                'makes' => $makes,
+                'canPrepare' => $inventoryService->hasRequiredItems($ingredients, $quantities)
             ];
         }
 
@@ -64,16 +70,18 @@ class CookingBuddyController extends PsyPetsController
     }
 
     /**
-     * @Route("/prepare/{knownRecipe}", methods={"POST"})
+     * @Route("/{cookingBuddy}/prepare/{knownRecipe}", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function prepareRecipeFromMemory(
-        KnownRecipes $knownRecipe, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, InventoryRepository $inventoryRepository,
-        UserStatsRepository $userStatsRepository
+        Inventory $cookingBuddy, KnownRecipes $knownRecipe, ResponseService $responseService, EntityManagerInterface $em,
+        InventoryService $inventoryService, InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository
     )
     {
         $user = $this->getUser();
+
+        if($cookingBuddy->getOwner()->getId() !== $user->getId() || $cookingBuddy->getItem()->getName() !== 'Cooking Buddy')
+            throw new NotFoundHttpException();
 
         if($knownRecipe->getUser()->getId() !== $user->getId())
             throw new NotFoundHttpException();
@@ -90,6 +98,7 @@ class CookingBuddyController extends PsyPetsController
                 [
                     'owner' => $user->getId(),
                     'item' => $ingredient->item->getId(),
+                    'location' => $cookingBuddy->getLocation()
                 ],
                 [],
                 $ingredient->quantity
@@ -106,7 +115,7 @@ class CookingBuddyController extends PsyPetsController
 
         $makes = $inventoryService->deserializeItemList($recipe->getMakes());
 
-        $newInventory = $inventoryService->giveInventory($makes, $user, $user, $user->getName() . ' prepared this.', LocationEnum::HOME);
+        $newInventory = $inventoryService->giveInventory($makes, $user, $user, $user->getName() . ' prepared this.', $cookingBuddy->getLocation());
 
         $userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING);
 
