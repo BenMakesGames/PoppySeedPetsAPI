@@ -581,7 +581,8 @@ class PetService
     {
         /** @var PetRelationship[] $friends */
         $relationships = $pet->getPetRelationships()->filter(function(PetRelationship $p) {
-            return $p->getRelationship()->getFood() > 0; // starving pets don't have time to hang out
+            // starving pets don't have time to hang out, and 0-commitment pets are not hung out with
+            return $p->getRelationship()->getFood() > 0 && $p->getCommitment() > 0;
         })->toArray();
 
         // no friends available? no spirit companion? GIT OUTTA' HE'E!
