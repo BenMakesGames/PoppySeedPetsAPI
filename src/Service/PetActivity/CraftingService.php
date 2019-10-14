@@ -122,14 +122,8 @@ class CraftingService
         if(array_key_exists('Plastic Idol', $quantities) && array_key_exists('Yellow Dye', $quantities))
             $possibilities[] = [ $this, 'createGoldIdol' ];
 
-        // TODO: fiberglass stuff!
-        /*
-        if(array_key_exists('Fiberglass', $quantities) && array_key_exists('String', $quantities))
-        {
-            $possibilities[] = [$this, 'createFiberglassBow'];
-            $possibilities[] = [$this, 'createFiberglassFishingRod'];
-        }
-        */
+        if(array_key_exists('Fiberglass', $quantities))
+            $possibilities[] = [ $this, 'createSimpleFiberglassItem' ];
 
         // pets won't try any smithing tasks if they don't feel sufficiently safe
         if($pet->getSafety() > 0)
@@ -167,6 +161,40 @@ class CraftingService
             $activityLog->setChanges($changes->compare($pet));
 
         return $activityLog;
+    }
+
+    public function createSimpleFiberglassItem(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        $item = ArrayFunctions::pick_one([ 'Fiberglass Flute' ]);
+
+        if($roll <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+
+            $this->inventoryService->loseItem('Fiberglass', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $item . ', but shattered the Fiberglass! :(', '');
+        }
+        else if($roll >= 14)
+        {
+            $this->petService->spendTime($pet, \mt_rand(60, 75));
+            $this->inventoryService->loseItem('Fiberglass', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a ' . $item . ' from Fiberglass.', '');
+            $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from Fiberglass.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 75));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $item . ', but the Fiberglass wasn\'t cooperating.', 'icons/activity-logs/confused');
+        }
     }
 
     private function createSweetBeat(Pet $pet): PetActivityLog

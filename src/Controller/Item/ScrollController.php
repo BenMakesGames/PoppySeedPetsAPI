@@ -73,6 +73,46 @@ class ScrollController extends PsyPetsItemController
             return $responseService->itemActionSuccess('You read the scroll perfectly, summoning ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
         }
     }
+    /**
+     * @Route("/music/{inventory}/invoke", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function invokeMusicScroll(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'scroll/music/#/invoke');
+
+        $em->remove($inventory);
+
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+
+        $commonItems = [
+            'Flute', 'Fiberglass Flute', 'Music Note'
+        ];
+
+        $rareItems = [
+            'Bass Guitar', 'Maraca', 'Melodica'
+        ];
+
+        $location = $inventory->getLocation();
+
+        $newInventory = [
+            $inventoryService->receiveItem('Music Note', $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location),
+            $inventoryService->receiveItem(ArrayFunctions::pick_one($commonItems), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location),
+            $inventoryService->receiveItem(ArrayFunctions::pick_one($rareItems), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location),
+        ];
+
+        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
+        sort($itemList);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess('You read the scroll perfectly, summoning ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+    }
 
     /**
      * @Route("/farmers/{inventory}/invoke", methods={"POST"})
