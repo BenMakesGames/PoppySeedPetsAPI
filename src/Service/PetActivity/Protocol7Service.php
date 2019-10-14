@@ -221,7 +221,7 @@ class Protocol7Service
             ],
             [
                 'name' => 'a Man in the Middle',
-                'loot' => [ 'Cryptocurrency Wallet', 'Hash Table' ],
+                'loot' => [ 'Cryptocurrency Wallet', 'Cryptocurrency Wallet', 'Hash Table' ],
             ]
         ]);
 

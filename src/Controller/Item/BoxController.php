@@ -567,6 +567,7 @@ class BoxController extends PsyPetsItemController
         $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
         sort($itemList);
 
+        $em->remove($key);
         $em->remove($inventory);
 
         $em->flush();
@@ -632,6 +633,7 @@ class BoxController extends PsyPetsItemController
         $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
         sort($itemList);
 
+        $em->remove($key);
         $em->remove($inventory);
 
         $em->flush();
@@ -678,6 +680,7 @@ class BoxController extends PsyPetsItemController
         $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
         sort($itemList);
 
+        $em->remove($key);
         $em->remove($inventory);
 
         $em->flush();

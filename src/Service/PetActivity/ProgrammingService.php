@@ -78,7 +78,9 @@ class ProgrammingService
             $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->inventoryService->loseItem('Pointer', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to dereference a String from a Pointer, but encountered a null exception :(', 'icons/activity-logs/null');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to dereference a String from a Pointer, but encountered a null exception :(', 'icons/activity-logs/null');
+            $this->inventoryService->petCollectsItem('NUL', $pet, $pet->getName() . ' encountered a null exception when trying to dereference a pointer.', $activityLog);
+            return $activityLog;
         }
         else if($roll >= 10)
         {
