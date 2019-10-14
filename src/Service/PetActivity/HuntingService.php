@@ -36,7 +36,7 @@ class HuntingService
     {
         $maxSkill = 10 + $pet->getStrength() + $pet->getBrawl() - $pet->getAlcohol() - $pet->getPsychedelic();
 
-        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 19);
+        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 20);
 
         $roll = \mt_rand(1, $maxSkill);
 
@@ -54,36 +54,39 @@ class HuntingService
                 $activityLog = $this->huntedDustBunny($pet);
                 break;
             case 5:
+                $activityLog = $this->huntedPlasticBag($pet);
+                break;
             case 6:
             case 7:
+            case 8:
                 $activityLog = $this->huntedGoat($pet);
                 break;
-            case 8:
             case 9:
+            case 10:
                 $activityLog = $this->huntedLargeToad($pet);
                 break;
-            case 10:
+            case 11:
                 $activityLog = $this->huntedScarecrow($pet);
                 break;
-            case 11:
+            case 12:
                 $activityLog = $this->huntedOnionBoy($pet);
                 break;
-            case 12:
             case 13:
+            case 14:
                 $activityLog = $this->huntedThievingMagpie($pet);
                 break;
-            case 14:
+            case 15:
                 $activityLog = $this->huntedGhosts($pet);
                 break;
-            case 15:
             case 16:
+            case 17:
                 $activityLog = $this->huntedSatyr($pet);
                 break;
-            case 17:
+            case 18:
                 $activityLog = $this->huntedPaperGolem($pet);
                 break;
-            case 18:
             case 19:
+            case 20:
                 $activityLog = $this->huntedLeshyDemon($pet);
                 break;
         }
@@ -117,6 +120,28 @@ class HuntingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' chased a Dust Bunny, but wasn\'t able to catch up with it.', '');
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::DEXTERITY, PetSkillEnum::BRAWL ]);
+        }
+
+        return $activityLog;
+    }
+
+    private function huntedPlasticBag(Pet $pet): PetActivityLog
+    {
+        $skill = 10 + $pet->getDexterity() + $pet->getBrawl();
+
+        $pet->increaseFood(-1);
+        $this->petService->spendTime($pet, mt_rand(30, 60));
+
+        if(\mt_rand(1, $skill) >= 6)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' pounced on a Plastic Bag, reducing it to Plastic... somehow?', 'items/ambiguous/fluff');
+            $this->inventoryService->petCollectsItem('Plastic', $pet, 'The remains of a vicious Plastic Bag that ' . $pet->getName() . ' hunted!', $activityLog);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::DEXTERITY, PetSkillEnum::BRAWL ]);
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' chased a Plastic Bag, but wasn\'t able to catch up with it!', '');
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::DEXTERITY, PetSkillEnum::BRAWL ]);
         }
 

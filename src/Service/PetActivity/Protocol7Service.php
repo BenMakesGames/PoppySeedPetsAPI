@@ -61,6 +61,11 @@ class Protocol7Service
             case 13:
                 $activityLog = $this->foundLayer03($pet);
                 break;
+            case 14:
+            case 15:
+            case 16:
+                $activityLog = $this->foundLayer04($pet);
+                break;
         }
 
         if($activityLog)
@@ -83,9 +88,20 @@ class Protocol7Service
     private function foundLayer01(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
-        $baddie = ArrayFunctions::pick_one([ 'a Pop-under Ad', 'an overflowed buffer', 'a Spam E-mail' ]);
 
-        $loot = ArrayFunctions::pick_one([ 'Pointer' ]);
+        $monster = ArrayFunctions::pick_one([
+            [
+                'name' => 'an overflowed buffer',
+                'loot' => [ 'Pointer' ]
+            ],
+            [
+                'name' => 'a Pop-under Ad',
+                'loot' => [ 'Pointer' ],
+            ]
+        ]);
+
+        $baddie = $monster['name'];
+        $loot = ArrayFunctions::pick_one($monster['loot']);
 
         if($roll >= 10)
         {
@@ -115,9 +131,24 @@ class Protocol7Service
     private function foundLayer02(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
-        $baddie = ArrayFunctions::pick_one([ 'a Trojan Horse', 'a Clickjacker', 'an SQL Injection' ]);
 
-        $loot = ArrayFunctions::pick_one([ 'Finite State Machine', 'Browser Cookie' ]);
+        $monster = ArrayFunctions::pick_one([
+            [
+                'name' => 'a Trojan Horse',
+                'loot' => [ 'Plastic' ]
+            ],
+            [
+                'name' => 'a Clickjacker',
+                'loot' => [ 'Browser Cookie' ],
+            ],
+            [
+                'name' => 'an SQL Injection',
+                'loot' => [ 'Finite State Machine' ]
+            ]
+        ]);
+
+        $baddie = $monster['name'];
+        $loot = ArrayFunctions::pick_one($monster['loot']);
 
         if($roll >= 12)
         {
@@ -137,14 +168,29 @@ class Protocol7Service
     private function foundLayer03(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
-        $baddie = ArrayFunctions::pick_one([ 'a Keylogger', 'a Rootkit', 'a Boot Sector Virus' ]);
 
-        $loot = ArrayFunctions::pick_one([ 'Hash Table', 'Beans' ]);
+        $monster = ArrayFunctions::pick_one([
+            [
+                'name' => 'a Keylogger',
+                'loot' => [ 'Hash Table', 'Password' ]
+            ],
+            [
+                'name' => 'a Rootkit',
+                'loot' => [ 'Beans', 'Password' ],
+            ],
+            [
+                'name' => 'a Boot Sector Virus',
+                'loot' => [ 'Pointer', 'NUL' ]
+            ]
+        ]);
+
+        $baddie = $monster['name'];
+        $loot = ArrayFunctions::pick_one($monster['loot']);
 
         if($roll >= 15)
         {
-            $pet->increaseSafety(1);
-            $pet->increaseEsteem(1);
+            $pet->increaseSafety(2);
+            $pet->increaseEsteem(2);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took its ' . $loot . '!', '');
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.', $activityLog);
@@ -161,10 +207,35 @@ class Protocol7Service
     private function foundLayer04(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
-        $baddie = ArrayFunctions::pick_one([ 'a Man in the Middle', 'a DDOS', 'a Slow Loris' ]);
 
-        if($roll >= 20)
+        $monster = ArrayFunctions::pick_one([
+            [
+                'name' => 'a Slow Loris',
+                'loot' => [ 'String', 'NUL' ]
+            ],
+            [
+                'name' => 'a Man in the Middle',
+                'loot' => [ 'Cryptocurrency Wallet', 'Hash Table' ],
+            ]
+        ]);
+
+        $baddie = $monster['name'];
+        $loot = ArrayFunctions::pick_one($monster['loot']);
+
+        if($roll >= 17)
         {
+            $pet->increaseSafety(2);
+            $pet->increaseEsteem(2);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took its ' . $loot . '!', '');
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $pet->increaseSafety(-1);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 03 of Project-E, but their avatar was disrupted by ' . $baddie . '.', '');
         }
     }
 }
