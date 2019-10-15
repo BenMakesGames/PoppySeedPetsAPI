@@ -53,12 +53,23 @@ final class ColorFunctions
                     break;
             }
         }
-        return [ 'r' => $r * 255.0, 'g' => $g * 255.0, 'b' => $b * 255.0 ];
+        return [ 'r' => $r * 255, 'g' => $g * 255, 'b' => $b * 255 ];
     }
 
     public static function RGB2Hex(int $r, int $g, int $b): string
     {
         return \str_pad(\dechex(($r << 16) + ($g << 8) + $b), 6, '0', STR_PAD_LEFT);
+    }
+
+    public static function Hex2RGB(string $color): array
+    {
+        $dec = hexdec($color);
+
+        return [
+            'r' => $dec >> 16,
+            'g' => ($dec >> 8) % 256,
+            'b' => $dec % 256
+        ];
     }
 
     public static function HSL2Hex(float $h, float $s, float $l): string

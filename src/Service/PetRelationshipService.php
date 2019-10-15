@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\PetBaby;
 use App\Entity\PetRelationship;
 use App\Enum\MeritEnum;
 use App\Enum\RelationshipEnum;
@@ -15,14 +16,17 @@ class PetRelationshipService
     private $petRelationshipRepository;
     private $em;
     private $responseService;
+    private $pregnancyService;
 
     public function __construct(
-        PetRelationshipRepository $petRelationshipRepository, EntityManagerInterface $em, ResponseService $responseService
+        PetRelationshipRepository $petRelationshipRepository, EntityManagerInterface $em, ResponseService $responseService,
+        PregnancyService $pregnancyService
     )
     {
         $this->petRelationshipRepository = $petRelationshipRepository;
         $this->em = $em;
         $this->responseService = $responseService;
+        $this->pregnancyService = $pregnancyService;
     }
 
     /**
@@ -420,6 +424,11 @@ class PetRelationshipService
                         ->increaseSafety(mt_rand(2, 4))
                         ->increaseEsteem(mt_rand(2, 4))
                     ;
+
+                    if(mt_rand(1, 20) === 1 && (!$pet->getPregnancy() || !$friend->getPregnancy()))
+                    {
+                        $this->pregnancyService->getPregnant($pet, $friend);
+                    }
                 }
                 else
                 {
