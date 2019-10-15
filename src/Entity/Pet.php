@@ -236,6 +236,11 @@ class Pet
      */
     private $sexDrive;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\PetBaby", inversedBy="parent", cascade={"persist", "remove"})
+     */
+    private $pregnancy;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -1109,6 +1114,18 @@ class Pet
     public function setSexDrive(int $sexDrive): self
     {
         $this->sexDrive = $sexDrive;
+
+        return $this;
+    }
+
+    public function getPregnancy(): ?PetBaby
+    {
+        return $this->pregnancy;
+    }
+
+    public function setPregnancy(?PetBaby $pregnancy): self
+    {
+        $this->pregnancy = $pregnancy;
 
         return $this;
     }
