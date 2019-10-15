@@ -241,6 +241,26 @@ class Pet
      */
     private $pregnancy;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Pet", inversedBy="motheredPets")
+     */
+    private $mom;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Pet", mappedBy="mom")
+     */
+    private $motheredPets;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Pet", inversedBy="fatheredPets")
+     */
+    private $dad;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Pet", mappedBy="dad")
+     */
+    private $fatheredPets;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -261,6 +281,9 @@ class Pet
             $this->sexDrive = -1;
         else
             $this->sexDrive = \mt_rand(1, 9) === 1 ? 0 : 1;
+
+        $this->motheredPets = new ArrayCollection();
+        $this->fatheredPets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -1126,6 +1149,97 @@ class Pet
     public function setPregnancy(?PetBaby $pregnancy): self
     {
         $this->pregnancy = $pregnancy;
+
+        return $this;
+    }
+
+    public function wantsSobriety(): bool
+    {
+        return $this->getPregnancy() !== null || $this->getPoison() > 6;
+    }
+
+    public function getMom(): ?self
+    {
+        return $this->mom;
+    }
+
+    public function setMom(?self $mom): self
+    {
+        $this->mom = $mom;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getMotheredPets(): Collection
+    {
+        return $this->motheredPets;
+    }
+
+    public function addMotheredPet(self $motheredPet): self
+    {
+        if (!$this->motheredPets->contains($motheredPet)) {
+            $this->motheredPets[] = $motheredPet;
+            $motheredPet->setMom($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMotheredPet(self $motheredPet): self
+    {
+        if ($this->motheredPets->contains($motheredPet)) {
+            $this->motheredPets->removeElement($motheredPet);
+            // set the owning side to null (unless already changed)
+            if ($motheredPet->getMom() === $this) {
+                $motheredPet->setMom(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDad(): ?self
+    {
+        return $this->dad;
+    }
+
+    public function setDad(?self $dad): self
+    {
+        $this->dad = $dad;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getFatheredPets(): Collection
+    {
+        return $this->fatheredPets;
+    }
+
+    public function addFatheredPet(self $fatheredPet): self
+    {
+        if (!$this->fatheredPets->contains($fatheredPet)) {
+            $this->fatheredPets[] = $fatheredPet;
+            $fatheredPet->setDad($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFatheredPet(self $fatheredPet): self
+    {
+        if ($this->fatheredPets->contains($fatheredPet)) {
+            $this->fatheredPets->removeElement($fatheredPet);
+            // set the owning side to null (unless already changed)
+            if ($fatheredPet->getDad() === $this) {
+                $fatheredPet->setDad(null);
+            }
+        }
 
         return $this;
     }

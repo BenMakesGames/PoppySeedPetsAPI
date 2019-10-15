@@ -247,7 +247,7 @@ class PetService
 
             $food = $i->getItem()->getFood();
 
-            if($pet->getPoison() > 6 && ($food->getAlcohol() > 0 || $food->getCaffeine() > 0 || $food->getPsychedelic() > 0))
+            if($pet->wantsSobriety() && ($food->getAlcohol() > 0 || $food->getCaffeine() > 0 || $food->getPsychedelic() > 0))
             {
                 $tooPoisonous[] = $i->getItem()->getName();
                 continue;
@@ -294,6 +294,9 @@ class PetService
             $pet->increaseSafety($gain);
             $this->gainAffection($pet, $gain);
 
+            if($pet->getPregnancy())
+                $pet->getPregnancy()->increaseAffection($gain);
+
             $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
         }
 
@@ -321,7 +324,7 @@ class PetService
 
         $food = $item->getFood();
 
-        if($pet->getPoison() > 6 && ($food->getAlcohol() > 0 || $food->getCaffeine() > 0 || $food->getPsychedelic() > 0))
+        if($pet->wantsSobriety() && ($food->getAlcohol() > 0 || $food->getCaffeine() > 0 || $food->getPsychedelic() > 0))
             return false;
 
         $this->applyFoodEffects($pet, $food);
@@ -431,6 +434,22 @@ class PetService
             $pet->increaseEsteem(-1);
         else if($pet->getEsteem() < 0 && mt_rand(1, 2) === 1)
             $pet->increaseEsteem(1);
+
+        $pregnancy = $pet->getPregnancy();
+
+        if($pregnancy)
+        {
+            if($pet->getFood() < 0) $pregnancy->increaseAffection(-1);
+            if($pet->getSafety() < 0 && mt_rand(1, 2) === 1) $pregnancy->increaseAffection(-1);
+            if($pet->getLove() < 0 && mt_rand(1, 3) === 1) $pregnancy->increaseAffection(-1);
+            if($pet->getEsteem() < 0 && mt_rand(1, 4) === 1) $pregnancy->increaseAffection(-1);
+
+            if($pregnancy->getGrowth() >= 30240)
+            {
+                $this->giveBirth($pet);
+                return;
+            }
+        }
 
         if($pet->getPoison() > 0)
         {
@@ -613,6 +632,52 @@ class PetService
         }
 
         return true;
+    }
+
+    private function giveBirth(Pet $pet)
+    {
+        $user = $pet->getOwner();
+        $pregnancy = $pet->getPregnancy();
+
+        $baby = (new Pet())
+            ->setOwner($user)
+            ->setSpecies($pregnancy->getSpecies())
+            ->setColorA($pregnancy->getColorA())
+            ->setColorB($pregnancy->getColorB())
+            ->setMom($pregnancy->getParent())
+            ->setDad($pregnancy->getOtherParent())
+        ;
+
+        $this->petRelationshipService->createParentalRelationships($baby, $pregnancy->getParent(), $pregnancy->getOtherParent());
+
+        $numberOfPetsAtHome = $this->petRepository->getNumberAtHome($user);
+
+        if($numberOfPetsAtHome >= $user->getMaxPets())
+        {
+            $baby->setInDaycare(true);
+            $pet->setInDaycare(true);
+
+            $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to a beautiful baby ' . $baby->getSpecies()->getName() . '! (There wasn\'t enough room at Home, so the birth took place at the Pet Shelter.)', '');
+        }
+        else
+        {
+            $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to a beautiful baby ' . $baby->getSpecies()->getName() . '!', '');
+        }
+
+        $this->em->persist($baby);
+        $this->em->remove($pregnancy);
+
+        $pet->setPregnancy(null);
+
+        $this->spendTime($pet, mt_rand(45, 75));
+
+        // applied in a slightly weird order, because I-dunno
+        $pet
+            ->increaseLove(mt_rand(8, 16))
+            ->increaseEsteem(mt_rand(8, 16))
+            ->increaseSafety(mt_rand(8, 16))
+            ->increaseFood(-mt_rand(8, 16))
+        ;
     }
 
     private function hangOutWithSpiritCompanion(Pet $pet)
@@ -840,6 +905,9 @@ class PetService
     public function spendTime(Pet $pet, int $time)
     {
         $pet->spendTime($time);
+
+        if($pet->getPregnancy())
+            $pet->getPregnancy()->increaseGrowth($time);
 
         /** @var StatusEffect[] $statusEffects */
         $statusEffects = array_values($pet->getStatusEffects()->toArray());

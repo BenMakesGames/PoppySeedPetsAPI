@@ -39,6 +39,46 @@ class PetRelationshipService
         }
     }
 
+    public function createParentalRelationships(Pet $baby, Pet $mother, Pet $father)
+    {
+        $petWithMother = (new PetRelationship())
+            ->setPet($baby)
+            ->setRelationship($mother)
+            ->setCurrentRelationship(RelationshipEnum::BFF)
+            ->setRelationshipGoal(RelationshipEnum::BFF)
+            ->setMetDescription($mother->getName() . ' gave birth to ' . $baby->getName() . '!')
+        ;
+
+        $petWithFather = (new PetRelationship())
+            ->setPet($baby)
+            ->setRelationship($father)
+            ->setCurrentRelationship(RelationshipEnum::BFF)
+            ->setRelationshipGoal(RelationshipEnum::BFF)
+            ->setMetDescription($father->getName() . ' fathered ' . $father->getName() . '!')
+        ;
+
+        $motherWithBaby = (new PetRelationship())
+            ->setPet($mother)
+            ->setRelationship($baby)
+            ->setCurrentRelationship(RelationshipEnum::BFF)
+            ->setRelationshipGoal(RelationshipEnum::BFF)
+            ->setMetDescription($mother->getName() . ' gave birth to ' . $baby->getName() . '!')
+        ;
+
+        $fatherWithBaby = (new PetRelationship())
+            ->setPet($father)
+            ->setRelationship($baby)
+            ->setCurrentRelationship(RelationshipEnum::BFF)
+            ->setRelationshipGoal(RelationshipEnum::BFF)
+            ->setMetDescription($father->getName() . ' fathered ' . $father->getName() . '!')
+        ;
+
+        $this->em->persist($petWithMother);
+        $this->em->persist($petWithFather);
+        $this->em->persist($motherWithBaby);
+        $this->em->persist($fatherWithBaby);
+    }
+
     public function seeAtGroupGathering(Pet $p1, Pet $p2, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetDescription, int $meetChance = 5)
     {
         if($p1->getId() === $p2->getId()) return;

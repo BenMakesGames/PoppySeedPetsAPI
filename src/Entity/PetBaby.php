@@ -21,12 +21,12 @@ class PetBaby
     /**
      * @ORM\Column(type="integer")
      */
-    private $growth;
+    private $growth = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $affection;
+    private $affection = 0;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\PetSpecies")
@@ -45,6 +45,16 @@ class PetBaby
      */
     private $otherParent;
 
+    /**
+     * @ORM\Column(type="string", length=6)
+     */
+    private $colorA;
+
+    /**
+     * @ORM\Column(type="string", length=6)
+     */
+    private $colorB;
+
     public function __construct()
     {
         $this->parents = new ArrayCollection();
@@ -60,9 +70,9 @@ class PetBaby
         return $this->growth;
     }
 
-    public function setGrowth(int $growth): self
+    public function increaseGrowth(int $growth): self
     {
-        $this->growth = $growth;
+        $this->growth += $growth;
 
         return $this;
     }
@@ -72,9 +82,9 @@ class PetBaby
         return $this->affection;
     }
 
-    public function setAffection(int $affection): self
+    public function increaseAffection(int $affection): self
     {
-        $this->affection = $affection;
+        $this->affection += $affection;
 
         return $this;
     }
@@ -117,6 +127,30 @@ class PetBaby
     public function setOtherParent(Pet $otherParent): self
     {
         $this->otherParent = $otherParent;
+
+        return $this;
+    }
+
+    public function getColorA(): ?string
+    {
+        return $this->colorA;
+    }
+
+    public function setColorA(string $colorA): self
+    {
+        $this->colorA = $colorA;
+
+        return $this;
+    }
+
+    public function getColorB(): ?string
+    {
+        return $this->colorB;
+    }
+
+    public function setColorB(string $colorB): self
+    {
+        $this->colorB = $colorB;
 
         return $this;
     }
