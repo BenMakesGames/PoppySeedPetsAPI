@@ -54,8 +54,9 @@ class UpsertItemCommand extends PsyPetsCommand
         $this->name($item, $name);
         $this->image($item);
         $this->elements($item);
-        $this->food($item);
         $this->tool($item);
+        $this->food($item);
+        $this->fertilizer($item);
 
         $this->em->flush();
     }
@@ -88,6 +89,11 @@ class UpsertItemCommand extends PsyPetsCommand
             $item->setImage($this->ask(new Question('What is its image? (' . $item->getImage() . ') ', $item->getImage())));
         else
             $item->setImage($this->ask(new Question('What is its image? ', '')));
+    }
+
+    private function fertilizer(Item $item)
+    {
+        $item->setFertilizer($this->askInt('Fertilizer hours', $item->getFertilizer()));
     }
 
     private function food(Item $item)
