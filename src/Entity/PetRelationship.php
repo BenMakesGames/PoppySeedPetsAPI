@@ -200,9 +200,9 @@ class PetRelationship
     public function setTimeUntilChange()
     {
         if($this->pet->hasMerit(MeritEnum::INTROSPECTIVE))
-            $this->timeUntilChange = \mt_rand(\mt_rand(15, 20), \mt_rand(35, 50));
+            $this->timeUntilChange = \mt_rand(\mt_rand(15, 20), \mt_rand(35, 40));
         else
-            $this->timeUntilChange = \mt_rand(\mt_rand(20, 30), \mt_rand(50, 80));
+            $this->timeUntilChange = \mt_rand(\mt_rand(20, 30), \mt_rand(50, 60));
     }
 
     public function decrementTimeUntilChange(): self
