@@ -70,6 +70,18 @@ class PetSpecies
      */
     private $availableFromPetShelter;
 
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"myPet", "userPublicProfile"})
+     */
+    private $pregnancyStyle;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"myPet", "userPublicProfile"})
+     */
+    private $eggImage;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -179,6 +191,30 @@ class PetSpecies
     public function setAvailableFromPetShelter(bool $availableFromPetShelter): self
     {
         $this->availableFromPetShelter = $availableFromPetShelter;
+
+        return $this;
+    }
+
+    public function getPregnancyStyle(): ?int
+    {
+        return $this->pregnancyStyle;
+    }
+
+    public function setPregnancyStyle(int $pregnancyStyle): self
+    {
+        $this->pregnancyStyle = $pregnancyStyle;
+
+        return $this;
+    }
+
+    public function getEggImage(): ?string
+    {
+        return $this->eggImage;
+    }
+
+    public function setEggImage(?string $eggImage): self
+    {
+        $this->eggImage = $eggImage;
 
         return $this;
     }

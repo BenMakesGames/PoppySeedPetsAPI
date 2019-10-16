@@ -652,16 +652,21 @@ class PetService
 
         $numberOfPetsAtHome = $this->petRepository->getNumberAtHome($user);
 
+        $adjective = ArrayFunctions::pick_one([
+            'a beautiful', 'an energetic', 'a wriggly',
+            'a smiling', 'an intense-looking', 'a plump',
+        ]);
+
         if($numberOfPetsAtHome >= $user->getMaxPets())
         {
             $baby->setInDaycare(true);
             $pet->setInDaycare(true);
 
-            $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to a beautiful baby ' . $baby->getSpecies()->getName() . '! (There wasn\'t enough room at Home, so the birth took place at the Pet Shelter.)', '');
+            $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '! (There wasn\'t enough room at Home, so the birth took place at the Pet Shelter.)', '');
         }
         else
         {
-            $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to a beautiful baby ' . $baby->getSpecies()->getName() . '!', '');
+            $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '!', '');
         }
 
         $this->em->persist($baby);

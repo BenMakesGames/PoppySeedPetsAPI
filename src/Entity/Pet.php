@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
+use App\Enum\PetPregnancyStyleEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
@@ -170,7 +171,7 @@ class Pet
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\SpiritCompanion", inversedBy="pet", cascade={"persist", "remove"})
-     * @Groups({"myPet", "parkEvent"})
+     * @Groups({"myPet", "parkEvent", "hollowEarth"})
      */
     private $spiritCompanion;
 
@@ -238,6 +239,7 @@ class Pet
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\PetBaby", inversedBy="parent", cascade={"persist", "remove"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "petFriend"})
      */
     private $pregnancy;
 
@@ -1155,7 +1157,18 @@ class Pet
 
     public function wantsSobriety(): bool
     {
-        return $this->getPregnancy() !== null || $this->getPoison() > 6;
+        if($this->getPoison() > 6)
+            return true;
+
+        if($this->getPregnancy() !== null)
+        {
+            if($this->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::EGG)
+                return $this->getPregnancy()->getGrowth() <= PetBaby::EGG_INCUBATION_TIME;
+            else
+                return true;
+        }
+
+        return false;
     }
 
     public function getMom(): ?self

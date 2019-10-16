@@ -2,15 +2,19 @@
 
 namespace App\Entity;
 
+use App\Enum\PetPregnancyStyleEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PetBabyRepository")
  */
 class PetBaby
 {
+    public const EGG_INCUBATION_TIME = 5760;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -153,5 +157,17 @@ class PetBaby
         $this->colorB = $colorB;
 
         return $this;
+    }
+
+    /**
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "petFriend"})
+     */
+    public function getEggColor(): ?string
+    {
+        // we only see the color expressed in an egg
+        if($this->getParent()->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::EGG && $this->getGrowth() > self::EGG_INCUBATION_TIME)
+            return $this->getColorA();
+        else
+            return null;
     }
 }
