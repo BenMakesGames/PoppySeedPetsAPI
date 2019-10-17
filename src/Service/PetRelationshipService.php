@@ -388,6 +388,55 @@ class PetRelationshipService
         return [ $p1Log, $p2Log ];
     }
 
+    private function sexyTimeChances(Pet $p1, Pet $p2, string $relationshipType): int
+    {
+        $totalDrive = $p1->getSexDrive() + $p2->getSexDrive();
+
+        // TODO: before we can implement this, we also need to implement a way for pets to "suppress" goals to date/fwb
+        // with pets while in a monogamous relationship
+        /*if($p1->hasMonogamousRelationship($p2) || $p2->hasMonogamousRelationship($p1))
+            return 0;*/
+
+        switch($relationshipType)
+        {
+            case RelationshipEnum::BFF:
+                switch($totalDrive)
+                {
+                    case -2: return 0;
+                    case -1: return 0;
+                    case 0: return 1;
+                    case 1: return 2;
+                    case 2: return 3;
+                    default: throw new \Exception('Pets\' total sex drive was outside the possible range??');
+                }
+
+            case RelationshipEnum::FWB:
+                switch($totalDrive)
+                {
+                    case -2: return 10;
+                    case -1: return 20;
+                    case 0: return 30;
+                    case 1: return 55;
+                    case 2: return 80;
+                    default: throw new \Exception('Pets\' total sex drive was outside the possible range??');
+                }
+
+            case RelationshipEnum::MATE:
+                switch($totalDrive)
+                {
+                    case -2: return 5;
+                    case -1: return 10;
+                    case 0: return 20;
+                    case 1: return 40;
+                    case 2: return 60;
+                    default: throw new \Exception('Pets\' total sex drive was outside the possible range??');
+                }
+
+            default:
+                return 0;
+        }
+    }
+
     /**
      * @return PetActivityLog[]
      */
@@ -406,10 +455,7 @@ class PetRelationshipService
         {
             if($friendLowestNeed === '')
             {
-                if(
-                    ($p1->getCurrentRelationship() === RelationshipEnum::FWB && mt_rand(1, 3) === 1) ||
-                    ($p1->getCurrentRelationship() === RelationshipEnum::MATE && mt_rand(1, 4) === 1)
-                )
+                if(mt_rand(1, 100) <= $this->sexyTimeChances($pet, $friend, $p1->getCurrentRelationship()))
                 {
                     $message = $pet->getName() . ' hung out with ' . $friend->getName() . '. They had fun! ;)';
 

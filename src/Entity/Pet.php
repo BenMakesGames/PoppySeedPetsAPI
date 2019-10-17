@@ -6,6 +6,7 @@ use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
 use App\Enum\PetPregnancyStyleEnum;
+use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
@@ -1255,5 +1256,25 @@ class Pet
         }
 
         return $this;
+    }
+
+    public function hasMonogamousRelationship(Pet $exceptOtherPet)
+    {
+        if($this->getPoly() === 1)
+            return false;
+
+        foreach($this->getPetRelationships() as $relationship)
+        {
+            if($relationship->getRelationship()->getId() === $exceptOtherPet->getId())
+                continue;
+
+            if($relationship->getCurrentRelationship() === RelationshipEnum::MATE || $relationship->getCurrentRelationship() === RelationshipEnum::FWB)
+            {
+                if($this->getPoly() === 0 && $relationship->getRelationship()->getPoly() === 0)
+                    return true;
+            }
+        }
+
+        return false;
     }
 }
