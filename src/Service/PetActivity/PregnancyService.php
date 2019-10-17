@@ -10,6 +10,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\NumberFunctions;
 use App\Repository\PetRepository;
+use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\PetRelationshipService;
 use App\Service\PetService;
@@ -25,10 +26,12 @@ class PregnancyService
     private $petRepository;
     private $responseService;
     private $petService;
+    private $userQuestRepository;
 
     public function __construct(
         EntityManagerInterface $em, InventoryService $inventoryService, PetRelationshipService $petRelationshipService,
-        PetRepository $petRepository, ResponseService $responseService, PetService $petService
+        PetRepository $petRepository, ResponseService $responseService, PetService $petService,
+        UserQuestRepository $userQuestRepository
     )
     {
         $this->em = $em;
@@ -37,6 +40,7 @@ class PregnancyService
         $this->petRepository = $petRepository;
         $this->responseService = $responseService;
         $this->petService = $petService;
+        $this->userQuestRepository = $userQuestRepository;
     }
 
     public function getPregnant(Pet $pet1, Pet $pet2)
@@ -112,6 +116,18 @@ class PregnancyService
             'a smiling', 'an intense-looking', 'a plump',
         ]);
 
+        $increasedPetLimitWithPetBirth = $this->userQuestRepository->findOrCreate($user, 'Increased Pet Limit with Pet Birth', false);
+
+        if(!$increasedPetLimitWithPetBirth->getValue())
+        {
+            $user->increaseMaxPets(1);
+            $increasedPetLimitWithPetBirth->setValue(true);
+
+            $increasedPetLimit = true;
+        }
+        else
+            $increasedPetLimit = false;
+
         if($numberOfPetsAtHome >= $user->getMaxPets())
         {
             $baby->setInDaycare(true);
@@ -121,7 +137,10 @@ class PregnancyService
         }
         else
         {
-            $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '!', '');
+            if($increasedPetLimit)
+                $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '! (Congrats on your first pet birth! The maximum amount of pets you can have at home has been permanently increased by one!)', '');
+            else
+                $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '!', '');
         }
 
         $this->inventoryService->receiveItem('Renaming Scroll', $pet->getOwner(), $pet->getOwner(), 'You received this when ' . $baby->getName() . ' was born.', LocationEnum::HOME);
