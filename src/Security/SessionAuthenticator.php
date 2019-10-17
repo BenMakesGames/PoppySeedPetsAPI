@@ -67,7 +67,9 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
             throw new AccessDeniedHttpException('You have been logged out due to inactivity. Please log in again.');
         }
 
-        if($session->getUser()->getIsLocked())
+        $user = $session->getUser();
+
+        if($user->getIsLocked())
         {
             $this->responseService->setSessionId(null);
             throw new AccessDeniedHttpException('This account has been locked.');
@@ -76,13 +78,13 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
         $this->sessionService->setCurrentSession($session);
 
         $session->setSessionExpiration();
-        $session->getUser()->setLastActivity();
+        $user->setLastActivity();
         $this->em->flush();
 
-        $this->houseService->run($session->getUser());
+        $this->houseService->run($user);
         $this->em->flush();
 
-        return $session->getUser();
+        return $user;
     }
 
     public function checkCredentials($credentials, UserInterface $user)

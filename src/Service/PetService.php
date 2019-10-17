@@ -6,6 +6,7 @@ use App\Entity\Item;
 use App\Entity\ItemFood;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\PetBaby;
 use App\Entity\PetRelationship;
 use App\Entity\StatusEffect;
 use App\Enum\FlavorEnum;
@@ -25,6 +26,7 @@ use App\Service\PetActivity\GenericAdventureService;
 use App\Service\PetActivity\GivingTreeGatheringService;
 use App\Service\PetActivity\HuntingService;
 use App\Service\PetActivity\PoopingService;
+use App\Service\PetActivity\PregnancyService;
 use App\Service\PetActivity\ProgrammingService;
 use App\Service\PetActivity\Protocol7Service;
 use App\Service\PetActivity\TreasureMapService;
@@ -50,6 +52,7 @@ class PetService
     private $umbraService;
     private $poopingService;
     private $givingTreeGatheringService;
+    private $pregnancyService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService,
@@ -58,7 +61,8 @@ class PetService
         CraftingService $craftingService, UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
         TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService,
         Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
-        PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService
+        PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService,
+        PregnancyService $pregnancyService
     )
     {
         $this->em = $em;
@@ -78,6 +82,7 @@ class PetService
         $this->umbraService = $umbraService;
         $this->poopingService = $poopingService;
         $this->givingTreeGatheringService = $givingTreeGatheringService;
+        $this->pregnancyService = $pregnancyService;
     }
 
     /**
@@ -444,9 +449,9 @@ class PetService
             if($pet->getLove() < 0 && mt_rand(1, 3) === 1) $pregnancy->increaseAffection(-1);
             if($pet->getEsteem() < 0 && mt_rand(1, 4) === 1) $pregnancy->increaseAffection(-1);
 
-            if($pregnancy->getGrowth() >= 30240)
+            if($pregnancy->getGrowth() >= PetBaby::PREGNANCY_DURATION)
             {
-                $this->giveBirth($pet);
+                $this->pregnancyService->giveBirth($pet);
                 return;
             }
         }
@@ -632,57 +637,6 @@ class PetService
         }
 
         return true;
-    }
-
-    private function giveBirth(Pet $pet)
-    {
-        $user = $pet->getOwner();
-        $pregnancy = $pet->getPregnancy();
-
-        $baby = (new Pet())
-            ->setOwner($user)
-            ->setSpecies($pregnancy->getSpecies())
-            ->setColorA($pregnancy->getColorA())
-            ->setColorB($pregnancy->getColorB())
-            ->setMom($pregnancy->getParent())
-            ->setDad($pregnancy->getOtherParent())
-        ;
-
-        $this->petRelationshipService->createParentalRelationships($baby, $pregnancy->getParent(), $pregnancy->getOtherParent());
-
-        $numberOfPetsAtHome = $this->petRepository->getNumberAtHome($user);
-
-        $adjective = ArrayFunctions::pick_one([
-            'a beautiful', 'an energetic', 'a wriggly',
-            'a smiling', 'an intense-looking', 'a plump',
-        ]);
-
-        if($numberOfPetsAtHome >= $user->getMaxPets())
-        {
-            $baby->setInDaycare(true);
-            $pet->setInDaycare(true);
-
-            $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '! (There wasn\'t enough room at Home, so the birth took place at the Pet Shelter.)', '');
-        }
-        else
-        {
-            $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '!', '');
-        }
-
-        $this->em->persist($baby);
-        $this->em->remove($pregnancy);
-
-        $pet->setPregnancy(null);
-
-        $this->spendTime($pet, mt_rand(45, 75));
-
-        // applied in a slightly weird order, because I-dunno
-        $pet
-            ->increaseLove(mt_rand(8, 16))
-            ->increaseEsteem(mt_rand(8, 16))
-            ->increaseSafety(mt_rand(8, 16))
-            ->increaseFood(-mt_rand(8, 16))
-        ;
     }
 
     private function hangOutWithSpiritCompanion(Pet $pet)

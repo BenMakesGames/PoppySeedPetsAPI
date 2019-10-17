@@ -13,7 +13,9 @@ use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\StringFunctions;
+use App\Repository\InventoryRepository;
 use App\Repository\PassphraseResetRequestRepository;
+use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserNotificationPreferencesRepository;
 use App\Repository\UserQuestRepository;
@@ -37,6 +39,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @Route("/account")
@@ -438,6 +441,33 @@ class AccountController extends PsyPetsController
         $stats = $userStatsRepository->findBy([ 'user' => $this->getUser() ]);
 
         return $responseService->success($stats, SerializationGroupEnum::MY_STATS);
+    }
+
+    /**
+     * @Route("/myHouse", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getHouse(
+        PetRepository $petRepository, InventoryRepository $inventoryRepository, ResponseService $responseService,
+        NormalizerInterface $normalizer
+    )
+    {
+        $user = $this->getUser();
+
+        $petsAtHome = $petRepository->findBy([
+            'owner' => $user->getId(),
+            'inDaycare' => false,
+        ]);
+
+        $inventory = $inventoryRepository->findBy([
+            'owner' => $this->getUser(),
+            'location' => LocationEnum::HOME
+        ]);
+
+        return $responseService->success([
+            'inventory' => $normalizer->normalize($inventory, null, [ 'groups' => [ SerializationGroupEnum::MY_INVENTORY ] ]),
+            'pets' => $normalizer->normalize($petsAtHome, null, [ 'groups' => [ SerializationGroupEnum::MY_PET ] ])
+        ]);
     }
 
     /**

@@ -3,12 +3,12 @@ namespace App\Service;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Entity\PetBaby;
 use App\Entity\PetRelationship;
 use App\Enum\MeritEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\PetRelationshipRepository;
+use App\Service\PetActivity\PregnancyService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetRelationshipService

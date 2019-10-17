@@ -14,6 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class PetBaby
 {
     public const EGG_INCUBATION_TIME = 5760;
+    public const PREGNANCY_DURATION = 30240;
 
     /**
      * @ORM\Id()
@@ -39,12 +40,12 @@ class PetBaby
     private $species;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="pregnancy", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="pregnancy")
      */
     private $parent;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Pet", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Pet")
      * @ORM\JoinColumn(nullable=false)
      */
     private $otherParent;
