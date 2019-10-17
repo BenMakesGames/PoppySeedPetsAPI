@@ -6,6 +6,7 @@ use App\Entity\Item;
 use App\Entity\ItemFood;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\PetBaby;
 use App\Entity\PetRelationship;
 use App\Entity\StatusEffect;
 use App\Enum\FlavorEnum;
@@ -25,6 +26,7 @@ use App\Service\PetActivity\GenericAdventureService;
 use App\Service\PetActivity\GivingTreeGatheringService;
 use App\Service\PetActivity\HuntingService;
 use App\Service\PetActivity\PoopingService;
+use App\Service\PetActivity\PregnancyService;
 use App\Service\PetActivity\ProgrammingService;
 use App\Service\PetActivity\Protocol7Service;
 use App\Service\PetActivity\TreasureMapService;
@@ -50,6 +52,7 @@ class PetService
     private $umbraService;
     private $poopingService;
     private $givingTreeGatheringService;
+    private $pregnancyService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService,
@@ -58,7 +61,8 @@ class PetService
         CraftingService $craftingService, UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
         TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService,
         Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
-        PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService
+        PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService,
+        PregnancyService $pregnancyService
     )
     {
         $this->em = $em;
@@ -78,6 +82,7 @@ class PetService
         $this->umbraService = $umbraService;
         $this->poopingService = $poopingService;
         $this->givingTreeGatheringService = $givingTreeGatheringService;
+        $this->pregnancyService = $pregnancyService;
     }
 
     /**
@@ -247,7 +252,7 @@ class PetService
 
             $food = $i->getItem()->getFood();
 
-            if($pet->getPoison() > 6 && ($food->getAlcohol() > 0 || $food->getCaffeine() > 0 || $food->getPsychedelic() > 0))
+            if($pet->wantsSobriety() && ($food->getAlcohol() > 0 || $food->getCaffeine() > 0 || $food->getPsychedelic() > 0))
             {
                 $tooPoisonous[] = $i->getItem()->getName();
                 continue;
@@ -294,6 +299,9 @@ class PetService
             $pet->increaseSafety($gain);
             $this->gainAffection($pet, $gain);
 
+            if($pet->getPregnancy())
+                $pet->getPregnancy()->increaseAffection($gain);
+
             $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
         }
 
@@ -321,7 +329,7 @@ class PetService
 
         $food = $item->getFood();
 
-        if($pet->getPoison() > 6 && ($food->getAlcohol() > 0 || $food->getCaffeine() > 0 || $food->getPsychedelic() > 0))
+        if($pet->wantsSobriety() && ($food->getAlcohol() > 0 || $food->getCaffeine() > 0 || $food->getPsychedelic() > 0))
             return false;
 
         $this->applyFoodEffects($pet, $food);
@@ -431,6 +439,22 @@ class PetService
             $pet->increaseEsteem(-1);
         else if($pet->getEsteem() < 0 && mt_rand(1, 2) === 1)
             $pet->increaseEsteem(1);
+
+        $pregnancy = $pet->getPregnancy();
+
+        if($pregnancy)
+        {
+            if($pet->getFood() < 0) $pregnancy->increaseAffection(-1);
+            if($pet->getSafety() < 0 && mt_rand(1, 2) === 1) $pregnancy->increaseAffection(-1);
+            if($pet->getLove() < 0 && mt_rand(1, 3) === 1) $pregnancy->increaseAffection(-1);
+            if($pet->getEsteem() < 0 && mt_rand(1, 4) === 1) $pregnancy->increaseAffection(-1);
+
+            if($pregnancy->getGrowth() >= PetBaby::PREGNANCY_DURATION)
+            {
+                $this->pregnancyService->giveBirth($pet);
+                return;
+            }
+        }
 
         if($pet->getPoison() > 0)
         {
@@ -840,6 +864,9 @@ class PetService
     public function spendTime(Pet $pet, int $time)
     {
         $pet->spendTime($time);
+
+        if($pet->getPregnancy())
+            $pet->getPregnancy()->increaseGrowth($time);
 
         /** @var StatusEffect[] $statusEffects */
         $statusEffects = array_values($pet->getStatusEffects()->toArray());

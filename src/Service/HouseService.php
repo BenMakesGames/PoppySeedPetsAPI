@@ -76,7 +76,7 @@ class HouseService
 
                         $this->em->flush();
 
-                        if($petsWithTime[$i]->getTime() < 60)
+                        if($petsWithTime[$i]->getTime() < 60 || $petsWithTime[$i]->getInDaycare())
                             unset($petsWithTime[$i]);
                     }
                 }

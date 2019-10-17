@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
+use App\Enum\PetPregnancyStyleEnum;
+use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
@@ -170,7 +172,7 @@ class Pet
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\SpiritCompanion", inversedBy="pet", cascade={"persist", "remove"})
-     * @Groups({"myPet", "parkEvent"})
+     * @Groups({"myPet", "parkEvent", "hollowEarth"})
      */
     private $spiritCompanion;
 
@@ -236,6 +238,32 @@ class Pet
      */
     private $sexDrive;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\PetBaby", inversedBy="parent", cascade={"persist", "remove"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "petFriend"})
+     */
+    private $pregnancy;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Pet", inversedBy="motheredPets")
+     */
+    private $mom;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Pet", mappedBy="mom")
+     */
+    private $motheredPets;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Pet", inversedBy="fatheredPets")
+     */
+    private $dad;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Pet", mappedBy="dad")
+     */
+    private $fatheredPets;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -256,6 +284,9 @@ class Pet
             $this->sexDrive = -1;
         else
             $this->sexDrive = \mt_rand(1, 9) === 1 ? 0 : 1;
+
+        $this->motheredPets = new ArrayCollection();
+        $this->fatheredPets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -1111,5 +1142,139 @@ class Pet
         $this->sexDrive = $sexDrive;
 
         return $this;
+    }
+
+    public function getPregnancy(): ?PetBaby
+    {
+        return $this->pregnancy;
+    }
+
+    public function setPregnancy(?PetBaby $pregnancy): self
+    {
+        $this->pregnancy = $pregnancy;
+
+        return $this;
+    }
+
+    public function wantsSobriety(): bool
+    {
+        if($this->getPoison() > 6)
+            return true;
+
+        if($this->getPregnancy() !== null)
+        {
+            if($this->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::EGG)
+                return $this->getPregnancy()->getGrowth() <= PetBaby::EGG_INCUBATION_TIME;
+            else
+                return true;
+        }
+
+        return false;
+    }
+
+    public function getMom(): ?self
+    {
+        return $this->mom;
+    }
+
+    public function setMom(?self $mom): self
+    {
+        $this->mom = $mom;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getMotheredPets(): Collection
+    {
+        return $this->motheredPets;
+    }
+
+    public function addMotheredPet(self $motheredPet): self
+    {
+        if (!$this->motheredPets->contains($motheredPet)) {
+            $this->motheredPets[] = $motheredPet;
+            $motheredPet->setMom($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMotheredPet(self $motheredPet): self
+    {
+        if ($this->motheredPets->contains($motheredPet)) {
+            $this->motheredPets->removeElement($motheredPet);
+            // set the owning side to null (unless already changed)
+            if ($motheredPet->getMom() === $this) {
+                $motheredPet->setMom(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDad(): ?self
+    {
+        return $this->dad;
+    }
+
+    public function setDad(?self $dad): self
+    {
+        $this->dad = $dad;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getFatheredPets(): Collection
+    {
+        return $this->fatheredPets;
+    }
+
+    public function addFatheredPet(self $fatheredPet): self
+    {
+        if (!$this->fatheredPets->contains($fatheredPet)) {
+            $this->fatheredPets[] = $fatheredPet;
+            $fatheredPet->setDad($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFatheredPet(self $fatheredPet): self
+    {
+        if ($this->fatheredPets->contains($fatheredPet)) {
+            $this->fatheredPets->removeElement($fatheredPet);
+            // set the owning side to null (unless already changed)
+            if ($fatheredPet->getDad() === $this) {
+                $fatheredPet->setDad(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function hasMonogamousRelationship(Pet $exceptOtherPet)
+    {
+        if($this->getPoly() === 1)
+            return false;
+
+        foreach($this->getPetRelationships() as $relationship)
+        {
+            if($relationship->getRelationship()->getId() === $exceptOtherPet->getId())
+                continue;
+
+            if($relationship->getCurrentRelationship() === RelationshipEnum::MATE || $relationship->getCurrentRelationship() === RelationshipEnum::FWB)
+            {
+                if($this->getPoly() === 0 && $relationship->getRelationship()->getPoly() === 0)
+                    return true;
+            }
+        }
+
+        return false;
     }
 }

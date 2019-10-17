@@ -36,8 +36,10 @@ class PetController extends PsyPetsController
      */
     public function getMyPets(ResponseService $responseService, PetRepository $petRepository)
     {
+        $user = $this->getUser();
+
         $petsAtHome = $petRepository->findBy([
-            'owner' => $this->getUser()->getId(),
+            'owner' => $user->getId(),
             'inDaycare' => false,
         ]);
 

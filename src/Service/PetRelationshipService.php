@@ -8,6 +8,7 @@ use App\Enum\MeritEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\PetRelationshipRepository;
+use App\Service\PetActivity\PregnancyService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetRelationshipService
@@ -15,14 +16,17 @@ class PetRelationshipService
     private $petRelationshipRepository;
     private $em;
     private $responseService;
+    private $pregnancyService;
 
     public function __construct(
-        PetRelationshipRepository $petRelationshipRepository, EntityManagerInterface $em, ResponseService $responseService
+        PetRelationshipRepository $petRelationshipRepository, EntityManagerInterface $em, ResponseService $responseService,
+        PregnancyService $pregnancyService
     )
     {
         $this->petRelationshipRepository = $petRelationshipRepository;
         $this->em = $em;
         $this->responseService = $responseService;
+        $this->pregnancyService = $pregnancyService;
     }
 
     /**
@@ -37,6 +41,46 @@ class PetRelationshipService
                 $this->seeAtGroupGathering($pets[$i], $pets[$j], $hangOutDescription, $enemyDescription, $meetSummary, $meetDescription, $meetChance);
             }
         }
+    }
+
+    public function createParentalRelationships(Pet $baby, Pet $mother, Pet $father)
+    {
+        $petWithMother = (new PetRelationship())
+            ->setPet($baby)
+            ->setRelationship($mother)
+            ->setCurrentRelationship(RelationshipEnum::BFF)
+            ->setRelationshipGoal(RelationshipEnum::BFF)
+            ->setMetDescription($mother->getName() . ' gave birth to ' . $baby->getName() . '!')
+        ;
+
+        $petWithFather = (new PetRelationship())
+            ->setPet($baby)
+            ->setRelationship($father)
+            ->setCurrentRelationship(RelationshipEnum::BFF)
+            ->setRelationshipGoal(RelationshipEnum::BFF)
+            ->setMetDescription($father->getName() . ' fathered ' . $father->getName() . '!')
+        ;
+
+        $motherWithBaby = (new PetRelationship())
+            ->setPet($mother)
+            ->setRelationship($baby)
+            ->setCurrentRelationship(RelationshipEnum::BFF)
+            ->setRelationshipGoal(RelationshipEnum::BFF)
+            ->setMetDescription($mother->getName() . ' gave birth to ' . $baby->getName() . '!')
+        ;
+
+        $fatherWithBaby = (new PetRelationship())
+            ->setPet($father)
+            ->setRelationship($baby)
+            ->setCurrentRelationship(RelationshipEnum::BFF)
+            ->setRelationshipGoal(RelationshipEnum::BFF)
+            ->setMetDescription($father->getName() . ' fathered ' . $father->getName() . '!')
+        ;
+
+        $this->em->persist($petWithMother);
+        $this->em->persist($petWithFather);
+        $this->em->persist($motherWithBaby);
+        $this->em->persist($fatherWithBaby);
     }
 
     public function seeAtGroupGathering(Pet $p1, Pet $p2, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetDescription, int $meetChance = 5)
@@ -344,6 +388,55 @@ class PetRelationshipService
         return [ $p1Log, $p2Log ];
     }
 
+    private function sexyTimeChances(Pet $p1, Pet $p2, string $relationshipType): int
+    {
+        $totalDrive = $p1->getSexDrive() + $p2->getSexDrive();
+
+        // TODO: before we can implement this, we also need to implement a way for pets to "suppress" goals to date/fwb
+        // with pets while in a monogamous relationship
+        /*if($p1->hasMonogamousRelationship($p2) || $p2->hasMonogamousRelationship($p1))
+            return 0;*/
+
+        switch($relationshipType)
+        {
+            case RelationshipEnum::BFF:
+                switch($totalDrive)
+                {
+                    case -2: return 0;
+                    case -1: return 0;
+                    case 0: return 1;
+                    case 1: return 2;
+                    case 2: return 3;
+                    default: throw new \Exception('Pets\' total sex drive was outside the possible range??');
+                }
+
+            case RelationshipEnum::FWB:
+                switch($totalDrive)
+                {
+                    case -2: return 10;
+                    case -1: return 20;
+                    case 0: return 30;
+                    case 1: return 55;
+                    case 2: return 80;
+                    default: throw new \Exception('Pets\' total sex drive was outside the possible range??');
+                }
+
+            case RelationshipEnum::MATE:
+                switch($totalDrive)
+                {
+                    case -2: return 5;
+                    case -1: return 10;
+                    case 0: return 20;
+                    case 1: return 40;
+                    case 2: return 60;
+                    default: throw new \Exception('Pets\' total sex drive was outside the possible range??');
+                }
+
+            default:
+                return 0;
+        }
+    }
+
     /**
      * @return PetActivityLog[]
      */
@@ -362,10 +455,7 @@ class PetRelationshipService
         {
             if($friendLowestNeed === '')
             {
-                if(
-                    ($p1->getCurrentRelationship() === RelationshipEnum::FWB && mt_rand(1, 3) === 1) ||
-                    ($p1->getCurrentRelationship() === RelationshipEnum::MATE && mt_rand(1, 4) === 1)
-                )
+                if(mt_rand(1, 100) <= $this->sexyTimeChances($pet, $friend, $p1->getCurrentRelationship()))
                 {
                     $message = $pet->getName() . ' hung out with ' . $friend->getName() . '. They had fun! ;)';
 
@@ -380,6 +470,11 @@ class PetRelationshipService
                         ->increaseSafety(mt_rand(2, 4))
                         ->increaseEsteem(mt_rand(2, 4))
                     ;
+
+                    if(mt_rand(1, 20) === 1 && (!$pet->getPregnancy() || !$friend->getPregnancy()))
+                    {
+                        $this->pregnancyService->getPregnant($pet, $friend);
+                    }
                 }
                 else
                 {

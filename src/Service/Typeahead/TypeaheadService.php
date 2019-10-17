@@ -2,6 +2,7 @@
 namespace App\Service\Typeahead;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\QueryBuilder;
 
 abstract class TypeaheadService
@@ -39,12 +40,22 @@ abstract class TypeaheadService
 
             $qb = $this->repository->createQueryBuilder('e')
                 ->andWhere('e.' . $fieldToSearch . ' LIKE :searchLike')
-                ->andWhere('e.id NOT IN (:ids)')
                 ->setParameter('searchLike', '%' . $search . '%')
-                ->setParameter('ids', $ids)
-                ->setMaxResults($maxResults - count($entities))
                 ->orderBy('e.' . $fieldToSearch, 'ASC')
             ;
+
+            if(count($entities) > 0)
+            {
+                $qb
+                    ->andWhere('e.id NOT IN (:ids)')
+                    ->setParameter('ids', $ids)
+                    ->setMaxResults($maxResults - count($entities))
+                ;
+            }
+            else
+            {
+                $qb->setMaxResults($maxResults);
+            }
 
             $qb = $this->addQueryBuilderConditions($qb);
 
