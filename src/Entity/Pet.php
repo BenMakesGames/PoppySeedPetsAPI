@@ -274,7 +274,7 @@ class Pet
      * @ORM\Column(type="boolean")
      * @Groups({"myPet"})
      */
-    private $isFertile;
+    private $isFertile = false;
 
     public function __construct()
     {
