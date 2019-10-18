@@ -29,7 +29,6 @@ class MarketFilterService
             self::PAGE_SIZE,
             [
                 'name' => [ 'i.name' => 'asc' ], // first one is the default
-                //'price' => [ 'inventory.sellPrice' => 'asc', 'i.name' => 'asc' ],
             ],
             [
                 'name' => [ $this, 'filterName' ],
