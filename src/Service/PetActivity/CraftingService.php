@@ -110,7 +110,7 @@ class CraftingService
         if(array_key_exists('String', $quantities) && array_key_exists('Glass', $quantities))
             $possibilities[] = [ $this, 'createGlassPendulum' ];
 
-        if(array_key_exists('String', $quantities) && array_key_exists('White Cloth', $quantities) && array_key_exists('Silver Key', $quantities))
+        if(array_key_exists('String', $quantities) && array_key_exists('Paper', $quantities) && array_key_exists('Silver Key', $quantities))
             $possibilities[] = [ $this, 'createBenjaminFranklin' ];
 
         if(array_key_exists('Hunting Spear', $quantities) && array_key_exists('Feathers', $quantities))
@@ -683,17 +683,17 @@ class CraftingService
             }
             else
             {
-                $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->inventoryService->loseItem('Paper', $pet->getOwner(), LocationEnum::HOME, 1);
                 $pet->increaseEsteem(-2);
                 $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a kite, but tore the White Cloth :(', '');
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a kite, but tore the Paper :(', '');
             }
         }
         else if($roll >= 17)
         {
             $this->petService->spendTime($pet, \mt_rand(45, 75));
             $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Paper', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Silver Key', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petService->gainExp($pet, 3, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(3);
