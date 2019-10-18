@@ -100,6 +100,8 @@ class PregnancyService
             ->setFavoriteFlavor(FlavorEnum::getRandomValue())
         ;
 
+        if($pregnancy->getAffection() > 0)
+            $pet->increaseAffectionPoints($pet->getAffectionPointsToLevel());
 
         $babySkills = new PetSkills();
 

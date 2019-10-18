@@ -390,6 +390,14 @@ class PetRelationshipService
 
     private function sexyTimeChances(Pet $p1, Pet $p2, string $relationshipType): int
     {
+        if(
+            ($p1->getMom() && $p1->getMom()->getId() === $p2->getId()) ||
+            ($p1->getDad() && $p1->getDad()->getId() === $p2->getId()) ||
+            ($p2->getMom() && $p2->getMom()->getId() === $p1->getId()) ||
+            ($p2->getDad() && $p2->getDad()->getId() === $p1->getId())
+        )
+            return 0;
+
         $totalDrive = $p1->getSexDrive() + $p2->getSexDrive();
 
         // TODO: before we can implement this, we also need to implement a way for pets to "suppress" goals to date/fwb
