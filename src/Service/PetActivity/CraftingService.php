@@ -110,6 +110,9 @@ class CraftingService
         if(array_key_exists('String', $quantities) && array_key_exists('Glass', $quantities))
             $possibilities[] = [ $this, 'createGlassPendulum' ];
 
+        if(array_key_exists('String', $quantities) && array_key_exists('White Cloth', $quantities) && array_key_exists('Silver Key', $quantities))
+            $possibilities[] = [ $this, 'createBenjaminFranklin' ];
+
         if(array_key_exists('Hunting Spear', $quantities) && array_key_exists('Feathers', $quantities))
             $possibilities[] = [ $this, 'createDecoratedSpear' ];
 
@@ -662,6 +665,47 @@ class CraftingService
             $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a magnifying glass, but almost broke the glass, and gave up.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createBenjaminFranklin(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 3)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            if(\mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a kite, but broke the String :(', 'icons/activity-logs/broke-string');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
+                $pet->increaseEsteem(-2);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a kite, but tore the White Cloth :(', '');
+            }
+        }
+        else if($roll >= 17)
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 75));
+            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Silver Key', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 3, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(3);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created Benjamin Franklin. (A kite, not the person.)', '');
+            $this->inventoryService->petCollectsItem('Benjamin Franklin', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a kite, but couldn\'t come up with a good design...', 'icons/activity-logs/confused');
         }
     }
 
