@@ -168,7 +168,7 @@ class Pet
      * @ORM\Column(type="json")
      * @Groups({"myPet"})
      */
-    private $merits = [];
+    private $oldMerits = [];
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\SpiritCompanion", inversedBy="pet", cascade={"persist", "remove"})
@@ -264,6 +264,18 @@ class Pet
      */
     private $fatheredPets;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Merit")
+     * @Groups({"myPet"})
+     */
+    private $merits;
+
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"myPet"})
+     */
+    private $isFertile;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -287,6 +299,7 @@ class Pet
 
         $this->motheredPets = new ArrayCollection();
         $this->fatheredPets = new ArrayCollection();
+        $this->merits = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -882,27 +895,27 @@ class Pet
         return $this;
     }
 
-    public function getMerits(): array
+    public function getOldMerits(): array
     {
-        return $this->merits;
+        return $this->oldMerits;
     }
 
-    public function addMerit(string $merit): self
+    public function addOldMerit(string $merit): self
     {
         if(!MeritEnum::isAValue($merit))
             throw new \InvalidArgumentException('"' . $merit . '" is not a valid merit');
 
-        if($this->hasMerit($merit))
+        if($this->hasOldMerit($merit))
             throw new \InvalidArgumentException($this->getName() . ' already has the merit "' . $merit . '"');
 
-        $this->merits[] = $merit;
+        $this->oldMerits[] = $merit;
 
         return $this;
     }
 
-    public function hasMerit(string $merit): bool
+    public function hasOldMerit(string $merit): bool
     {
-        return in_array($merit, $this->getMerits());
+        return in_array($merit, $this->getOldMerits());
     }
 
     public function getSpiritCompanion(): ?SpiritCompanion
@@ -1276,5 +1289,54 @@ class Pet
         }
 
         return false;
+    }
+
+    /**
+     * @return Collection|Merit[]
+     */
+    public function getMerits(): Collection
+    {
+        return $this->merits;
+    }
+
+    public function addMerit(Merit $merit): self
+    {
+        if (!$this->merits->contains($merit)) {
+            $this->merits[] = $merit;
+        }
+
+        return $this;
+    }
+
+    public function removeMerit(Merit $merit): self
+    {
+        if ($this->merits->contains($merit)) {
+            $this->merits->removeElement($merit);
+        }
+
+        return $this;
+    }
+
+    public function hasMerit(string $merit): bool
+    {
+        foreach($this->merits as $m)
+        {
+            if($m->getName() === $merit)
+                return true;
+        }
+
+        return false;
+    }
+
+    public function getIsFertile(): ?bool
+    {
+        return $this->isFertile;
+    }
+
+    public function setIsFertile(bool $isFertile): self
+    {
+        $this->isFertile = $isFertile;
+
+        return $this;
     }
 }

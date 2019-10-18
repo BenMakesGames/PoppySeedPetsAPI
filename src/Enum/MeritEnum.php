@@ -15,9 +15,8 @@ final class MeritEnum
     public const SPIRIT_COMPANION = 'Spirit Companion';
     public const PROTOCOL_7 = 'Protocol 7';
     public const INTROSPECTIVE = 'Introspective';
+    public const VOLAGAMY = 'Volagamy';
 
     // not yet implemented
-    public const PAST_LIFE = 'Past Life';
-    public const PERFECT_BALANCE = 'Perfect Balance';
-    public const TOUCH_OF_LIFE = 'Touch of Life';
+    //public const PAST_LIFE = 'Past Life';
 }

@@ -45,16 +45,17 @@ class PregnancyService
 
     public function getPregnant(Pet $pet1, Pet $pet2)
     {
-        if (!$pet1->getPregnancy())
+        if ($pet1->getIsFertile() && !$pet1->getPregnancy())
             $this->createPregnancy($pet1, $pet2);
 
-        if (!$pet2->getPregnancy())
+        if ($pet2->getIsFertile() && !$pet2->getPregnancy())
             $this->createPregnancy($pet2, $pet1);
     }
 
     private function createPregnancy(Pet $mother, Pet $father)
     {
         $r = mt_rand(1, 100);
+
         if($r <= 45)
             $species = $mother->getSpecies();
         else if($r <= 90)

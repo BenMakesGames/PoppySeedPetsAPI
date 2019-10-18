@@ -32,4 +32,5 @@ final class SerializationGroupEnum
     const REMINDER = 'reminder';
     const HOLLOW_EARTH = 'hollowEarth';
     const USER_TYPEAHEAD = 'userTypeahead';
+    const AVAILABLE_MERITS = 'availableMerits';
 }

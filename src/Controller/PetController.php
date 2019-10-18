@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Inventory;
+use App\Entity\Merit;
 use App\Entity\Pet;
 use App\Entity\SpiritCompanion;
 use App\Enum\LocationEnum;
@@ -9,10 +10,12 @@ use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\InventoryRepository;
+use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogRepository;
 use App\Repository\PetRepository;
 use App\Service\Filter\DaycareFilterService;
 use App\Service\Filter\PetActivityLogsFilterService;
+use App\Service\MeritService;
 use App\Service\PetService;
 use App\Service\ResponseService;
 use App\Service\Typeahead\PetTypeaheadService;
@@ -194,6 +197,20 @@ class PetController extends PsyPetsController
     }
 
     /**
+     * @Route("/{pet}/availableMerits", methods={"GET"}, requirements={"pet"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getAvailableMerits(Pet $pet, ResponseService $responseService, MeritService $meritService)
+    {
+        $user = $this->getUser();
+
+        if($pet->getOwner()->getId() !== $user->getId())
+            throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
+
+        return $responseService->success($meritService->getAvailableMerits($pet), SerializationGroupEnum::AVAILABLE_MERITS);
+    }
+
+    /**
      * @Route("/{pet}/unequip", methods={"POST"}, requirements={"pet"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -218,11 +235,32 @@ class PetController extends PsyPetsController
     }
 
     /**
+     * @Route("/{pet}/setFertility", methods={"PATCH"}, requirements={"pet"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function setPetFertility(Pet $pet, Request $request, ResponseService $responseService)
+    {
+        $user = $this->getUser();
+
+        if($pet->getOwner()->getId() !== $user->getId())
+            throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
+
+        if(!$pet->hasMerit(MeritEnum::VOLAGAMY))
+            throw new AccessDeniedHttpException($pet->getName() . ' does not have the ' . MeritEnum::VOLAGAMY . ' Merit.');
+
+        $fertility = $request->request->getBoolean('fertility');
+
+        $pet->setIsFertile($fertility);
+
+        return $responseService->success();
+    }
+
+    /**
      * @Route("/{pet}/chooseAffectionReward", methods={"POST"}, requirements={"pet"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function chooseAffectionReward(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, MeritService $meritService
     )
     {
         $user = $this->getUser();
@@ -233,28 +271,34 @@ class PetController extends PsyPetsController
         if($pet->getAffectionRewardsClaimed() >= $pet->getAffectionLevel())
             throw new UnprocessableEntityHttpException('You\'ll have to raise ' . $pet->getName() . '\'s affection, first.');
 
-        $merit = $request->request->get('merit');
+        $meritName = $request->request->get('merit');
 
-        if(!MeritEnum::isAValue($merit))
-            throw new UnprocessableEntityHttpException('"' . $merit . '" is not a merit.');
+        $availableMerits = $meritService->getAvailableMerits($pet);
 
-        if($pet->hasMerit($merit))
-            throw new UnprocessableEntityHttpException($pet->getName() . ' already has ' . $merit . '.');
+        /** @var Merit $merit */
+        $merit = ArrayFunctions::find_one($availableMerits, function(Merit $m) use($meritName) {
+            return $m->getName() === $meritName;
+        });
+
+        if(!$merit)
+            throw new UnprocessableEntityHttpException('That merit is not available.');
 
         $pet
             ->addMerit($merit)
             ->increaseAffectionRewardsClaimed()
         ;
 
-        if($merit === MeritEnum::SPIRIT_COMPANION)
+        if($merit->getName() === MeritEnum::SPIRIT_COMPANION)
         {
-            $spiritCompanion = (new SpiritCompanion())
-                ->setImage(ArrayFunctions::pick_one([ 'blob', 'dino', 'erm', 'splat', 'jellyfish', 'sooty', 'cat-snake', 'haha' ]))
-            ;
+            $spiritCompanion = new SpiritCompanion();
 
             $pet->setSpiritCompanion($spiritCompanion);
 
             $em->persist($spiritCompanion);
+        }
+        else if($merit->getName() === MeritEnum::VOLAGAMY)
+        {
+            $pet->setIsFertile(true);
         }
 
         $em->flush();

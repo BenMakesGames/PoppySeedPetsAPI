@@ -33,6 +33,8 @@ class SpiritCompanion
         'Ysbryd',
     ];
 
+    const IMAGES = [ 'blob', 'dino', 'erm', 'splat', 'jellyfish', 'sooty', 'cat-snake', 'haha' ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -67,6 +69,7 @@ class SpiritCompanion
     {
         $this->star = SpiritCompanionStarEnum::getRandomValue();
         $this->name = ArrayFunctions::pick_one(self::NAMES);
+        $this->image = ArrayFunctions::pick_one(self::IMAGES);
     }
 
     public function getId(): ?int

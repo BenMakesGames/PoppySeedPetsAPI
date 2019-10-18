@@ -479,10 +479,8 @@ class PetRelationshipService
                         ->increaseEsteem(mt_rand(2, 4))
                     ;
 
-                    if(mt_rand(1, 20) === 1 && (!$pet->getPregnancy() || !$friend->getPregnancy()))
-                    {
+                    if(mt_rand(1, 20) === 1)
                         $this->pregnancyService->getPregnant($pet, $friend);
-                    }
                 }
                 else
                 {
