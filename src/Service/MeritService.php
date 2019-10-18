@@ -43,7 +43,19 @@ class MeritService
                     break;
 
                 case MeritEnum::PROTOCOL_7:
-                    $available = $pet->getComputer() > 0 || $pet->getLevel() >= 10;
+                    $available = $pet->getSkills()->getComputer() > 0;
+                    break;
+
+                case MeritEnum::SOOTHING_VOICE:
+                    $available = $pet->getSkills()->getMusic() > 0;
+                    break;
+
+                case MeritEnum::BLACK_HOLE_TUM:
+                    $available = $pet->getSkills()->getStamina() >= 4;
+                    break;
+
+                case MeritEnum::EIDETIC_MEMORY:
+                    $available = $pet->getSkills()->getIntelligence() >= 4;
                     break;
 
                 default:
