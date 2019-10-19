@@ -213,6 +213,18 @@ class HollowEarthService
                 $this->inventoryService->receiveItem($event['receiveItems'], $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);
         }
 
+        // because I'm likely to screw up and forget to make it plural:
+        if(array_key_exists('receiveItem', $event))
+        {
+            if(is_array($event['receiveItem']))
+            {
+                foreach($event['receiveItem'] as $itemName)
+                    $this->inventoryService->receiveItem($itemName, $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);
+            }
+            else
+                $this->inventoryService->receiveItem($event['receiveItem'], $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);
+        }
+
         if(array_key_exists('receiveMoneys', $event))
             $player->getUser()->increaseMoneys($event['receiveMoneys']);
 
