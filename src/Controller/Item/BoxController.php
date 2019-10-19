@@ -176,6 +176,9 @@ class BoxController extends PsyPetsItemController
         for($i = 0; $i < 4; $i++)
             $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Corn Syrup', 'Baker\'s Yeast', 'Cocoa Beans', 'Baking Soda', 'Cream of Tartar' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location);
 
+        if(mt_rand(1, 4) === 1)
+            $newInventory[] = $inventoryService->receiveItem('Cobbler Recipe', $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location);
+
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
         $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);

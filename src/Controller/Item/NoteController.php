@@ -74,4 +74,18 @@ Here\'s some basic notes on how to take care of your new pet:
 * b powder
 * berries');
     }
+
+    /**
+     * @Route("/stroganoff/{inventory}/read", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function readStroganoffRecipe(Inventory $inventory, ResponseService $responseService)
+    {
+        $this->validateInventory($inventory, 'note/stroganoff/#/read');
+
+        return $responseService->itemActionSuccess('* mushrooms, onions, oil (or butter)
+* fish
+* sour cream, flour (any - thickener)
+* noodles');
+    }
 }
