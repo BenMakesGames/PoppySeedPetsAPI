@@ -33,6 +33,7 @@ class BakingBookController extends PsyPetsItemController
 
 #### Recipes
 
+* Flour Tortilla
 * Melon Pan
 * Meringues
 * Pancakes
@@ -62,6 +63,14 @@ Can be found as a byproduct of wine-making. (As an example, you can age some Blu
 Simply grind some Wheat into a fine powder.
 
 ## Recipes
+
+#### Flour Tortilla
+
+A versatile bread! (If you make quesadillas, don\'t forget to Butter, or Oil, the pan, as you would with a Grilled Cheese!)
+
+* Wheat Flour
+* Baking Powder (or Baking Soda + Cream of Tartar)
+* Butter
 
 #### Melon Pan
 
