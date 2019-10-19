@@ -58,4 +58,20 @@ Here\'s some basic notes on how to take care of your new pet:
 1. Have fun!
 ');
     }
+
+    /**
+     * @Route("/cobblers/{inventory}/read", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function readCobblerRecipes(Inventory $inventory, ResponseService $responseService)
+    {
+        $this->validateInventory($inventory, 'note/cobblers/#/read');
+
+        return $responseService->itemActionSuccess('* flour
+* milk
+* butter
+* sugar
+* b powder
+* berries');
+    }
 }
