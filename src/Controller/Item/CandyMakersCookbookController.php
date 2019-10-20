@@ -31,8 +31,8 @@ class CandyMakersCookbookController extends PsyPetsItemController
 
 #### Recipes
 
-* Fruit Candies
-* Fruit Gummies
+* Hand Candies
+* Soft Gummies
 
 ## Basic Ingredients
 
@@ -71,34 +71,19 @@ Quick method:
 
 ## Recipes
 
-#### Fruit Candies
+#### Hard Candies
 
 Combine the following:
-* A small fruit (ex: Blueberries, or Blackberries)
+* Fruit (berries, melon, orange, etc)
 * Sugar
-
-Or:
-* A larger fruit (ex: Red, Orange, or Pamplemousse)
-* 2 Sugar
 
 If you prefer to always think in terms of "2 Sugar", you can also double the small fruit recipes.
 
-#### Fruit Gummies
+#### Soft Gummies
 
 Combine the following:
-* A small fruit (ex: Blueberries, or Blackberries)
+* Fruit (berries, melon, orange, etc)
 * Sugar
-* Corn Syrup
-
-Or:
-* A large fruit (ex: Red, Orange, or Pamplemousse)
-* 2 Sugar
-* Corn Syrup
-
-When making small fruit gummies, you can be a little more efficient with your Corn Syrup, as follows:
-* 2 of same small fruit
-* 2 Sugar
-* Corn Syrup
-');
+* Corn Syrup');
     }
 }
