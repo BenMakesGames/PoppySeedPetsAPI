@@ -54,7 +54,7 @@ class UserStatsRepository extends ServiceEntityRepository
         {
             $tossedAndDonated = $this->findBy([ 'user' => $user, 'stat' => [ UserStatEnum::ITEMS_THROWN_AWAY, UserStatEnum::ITEMS_DONATED_TO_MUSEUM ] ]);
             $total = array_sum(array_map(function(UserStats $s) { return $s->getValue(); }, $tossedAndDonated));
-            if($total >= 50)
+            if($total >= 10)
                 $user->setUnlockedBookstore();
         }
 
