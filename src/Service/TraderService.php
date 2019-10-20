@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 use App\Entity\User;
+use App\Entity\UserStats;
 use App\Enum\CostOrYieldTypeEnum;
 use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
@@ -51,6 +52,7 @@ class TraderService
     private const ID_GLOWING_D4 = 'glowingD4';
     private const ID_GLOWING_D6 = 'glowingD6';
     private const ID_GLOWING_D8 = 'glowingD8';
+    private const ID_MONEY_SINK = 'moneySink';
 
     private $itemRepository;
     private $inventoryService;
@@ -84,6 +86,8 @@ class TraderService
         $date = $now->format('M j');
         $dayOfWeek = $now->format('D');
         $dayOfTheYear = (int)$now->format('z') + $user->getDailySeed();
+
+        $itemsDonatedToMuseum = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]);
 
         $leapDay = $date === 'Feb 29';
 
@@ -122,11 +126,11 @@ class TraderService
             );
         }
 
-        $offers = $this->addDayOfWeekTrades($dayOfWeek, $leapDay, $offers);
-        $offers = $this->addMod17TradesPreciousMetals($dayOfTheYear, $leapDay, $offers);
-        $offers = $this->addMod11Trades($dayOfTheYear, $leapDay, $offers);
-        $offers = $this->addMod5Trades($dayOfTheYear, $leapDay, $offers);
-        $offers = $this->addMod4Trades($dayOfTheYear, $leapDay, $offers);
+        $offers = $this->addDayOfWeekTrades($offers, $dayOfWeek, $leapDay);
+        $offers = $this->addMod17TradesPreciousMetals($offers, $dayOfTheYear, $leapDay);
+        $offers = $this->addMod11Trades($offers, $dayOfTheYear, $leapDay);
+        $offers = $this->addMod5Trades($offers, $dayOfTheYear, $leapDay, $itemsDonatedToMuseum);
+        $offers = $this->addMod4Trades($offers, $dayOfTheYear, $leapDay);
 
         if($dayOfTheYear % 3 === 0 || $leapDay)
         {
@@ -151,7 +155,7 @@ class TraderService
         ];
     }
 
-    private function addDayOfWeekTrades(string $dayOfWeek, bool $leapDay, array $offers): array
+    private function addDayOfWeekTrades(array $offers, string $dayOfWeek, bool $leapDay): array
     {
 
         if($dayOfWeek === 'Mon' || $leapDay)
@@ -277,7 +281,7 @@ class TraderService
         return $offers;
     }
 
-    private function addMod4Trades(int $dayOfTheYear, bool $leapDay, array $offers): array
+    private function addMod4Trades(array $offers, int $dayOfTheYear, bool $leapDay): array
     {
         if($dayOfTheYear % 4 === 0 || $leapDay)
         {
@@ -322,7 +326,7 @@ class TraderService
         return $offers;
     }
 
-    private function addMod5Trades(int $dayOfTheYear, bool $leapDay, array $offers): array
+    private function addMod5Trades(array $offers, int $dayOfTheYear, bool $leapDay, UserStats $itemsDonatedToMuseum): array
     {
         if($dayOfTheYear % 5 === 0 || $leapDay)
         {
@@ -350,6 +354,17 @@ class TraderService
             );
         }
 
+        if($itemsDonatedToMuseum->getValue() >= 250)
+        {
+            $offers[] = new TraderOffer(
+                self::ID_MONEY_SINK,
+                [ TraderOfferCostOrYield::createMoney(1000) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Money Sink'), 1) ],
+                'The Museum\'s curator insisted I make this offer...'
+            );
+        }
+
+
         if(($dayOfTheYear + 4) % 5 === 0 || $leapDay)
         {
             $offers[] = new TraderOffer(
@@ -366,7 +381,7 @@ class TraderService
         return $offers;
     }
 
-    private function addMod11Trades(int $dayOfTheYear, bool $leapDay, array $offers): array
+    private function addMod11Trades(array $offers, int $dayOfTheYear, bool $leapDay): array
     {
         if($dayOfTheYear % 11 === 0 || $leapDay)
         {
@@ -449,7 +464,7 @@ class TraderService
         return $offers;
     }
 
-    private function addMod17TradesPreciousMetals(int $dayOfTheYear, bool $leapDay, array $offers): array
+    private function addMod17TradesPreciousMetals(array $offers, int $dayOfTheYear, bool $leapDay): array
     {
 
         if($dayOfTheYear % 17 === 0 || $dayOfTheYear % 17 === 6 || $dayOfTheYear % 17 === 12 || $leapDay)
