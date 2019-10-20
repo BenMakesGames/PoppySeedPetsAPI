@@ -27,10 +27,18 @@ class SoupController extends PsyPetsItemController
 
 IF YOU HAPPEN TO STOR-- \*HACK; CoUgh; wheeze\* to store your Beans in threes, five lots of three will do.
 
+#### Chicken Noodle Soup
+
+* Chicken
+* Mirepoix
+* Noodles
+
+Also good with Fish, instead of chicken.
+
 #### Fish Stew
 
-* Mirepoix
 * Fish
+* Mirepoix
 * Tomato
 * Spicy Peps (optional)
 
