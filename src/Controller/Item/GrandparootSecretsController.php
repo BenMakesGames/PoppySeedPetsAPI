@@ -108,6 +108,18 @@ If you already have Black Tea or Sweet Black Tea made, simply add Aging Root. (I
 
 If you haven\'t made any tea yet, don\'t worry: Aging Powder will speed up the steeping process as well! Combine Tea Leaves, Sugar, and Aging Root, and let time do the rest... in just under a minute!
 
+### Soy Sauce
+
+Did you know Soy Sauce is fermented soy beans? Today, starters are available in grocery stores, but the traditional method simply leaves a mixture of beans and wheat flour out to rest.
+
+Subbing Aging Powder for *time itself*, Soy Sauce can be made very quickly indeed! Combine:
+
+* Wheat Flour
+* Beans
+* Aging Powder
+
+Apply a little heat, and you\'re done!
+
 ### Conclusion
 
 There\'s a lot more you can do with Aging Powder, of course, and you should feel free to experiment. I hope this book has opened your eyes to the possibilities that Grandparoot can bring to your kitchen!
