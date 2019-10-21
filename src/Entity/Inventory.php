@@ -67,7 +67,7 @@ class Inventory
      * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="tool")
      * @Groups({"myInventory"})
      */
-    private $pet;
+    private $holder;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -84,6 +84,12 @@ class Inventory
      * @ORM\Column(type="smallint")
      */
     private $location = LocationEnum::HOME;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="hat")
+     * @Groups({"myInventory"})
+     */
+    private $wearer;
 
     public function __construct()
     {
@@ -161,14 +167,14 @@ class Inventory
         return $this;
     }
 
-    public function getPet(): ?Pet
+    public function getHolder(): ?Pet
     {
-        return $this->pet;
+        return $this->holder;
     }
 
-    public function setPet(?Pet $pet): self
+    public function setHolder(?Pet $pet): self
     {
-        $this->pet = $pet;
+        $this->holder = $pet;
 
         // set (or unset) the owning side of the relation if necessary
         $newTool = $pet === null ? null : $this;
@@ -227,6 +233,24 @@ class Inventory
             throw new \InvalidArgumentException('$location is not a valid LocationEnum value.');
 
         $this->location = $location;
+
+        return $this;
+    }
+
+    public function getWearer(): ?Pet
+    {
+        return $this->wearer;
+    }
+
+    public function setWearer(?Pet $wearer): self
+    {
+        $this->wearer = $wearer;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newHat = $wearer === null ? null : $this;
+        if ($newHat !== $wearer->getHat()) {
+            $wearer->setHat($newHat);
+        }
 
         return $this;
     }

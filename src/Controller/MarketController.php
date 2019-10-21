@@ -107,8 +107,11 @@ class MarketController extends PsyPetsController
                 ->setModifiedOn()
             ;
 
-            if($buy->getPet())
-                $buy->getPet()->setTool(null);
+            if($buy->getHolder())
+                $buy->getHolder()->setTool(null);
+
+            if($buy->getWearer())
+                $buy->getWearer()->setHat(null);
 
             $em->flush();
         }

@@ -184,9 +184,15 @@ class PetController extends PsyPetsController
         if($pet->getInDaycare())
             throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');
 
-        if($inventory->getPet())
+        if($inventory->getHolder())
         {
-            $inventory->getPet()->setTool(null);
+            $inventory->getHolder()->setTool(null);
+            $em->flush();
+        }
+
+        if($inventory->getWearer())
+        {
+            $inventory->getWearer()->setWearer(null);
             $em->flush();
         }
 

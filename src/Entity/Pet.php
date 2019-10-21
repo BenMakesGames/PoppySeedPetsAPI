@@ -130,7 +130,7 @@ class Pet
     private $species;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Inventory", inversedBy="pet")
+     * @ORM\OneToOne(targetEntity="App\Entity\Inventory", inversedBy="holder")
      * @ORM\JoinColumn(onDelete="SET NULL")
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
      */
@@ -275,6 +275,13 @@ class Pet
      * @Groups({"myPet"})
      */
     private $isFertile = false;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Inventory", inversedBy="wearer")
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
+     */
+    private $hat;
 
     public function __construct()
     {
@@ -1336,6 +1343,18 @@ class Pet
     public function setIsFertile(bool $isFertile): self
     {
         $this->isFertile = $isFertile;
+
+        return $this;
+    }
+
+    public function getHat(): ?Inventory
+    {
+        return $this->hat;
+    }
+
+    public function setHat(?Inventory $hat): self
+    {
+        $this->hat = $hat;
 
         return $this;
     }

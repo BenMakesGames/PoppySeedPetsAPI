@@ -216,8 +216,11 @@ class InventoryController extends PsyPetsController
                     ->addComment($user->getName() . ' threw this item away, but it found its way to The Giving Tree.')
                 ;
 
-                if($i->getPet())
-                    $i->getPet()->setTool(null);
+                if($i->getHolder())
+                    $i->getHolder()->setTool(null);
+
+                if($i->getWearer())
+                    $i->getWearer()->setHat(null);
             }
             else
                 $em->remove($i);
@@ -269,9 +272,9 @@ class InventoryController extends PsyPetsController
                 ->setModifiedOn()
             ;
 
-            if($location !== LocationEnum::HOME && $i->getPet())
+            if($location !== LocationEnum::HOME && $i->getHolder())
             {
-                $i->getPet()->setTool(null);
+                $i->getHolder()->setTool(null);
                 $unequippedAPet = true;
             }
         }
