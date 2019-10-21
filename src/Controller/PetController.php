@@ -238,7 +238,9 @@ class PetController extends PsyPetsController
      * @Route("/{pet}/setFertility", methods={"PATCH"}, requirements={"pet"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function setPetFertility(Pet $pet, Request $request, ResponseService $responseService)
+    public function setPetFertility(
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
+    )
     {
         $user = $this->getUser();
 
@@ -251,6 +253,8 @@ class PetController extends PsyPetsController
         $fertility = $request->request->getBoolean('fertility');
 
         $pet->setIsFertile($fertility);
+
+        $em->flush();
 
         return $responseService->success();
     }
