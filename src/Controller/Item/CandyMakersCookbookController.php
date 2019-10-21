@@ -33,6 +33,7 @@ class CandyMakersCookbookController extends PsyPetsItemController
 
 * Hand Candies
 * Soft Gummies
+* Chocolates
 
 ## Basic Ingredients
 
@@ -84,6 +85,14 @@ If you prefer to always think in terms of "2 Sugar", you can also double the sma
 Combine the following:
 * Fruit (berries, melon, orange, etc)
 * Sugar
-* Corn Syrup');
+* Corn Syrup
+
+#### Chocolates
+
+Combine:
+* Cocoa Beans (*not* powder!)
+* Sugar
+* Optionally, add Orange, or Spicy Peps.
+');
     }
 }
