@@ -366,13 +366,13 @@ class ItemFood
     {
         $modifiers = [];
 
-        if($this->food >= 10)
+        if($this->food > 9)
             $modifiers[] = 'huge meal';
-        else if($this->food >= 6)
+        else if($this->food > 5)
             $modifiers[] = 'meal';
-        else if($this->food >= 3)
+        else if($this->food > 2)
             $modifiers[] = 'small meal';
-        else if($this->food >= 1)
+        else if($this->food > 0)
             $modifiers[] = 'snack';
         else
             $modifiers[] = 'no food value';
@@ -381,12 +381,31 @@ class ItemFood
         else if($this->love > 0) $modifiers[] = 'all pets like this food';
         else if($this->love < 0) $modifiers[] = 'all pets hate this food';
 
-        if($this->junk > 0) $modifiers[] = 'a junk food';
-        else if($this->junk < 0) $modifiers[] = 'a healthy food';
+        if($this->junk > 9)
+            $modifiers[] = 'very junky';
+        else if($this->junk > 5)
+            $modifiers[] = 'junky';
+        else if($this->junk > 2)
+            $modifiers[] = 'somewhat junky';
+        else if($this->junk > 0)
+            $modifiers[] = 'slightly junky';
+        else if($this->junk < 0)
+            $modifiers[] = 'a health food';
 
-        if($this->alcohol > 0) $modifiers[] = 'alcoholic';
-        if($this->caffeine > 0) $modifiers[] = 'caffeinated';
-        if($this->psychedelic > 0) $modifiers[] = 'trippy';
+        if($this->alcohol > 2)
+            $modifiers[] = 'alcoholic';
+        else if($this->alcohol > 0)
+            $modifiers[] = 'mildly alcoholic';
+
+        if($this->caffeine > 2)
+            $modifiers[] = 'caffeinated';
+        else if($this->caffeine > 0)
+            $modifiers[] = 'mildly caffeinated';
+
+        if($this->psychedelic > 2)
+            $modifiers[] = 'trippy';
+        else if($this->psychedelic > 0)
+            $modifiers[] = 'slightly trippy';
 
         foreach(FlavorEnum::getValues() as $flavor)
         {
