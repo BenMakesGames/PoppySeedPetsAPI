@@ -19,6 +19,7 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -197,7 +198,7 @@ class InventoryController extends PsyPetsController
         $givingTree = $userRepository->findOneByEmail('giving-tree@poppyseedpets.com');
 
         if(!$givingTree)
-            throw new \Exception('The "Giving Tree" NPC does not exist in the database!');
+            throw new HttpException(500, 'The "Giving Tree" NPC does not exist in the database!');
 
         foreach($inventory as $i)
         {

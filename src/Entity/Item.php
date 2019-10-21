@@ -107,6 +107,11 @@ class Item
      */
     private $inventory;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\ItemHat", inversedBy="item", cascade={"persist", "remove"})
+     */
+    private $hat;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -289,6 +294,18 @@ class Item
     public function setPlant(?ItemPlant $plant): self
     {
         $this->plant = $plant;
+
+        return $this;
+    }
+
+    public function getHat(): ?ItemHat
+    {
+        return $this->hat;
+    }
+
+    public function setHat(?ItemHat $hat): self
+    {
+        $this->hat = $hat;
 
         return $this;
     }

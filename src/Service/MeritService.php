@@ -58,6 +58,12 @@ class MeritService
                     $available = $pet->getSkills()->getIntelligence() >= 4;
                     break;
 
+                // these Merits may NEVER be chosen; they are gained in other ways:
+                case MeritEnum::BEHATTED:
+                    $available = false;
+                    break;
+
+                // all other Merits can ALWAYS be chosen:
                 default:
                     $available = true;
             }

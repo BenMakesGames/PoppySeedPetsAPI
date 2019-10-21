@@ -57,7 +57,7 @@ class PetSpecies
      * @ORM\Column(type="boolean")
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
      */
-    private $handFlipX;
+    private $flipX;
 
     /**
      * @ORM\Column(type="boolean")
@@ -81,6 +81,21 @@ class PetSpecies
      * @Groups({"myPet", "userPublicProfile"})
      */
     private $eggImage;
+
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $hatX;
+
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $hatY;
+
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $hatAngle;
 
     public function getId(): ?int
     {
@@ -159,14 +174,14 @@ class PetSpecies
         return $this;
     }
 
-    public function getHandFlipX(): ?bool
+    public function getFlipX(): ?bool
     {
-        return $this->handFlipX;
+        return $this->flipX;
     }
 
-    public function setHandFlipX(bool $handFlipX): self
+    public function setFlipX(bool $flipX): self
     {
-        $this->handFlipX = $handFlipX;
+        $this->flipX = $flipX;
 
         return $this;
     }
@@ -215,6 +230,42 @@ class PetSpecies
     public function setEggImage(?string $eggImage): self
     {
         $this->eggImage = $eggImage;
+
+        return $this;
+    }
+
+    public function getHatX(): ?float
+    {
+        return $this->hatX;
+    }
+
+    public function setHatX(float $hatX): self
+    {
+        $this->hatX = $hatX;
+
+        return $this;
+    }
+
+    public function getHatY(): ?float
+    {
+        return $this->hatY;
+    }
+
+    public function setHatY(float $hatY): self
+    {
+        $this->hatY = $hatY;
+
+        return $this;
+    }
+
+    public function getHatAngle(): ?float
+    {
+        return $this->hatAngle;
+    }
+
+    public function setHatAngle(float $hatAngle): self
+    {
+        $this->hatAngle = $hatAngle;
 
         return $this;
     }

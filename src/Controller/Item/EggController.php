@@ -15,6 +15,7 @@ use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -37,7 +38,7 @@ class EggController extends PsyPetsItemController
         $starMonkey = $petSpeciesRepository->findOneBy([ 'name' => 'Star Monkey' ]);
 
         if(!$starMonkey)
-            throw new \Exception('The species "Star Monkey" does not exist! :| Make Ben fix this!');
+            throw new HttpException(500, 'The species "Star Monkey" does not exist! :| Make Ben fix this!');
 
         $user = $this->getUser();
         $location = $inventory->getLocation();

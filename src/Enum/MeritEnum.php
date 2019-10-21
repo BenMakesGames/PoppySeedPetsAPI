@@ -16,6 +16,7 @@ final class MeritEnum
     public const PROTOCOL_7 = 'Protocol 7';
     public const INTROSPECTIVE = 'Introspective';
     public const VOLAGAMY = 'Volagamy';
+    public const BEHATTED = 'Behatted';
 
     // not yet implemented
     //public const PAST_LIFE = 'Past Life';
