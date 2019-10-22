@@ -339,7 +339,7 @@ class TraderService
         return $offers;
     }
 
-    private function addMod5Trades(array $offers, int $dayOfTheYear, bool $leapDay, UserStats $itemsDonatedToMuseum): array
+    private function addMod5Trades(array $offers, int $dayOfTheYear, bool $leapDay, ?UserStats $itemsDonatedToMuseum): array
     {
         if($dayOfTheYear % 5 === 0 || $leapDay)
         {
@@ -367,7 +367,7 @@ class TraderService
             );
         }
 
-        if($itemsDonatedToMuseum->getValue() >= 250)
+        if($itemsDonatedToMuseum && $itemsDonatedToMuseum->getValue() >= 250)
         {
             $offers[] = new TraderOffer(
                 self::ID_MONEY_SINK,
