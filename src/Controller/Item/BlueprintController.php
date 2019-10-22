@@ -11,7 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/blueprint")
  */
-class BlueprintController extends PsyPetsItemController
+class BlueprintController extends PoppySeedPetsItemController
 {
     /**
      * @Route("/basement/{inventory}/read", methods={"POST"})

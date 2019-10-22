@@ -13,7 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/bug")
  */
-class BugController extends PsyPetsItemController
+class BugController extends PoppySeedPetsItemController
 {
     /**
      * @Route("/{inventory}/squish", methods={"POST"})

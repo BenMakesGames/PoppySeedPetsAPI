@@ -23,12 +23,11 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/florist")
  */
-class FloristController extends PsyPetsController
+class FloristController extends PoppySeedPetsController
 {
     private const FLOWERS_FOR_SALE = [
         'Agrimony' => 10,

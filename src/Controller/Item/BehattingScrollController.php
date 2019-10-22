@@ -23,7 +23,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/behattingScroll")
  */
-class BehattingScrollController extends PsyPetsItemController
+class BehattingScrollController extends PoppySeedPetsItemController
 {
     /**
      * @Route("/{inventory}/read", methods={"PATCH"})

@@ -44,7 +44,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 /**
  * @Route("/account")
  */
-class AccountController extends PsyPetsController
+class AccountController extends PoppySeedPetsController
 {
     /**
      * @Route("/register", methods={"POST"})

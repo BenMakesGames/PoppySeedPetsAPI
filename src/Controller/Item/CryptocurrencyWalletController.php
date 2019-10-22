@@ -14,7 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/cryptocurrencyWallet")
  */
-class CryptocurrencyWalletController extends PsyPetsItemController
+class CryptocurrencyWalletController extends PoppySeedPetsItemController
 {
     /**
      * @Route("/{inventory}/unlock", methods={"POST"})

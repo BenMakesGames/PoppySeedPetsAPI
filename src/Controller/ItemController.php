@@ -14,7 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item")
  */
-class ItemController extends PsyPetsController
+class ItemController extends PoppySeedPetsController
 {
     /**
      * @Route("/{item}", methods={"GET"})

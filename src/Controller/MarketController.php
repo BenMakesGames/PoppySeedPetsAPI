@@ -21,7 +21,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/market")
  */
-class MarketController extends PsyPetsController
+class MarketController extends PoppySeedPetsController
 {
     /**
      * @Route("/search", methods={"GET"})

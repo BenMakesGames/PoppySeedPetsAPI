@@ -1,11 +1,11 @@
 <?php
 namespace App\Controller\Item;
 
-use App\Controller\PsyPetsController;
+use App\Controller\PoppySeedPetsController;
 use App\Entity\Inventory;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
-abstract class PsyPetsItemController extends PsyPetsController
+abstract class PoppySeedPetsItemController extends PoppySeedPetsController
 {
     protected function validateInventory(Inventory $inventory, string $action)
     {

@@ -22,7 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/egg")
  */
-class EggController extends PsyPetsItemController
+class EggController extends PoppySeedPetsItemController
 {
     /**
      * @Route("/weird-blue/{inventory}/hatch", methods={"POST"})

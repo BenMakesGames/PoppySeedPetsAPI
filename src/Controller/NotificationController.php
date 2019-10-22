@@ -17,7 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/notification")
  */
-class NotificationController extends PsyPetsController
+class NotificationController extends PoppySeedPetsController
 {
     /**
      * @Route("", methods={"GET"})

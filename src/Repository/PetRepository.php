@@ -61,4 +61,39 @@ class PetRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    public function findRandomTrickOrTreater(User $user): ?Pet
+    {
+        $oneDayAgo = (new \DateTimeImmutable())->modify('-24 hours');
+
+        $numberOfPets = (int)$this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->andWhere('p.tool IS NOT NULL')
+            ->andWhere('p.hat IS NOT NULL')
+            ->andWhere('p.lastInteracted >= :oneDayAgo')
+            ->andWhere('p.owner != :user')
+            ->setParameter('oneDayAgo', $oneDayAgo)
+            ->setParameter('user', $user->getId())
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+
+        if($numberOfPets === 0)
+            return null;
+
+        $offset = mt_rand(0, $numberOfPets - 1);
+
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.tool IS NOT NULL')
+            ->andWhere('p.hat IS NOT NULL')
+            ->andWhere('p.lastInteracted >= :oneDayAgo')
+            ->andWhere('p.owner != :user')
+            ->setParameter('oneDayAgo', $oneDayAgo)
+            ->setParameter('user', $user->getId())
+            ->setFirstResult($offset)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleResult()
+        ;
+    }
 }

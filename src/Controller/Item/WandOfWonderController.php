@@ -18,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/wandOfWonder")
  */
-class WandOfWonderController extends PsyPetsItemController
+class WandOfWonderController extends PoppySeedPetsItemController
 {
     /**
      * @Route("/{inventory}/point", methods={"POST"})

@@ -9,7 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("")
  */
-class IndexController extends PsyPetsController
+class IndexController extends PoppySeedPetsController
 {
     /**
      * @Route("/about")

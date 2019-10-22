@@ -9,7 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/candyMakerCookbook")
  */
-class CandyMakersCookbookController extends PsyPetsItemController
+class CandyMakersCookbookController extends PoppySeedPetsItemController
 {
     /**
      * @Route("/{inventory}/read", methods={"POST"})

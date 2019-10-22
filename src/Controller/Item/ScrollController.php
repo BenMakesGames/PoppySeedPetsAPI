@@ -17,7 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/scroll")
  */
-class ScrollController extends PsyPetsItemController
+class ScrollController extends PoppySeedPetsItemController
 {
     /**
      * @Route("/fruit/{inventory}/invoke", methods={"POST"})

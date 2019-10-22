@@ -21,7 +21,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/encyclopedia")
  */
-class EncyclopediaController extends PsyPetsController
+class EncyclopediaController extends PoppySeedPetsController
 {
     /**
      * @Route("/item", methods={"GET"})

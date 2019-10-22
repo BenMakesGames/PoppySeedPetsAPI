@@ -11,7 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/note")
  */
-class NoteController extends PsyPetsItemController
+class NoteController extends PoppySeedPetsItemController
 {
     /**
      * @Route("/{inventory}/erase", methods={"POST"})

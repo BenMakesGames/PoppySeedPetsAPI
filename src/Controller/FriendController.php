@@ -19,7 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/friend")
  */
-class FriendController extends PsyPetsController
+class FriendController extends PoppySeedPetsController
 {
     /**
      * @Route("", methods={"POST"})

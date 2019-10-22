@@ -16,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/magicHourglass")
  */
-class MagicHourglassController extends PsyPetsItemController
+class MagicHourglassController extends PoppySeedPetsItemController
 {
     /**
      * @Route("/{inventory}/shatter", methods={"POST"})

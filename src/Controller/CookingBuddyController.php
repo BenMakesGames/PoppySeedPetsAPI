@@ -22,7 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/cookingBuddy")
  */
-class CookingBuddyController extends PsyPetsController
+class CookingBuddyController extends PoppySeedPetsController
 {
     /**
      * @Route("/{cookingBuddy}", methods={"GET"})

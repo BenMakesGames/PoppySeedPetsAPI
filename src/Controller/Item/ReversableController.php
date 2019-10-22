@@ -20,7 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/reversable")
  */
-class ReversableController extends PsyPetsItemController
+class ReversableController extends PoppySeedPetsItemController
 {
     private const FLIPS = [
         'Small Plastic Bucket' => 'Upside-down Plastic Bucket'

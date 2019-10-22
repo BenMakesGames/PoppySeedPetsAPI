@@ -13,7 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/die")
  */
-class DieController extends PsyPetsItemController
+class DieController extends PoppySeedPetsItemController
 {
     /**
      * @Route("/{inventory}/roll", methods={"POST"})

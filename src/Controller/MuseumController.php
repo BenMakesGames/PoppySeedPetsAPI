@@ -31,7 +31,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 /**
  * @Route("/museum")
  */
-class MuseumController extends PsyPetsController
+class MuseumController extends PoppySeedPetsController
 {
     /**
      * @Route("/{user}/items", methods={"GET"}, requirements={"user"="\d+"})

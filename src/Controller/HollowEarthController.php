@@ -24,7 +24,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/hollowEarth")
  */
-class HollowEarthController extends PsyPetsController
+class HollowEarthController extends PoppySeedPetsController
 {
     /**
      * @Route("", methods={"GET"})

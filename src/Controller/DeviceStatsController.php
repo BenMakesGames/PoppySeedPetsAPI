@@ -11,7 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/deviceStats")
  */
-class DeviceStatsController extends PsyPetsController
+class DeviceStatsController extends PoppySeedPetsController
 {
     /**
      * @Route("", methods={"PUT"})

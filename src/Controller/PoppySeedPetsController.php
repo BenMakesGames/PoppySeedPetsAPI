@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 /**
  * @method null|User getUser()
  */
-abstract class PsyPetsController extends AbstractController
+abstract class PoppySeedPetsController extends AbstractController
 {
     public function adminIPsOnly(Request $request)
     {

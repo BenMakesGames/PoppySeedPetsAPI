@@ -15,7 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/magpieDeal")
  */
-class MagpieDealController extends PsyPetsItemController
+class MagpieDealController extends PoppySeedPetsItemController
 {
     /**
      * @Route("/{inventory}/quint", methods={"POST"})

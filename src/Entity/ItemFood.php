@@ -415,4 +415,12 @@ class ItemFood
 
         return $modifiers;
     }
+
+    /**
+     * @Groups({"myInventory", "itemEncyclopedia"})
+     */
+    public function isCandy(): bool
+    {
+        return $this->getLove() > $this->getFood() - $this->getJunk() / 2;
+    }
 }
