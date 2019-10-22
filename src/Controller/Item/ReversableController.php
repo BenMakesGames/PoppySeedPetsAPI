@@ -50,6 +50,8 @@ class ReversableController extends PsyPetsItemController
 
         $newItem = $itemRepository->findOneByName($newItemName);
 
+        $reloadPets = $inventory->getHolder() || $inventory->getWearer();
+
         $inventory
             ->changeItem($newItem)
             ->setModifiedOn()
@@ -66,6 +68,6 @@ class ReversableController extends PsyPetsItemController
             'You caaaaaarefully turn the ' . $oldItemName . ' over, then caaaaaarefully put it down...' . "\n\n" . 'Okay... okay, yeah! It worked!' . "\n\n" . 'You successfully made ' . $newItemNameArticle . ' ' . $newItemName . '!',
         ]);
 
-        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true, 'reloadPets' => $reloadPets ]);
     }
 }

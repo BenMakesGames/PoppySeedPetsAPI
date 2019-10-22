@@ -122,10 +122,10 @@ class Inventory
 
         // if the item changes, we need to make sure it can still be worn/held, and unequip it if not
         if($this->getWearer() && !$item->getHat())
-            $this->setWearer(null);
+            $this->getWearer()->setHat(null);
 
         if($this->getHolder() && !$item->getTool())
-            $this->setHolder(null);
+            $this->getHolder()->setTool(null);
 
         return $this;
     }
