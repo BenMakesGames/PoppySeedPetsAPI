@@ -109,6 +109,7 @@ class Item
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\ItemHat", inversedBy="item", cascade={"persist", "remove"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth"})
      */
     private $hat;
 

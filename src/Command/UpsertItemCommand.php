@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Entity\Item;
 use App\Entity\ItemFood;
+use App\Entity\ItemHat;
 use App\Entity\ItemTool;
 use App\Enum\FlavorEnum;
 use App\Repository\ItemRepository;
@@ -55,6 +56,7 @@ class UpsertItemCommand extends PsyPetsCommand
         $this->image($item);
         $this->elements($item);
         $this->tool($item);
+        $this->hat($item);
         $this->food($item);
         $this->fertilizer($item);
 
@@ -137,7 +139,7 @@ class UpsertItemCommand extends PsyPetsCommand
     {
         $equipable = $item->getTool() !== null;
 
-        $equipable = $this->confirm('Is it equipable?', $equipable);
+        $equipable = $this->confirm('Is it a tool?', $equipable);
 
         if($equipable)
         {
@@ -169,12 +171,47 @@ class UpsertItemCommand extends PsyPetsCommand
         }
     }
 
+    private function hat(Item $item)
+    {
+        $wearable = $item->getHat() !== null;
+
+        $wearable = $this->confirm('Is it a hat?', $wearable);
+
+        if($wearable)
+        {
+            if($item->getHat() !== null)
+                $hat = $item->getHat();
+            else
+            {
+                $hat = new ItemHat();
+                $this->em->persist($hat);
+
+                $item->setHat($hat);
+            }
+
+            $hat->setHeadScale($this->askFloat('Hat scale', $hat->getHeadScale()));
+            $hat->setHeadX($this->askFloat('Head X', $hat->getHeadX()));
+            $hat->setHeadY($this->askFloat('Head Y', $hat->getHeadY()));
+            $hat->setHeadAngle($this->askInt('Hat angle', $hat->getHeadAngle()));
+            $hat->setHeadAngleFixed($this->confirm('Hat angle fixed?', $hat->getHeadAngleFixed()));
+        }
+        else
+        {
+            if($item->getHat())
+                $this->em->remove($item->getHat());
+
+            $item->setHat(null);
+        }
+    }
+
     private function elements(Item $item)
     {
+        /*
         $item->setEarth($this->askInt('Earth hours', $item->getEarth()));
         $item->setFire($this->askInt('Fire hours', $item->getFire()));
         $item->setWater($this->askInt('Water hours', $item->getWater()));
         $item->setWind($this->askInt('Wind hours', $item->getWind()));
         $item->setSpirit($this->askInt('Spirit hours', $item->getSpirit()));
+        */
     }
 }

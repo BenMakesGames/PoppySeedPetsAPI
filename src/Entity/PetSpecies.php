@@ -84,16 +84,19 @@ class PetSpecies
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
      */
     private $hatX;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
      */
     private $hatY;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
      */
     private $hatAngle;
 

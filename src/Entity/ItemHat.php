@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ItemHatRepository")
@@ -18,31 +19,36 @@ class ItemHat
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
      */
-    private $headX;
+    private $headX = 0;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
      */
-    private $headY;
+    private $headY = 0;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
      */
-    private $headAngle;
+    private $headAngle = 0;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
      */
-    private $headScale;
+    private $headScale = 0;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
      */
-    private $headAngleFixed;
+    private $headAngleFixed = 0;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Item", mappedBy="hat", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Item", mappedBy="hat")
      */
     private $item;
 

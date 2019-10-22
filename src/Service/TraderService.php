@@ -53,6 +53,7 @@ class TraderService
     private const ID_GLOWING_D6 = 'glowingD6';
     private const ID_GLOWING_D8 = 'glowingD8';
     private const ID_MONEY_SINK = 'moneySink';
+    private const ID_UNICORN_HORN = 'unicornHorn';
 
     private $itemRepository;
     private $inventoryService;
@@ -97,6 +98,18 @@ class TraderService
                 $dialog = "Halloweeeeeeeeeeeeeeee\n\neeeeeeeeeeeeeeeeee\n\neeen!!!\n\n\n\nHalloween.";
             else
                 $dialog = 'Halloween\'s coming up! Don\'t forget!';
+
+            $offers[] = new TraderOffer(
+                self::ID_UNICORN_HORN,
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Talon'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Quintessence'), 1),
+                ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Unicorn Horn'), 1),
+                ],
+                'Alright. I can\'t deny it: it\'s a pretty cute hat.'
+            );
 
             // TODO: ways to get candy, and/or other halloween-y things
         }

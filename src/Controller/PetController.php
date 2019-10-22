@@ -192,11 +192,51 @@ class PetController extends PsyPetsController
 
         if($inventory->getWearer())
         {
-            $inventory->getWearer()->setWearer(null);
+            $inventory->getWearer()->setHat(null);
             $em->flush();
         }
 
         $pet->setTool($inventory);
+        $em->flush();
+
+        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+    }
+
+    /**
+     * @Route("/{pet}/hat/{inventory}", methods={"POST"}, requirements={"pet"="\d+", "inventory"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function hatPet(
+        Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        if($inventory->getOwner()->getId() !== $user->getId())
+            throw new NotFoundHttpException();
+
+        if($pet->getOwner()->getId() !== $user->getId())
+            throw new NotFoundHttpException();
+
+        if($pet->getInDaycare())
+            throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');
+
+        if(!$pet->hasMerit(MeritEnum::BEHATTED))
+            throw new UnprocessableEntityHttpException($pet->getName() . ' does not have the Merit required to wear hats.');
+
+        if($inventory->getHolder())
+        {
+            $inventory->getHolder()->setTool(null);
+            $em->flush();
+        }
+
+        if($inventory->getWearer())
+        {
+            $inventory->getWearer()->setHat(null);
+            $em->flush();
+        }
+
+        $pet->setHat($inventory);
         $em->flush();
 
         return $responseService->success($pet, SerializationGroupEnum::MY_PET);
@@ -234,6 +274,30 @@ class PetController extends PsyPetsController
             throw new UnprocessableEntityHttpException($pet->getName() . ' is not currently equipped.');
 
         $pet->setTool(null);
+
+        $em->flush();
+
+        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+    }
+
+    /**
+     * @Route("/{pet}/unhat", methods={"POST"}, requirements={"pet"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function unhatPet(Pet $pet, ResponseService $responseService, EntityManagerInterface $em)
+    {
+        $user = $this->getUser();
+
+        if($pet->getOwner()->getId() !== $user->getId())
+            throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
+
+        if($pet->getInDaycare())
+            throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');
+
+        if(!$pet->getHat())
+            throw new UnprocessableEntityHttpException($pet->getName() . ' is not currently wearing a hat.');
+
+        $pet->setHat(null);
 
         $em->flush();
 
