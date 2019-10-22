@@ -109,7 +109,23 @@ class Inventory
 
     public function setItem(Item $item): self
     {
+        if($this->item !== null) throw new \InvalidArgumentException('$item has already been set; use changeItem, instead!');
+
         $this->item = $item;
+
+        return $this;
+    }
+
+    public function changeItem(Item $item): self
+    {
+        $this->item = $item;
+
+        // if the item changes, we need to make sure it can still be worn/held, and unequip it if not
+        if($this->getWearer() && !$item->getHat())
+            $this->setWearer(null);
+
+        if($this->getHolder() && !$item->getTool())
+            $this->setHolder(null);
 
         return $this;
     }

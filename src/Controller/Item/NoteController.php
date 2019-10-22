@@ -29,7 +29,7 @@ class NoteController extends PsyPetsItemController
         $paper = $itemRepository->findOneByName('Paper');
 
         $inventory
-            ->setItem($paper)
+            ->changeItem($paper)
             ->addComment($user->getName() . ' erased the message that had been written on this Paper.');
         ;
 

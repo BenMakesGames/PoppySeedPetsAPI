@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\MeritEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
@@ -54,6 +55,10 @@ class GenericAdventureService
         if($level >= 20)
         {
             $possibleRewards[] = [ '', 'Silver Ore' ];
+
+            if($pet->hasMerit(MeritEnum::BEHATTED))
+                $possibleRewards[] = [ 'a', 'Tinfoil Hat' ];
+
             $possibleRewards[] = [ mt_rand(6, 12), 'moneys' ];
         }
 
