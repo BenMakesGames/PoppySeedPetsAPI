@@ -36,7 +36,7 @@ class HalloweenService
         return $this->userQuestRepository->findOrCreate($user, 'Next Trick-or-Treater', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d H:i:s'));
     }
 
-    public function getTrickOrTreater(User $user): Pet
+    public function getTrickOrTreater(User $user): ?Pet
     {
         $trickOrTreater = $this->userQuestRepository->findOrCreate($user, 'Trick-or-Treater', 0);
 

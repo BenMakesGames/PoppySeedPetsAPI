@@ -46,6 +46,9 @@ class HalloweenController extends PoppySeedPetsController
 
         $em->flush();
 
+        if($trickOrTreater === null)
+            throw new UnprocessableEntityHttpException('No one else\'s pets are trick-or-treating right now! (Not many people must be playing :| TELL YOUR FRIENDS TO SIGN IN AND DRESS UP THEIR PETS!');
+
         return $responseService->success([ 'trickOrTreater' => $trickOrTreater, 'nextTrickOrTreater' => $nextTrickOrTreater->getValue() ], SerializationGroupEnum::PET_PUBLIC_PROFILE);
     }
 
