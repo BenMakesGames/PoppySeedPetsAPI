@@ -1,5 +1,5 @@
 <?php
-namespace App\Service;
+namespace App\Service\Holidays;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
@@ -9,6 +9,8 @@ use App\Enum\LocationEnum;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
+use App\Service\CalendarService;
+use App\Service\InventoryService;
 
 class HalloweenService
 {
@@ -19,22 +21,13 @@ class HalloweenService
 
     public function __construct(
         UserQuestRepository $userQuestRepository, PetRepository $petRepository, InventoryService $inventoryService,
-        InventoryRepository $inventoryRepository
+        InventoryRepository $inventoryRepository, CalendarService $calendarService
     )
     {
         $this->userQuestRepository = $userQuestRepository;
         $this->petRepository = $petRepository;
         $this->inventoryService = $inventoryService;
         $this->inventoryRepository = $inventoryRepository;
-    }
-
-    public function isHalloween()
-    {
-        return true;
-
-        $monthAndDay = (int)(new \DateTimeImmutable())->format('md');
-
-        return $monthAndDay >= 1029 && $monthAndDay <= 1031;
     }
 
     public function getNextTrickOrTreater(User $user): UserQuest

@@ -22,15 +22,18 @@ class ResponseService
     private $security;
     private $normalizer;
     private $sessionId = 0;
+    private $calendarService;
 
     public function __construct(
-        SerializerInterface $serializer, NormalizerInterface $normalizer, EntityManagerInterface $em, Security $security
+        SerializerInterface $serializer, NormalizerInterface $normalizer, EntityManagerInterface $em, Security $security,
+        CalendarService $calendarService
     )
     {
         $this->serializer = $serializer;
         $this->normalizer = $normalizer;
         $this->em = $em;
         $this->security = $security;
+        $this->calendarService = $calendarService;
     }
 
     public function setSessionId(?string $sessionId)
@@ -69,6 +72,8 @@ class ResponseService
 
         if($this->sessionId !== 0)
             $responseData['sessionId'] = $this->sessionId;
+
+        $responseData['event'] = $this->calendarService->getEventData($this->security->getUser());
 
         $this->injectUserData($responseData);
 

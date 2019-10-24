@@ -58,14 +58,17 @@ class TraderService
     private $itemRepository;
     private $inventoryService;
     private $userStatsRepository;
+    private $calendarService;
 
     public function __construct(
-        ItemRepository $itemRepository, InventoryService $inventoryService, UserStatsRepository $userStatsRepository
+        ItemRepository $itemRepository, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
+        CalendarService $calendarService
     )
     {
         $this->itemRepository = $itemRepository;
         $this->inventoryService = $inventoryService;
         $this->userStatsRepository = $userStatsRepository;
+        $this->calendarService = $calendarService;
     }
 
     public function getOffers(User $user)
@@ -90,7 +93,7 @@ class TraderService
 
         $itemsDonatedToMuseum = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]);
 
-        $leapDay = $date === 'Feb 29';
+        $leapDay = $this->calendarService->isLeapDay();
 
         if($date === 'Oct 31' || $date === 'Oct 30' || $date === 'Oct 29' || $date === 'Oct 28')
         {
@@ -123,7 +126,7 @@ class TraderService
         }
 
         // talk like a pirate day
-        if($date === 'Sep 19')
+        if($this->calendarService->isTalkLikeAPirateDay())
         {
             $offers[] = new TraderOffer(
                 self::ID_RUSTY_RAPIER,

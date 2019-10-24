@@ -5,9 +5,8 @@ use App\Entity\PetActivityLog;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\GrammarFunctions;
 use App\Repository\InventoryRepository;
-use App\Repository\PetRepository;
-use App\Repository\UserQuestRepository;
-use App\Service\HalloweenService;
+use App\Service\CalendarService;
+use App\Service\Holidays\HalloweenService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,17 +23,35 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 class HalloweenController extends PoppySeedPetsController
 {
     /**
+     * @Route(methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getNextTrickOrTreater(
+        HalloweenService $halloweenService, ResponseService $responseService, CalendarService $calendarService
+    )
+    {
+        $user = $this->getUser();
+
+        if(!$calendarService->isHalloween())
+            throw new AccessDeniedHttpException('It isn\'t Halloween!');
+
+        $nextTrickOrTreater = $halloweenService->getNextTrickOrTreater($user);
+
+        return $responseService->success($nextTrickOrTreater->getValue());
+    }
+
+    /**
      * @Route("/trickOrTreater", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getTrickOrTreater(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
-        NormalizerInterface $normalizer
+        NormalizerInterface $normalizer, CalendarService $calendarService
     )
     {
         $user = $this->getUser();
 
-        if(!$halloweenService->isHalloween())
+        if(!$calendarService->isHalloween())
             throw new AccessDeniedHttpException('It isn\'t Halloween!');
 
         $nextTrickOrTreater = $halloweenService->getNextTrickOrTreater($user);
@@ -64,12 +81,12 @@ class HalloweenController extends PoppySeedPetsController
      */
     public function giveCandy(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
-        Request $request, InventoryRepository $inventoryRepository
+        Request $request, InventoryRepository $inventoryRepository, CalendarService $calendarService
     )
     {
         $user = $this->getUser();
 
-        if(!$halloweenService->isHalloween())
+        if(!$calendarService->isHalloween())
             throw new AccessDeniedHttpException('It isn\'t Halloween!');
 
         $candy = $inventoryRepository->find($request->request->getInt('candy'));

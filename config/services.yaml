@@ -32,6 +32,10 @@ services:
         resource: '../src/Service/PetActivity'
         lazy: true
 
+    App\Service\Holidays\:
+        resource: '../src/Service/Holidays'
+        lazy: true
+
     App\Service\TwitterService:
         arguments:
             $apiConsumerKey: '%env(TWITTER_API_CONSUMER_KEY)%'
