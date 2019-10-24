@@ -252,7 +252,7 @@ class InventoryService
     /**
      * @param Item|string $item
      */
-    public function receiveItem($item, User $owner, ?User $creator, string $comment, int $location): Inventory
+    public function receiveItem($item, User $owner, ?User $creator, string $comment, int $location, bool $lockedToOwner = false): Inventory
     {
         if(is_string($item))
         {
@@ -268,6 +268,7 @@ class InventoryService
             ->setItem($item)
             ->addComment($comment)
             ->setLocation($location)
+            ->setLockedToOwner($lockedToOwner)
         ;
 
         $this->em->persist($i);

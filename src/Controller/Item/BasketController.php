@@ -27,11 +27,12 @@ class BasketController extends PoppySeedPetsItemController
 
         $user = $this->getUser();
         $location = $inventory->getLocation();
+        $lockedToOwner = $inventory->getLockedToOwner();
 
-        $inventoryService->receiveItem('Apricot Preserves', $user, $user, $user->getName() . ' got this from a Fruit Basket.', $location);
-        $inventoryService->receiveItem('Blueberries', $user, $user, $user->getName() . ' got this from a Fruit Basket.', $location);
-        $inventoryService->receiveItem('Naner', $user, $user, $user->getName() . ' got this from a Fruit Basket.', $location);
-        $inventoryService->receiveItem('Fabric Mâché Basket', $user, $user, $user->getName() . ' took everything out of a Fruit Basket; this is what was left.', $location);
+        $inventoryService->receiveItem('Apricot Preserves', $user, $user, $user->getName() . ' got this from a Fruit Basket.', $location, $lockedToOwner);
+        $inventoryService->receiveItem('Blueberries', $user, $user, $user->getName() . ' got this from a Fruit Basket.', $location, $lockedToOwner);
+        $inventoryService->receiveItem('Naner', $user, $user, $user->getName() . ' got this from a Fruit Basket.', $location, $lockedToOwner);
+        $inventoryService->receiveItem('Fabric Mâché Basket', $user, $user, $user->getName() . ' took everything out of a Fruit Basket; this is what was left.', $location, $lockedToOwner);
 
         $em->remove($inventory);
 
@@ -53,6 +54,7 @@ class BasketController extends PoppySeedPetsItemController
 
         $user = $this->getUser();
         $location = $inventory->getLocation();
+        $lockedToOwner = $inventory->getLockedToOwner();
 
         $possibleFlowers = [
             'Rice Flower',
@@ -72,10 +74,10 @@ class BasketController extends PoppySeedPetsItemController
             $itemName = ArrayFunctions::pick_one($possibleFlowers);
             $items[] = $itemName;
 
-            $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in a Flower Basket.', $location);
+            $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in a Flower Basket.', $location, $lockedToOwner);
         }
 
-        $inventoryService->receiveItem('Fabric Mâché Basket', $user, $user, $user->getName() . ' took everything out of a Flower Basket; this is what was left.', $location);
+        $inventoryService->receiveItem('Fabric Mâché Basket', $user, $user, $user->getName() . ' took everything out of a Flower Basket; this is what was left.', $location, $lockedToOwner);
 
         $em->remove($inventory);
 

@@ -6,6 +6,7 @@ use App\Entity\Pet;
 use App\Entity\User;
 use App\Entity\UserQuest;
 use App\Enum\LocationEnum;
+use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 
@@ -14,18 +15,23 @@ class HalloweenService
     private $userQuestRepository;
     private $petRepository;
     private $inventoryService;
+    private $inventoryRepository;
 
     public function __construct(
-        UserQuestRepository $userQuestRepository, PetRepository $petRepository, InventoryService $inventoryService
+        UserQuestRepository $userQuestRepository, PetRepository $petRepository, InventoryService $inventoryService,
+        InventoryRepository $inventoryRepository
     )
     {
         $this->userQuestRepository = $userQuestRepository;
         $this->petRepository = $petRepository;
         $this->inventoryService = $inventoryService;
+        $this->inventoryRepository = $inventoryRepository;
     }
 
     public function isHalloween()
     {
+        return true;
+
         $monthAndDay = (int)(new \DateTimeImmutable())->format('md');
 
         return $monthAndDay >= 1029 && $monthAndDay <= 1031;
@@ -85,5 +91,23 @@ class HalloweenService
             return $this->inventoryService->receiveItem($item, $user, $trickOrTreater->getOwner(), $trickOrTreater->getName() . ' gave you this item after trick-or-treating. (Treats for everyone, I guess!)', LocationEnum::HOME);
         else
             return null;
+    }
+
+    /**
+     * @return Inventory[]
+     */
+    public function getCandy(User $user): array
+    {
+        return $this->inventoryRepository->createQueryBuilder('i')
+            ->andWhere('i.owner = :user')
+            ->andWhere('i.location = :home')
+            ->leftJoin('i.item', 'item')
+            ->leftJoin('item.food', 'food')
+            ->andWhere('food.love > food.food - food.junk / 2')
+            ->setParameter('user', $user->getId())
+            ->setParameter('home', LocationEnum::HOME)
+            ->getQuery()
+            ->execute()
+        ;
     }
 }

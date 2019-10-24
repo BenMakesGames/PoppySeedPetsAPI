@@ -19,6 +19,7 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -154,6 +155,9 @@ class InventoryController extends PoppySeedPetsController
     )
     {
         $user = $this->getUser();
+
+        if($user->getUnlockedMarket() === null)
+            throw new AccessDeniedHttpException('You have not yet unlocked this feature.');
 
         if($inventory->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException();

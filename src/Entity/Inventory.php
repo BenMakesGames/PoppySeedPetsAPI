@@ -91,6 +91,11 @@ class Inventory
      */
     private $wearer;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $lockedToOwner = false;
+
     public function __construct()
     {
         $this->createdOn = new \DateTimeImmutable();
@@ -267,6 +272,18 @@ class Inventory
         if ($newHat !== $wearer->getHat()) {
             $wearer->setHat($newHat);
         }
+
+        return $this;
+    }
+
+    public function getLockedToOwner(): ?bool
+    {
+        return $this->lockedToOwner;
+    }
+
+    public function setLockedToOwner(bool $lockedToOwner): self
+    {
+        $this->lockedToOwner = $lockedToOwner;
 
         return $this;
     }

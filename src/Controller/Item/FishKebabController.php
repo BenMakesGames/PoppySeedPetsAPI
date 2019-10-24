@@ -27,11 +27,12 @@ class FishKebabController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $location = $inventory->getLocation();
+        $lockedToOwner = $inventory->getLockedToOwner();
 
-        $inventoryService->receiveItem('Fish', $user, $user, $user->getName() . ' got this from a Fishkebab.', $location);
-        $inventoryService->receiveItem('Fish', $user, $user, $user->getName() . ' got this from a Fishkebab.', $location);
-        $inventoryService->receiveItem('Fish', $user, $user, $user->getName() . ' got this from a Fishkebab.', $location);
-        $inventoryService->receiveItem('Crooked Stick', $user, $user, $user->getName() . ' got this from a Fishkebab.', $location);
+        $inventoryService->receiveItem('Fish', $user, $user, $user->getName() . ' got this from a Fishkebab.', $location, $lockedToOwner);
+        $inventoryService->receiveItem('Fish', $user, $user, $user->getName() . ' got this from a Fishkebab.', $location, $lockedToOwner);
+        $inventoryService->receiveItem('Fish', $user, $user, $user->getName() . ' got this from a Fishkebab.', $location, $lockedToOwner);
+        $inventoryService->receiveItem('Crooked Stick', $user, $user, $user->getName() . ' got this from a Fishkebab.', $location, $lockedToOwner);
 
         $em->remove($inventory);
 

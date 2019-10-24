@@ -40,6 +40,7 @@ class BoxController extends PoppySeedPetsItemController
         $this->validateInventory($box, 'box/ores/#/loot');
 
         $location = $box->getLocation();
+        $lockedToOwner = $box->getLockedToOwner();
 
         $possibleOres = [
             'Iron Ore', 'Iron Ore', 'Iron Ore',
@@ -57,7 +58,7 @@ class BoxController extends PoppySeedPetsItemController
             $numberOfItems = max(3, $numberOfItems - 1);
 
         for($i = 0; $i < $numberOfItems; $i++)
-            $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleOres), $user, $box->getCreatedBy(), 'Found inside a ' . $box->getItem()->getName() . '.', $location);
+            $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleOres), $user, $box->getCreatedBy(), 'Found inside a ' . $box->getItem()->getName() . '.', $location, $lockedToOwner);
 
         $em->remove($box);
 
@@ -74,7 +75,7 @@ class BoxController extends PoppySeedPetsItemController
                 $message .= "\n\nA lobster claw reached out from underneath and pinched you before scuttling away!";
             else
             {
-                $inventoryService->receiveItem('Fish', $user, $box->getCreatedBy(), 'Found inside a lobster inside a ' . $box->getItem()->getName() . '.', $location);
+                $inventoryService->receiveItem('Fish', $user, $box->getCreatedBy(), 'Found inside a lobster inside a ' . $box->getItem()->getName() . '.', $location, $lockedToOwner);
                 $changes = new PetChanges($pet);
                 $petService->gainExp($pet, 2, [ 'dexterity', 'strength', 'brawl' ]);
                 $pet->increaseEsteem(3);
@@ -109,7 +110,7 @@ class BoxController extends PoppySeedPetsItemController
 
             $userStatsRepository->incrementStat($user, 'Found a Box Box Inside a Box Box');
 
-            $inventoryService->receiveItem('Box Box', $user, $user, $user->getName() . ' found this in a Box Box... huh...', $location);
+            $inventoryService->receiveItem('Box Box', $user, $user, $user->getName() . ' found this in a Box Box... huh...', $location, $inventory->getLockedToOwner());
         }
         else
         {
@@ -141,8 +142,8 @@ class BoxController extends PoppySeedPetsItemController
 
             $message = "What boxes will be in _this_ Box Box, I wonder?\n\nOh: " . $possibleItems[0] . " and " . $possibleItems[1] . ", apparently!";
 
-            $inventoryService->receiveItem($possibleItems[0], $user, $user, $user->getName() . ' found this in a Box Box.', $location);
-            $inventoryService->receiveItem($possibleItems[1], $user, $user, $user->getName() . ' found this in a Box Box.', $location);
+            $inventoryService->receiveItem($possibleItems[0], $user, $user, $user->getName() . ' found this in a Box Box.', $location, $inventory->getLockedToOwner());
+            $inventoryService->receiveItem($possibleItems[1], $user, $user, $user->getName() . ' found this in a Box Box.', $location, $inventory->getLockedToOwner());
         }
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
@@ -171,13 +172,13 @@ class BoxController extends PoppySeedPetsItemController
         $location = $inventory->getLocation();
 
         for($i = 0; $i < 5; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Egg', 'Wheat Flour', 'Sugar', 'Creamy Milk' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location);
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Egg', 'Wheat Flour', 'Sugar', 'Creamy Milk' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location, $inventory->getLockedToOwner());
 
         for($i = 0; $i < 4; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Corn Syrup', 'Baker\'s Yeast', 'Cocoa Beans', 'Baking Soda', 'Cream of Tartar' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location);
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Corn Syrup', 'Baker\'s Yeast', 'Cocoa Beans', 'Baking Soda', 'Cream of Tartar' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location, $inventory->getLockedToOwner());
 
         if(mt_rand(1, 4) === 1)
-            $newInventory[] = $inventoryService->receiveItem('Cobbler Recipe', $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location);
+            $newInventory[] = $inventoryService->receiveItem('Cobbler Recipe', $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location, $inventory->getLockedToOwner());
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
@@ -209,10 +210,10 @@ class BoxController extends PoppySeedPetsItemController
         $location = $inventory->getLocation();
 
         for($i = 0; $i < 5; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Orange', 'Red', 'Blackberries', 'Blueberries']), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Orange', 'Red', 'Blackberries', 'Blueberries']), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location, $inventory->getLockedToOwner());
 
         for($i = 0; $i < 4; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Carrot', 'Onion', 'Celery', 'Carrot', 'Sweet Beet']), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Carrot', 'Onion', 'Celery', 'Carrot', 'Sweet Beet']), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location, $inventory->getLockedToOwner());
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
@@ -242,11 +243,11 @@ class BoxController extends PoppySeedPetsItemController
         $location = $inventory->getLocation();
 
         $newInventory = [
-            $inventoryService->receiveItem('Crooked Stick', $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location)
+            $inventoryService->receiveItem('Crooked Stick', $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location, $inventory->getLockedToOwner())
         ];
 
         for($i = 0; $i < 5; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Fluff', 'Plastic', 'Green Dye', 'Yellow Dye', 'Paper', 'Glue']), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Fluff', 'Plastic', 'Green Dye', 'Yellow Dye', 'Paper', 'Glue']), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location, $inventory->getLockedToOwner());
 
         for($i = 0; $i < 3; $i++)
         {
@@ -257,7 +258,7 @@ class BoxController extends PoppySeedPetsItemController
             else
                 $description = $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.';
 
-            $newInventory[] = $inventoryService->receiveItem($itemName, $user, $user, $description, $location);
+            $newInventory[] = $inventoryService->receiveItem($itemName, $user, $user, $description, $location, $inventory->getLockedToOwner());
         }
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
@@ -293,7 +294,7 @@ class BoxController extends PoppySeedPetsItemController
         $location = $inventory->getLocation();
 
         for($i = 0; $i < $beans; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Coffee Beans', 'Cocoa Beans', 'Beans' ]), $user, $user, $description, $location);
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Coffee Beans', 'Cocoa Beans', 'Beans' ]), $user, $user, $description, $location, $inventory->getLockedToOwner());
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
@@ -328,7 +329,7 @@ class BoxController extends PoppySeedPetsItemController
         $location = $inventory->getLocation();
 
         for($i = 0; $i < $peppers; $i++)
-            $newInventory[] = $inventoryService->receiveItem('Spicy Peps', $user, $user, $description, $location);
+            $newInventory[] = $inventoryService->receiveItem('Spicy Peps', $user, $user, $description, $location, $inventory->getLockedToOwner());
 
         $userStatsRepository->incrementStat($user, 'Disassembled a ' . $inventory->getItem()->getName());
 
@@ -431,14 +432,14 @@ class BoxController extends PoppySeedPetsItemController
 
         if($extraItem)
         {
-            $inventoryService->receiveItem($extraItem['name'], $user, $user, $description, $location);
+            $inventoryService->receiveItem($extraItem['name'], $user, $user, $description, $location, $inventory->getLockedToOwner());
             $itemActionMessage = 'You raid the Sandbox, finding ' . $sand . ' batches, or piles, or whatever of Silica Grounds, _but also_ ' . $extraItem['description'] . '!';
         }
         else
             $itemActionMessage = 'You raid the Sandbox, finding ' . $sand . ' batches, or piles, or whatever of Silica Grounds.';
 
         for($i = 0; $i < $sand; $i++)
-            $inventoryService->receiveItem('Silica Grounds', $user, $user, $description, $location);
+            $inventoryService->receiveItem('Silica Grounds', $user, $user, $description, $location, $inventory->getLockedToOwner());
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
@@ -471,7 +472,7 @@ class BoxController extends PoppySeedPetsItemController
             'World\'s Best Sugar Cookie', 'Glowing Four-sided Die'
         ]);
 
-        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $inventory->getLocation());
+        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $inventory->getLocation(), $inventory->getLockedToOwner());
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
@@ -498,14 +499,15 @@ class BoxController extends PoppySeedPetsItemController
         $comment = $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.';
 
         $location = $inventory->getLocation();
+        $lockedToOwner = $inventory->getLockedToOwner();
 
         $newInventory = [
-            $inventoryService->receiveItem('Hot Dog', $user, $user, $comment, $location),
-            $inventoryService->receiveItem('Hot Dog', $user, $user, $comment, $location),
-            $inventoryService->receiveItem('Sunscreen', $user, $user, $comment, $location),
-            $inventoryService->receiveItem('Red Firework', $user, $user, $comment, $location),
-            $inventoryService->receiveItem('White Firework', $user, $user, $comment, $location),
-            $inventoryService->receiveItem('Blue Firework', $user, $user, $comment, $location),
+            $inventoryService->receiveItem('Hot Dog', $user, $user, $comment, $location, $lockedToOwner),
+            $inventoryService->receiveItem('Hot Dog', $user, $user, $comment, $location, $lockedToOwner),
+            $inventoryService->receiveItem('Sunscreen', $user, $user, $comment, $location, $lockedToOwner),
+            $inventoryService->receiveItem('Red Firework', $user, $user, $comment, $location, $lockedToOwner),
+            $inventoryService->receiveItem('White Firework', $user, $user, $comment, $location, $lockedToOwner),
+            $inventoryService->receiveItem('Blue Firework', $user, $user, $comment, $location, $lockedToOwner),
         ];
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
@@ -563,7 +565,7 @@ class BoxController extends PoppySeedPetsItemController
             $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleItems), $user, $user, $comment, $location);
 
         if(mt_rand(1, 4) > 1)
-            $newInventory[] = $inventoryService->receiveItem('Piece of Cetgueli\'s Map', $user, $user, $comment, $location);
+            $newInventory[] = $inventoryService->receiveItem('Piece of Cetgueli\'s Map', $user, $user, $comment, $location, $inventory->getLockedToOwner());
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
@@ -629,7 +631,7 @@ class BoxController extends PoppySeedPetsItemController
         $location = $inventory->getLocation();
 
         foreach($items as $item)
-            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location);
+            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $inventory->getLockedToOwner());
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
@@ -676,7 +678,7 @@ class BoxController extends PoppySeedPetsItemController
         $location = $inventory->getLocation();
 
         foreach($items as $item)
-            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location);
+            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $inventory->getLockedToOwner());
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 

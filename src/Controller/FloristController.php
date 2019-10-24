@@ -84,7 +84,7 @@ class FloristController extends PoppySeedPetsController
         $stat = $userStatsRepository->incrementStat($user, UserStatEnum::FLOWERS_PURCHASED);
 
         if($stat->getValue() === 1)
-            $inventoryService->receiveItem('Book of Flowers', $user, $user, 'This was delivered to you from The Florist\'s.', LocationEnum::HOME);
+            $inventoryService->receiveItem('Book of Flowers', $user, $user, 'This was delivered to you from The Florist\'s.', LocationEnum::HOME, true);
 
         $em->flush();
 

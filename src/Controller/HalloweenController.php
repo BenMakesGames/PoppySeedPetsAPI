@@ -16,6 +16,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @Route("/halloween")
@@ -27,7 +28,8 @@ class HalloweenController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getTrickOrTreater(
-        ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService
+        ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
+        NormalizerInterface $normalizer
     )
     {
         $user = $this->getUser();
@@ -49,7 +51,11 @@ class HalloweenController extends PoppySeedPetsController
         if($trickOrTreater === null)
             throw new UnprocessableEntityHttpException('No one else\'s pets are trick-or-treating right now! (Not many people must be playing :| TELL YOUR FRIENDS TO SIGN IN AND DRESS UP THEIR PETS!');
 
-        return $responseService->success([ 'trickOrTreater' => $trickOrTreater, 'nextTrickOrTreater' => $nextTrickOrTreater->getValue() ], SerializationGroupEnum::PET_PUBLIC_PROFILE);
+        return $responseService->success([
+            'trickOrTreater' => $normalizer->normalize($trickOrTreater, null, [ 'groups' => [ SerializationGroupEnum::PET_PUBLIC_PROFILE ] ]),
+            'nextTrickOrTreater' => $nextTrickOrTreater->getValue(),
+            'candy' => $normalizer->normalize($halloweenService->getCandy($user), null, [ 'groups' => [ SerializationGroupEnum::MY_INVENTORY ] ])
+        ]);
     }
 
     /**
@@ -66,7 +72,7 @@ class HalloweenController extends PoppySeedPetsController
         if(!$halloweenService->isHalloween())
             throw new AccessDeniedHttpException('It isn\'t Halloween!');
 
-        $candy = $inventoryRepository->find($request->request->getInt('item'));
+        $candy = $inventoryRepository->find($request->request->getInt('candy'));
 
         if(!$candy || $candy->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException('The selected candy could not be found... reload and try again?');
@@ -116,6 +122,6 @@ class HalloweenController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success([ 'trickOrTreater' => null, 'nextTrickOrTreater' => $nextTrickOrTreater->getValue() ]);
+        return $responseService->success([ 'trickOrTreater' => null, 'nextTrickOrTreater' => $nextTrickOrTreater->getValue(), 'candy' => [] ]);
     }
 }

@@ -199,6 +199,12 @@ class User implements UserInterface
      */
     private $unlockedHollowEarth;
 
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"myAccount"})
+     */
+    private $unlockedMarket;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -376,6 +382,9 @@ class User implements UserInterface
     public function increaseMoneys(int $amount): self
     {
         $this->moneys += $amount;
+
+        if(!$this->unlockedMarket)
+            $this->setUnlockedMarket();
 
         return $this;
     }
@@ -703,6 +712,18 @@ class User implements UserInterface
     public function setUnlockedHollowEarth(): self
     {
         $this->unlockedHollowEarth = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getUnlockedMarket(): ?\DateTimeImmutable
+    {
+        return $this->unlockedMarket;
+    }
+
+    public function setUnlockedMarket(): self
+    {
+        $this->unlockedMarket = new \DateTimeImmutable();
 
         return $this;
     }

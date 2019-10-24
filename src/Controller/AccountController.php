@@ -128,7 +128,7 @@ class AccountController extends PoppySeedPetsController
 
         $em->persist($pet);
 
-        $inventoryService->receiveItem('Welcome Note', $user, null, 'This Welcome Note was waiting for ' . $user->getName() . ' in their house.', LocationEnum::HOME);
+        $inventoryService->receiveItem('Welcome Note', $user, null, 'This Welcome Note was waiting for ' . $user->getName() . ' in their house.', LocationEnum::HOME, true);
 
         $preferences = (new UserNotificationPreferences())
             ->setUser($user)
@@ -370,7 +370,7 @@ class AccountController extends PoppySeedPetsController
 
         $gotBox->setValue(true);
 
-        $inventoryService->receiveItem('4th of July Box', $user, $user, 'Received on the ' . $now->format('jS') . ' of July, ' . $now->format('Y'), LocationEnum::HOME);
+        $inventoryService->receiveItem('4th of July Box', $user, $user, 'Received on the ' . $now->format('jS') . ' of July, ' . $now->format('Y'), LocationEnum::HOME, true);
 
         $em->flush();
 
