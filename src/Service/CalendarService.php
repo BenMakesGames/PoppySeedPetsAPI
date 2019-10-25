@@ -19,7 +19,6 @@ class CalendarService
 
     public function isHalloween(): bool
     {
-        return true;
         return $this->monthAndDay >= 1029 && $this->monthAndDay <= 1031;
     }
 

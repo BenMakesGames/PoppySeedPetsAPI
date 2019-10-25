@@ -283,6 +283,12 @@ class Pet
      */
     private $hat;
 
+    /**
+     * @ORM\Column(type="string", length=30)
+     * @Groups({"myPet", "petPublicProfile"})
+     */
+    private $costume = '';
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -1355,6 +1361,18 @@ class Pet
     public function setHat(?Inventory $hat): self
     {
         $this->hat = $hat;
+
+        return $this;
+    }
+
+    public function getCostume(): ?string
+    {
+        return $this->costume;
+    }
+
+    public function setCostume(string $costume): self
+    {
+        $this->costume = $costume;
 
         return $this;
     }

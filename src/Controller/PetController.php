@@ -330,6 +330,31 @@ class PetController extends PoppySeedPetsController
     }
 
     /**
+     * @Route("/{pet}/costume", methods={"PATCH"}, requirements={"pet"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function setCostume(
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        if($pet->getOwner()->getId() !== $user->getId())
+            throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
+
+        $costume = trim($request->request->get('costume'));
+
+        if(strlen($costume) > 30)
+            throw new UnprocessableEntityHttpException('Costume description cannot be longer than 30 characters.');
+
+        $pet->setCostume($costume);
+
+        $em->flush();
+
+        return $responseService->success();
+    }
+
+    /**
      * @Route("/{pet}/chooseAffectionReward", methods={"POST"}, requirements={"pet"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
