@@ -62,10 +62,10 @@ class TraderController extends PoppySeedPetsController
         if(!$travelingMerchantService->userCanMakeExchange($user, $exchange))
             throw new UnprocessableEntityHttpException('You don\'t have the items needed to make this exchange.');
 
-        $travelingMerchantService->makeExchange($user, $exchange);
+        $message = $travelingMerchantService->makeExchange($user, $exchange);
 
         $em->flush();
 
-        return $responseService->success();
+        return $responseService->success([ 'message' => $message ]);
     }
 }

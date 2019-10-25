@@ -59,16 +59,18 @@ class TraderService
     private $inventoryService;
     private $userStatsRepository;
     private $calendarService;
+    private $userQuestRepository;
 
     public function __construct(
         ItemRepository $itemRepository, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
-        CalendarService $calendarService
+        CalendarService $calendarService, UserQuestRepository $userQuestRepository
     )
     {
         $this->itemRepository = $itemRepository;
         $this->inventoryService = $inventoryService;
         $this->userStatsRepository = $userStatsRepository;
         $this->calendarService = $calendarService;
+        $this->userQuestRepository = $userQuestRepository;
     }
 
     public function getOffers(User $user)
@@ -609,7 +611,7 @@ class TraderService
         return true;
     }
 
-    public function makeExchange(User $user, TraderOffer $exchange)
+    public function makeExchange(User $user, TraderOffer $exchange): ?string
     {
         foreach($exchange->cost as $cost)
         {
@@ -651,5 +653,20 @@ class TraderService
                     break;
             }
         }
+
+        // october
+        if((int)(new \DateTimeImmutable())->format('n') === 10)
+        {
+            $quest = $this->userQuestRepository->findOrCreate($user, 'Get October Behatting Scroll', false);
+            if($quest->getValue() === false)
+            {
+                $quest->setValue(true);
+                $this->inventoryService->receiveItem('Behatting Scroll', $user, null, 'The Trader gave you this, for Halloween.', LocationEnum::HOME, true);
+
+                return 'Oh, and here, have a Behatting Scroll. It\'ll come in handy for Halloween, trust me!';
+            }
+        }
+
+        return null;
     }
 }
