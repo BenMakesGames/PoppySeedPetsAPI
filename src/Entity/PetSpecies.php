@@ -100,6 +100,11 @@ class PetSpecies
      */
     private $hatAngle;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $availableFromBreeding;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -269,6 +274,18 @@ class PetSpecies
     public function setHatAngle(float $hatAngle): self
     {
         $this->hatAngle = $hatAngle;
+
+        return $this;
+    }
+
+    public function getAvailableFromBreeding(): ?bool
+    {
+        return $this->availableFromBreeding;
+    }
+
+    public function setAvailableFromBreeding(bool $availableFromBreeding): self
+    {
+        $this->availableFromBreeding = $availableFromBreeding;
 
         return $this;
     }

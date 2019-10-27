@@ -33,7 +33,7 @@ class SpiritCompanion
         'Ysbryd',
     ];
 
-    const IMAGES = [ 'blob', 'dino', 'erm', 'splat', 'jellyfish', 'sooty', 'cat-snake', 'haha' ];
+    const IMAGES = [ 'blob', 'dino', 'erm', 'splat', 'jellyfish', 'sooty', 'cat-snake', 'haha', 'icicle' ];
 
     /**
      * @ORM\Id()
