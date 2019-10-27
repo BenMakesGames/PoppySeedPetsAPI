@@ -22,6 +22,7 @@ use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -42,6 +43,9 @@ class MuseumController extends PoppySeedPetsController
         Request $request, ResponseService $responseService, MuseumFilterService $museumFilterService
     )
     {
+        if($this->getUser()->getUnlockedMuseum() === null)
+            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+
         $museumFilterService->addRequiredFilter('user', $user->getId());
 
         return $responseService->success(
@@ -59,6 +63,9 @@ class MuseumController extends PoppySeedPetsController
         Request $request, ResponseService $responseService, ItemFilterService $itemFilterService
     )
     {
+        if($this->getUser()->getUnlockedMuseum() === null)
+            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+
         $itemFilterService->addRequiredFilter('notDonatedBy', $user->getId());
 
         return $responseService->success(
@@ -76,6 +83,9 @@ class MuseumController extends PoppySeedPetsController
         Request $request, ResponseService $responseService, MuseumFilterService $museumFilterService
     )
     {
+        if($this->getUser()->getUnlockedMuseum() === null)
+            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+
         $museumFilterService->addRequiredFilter('user', $user->getId());
 
         return $responseService->success(
@@ -93,6 +103,9 @@ class MuseumController extends PoppySeedPetsController
     )
     {
         $user = $this->getUser();
+
+        if($user->getUnlockedMuseum() === null)
+            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
 
         $qb = $inventoryRepository->createQueryBuilder('i')
             ->andWhere('i.owner=:user')
@@ -139,6 +152,9 @@ class MuseumController extends PoppySeedPetsController
         Request $request, ResponseService $responseService, UserRepository $userRepository, NormalizerInterface $normalizer
     )
     {
+        if($this->getUser()->getUnlockedMuseum() === null)
+            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+
         $qb = $userRepository->createQueryBuilder('u')
             ->select('u AS user,s.value AS itemsDonated')
             ->leftJoin('App:UserStats', 's', Expr\Join::WITH, 's.user = u.id')
@@ -185,6 +201,9 @@ class MuseumController extends PoppySeedPetsController
     )
     {
         $user = $this->getUser();
+
+        if($user->getUnlockedMuseum() === null)
+            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
 
         $inventoryIds = $request->request->get('inventory');
 

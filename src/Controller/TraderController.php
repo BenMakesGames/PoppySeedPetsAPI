@@ -27,9 +27,6 @@ class TraderController extends PoppySeedPetsController
     {
         $user = $this->getUser();
 
-        if($user->getUnlockedMerchant() === null)
-            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
-
         $offers = $travelingMerchantService->getOffers($user);
 
         if(count($offers['offers']) === 0)
@@ -47,9 +44,6 @@ class TraderController extends PoppySeedPetsController
     )
     {
         $user = $this->getUser();
-
-        if($user->getUnlockedMerchant() === null)
-            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
 
         $offers = $travelingMerchantService->getOffers($user);
         $exchange = null;

@@ -142,7 +142,7 @@ class User implements UserInterface
      * @ORM\Column(type="datetime_immutable", nullable=true)
      * @Groups({"myAccount"})
      */
-    private $unlockedMerchant;
+    private $unlockedMuseum;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
@@ -540,14 +540,14 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getUnlockedMerchant(): ?\DateTimeImmutable
+    public function getUnlockedMuseum(): ?\DateTimeImmutable
     {
-        return $this->unlockedMerchant;
+        return $this->unlockedMuseum;
     }
 
-    public function setUnlockedMerchant(): self
+    public function setUnlockedMuseum(): self
     {
-        $this->unlockedMerchant = new \DateTimeImmutable();
+        $this->unlockedMuseum = new \DateTimeImmutable();
 
         return $this;
     }
