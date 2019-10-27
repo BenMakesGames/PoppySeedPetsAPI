@@ -54,6 +54,8 @@ class TraderService
     private const ID_GLOWING_D8 = 'glowingD8';
     private const ID_MONEY_SINK = 'moneySink';
     private const ID_UNICORN_HORN = 'unicornHorn';
+    private const ID_TINFOIL_HAT_1 = 'toadstoolForTinfoilHat';
+    private const ID_TINFOIL_HAT_2 = 'teaLeavesForTinfoilHat';
 
     private $itemRepository;
     private $inventoryService;
@@ -104,6 +106,11 @@ class TraderService
             else
                 $dialog = 'Halloween\'s coming up! Don\'t forget!';
 
+            // TODO: ways to get candy, and/or other halloween-y things
+        }
+
+        if($now->format('M'))
+        {
             $offers[] = new TraderOffer(
                 self::ID_UNICORN_HORN,
                 [
@@ -116,7 +123,32 @@ class TraderService
                 'Alright. I can\'t deny it: it\'s a pretty cute hat.'
             );
 
-            // TODO: ways to get candy, and/or other halloween-y things
+            if($dayOfTheYear % 2 === 0)
+            {
+                $offers[] = new TraderOffer(
+                    self::ID_TINFOIL_HAT_1,
+                    [
+                        TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Toadstool'), 3),
+                    ],
+                    [
+                        TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Tinfoil Hat'), 1),
+                    ],
+                    'Cool, thanks! I have all this tin, but nothing to really do with it, so...'
+                );
+            }
+            else
+            {
+                $offers[] = new TraderOffer(
+                    self::ID_TINFOIL_HAT_2,
+                    [
+                        TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Tea Leaves'), 4),
+                    ],
+                    [
+                        TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Tinfoil Hat'), 1),
+                    ],
+                    'Cool, thanks! I have all this tin, but nothing to really do with it, so...'
+                );
+            }
         }
 
         if($date === 'Oct 31' || $date === 'Nov 1' || $date === 'Nov 2' || $date === 'Nov 3')
