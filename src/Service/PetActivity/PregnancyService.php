@@ -4,12 +4,14 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetBaby;
 use App\Entity\PetSkills;
+use App\Entity\PetSpecies;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\NumberFunctions;
 use App\Repository\PetRepository;
+use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\PetRelationshipService;
@@ -27,11 +29,12 @@ class PregnancyService
     private $responseService;
     private $petService;
     private $userQuestRepository;
+    private $petSpeciesRepository;
 
     public function __construct(
         EntityManagerInterface $em, InventoryService $inventoryService, PetRelationshipService $petRelationshipService,
         PetRepository $petRepository, ResponseService $responseService, PetService $petService,
-        UserQuestRepository $userQuestRepository
+        UserQuestRepository $userQuestRepository, PetSpeciesRepository $petSpeciesRepository
     )
     {
         $this->em = $em;
@@ -41,6 +44,7 @@ class PregnancyService
         $this->responseService = $responseService;
         $this->petService = $petService;
         $this->userQuestRepository = $userQuestRepository;
+        $this->petSpeciesRepository = $petSpeciesRepository;
     }
 
     public function getPregnant(Pet $pet1, Pet $pet2)
@@ -61,7 +65,7 @@ class PregnancyService
         else if($r <= 90)
             $species = $father->getSpecies();
         else
-            $species = null;
+            $species = $this->getRandomBreedingSpecies();
 
         $colorA = $this->generateColor($mother->getColorA(), $father->getColorA());
         $colorB = $this->generateColor($mother->getColorB(), $father->getColorB());
@@ -83,6 +87,13 @@ class PregnancyService
         ;
 
         $this->em->persist($petPregnancy);
+    }
+
+    public function getRandomBreedingSpecies(): PetSpecies
+    {
+        $species = $this->petSpeciesRepository->findBy([ 'availableFromBreeding' => true ]);
+
+        return ArrayFunctions::pick_one($species);
     }
 
     public function giveBirth(Pet $pet)
