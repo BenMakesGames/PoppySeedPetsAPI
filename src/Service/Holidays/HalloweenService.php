@@ -72,12 +72,12 @@ class HalloweenService
         switch($treated->getValue() % 61)
         {
             case 1: $item = 'Crooked Stick'; break;
-            case 3: $item = ''; break;
-            case 8: $item = ''; break;
-            case 15: $item = ''; break;
-            case 25: $item = ''; break;
-            case 40: $item = ''; break;
-            case 60: $item = ''; break;
+            case 3: $item = 'Glowing Four-sided Die'; break;
+            case 8: $item = 'Smallish Pumpkin'; break;
+            case 15: $item = 'Glowing Six-sided Die'; break;
+            case 25: $item = 'Behatting Scroll'; break;
+            case 40: $item = 'Glowing Eight-sided Die'; break;
+            case 60: $item = 'Witch\'s Hat'; break;
         }
 
         if($item)
