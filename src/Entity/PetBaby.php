@@ -45,7 +45,7 @@ class PetBaby
     private $parent;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Pet")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Pet")
      * @ORM\JoinColumn(nullable=false)
      */
     private $otherParent;
