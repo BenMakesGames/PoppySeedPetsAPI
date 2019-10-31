@@ -55,7 +55,7 @@ class PetSpecies
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petEncyclopedia"})
      */
     private $flipX;
 
@@ -67,18 +67,19 @@ class PetSpecies
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"myPet", "userPublicProfile"})
      */
     private $availableFromPetShelter;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "userPublicProfile"})
+     * @Groups({"myPet", "userPublicProfile", "petEncyclopedia"})
      */
     private $pregnancyStyle;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"myPet", "userPublicProfile"})
+     * @Groups({"myPet", "userPublicProfile", "petEncyclopedia"})
      */
     private $eggImage;
 
@@ -102,6 +103,7 @@ class PetSpecies
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"petEncyclopedia"})
      */
     private $availableFromBreeding;
 
@@ -288,5 +290,13 @@ class PetSpecies
         $this->availableFromBreeding = $availableFromBreeding;
 
         return $this;
+    }
+
+    /**
+     * @Groups({"petEncyclopedia"})
+     */
+    public function getAvailableAtSignup(): bool
+    {
+        return $this->getId() <= 16;
     }
 }
