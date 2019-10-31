@@ -67,7 +67,7 @@ class PetSpecies
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"myPet", "userPublicProfile"})
+     * @Groups({"myPet", "userPublicProfile", "petEncyclopedia"})
      */
     private $availableFromPetShelter;
 
