@@ -205,6 +205,11 @@ class User implements UserInterface
      */
     private $unlockedMarket;
 
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     */
+    private $unlockedFireplace;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -724,6 +729,18 @@ class User implements UserInterface
     public function setUnlockedMarket(): self
     {
         $this->unlockedMarket = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getUnlockedFireplace(): ?\DateTimeImmutable
+    {
+        return $this->unlockedFireplace;
+    }
+
+    public function setUnlockedFireplace(?\DateTimeImmutable $unlockedFireplace): self
+    {
+        $this->unlockedFireplace = $unlockedFireplace;
 
         return $this;
     }
