@@ -10,6 +10,7 @@ use App\Entity\PetBaby;
 use App\Entity\PetRelationship;
 use App\Entity\StatusEffect;
 use App\Enum\FlavorEnum;
+use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\SpiritCompanionStarEnum;
 use App\Enum\StatusEffectEnum;
@@ -512,7 +513,7 @@ class PetService
             return;
         }
 
-        $itemsInHouse = (int)$this->inventoryRepository->countItemsInHouse($pet->getOwner());
+        $itemsInHouse = (int)$this->inventoryRepository->countItemsInLocation($pet->getOwner(), LocationEnum::HOME);
         $craftingPossibilities = $this->craftingService->getCraftingPossibilities($pet);
         $programmingPossibilities = $this->programmingService->getCraftingPossibilities($pet);
 

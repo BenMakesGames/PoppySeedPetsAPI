@@ -147,7 +147,7 @@ class InventoryController extends PoppySeedPetsController
     }
 
     /**
-     * @Route("/{inventory}/sellPrice", methods={"POST"})
+     * @Route("/{inventory}/sellPrice", methods={"POST"}, requirements={"inventory"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function setSellPrice(
@@ -251,6 +251,12 @@ class InventoryController extends PoppySeedPetsController
 
         $user = $this->getUser();
 
+        if($location === LocationEnum::BASEMENT && !$user->getUnlockedBasement())
+            throw new UnprocessableEntityHttpException('Invalid location given.');
+
+        if($location === LocationEnum::MANTLE && !$user->getUnlockedFireplace())
+            throw new UnprocessableEntityHttpException('Invalid location given.');
+
         $inventoryIds = $request->request->get('inventory');
         if(!\is_array($inventoryIds)) $inventoryIds = [ $inventoryIds ];
 
@@ -262,10 +268,21 @@ class InventoryController extends PoppySeedPetsController
         if(\count($inventory) !== \count($inventoryIds))
             throw new UnprocessableEntityHttpException('Some of the items could not be found??');
 
-        $itemsInHouse = (int)$inventoryRepository->countItemsInHouse($user);
+        if($location === LocationEnum::HOME)
+        {
+            $itemsInHouse = (int)$inventoryRepository->countItemsInLocation($user, $location);
 
-        if($location === LocationEnum::HOME && $itemsInHouse + count($inventory) > $user->getMaxInventory())
-            throw new UnprocessableEntityHttpException('You do not have enough space in your house!');
+            if ($itemsInHouse + count($inventory) > $user->getMaxInventory())
+                throw new UnprocessableEntityHttpException('You do not have enough space in your house!');
+        }
+
+        if($location === LocationEnum::MANTLE)
+        {
+            $itemsOnMantle = (int)$inventoryRepository->countItemsInLocation($user, $location);
+
+            if ($itemsOnMantle + count($inventory) > 12)
+                throw new UnprocessableEntityHttpException('The mantle only has space for 12 items.');
+        }
 
         $unequippedAPet = false;
 

@@ -49,14 +49,17 @@ class InventoryRepository extends ServiceEntityRepository
         ;
     }
 
-    public function countItemsInHouse(User $user)
+    public function countItemsInLocation(User $user, int $location)
     {
+        if(!LocationEnum::isAValue($location))
+            throw new \InvalidArgumentException('$location is not a valid LocationEnum value.');
+
         return (int)$this->createQueryBuilder('i')
             ->select('COUNT(i.id)')
             ->andWhere('i.owner=:user')
-            ->andWhere('i.location=:houseLocation')
+            ->andWhere('i.location=:location')
             ->setParameter('user', $user)
-            ->setParameter('houseLocation', LocationEnum::HOME)
+            ->setParameter('location', $location)
             ->getQuery()
             ->getSingleScalarResult()
         ;

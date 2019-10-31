@@ -12,7 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Question\Question;
 
-class UpsertItemCommand extends PsyPetsCommand
+class UpsertItemCommand extends PoppySeedPetsCommand
 {
     private $em;
     private $itemRepository;

@@ -29,7 +29,7 @@ class Inventory
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Item", inversedBy="inventory")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "greenhousePlant", "mySeeds", "hollowEarth"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "greenhousePlant", "mySeeds", "hollowEarth", "fireplaceMantle"})
      */
     private $item;
 
@@ -53,7 +53,7 @@ class Inventory
 
     /**
      * @ORM\Column(type="json")
-     * @Groups({"myInventory"})
+     * @Groups({"myInventory", "fireplaceMantle"})
      */
     private $comments = [];
 
