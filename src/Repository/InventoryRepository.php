@@ -22,13 +22,15 @@ class InventoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Inventory::class);
     }
 
-    public function findOneByName(User $owner, string $itemName): ?Inventory
+    public function findOneToConsume(User $owner, string $itemName): ?Inventory
     {
         return $this->createQueryBuilder('i')
             ->andWhere('i.owner=:user')
-            ->setParameter('user', $owner)
+            ->andWhere('i.location IN (:consumableLocations)')
             ->leftJoin('i.item', 'item')
             ->andWhere('item.name=:itemName')
+            ->setParameter('user', $owner)
+            ->setParameter('consumableLocations', Inventory::CONSUMABLE_LOCATIONS)
             ->setParameter('itemName', $itemName)
             ->setMaxResults(1)
             ->getQuery()
@@ -40,10 +42,12 @@ class InventoryRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('i')
             ->andWhere('i.owner=:owner')
+            ->andWhere('i.location IN (:consumableLocations)')
             ->leftJoin('i.item', 'item')
             ->andWhere('item.fertilizer>0')
             ->addOrderBy('item.name', 'ASC')
             ->setParameter('owner', $user->getId())
+            ->setParameter('consumableLocations', Inventory::CONSUMABLE_LOCATIONS)
             ->getQuery()
             ->getResult()
         ;

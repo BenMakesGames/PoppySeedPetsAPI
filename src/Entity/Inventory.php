@@ -18,6 +18,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class Inventory
 {
+    public const CONSUMABLE_LOCATIONS = [
+        LocationEnum::HOME,
+        LocationEnum::BASEMENT
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

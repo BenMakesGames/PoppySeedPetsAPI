@@ -6,6 +6,7 @@ use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
+use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\PetService;
 use App\Service\ResponseService;
@@ -15,12 +16,17 @@ class GenericAdventureService
     private $responseService;
     private $inventoryService;
     private $petService;
+    private $userQuestRepository;
 
-    public function __construct(ResponseService $responseService, InventoryService $inventoryService, PetService $petService)
+    public function __construct(
+        ResponseService $responseService, InventoryService $inventoryService, PetService $petService,
+        UserQuestRepository $userQuestRepository
+    )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petService = $petService;
+        $this->userQuestRepository = $userQuestRepository;
     }
 
     public function adventure(Pet $pet): PetActivityLog
@@ -30,6 +36,26 @@ class GenericAdventureService
         $changes = new PetChanges($pet);
 
         $this->petService->spendTime($pet, \mt_rand(30, 60));
+
+        if($level >= 5)
+        {
+            $rescuedAFairy = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Rescued a House Fairy from a Raccoon', null);
+            if(!$rescuedAFairy->getValue())
+            {
+                $rescuedAFairy->setValue((new \DateTimeImmutable())->format('Y-m-d H:i:s'));
+
+                $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, they saw a raccoon carrying a House Fairy in its mouth. The raccoon stared at ' . $pet->getName() . ' for a moment, then dropped the House Fairy and scurried away.', '');
+                $inventory = $this->inventoryService->petCollectsItem('House Fairy', $pet, 'A startled raccoon dropped this while ' . $pet->getName() . ' was out.', $activityLog);
+
+                $inventory->setLockedToOwner(true);
+
+                $pet->increaseEsteem(4);
+
+                $activityLog->setChanges($changes->compare($pet));
+
+                return $activityLog;
+            }
+        }
 
         $possibleRewards = [
             [ 'a ', 'Crooked Stick' ],

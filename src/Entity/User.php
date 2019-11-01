@@ -207,6 +207,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"myAccount"})
      */
     private $unlockedFireplace;
 
@@ -528,7 +529,8 @@ class User implements UserInterface
 
     public function setUnlockedFlorist(): self
     {
-        $this->unlockedFlorist = new \DateTimeImmutable();
+        if(!$this->unlockedFlorist)
+            $this->unlockedFlorist = new \DateTimeImmutable();
 
         return $this;
     }
@@ -540,7 +542,8 @@ class User implements UserInterface
 
     public function setUnlockedBookstore(): self
     {
-        $this->unlockedBookstore = new \DateTimeImmutable();
+        if(!$this->unlockedBookstore)
+            $this->unlockedBookstore = new \DateTimeImmutable();
 
         return $this;
     }
@@ -552,7 +555,8 @@ class User implements UserInterface
 
     public function setUnlockedMuseum(): self
     {
-        $this->unlockedMuseum = new \DateTimeImmutable();
+        if(!$this->unlockedMuseum)
+            $this->unlockedMuseum = new \DateTimeImmutable();
 
         return $this;
     }
@@ -564,7 +568,8 @@ class User implements UserInterface
 
     public function setUnlockedPark(): self
     {
-        $this->unlockedPark = new \DateTimeImmutable();
+        if(!$this->unlockedPark)
+            $this->unlockedPark = new \DateTimeImmutable();
 
         return $this;
     }
@@ -593,7 +598,8 @@ class User implements UserInterface
 
     public function setUnlockedGreenhouse(): self
     {
-        $this->unlockedGreenhouse = new \DateTimeImmutable();
+        if(!$this->unlockedGreenhouse)
+            $this->unlockedGreenhouse = new \DateTimeImmutable();
 
         return $this;
     }
@@ -679,7 +685,8 @@ class User implements UserInterface
 
     public function setUnlockedBasement(): self
     {
-        $this->unlockedBasement = new \DateTimeImmutable();
+        if(!$this->unlockedBasement)
+            $this->unlockedBasement = new \DateTimeImmutable();
 
         return $this;
     }
@@ -716,7 +723,8 @@ class User implements UserInterface
 
     public function setUnlockedHollowEarth(): self
     {
-        $this->unlockedHollowEarth = new \DateTimeImmutable();
+        if(!$this->unlockedHollowEarth)
+            $this->unlockedHollowEarth = new \DateTimeImmutable();
 
         return $this;
     }
@@ -728,7 +736,8 @@ class User implements UserInterface
 
     public function setUnlockedMarket(): self
     {
-        $this->unlockedMarket = new \DateTimeImmutable();
+        if(!$this->unlockedMarket)
+            $this->unlockedMarket = new \DateTimeImmutable();
 
         return $this;
     }
@@ -738,9 +747,10 @@ class User implements UserInterface
         return $this->unlockedFireplace;
     }
 
-    public function setUnlockedFireplace(?\DateTimeImmutable $unlockedFireplace): self
+    public function setUnlockedFireplace(): self
     {
-        $this->unlockedFireplace = $unlockedFireplace;
+        if(!$this->unlockedFireplace)
+            $this->unlockedFireplace = new \DateTimeImmutable();
 
         return $this;
     }
