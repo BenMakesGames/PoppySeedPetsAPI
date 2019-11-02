@@ -33,7 +33,10 @@ class Filterer
         $this->requiredFilters[$key] = $value;
     }
 
-    public function filter(QueryBuilder $qb, ParameterBag $params): FilterResults
+    /**
+     * @param FilterService $filterService
+     */
+    public function filter($filterService, ParameterBag $params): FilterResults
     {
         // sanitize parameters:
 
@@ -45,6 +48,8 @@ class Filterer
         if(!is_array($filters))
             throw new UnprocessableEntityHttpException('filter must be an array.');
 
+        $grandTotal = $this->getGrandTotal($filterService->createQueryBuilder());
+
         $filters = array_merge($this->defaultFilters, $filters, $this->requiredFilters);
 
         if(!array_key_exists($orderBy, $this->orderByMap))
@@ -55,6 +60,7 @@ class Filterer
         $filters = array_filter($filters, function($filter) { return array_key_exists($filter, $this->filterMap); }, ARRAY_FILTER_USE_KEY);
 
         // assemble query:
+        $qb = $filterService->createQueryBuilder();
 
         foreach($this->orderByMap[$orderBy] as $by=>$dir)
         {
@@ -90,6 +96,7 @@ class Filterer
         $results->pageSize = $this->pageSize;
         $results->pageCount = $lastPage;
         $results->resultCount = $numResults;
+        $results->unfilteredTotal = $grandTotal;
         $results->results = $paginator->getQuery()->execute();
 
         $parameters = [];
@@ -103,5 +110,17 @@ class Filterer
         ];
 
         return $results;
+    }
+
+    private function getGrandTotal(QueryBuilder $qb): int
+    {
+        $filters = array_filter($this->requiredFilters, function($filter) { return array_key_exists($filter, $this->filterMap); }, ARRAY_FILTER_USE_KEY);
+
+        foreach($filters as $filter=>$value)
+            $this->filterMap[$filter]($qb, $value);
+
+        $paginator = new Paginator($qb->getQuery());
+
+        return count($paginator);
     }
 }

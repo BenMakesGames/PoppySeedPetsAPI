@@ -29,6 +29,12 @@ class FilterResults
     public $resultCount;
 
     /**
+     * @var int
+     * @Groups({"filterResults"})
+     */
+    public $unfilteredTotal;
+
+    /**
      * @var array[]
      * @Groups({"filterResults"})
      */

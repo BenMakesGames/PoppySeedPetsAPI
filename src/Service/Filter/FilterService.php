@@ -14,7 +14,7 @@ trait FilterService
 
     public function getResults(ParameterBag $parameters): FilterResults
     {
-        return $this->filterer->filter($this->createQueryBuilder(), $parameters);
+        return $this->filterer->filter($this, $parameters);
     }
 
     public function addDefaultFilter(string $key, $value)
