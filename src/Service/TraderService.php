@@ -109,7 +109,7 @@ class TraderService
             // TODO: ways to get candy, and/or other halloween-y things
         }
 
-        if($now->format('M'))
+        if($now->format('M') === 'Oct')
         {
             $offers[] = new TraderOffer(
                 self::ID_UNICORN_HORN,
