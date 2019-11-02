@@ -23,7 +23,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=45, unique=true)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe", "mySeeds", "greenhousePlant"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe", "mySeeds", "greenhousePlant", "fireplaceMantle", "fireplaceFuel"})
      */
     private $name;
 
@@ -35,7 +35,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe", "mySeeds", "greenhousePlant", "hollowEarth"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe", "mySeeds", "greenhousePlant", "hollowEarth", "fireplaceMantle", "fireplaceFuel"})
      */
     private $image;
 
@@ -60,37 +60,7 @@ class Item
     /**
      * @ORM\Column(type="integer")
      */
-    private $earth = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $water = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $fire = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $wind = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $spirit = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
     private $fertilizer = 0;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $nonTransferable = false;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\ItemPlant", inversedBy="item", cascade={"persist", "remove"})
@@ -112,6 +82,11 @@ class Item
      * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth"})
      */
     private $hat;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $fuel = 0;
 
     public function getId(): ?int
     {
@@ -203,66 +178,6 @@ class Item
         return $this;
     }
 
-    public function getEarth(): ?int
-    {
-        return $this->earth;
-    }
-
-    public function setEarth(int $earth): self
-    {
-        $this->earth = $earth;
-
-        return $this;
-    }
-
-    public function getWater(): ?int
-    {
-        return $this->water;
-    }
-
-    public function setWater(int $water): self
-    {
-        $this->water = $water;
-
-        return $this;
-    }
-
-    public function getFire(): ?int
-    {
-        return $this->fire;
-    }
-
-    public function setFire(int $fire): self
-    {
-        $this->fire = $fire;
-
-        return $this;
-    }
-
-    public function getWind(): ?int
-    {
-        return $this->wind;
-    }
-
-    public function setWind(int $wind): self
-    {
-        $this->wind = $wind;
-
-        return $this;
-    }
-
-    public function getSpirit(): ?int
-    {
-        return $this->spirit;
-    }
-
-    public function setSpirit(int $spirit): self
-    {
-        $this->spirit = $spirit;
-
-        return $this;
-    }
-
     public function getFertilizer(): int
     {
         return $this->fertilizer;
@@ -271,18 +186,6 @@ class Item
     public function setFertilizer(int $fertilizer): self
     {
         $this->fertilizer = $fertilizer;
-
-        return $this;
-    }
-
-    public function getNonTransferable(): ?bool
-    {
-        return $this->nonTransferable;
-    }
-
-    public function setNonTransferable(bool $nonTransferable): self
-    {
-        $this->nonTransferable = $nonTransferable;
 
         return $this;
     }
@@ -309,5 +212,25 @@ class Item
         $this->hat = $hat;
 
         return $this;
+    }
+
+    public function getFuel(): ?int
+    {
+        return $this->fuel;
+    }
+
+    public function setFuel(int $fuel): self
+    {
+        $this->fuel = $fuel;
+
+        return $this;
+    }
+
+    /**
+     * @Groups({"fireplaceFuel"})
+     */
+    public function getFuelRating(): int
+    {
+        return (int)(($this->fuel / 1440) * 10);
     }
 }

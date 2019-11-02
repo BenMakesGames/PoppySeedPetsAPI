@@ -8,7 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 
-abstract class PsyPetsCommand extends Command
+abstract class PoppySeedPetsCommand extends Command
 {
     /** @var InputInterface */ protected $input;
     /** @var OutputInterface */ protected $output;

@@ -493,8 +493,25 @@ class AccountController extends PoppySeedPetsController
     /**
      * @Route("/{user}", methods={"GET"}, requirements={"user"="\d+"})
      */
-    public function getProfile(User $user, ResponseService $responseService)
+    public function getProfile(
+        User $user, ResponseService $responseService, PetRepository $petRepository, InventoryRepository $inventoryRepository,
+        NormalizerInterface $normalizer
+    )
     {
-        return $responseService->success($user, SerializationGroupEnum::USER_PUBLIC_PROFILE);
+        $pets = $petRepository->findBy([ 'owner' => $user, 'inDaycare' => false ]);
+
+        $data = [
+            'user' => $normalizer->normalize($user, null, [ 'groups' => [ SerializationGroupEnum::USER_PUBLIC_PROFILE ] ]),
+            'pets' => $normalizer->normalize($pets, null, [ 'groups' => [ SerializationGroupEnum::USER_PUBLIC_PROFILE ] ]),
+        ];
+
+        if($user->getUnlockedFireplace())
+        {
+            $mantle = $inventoryRepository->findBy(['owner' => $user, 'location' => LocationEnum::MANTLE]);
+
+            $data['mantle'] = $normalizer->normalize($mantle, null, [ 'groups' => [ SerializationGroupEnum::FIREPLACE_MANTLE ] ]);
+        }
+
+        return $responseService->success($data);
     }
 }

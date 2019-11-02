@@ -174,7 +174,7 @@ class HollowEarthController extends PoppySeedPetsController
 
         if($payUp)
         {
-            $itemToPay = $inventoryRepository->findOneByName($player->getUser(), $action['item']);
+            $itemToPay = $inventoryRepository->findOneToConsume($player->getUser(), $action['item']);
 
             if(!$itemToPay)
                 throw new UnprocessableEntityHttpException('You do not have a ' . $action['item'] . '...');
@@ -289,7 +289,7 @@ class HollowEarthController extends PoppySeedPetsController
         if($itemName === false)
             throw new UnprocessableEntityHttpException('Can only roll a d4, d6, or d8.');
 
-        $inventory = $inventoryRepository->findOneByName($user, $itemName);
+        $inventory = $inventoryRepository->findOneToConsume($user, $itemName);
 
         if(!$inventory)
             throw new UnprocessableEntityHttpException('You do not have a ' . $itemName . '!');

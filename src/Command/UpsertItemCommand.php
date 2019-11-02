@@ -12,7 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Question\Question;
 
-class UpsertItemCommand extends PsyPetsCommand
+class UpsertItemCommand extends PoppySeedPetsCommand
 {
     private $em;
     private $itemRepository;
@@ -54,11 +54,11 @@ class UpsertItemCommand extends PsyPetsCommand
 
         $this->name($item, $name);
         $this->image($item);
-        $this->elements($item);
         $this->tool($item);
         $this->hat($item);
         $this->food($item);
         $this->fertilizer($item);
+        $this->fuel($item);
 
         $this->em->flush();
     }
@@ -204,14 +204,8 @@ class UpsertItemCommand extends PsyPetsCommand
         }
     }
 
-    private function elements(Item $item)
+    private function fuel(Item $item)
     {
-        /*
-        $item->setEarth($this->askInt('Earth hours', $item->getEarth()));
-        $item->setFire($this->askInt('Fire hours', $item->getFire()));
-        $item->setWater($this->askInt('Water hours', $item->getWater()));
-        $item->setWind($this->askInt('Wind hours', $item->getWind()));
-        $item->setSpirit($this->askInt('Spirit hours', $item->getSpirit()));
-        */
+        $item->setFuel($this->askInt('Fuel', $item->getFuel()));
     }
 }

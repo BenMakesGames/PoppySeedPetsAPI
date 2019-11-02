@@ -535,7 +535,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $this->validateInventory($inventory, 'box/little-strongbox/#/open');
 
-        $key = $inventoryRepository->findOneByName($user, 'Iron Key');
+        $key = $inventoryRepository->findOneToConsume($user, 'Iron Key');
 
         if(!$key)
             throw new UnprocessableEntityHttpException('You need an Iron Key to do that.');
@@ -593,7 +593,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $this->validateInventory($inventory, 'box/very-strongbox/#/open');
 
-        $key = $inventoryRepository->findOneByName($user, 'Silver Key');
+        $key = $inventoryRepository->findOneToConsume($user, 'Silver Key');
 
         if(!$key)
             throw new UnprocessableEntityHttpException('You need a Silver Key to do that.');
@@ -659,7 +659,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $this->validateInventory($inventory, 'box/outrageously-strongbox/#/open');
 
-        $key = $inventoryRepository->findOneByName($user, 'Gold Key');
+        $key = $inventoryRepository->findOneToConsume($user, 'Gold Key');
 
         if(!$key)
             throw new UnprocessableEntityHttpException('You need a Gold Key to do that.');

@@ -147,7 +147,7 @@ class InventoryController extends PoppySeedPetsController
     }
 
     /**
-     * @Route("/{inventory}/sellPrice", methods={"POST"})
+     * @Route("/{inventory}/sellPrice", methods={"POST"}, requirements={"inventory"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function setSellPrice(
@@ -162,9 +162,12 @@ class InventoryController extends PoppySeedPetsController
         if($inventory->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException();
 
+        if($inventory->getLockedToOwner())
+            throw new UnprocessableEntityHttpException('This item is locked to your account. It cannot be sold, traded, etc.');
+
         $price = $request->request->getInt('price', 0);
 
-        if($price >= $user->getMaxSellPrice())
+        if($price > $user->getMaxSellPrice())
             throw new UnprocessableEntityHttpException('You cannot list items for more than ' . $user->getMaxSellPrice() . ' moneys. See the Market Manager to see if you can increase this limit!');
 
         if($price <= 0)
@@ -211,7 +214,7 @@ class InventoryController extends PoppySeedPetsController
                 $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_PUT_OUTSIDE);
                 $em->remove($i);
             }
-            else if(mt_rand(1, 10) === 1)
+            else if(mt_rand(1, 10) === 1 && !$i->getLockedToOwner())
             {
                 $i
                     ->setOwner($givingTree)
@@ -251,6 +254,12 @@ class InventoryController extends PoppySeedPetsController
 
         $user = $this->getUser();
 
+        if($location === LocationEnum::BASEMENT && !$user->getUnlockedBasement())
+            throw new UnprocessableEntityHttpException('Invalid location given.');
+
+        if($location === LocationEnum::MANTLE && !$user->getUnlockedFireplace())
+            throw new UnprocessableEntityHttpException('Invalid location given.');
+
         $inventoryIds = $request->request->get('inventory');
         if(!\is_array($inventoryIds)) $inventoryIds = [ $inventoryIds ];
 
@@ -262,10 +271,25 @@ class InventoryController extends PoppySeedPetsController
         if(\count($inventory) !== \count($inventoryIds))
             throw new UnprocessableEntityHttpException('Some of the items could not be found??');
 
-        $itemsInHouse = (int)$inventoryRepository->countItemsInHouse($user);
+        $itemsInTargetLocation = (int)$inventoryRepository->countItemsInLocation($user, $location);
 
-        if($location === LocationEnum::HOME && $itemsInHouse + count($inventory) > $user->getMaxInventory())
-            throw new UnprocessableEntityHttpException('You do not have enough space in your house!');
+        if($location === LocationEnum::HOME)
+        {
+            if ($itemsInTargetLocation + count($inventory) > $user->getMaxInventory())
+                throw new UnprocessableEntityHttpException('You do not have enough space in your house!');
+        }
+
+        if($location === LocationEnum::BASEMENT)
+        {
+            if ($itemsInTargetLocation + count($inventory) > 10000)
+                throw new UnprocessableEntityHttpException('You do not have enough space in the basement!');
+        }
+
+        if($location === LocationEnum::MANTLE)
+        {
+            if ($itemsInTargetLocation + count($inventory) > 12)
+                throw new UnprocessableEntityHttpException('The mantle only has space for 12 items.');
+        }
 
         $unequippedAPet = false;
 

@@ -29,7 +29,7 @@ class CryptocurrencyWalletController extends PoppySeedPetsItemController
 
         $user = $this->getUser();
 
-        $key = $inventoryRepository->findOneByName($user, 'Password');
+        $key = $inventoryRepository->findOneToConsume($user, 'Password');
 
         if(!$key)
             throw new UnprocessableEntityHttpException('It\'s locked! (It\'s got a little lock on it, and everything!) You\'ll need a Password to open it...');

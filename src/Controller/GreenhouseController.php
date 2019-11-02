@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\GreenhousePlant;
+use App\Entity\Inventory;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
@@ -166,7 +167,11 @@ class GreenhouseController extends PoppySeedPetsController
 
         $fertilizerId = $request->request->getInt('fertilizer', 0);
 
-        $fertilizer = $inventoryRepository->findOneBy([ 'id' => $fertilizerId, 'owner' => $user->getId() ]);
+        $fertilizer = $inventoryRepository->findOneBy([
+            'id' => $fertilizerId,
+            'owner' => $user->getId(),
+            'location' => Inventory::CONSUMABLE_LOCATIONS,
+        ]);
 
         if(!$fertilizer || $fertilizer->getItem()->getFertilizer() === 0)
             throw new UnprocessableEntityHttpException('A fertilizer must be selected.');
@@ -210,10 +215,12 @@ class GreenhouseController extends PoppySeedPetsController
 
         $seeds = $inventoryRepository->createQueryBuilder('i')
             ->andWhere('i.owner=:owner')
+            ->andWhere('i.location IN (:consumableLocations)')
             ->leftJoin('i.item', 'item')
             ->andWhere('item.plant IS NOT NULL')
             ->addOrderBy('item.name', 'ASC')
             ->setParameter('owner', $user->getId())
+            ->setParameter('consumableLocations', Inventory::CONSUMABLE_LOCATIONS)
             ->getQuery()
             ->getResult()
         ;
@@ -243,6 +250,7 @@ class GreenhouseController extends PoppySeedPetsController
         $item = $inventoryRepository->findOneBy([
             'id' => $seedId,
             'owner' => $user->getId(),
+            'location' => Inventory::CONSUMABLE_LOCATIONS,
         ]);
 
         if($item === null || $item->getItem()->getPlant() === null)

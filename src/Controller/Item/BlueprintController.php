@@ -17,7 +17,7 @@ class BlueprintController extends PoppySeedPetsItemController
      * @Route("/basement/{inventory}/read", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function claim(
+    public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {

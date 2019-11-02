@@ -55,8 +55,7 @@ class User implements UserInterface
     private $lastActivity;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Pet", mappedBy="owner")
-     * @Groups({"userPublicProfile"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Pet", mappedBy="owner", fetch="EXTRA_LAZY")
      */
     private $pets;
 
@@ -96,17 +95,17 @@ class User implements UserInterface
     private $maxPets = 2;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserFriend", mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\UserFriend", mappedBy="user", orphanRemoval=true, fetch="EXTRA_LAZY")
      */
     private $friends;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserFriend", mappedBy="friend", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\UserFriend", mappedBy="friend", orphanRemoval=true, fetch="EXTRA_LAZY")
      */
     private $friendsOf;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserStats", mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\UserStats", mappedBy="user", orphanRemoval=true, fetch="EXTRA_LAZY")
      */
     private $stats;
 
@@ -157,12 +156,12 @@ class User implements UserInterface
     private $unlockedGreenhouse;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\PassphraseResetRequest", mappedBy="user", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\PassphraseResetRequest", mappedBy="user", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
      */
     private $passphraseResetRequest;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\GreenhousePlant", mappedBy="owner", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\GreenhousePlant", mappedBy="owner", orphanRemoval=true, fetch="EXTRA_LAZY")
      */
     private $greenhousePlants;
 
@@ -184,12 +183,12 @@ class User implements UserInterface
     private $unlockedBasement;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PushSubscription", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\PushSubscription", mappedBy="user", fetch="EXTRA_LAZY")
      */
     private $pushSubscriptions;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\HollowEarthPlayer", mappedBy="user", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\HollowEarthPlayer", mappedBy="user", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
      */
     private $hollowEarthPlayer;
 
@@ -204,6 +203,17 @@ class User implements UserInterface
      * @Groups({"myAccount"})
      */
     private $unlockedMarket;
+
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"myAccount"})
+     */
+    private $unlockedFireplace;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Fireplace", mappedBy="user", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
+     */
+    private $fireplace;
 
     public function __construct()
     {
@@ -523,7 +533,8 @@ class User implements UserInterface
 
     public function setUnlockedFlorist(): self
     {
-        $this->unlockedFlorist = new \DateTimeImmutable();
+        if(!$this->unlockedFlorist)
+            $this->unlockedFlorist = new \DateTimeImmutable();
 
         return $this;
     }
@@ -535,7 +546,8 @@ class User implements UserInterface
 
     public function setUnlockedBookstore(): self
     {
-        $this->unlockedBookstore = new \DateTimeImmutable();
+        if(!$this->unlockedBookstore)
+            $this->unlockedBookstore = new \DateTimeImmutable();
 
         return $this;
     }
@@ -547,7 +559,8 @@ class User implements UserInterface
 
     public function setUnlockedMuseum(): self
     {
-        $this->unlockedMuseum = new \DateTimeImmutable();
+        if(!$this->unlockedMuseum)
+            $this->unlockedMuseum = new \DateTimeImmutable();
 
         return $this;
     }
@@ -559,7 +572,8 @@ class User implements UserInterface
 
     public function setUnlockedPark(): self
     {
-        $this->unlockedPark = new \DateTimeImmutable();
+        if(!$this->unlockedPark)
+            $this->unlockedPark = new \DateTimeImmutable();
 
         return $this;
     }
@@ -588,7 +602,8 @@ class User implements UserInterface
 
     public function setUnlockedGreenhouse(): self
     {
-        $this->unlockedGreenhouse = new \DateTimeImmutable();
+        if(!$this->unlockedGreenhouse)
+            $this->unlockedGreenhouse = new \DateTimeImmutable();
 
         return $this;
     }
@@ -674,7 +689,8 @@ class User implements UserInterface
 
     public function setUnlockedBasement(): self
     {
-        $this->unlockedBasement = new \DateTimeImmutable();
+        if(!$this->unlockedBasement)
+            $this->unlockedBasement = new \DateTimeImmutable();
 
         return $this;
     }
@@ -711,7 +727,8 @@ class User implements UserInterface
 
     public function setUnlockedHollowEarth(): self
     {
-        $this->unlockedHollowEarth = new \DateTimeImmutable();
+        if(!$this->unlockedHollowEarth)
+            $this->unlockedHollowEarth = new \DateTimeImmutable();
 
         return $this;
     }
@@ -723,7 +740,38 @@ class User implements UserInterface
 
     public function setUnlockedMarket(): self
     {
-        $this->unlockedMarket = new \DateTimeImmutable();
+        if(!$this->unlockedMarket)
+            $this->unlockedMarket = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getUnlockedFireplace(): ?\DateTimeImmutable
+    {
+        return $this->unlockedFireplace;
+    }
+
+    public function setUnlockedFireplace(): self
+    {
+        if(!$this->unlockedFireplace)
+            $this->unlockedFireplace = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getFireplace(): ?Fireplace
+    {
+        return $this->fireplace;
+    }
+
+    public function setFireplace(Fireplace $fireplace): self
+    {
+        $this->fireplace = $fireplace;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $fireplace->getUser()) {
+            $fireplace->setUser($this);
+        }
 
         return $this;
     }

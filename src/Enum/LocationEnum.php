@@ -7,4 +7,5 @@ final class LocationEnum
 
     const HOME = 0;
     const BASEMENT = 1;
+    const MANTLE = 2;
 }

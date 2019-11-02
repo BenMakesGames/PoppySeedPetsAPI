@@ -22,13 +22,15 @@ class InventoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Inventory::class);
     }
 
-    public function findOneByName(User $owner, string $itemName): ?Inventory
+    public function findOneToConsume(User $owner, string $itemName): ?Inventory
     {
         return $this->createQueryBuilder('i')
             ->andWhere('i.owner=:user')
-            ->setParameter('user', $owner)
+            ->andWhere('i.location IN (:consumableLocations)')
             ->leftJoin('i.item', 'item')
             ->andWhere('item.name=:itemName')
+            ->setParameter('user', $owner)
+            ->setParameter('consumableLocations', Inventory::CONSUMABLE_LOCATIONS)
             ->setParameter('itemName', $itemName)
             ->setMaxResults(1)
             ->getQuery()
@@ -40,23 +42,44 @@ class InventoryRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('i')
             ->andWhere('i.owner=:owner')
+            ->andWhere('i.location = :home')
             ->leftJoin('i.item', 'item')
             ->andWhere('item.fertilizer>0')
             ->addOrderBy('item.name', 'ASC')
             ->setParameter('owner', $user->getId())
+            ->setParameter('home', LocationEnum::HOME)
             ->getQuery()
             ->getResult()
         ;
     }
 
-    public function countItemsInHouse(User $user)
+    public function findFuel(User $user)
     {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.owner=:owner')
+            ->andWhere('i.location IN (:home)')
+            ->leftJoin('i.item', 'item')
+            ->andWhere('item.fuel>0')
+            ->addOrderBy('item.fuel', 'DESC')
+            ->addOrderBy('item.name', 'ASC')
+            ->setParameter('owner', $user->getId())
+            ->setParameter('home', LocationEnum::HOME)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function countItemsInLocation(User $user, int $location)
+    {
+        if(!LocationEnum::isAValue($location))
+            throw new \InvalidArgumentException('$location is not a valid LocationEnum value.');
+
         return (int)$this->createQueryBuilder('i')
             ->select('COUNT(i.id)')
             ->andWhere('i.owner=:user')
-            ->andWhere('i.location=:houseLocation')
+            ->andWhere('i.location=:location')
             ->setParameter('user', $user)
-            ->setParameter('houseLocation', LocationEnum::HOME)
+            ->setParameter('location', $location)
             ->getQuery()
             ->getSingleScalarResult()
         ;
