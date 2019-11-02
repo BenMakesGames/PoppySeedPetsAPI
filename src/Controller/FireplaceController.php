@@ -98,6 +98,7 @@ class FireplaceController extends PoppySeedPetsController
             'Quintessence',
             'Naner Pancakes',
             'Burnt Log',
+            'Burnt Log',
             'Poker',
             'Hot Dog',
             'Glowing Four-sided Die',
@@ -116,7 +117,7 @@ class FireplaceController extends PoppySeedPetsController
 
         for($i = 0; $i < $numItems; $i++)
         {
-            $itemName = $possibleRewards[mt_rand(0, mt_rand(6, 6 + $rewardLevelBonus + 1))];
+            $itemName = $possibleRewards[mt_rand(0, mt_rand(7, 7 + $rewardLevelBonus))];
 
             if($itemName === 'Burnt Log')
                 $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Nothing surprising there.)', LocationEnum::HOME);
