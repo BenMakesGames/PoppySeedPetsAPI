@@ -42,12 +42,28 @@ class InventoryRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('i')
             ->andWhere('i.owner=:owner')
-            ->andWhere('i.location IN (:consumableLocations)')
+            ->andWhere('i.location = :home')
             ->leftJoin('i.item', 'item')
             ->andWhere('item.fertilizer>0')
             ->addOrderBy('item.name', 'ASC')
             ->setParameter('owner', $user->getId())
-            ->setParameter('consumableLocations', Inventory::CONSUMABLE_LOCATIONS)
+            ->setParameter('home', LocationEnum::HOME)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findFuel(User $user)
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.owner=:owner')
+            ->andWhere('i.location IN (:home)')
+            ->leftJoin('i.item', 'item')
+            ->andWhere('item.fuel>0')
+            ->addOrderBy('item.fuel', 'DESC')
+            ->addOrderBy('item.name', 'ASC')
+            ->setParameter('owner', $user->getId())
+            ->setParameter('home', LocationEnum::HOME)
             ->getQuery()
             ->getResult()
         ;

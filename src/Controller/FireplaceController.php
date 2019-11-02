@@ -46,6 +46,24 @@ class FireplaceController extends PoppySeedPetsController
     }
 
     /**
+     * @Route("/fuel", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getFireplaceFuel(
+        InventoryRepository $inventoryRepository, ResponseService $responseService
+    )
+    {
+        $user = $this->getUser();
+
+        if(!$user->getUnlockedFireplace())
+            throw new AccessDeniedHttpException('You haven\'t got a Fireplace, yet!');
+
+        $fuel = $inventoryRepository->findFuel($user);
+
+        return $responseService->success($fuel, SerializationGroupEnum::FIREPLACE_FUEL);
+    }
+
+    /**
      * @Route("/mantle/{user}", methods={"GET"}, requirements={"user"="\d+"})
      */
     public function getMantle(User $user, InventoryRepository $inventoryRepository, ResponseService $responseService)

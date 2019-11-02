@@ -23,7 +23,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=45, unique=true)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe", "mySeeds", "greenhousePlant", "fireplaceMantle"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe", "mySeeds", "greenhousePlant", "fireplaceMantle", "fireplaceFuel"})
      */
     private $name;
 
@@ -35,7 +35,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe", "mySeeds", "greenhousePlant", "hollowEarth", "fireplaceMantle"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe", "mySeeds", "greenhousePlant", "hollowEarth", "fireplaceMantle", "fireplaceFuel"})
      */
     private $image;
 
@@ -241,5 +241,13 @@ class Item
         $this->fuel = $fuel;
 
         return $this;
+    }
+
+    /**
+     * @Groups({"fireplaceFuel"})
+     */
+    public function getFuelRating(): int
+    {
+        return (int)(($this->fuel / 1440) * 10);
     }
 }

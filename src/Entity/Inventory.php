@@ -27,14 +27,14 @@ class Inventory
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "myInventory", "marketItem", "greenhousePlant", "mySeeds"})
+     * @Groups({"myPet", "myInventory", "marketItem", "greenhousePlant", "mySeeds", "fireplaceFuel"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Item", inversedBy="inventory")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "greenhousePlant", "mySeeds", "hollowEarth", "fireplaceMantle"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "greenhousePlant", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel"})
      */
     private $item;
 
@@ -70,13 +70,13 @@ class Inventory
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="tool")
-     * @Groups({"myInventory"})
+     * @Groups({"myInventory", "fireplaceFuel"})
      */
     private $holder;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"myInventory", "marketItem"})
+     * @Groups({"myInventory", "marketItem", "fireplaceFuel"})
      */
     private $sellPrice;
 
@@ -92,7 +92,7 @@ class Inventory
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="hat")
-     * @Groups({"myInventory"})
+     * @Groups({"myInventory", "fireplaceFuel"})
      */
     private $wearer;
 
