@@ -60,31 +60,6 @@ class Item
     /**
      * @ORM\Column(type="integer")
      */
-    private $earth = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $water = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $fire = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $wind = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $spirit = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
     private $fertilizer = 0;
 
     /**
@@ -112,6 +87,11 @@ class Item
      * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth"})
      */
     private $hat;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $fuel = 0;
 
     public function getId(): ?int
     {
@@ -203,66 +183,6 @@ class Item
         return $this;
     }
 
-    public function getEarth(): ?int
-    {
-        return $this->earth;
-    }
-
-    public function setEarth(int $earth): self
-    {
-        $this->earth = $earth;
-
-        return $this;
-    }
-
-    public function getWater(): ?int
-    {
-        return $this->water;
-    }
-
-    public function setWater(int $water): self
-    {
-        $this->water = $water;
-
-        return $this;
-    }
-
-    public function getFire(): ?int
-    {
-        return $this->fire;
-    }
-
-    public function setFire(int $fire): self
-    {
-        $this->fire = $fire;
-
-        return $this;
-    }
-
-    public function getWind(): ?int
-    {
-        return $this->wind;
-    }
-
-    public function setWind(int $wind): self
-    {
-        $this->wind = $wind;
-
-        return $this;
-    }
-
-    public function getSpirit(): ?int
-    {
-        return $this->spirit;
-    }
-
-    public function setSpirit(int $spirit): self
-    {
-        $this->spirit = $spirit;
-
-        return $this;
-    }
-
     public function getFertilizer(): int
     {
         return $this->fertilizer;
@@ -307,6 +227,18 @@ class Item
     public function setHat(?ItemHat $hat): self
     {
         $this->hat = $hat;
+
+        return $this;
+    }
+
+    public function getFuel(): ?int
+    {
+        return $this->fuel;
+    }
+
+    public function setFuel(int $fuel): self
+    {
+        $this->fuel = $fuel;
 
         return $this;
     }
