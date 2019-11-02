@@ -120,7 +120,7 @@ class HouseFairyController extends PoppySeedPetsItemController
             $em->flush();
 
             return $responseService->itemActionSuccess(
-                '"Thanks for the Quintessence!" says ' . $this->fairyName($inventory) . '. "Now, let me just... do a little thing here..."' . "\n\n" . $this->fairyName($inventory) . ' wriggles a little, as if something is crawling around inside their... dress? Tunic? Whatever it is.' . "\n\n" . '"Alright! It\'s done!" announces the fairy with a grin.' . "\n\n" . 'And indeed: there\'s now a fireplace in the living room! (But you, dear Poppy Seed Pets player, can find it in the game menu.)',
+                '"Thanks! Oh, but actually: do you also have any Bricks?" asks ' . $this->fairyName($inventory) . '. "I\'m going to need about 20 exactly...' . "\n\n" . '"Hehehe! Your face! Humans are so cute! I\'m going to make the bricks - and everything else - out of Quintessence! Obviously! Now, let me just... do a little thing here..."' . "\n\n" . $this->fairyName($inventory) . ' wriggles a little, as if something is crawling around inside their... dress? Tunic? Whatever it is.' . "\n\n" . '"Alright! It\'s done!" announces the fairy with a grin.' . "\n\n" . 'And indeed: there\'s now a fireplace in the living room! (But you, dear Poppy Seed Pets player, can find it in the game menu.)',
                 [ 'reloadInventory' => true ]
             );
         }
