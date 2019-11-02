@@ -93,7 +93,7 @@ class TraderService
 
         $date = $now->format('M j');
         $dayOfWeek = $now->format('D');
-        $dayOfTheYear = (int)$now->format('z') + $user->getDailySeed();
+        $dayOfTheYear = (int)$now->format('z') + $user->getRegisteredOn()->getTimestamp() - $user->getId();
 
         $itemsDonatedToMuseum = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]);
 
