@@ -37,24 +37,21 @@ class GenericAdventureService
 
         $this->petService->spendTime($pet, \mt_rand(30, 60));
 
-        if($level >= 5)
+        $rescuedAFairy = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Rescued a House Fairy from a Raccoon', null);
+        if(!$rescuedAFairy->getValue())
         {
-            $rescuedAFairy = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Rescued a House Fairy from a Raccoon', null);
-            if(!$rescuedAFairy->getValue())
-            {
-                $rescuedAFairy->setValue((new \DateTimeImmutable())->format('Y-m-d H:i:s'));
+            $rescuedAFairy->setValue((new \DateTimeImmutable())->format('Y-m-d H:i:s'));
 
-                $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, they saw a raccoon carrying a House Fairy in its mouth. The raccoon stared at ' . $pet->getName() . ' for a moment, then dropped the House Fairy and scurried away.', '');
-                $inventory = $this->inventoryService->petCollectsItem('House Fairy', $pet, 'A startled raccoon dropped this while ' . $pet->getName() . ' was out.', $activityLog);
+            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, they saw a raccoon carrying a House Fairy in its mouth. The raccoon stared at ' . $pet->getName() . ' for a moment, then dropped the House Fairy and scurried away.', '');
+            $inventory = $this->inventoryService->petCollectsItem('House Fairy', $pet, 'A startled raccoon dropped this while ' . $pet->getName() . ' was out.', $activityLog);
 
-                $inventory->setLockedToOwner(true);
+            $inventory->setLockedToOwner(true);
 
-                $pet->increaseEsteem(4);
+            $pet->increaseEsteem(4);
 
-                $activityLog->setChanges($changes->compare($pet));
+            $activityLog->setChanges($changes->compare($pet));
 
-                return $activityLog;
-            }
+            return $activityLog;
         }
 
         $possibleRewards = [
