@@ -271,19 +271,23 @@ class InventoryController extends PoppySeedPetsController
         if(\count($inventory) !== \count($inventoryIds))
             throw new UnprocessableEntityHttpException('Some of the items could not be found??');
 
+        $itemsInTargetLocation = (int)$inventoryRepository->countItemsInLocation($user, $location);
+
         if($location === LocationEnum::HOME)
         {
-            $itemsInHouse = (int)$inventoryRepository->countItemsInLocation($user, $location);
-
-            if ($itemsInHouse + count($inventory) > $user->getMaxInventory())
+            if ($itemsInTargetLocation + count($inventory) > $user->getMaxInventory())
                 throw new UnprocessableEntityHttpException('You do not have enough space in your house!');
+        }
+
+        if($location === LocationEnum::BASEMENT)
+        {
+            if ($itemsInTargetLocation + count($inventory) > 10000)
+                throw new UnprocessableEntityHttpException('You do not have enough space in the basement!');
         }
 
         if($location === LocationEnum::MANTLE)
         {
-            $itemsOnMantle = (int)$inventoryRepository->countItemsInLocation($user, $location);
-
-            if ($itemsOnMantle + count($inventory) > 12)
+            if ($itemsInTargetLocation + count($inventory) > 12)
                 throw new UnprocessableEntityHttpException('The mantle only has space for 12 items.');
         }
 

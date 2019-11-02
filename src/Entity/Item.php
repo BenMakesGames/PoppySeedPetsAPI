@@ -63,11 +63,6 @@ class Item
     private $fertilizer = 0;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
-    private $nonTransferable = false;
-
-    /**
      * @ORM\OneToOne(targetEntity="App\Entity\ItemPlant", inversedBy="item", cascade={"persist", "remove"})
      */
     private $plant;
@@ -191,18 +186,6 @@ class Item
     public function setFertilizer(int $fertilizer): self
     {
         $this->fertilizer = $fertilizer;
-
-        return $this;
-    }
-
-    public function getNonTransferable(): ?bool
-    {
-        return $this->nonTransferable;
-    }
-
-    public function setNonTransferable(bool $nonTransferable): self
-    {
-        $this->nonTransferable = $nonTransferable;
 
         return $this;
     }

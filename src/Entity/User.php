@@ -96,17 +96,17 @@ class User implements UserInterface
     private $maxPets = 2;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserFriend", mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\UserFriend", mappedBy="user", orphanRemoval=true, fetch="EXTRA_LAZY")
      */
     private $friends;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserFriend", mappedBy="friend", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\UserFriend", mappedBy="friend", orphanRemoval=true, fetch="EXTRA_LAZY")
      */
     private $friendsOf;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserStats", mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\UserStats", mappedBy="user", orphanRemoval=true, fetch="EXTRA_LAZY")
      */
     private $stats;
 
@@ -157,12 +157,12 @@ class User implements UserInterface
     private $unlockedGreenhouse;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\PassphraseResetRequest", mappedBy="user", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\PassphraseResetRequest", mappedBy="user", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
      */
     private $passphraseResetRequest;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\GreenhousePlant", mappedBy="owner", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\GreenhousePlant", mappedBy="owner", orphanRemoval=true, fetch="EXTRA_LAZY")
      */
     private $greenhousePlants;
 
@@ -184,12 +184,12 @@ class User implements UserInterface
     private $unlockedBasement;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PushSubscription", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\PushSubscription", mappedBy="user", fetch="EXTRA_LAZY")
      */
     private $pushSubscriptions;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\HollowEarthPlayer", mappedBy="user", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\HollowEarthPlayer", mappedBy="user", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
      */
     private $hollowEarthPlayer;
 
@@ -212,7 +212,7 @@ class User implements UserInterface
     private $unlockedFireplace;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Fireplace", mappedBy="user", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Fireplace", mappedBy="user", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
      */
     private $fireplace;
 
