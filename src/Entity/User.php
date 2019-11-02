@@ -211,6 +211,11 @@ class User implements UserInterface
      */
     private $unlockedFireplace;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Fireplace", mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $fireplace;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -751,6 +756,23 @@ class User implements UserInterface
     {
         if(!$this->unlockedFireplace)
             $this->unlockedFireplace = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getFireplace(): ?Fireplace
+    {
+        return $this->fireplace;
+    }
+
+    public function setFireplace(Fireplace $fireplace): self
+    {
+        $this->fireplace = $fireplace;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $fireplace->getUser()) {
+            $fireplace->setUser($this);
+        }
 
         return $this;
     }

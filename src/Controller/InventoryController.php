@@ -162,6 +162,9 @@ class InventoryController extends PoppySeedPetsController
         if($inventory->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException();
 
+        if($inventory->getLockedToOwner())
+            throw new UnprocessableEntityHttpException('This item is locked to your account. It cannot be sold, traded, etc.');
+
         $price = $request->request->getInt('price', 0);
 
         if($price >= $user->getMaxSellPrice())
@@ -211,7 +214,7 @@ class InventoryController extends PoppySeedPetsController
                 $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_PUT_OUTSIDE);
                 $em->remove($i);
             }
-            else if(mt_rand(1, 10) === 1)
+            else if(mt_rand(1, 10) === 1 && !$i->getLockedToOwner())
             {
                 $i
                     ->setOwner($givingTree)

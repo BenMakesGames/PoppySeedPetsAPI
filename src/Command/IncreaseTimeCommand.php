@@ -32,7 +32,10 @@ class IncreaseTimeCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->em->getConnection()->executeQuery('UPDATE pet SET `time` = `time` + 1 WHERE in_daycare=0 AND `time` < 2880');
+        $this->em->getConnection()->executeQuery('UPDATE pet SET `time` = `time` + 1 WHERE in_daycare = 0 AND `time` < 2880');
+        $this->em->getConnection()->executeQuery('UPDATE fireplace SET heat = heat - 1, current_streak = current_streak + 1 WHERE heat > 1');
+        $this->em->getConnection()->executeQuery('UPDATE fireplace SET heat = 0, longest_streak = current_streak + 1 WHERE heat = 1 AND current_streak >= longest_streak');
+        $this->em->getConnection()->executeQuery('UPDATE fireplace SET heat = 0, current_streak = 0 WHERE heat = 1');
 
         $this->em->getConnection()->executeQuery(
             'DELETE FROM user_session WHERE session_expiration<:now',

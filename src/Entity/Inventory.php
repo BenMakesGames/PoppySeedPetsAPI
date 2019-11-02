@@ -98,6 +98,7 @@ class Inventory
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"myInventory"})
      */
     private $lockedToOwner = false;
 

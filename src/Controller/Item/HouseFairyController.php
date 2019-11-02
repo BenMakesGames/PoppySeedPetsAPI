@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Item;
 
+use App\Entity\Fireplace;
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
 use App\Repository\InventoryRepository;
@@ -29,7 +30,7 @@ class HouseFairyController extends PoppySeedPetsItemController
         'Kailen', 'Klabautermann',
         'Lance', 'Lilac', 'Lily', 'Lumina',
         'Malachite', 'Marigold', 'Marrowfat', 'Melon', 'Milkweed', 'Mint', 'Moss', 'Moth', 'Mulberry', 'Mustardseed',
-        'Neráida', 'Nissa',
+        'Navi', 'Neráida', 'Nissa',
         'Odelina', 'Onyx', 'Orin', 'Oxblood',
         'Paprika', 'Peri', 'Peaseblossom', 'Plum', 'Potato', 'Pudding', 'Pumpkin',
         'Rhythm', 'Ribbon', 'Riverweed', 'Robin', 'Rockweed', 'Roosevelt', 'Rosewood', 'Rust',
@@ -93,10 +94,10 @@ class HouseFairyController extends PoppySeedPetsItemController
 
         $quint = $inventoryRepository->findOneToConsume($user, 'Quintessence');
 
-        if($user->getUnlockedFireplace())
+        if($user->getUnlockedFireplace() && $user->getFireplace())
         {
             return $responseService->itemActionSuccess(
-                '"You already have a Fireplace, and it\'s already as fireplacey as a fireplace can be!" says ' . $this->fairyName($inventory) . '.' . "\n\n". 'Faire nough-- I mean: fair enough.'
+                '"You already have a Fireplace, and it\'s already as fireplacey as a fireplace can be!" says ' . $this->fairyName($inventory) . '.' . "\n\n". 'Fairy nough-- er: fair enough.'
             );
         }
         else
@@ -104,11 +105,16 @@ class HouseFairyController extends PoppySeedPetsItemController
             if($quint === null)
             {
                 return $responseService->itemActionSuccess(
-                    '"I\'ll do it... for a _Quintessence!_" ' . $this->fairyName($inventory) . ' screams with excitement. (Which would have been annoying were the creature\'s scream not as tiny as the creature itself.)'
+                    '"I\'ll do it... for a _Quintessence!_" ' . $this->fairyName($inventory) . ' screams with excitement. (A scream which would have been annoying were the creature\'s scream not as tiny as the creature itself.)'
                 );
             }
 
             $user->setUnlockedFireplace();
+
+            $fireplace = (new Fireplace())->setUser($user);
+
+            $em->persist($fireplace);
+
             $em->remove($quint);
 
             $em->flush();
