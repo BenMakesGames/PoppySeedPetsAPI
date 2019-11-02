@@ -167,7 +167,7 @@ class InventoryController extends PoppySeedPetsController
 
         $price = $request->request->getInt('price', 0);
 
-        if($price >= $user->getMaxSellPrice())
+        if($price > $user->getMaxSellPrice())
             throw new UnprocessableEntityHttpException('You cannot list items for more than ' . $user->getMaxSellPrice() . ' moneys. See the Market Manager to see if you can increase this limit!');
 
         if($price <= 0)

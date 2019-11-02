@@ -55,8 +55,7 @@ class User implements UserInterface
     private $lastActivity;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Pet", mappedBy="owner")
-     * @Groups({"userPublicProfile"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Pet", mappedBy="owner", fetch="EXTRA_LAZY")
      */
     private $pets;
 

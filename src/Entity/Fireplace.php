@@ -124,6 +124,13 @@ class Fireplace
         return $this->points;
     }
 
+    public function clearPoints(): self
+    {
+        $this->points = 0;
+
+        return $this;
+    }
+
     public function spendPoints(int $points): self
     {
         if($points > $this->points)

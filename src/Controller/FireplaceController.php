@@ -132,6 +132,11 @@ class FireplaceController extends PoppySeedPetsController
             $itemsReceived[] = $itemName;
         }
 
+        if($numItems === 3)
+            $fireplace->clearPoints();
+        else
+            $fireplace->spendPoints($numItems * 8 * 60);
+
         $em->flush();
 
         if($fireplace->getHeat() >= 2 * 60 && mt_rand(1, 3) === 1)
