@@ -77,14 +77,14 @@ class BugController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'bug/#/feed');
+        $this->validateInventory($inventory, 'feedBug');
 
         $item = $inventoryRepository->find($request->request->getInt('food'));
 
         if(!$item || $item->getOwner()->getId() !== $user->getId())
             throw new UnprocessableEntityHttpException('Must select an item to feed.');
 
-        if(!$item->getItem()->getFood() && $item->getItem()->getFertilizer() < 0)
+        if(!$item->getItem()->getFood())
             throw new UnprocessableEntityHttpException('Bugs won\'t eat that item. (Bugs are bougie like that, I guess.)');
 
         switch($inventory->getItem()->getName())
@@ -104,7 +104,21 @@ class BugController extends PoppySeedPetsItemController
                 break;
 
             case 'Line of Ants':
-                $inventoryService->receiveItem('Line of Ants', $user, $user, $user->getName() . ' fed a Line of Ants; as a result, _these_ ants showed up. (Is this a good thing?)', $inventory->getLocation());
+                if(mt_rand(1, 10) === 1)
+                {
+                    $inventoryService->receiveItem('Ant Queen', $user, $user, $user->getName() . ' fed a Line of Ants; as a result, a Queen Ant showed up! (Is this a good thing?)', $inventory->getLocation());
+                    $message = 'Oh? You\'ve attracted an Ant Queen!';
+                }
+                else
+                {
+                    $inventoryService->receiveItem('Line of Ants', $user, $user, $user->getName() . ' fed a Line of Ants; as a result, _these_ ants showed up. (Is this a good thing?)', $inventory->getLocation());
+                    $message = 'Oh. You\'ve attracted more ants!';
+                }
+
+                break;
+
+            case 'Ant Queen':
+                $inventoryService->receiveItem('Line of Ants', $user, $user, $user->getName() . ' fed an Ant Queen; as a result, _these_ ants showed up. (Is this a good thing?)', $inventory->getLocation());
                 $message = 'Oh. You\'ve attracted more ants!';
                 break;
 
