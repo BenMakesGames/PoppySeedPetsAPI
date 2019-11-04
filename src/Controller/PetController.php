@@ -61,7 +61,7 @@ class PetController extends PoppySeedPetsController
 
         $daycareFilterService->addRequiredFilter('user', $user->getId());
 
-        $petsInDaycare = $daycareFilterService->getResults($request->request);
+        $petsInDaycare = $daycareFilterService->getResults($request->query);
 
         return $responseService->success(
             $petsInDaycare,
