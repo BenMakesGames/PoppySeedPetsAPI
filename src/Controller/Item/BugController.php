@@ -107,7 +107,7 @@ class BugController extends PoppySeedPetsItemController
             case 'Line of Ants':
                 if(mt_rand(1, 10) === 1)
                 {
-                    $inventoryService->receiveItem('Ant Queen', $user, $user, $user->getName() . ' fed a Line of Ants; as a result, a Queen Ant showed up! (Is this a good thing?)', $inventory->getLocation());
+                    $inventoryService->receiveItem('Ant Queen', $user, $user, $user->getName() . ' fed a Line of Ants; as a result, this Queen Ant showed up! (Is this a good thing?)', $inventory->getLocation());
                     $message = 'Oh? You\'ve attracted an Ant Queen!';
                 }
                 else
