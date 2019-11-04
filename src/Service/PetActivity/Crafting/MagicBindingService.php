@@ -192,7 +192,7 @@ class MagicBindingService
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' successfully extracted Quintessence from a Mermaid Egg.', '');
 
-            $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this from a block of glowing dice that they made.', $activityLog);
+            $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' extracted this from a Mermaid Egg.', $activityLog);
 
             return $activityLog;
         }
