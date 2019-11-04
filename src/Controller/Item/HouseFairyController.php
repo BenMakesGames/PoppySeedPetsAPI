@@ -90,7 +90,7 @@ class HouseFairyController extends PoppySeedPetsItemController
                     $adjective = 'reminds me of the real Hahanu';
 
                 return $responseService->itemActionSuccess(
-                    '"I mean, I wasn\'t exactly expecting to get carried around like this," says ' . $this->fairyName($inventory) . '. "But ' . $inventory->getHolder()->getName() .  ' ' . $adjective . ', so I guess it\'s fine?? Better than being carried around by that raccoon, anyway!"'
+                    '"I mean, I wasn\'t exactly expecting to get carried around like this," says ' . $this->fairyName($inventory) . '. "But ' . $inventory->getHolder()->getName() .  ' ' . $adjective . ', so I guess it\'s fine?? Better than being carried around by a raccoon, anyway!"'
                 );
             }
             else
