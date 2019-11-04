@@ -74,9 +74,31 @@ class HouseFairyController extends PoppySeedPetsItemController
         }
         else
         {
-            return $responseService->itemActionSuccess(
-                '"Oh, hi!" says ' . $this->fairyName($inventory) . '.'
-            );
+            $pet = $inventory->getHolder();
+
+            if($pet !== null)
+            {
+                $adjectives = [
+                    'is pretty cute', 'is really friendly', 'actually smells really nice',
+                    'seems to like listening to my stories', 'is really funny',
+                    'has a charming aura', 'makes sure I don\'t get hurt', 'reminds me of Hahanu'
+                ];
+
+                $adjective = $adjectives[($inventory->getId() + $pet->getId()) % count($adjectives)];
+
+                if($adjective === 'reminds me of Hahanu' && strtolower(str_replace(' ', '', $pet->getName())) === 'hahanu')
+                    $adjective = 'reminds me of the real Hahanu';
+
+                return $responseService->itemActionSuccess(
+                    '"I mean, I wasn\'t exactly expecting to get carried around like this," says ' . $this->fairyName($inventory) . '. "But ' . $inventory->getHolder()->getName() .  ' ' . $adjective . ', so I guess it\'s fine?? Better than being carried around by that raccoon, anyway!"'
+                );
+            }
+            else
+            {
+                return $responseService->itemActionSuccess(
+                    '"Oh, hi!" says ' . $this->fairyName($inventory) . '.'
+                );
+            }
         }
     }
 
