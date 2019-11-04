@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
 use App\Repository\InventoryRepository;
@@ -137,6 +138,8 @@ class BugController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        $responseService->addActivityLog((new PetActivityLog())->setEntry($message));
+
+        return $responseService->itemActionSuccess(null, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
 }
