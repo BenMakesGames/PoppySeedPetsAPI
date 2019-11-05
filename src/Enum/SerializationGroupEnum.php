@@ -36,4 +36,5 @@ final class SerializationGroupEnum
     const FIREPLACE_MANTLE = 'fireplaceMantle';
     const MY_FIREPLACE = 'myFireplace';
     const FIREPLACE_FUEL = 'fireplaceFuel';
+    const DEV_TASK = 'devTask';
 }
