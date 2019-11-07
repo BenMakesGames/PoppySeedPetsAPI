@@ -29,7 +29,7 @@ class BehattingScrollController extends PoppySeedPetsItemController
      * @Route("/{inventory}/read", methods={"PATCH"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function invokeFruitScroll(
+    public function readBehattingScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository, MeritRepository $meritRepository
     )
@@ -58,6 +58,6 @@ class BehattingScrollController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess([ 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 }

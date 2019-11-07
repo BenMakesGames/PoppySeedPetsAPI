@@ -2,9 +2,12 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\SpiritCompanion;
+use App\Enum\MeritEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\InventoryRepository;
+use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
@@ -12,28 +15,29 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
- * @Route("/item/renamingScroll")
+ * @Route("/item/spiritPolymorphPotion")
  */
-class RenamingScrollController extends PoppySeedPetsItemController
+class SpiritPolymorphPotionController extends PoppySeedPetsItemController
 {
     /**
-     * @Route("/{inventory}/read", methods={"PATCH"})
+     * @Route("/{inventory}/drink", methods={"PATCH"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function readRenamingScroll(
+    public function drink(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        PetRepository $petRepository, MeritRepository $meritRepository
     )
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'renamingScroll');
+        $this->validateInventory($inventory, 'spiritPolymorphPotion');
 
         $petId = $request->request->getInt('pet', 0);
         $pet = $petRepository->find($petId);
@@ -41,17 +45,15 @@ class RenamingScrollController extends PoppySeedPetsItemController
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException();
 
-        $petName = trim($request->request->get('name', ''));
-
-        if(\strlen($petName) < 1 || \strlen($petName) > 30)
-            throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
-
-        if($petName === $pet->getName())
-            throw new UnprocessableEntityHttpException('That\'s the pet\'s current name! What a waste of the scroll that would be...');
+        if(!$pet->getSpiritCompanion())
+            throw new UnprocessableEntityHttpException($pet->getName() . ' doesn\'t have a spirit companion! Let\'s not waste a perfectly-good potion!');
 
         $em->remove($inventory);
 
-        $pet->setName($petName);
+        $currentImage = $pet->getSpiritCompanion()->getImage();
+        $possibleImages = array_filter(SpiritCompanion::IMAGES, function($i) use($currentImage) { return $i !== $currentImage; });
+
+        $pet->getSpiritCompanion()->setImage(ArrayFunctions::pick_one($possibleImages));
 
         $em->flush();
 
