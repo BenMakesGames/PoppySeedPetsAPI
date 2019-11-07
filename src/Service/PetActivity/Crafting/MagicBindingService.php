@@ -82,6 +82,9 @@ class MagicBindingService
                 if(array_key_exists('Firestone', $quantities))
                     $possibilities[] = [ $this, 'createCeremonyOfFire' ];
             }
+
+            if(array_key_exists('Moon Pearl', $quantities) && array_key_exists('Blunderbuss', $quantities) && array_key_exists('Crooked Stick', $quantities))
+                $possibilities[] = [ $this, 'createIridescentHandCannon' ];
         }
 
         return $possibilities;
@@ -229,7 +232,7 @@ class MagicBindingService
         }
     }
 
-    private function bindCeremonialTrident(Pet $pet, array $otherMaterials, string $makes)
+    private function bindCeremonialTrident(Pet $pet, array $otherMaterials, string $makes): PetActivityLog
     {
         $umbraCheck = \mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence());
         $craftsCheck = \mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
@@ -261,7 +264,6 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem($makes, $pet, $pet->getName() . ' made this real.', $activityLog);
             return $activityLog;
         }
-
     }
 
     public function createCeremonyOfShadows(Pet $pet): PetActivityLog
@@ -277,6 +279,48 @@ class MagicBindingService
     public function createCeremonyOfSandAndSea(Pet $pet): PetActivityLog
     {
         return $this->bindCeremonialTrident($pet, [ 'Seaweed', 'Sand Dollar' ], 'Ceremony of Sand and Sea');
+    }
+
+
+    private function createIridescentHandCannon(Pet $pet): PetActivityLog
+    {
+        $umbraCheck = \mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence());
+        $craftsCheck = \mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
+
+        if($craftsCheck <= 2)
+        {
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extend a Blunderbuss but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
+        }
+        else if($umbraCheck <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(-1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Blunderbuss, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+        }
+        else if($craftsCheck < 22)
+        {
+            $this->petService->spendTime($pet, \mt_rand(46, 60));
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA, PetSkillEnum::CRAFTS, PetSkillEnum::DEXTERITY ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Blunderbuss, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petService->spendTime($pet, \mt_rand(60, 75));
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Blunderbuss', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Moon Pearl', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Ceremonial Trident', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 4, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA, PetSkillEnum::CRAFTS, PetSkillEnum::DEXTERITY ]);
+            $pet->increaseEsteem(5);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made an Iridescent Hand Cannon by extending a Blunderbuss, and binding a Moon Pearl to it!', '');
+            $this->inventoryService->petCollectsItem('Iridescent Hand Cannon', $pet, $pet->getName() . ' bound a Moon Pearl to an extended Blunderbuss, making this!', $activityLog);
+            return $activityLog;
+        }
+
     }
 
     public function createWitchsBroom(Pet $pet): PetActivityLog
