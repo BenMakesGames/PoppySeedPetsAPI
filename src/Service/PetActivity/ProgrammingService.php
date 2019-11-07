@@ -45,6 +45,9 @@ class ProgrammingService
                 $possibilities[] = [ $this, 'createRegex' ];
         }
 
+        if(array_key_exists('Regex', $quantities) && array_key_exists('XOR', $quantities) && array_key_exists('String', $quantities))
+            $possibilities[] = [ $this, 'createL33tH4xx0r' ];
+
         if(array_key_exists('Hash Table', $quantities) && array_key_exists('Finite State Machine', $quantities) && array_key_exists('String', $quantities))
             $possibilities[] = [ $this, 'createCompiler' ];
 
@@ -176,6 +179,47 @@ class ProgrammingService
             $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to bootstrap a Compiler, but only got so far.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createL33tH4xx0r(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
+        if($roll <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
+
+            if(mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to become a l33t h4xx0r, but accidentally de-allocated a String, leaving a useless Pointer behind :(', 'icons/activity-logs/null');
+                $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' accidentally de-allocated a String; all that remains is this Pointer.', $activityLog);
+                return $activityLog;
+            }
+            else
+            {
+                $this->inventoryService->loseItem('XOR', $pet->getOwner(), LocationEnum::HOME, 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to become a l33t h4xx0r, but confused an XOR for an OR; the XOR was lost forever :(', 'icons/activity-logs/null');
+            }
+        }
+        else if($roll >= 16)
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
+            $this->inventoryService->loseItem('Regex', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('XOR', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
+            $pet->increaseEsteem(1);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' became a l33t h4xx0r.', '');
+            $this->inventoryService->petCollectsItem('l33t h4xx0r', $pet, $pet->getName() . ' made this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to become a l33t h4xx0r, but didn\'t have the right stuff.', 'icons/activity-logs/confused');
         }
     }
 }
