@@ -3,6 +3,51 @@ namespace App\Functions;
 
 final class ColorFunctions
 {
+    public static function RGB2HSL(int $red, int $green, int $blue)
+    {
+        $r = $red / 255;
+        $g = $green / 255;
+        $b = $blue / 255;
+
+        $min = min($r, $g, $b);
+        $max = max($r, $g, $b);
+
+        $l = ($max + $min) / 2;
+
+        if($red === $green && $green == $blue)
+        {
+            $h = 0;
+            $s = 0;
+        }
+        else
+        {
+            $range = $max - $min;
+
+            if($l < 0.5)
+                $s = $range / ($max + $min);
+            else
+                $s = $range / (2 - $max - $min);
+
+            $dR = (($max - $r) / 6 + ($range / 2)) / $range;
+            $dG = (($max - $g) / 6 + ($range / 2)) / $range;
+            $dB = (($max - $b) / 6 + ($range / 2)) / $range;
+
+            if($red >= $green && $red >= $blue)
+                $h = $dB - $dG;
+            else if($green >= $blue)
+                $h = 1 / 3 + $dR - $dB;
+            else
+                $h = 2 / 3 + $dG - $dR;
+
+            if($h < 0)
+                $h += 1;
+            else if($h > 1)
+                $h -= 1;
+        }
+
+        return [ 'h' => $h, 's' => $s, 'l' => $l ];
+    }
+
     public static function HSL2RGB(float $h, float $s, float $l)
     {
         $r = $l;

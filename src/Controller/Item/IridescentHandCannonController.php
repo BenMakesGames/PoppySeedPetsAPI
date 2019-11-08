@@ -45,7 +45,19 @@ class IridescentHandCannonController extends PoppySeedPetsItemController
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException();
 
-        $h = mt_rand(0, 1000) / 1000.0;
+        // make sure the new hue is some minimum distance away from the old hue:
+        if($color === 'A')
+            $oldColor = $pet->getColorA();
+        else
+            $oldColor = $pet->getColorB();
+
+        $oldRGB = ColorFunctions::Hex2RGB($oldColor);
+        $oldHSL = ColorFunctions::RGB2HSL($oldRGB['r'], $oldRGB['g'], $oldRGB['b']);
+
+        $h = $oldHSL['h'] + mt_rand(200, 800) / 1000.0;
+        if($h > 1) $h -= 1;
+
+        // now pick a random saturation and luminosity within that:
         $s = mt_rand(mt_rand(0, 500), 1000) / 1000.0;
         $l = mt_rand(mt_rand(0, 500), mt_rand(750, 1000)) / 1000.0;
 
