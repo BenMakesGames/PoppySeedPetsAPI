@@ -244,6 +244,8 @@ class UmbraService
 
             if(mt_rand(1, 100) === 1)
                 $prize = 'Blackonite';
+            else if(mt_rand(1, 50) === 1)
+                $prize = 'Spirit Polymorph Potion Recipe';
             else
                 $prize = ArrayFunctions::pick_one($prizes);
 

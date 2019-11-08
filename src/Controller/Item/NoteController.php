@@ -88,4 +88,18 @@ Here\'s some basic notes on how to take care of your new pet:
 * sour cream, flour (any - thickener)
 * noodles');
     }
+
+    /**
+     * @Route("/spiritPolymorphPotion/{inventory}/read", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function readSpiritPolymorphPotion(Inventory $inventory, ResponseService $responseService)
+    {
+        $this->validateInventory($inventory, 'note/spiritPolymorphPotion/#/read');
+
+        return $responseService->itemActionSuccess('* Witch-hazel
+* Carrot
+* Striped Microcline
+');
+    }
 }
