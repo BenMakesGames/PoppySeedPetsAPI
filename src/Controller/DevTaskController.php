@@ -77,6 +77,7 @@ class DevTaskController
             ->setTitle($title)
             ->setDescription($description)
             ->setType($type)
+            ->setStatus(DevTaskStatusEnum::BACKLOG)
         ;
 
         $em->persist($task);
