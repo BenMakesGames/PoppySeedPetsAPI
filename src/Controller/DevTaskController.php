@@ -6,6 +6,7 @@ use App\Enum\DevTaskStatusEnum;
 use App\Enum\DevTaskTypeEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\DevTaskRepository;
+use App\Service\Filter\DevTaskFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,12 +34,12 @@ class DevTaskController
     /**
      * @Route("/search", methods={"GET"})
      */
-    public function searchTasks(ResponseService $responseService, DevTaskRepository $devTaskRepository, Request $request)
+    public function searchTasks(ResponseService $responseService, DevTaskFilterService $devTaskFilterService, Request $request)
     {
-        // TODO
-        $tasks = [];
-
-        return $responseService->success($tasks, SerializationGroupEnum::DEV_TASK);
+        return $responseService->success(
+            $devTaskFilterService->getResults($request->query),
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::DEV_TASK ]
+        );
     }
 
     /**

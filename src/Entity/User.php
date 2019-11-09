@@ -33,6 +33,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="json")
+     * @Groups({"myAccount"})
      */
     private $roles = [];
 
@@ -283,9 +284,6 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @Groups({"myAccount"})
-     */
     public function getIsAdmin(): bool
     {
         return $this->hasRole('ROLE_ADMIN');

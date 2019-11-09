@@ -32,7 +32,7 @@ class SpiritPolymorphPotionController extends PoppySeedPetsItemController
      */
     public function drink(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, MeritRepository $meritRepository
+        PetRepository $petRepository
     )
     {
         $user = $this->getUser();
