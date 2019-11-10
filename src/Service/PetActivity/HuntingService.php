@@ -41,7 +41,7 @@ class HuntingService
 
         $maxSkill = NumberFunctions::constrain($maxSkill, 1, 20);
 
-        $isThanksgiving = $this->calendarService->isThanksgiving();
+        $useThanksgivingPrey = $this->calendarService->isThanksgiving() && mt_rand(1, 2) === 1;
 
         $roll = \mt_rand(1, $maxSkill);
 
@@ -64,14 +64,14 @@ class HuntingService
             case 6:
             case 7:
             case 8:
-                if($isThanksgiving)
+                if($useThanksgivingPrey)
                     $activityLog = $this->huntedTurkey($pet);
                 else
                     $activityLog = $this->huntedGoat($pet);
                 break;
             case 9:
             case 10:
-                if($isThanksgiving)
+                if($useThanksgivingPrey)
                     $activityLog = $this->huntedTurkey($pet);
                 else
                     $activityLog = $this->huntedLargeToad($pet);
@@ -87,14 +87,14 @@ class HuntingService
                 $activityLog = $this->huntedThievingMagpie($pet);
                 break;
             case 15:
-                if($isThanksgiving)
+                if($useThanksgivingPrey)
                     $activityLog = $this->huntedPossessedTurkey($pet);
                 else
                     $activityLog = $this->huntedGhosts($pet);
                 break;
             case 16:
             case 17:
-                if($isThanksgiving)
+                if($useThanksgivingPrey)
                     $activityLog = $this->huntedPossessedTurkey($pet);
                 else
                     $activityLog = $this->huntedSatyr($pet);
@@ -104,7 +104,7 @@ class HuntingService
                 break;
             case 19:
             case 20:
-                if($isThanksgiving)
+                if($useThanksgivingPrey)
                     $activityLog = $this->huntedTurkeyDragon($pet);
                 else
                     $activityLog = $this->huntedLeshyDemon($pet);
