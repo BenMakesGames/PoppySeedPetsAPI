@@ -256,8 +256,13 @@ class InventoryService
     {
         if(is_string($item))
         {
-            if($item === 'Beans' && mt_rand(1, 100) === 1)
-                $item = 'Magic Beans';
+            if(mt_rand(1, 100) === 1)
+            {
+                if($item === 'Beans')
+                    $item = 'Magic Beans';
+                else if($item === 'Feathers')
+                    $item = 'Ruby Feather';
+            }
 
             $item = $this->itemRepository->findOneByName($item);
         }
