@@ -472,7 +472,20 @@ class BoxController extends PoppySeedPetsItemController
             'World\'s Best Sugar Cookie', 'Glowing Four-sided Die'
         ]);
 
-        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $inventory->getLocation(), $inventory->getLockedToOwner());
+        if($item === 'Cockroach' && mt_rand(1, 3) === 1)
+        {
+            $numRoaches = mt_rand(6, 8);
+
+            for($i = 0; $i < $numRoaches; $i++)
+                $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $inventory->getLocation(), $inventory->getLockedToOwner());
+
+            $message = 'You open the bag... agh! It\'s swarming with roaches!!';
+        }
+        else
+        {
+            $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $inventory->getLocation(), $inventory->getLockedToOwner());
+            $message = 'You open the bag... ah! ' . $item . '!';
+        }
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
@@ -480,7 +493,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You open the bag... ah! ' . $item . '!', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
 
     /**

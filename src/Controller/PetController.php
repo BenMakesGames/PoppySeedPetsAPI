@@ -4,15 +4,18 @@ namespace App\Controller;
 use App\Entity\Inventory;
 use App\Entity\Merit;
 use App\Entity\Pet;
+use App\Entity\PetActivityLog;
 use App\Entity\SpiritCompanion;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
 use App\Repository\PetActivityLogRepository;
 use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
+use App\Repository\UserRepository;
 use App\Service\Filter\DaycareFilterService;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\MeritService;
@@ -78,13 +81,12 @@ class PetController extends PoppySeedPetsController
     }
 
     /**
-     * @Route("/{pet}/setFree", methods={"POST"}, requirements={"pet"="\d+"})
+     * @Route("/{pet}/release", methods={"POST"}, requirements={"pet"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function deletePet(
+    public function releasePet(
         Pet $pet, Request $request, ResponseService $responseService, UserPasswordEncoderInterface $passwordEncoder,
-        EntityManagerInterface $em, PetActivityLogRepository $petActivityLogRepository,
-        PetRelationshipRepository $petRelationshipRepository
+        EntityManagerInterface $em, UserRepository $userRepository, PetRepository $petRepository
     )
     {
         $user = $this->getUser();
@@ -92,29 +94,40 @@ class PetController extends PoppySeedPetsController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new AccessDeniedHttpException('This isn\'t your pet.');
 
+        $petCount = $petRepository->getTotalOwned($user);
+
+        if($petCount === 1)
+            throw new UnprocessableEntityHttpException('You can\'t release your very last pet! That would be FOOLISH!');
+
         if(!$passwordEncoder->isPasswordValid($user, $request->request->get('confirmPassphrase')))
             throw new AccessDeniedHttpException('Passphrase is not correct.');
 
-        $qb = $petActivityLogRepository->createQueryBuilder('l')
-            ->delete()
-            ->where('l.pet = :pet')
-            ->setParameter('pet', $pet)
+        $state = new PetChanges($pet);
+
+        $pet
+            ->setTool(null)
+            ->setHat(null)
+            ->setOwner($userRepository->findOneByEmail('the-wilds@poppyseedpets.com'))
+            ->setParkEventType(null)
+            ->setNote('')
+            ->setCostume('')
+            ->setInDaycare(true)
+            ->increaseEsteem(-5 * ($pet->getLevel() + 1))
+            ->increaseSafety(-5 * ($pet->getLevel() + 1))
+            ->increaseLove(-6 * ($pet->getLevel() + 1))
         ;
-
-        $qb->getQuery()->execute();
-
-        $qb = $petRelationshipRepository->createQueryBuilder('r')
-            ->delete()
-            ->where('(r.pet = :pet) OR (r.relationship = :pet)')
-            ->setParameter('pet', $pet)
-        ;
-
-        $qb->getQuery()->execute();
 
         if($user->getHollowEarthPlayer()->getChosenPet() !== null && $user->getHollowEarthPlayer()->getChosenPet()->getId() === $pet->getId())
             $user->getHollowEarthPlayer()->setChosenPet(null);
 
-        $em->remove($pet);
+        $activityLog = (new PetActivityLog())
+            ->setPet($pet)
+            ->setEntry($user->getName() . ' gave up ' . $pet->getName() . ', releasing them to The Wilds.')
+            ->setChanges($state->compare($pet))
+        ;
+
+        $em->persist($activityLog);
+
         $em->flush();
 
         return $responseService->success();

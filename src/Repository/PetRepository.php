@@ -49,6 +49,17 @@ class PetRepository extends ServiceEntityRepository
         ;
     }
 
+    public function getTotalOwned(User $user): int
+    {
+        return $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->andWhere('p.owner=:owner')
+            ->setParameter('owner', $user->getId())
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+    }
+
     public function getRoommates(Pet $pet)
     {
         return $this->createQueryBuilder('p')
