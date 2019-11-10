@@ -55,7 +55,7 @@ class SpiritCompanion
     private $image;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="spiritCompanion", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="spiritCompanion")
      */
     private $pet;
 

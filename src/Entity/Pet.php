@@ -240,6 +240,7 @@ class Pet
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\PetBaby", inversedBy="parent", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(onDelete="CASCADE")
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "petFriend"})
      */
     private $pregnancy;

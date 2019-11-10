@@ -38,7 +38,7 @@ class ItemPlant
     private $harvestableImage;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Item", mappedBy="plant", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Item", mappedBy="plant")
      * @Groups({"greenhousePlant"})
      */
     private $item;

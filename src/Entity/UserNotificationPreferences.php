@@ -18,7 +18,7 @@ class UserNotificationPreferences
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="userNotificationPreferences", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="userNotificationPreferences")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;

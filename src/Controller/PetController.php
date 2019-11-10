@@ -10,8 +10,8 @@ use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\InventoryRepository;
-use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogRepository;
+use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
 use App\Service\Filter\DaycareFilterService;
 use App\Service\Filter\PetActivityLogsFilterService;
@@ -19,12 +19,12 @@ use App\Service\MeritService;
 use App\Service\PetService;
 use App\Service\ResponseService;
 use App\Service\Typeahead\PetTypeaheadService;
-use App\Service\TypeaheadSearchService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -78,6 +78,49 @@ class PetController extends PoppySeedPetsController
     }
 
     /**
+     * @Route("/{pet}/setFree", methods={"POST"}, requirements={"pet"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function deletePet(
+        Pet $pet, Request $request, ResponseService $responseService, UserPasswordEncoderInterface $passwordEncoder,
+        EntityManagerInterface $em, PetActivityLogRepository $petActivityLogRepository,
+        PetRelationshipRepository $petRelationshipRepository
+    )
+    {
+        $user = $this->getUser();
+
+        if($pet->getOwner()->getId() !== $user->getId())
+            throw new AccessDeniedHttpException('This isn\'t your pet.');
+
+        if(!$passwordEncoder->isPasswordValid($user, $request->request->get('confirmPassphrase')))
+            throw new AccessDeniedHttpException('Passphrase is not correct.');
+
+        $qb = $petActivityLogRepository->createQueryBuilder('l')
+            ->delete()
+            ->where('l.pet = :pet')
+            ->setParameter('pet', $pet)
+        ;
+
+        $qb->getQuery()->execute();
+
+        $qb = $petRelationshipRepository->createQueryBuilder('r')
+            ->delete()
+            ->where('(r.pet = :pet) OR (r.relationship = :pet)')
+            ->setParameter('pet', $pet)
+        ;
+
+        $qb->getQuery()->execute();
+
+        if($user->getHollowEarthPlayer()->getChosenPet() !== null && $user->getHollowEarthPlayer()->getChosenPet()->getId() === $pet->getId())
+            $user->getHollowEarthPlayer()->setChosenPet(null);
+
+        $em->remove($pet);
+        $em->flush();
+
+        return $responseService->success();
+    }
+
+    /**
      * @Route("/{pet}/putInDaycare", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -90,7 +133,6 @@ class PetController extends PoppySeedPetsController
             throw new UnprocessableEntityHttpException($pet->getName() . ' is already in Daycare.');
 
         $pet
-            ->setTool(null) // unequip pet before putting into daycare
             ->setParkEventType(null) // unregister from park events
             ->setInDaycare(true)
         ;

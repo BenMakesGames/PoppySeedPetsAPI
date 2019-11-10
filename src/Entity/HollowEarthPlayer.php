@@ -20,7 +20,7 @@ class HollowEarthPlayer
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="hollowEarthPlayer", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="hollowEarthPlayer")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
@@ -44,7 +44,8 @@ class HollowEarthPlayer
     private $movesRemaining = 0;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Pet")
+     * @ORM\OneToOne(targetEntity="App\Entity\Pet")
+     * @ORM\JoinColumn(nullable=true)
      * @Groups({"hollowEarth"})
      */
     private $chosenPet = null;

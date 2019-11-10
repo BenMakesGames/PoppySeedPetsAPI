@@ -189,7 +189,7 @@ class AccountController extends PoppySeedPetsController
         $user = $this->getUser();
 
         if(!$passwordEncoder->isPasswordValid($user, $request->request->get('confirmPassphrase')))
-            throw new AccessDeniedHttpException('Email and/or passphrase is not correct.');
+            throw new AccessDeniedHttpException('Passphrase is not correct.');
 
         $newEmail = trim($request->request->get('newEmail'));
 
@@ -232,7 +232,7 @@ class AccountController extends PoppySeedPetsController
         $user = $this->getUser();
 
         if(!$passwordEncoder->isPasswordValid($user, $request->request->get('confirmPassphrase')))
-            throw new AccessDeniedHttpException('Email and/or passphrase is not correct.');
+            throw new AccessDeniedHttpException('Passphrase is not correct.');
 
         $newPassphrase = trim($request->request->get('newPassphrase'));
 
@@ -380,7 +380,7 @@ class AccountController extends PoppySeedPetsController
     /**
      * @Route("/requestPassphraseReset", methods={"POST"})
      */
-    public function requestPasswordReset(
+    public function requestPassphraseReset(
         Request $request, UserRepository $userRepository, ResponseService $responseService,
         PassphraseResetService $passphraseResetService
     )
@@ -406,7 +406,7 @@ class AccountController extends PoppySeedPetsController
     /**
      * @Route("/requestPassphraseReset/{code}", methods={"POST"})
      */
-    public function resetPassword(
+    public function resetPassphrase(
         string $code, Request $request, PassphraseResetRequestRepository $passwordResetRequestRepository,
         UserPasswordEncoderInterface $userPasswordEncoder, EntityManagerInterface $em, ResponseService $responseService
     )

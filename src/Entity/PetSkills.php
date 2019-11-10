@@ -77,7 +77,7 @@ class PetSkills
     private $computer = 0;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="skills", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="skills")
      */
     private $pet;
 
