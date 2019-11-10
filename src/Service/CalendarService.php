@@ -25,7 +25,8 @@ class CalendarService
 
         $fourthThursdayOfNovember = new \DateTimeImmutable('fourth Thursday of this month');
 
-        return $fourthThursdayOfNovember->format('md') == $this->monthAndDay;
+        // within 1 day of thanksgiving
+        return abs((int)$fourthThursdayOfNovember->format('md') - $this->monthAndDay) <= 1;
     }
 
     public function isHalloween(): bool
