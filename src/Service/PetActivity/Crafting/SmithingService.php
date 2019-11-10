@@ -661,8 +661,8 @@ class SmithingService
     public function createIronTongsOrFlute(Pet $pet): PetActivityLog
     {
         $making = ArrayFunctions::pick_one([
-            [ 'item' => 'Iron Tongs', 'description' => 'Iron Tongs' ],
-            [ 'item' => 'Flute', 'description' => 'a Flute' ],
+            [ 'item' => 'Iron Tongs', 'description' => 'Iron Tongs', 'image' => 'items/tool/tongs' ],
+            [ 'item' => 'Flute', 'description' => 'a Flute', 'image' => 'items/tool/instrument/flute' ],
         ]);
 
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
@@ -680,7 +680,7 @@ class SmithingService
             $this->petService->spendTime($pet, \mt_rand(60, 75));
             $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' forged ' . $making['description'] . ' from an Iron Bar.', 'items/tool/tongs');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' forged ' . $making['description'] . ' from an Iron Bar.', $making['image']);
 
             $this->inventoryService->petCollectsItem($making['item'], $pet, $pet->getName() . ' forged this from an Iron Bar.', $activityLog);
 

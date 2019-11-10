@@ -37,6 +37,9 @@ class PlasticPrinterService
 
             if(array_key_exists('String', $quantities))
                 $possibilities[] = [ $this, 'createPlasticFishingRod' ];
+
+            if(array_key_exists('Black Feathers', $quantities))
+                $possibilities[] = [ $this, 'createEvilFeatherDuster' ];
         }
 
         return $possibilities;
@@ -79,6 +82,35 @@ class PlasticPrinterService
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Plastic Fishing Rod.', '');
             $this->inventoryService->petCollectsItem('Plastic Fishing Rod', $pet, $pet->getName() . ' created this from String and Plastic.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            return $this->printerActingUp($pet);
+        }
+    }
+
+    public function createEvilFeatherDuster(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer() + \max($pet->getCrafts(), $pet->getNature()));
+
+        if($roll <= 3)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+
+            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make an Evil Feather Duster, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
+        }
+        else if($roll >= 16)
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
+            $this->inventoryService->loseItem('Black Feathers', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
+            $pet->increaseEsteem(3);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created an Evil Feather Duster.', '');
+            $this->inventoryService->petCollectsItem('Evil Feather Duster', $pet, $pet->getName() . ' created this from Black Feathers and Plastic.', $activityLog);
             return $activityLog;
         }
         else

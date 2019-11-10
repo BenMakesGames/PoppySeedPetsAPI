@@ -17,6 +17,17 @@ class CalendarService
         $this->halloweenService = $halloweenService;
     }
 
+    public function isThanksgiving(): bool
+    {
+        // if it's not November, just get outta' here
+        if($this->monthAndDay < 1100 || $this->monthAndDay >= 1200)
+            return false;
+
+        $fourthThursdayOfNovember = new \DateTimeImmutable('fourth Thursday of this month');
+
+        return $fourthThursdayOfNovember->format('md') == $this->monthAndDay;
+    }
+
     public function isHalloween(): bool
     {
         return $this->monthAndDay >= 1029 && $this->monthAndDay <= 1031;
