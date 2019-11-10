@@ -99,15 +99,14 @@ class TraderService
 
         $leapDay = $this->calendarService->isLeapDay();
 
-        if($date === 'Oct 31' || $date === 'Oct 30' || $date === 'Oct 29' || $date === 'Oct 28')
-        {
-            if($date === 'Oct 31')
-                $dialog = "Halloweeeeeeeeeeeeeeee\n\neeeeeeeeeeeeeeeeee\n\neeen!!!\n\n\n\nHalloween.";
-            else
-                $dialog = 'Halloween\'s coming up! Don\'t forget!';
-
-            // TODO: ways to get candy, and/or other halloween-y things
-        }
+        if($date === 'Oct 31')
+            $dialog = "Halloweeeeeeeeeeeeeeee\n\neeeeeeeeeeeeeeeeee\n\neeen!!!\n\n\n\nHalloween.";
+        else if($date === 'Oct 30' || $date === 'Oct 29' || $date === 'Oct 28')
+            $dialog = 'Halloween\'s coming up! Don\'t forget!';
+        else if($date === 'Nov 1')
+            $dialog = 'Did you have a fun halloween?';
+        else if($this->calendarService->isThanksgiving())
+            $dialog = 'Happy Thanksgiving! And watch out for those Possessed Turkeys...';
 
         if($now->format('M') === 'Oct')
         {
@@ -149,14 +148,6 @@ class TraderService
                     'Cool, thanks! I have all this tin, but nothing to really do with it, so...'
                 );
             }
-        }
-
-        if($date === 'Oct 31' || $date === 'Nov 1' || $date === 'Nov 2' || $date === 'Nov 3')
-        {
-            if($date !== 'Oct 31')
-                $dialog = 'Did you have a fun halloween?';
-
-            // TODO: trade halloween rewards for other things
         }
 
         // talk like a pirate day
