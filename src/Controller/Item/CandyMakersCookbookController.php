@@ -78,8 +78,6 @@ Combine the following:
 * Fruit (berries, melon, orange, etc)
 * Sugar
 
-If you prefer to always think in terms of "2 Sugar", you can also double the small fruit recipes.
-
 #### Soft Gummies
 
 Combine the following:
