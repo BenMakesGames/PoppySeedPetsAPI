@@ -300,10 +300,19 @@ class InventoryController extends PoppySeedPetsController
                 ->setModifiedOn()
             ;
 
-            if($location !== LocationEnum::HOME && $i->getHolder())
+            if($location !== LocationEnum::HOME)
             {
-                $i->getHolder()->setTool(null);
-                $unequippedAPet = true;
+                if($i->getHolder())
+                {
+                    $i->getHolder()->setTool(null);
+                    $unequippedAPet = true;
+                }
+
+                if($i->getWearer())
+                {
+                    $i->getWearer()->setHat(null);
+                    $unequippedAPet = true;
+                }
             }
         }
 
