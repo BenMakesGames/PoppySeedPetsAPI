@@ -88,9 +88,9 @@ Or, if you have Blackberry or Blueberry Yogurt, just add... Creamy Milk!
 #### Naner Puddin\'
 
 * Creamy Milk!
-* Two Naners
-* Two Sugar
-* Two Eggs
+* Naner
+* Sugar
+* Egg
 * Wheat Flour
 
 #### Pancakes
