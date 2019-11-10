@@ -69,15 +69,19 @@ class DevTaskController
         $title = trim($request->request->get('title', ''));
         $description = trim($request->request->get('description', ''));
         $type = $request->request->getInt('type', -1);
+        $status = $request->request->getInt('status', -1);
 
         if(!DevTaskTypeEnum::isAValue($type))
-            throw new UnprocessableEntityHttpException('the type given is not a valid task type.');
+            throw new UnprocessableEntityHttpException('The type given is not a valid task type.');
+
+        if(!DevTaskStatusEnum::isAValue($status))
+            throw new UnprocessableEntityHttpException('The status given is not a valid task status.');
 
         $task = (new DevTask())
             ->setTitle($title)
             ->setDescription($description)
             ->setType($type)
-            ->setStatus(DevTaskStatusEnum::BACKLOG)
+            ->setStatus($status)
         ;
 
         $em->persist($task);
