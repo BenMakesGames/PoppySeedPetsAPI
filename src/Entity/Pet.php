@@ -131,6 +131,7 @@ class Pet
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Inventory", inversedBy="holder")
+     * @ORM\JoinColumn(onDelete="SET NULL")
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
      */
     private $tool;
@@ -279,6 +280,7 @@ class Pet
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Inventory", inversedBy="wearer")
+     * @ORM\JoinColumn(onDelete="SET NULL")
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
      */
     private $hat;
