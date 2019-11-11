@@ -20,6 +20,7 @@ class DevTaskFilterService
             self::PAGE_SIZE,
             [
                 'id' => [ 't.id' => 'asc' ], // first one is the default
+                'releasedon' => [ 't.releasedOn' => 'desc', 't.id' => 'desc' ],
             ],
             [
                 'title' => [ $this, 'filterTitle' ],
