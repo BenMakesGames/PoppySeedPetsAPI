@@ -23,7 +23,7 @@ class DevTaskFilterService
                 'releasedon' => [ 't.releasedOn' => 'desc', 't.id' => 'desc' ],
             ],
             [
-                'title' => [ $this, 'filterTitle' ],
+                'text' => [ $this, 'filterText' ],
                 'type' => [ $this, 'filterType' ],
                 'status' => [ $this, 'filterStatus' ],
             ]
@@ -35,11 +35,11 @@ class DevTaskFilterService
         return $this->repository->createQueryBuilder('t');
     }
 
-    public function filterTitle(QueryBuilder $qb, $value)
+    public function filterText(QueryBuilder $qb, $value)
     {
         $qb
-            ->andWhere('t.title LIKE :titleLink')
-            ->setParameter('titleLink', '%' . $value . '%')
+            ->andWhere('(t.title LIKE :textLike OR t.description LIKE :textLike)')
+            ->setParameter('textLike', '%' . $value . '%')
         ;
     }
 

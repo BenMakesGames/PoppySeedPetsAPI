@@ -57,7 +57,18 @@ class Filterer
 
         if($orderDir !== '' && $orderDir !== 'reverse') $orderDir = '';
 
-        $filters = array_filter($filters, function($filter) { return array_key_exists($filter, $this->filterMap); }, ARRAY_FILTER_USE_KEY);
+        $filters = array_filter(
+            $filters,
+            function($value, $filter) {
+                if(is_array($value) && count($value) === 0)
+                    return false;
+                else if($value == '')
+                    return false;
+                else
+                    return array_key_exists($filter, $this->filterMap);
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
 
         // assemble query:
         $qb = $filterService->createQueryBuilder();
