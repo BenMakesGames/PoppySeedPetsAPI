@@ -21,7 +21,7 @@ class NoodsBookController extends PoppySeedPetsItemController
 
         return $responseService->itemActionSuccess('## Noods
 
-* What Flour
+* Wheat Flour
 * Egg
 
 OR
