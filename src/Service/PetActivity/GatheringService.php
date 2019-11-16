@@ -34,7 +34,7 @@ class GatheringService
     {
         $maxSkill = 10 + $pet->getPerception() + $pet->getNature() + $pet->getGathering() - $pet->getAlcohol() - $pet->getPsychedelic();
 
-        if($maxSkill > 18) $maxSkill = 18;
+        if($maxSkill > 19) $maxSkill = 19;
         else if($maxSkill < 1) $maxSkill = 1;
 
         $roll = \mt_rand(1, $maxSkill);
@@ -89,6 +89,9 @@ class GatheringService
                 break;
             case 18:
                 $activityLog = $this->foundWildHedgemaze($pet);
+                break;
+            case 19:
+                $activityLog = $this->foundVolcano($pet);
                 break;
         }
 
@@ -507,13 +510,18 @@ class GatheringService
         $this->petService->spendTime($pet, \mt_rand(45, 60) + count($loot) * 5);
 
         if(count($loot) === 0)
+        {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' entered the island\'s Micro-Jungle, but couldn\'t find anything.', 'icons/activity-logs/confused');
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::STAMINA ]);
+        }
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' entered the island\'s Micro-Jungle, and got ' . ArrayFunctions::list_nice($loot) . '.', '');
 
             foreach($loot as $itemName)
                 $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in the island\'s Micro-Jungle.', $activityLog);
+
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::STAMINA ]);
         }
 
         if(mt_rand(1, 10 + $pet->getStamina()) < 8)
@@ -522,7 +530,7 @@ class GatheringService
             $pet->increaseSafety(-mt_rand(1, 2));
 
             // why need to have unlocked the greenhouse? just testing that you've been playing for a while
-            if(mt_rand(1, 10) === 1 && $pet->getOwner()->getUnlockedGreenhouse() !== null)
+            if(mt_rand(1, 20) === 1 && $pet->getOwner()->getUnlockedGreenhouse() !== null)
                 $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and I don\'t mean in a sexy way; ' . $pet->getName() . ' got a bit light-headed.');
             else
                 $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and ' . $pet->getName() . ' got a bit light-headed.');
@@ -632,6 +640,49 @@ class GatheringService
 
         foreach($loot as $itemName)
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in a Wild Hedgemaze.', $activityLog);
+
+        return $activityLog;
+    }
+
+    private function foundVolcano(Pet $pet): PetActivityLog
+    {
+        $check = mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering());
+
+        $this->petService->spendTime($pet, \mt_rand(45, 60));
+
+        if($check < 15)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the island\'s Volcano, but couldn\'t find anything.', 'icons/activity-logs/confused');
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::STAMINA ]);
+        }
+        else
+        {
+            $loot = ArrayFunctions::pick_one([
+                'Liquid-hot Magma', 'Liquid-hot Magma', 'Iron Ore'
+            ]);
+
+            if(mt_rand(1, 100))
+                $loot = 'Hot Potato';
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the island\'s Volcano, and got ' . ArrayFunctions::list_nice($loot) . '.', '');
+
+            foreach($loot as $itemName)
+                $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this near the island\'s Volcano.', $activityLog);
+
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::STAMINA ]);
+        }
+
+        if(mt_rand(1, 10 + $pet->getStamina()) < 10)
+        {
+            $pet->increaseFood(-1);
+            $pet->increaseSafety(-mt_rand(1, 2));
+
+            // why need to have unlocked the greenhouse? just testing that you've been playing for a while
+            if(mt_rand(1, 20) === 1 && $pet->getOwner()->getUnlockedGreenhouse() !== null)
+                $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and I don\'t mean in a sexy way; ' . $pet->getName() . ' got a bit light-headed.');
+            else
+                $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and ' . $pet->getName() . ' got a bit light-headed.');
+        }
 
         return $activityLog;
     }

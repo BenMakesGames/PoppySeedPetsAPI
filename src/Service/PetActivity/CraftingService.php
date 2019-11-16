@@ -4,6 +4,7 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
@@ -135,10 +136,10 @@ class CraftingService
         if(array_key_exists('3D Printer', $quantities) && array_key_exists('Plastic', $quantities))
             $possibilities = array_merge($possibilities, $this->plasticPrinterService->getCraftingPossibilities($pet, $quantities));
 
-        if(array_key_exists('Rusty Blunderbuss', $quantities) && $pet->getCrafts() >= 5)
+        if(array_key_exists('Rusty Blunderbuss', $quantities) && ($pet->getSmithing() >= 5 || $pet->getCrafts() >= 5))
             $possibilities[] = [ $this, 'repairRustyBlunderbuss' ];
 
-        if(array_key_exists('Rusty Rapier', $quantities) && $pet->getCrafts() >= 5)
+        if(array_key_exists('Rusty Rapier', $quantities) && ($pet->getSmithing() >= 5 || $pet->getCrafts() >= 5))
             $possibilities[] = [ $this, 'repairRustyRapier' ];
 
         if(mt_rand(1, 20 + $pet->getUmbra()) >= 15)
@@ -988,20 +989,20 @@ class CraftingService
     {
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
 
-        if($roll <= 5)
+        if($roll === 1 && !$pet->hasMerit(MeritEnum::LUCKY))
         {
             $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('Rusty Blunderbuss', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(-2);
+            $pet->increaseEsteem(-4);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to repair a Rusty Blunderbuss, but accidentally broke it beyond repair :(', '');
         }
         else if($roll >= 18)
         {
             $this->petService->spendTime($pet, \mt_rand(60, 75));
             $this->inventoryService->loseItem('Rusty Blunderbuss', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(2);
+            $this->petService->gainExp($pet, 3, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' repaired a Rusty Blunderbuss. It\'s WAY less rusty now!', '');
             $this->inventoryService->petCollectsItem('Blunderbuss', $pet, $pet->getName() . ' repaired this Rusty Blunderbuss.', $activityLog);
             return $activityLog;
@@ -1018,12 +1019,12 @@ class CraftingService
     {
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + \max($pet->getCrafts(), $pet->getBrawl()));
 
-        if($roll <= 5)
+        if($roll === 1 && !$pet->hasMerit(MeritEnum::LUCKY))
         {
             $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('Rusty Rapier', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-            $pet->increaseEsteem(-2);
+            $pet->increaseEsteem(-4);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to repair a Rusty Rapier, but accidentally broke it beyond repair :(', '');
         }
         else if($roll >= 14)

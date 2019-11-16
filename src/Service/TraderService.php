@@ -15,7 +15,6 @@ use App\Repository\UserStatsRepository;
 
 class TraderService
 {
-    private const ID_PROOF_OF_ADVENTURING = 'proofOfAdventuring';
     private const ID_LEVEL_2_SWORD = 'level2Sword';
     private const ID_RUSTY_RAPIER = 'rustyRapier';
     private const ID_GREENHOUSE_DEED = 'greenhouseDeed';
