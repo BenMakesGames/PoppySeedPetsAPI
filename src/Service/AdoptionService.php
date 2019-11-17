@@ -38,7 +38,7 @@ class AdoptionService
     ];
 
     public const PET_THANKSGIVING_NAMES = [
-        'Gobbles', 'Pumpkin', 'Cranberry', 'Turkey', 'Stuffing', 'Potato',
+        'Gobbles', 'Pumpkin', 'Cranberry', 'Turkey', 'Stuffing', 'Potato', 'Gravy',
     ];
 
     public const PET_HANNUKAH_NAMES = [
