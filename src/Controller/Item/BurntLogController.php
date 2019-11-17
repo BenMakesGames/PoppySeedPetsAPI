@@ -38,12 +38,18 @@ class BurntLogController extends PoppySeedPetsItemController
             'Fried Egg',
         ]);
 
-        if(mt_rand(1, 3) === 1)
+        if(mt_rand(1, 4) === 1)
+        {
+            $charcoalReceived = 'Charcoal, Liquid-hot Magma';
             $inventoryService->receiveItem('Liquid-hot Magma', $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);
+        }
         else
+        {
+            $charcoalReceived = 'three Charcoal';
             $inventoryService->receiveItem('Charcoal', $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);
+            $inventoryService->receiveItem('Charcoal', $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);
+        }
 
-        $inventoryService->receiveItem('Charcoal', $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);
         $inventoryService->receiveItem('Charcoal', $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);
 
         $inventoryService->receiveItem($extraItem, $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);
@@ -52,6 +58,6 @@ class BurntLogController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You break the Burnt Log apart, receiving three Charcoal, and ' . GrammarFunctions::indefiniteArticle($extraItem) . ' ' . $extraItem . '!', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You break the Burnt Log apart, receiving ' . $charcoalReceived . ', and ' . GrammarFunctions::indefiniteArticle($extraItem) . ' ' . $extraItem . '!', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
 }
