@@ -664,7 +664,7 @@ class GatheringService
             if(mt_rand(1, 100))
                 $loot = 'Hot Potato';
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the island\'s Volcano, and got ' . ArrayFunctions::list_nice($loot) . '.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the island\'s Volcano, and got ' . $loot . '.', '');
 
             foreach($loot as $itemName)
                 $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this near the island\'s Volcano.', $activityLog);
