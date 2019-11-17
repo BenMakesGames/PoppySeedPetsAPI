@@ -1,16 +1,17 @@
 <?php
 namespace App\Controller;
+
 use App\Entity\Pet;
 use App\Entity\PetSkills;
 use App\Enum\FlavorEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\PetShelterPet;
 use App\Repository\PetRepository;
-use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
-use App\Service\PetService;
+use App\Service\AdoptionService;
 use App\Service\ResponseService;
 use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,23 +30,13 @@ class PetShelterController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getAvailablePets(
-        PetSpeciesRepository $petSpeciesRepository, ResponseService $responseService, PetRepository $petRepository,
+        AdoptionService $adoptionService, ResponseService $responseService, PetRepository $petRepository,
         UserQuestRepository $userQuestRepository, UserService $userService
     )
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
         $user = $this->getUser();
         $costToAdopt = $userService->getAdoptionFee($user);
-
-        if(date('H') == 23)
-        {
-            return $responseService->success([
-                'costToAdopt' => $costToAdopt,
-                'pets' => [],
-                'dialog' => 'Sorry, we\'re closed right now. Can you come back in an hour?'
-            ]);
-        }
-
         $lastAdopted = $userQuestRepository->findOneBy([ 'user' => $user, 'name' => 'Last Adopted a Pet' ]);
 
         if($lastAdopted && $lastAdopted->getValue() === $now)
@@ -57,58 +48,7 @@ class PetShelterController extends PoppySeedPetsController
             ]);
         }
 
-        mt_srand($user->getDailySeed());
-
-        $numPets = mt_rand(4, 8);
-
-        $petCount = $petRepository->createQueryBuilder('p')
-            ->select('COUNT(p.id)')
-            ->andWhere('p.birthDate<:today')
-            ->setParameter('today', $now)
-            ->getQuery()
-            ->getSingleScalarResult();
-        ;
-
-        $petNames = [
-            "Aalina", "Aaron", "Abrahil", "Aedoc", "Aelfric", "Alain", "Alda", "Alienora", "Aliette", "Artaca",
-            "Aureliana", "Batu", "Belka", "Bezzhen", "Biedeluue", "Blicze", "Ceinguled", "Ceri", "Ceslinus", "Christien",
-            "Clement", "Cyra", "Czestobor", "Dagena", "Denyw", "Disideri", "Eileve", "Emilija", "Enim", "Enynny",
-            "Erasmus", "Eve", "Felix", "Fiora", "Fluri", "Frotlildis", "Galine", "Gennoveus", "Genoveva", "Giliana",
-            "Godelive", "Gubin", "Idzi", "Jadviga", "Jehanne", "Kaija", "Kain", "Kima", "Kint", "Kirik",
-            "Klara", "Kryspin", "Leodhild", "Leon", "Levi", "Lowri", "Lucass", "Ludmila", "Maccos", "Maeldoi",
-            "Magdalena", "Makrina", "Malik", "Margaret", "Marsley", "Masayasu", "Mateline", "Mathias", "Maurifius", "Meduil",
-            "Melita", "Meoure", "Merewen", "Milesent", "Milian", "Mold", "Montgomery", "Morys", 'Newt', "Nicholina",
-            "Nilus", "Noe", "Oswyn", "Paperclip", "Perkhta", "Pesczek", "Regina", "Reina", "Rimoete", "Rocatos",
-            "Rozalia", "Rum", "Runne", "Ryd", "Saewine", "Sandivoi", "Skenfrith", "Sulimir", "Sybil", "Talan",
-            "Tede", "Tephaine", "Tetris", "Tiecia", "Toregene", "Trenewydd", "Usk", "Vasilii", "Vitseslav", "Vivka",
-            "Wrexham", "Ysabeau", "Ystradewel", "Zofija", "Zygmunt"
-        ];
-
-        $pets = [];
-
-        $allSpecies = $petSpeciesRepository->findBy([ 'availableFromPetShelter' => true ]);
-
-        for($i = 0; $i < $numPets; $i++)
-        {
-            $basePet = $petRepository->createQueryBuilder('p')
-                ->andWhere('p.birthDate<:today')
-                ->setParameter('today', $now)
-                ->setMaxResults(1)
-                ->setFirstResult(mt_rand(0, $petCount - 1))
-                ->getQuery()
-                ->getSingleResult()
-            ;
-
-            $colorA = $this->tweakColor($basePet->getColorA());
-            $colorB = $this->tweakColor($basePet->getColorB());
-
-            $pets[] = (new Pet())
-                ->setSpecies(ArrayFunctions::pick_one($allSpecies))
-                ->setName(ArrayFunctions::pick_one($petNames))
-                ->setColorA($colorA)
-                ->setColorB($colorB)
-            ;
-        }
+        $pets = $adoptionService->getDailyPets($user);
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
 
@@ -134,14 +74,11 @@ class PetShelterController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function adoptPet(
-        int $id, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository, Request $request,
+        int $id, PetRepository $petRepository, AdoptionService $adoptionService, Request $request,
         ResponseService $responseService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
         UserQuestRepository $userQuestRepository, UserService $userService
     )
     {
-        if(date('H') == 23)
-            throw new UnprocessableEntityHttpException('Pets cannot be adopted during this hour of the day.');
-
         $user = $this->getUser();
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
@@ -151,73 +88,43 @@ class PetShelterController extends PoppySeedPetsController
         if($user->getMoneys() < $costToAdopt)
             throw new UnprocessableEntityHttpException('It costs ' . $costToAdopt . ' moneys to adopt a pet, but you only have ' . $user->getMoneys() . '.');
 
-        mt_srand($user->getDailySeed());
-        $now = date('Y-m-d');
-
-        $numPets = mt_rand(4, 8);
-
-        if($id >= $numPets)
-            throw new UnprocessableEntityHttpException('There is no such pet available for adoption...');
-
         $petName = trim($request->request->get('name', ''));
 
         if(\strlen($petName) < 1 || \strlen($petName) > 30)
             throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
 
-        $petCount = $petRepository->createQueryBuilder('p')
-            ->select('COUNT(p.id)')
-            ->andWhere('p.birthDate<:today')
-            ->setParameter('today', $now)
-            ->getQuery()
-            ->getSingleScalarResult();
-        ;
+        $pets = $adoptionService->getDailyPets($user);
 
-        $petToAdopt = null;
+        $petToAdopt = ArrayFunctions::find_one($pets, function(PetShelterPet $p) use($id) { return $p->id === $id; });
 
-        $allSpecies = $petSpeciesRepository->findBy([ 'availableFromPetShelter' => true ]);
-
-        for($i = 0; $i <= $id; $i++)
-        {
-            $basePet = $petRepository->createQueryBuilder('p')
-                ->andWhere('p.birthDate<:today')
-                ->setParameter('today', $now)
-                ->setMaxResults(1)
-                ->setFirstResult(mt_rand(0, $petCount - 1))
-                ->getQuery()
-                ->getSingleResult()
-            ;
-
-            $colorA = $this->tweakColor($basePet->getColorA());
-            $colorB = $this->tweakColor($basePet->getColorB());
-
-            $petToAdopt = (new Pet())
-                ->setSpecies(ArrayFunctions::pick_one($allSpecies))
-                ->setColorA($colorA)
-                ->setColorB($colorB)
-                ->setFavoriteFlavor(FlavorEnum::getRandomValue())
-            ;
-        }
+        if($petToAdopt === null)
+            throw new UnprocessableEntityHttpException('There is no such pet available for adoption...');
 
         $petSkills = new PetSkills();
 
         $em->persist($petSkills);
 
-        $petToAdopt
+        $newPet = (new Pet())
             ->setOwner($user)
             ->setName($petName)
-            // species, colorA, and colorB are already taken care of
+            ->setSpecies($petToAdopt->species)
+            ->setColorA($petToAdopt->colorA)
+            ->setColorB($petToAdopt->colorB)
+            ->setFavoriteFlavor(FlavorEnum::getRandomValue())
             ->setNeeds(mt_rand(10, 12), -9)
             ->setSkills($petSkills)
         ;
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
-            $petToAdopt->setInDaycare(true);
+            $newPet->setInDaycare(true);
 
-        $em->persist($petToAdopt);
+        $em->persist($newPet);
 
         $user->increaseMoneys(-$costToAdopt);
         $userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, $costToAdopt);
         $userStatsRepository->incrementStat($user, UserStatEnum::PETS_ADOPTED, 1);
+
+        $now = (new \DateTimeImmutable())->format('Y-m-d');
 
         $userQuestRepository->findOrCreate($user, 'Last Adopted a Pet', $now)
             ->setValue($now)
@@ -228,22 +135,5 @@ class PetShelterController extends PoppySeedPetsController
         $costToAdopt = $userService->getAdoptionFee($user);
 
         return $responseService->success([ 'pets' => [], 'costToAdopt' => $costToAdopt ]);
-    }
-
-    private function tweakColor(string $color): string
-    {
-        $newColor = '';
-
-        for($i = 0; $i < 3; $i++)
-        {
-            $part = hexdec($color[$i * 2] . $color[$i * 2 + 1]);    // get color part as decimal
-            $part += mt_rand(-12, 12);                              // randomize
-            $part = max(0, min(255, $part));                        // keep between 0 and 255
-            $part = str_pad(dechex($part), 2, '0', STR_PAD_LEFT);   // turn back into hex
-
-            $newColor .= $part;
-        }
-
-        return $newColor;
     }
 }
