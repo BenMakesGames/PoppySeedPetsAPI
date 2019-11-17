@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Functions\ArrayFunctions;
+use App\Functions\ColorFunctions;
 use App\Model\PetShelterPet;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
@@ -98,6 +99,22 @@ class AdoptionService
                 $colorB = $this->tweakColor($colors[1]);
 
                 $name = ArrayFunctions::pick_one($this->getSeasonalNames());
+            }
+            else if($i === $numPets - 1)
+            {
+                // RANDOM!
+                $h1 = mt_rand(0, 1000) / 1000.0;
+                $s1 = mt_rand(mt_rand(0, 500), 1000) / 1000.0;
+                $l1 = mt_rand(mt_rand(0, 500), mt_rand(750, 1000)) / 1000.0;
+
+                $h2 = mt_rand(0, 1000) / 1000.0;
+                $s2 = mt_rand(mt_rand(0, 500), 1000) / 1000.0;
+                $l2 = mt_rand(mt_rand(0, 500), mt_rand(750, 1000)) / 1000.0;
+
+                $colorA = ColorFunctions::HSL2Hex($h1, $s1, $l1);
+                $colorB = ColorFunctions::HSL2Hex($h2, $s2, $l2);
+
+                $name = ArrayFunctions::pick_one(self::PET_NAMES);
             }
             else
             {
