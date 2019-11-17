@@ -6,6 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DeviceStatsRepository")
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="time_idx", columns={"time"}),
+ * })
  */
 class DeviceStats
 {

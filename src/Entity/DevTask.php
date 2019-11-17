@@ -9,6 +9,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DevTaskRepository")
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="type_idx", columns={"type"}),
+ *     @ORM\Index(name="status_idx", columns={"status"}),
+ *     @ORM\Index(name="released_on_idx", columns={"released_on"}),
+ * })
  */
 class DevTask
 {
