@@ -98,7 +98,7 @@ class PetShelterController extends PoppySeedPetsController
         $petToAdopt = ArrayFunctions::find_one($pets, function(PetShelterPet $p) use($id) { return $p->id === $id; });
 
         if($petToAdopt === null)
-            throw new UnprocessableEntityHttpException('There is no such pet available for adoption...');
+            throw new UnprocessableEntityHttpException('There is no such pet available for adoption... maybe reload and try again??');
 
         $petSkills = new PetSkills();
 
