@@ -666,8 +666,7 @@ class GatheringService
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the island\'s Volcano, and got ' . $loot . '.', '');
 
-            foreach($loot as $itemName)
-                $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this near the island\'s Volcano.', $activityLog);
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this near the island\'s Volcano.', $activityLog);
 
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::STAMINA ]);
         }
