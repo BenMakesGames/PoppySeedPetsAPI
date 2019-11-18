@@ -189,8 +189,8 @@ class ScrollController extends PoppySeedPetsItemController
         if(mt_rand(1, 5) === 1) $items[] = 'Crooked Stick';
         if(mt_rand(1, 5) === 1) $items[] = 'Mermaid Egg';
         if(mt_rand(1, 10) === 1) $items[] = 'Glass';
-        if(mt_rand(1, 15) === 1) $items[] = 'Music Note';
-        if(mt_rand(1, 25) === 1) $items[] = 'Little Strongbox';
+        if(mt_rand(1, 25) === 1) $items[] = 'Music Note';
+        if(mt_rand(1, 50) === 1) $items[] = 'Little Strongbox';
 
         $newInventory = [];
         $location = $inventory->getLocation();

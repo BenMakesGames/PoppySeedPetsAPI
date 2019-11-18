@@ -105,8 +105,8 @@ class FireplaceController extends PoppySeedPetsController
             'Glowing Six-sided Die',
 
             'Fairy Ring', // 1 day
-            'Glowing Eight-sided Die', // 2 days
-            'Little Strongbox', // 3 days
+            'Iron Ore', // 2 days
+            'Glowing Eight-sided Die', // 3 days
             'Bag of Beans', // 4 days
             'Box of Ores', // 5 days
             'Magic Beans', // 6 days
