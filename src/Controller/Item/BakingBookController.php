@@ -36,6 +36,7 @@ class BakingBookController extends PoppySeedPetsItemController
 * Flour Tortilla
 * Melon Pan
 * Meringues
+* Naner Bread
 * Pancakes
 * Plain Bread
 * Sugar Cookies (World\'s Best!)
@@ -68,29 +69,38 @@ Simply grind some Wheat into a fine powder.
 
 A versatile bread! (If you make quesadillas, don\'t forget to Butter, or Oil, the pan, as you would with a Grilled Cheese!)
 
-* Wheat Flour
 * Baking Powder (or Baking Soda + Cream of Tartar)
 * Butter
+* Wheat Flour
 
 #### Melon Pan
 
 A simple bread with a cracked, cookie crust. It\'s melon-like appearance gives it its name.
 
-* Wheat Flour
-* Sugar
-* Yeast
+* Baking Powder
+* Butter
 * Egg
 * Milk
-* Butter
-* Baking Powder
+* Sugar
+* Wheat Flour
+* Yeast
 
 #### Meringues
 
-* Sugar
 * Egg
 * Cream of Tartar
+* Sugar
 
 Optionally, add Cocoa Powder for Chocolate Meringues!
+
+#### Naner Bread
+
+* Baking Soda
+* Butter
+* Egg
+* Naner
+* Sugar
+* Wheat Flour
 
 #### Pancakes
 
