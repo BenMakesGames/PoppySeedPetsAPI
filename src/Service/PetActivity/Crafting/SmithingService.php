@@ -273,7 +273,12 @@ class SmithingService
             $pet->increaseEsteem(1);
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made Yellow Scissors.', 'items/tool/scissors/yellow');
-            $this->inventoryService->petCollectsItem('Yellow Scissors', $pet, $pet->getName() . ' created.', $activityLog);
+
+            if(\mt_rand(1, 20 + ($pet->getId() % 4) * 3) >= 23)
+                $this->inventoryService->petCollectsItem('Yellow Scissors', $pet, $pet->getName() . ' created (and sharpened) this!', $activityLog);
+            else
+                $this->inventoryService->petCollectsItem('Yellow Scissors', $pet, $pet->getName() . ' created this.', $activityLog);
+
             return $activityLog;
         }
         else
