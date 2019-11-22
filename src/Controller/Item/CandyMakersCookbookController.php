@@ -40,7 +40,7 @@ class CandyMakersCookbookController extends PoppySeedPetsItemController
 
 #### Agar-agar
 
-Boiling Algae breaks up the cell walls. As they cool, they form the fibrous chains we call Agar-agar!
+Boiling Algae breaks up the cell walls. As it all cools, the fibrous chains we call Agar-agar are formed!
 
 Let it dry, grind it up, and you\'ve got yourself some Agar-agar powder!
 
