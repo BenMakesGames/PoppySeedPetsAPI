@@ -30,7 +30,7 @@ class FishingService
     {
         $maxSkill = 5 + $pet->getDexterity() + $pet->getNature() + $pet->getFishing() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2);
 
-        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 18);
+        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 19);
 
         $roll = \mt_rand(1, $maxSkill);
 
@@ -80,6 +80,9 @@ class FishingService
                 break;
             case 18:
                 $activityLog = $this->fishedGallopingOctopus($pet);
+                break;
+            case 19:
+                $activityLog = $this->fishedAlgae($pet);
                 break;
         }
 
@@ -224,6 +227,43 @@ class FishingService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing, and started to reel something in, only to realize it was a huge Galloping Octopus! The two tussled for a while before breaking apart and cautiously retreating...', '');
             $this->petService->spendTime($pet, mt_rand(45, 75));
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::DEXTERITY, PetSkillEnum::BRAWL, PetSkillEnum::STRENGTH ]);
+        }
+
+        return $activityLog;
+    }
+
+    private function fishedAlgae(Pet $pet): PetActivityLog
+    {
+        $nothingBiting = $this->nothingBiting($pet, 15, 'still-water pond');
+        if($nothingBiting !== null) return $nothingBiting;
+
+        $fishingSkill = mt_rand(1, 10 + $pet->getDexterity() + $pet->getFishing() + $pet->getNature());
+
+        if($fishingSkill >= 15)
+        {
+            $this->petService->spendTime($pet, mt_rand(45, 60));
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a still-water pond. There weren\'t any fish, but there was some Algae!', '');
+
+            $this->inventoryService->petCollectsItem('Algae', $pet, $pet->getName() . ' "fished" this from a still-water pond.', $activityLog);
+
+            $pet->increaseEsteem(mt_rand(1, 4));
+
+            $this->petService->gainExp($pet, 3, [ PetSkillEnum::DEXTERITY, PetSkillEnum::NATURE ]);
+        }
+        else
+        {
+            $message = ArrayFunctions::pick_one([
+                'They saw a snail once, but that was about it. (And it was one of those crazy-poisonous types of snails! Ugh!)',
+                'The most exciting thing that happened was that their foot got stuck in the mud :|',
+                'They almost caught something, but a bird swooped in and got it, first! >:(',
+                'After over half an hour of nothing, they gave up out of sheer boredom >_>',
+                'Nothing was biting, but at least it was relaxing??',
+            ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried fishing at a still-water pond. ' . $message, '');
+
+            $this->petService->spendTime($pet, mt_rand(30, 45));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::DEXTERITY, PetSkillEnum::NATURE ]);
         }
 
         return $activityLog;
