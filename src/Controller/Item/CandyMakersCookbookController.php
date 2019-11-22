@@ -25,6 +25,7 @@ class CandyMakersCookbookController extends PoppySeedPetsItemController
 
 #### Basic Ingredients
 
+* Agar-agar
 * Corn Syrup
 * Pectin
 * Sugar
@@ -36,6 +37,14 @@ class CandyMakersCookbookController extends PoppySeedPetsItemController
 * Chocolates
 
 ## Basic Ingredients
+
+#### Agar-agar
+
+Boiling Algae breaks up the cell walls. As they cool, they form the fibrous chains we call Agar-agar!
+
+Let it dry, grind it up, and you\'ve got yourself some Agar-agar powder!
+
+<small>(For those of you trying these recipes in real life, it\'s probably actually more complicated than that... sorry...)</small>
 
 #### Corn Syrup
 
@@ -83,7 +92,7 @@ Combine the following:
 Combine the following:
 * Fruit (berries, melon, orange, etc)
 * Sugar
-* Corn Syrup
+* Corn Syrup, or Agar-agar
 
 #### Chocolates
 
