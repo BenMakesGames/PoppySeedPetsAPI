@@ -57,13 +57,13 @@ class PetSpeciesFilterService
         if($value)
         {
             $qb
-                ->andWhere('(i.availableAtSignup=1 OR i.availableFromBreeding=1 OR i.availableFromPetShelter=1)')
+                ->andWhere('(i.id<=16 OR i.availableFromBreeding=1 OR i.availableFromPetShelter=1)')
             ;
         }
         else
         {
             $qb
-                ->andWhere('i.availableAtSignup=0 AND i.availableFromBreeding=0 AND i.availableFromPetShelter=0')
+                ->andWhere('i.id>16 AND i.availableFromBreeding=0 AND i.availableFromPetShelter=0')
             ;
         }
     }
