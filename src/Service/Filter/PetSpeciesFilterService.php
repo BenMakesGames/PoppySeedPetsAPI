@@ -25,6 +25,8 @@ class PetSpeciesFilterService
             ],
             [
                 'name' => [ $this, 'filterName' ],
+                'classification' => [ $this, 'filterClassification' ],
+                'canTransmigrate' => [ $this, 'filterCanTransmigrate' ],
             ]
         );
     }
@@ -40,5 +42,29 @@ class PetSpeciesFilterService
             ->andWhere('i.name LIKE :nameLike')
             ->setParameter('nameLike', '%' . $value . '%')
         ;
+    }
+
+    public function filterClassification(QueryBuilder $qb, $value)
+    {
+        $qb
+            ->andWhere('i.image LIKE :imageLike')
+            ->setParameter('imageLike', $value . '/%')
+        ;
+    }
+
+    public function filterCanTransmigrate(QueryBuilder $qb, $value)
+    {
+        if($value)
+        {
+            $qb
+                ->andWhere('(i.availableAtSignup=1 OR i.availableFromBreeding=1 OR i.availableFromPetShelter=1)')
+            ;
+        }
+        else
+        {
+            $qb
+                ->andWhere('i.availableAtSignup=0 AND i.availableFromBreeding=0 AND i.availableFromPetShelter=0')
+            ;
+        }
     }
 }

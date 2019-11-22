@@ -14,6 +14,7 @@ class PetSpecies
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"petEncyclopedia"})
      */
     private $id;
 
@@ -298,5 +299,15 @@ class PetSpecies
     public function getAvailableAtSignup(): bool
     {
         return $this->getId() <= 16;
+    }
+
+    public function getClassification(): string
+    {
+        return substr($this->image, 0, strpos($this->image, '/'));
+    }
+
+    public function getAvailableForTransmigration(): bool
+    {
+        return $this->getAvailableAtSignup() || $this->getAvailableFromBreeding() || $this->getAvailableFromPetShelter();
     }
 }

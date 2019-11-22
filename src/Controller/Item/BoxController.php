@@ -121,7 +121,7 @@ class BoxController extends PoppySeedPetsItemController
                 'Little Strongbox',
             ];
 
-            if(mt_rand(1, 3) === 0)
+            if(mt_rand(1, 2) === 0)
             {
                 $possibleItems[] = ArrayFunctions::pick_one([
                     'Sandbox',
@@ -413,20 +413,24 @@ class BoxController extends PoppySeedPetsItemController
             $extraItem = [ 'name' => 'Striped Microcline', 'description' => 'a pretty, striped rock' ];
             $sand--;
         }
-        else if($a === 2)
+        else if($a >= 2 && $a <= 5)
         {
-            // TODO: password
-            /*$extraItem = 'Password';
-            $sand--;*/
+            $extraItem = 'Password';
+            $sand--;
         }
-        else if($a === 3)
+        else if($a === 6 || $a === 7)
         {
             $extraItem = [ 'name' => 'Garden Shovel', 'description' => 'a shovel' ];
             $sand -= 3;
         }
-        else if($a === 4)
+        else if($a >= 8 && $a <= 10)
         {
             $extraItem = [ 'name' => 'Plastic Idol', 'description' => 'a plastic figurine of some kind' ];
+            $sand--;
+        }
+        else if($a === 11)
+        {
+            $extraItem = 'Species Transmigration Serum';
             $sand--;
         }
 
