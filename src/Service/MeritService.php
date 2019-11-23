@@ -38,16 +38,16 @@ class MeritService
                     $available = $pet->getRelationshipCount() >= 3;
                     break;
 
-                case MeritEnum::NO_SHADOW_OR_REFLECTION:
-                    $available = $pet->hasMerit(MeritEnum::MOON_BOUND);
+                case MeritEnum::PROTOCOL_7:
+                    $available = $pet->getSkills()->getComputer() > 0 || $pet->getLevel() >= 10;
                     break;
 
-                case MeritEnum::PROTOCOL_7:
-                    $available = $pet->getSkills()->getComputer() > 0;
+                case MeritEnum::NATURAL_CHANNEL:
+                    $available = $pet->getSkills()->getUmbra() > 0 || $pet->getLevel() >= 10;
                     break;
 
                 case MeritEnum::SOOTHING_VOICE:
-                    $available = $pet->getSkills()->getMusic() > 0;
+                    $available = $pet->getSkills()->getMusic() > 0 || count($pet->getMerits()) >= 3;
                     break;
 
                 case MeritEnum::BLACK_HOLE_TUM:
@@ -65,6 +65,7 @@ class MeritService
 
                 // all other Merits can ALWAYS be chosen:
                 default:
+                    // moon-bound, spirit companion, no shadow or reflection
                     $available = true;
             }
 
