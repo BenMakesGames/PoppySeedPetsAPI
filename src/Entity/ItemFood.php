@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Enum\FlavorEnum;
+use App\Enum\PetSkillEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -111,6 +112,12 @@ class ItemFood
      * @ORM\Column(type="integer")
      */
     private $chemicaly = 0;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     * @Groups({"myInventory", "itemEncyclopedia"})
+     */
+    private $grantedSkill;
 
     public function getId(): ?int
     {
@@ -422,5 +429,20 @@ class ItemFood
     public function isCandy(): bool
     {
         return $this->getLove() > $this->getFood() - $this->getJunk() / 2;
+    }
+
+    public function getGrantedSkill(): ?string
+    {
+        return $this->grantedSkill;
+    }
+
+    public function setGrantedSkill(?string $grantedSkill): self
+    {
+        if($grantedSkill !== null && !PetSkillEnum::isAValue($grantedSkill))
+            throw new \InvalidArgumentException('$grantedSkill must be null, or a PetSkillEnum value.');
+
+        $this->grantedSkill = $grantedSkill;
+
+        return $this;
     }
 }

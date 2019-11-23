@@ -164,12 +164,6 @@ class Pet
     private $affectionRewardsClaimed = 0;
 
     /**
-     * @ORM\Column(type="json")
-     * @Groups({"myPet"})
-     */
-    private $oldMerits = [];
-
-    /**
      * @ORM\OneToOne(targetEntity="App\Entity\SpiritCompanion", inversedBy="pet", cascade={"persist", "remove"})
      * @ORM\JoinColumn(onDelete="CASCADE")
      * @Groups({"myPet", "parkEvent", "hollowEarth"})
@@ -907,29 +901,6 @@ class Pet
         $this->affectionRewardsClaimed++;
 
         return $this;
-    }
-
-    public function getOldMerits(): array
-    {
-        return $this->oldMerits;
-    }
-
-    public function addOldMerit(string $merit): self
-    {
-        if(!MeritEnum::isAValue($merit))
-            throw new \InvalidArgumentException('"' . $merit . '" is not a valid merit');
-
-        if($this->hasOldMerit($merit))
-            throw new \InvalidArgumentException($this->getName() . ' already has the merit "' . $merit . '"');
-
-        $this->oldMerits[] = $merit;
-
-        return $this;
-    }
-
-    public function hasOldMerit(string $merit): bool
-    {
-        return in_array($merit, $this->getOldMerits());
     }
 
     public function getSpiritCompanion(): ?SpiritCompanion

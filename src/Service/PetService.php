@@ -388,6 +388,9 @@ class PetService
         $pet->increasePsychedelic($food->getPsychedelic());
         $pet->increaseFood($food->getFood());
         $pet->increaseJunk($food->getJunk());
+
+        if($food->getGrantedSkill() && $pet->getSkills()->{'get' . $food->getGrantedSkill()}() < 1)
+            $pet->getSkills()->increaseStat($food->getGrantedSkill());
     }
 
     public function runHour(Pet $pet)
