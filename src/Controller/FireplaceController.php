@@ -8,8 +8,11 @@ use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Functions\JewishCalendarFunctions;
 use App\Functions\StringFunctions;
 use App\Repository\InventoryRepository;
+use App\Repository\UserQuestRepository;
+use App\Service\CalendarService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -70,6 +73,100 @@ class FireplaceController extends PoppySeedPetsController
         $fuel = $inventoryRepository->findFuel($user);
 
         return $responseService->success($fuel, SerializationGroupEnum::FIREPLACE_FUEL);
+    }
+
+    /**
+     * @Route("/lookInStocking", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function lookInStocking(
+        InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
+        UserQuestRepository $userQuestRepository
+    )
+    {
+        $user = $this->getUser();
+        $now = new \DateTimeImmutable();
+        $monthAndDay = $now->format('md');
+
+        if($monthAndDay < 1201)
+            throw new AccessDeniedHttpException('It\'s not December!');
+
+        $gotStockingPresent = $userQuestRepository->findOrCreate($user, 'Got a Stocking Present', null);
+
+        if($gotStockingPresent->getValue() === $now->format('Y-m-d'))
+            throw new AccessDeniedHttpException('There\'s nothing else in the stocking. Maybe tomorrow?');
+
+        // @TODO: items to add: Lutefisk, Bungee Cord, Radish, Dreidel, Mint
+
+        $randomRewards = [
+            'Mint', 'Chocolate Bar', 'Charcoal', 'Blackberry Wine', 'Cheese', 'Cooking Buddy',
+            'Fruit Basket', 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die',
+            'House Fairy', 'Fluff', 'Paper Bag', 'Plastic Idol', 'Renaming Scroll', 'Secret Seashell',
+        ];
+
+        $rewards = [
+            null, // 1st
+            'Gold Key', // 2nd - International Day for the Abolition of Slavery
+            null, // 3rd
+            'World\'s Best Sugar Cookie', // 4th - National Cookie Day
+            'Mysterious Seed', // 5th - World Soil Day
+            'Blue Firework', // 6th - Independence Day (Finland)
+            'Candle', // 7th - Day of the Little Candles
+            'Fig', // 8th - Bodhi Day
+            'Lutefisk', // 9th - Anna's Day
+            null, // 10th
+            'Liquid-hot Magma', // 11th - International Mountain Day
+            'Bungee Cord', // 12th - Jamhuri Day
+            null, // 13th
+            'Naner', // 14th - Monkey Day
+            'Tea Leaves', // 15th - International Tea Day
+            'Red Firework', // 16th - Day of Reconciliation
+            'Red Umbrella', // 17th - International Day to End Violence Against Sex Workers
+            null, // 18th
+            'Behatting Scroll', // 19th - no particular holiday; just want to give one of these out
+            'String', // 20th - National Ugly Sweater Day (it's stupid, but sure)
+            null, // 21st
+            'Compass (the Math Kind)', // 22nd - National Mathematics Day
+            'Radish', // 23rd - Night of the Radishes
+            'Fish', // 24th - Feast of the Seven Fishes
+            'Santa Hat', // 25th - Christmas
+            'Candle', // 26th - 1st day of Kwanzaa (candle-lighting is listed among ceremonies)
+            null, // 27th
+            'Corn', // 28th - 3rd day of Kwanzaa (corn is listed among symbols)
+            null, // 29th
+            'Apricot', // 30th - 4th day of Kwanzaa (fresh fruit is listed among symbols)
+            'Music Note', // 31st - New Year's Eve/Hogmanay
+        ];
+
+        $item = $rewards[$monthAndDay - 1201];
+
+        if(!$item)
+        {
+            if(JewishCalendarFunctions::isHannukah($now))
+                $item = 'Dreidel';
+            else
+                $item = ArrayFunctions::pick_one($randomRewards);
+        }
+
+        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' found this in a stocking over their Fireplace on ' . $now->format('M j, Y') . '.', LocationEnum::HOME, true);
+
+        $messages = [
+            'You reach into the stocking and feel around... eventually your fingers find something. You pull it out...',
+            'You reach into the stocking, and in one, swift motion extract the gift inside...',
+            'You up-end the stocking; something falls out, but you\'re ready...',
+            'You squeeze the stocking like a tube of toothpaste, forcing its contents up, and out of the stocking\'s opening...',
+            'You peer into the stocking, but all you see darkness. Carefully, you reach inside... and find something! You pull it out as quickly as possible!',
+        ];
+
+        $responseService->addActivityLog((new PetActivityLog())
+            ->setEntry(ArrayFunctions::pick_one($messages) . "\n\n" . $item . '!')
+        );
+
+        $gotStockingPresent->setValue($now->format('Y-m-d'));
+
+        $em->flush();
+
+        return $responseService->success();
     }
 
     /**
