@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\GreenhousePlant;
 use App\Entity\Inventory;
+use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
@@ -131,12 +132,40 @@ class GreenhouseController extends PoppySeedPetsController
 
         $plant->clearGrowth();
 
-        $quantity = new ItemQuantity();
+        $yield = mt_rand($plant->getPlant()->getMinYield(), $plant->getPlant()->getMaxYield());
 
-        $quantity->item = $plant->getPlant()->getItem();
-        $quantity->quantity = mt_rand($plant->getPlant()->getMinYield(), $plant->getPlant()->getMaxYield());
+        if($plant->getPlant()->getItem()->getName() === 'Mysterious Seed')
+        {
+            $possibleYield = [
+                'Celery', 'Sugar', 'Egg', 'Toad Legs', 'Crooked Stick',
+                'Fluff', 'Aging Powder', 'Beans', 'Noodles', 'Algae',
+                'Orange', 'Red', 'Mermaid Egg', 'Tentacle', 'Carrot',
+                'Butter', 'Pectin', 'Plain Yogurt', 'Naner', 'Pie Crust'
+            ];
 
-        $inventoryService->giveInventory($quantity, $user, $user, $user->getName() . ' grew this in their greenhouse.', LocationEnum::HOME);
+            shuffle($possibleYield);
+
+            $items = [];
+
+            for($i = 0; $i < $yield; $i++)
+            {
+                $inventoryService->receiveItem($possibleYield[$i], $user, $user, $user->getName() . ' grew this in their greenhouse.', LocationEnum::HOME);
+                $items[] = $possibleYield[$i];
+            }
+
+            $message = 'You harvested ' . ArrayFunctions::list_nice($items) . '!';
+        }
+        else
+        {
+            $quantity = new ItemQuantity();
+
+            $quantity->item = $plant->getPlant()->getItem();
+            $quantity->quantity = $yield;
+
+            $inventoryService->giveInventory($quantity, $user, $user, $user->getName() . ' grew this in their greenhouse.', LocationEnum::HOME);
+
+            $message = 'You harvested ' . $yield . '× ' . $plant->getPlant()->getItem()->getName() . '!';
+        }
 
         $plantsHarvested = $userStatsRepository->incrementStat($user, UserStatEnum::HARVESTED_PLANT);
 
@@ -145,7 +174,9 @@ class GreenhouseController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success([ 'item' => $quantity->item->getName(), 'quantity' => $quantity->quantity ]);
+        $responseService->addActivityLog((new PetActivityLog())->setEntry($message));
+
+        return $responseService->success();
     }
 
     /**

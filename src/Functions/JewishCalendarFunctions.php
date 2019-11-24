@@ -69,6 +69,17 @@ class JewishCalendarFunctions
         return [ $jewishYear, $jewishMonth, $jewishDay ];
     }
 
+    public static function isHannukah(\DateTimeInterface $dt)
+    {
+        $jdCurrent = gregoriantojd($dt->format('m'), $dt->format('d'), $dt->format('Y'));
+        list($jewishYear, $jewishMonth, $jewishDay) = self::getJewishDate($dt);
+
+        $hanukkahStart = jewishtojd(self::KISLEV, 25, $jewishYear);
+        $hanukkahNo = (int) ($jdCurrent-$hanukkahStart+1);
+
+        return $hanukkahNo >= 1 && $hanukkahNo <= 8;
+    }
+
     public static function getJewishHoliday(
         \DateTimeInterface $dt, bool $isDiaspora, bool $postponeShushanPurimOnSaturday
     ): array

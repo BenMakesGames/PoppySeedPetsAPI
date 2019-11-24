@@ -16,6 +16,7 @@ use App\Service\ResponseService;
 use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -79,11 +80,15 @@ class PetShelterController extends PoppySeedPetsController
         UserQuestRepository $userQuestRepository, UserService $userService
     )
     {
+        $now = (new \DateTimeImmutable())->format('Y-m-d');
         $user = $this->getUser();
+        $costToAdopt = $userService->getAdoptionFee($user);
+        $lastAdopted = $userQuestRepository->findOneBy([ 'user' => $user, 'name' => 'Last Adopted a Pet' ]);
+
+        if($lastAdopted && $lastAdopted->getValue() === $now)
+            throw new AccessDeniedHttpException('You cannot adopt another pet today.');
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
-
-        $costToAdopt = $userService->getAdoptionFee($user);
 
         if($user->getMoneys() < $costToAdopt)
             throw new UnprocessableEntityHttpException('It costs ' . $costToAdopt . ' moneys to adopt a pet, but you only have ' . $user->getMoneys() . '.');
