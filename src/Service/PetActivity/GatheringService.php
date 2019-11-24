@@ -550,7 +550,13 @@ class GatheringService
         ];
 
         if(mt_rand(1, 20) === 1)
-            $possibleLoot[] = ArrayFunctions::pick_one(array_keys(HollowEarthService::DICE_ITEMS));
+        {
+            $possibleLoot[] = ArrayFunctions::pick_one([
+                'Glowing Four-sided Die',
+                'Glowing Six-sided Die',
+                'Glowing Eight-sided Die'
+            ]);
+        }
 
         $loot = [];
 

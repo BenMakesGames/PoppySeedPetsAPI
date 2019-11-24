@@ -264,12 +264,12 @@ class HollowEarthController extends PoppySeedPetsController
     }
 
     /**
-     * @Route("/roll/d{sides}", methods={"POST"}, requirements={"sides"="4|6|8"})
+     * @Route("/roll", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function rollDie(
-        int $sides, ResponseService $responseService, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        HollowEarthService $hollowEarthService
+        ResponseService $responseService, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
+        HollowEarthService $hollowEarthService, Request $request
     )
     {
         $user = $this->getUser();
@@ -284,16 +284,17 @@ class HollowEarthController extends PoppySeedPetsController
         if($player->getCurrentAction() !== null || $player->getMovesRemaining() > 0)
             throw new UnprocessableEntityHttpException('Cannot roll a die at this time...');
 
-        $itemName = array_search($sides, HollowEarthService::DICE_ITEMS);
+        $itemName = $request->request->get('die', '');
 
-        if($itemName === false)
-            throw new UnprocessableEntityHttpException('Can only roll a d4, d6, or d8.');
+        if(!array_key_exists($itemName, HollowEarthService::DICE_ITEMS))
+            throw new UnprocessableEntityHttpException('You must specify a die to roll.');
 
         $inventory = $inventoryRepository->findOneToConsume($user, $itemName);
 
         if(!$inventory)
             throw new UnprocessableEntityHttpException('You do not have a ' . $itemName . '!');
 
+        $sides = HollowEarthService::DICE_ITEMS[$itemName];
         $moves = mt_rand(1, $sides);
 
         $responseService->addActivityLog((new PetActivityLog())->setEntry('You rolled a ' . $moves . '!'));

@@ -23,6 +23,7 @@ class HollowEarthService
     private $petService;
 
     public const DICE_ITEMS = [
+        'Dreidel' => 4,
         'Glowing Four-sided Die' => 4,
         'Glowing Six-sided Die' => 6,
         'Glowing Eight-sided Die' => 8
@@ -57,7 +58,7 @@ class HollowEarthService
     public function getDice(User $user): array
     {
         $dice = $this->em->createQueryBuilder()
-            ->select('item.name,COUNT(i.id) AS quantity')
+            ->select('item.name,item.image,COUNT(i.id) AS quantity')
             ->from(Inventory::class, 'i')
             ->leftJoin('i.item', 'item')
             ->andWhere('i.owner=:owner')
@@ -77,7 +78,9 @@ class HollowEarthService
                 continue;
 
             $results[] = [
-                'sides' => self::DICE_ITEMS[$die['name']],
+                'item' => $die['name'],
+                'image' => $die['image'],
+                'size' => self::DICE_ITEMS[$die['name']],
                 'quantity' => (int)$die['quantity'],
             ];
         }

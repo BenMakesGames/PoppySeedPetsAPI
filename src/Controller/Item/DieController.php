@@ -3,6 +3,7 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
+use App\Functions\ArrayFunctions;
 use App\Service\HollowEarthService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,11 +33,20 @@ class DieController extends PoppySeedPetsItemController
         if(!array_key_exists($itemName, HollowEarthService::DICE_ITEMS))
             throw new UnprocessableEntityHttpException('Selected item is not a die!');
 
-        $sides = HollowEarthService::DICE_ITEMS[$itemName];
-        $roll = mt_rand(1, $sides);
+        if($itemName === 'Dreidel')
+        {
+            $roll = ArrayFunctions::pick_one([
+                'נ', 'ג', 'ה', 'ש'
+            ]);
+        }
+        else
+        {
+            $sides = HollowEarthService::DICE_ITEMS[$itemName];
+            $roll = mt_rand(1, $sides);
+        }
 
         if($user->getUnlockedHollowEarth() !== null)
-            return $responseService->itemActionSuccess('You rolled a ' . $roll . '.', []);
+            return $responseService->itemActionSuccess('You got a ' . $roll . '.', []);
 
         $hollowEarthService->unlockHollowEarth($user);
 
