@@ -467,7 +467,7 @@ class BoxController extends PoppySeedPetsItemController
             'Grandparoot', 'Honeydont', 'Hot Dog', 'Iron Ore', 'Kombucha', 'Melon Bun', 'Naner', 'Oil', 'Onion',
             'Orange', 'Pamplemousse', 'Plain Yogurt', 'Quintessence', 'Red', 'Rice', 'Seaweed', 'Secret Seashell',
             'Silica Grounds', 'Smallish Pumpkin', 'Sugar', 'Toad Legs', 'Tomato', 'Wheat Flour',
-            'World\'s Best Sugar Cookie', 'Glowing Four-sided Die'
+            'World\'s Best Sugar Cookie', 'Glowing Four-sided Die', 'Mint'
         ]);
 
         if($item === 'Cockroach' && mt_rand(1, 3) === 1)
