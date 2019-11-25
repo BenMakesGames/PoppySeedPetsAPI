@@ -39,7 +39,7 @@ class MagpieDealController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('Opening the box revealed two Quintessence.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('A mail magpie delivers two Quintessence. "Thus concludes our deal!" it squawks, before flying away.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
 
     /**
@@ -69,7 +69,7 @@ class MagpieDealController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('Opening the box revealed ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('A mail magpie delivers ' . ArrayFunctions::list_nice($itemList) . '. "Thus concludes our deal!" it squawks, before flying away.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
 
     /**
@@ -94,7 +94,7 @@ class MagpieDealController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('Opening the box revealed five Crooked Sticks.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('A mail magpie delivers five Crooked Sticks. "Thus concludes our deal!" it squawks, before flying away.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
 
     /**
@@ -120,6 +120,6 @@ class MagpieDealController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('Opening the box revealed an Iron, Silver, and Gold Bar.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('A mail magpie delivers an Iron, Silver, and Gold Bar. "Thus concludes our deal!" it squawks, before flying away.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
 }
