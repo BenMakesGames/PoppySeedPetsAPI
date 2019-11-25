@@ -96,7 +96,7 @@ class FireplaceController extends PoppySeedPetsController
         if($gotStockingPresent->getValue() === $now->format('Y-m-d'))
             throw new AccessDeniedHttpException('There\'s nothing else in the stocking. Maybe tomorrow?');
 
-        // @TODO: items to add: Lutefisk, Mint
+        // @TODO: items to add: Mint
 
         $randomRewards = [
             'Mint', 'Chocolate Bar', 'Charcoal', 'Blackberry Wine', 'Cheese', 'Cooking Buddy',
