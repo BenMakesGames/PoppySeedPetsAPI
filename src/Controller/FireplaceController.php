@@ -96,7 +96,7 @@ class FireplaceController extends PoppySeedPetsController
         if($gotStockingPresent->getValue() === $now->format('Y-m-d'))
             throw new AccessDeniedHttpException('There\'s nothing else in the stocking. Maybe tomorrow?');
 
-        // @TODO: items to add: Lutefisk, Radish, Mint
+        // @TODO: items to add: Lutefisk, Mint
 
         $randomRewards = [
             'Mint', 'Chocolate Bar', 'Charcoal', 'Blackberry Wine', 'Cheese', 'Cooking Buddy',
@@ -127,7 +127,7 @@ class FireplaceController extends PoppySeedPetsController
             'String', // 20th - National Ugly Sweater Day (it's stupid, but sure)
             null, // 21st
             'Compass (the Math Kind)', // 22nd - National Mathematics Day
-            'Radish', // 23rd - Night of the Radishes
+            'Large Radish', // 23rd - Night of the Radishes
             'Fish', // 24th - Feast of the Seven Fishes
             'Santa Hat', // 25th - Christmas
             'Candle', // 26th - 1st day of Kwanzaa (candle-lighting is listed among ceremonies)
