@@ -1122,7 +1122,7 @@ class Pet
     /**
      * @Groups({"myPet"})
      */
-    public function getCanPickTalent(): string
+    public function getCanPickTalent(): ?string
     {
         if($this->getSkills()->getTalent() === null)
         {

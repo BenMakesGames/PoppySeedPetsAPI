@@ -18,7 +18,7 @@ class Merit
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=30)
+     * @ORM\Column(type="string", length=30, unique=true)
      * @Groups({"availableMerits", "myPet"})
      */
     private $name;

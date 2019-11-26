@@ -12,6 +12,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
+use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogRepository;
 use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
@@ -590,7 +591,8 @@ class PetController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function pickTalent(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        MeritRepository $meritRepository
     )
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
@@ -604,7 +606,12 @@ class PetController extends PoppySeedPetsController
         if(!in_array($talent, [ MeritEnum::MIND_OVER_MATTER, MeritEnum::MATTER_OVER_MIND, MeritEnum::MODERATION ]))
             throw new UnprocessableEntityHttpException('You gotta\' choose one of the talents!');
 
-        $pet->addMerit($talent);
+        $merit = $meritRepository->findOneByName($talent);
+
+        if(!$merit)
+            throw new \Exception('Programmer error! The Merit "' . $talent . '" does not exist in the DB! :(');
+
+        $pet->addMerit($merit);
 
         if($talent === MeritEnum::MIND_OVER_MATTER)
         {
@@ -641,9 +648,11 @@ class PetController extends PoppySeedPetsController
 
         $pet->getSkills()->setTalent();
 
+        $responseService->createActivityLog($pet, str_replace('%pet.name%', $pet->getName(), $merit->getDescription()), '');
+
         $em->flush();
 
-        return $responseService->success();
+        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
     }
 
     /**
@@ -651,7 +660,8 @@ class PetController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function pickExpertise(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        MeritRepository $meritRepository
     )
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
@@ -660,14 +670,19 @@ class PetController extends PoppySeedPetsController
         if($pet->getCanPickTalent() !== 'expertise')
             throw new AccessDeniedHttpException('This pet is not ready to have a talent picked.');
 
-        $talent = $request->request->get('expertise', '');
+        $expertise = $request->request->get('expertise', '');
 
-        if(!in_array($talent, [ MeritEnum::FORCE_OF_WILL, MeritEnum::FORCE_OF_NATURE, MeritEnum::BALANCE ]))
+        if(!in_array($expertise, [ MeritEnum::FORCE_OF_WILL, MeritEnum::FORCE_OF_NATURE, MeritEnum::BALANCE ]))
             throw new UnprocessableEntityHttpException('You gotta\' choose one of the talents!');
 
-        $pet->addMerit($talent);
+        $merit = $meritRepository->findOneByName($expertise);
 
-        if($talent === MeritEnum::FORCE_OF_WILL)
+        if(!$merit)
+            throw new \Exception('Programmer error! The Merit "' . $expertise . '" does not exist in the DB! :(');
+
+        $pet->addMerit($merit);
+
+        if($expertise === MeritEnum::FORCE_OF_WILL)
         {
             $pet->getSkills()
                 ->increaseStat('intelligence')
@@ -678,7 +693,7 @@ class PetController extends PoppySeedPetsController
                 ->increaseStat(ArrayFunctions::pick_one([ 'intelligence', 'perception', 'dexterity' ]))
             ;
         }
-        else if($talent === MeritEnum::FORCE_OF_NATURE)
+        else if($expertise === MeritEnum::FORCE_OF_NATURE)
         {
             $pet->getSkills()
                 ->increaseStat('strength')
@@ -689,7 +704,7 @@ class PetController extends PoppySeedPetsController
                 ->increaseStat(ArrayFunctions::pick_one([ 'strength', 'stamina', 'dexterity' ]))
             ;
         }
-        else if($talent === MeritEnum::BALANCE)
+        else if($expertise === MeritEnum::BALANCE)
         {
             $pet->getSkills()
                 ->increaseStat('strength')
@@ -702,9 +717,11 @@ class PetController extends PoppySeedPetsController
 
         $pet->getSkills()->setExpertise();
 
+        $responseService->createActivityLog($pet, str_replace('%pet.name%', $pet->getName(), $merit->getDescription()), '');
+
         $em->flush();
 
-        return $responseService->success();
+        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
     }
 
     /**
