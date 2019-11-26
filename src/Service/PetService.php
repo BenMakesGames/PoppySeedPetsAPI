@@ -12,6 +12,7 @@ use App\Entity\StatusEffect;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityStatEnum;
 use App\Enum\SpiritCompanionStarEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
@@ -54,6 +55,7 @@ class PetService
     private $poopingService;
     private $givingTreeGatheringService;
     private $pregnancyService;
+    private $petActivityStatsService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService,
@@ -63,7 +65,7 @@ class PetService
         TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService,
         Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
         PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService,
-        PregnancyService $pregnancyService
+        PregnancyService $pregnancyService, PetActivityStatsService $petActivityStatsService
     )
     {
         $this->em = $em;
@@ -84,6 +86,7 @@ class PetService
         $this->poopingService = $poopingService;
         $this->givingTreeGatheringService = $givingTreeGatheringService;
         $this->pregnancyService = $pregnancyService;
+        $this->petActivityStatsService = $petActivityStatsService;
     }
 
     /**
@@ -484,7 +487,7 @@ class PetService
                 $pet->increaseSafety(-mt_rand(1, $safetyVom));
                 $pet->increaseEsteem(-mt_rand(1, $safetyVom));
 
-                $this->spendTime($pet, \mt_rand(15, 30));
+                $this->spendTime($pet, \mt_rand(15, 30), PetActivityStatEnum::OTHER, null);
 
                 $this->responseService->createActivityLog($pet, $pet->getName() . ' threw up :(', '', $changes->compare($pet));
 
@@ -518,7 +521,7 @@ class PetService
 
         if($this->meetRoommates($pet))
         {
-            $this->spendTime($pet, \mt_rand(45, 60));
+            $this->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
             return;
         }
 
@@ -537,7 +540,7 @@ class PetService
 
             if(count($craftingPossibilities) === 0 && count($programmingPossibilities) === 0)
             {
-                $this->spendTime($pet, \mt_rand(45, 60));
+                $this->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
 
                 $this->responseService->createActivityLog($pet, $description . ' ' . $pet->getName() . ' wanted to make something, but couldn\'t find any materials to work with.', '');
             }
@@ -653,7 +656,7 @@ class PetService
     {
         $changes = new PetChanges($pet);
 
-        $this->spendTime($pet, \mt_rand(45, 60));
+        $this->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
 
         $companion = $pet->getSpiritCompanion();
 
@@ -812,8 +815,8 @@ class PetService
         $petChanges = new PetChanges($pet->getPet());
         $friendChanges = new PetChanges($friend->getPet());
 
-        $this->spendTime($pet->getPet(), \mt_rand(45, 60));
-        $this->spendTime($friend->getPet(), mt_rand(5, 10));
+        $this->spendTime($pet->getPet(), \mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
+        $this->spendTime($friend->getPet(), mt_rand(5, 10), PetActivityStatEnum::HANG_OUT, null);
 
         $petPreviousRelationship = $pet->getCurrentRelationship();
         $friendPreviousRelationship = $friend->getCurrentRelationship();
@@ -871,9 +874,10 @@ class PetService
         return $metNewPet;
     }
 
-    public function spendTime(Pet $pet, int $time)
+    public function spendTime(Pet $pet, int $time, string $activityStat, ?bool $success)
     {
         $pet->spendTime($time);
+        $this->petActivityStatsService->logStat($pet, $activityStat, $success, $time);
 
         if($pet->getPregnancy())
             $pet->getPregnancy()->increaseGrowth($time);
@@ -907,7 +911,7 @@ class PetService
 
     private function doNothing(Pet $pet)
     {
-        $this->spendTime($pet, \mt_rand(30, 60));
+        $this->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::OTHER, null);
         $this->responseService->createActivityLog($pet, $pet->getName() . ' hung around the house.', '');
     }
 

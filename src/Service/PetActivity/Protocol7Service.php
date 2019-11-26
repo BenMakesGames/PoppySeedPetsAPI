@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\Enum;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
@@ -80,7 +81,7 @@ class Protocol7Service
         $exp = \ceil($roll / 10);
 
         $this->petService->gainExp($pet, $exp, [ PetSkillEnum::COMPUTER ]);
-        $this->petService->spendTime($pet, \mt_rand(45, 60));
+        $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, but got lost.', 'icons/activity-logs/confused');
     }
@@ -102,10 +103,11 @@ class Protocol7Service
 
         $baddie = $monster['name'];
         $loot = ArrayFunctions::pick_one($monster['loot']);
+        $success = $roll >= 10;
 
-        $this->petService->spendTime($pet, \mt_rand(45, 75));
+        $this->petService->spendTime($pet, \mt_rand(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
 
-        if($roll >= 10)
+        if($success)
         {
             $pet->increaseEsteem(1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
@@ -151,10 +153,11 @@ class Protocol7Service
 
         $baddie = $monster['name'];
         $loot = ArrayFunctions::pick_one($monster['loot']);
+        $success = $roll >= 12;
 
-        $this->petService->spendTime($pet, \mt_rand(45, 75));
+        $this->petService->spendTime($pet, \mt_rand(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
 
-        if($roll >= 12)
+        if($success)
         {
             $pet->increaseEsteem(1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
@@ -190,10 +193,11 @@ class Protocol7Service
 
         $baddie = $monster['name'];
         $loot = ArrayFunctions::pick_one($monster['loot']);
+        $success = $roll >= 15;
 
-        $this->petService->spendTime($pet, \mt_rand(45, 75));
+        $this->petService->spendTime($pet, \mt_rand(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
 
-        if($roll >= 15)
+        if($success)
         {
             $pet->increaseSafety(2);
             $pet->increaseEsteem(2);
@@ -227,10 +231,11 @@ class Protocol7Service
 
         $baddie = $monster['name'];
         $loot = ArrayFunctions::pick_one($monster['loot']);
+        $success = $roll >= 17;
 
-        $this->petService->spendTime($pet, \mt_rand(45, 75));
+        $this->petService->spendTime($pet, \mt_rand(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
 
-        if($roll >= 17)
+        if($success)
         {
             $pet->increaseSafety(2);
             $pet->increaseEsteem(2);

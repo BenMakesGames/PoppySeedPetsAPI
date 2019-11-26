@@ -4,6 +4,7 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\UserQuestRepository;
@@ -35,7 +36,7 @@ class GenericAdventureService
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        $this->petService->spendTime($pet, \mt_rand(30, 60));
+        $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::OTHER, null);
 
         $rescuedAFairy = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Rescued a House Fairy from a Raccoon', null);
         if(!$rescuedAFairy->getValue())

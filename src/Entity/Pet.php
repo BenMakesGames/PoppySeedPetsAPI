@@ -289,6 +289,11 @@ class Pet
      */
     private $costume = '';
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\PetActivityStats", mappedBy="pet", cascade={"persist", "remove"})
+     */
+    private $petActivityStats;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -1389,6 +1394,23 @@ class Pet
     public function setCostume(string $costume): self
     {
         $this->costume = $costume;
+
+        return $this;
+    }
+
+    public function getPetActivityStats(): ?PetActivityStats
+    {
+        return $this->petActivityStats;
+    }
+
+    public function setPetActivityStats(PetActivityStats $petActivityStats): self
+    {
+        $this->petActivityStats = $petActivityStats;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $petActivityStats->getPet()) {
+            $petActivityStats->setPet($this);
+        }
 
         return $this;
     }

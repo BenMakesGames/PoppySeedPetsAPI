@@ -7,6 +7,7 @@ use App\Entity\PetSkills;
 use App\Entity\PetSpecies;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
+use App\Enum\PetActivityStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\NumberFunctions;
@@ -164,7 +165,7 @@ class PregnancyService
         $this->em->persist($baby);
         $this->em->remove($pregnancy);
 
-        $this->petService->spendTime($pet, mt_rand(45, 75));
+        $this->petService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::OTHER, null);
 
         // applied in a slightly weird order, because I-dunno
         $pet

@@ -4,6 +4,7 @@ namespace App\Service\PetActivity\Crafting;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
+use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Service\InventoryService;
 use App\Service\PetService;
@@ -47,7 +48,7 @@ class PlasticPrinterService
 
     private function printerActingUp(Pet $pet): PetActivityLog
     {
-        $this->petService->spendTime($pet, \mt_rand(30, 60));
+        $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
         $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::COMPUTER ]);
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Plastic Fishing Rod, but the 3D Printer kept acting up.', 'icons/activity-logs/confused');
     }
@@ -58,7 +59,7 @@ class PlasticPrinterService
 
         if($roll <= 3)
         {
-            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
             if(\mt_rand(1, 2) === 1)
             {
                 $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
@@ -75,7 +76,7 @@ class PlasticPrinterService
         }
         else if($roll >= 12)
         {
-            $this->petService->spendTime($pet, \mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
             $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
@@ -96,7 +97,7 @@ class PlasticPrinterService
 
         if($roll <= 3)
         {
-            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
 
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
@@ -104,7 +105,7 @@ class PlasticPrinterService
         }
         else if($roll >= 16)
         {
-            $this->petService->spendTime($pet, \mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
             $this->inventoryService->loseItem('Black Feathers', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
@@ -125,7 +126,7 @@ class PlasticPrinterService
 
         if($roll <= 3)
         {
-            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
 
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS ]);
@@ -133,7 +134,7 @@ class PlasticPrinterService
         }
         else if($roll >= 10)
         {
-            $this->petService->spendTime($pet, \mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
@@ -153,7 +154,7 @@ class PlasticPrinterService
 
         if($roll <= 3)
         {
-            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
 
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS ]);
@@ -161,7 +162,7 @@ class PlasticPrinterService
         }
         else if($roll >= 13)
         {
-            $this->petService->spendTime($pet, \mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);

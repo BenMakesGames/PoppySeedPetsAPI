@@ -4,6 +4,7 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
+use App\Enum\PetActivityStatEnum;
 use App\Repository\UserRepository;
 use App\Service\InventoryService;
 use App\Service\PetService;
@@ -63,7 +64,7 @@ class GivingTreeGatheringService
                 ]
             );
 
-            $this->petService->spendTime($pet, mt_rand(10, 20));
+            $this->petService->spendTime($pet, mt_rand(10, 20), PetActivityStatEnum::OTHER, null);
 
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' visited The Giving Tree, and picked up several items that other players had discarded.', '');
         }
