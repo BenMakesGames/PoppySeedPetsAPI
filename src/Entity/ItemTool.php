@@ -111,12 +111,12 @@ class ItemTool
     /**
      * @ORM\Column(type="boolean")
      */
-    private $providesLight;
+    private $providesLight = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $protectionFromHeat;
+    private $protectionFromHeat = false;
 
     public function getId(): ?int
     {
