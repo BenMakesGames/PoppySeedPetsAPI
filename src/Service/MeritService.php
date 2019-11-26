@@ -59,6 +59,12 @@ class MeritService
                     break;
 
                 // these Merits may NEVER be chosen; they are gained in other ways:
+                case MeritEnum::MODERATION:
+                case MeritEnum::MIND_OVER_MATTER:
+                case MeritEnum::MATTER_OVER_MIND:
+                case MeritEnum::BALANCE:
+                case MeritEnum::FORCE_OF_WILL:
+                case MeritEnum::FORCE_OF_NATURE:
                 case MeritEnum::BEHATTED:
                     $available = false;
                     break;

@@ -15,6 +15,22 @@ class PetActivityStatsService
         PetActivityStatEnum::OTHER
     ];
 
+    public const STAT_COLORS = [
+        PetActivityStatEnum::UMBRA => '#9900FF', // purple
+        PetActivityStatEnum::SMITH => '#FFCC00', // yellow
+        PetActivityStatEnum::PLASTIC_PRINT => '#FFFFFF', // white
+        PetActivityStatEnum::CRAFT => '#FF6600', // orange
+        PetActivityStatEnum::MAGIC_BIND => '#FF00FF', // magenta
+        PetActivityStatEnum::GATHER => '#33CC00', // green
+        PetActivityStatEnum::PROTOCOL_7 => '#336600', // dark green
+        PetActivityStatEnum::PROGRAM => '#333333', // black
+        PetActivityStatEnum::HUNT => '#CC0000', // red
+        PetActivityStatEnum::FISH => '#3399FF', // blue
+        PetActivityStatEnum::HANG_OUT => '#FF99FF', // pink
+        PetActivityStatEnum::PARK_EVENT => '#996600', // brown
+        PetActivityStatEnum::OTHER => '#999999', // gray
+    ];
+
     private $petActivityStatsRepository;
     private $em;
 

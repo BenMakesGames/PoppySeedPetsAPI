@@ -486,7 +486,7 @@ class PetController extends PoppySeedPetsController
     }
 
     /**
-     * @Route("/{pet}/stats", methods={"GET"}, requirements={"pet"="\d+"})
+     * @Route("/{pet}/activityStats", methods={"GET"}, requirements={"pet"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function activityStats(
@@ -512,7 +512,7 @@ class PetController extends PoppySeedPetsController
             {
                 $data['byActivity'][] = [ 'value' => $stats->{'get' . $stat}(), 'label' => $stat ];
 
-                $data['byActivityCombined'][] = [ 'value' => $stats->{'get' . $stat}(), 'label' => $stat ];
+                $data['byActivityCombined'][] = [ 'value' => $stats->{'get' . $stat}(), 'label' => $stat, 'color' => PetActivityStatsService::STAT_COLORS[$stat] ];
             }
             else
             {
@@ -522,10 +522,10 @@ class PetController extends PoppySeedPetsController
                 $data['byActivity'][] = [ 'value' => $success, 'label' => $stat . ' success' ];
                 $data['byActivity'][] = [ 'value' => $failure, 'label' => $stat . ' failure' ];
 
-                $data['byActivityCombined'][] = [ 'value' => $success + $failure, 'label' => $stat ];
+                $data['byActivityCombined'][] = [ 'value' => $success + $failure, 'label' => $stat, 'color' => PetActivityStatsService::STAT_COLORS[$stat] ];
             }
 
-            $data['byTime'][] = [ 'value' => $stats->{'get' . $stat . 'time'}(), 'label' => $stat ];
+            $data['byTime'][] = [ 'value' => $stats->{'get' . $stat . 'time'}(), 'label' => $stat, 'color' => PetActivityStatsService::STAT_COLORS[$stat] ];
         }
 
         return $responseService->success($data);
