@@ -500,6 +500,9 @@ class PetController extends PoppySeedPetsController
 
         $stats = $pet->getPetActivityStats();
 
+        if($stats === null)
+            return $responseService->success(null);
+
         $data = [
             'byTime' => [],
             'byActivity' => [],
