@@ -4,6 +4,7 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SpiritCompanionStarEnum;
 use App\Functions\ArrayFunctions;
@@ -80,7 +81,7 @@ class UmbraService
 
         $this->petService->gainExp($pet, $exp, [ PetSkillEnum::UMBRA ]);
 
-        $this->petService->spendTime($pet, \mt_rand(45, 60));
+        $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::UMBRA, 'false');
 
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' crossed into the Umbra, but the Storm was too harsh; ' . $pet->getName() . ' retreated before finding anything.', 'icons/activity-logs/confused');
     }
@@ -110,14 +111,14 @@ class UmbraService
             }
 
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $this->petService->spendTime($pet, \mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::UMBRA, 'true');
 
             return $activityLog;
         }
         else
         {
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $this->petService->spendTime($pet, \mt_rand(45, 60));
+            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::UMBRA, 'false');
             return $this->responseService->createActivityLog($pet, 'In the Umbra, ' . $pet->getName() . ' found an outcropping of rocks where the full force of the Storm could not reach. Some weeds were growing there, but nothing of value.', 'icons/activity-logs/confused');
         }
     }
@@ -128,13 +129,13 @@ class UmbraService
 
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getUmbra());
 
-        $this->petService->spendTime($pet, \mt_rand(45, 60));
-
         $rewards = [ 'Quintessence' => 'some', 'Music Note' => 'a', 'Ginger' => 'some', 'Oil' => 'some', 'Silica Grounds' => 'some' ];
         $reward = array_rand($rewards);
 
         if($roll >= 14)
         {
+            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
+
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
 
             if(mt_rand(1, 2) === 1)
@@ -153,6 +154,8 @@ class UmbraService
         }
         else if($hasRelevantSpirit && $roll >= 11)
         {
+            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
+
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
             if(mt_rand(1, 2) === 1)
@@ -171,6 +174,8 @@ class UmbraService
         }
         else
         {
+            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
+
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
             if($hasRelevantSpirit)
