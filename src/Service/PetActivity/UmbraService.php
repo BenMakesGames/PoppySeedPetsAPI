@@ -81,7 +81,7 @@ class UmbraService
 
         $this->petService->gainExp($pet, $exp, [ PetSkillEnum::UMBRA ]);
 
-        $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::UMBRA, 'false');
+        $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
 
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' crossed into the Umbra, but the Storm was too harsh; ' . $pet->getName() . ' retreated before finding anything.', 'icons/activity-logs/confused');
     }
@@ -118,7 +118,7 @@ class UmbraService
         else
         {
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::UMBRA, 'false');
+            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
             return $this->responseService->createActivityLog($pet, 'In the Umbra, ' . $pet->getName() . ' found an outcropping of rocks where the full force of the Storm could not reach. Some weeds were growing there, but nothing of value.', 'icons/activity-logs/confused');
         }
     }
