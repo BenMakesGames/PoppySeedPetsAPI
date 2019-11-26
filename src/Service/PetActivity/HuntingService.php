@@ -160,7 +160,11 @@ class HuntingService
         ;
 
         $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was out hunting, they spotted a Raccoon and Thieving Magpie fighting over a fairy! ' . $pet->getName() . ' jumped in and chased the two creatures off before tending to the fairy\'s wounds.', '');
-        $this->inventoryService->petCollectsItem('House Fairy', $pet, 'Rescued from a Raccoon and Thieving Magpie.', $activityLog);
+        $inventory = $this->inventoryService->petCollectsItem('House Fairy', $pet, 'Rescued from a Raccoon and Thieving Magpie.', $activityLog);
+
+        if($inventory)
+            $inventory->setLockedToOwner(true);
+
         $this->petService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
 
         $pet->increaseSafety(2);
