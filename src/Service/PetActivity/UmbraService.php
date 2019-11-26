@@ -78,7 +78,7 @@ class UmbraService
     {
         $exp = \ceil($roll / 10);
 
-        $this->petService->gainExp($pet, $exp, [ PetSkillEnum::UMBRA, PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA ]);
+        $this->petService->gainExp($pet, $exp, [ PetSkillEnum::UMBRA ]);
 
         $this->petService->spendTime($pet, \mt_rand(45, 60));
 
@@ -109,14 +109,14 @@ class UmbraService
                 $this->inventoryService->petCollectsItem('Blackberries', $pet, $pet->getName() . ' harvested these exceptionally-dark Blackberries from a rock-sheltered berry bush in the Umbra.', $activityLog);
             }
 
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::UMBRA, PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $this->petService->spendTime($pet, \mt_rand(45, 60));
 
             return $activityLog;
         }
         else
         {
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::UMBRA, PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $this->petService->spendTime($pet, \mt_rand(45, 60));
             return $this->responseService->createActivityLog($pet, 'In the Umbra, ' . $pet->getName() . ' found an outcropping of rocks where the full force of the Storm could not reach. Some weeds were growing there, but nothing of value.', 'icons/activity-logs/confused');
         }
@@ -135,7 +135,7 @@ class UmbraService
 
         if($roll >= 14)
         {
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::UMBRA, PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
 
             if(mt_rand(1, 2) === 1)
             {
@@ -153,7 +153,7 @@ class UmbraService
         }
         else if($hasRelevantSpirit && $roll >= 11)
         {
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
             if(mt_rand(1, 2) === 1)
             {
@@ -171,7 +171,7 @@ class UmbraService
         }
         else
         {
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
             if($hasRelevantSpirit)
                 return $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. It asked for directions, but ' . $pet->getName() . ' and ' . $pet->getSpiritCompanion()->getName() . ' didn\'t know how to help.', 'icons/activity-logs/confused');
@@ -182,7 +182,7 @@ class UmbraService
 
     private function found2Moneys(Pet $pet): PetActivityLog
     {
-        $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::UMBRA, PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA ]);
+        $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
         if($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 80) === 1)
         {
@@ -249,14 +249,14 @@ class UmbraService
             else
                 $prize = ArrayFunctions::pick_one($prizes);
 
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA, PetSkillEnum::STAMINA, PetSkillEnum::DEXTERITY ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
             $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' beat it back, and claimed its ' . $prize . '!', '');
             $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' defeated a gross-looking mummy with crazy-long arms, and took this.', $activityLog);
             return $activityLog;
         }
         else
         {
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA, PetSkillEnum::STAMINA, PetSkillEnum::DEXTERITY ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; ' . $pet->getName() . ' made a hasty retreat.', '');
         }
     }

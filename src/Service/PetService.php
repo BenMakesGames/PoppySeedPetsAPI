@@ -102,6 +102,12 @@ class PetService
 
         if(count($possibleStats) === 0) return;
 
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool()->getFocusSkill())
+        {
+            if(in_array($pet->getTool()->getItem()->getTool()->getFocusSkill(), $possibleStats))
+                $exp++;
+        }
+
         $divideBy = 1;
 
         if($pet->getFood() + $pet->getAlcohol() < 0) $divideBy++;
@@ -111,7 +117,7 @@ class PetService
 
         $divideBy += 1 + ($pet->getAlcohol() / $pet->getStomachSize());
 
-        $exp = \ceil($exp / $divideBy);
+        $exp = \round($exp / $divideBy);
 
         if($exp === 0) return;
 
@@ -933,7 +939,7 @@ class PetService
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
-            $desire += $pet->getTool()->getItem()->getTool()->getDexterity() + $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getFishing();
+            $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getFishing();
 
         return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
     }
@@ -944,7 +950,7 @@ class PetService
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
-            $desire += $pet->getTool()->getItem()->getTool()->getStrength() + $pet->getTool()->getItem()->getTool()->getBrawl();
+            $desire += $pet->getTool()->getItem()->getTool()->getBrawl();
 
         return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
     }
@@ -955,7 +961,7 @@ class PetService
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
-            $desire += $pet->getTool()->getItem()->getTool()->getIntelligence() + $pet->getTool()->getItem()->getTool()->getCrafts();
+            $desire += $pet->getTool()->getItem()->getTool()->getCrafts();
 
         return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
     }
@@ -965,7 +971,7 @@ class PetService
         $desire = $pet->getStamina() + $pet->getIntelligence() + $pet->getUmbra() + \mt_rand(1, 4);
 
         if($pet->getTool())
-            $desire += $pet->getTool()->getItem()->getTool()->getStamina() + $pet->getTool()->getItem()->getTool()->getIntelligence() + $pet->getTool()->getItem()->getTool()->getUmbra();
+            $desire += $pet->getTool()->getItem()->getTool()->getUmbra();
 
         if($pet->hasMerit(MeritEnum::NATURAL_CHANNEL))
         {
@@ -988,7 +994,7 @@ class PetService
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
-            $desire += $pet->getTool()->getItem()->getTool()->getPerception() + $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getGathering();
+            $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getGathering();
 
         return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
     }
@@ -999,7 +1005,7 @@ class PetService
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
-            $desire += $pet->getTool()->getItem()->getTool()->getIntelligence() + $pet->getTool()->getItem()->getTool()->getComputer();
+            $desire += $pet->getTool()->getItem()->getTool()->getComputer();
 
         return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
     }
@@ -1010,7 +1016,7 @@ class PetService
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
-            $desire += $pet->getTool()->getItem()->getTool()->getIntelligence() + $pet->getTool()->getItem()->getTool()->getComputer();
+            $desire += $pet->getTool()->getItem()->getTool()->getComputer();
 
         return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
     }

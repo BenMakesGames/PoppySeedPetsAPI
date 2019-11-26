@@ -81,6 +81,31 @@ class PetSkills
      */
     private $pet;
 
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     */
+    private $talent;
+
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     */
+    private $expertise;
+
+    public function __construct()
+    {
+        for($x = 0; $x < 5; $x++)
+        {
+            switch(mt_rand(1, 5))
+            {
+                case 1: $this->strength++; break;
+                case 2: $this->intelligence++; break;
+                case 3: $this->stamina++; break;
+                case 4: $this->perception++; break;
+                case 5: $this->dexterity++; break;
+            }
+        }
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -89,7 +114,6 @@ class PetSkills
     public function getTotal(): int
     {
         return
-            $this->strength + $this->stamina + $this->dexterity + $this->intelligence + $this->perception +
             $this->nature + $this->brawl + $this->umbra + $this->stealth + $this->crafts + $this->music + $this->computer
         ;
     }
@@ -270,6 +294,30 @@ class PetSkills
     public function setMusic(int $music): self
     {
         $this->music = $music;
+
+        return $this;
+    }
+
+    public function getTalent(): ?\DateTimeImmutable
+    {
+        return $this->talent;
+    }
+
+    public function setTalent(): self
+    {
+        $this->talent = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getExpertise(): ?\DateTimeImmutable
+    {
+        return $this->expertise;
+    }
+
+    public function setExpertise(): self
+    {
+        $this->expertise = new \DateTimeImmutable();
 
         return $this;
     }

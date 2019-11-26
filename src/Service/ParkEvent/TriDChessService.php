@@ -253,7 +253,7 @@ class TriDChessService implements ParkEventInterface
             $this->petService->gainExp(
                 $participant->pet,
                 $expGain,
-                [ PetSkillEnum::INTELLIGENCE ]
+                [ PetSkillEnum::COMPUTER ]
             );
 
             $participant->pet->increaseEsteem(2 * $wins);

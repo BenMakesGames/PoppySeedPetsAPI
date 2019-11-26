@@ -11,7 +11,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class ItemTool
 {
     public const MODIFIER_FIELDS = [
-        'strength', 'dexterity', 'stamina', 'intelligence', 'perception',
         'stealth', 'nature', 'brawl', 'umbra', 'crafts', 'fishing', 'gathering',
         'music', 'smithing', 'computer'
     ];
@@ -22,31 +21,6 @@ class ItemTool
      * @ORM\Column(type="integer")
      */
     private $id;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $strength = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $dexterity = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $stamina = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $intelligence = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $perception = 0;
 
     /**
      * @ORM\Column(type="integer")
@@ -129,69 +103,24 @@ class ItemTool
      */
     private $gripScale = 1;
 
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $focusSkill;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $providesLight;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $protectionFromHeat;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getStrength(): int
-    {
-        return $this->strength;
-    }
-
-    public function setStrength(int $strength): self
-    {
-        $this->strength = $strength;
-
-        return $this;
-    }
-
-    public function getDexterity(): int
-    {
-        return $this->dexterity;
-    }
-
-    public function setDexterity(int $dexterity): self
-    {
-        $this->dexterity = $dexterity;
-
-        return $this;
-    }
-
-    public function getStamina(): int
-    {
-        return $this->stamina;
-    }
-
-    public function setStamina(int $stamina): self
-    {
-        $this->stamina = $stamina;
-
-        return $this;
-    }
-
-    public function getIntelligence(): int
-    {
-        return $this->intelligence;
-    }
-
-    public function setIntelligence(int $intelligence): self
-    {
-        $this->intelligence = $intelligence;
-
-        return $this;
-    }
-
-    public function getPerception(): int
-    {
-        return $this->perception;
-    }
-
-    public function setPerception(int $perception): self
-    {
-        $this->perception = $perception;
-
-        return $this;
     }
 
     public function getStealth(): int
@@ -389,6 +318,15 @@ class ItemTool
                 $modifiers[] = self::rate($value) . ' ' . $modifier;
         }
 
+        if($this->getProvidesLight())
+            $modifiers[] = 'provides light';
+
+        if($this->getProtectionFromHeat())
+            $modifiers[] = 'protects from heat';
+
+        if($this->getFocusSkill())
+            $modifiers[] = 'learn faster when using ' . $this->getFocusSkill();
+
         return $modifiers;
     }
 
@@ -413,5 +351,41 @@ class ItemTool
             return '-';
         else
             return null;
+    }
+
+    public function getFocusSkill(): ?string
+    {
+        return $this->focusSkill;
+    }
+
+    public function setFocusSkill(?string $focusSkill): self
+    {
+        $this->focusSkill = $focusSkill;
+
+        return $this;
+    }
+
+    public function getProvidesLight(): ?bool
+    {
+        return $this->providesLight;
+    }
+
+    public function setProvidesLight(bool $providesLight): self
+    {
+        $this->providesLight = $providesLight;
+
+        return $this;
+    }
+
+    public function getProtectionFromHeat(): ?bool
+    {
+        return $this->protectionFromHeat;
+    }
+
+    public function setProtectionFromHeat(bool $protectionFromHeat): self
+    {
+        $this->protectionFromHeat = $protectionFromHeat;
+
+        return $this;
     }
 }

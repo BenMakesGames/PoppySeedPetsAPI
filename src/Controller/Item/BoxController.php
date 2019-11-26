@@ -77,7 +77,7 @@ class BoxController extends PoppySeedPetsItemController
             {
                 $inventoryService->receiveItem('Fish', $user, $box->getCreatedBy(), 'Found inside a lobster inside a ' . $box->getItem()->getName() . '.', $location, $lockedToOwner);
                 $changes = new PetChanges($pet);
-                $petService->gainExp($pet, 2, [ 'dexterity', 'strength', 'brawl' ]);
+                $petService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
                 $pet->increaseEsteem(3);
                 $message .= "\n\nA lobster claw reached out from underneath and tried to pinch you, but " . $pet->getName() . " stepped in and beat it up!\n\nThat was a little scary, but hey: +1 Fish meat!";
                 $responseService->createActivityLog($pet, 'While ' . $user->getName() . ' was sifting through a box of ore, a lobster jumped out and tried to attack them! ' . $pet->getName() . ' stepped in and saved the day! It was a little scary, but hey: +1 Fish meat!', '', $changes->compare($pet));

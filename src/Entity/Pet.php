@@ -55,6 +55,11 @@ class Pet
     /**
      * @ORM\Column(type="integer")
      */
+    private $timeSpent = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
     private $food = 0;
 
     /**
@@ -347,6 +352,19 @@ class Pet
     public function spendTime(int $amount): self
     {
         $this->time -= $amount;
+        $this->timeSpent += $amount;
+
+        return $this;
+    }
+
+    public function getTimeSpent(): int
+    {
+        return $this->timeSpent;
+    }
+
+    public function setTimeSpent(int $timeSpent): self
+    {
+        $this->timeSpent = $timeSpent;
 
         return $this;
     }
@@ -710,7 +728,7 @@ class Pet
 
     public function getExperienceToLevel(): int
     {
-        return ($this->getLevel() + 1) * 10;
+        return ($this->getLevel() + 1) * 15;
     }
 
     public function getSpecies(): ?PetSpecies
@@ -739,14 +757,13 @@ class Pet
 
     public function getDexterity(): int
     {
-        return $this->getSkills()->getDexterity() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getDexterity() : 0);
+        return $this->getSkills()->getDexterity();
     }
 
     public function getStrength(): int
     {
         return
             $this->getSkills()->getStrength() +
-            ($this->getTool() ? $this->getTool()->getItem()->getTool()->getStrength() : 0) +
             ($this->hasMerit(MeritEnum::MOON_BOUND) ? DateFunctions::moonStrength(new \DateTimeImmutable()) : 0)
         ;
     }
@@ -755,7 +772,6 @@ class Pet
     {
         return
             $this->getSkills()->getStamina() +
-            ($this->getTool() ? $this->getTool()->getItem()->getTool()->getStamina() : 0) +
             ($this->hasMerit(MeritEnum::MOON_BOUND) ? DateFunctions::moonStrength(new \DateTimeImmutable()) : 0)
         ;
     }
@@ -764,7 +780,6 @@ class Pet
     {
         return
             $this->getSkills()->getIntelligence() +
-            ($this->getTool() ? $this->getTool()->getItem()->getTool()->getIntelligence() : 0) +
             ($this->hasStatusEffect(StatusEffectEnum::TIRED) ? -2 : 0) +
             ($this->hasStatusEffect(StatusEffectEnum::CAFFEINATED) ? 2 : 0)
         ;
@@ -772,7 +787,17 @@ class Pet
 
     public function getPerception(): int
     {
-        return $this->getSkills()->getPerception() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getPerception() : 0);
+        return $this->getSkills()->getPerception();
+    }
+
+    public function hasLight(): bool
+    {
+        return $this->getTool() ? $this->getTool()->getItem()->getTool()->getProvidesLight() : false;
+    }
+
+    public function hasProtectionFromHeat(): bool
+    {
+        return $this->getTool() ? $this->getTool()->getItem()->getTool()->getProtectionFromHeat() : false;
     }
 
     public function getNature(): int
@@ -1092,6 +1117,25 @@ class Pet
     public function getStatuses(): array
     {
         return array_map(function(StatusEffect $se) { return $se->getStatus(); }, $this->statusEffects->toArray());
+    }
+
+    /**
+     * @Groups({"myPet"})
+     */
+    public function getCanPickTalent(): string
+    {
+        if($this->getSkills()->getTalent() === null)
+        {
+            if($this->timeSpent >= 15000) // 15000 = ~10.4 days of minutes
+                return 'talent';
+        }
+        else if($this->getSkills()->getExpertise() === null)
+        {
+            if($this->timeSpent >= 150000) // 150000 = 104 days of minutes
+                return 'expertise';
+        }
+
+        return null;
     }
 
     public function getInDaycare(): ?bool

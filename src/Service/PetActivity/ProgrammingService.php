@@ -80,7 +80,7 @@ class ProgrammingService
         {
             $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->inventoryService->loseItem('Pointer', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to dereference a String from a Pointer, but encountered a null exception :(', 'icons/activity-logs/null');
             $this->inventoryService->petCollectsItem('NUL', $pet, $pet->getName() . ' encountered a null exception when trying to dereference a pointer.', $activityLog);
             return $activityLog;
@@ -89,7 +89,7 @@ class ProgrammingService
         {
             $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('Pointer', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' dereferenced a String from a Pointer.', 'items/resource/string');
             $this->inventoryService->petCollectsItem('String', $pet, $pet->getName() . ' dereferenced this from a Pointer.', $activityLog);
@@ -98,7 +98,7 @@ class ProgrammingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(30, 60));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to dereference a Pointer, but couldn\'t figure out all the syntax errors.', 'icons/activity-logs/confused');
         }
     }
@@ -109,7 +109,7 @@ class ProgrammingService
         if($roll <= 2)
         {
             $this->petService->spendTime($pet, \mt_rand(30, 60));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
 
             if(mt_rand(1, 2) === 1)
             {
@@ -127,7 +127,7 @@ class ProgrammingService
             $this->petService->spendTime($pet, \mt_rand(45, 60));
             $this->inventoryService->loseItem('Pointer', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Finite State Machine', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::COMPUTER ]);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' upgraded a Finite State Machine into a Regex.', '');
             $this->inventoryService->petCollectsItem('Regex', $pet, $pet->getName() . ' build this from a Finite State Machine.', $activityLog);
@@ -136,7 +136,7 @@ class ProgrammingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(30, 60));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to create a Regex, but all the documentation they found online was too old.', 'icons/activity-logs/confused');
         }
     }
@@ -147,7 +147,7 @@ class ProgrammingService
         if($roll <= 2)
         {
             $this->petService->spendTime($pet, \mt_rand(30, 60));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
 
             if(mt_rand(1, 2) === 1)
             {
@@ -168,7 +168,7 @@ class ProgrammingService
             $this->inventoryService->loseItem('Hash Table', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Finite State Machine', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::COMPUTER ]);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' bootstrapped a Compiler.', '');
             $this->inventoryService->petCollectsItem('Compiler', $pet, $pet->getName() . ' bootstrapped this.', $activityLog);
@@ -177,7 +177,7 @@ class ProgrammingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(30, 60));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to bootstrap a Compiler, but only got so far.', 'icons/activity-logs/confused');
         }
     }
@@ -188,7 +188,7 @@ class ProgrammingService
         if($roll <= 2)
         {
             $this->petService->spendTime($pet, \mt_rand(30, 60));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
 
             if(mt_rand(1, 2) === 1)
             {
@@ -209,7 +209,7 @@ class ProgrammingService
             $this->inventoryService->loseItem('Regex', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('XOR', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::COMPUTER ]);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' became a l33t h4xx0r.', '');
             $this->inventoryService->petCollectsItem('l33t h4xx0r', $pet, $pet->getName() . ' made this.', $activityLog);
@@ -218,7 +218,7 @@ class ProgrammingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(30, 60));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::COMPUTER ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to become a l33t h4xx0r, but didn\'t have the right stuff.', 'icons/activity-logs/confused');
         }
     }

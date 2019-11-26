@@ -191,7 +191,7 @@ class KinBallService implements ParkEventInterface
                 $this->petService->gainExp(
                     $participant->pet,
                     $expGain,
-                    [ PetSkillEnum::STRENGTH, PetSkillEnum::DEXTERITY, PetSkillEnum::PERCEPTION ]
+                    [ PetSkillEnum::BRAWL ]
                 );
 
                 $participant->pet->increaseSafety(3);

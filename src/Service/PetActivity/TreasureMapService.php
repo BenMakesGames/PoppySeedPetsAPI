@@ -42,7 +42,7 @@ class TreasureMapService
         if($followMapCheck < 15)
         {
             $this->petService->spendTime($pet, \mt_rand(30, 90));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::INTELLIGENCE ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to decipher Cetgueli\'s Treasure Map, but couldn\'t make sense of it.', 'icons/activity-logs/confused');
             $pet->increaseEsteem(-1);
 
@@ -55,7 +55,7 @@ class TreasureMapService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(60, 90));
-            $this->petService->gainExp($pet, 3, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::INTELLIGENCE ]);
+            $this->petService->gainExp($pet, 3, [ PetSkillEnum::NATURE ]);
             $pet->increaseEsteem(5);
 
             $prize = 'Outrageously Strongbox';

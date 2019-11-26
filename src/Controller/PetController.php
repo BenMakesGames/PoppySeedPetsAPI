@@ -586,6 +586,128 @@ class PetController extends PoppySeedPetsController
     }
 
     /**
+     * @Route("/{pet}/pickTalent", methods={"POST"}, requirements={"pet"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function pickTalent(
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
+    )
+    {
+        if($pet->getOwner()->getId() !== $this->getUser()->getId())
+            throw new AccessDeniedHttpException('That\'s not your pet.');
+
+        if($pet->getCanPickTalent() !== 'talent')
+            throw new AccessDeniedHttpException('This pet is not ready to have a talent picked.');
+
+        $talent = $request->request->get('talent', '');
+
+        if(!in_array($talent, [ MeritEnum::MIND_OVER_MATTER, MeritEnum::MATTER_OVER_MIND, MeritEnum::MODERATION ]))
+            throw new UnprocessableEntityHttpException('You gotta\' choose one of the talents!');
+
+        $pet->addMerit($talent);
+
+        if($talent === MeritEnum::MIND_OVER_MATTER)
+        {
+            $pet->getSkills()
+                ->increaseStat('intelligence')
+                ->increaseStat('perception')
+                ->increaseStat('dexterity')
+
+                ->increaseStat(ArrayFunctions::pick_one([ 'intelligence', 'perception' ]))
+                ->increaseStat(ArrayFunctions::pick_one([ 'intelligence', 'perception', 'dexterity' ]))
+            ;
+        }
+        else if($talent === MeritEnum::MATTER_OVER_MIND)
+        {
+            $pet->getSkills()
+                ->increaseStat('strength')
+                ->increaseStat('stamina')
+                ->increaseStat('dexterity')
+
+                ->increaseStat(ArrayFunctions::pick_one([ 'strength', 'stamina' ]))
+                ->increaseStat(ArrayFunctions::pick_one([ 'strength', 'stamina', 'dexterity' ]))
+            ;
+        }
+        else if($talent === MeritEnum::MODERATION)
+        {
+            $pet->getSkills()
+                ->increaseStat('strength')
+                ->increaseStat('stamina')
+                ->increaseStat('dexterity')
+                ->increaseStat('intelligence')
+                ->increaseStat('perception')
+            ;
+        }
+
+        $pet->getSkills()->setTalent();
+
+        $em->flush();
+
+        return $responseService->success();
+    }
+
+    /**
+     * @Route("/{pet}/pickExpertise", methods={"POST"}, requirements={"pet"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function pickExpertise(
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
+    )
+    {
+        if($pet->getOwner()->getId() !== $this->getUser()->getId())
+            throw new AccessDeniedHttpException('That\'s not your pet.');
+
+        if($pet->getCanPickTalent() !== 'expertise')
+            throw new AccessDeniedHttpException('This pet is not ready to have a talent picked.');
+
+        $talent = $request->request->get('expertise', '');
+
+        if(!in_array($talent, [ MeritEnum::FORCE_OF_WILL, MeritEnum::FORCE_OF_NATURE, MeritEnum::BALANCE ]))
+            throw new UnprocessableEntityHttpException('You gotta\' choose one of the talents!');
+
+        $pet->addMerit($talent);
+
+        if($talent === MeritEnum::FORCE_OF_WILL)
+        {
+            $pet->getSkills()
+                ->increaseStat('intelligence')
+                ->increaseStat('perception')
+                ->increaseStat('dexterity')
+
+                ->increaseStat(ArrayFunctions::pick_one([ 'intelligence', 'perception' ]))
+                ->increaseStat(ArrayFunctions::pick_one([ 'intelligence', 'perception', 'dexterity' ]))
+            ;
+        }
+        else if($talent === MeritEnum::FORCE_OF_NATURE)
+        {
+            $pet->getSkills()
+                ->increaseStat('strength')
+                ->increaseStat('stamina')
+                ->increaseStat('dexterity')
+
+                ->increaseStat(ArrayFunctions::pick_one([ 'strength', 'stamina' ]))
+                ->increaseStat(ArrayFunctions::pick_one([ 'strength', 'stamina', 'dexterity' ]))
+            ;
+        }
+        else if($talent === MeritEnum::BALANCE)
+        {
+            $pet->getSkills()
+                ->increaseStat('strength')
+                ->increaseStat('stamina')
+                ->increaseStat('dexterity')
+                ->increaseStat('intelligence')
+                ->increaseStat('perception')
+            ;
+        }
+
+        $pet->getSkills()->setExpertise();
+
+        $em->flush();
+
+        return $responseService->success();
+    }
+
+    /**
      * @Route("/typeahead", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */

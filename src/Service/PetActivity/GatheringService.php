@@ -108,28 +108,22 @@ class GatheringService
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to an Abandoned Quarry, and happened to find a piece of Striped Microcline!', '');
 
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $this->inventoryService->petCollectsItem('Striped Microcline', $pet, $pet->getName() . ' found this at an Abandoned Quarry.', $activityLog);
             $this->petService->spendTime($pet, \mt_rand(30, 45));
         }
-        else if($pet->getStrength() < 2)
-        {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a huge block of Limestone at an Abandoned Quarry, but isn\'t strong enough to lift it...', '');
-            $pet->increaseFood(-1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::STRENGTH ]);
-            $this->petService->spendTime($pet, \mt_rand(45, 75));
-        }
         else if($pet->getStrength() < 4)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a huge block of Limestone at an Abandoned Quarry, and, with all their might, carried it home.', 'items/mineral/limestone');
-            $pet->increaseFood(-1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::STRENGTH ]);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a huge block of Limestone at an Abandoned Quarry, and, with all their might, pushed, dragged, and "rolled" it home.', 'items/mineral/limestone');
+            $pet->increaseFood(-2);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $this->inventoryService->petCollectsItem('Limestone', $pet, $pet->getName() . ' found this at an Abandoned Quarry. It was really heavy!', $activityLog);
-            $this->petService->spendTime($pet, \mt_rand(45, 75));
+            $this->petService->spendTime($pet, \mt_rand(60, 75));
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a huge block of Limestone at an Abandoned Quarry, and carried it home with ease.', 'items/mineral/limestone');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a huge block of Limestone at an Abandoned Quarry, and carried it home.', 'items/mineral/limestone');
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $this->inventoryService->petCollectsItem('Limestone', $pet, $pet->getName() . ' found this at an Abandoned Quarry.', $activityLog);
             $this->petService->spendTime($pet, \mt_rand(45, 60));
         }
@@ -141,7 +135,7 @@ class GatheringService
     {
         $exp = \ceil($roll / 10);
 
-        $this->petService->gainExp($pet, $exp, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE ]);
+        $this->petService->gainExp($pet, $exp, [ PetSkillEnum::NATURE ]);
 
         $this->petService->spendTime($pet, \mt_rand(45, 75));
 
@@ -154,7 +148,7 @@ class GatheringService
 
         $this->inventoryService->petCollectsItem('Paper Bag', $pet, $pet->getName() . ' found this just lyin\' around.', $activityLog);
 
-        $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE ]);
+        $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
         $this->petService->spendTime($pet, \mt_rand(45, 60));
 
         return $activityLog;
@@ -170,7 +164,7 @@ class GatheringService
         if(\mt_rand(1, 2) === 1)
             $this->inventoryService->petCollectsItem('Tea Leaves', $pet, $pet->getName() . ' harvested this from a Tea Bush.', $activityLog);
 
-        $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE ]);
+        $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
         $this->petService->spendTime($pet, \mt_rand(45, 60));
 
         return $activityLog;
@@ -205,7 +199,7 @@ class GatheringService
         if($additionalHarvest)
             $this->inventoryService->petCollectsItem($harvest, $pet, $pet->getName() . ' harvested these from a Thorny ' . $harvest . ' Bush.', $activityLog);
 
-        $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::STAMINA ]);
+        $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
 
         $this->petService->spendTime($pet, \mt_rand(45, 60));
 
@@ -216,18 +210,25 @@ class GatheringService
     {
         if(\mt_rand(1, 4) === 1)
         {
-            if(\mt_rand(1, 20 + $pet->getDexterity() + $pet->getStrength() + $pet->getStealth() + $pet->getBrawl()) >= 15)
+            if(!$pet->hasLight())
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Hollow Log, but it was too dark inside to see anything.', '');
+
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+                $this->petService->spendTime($pet, \mt_rand(30, 45));
+            }
+            else if(\mt_rand(1, 20 + $pet->getDexterity() + $pet->getStrength() + $pet->getStealth() + $pet->getBrawl()) >= 15)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Huge Toad inside a Hollow Log, got the jump on it, wrestled it to the ground, and claimed its Toadstool!', 'items/fungus/toadstool');
                 $this->inventoryService->petCollectsItem('Toadstool', $pet, $pet->getName() . ' harvested this from the back of a Huge Toad found inside a Hollow Log.', $activityLog);
-                $this->petService->gainExp($pet, 2, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::DEXTERITY, PetSkillEnum::STRENGTH, PetSkillEnum::STEALTH ]);
+                $this->petService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH, PetSkillEnum::BRAWL ]);
                 $pet->increaseEsteem(\mt_rand(1, 2));
                 $this->petService->spendTime($pet, \mt_rand(45, 60));
             }
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Huge Toad inside a Hollow Log, but it got away!', '');
-                $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::DEXTERITY, PetSkillEnum::STRENGTH, PetSkillEnum::STEALTH ]);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH, PetSkillEnum::BRAWL ]);
                 $this->petService->spendTime($pet, \mt_rand(45, 60));
             }
         }
@@ -240,11 +241,18 @@ class GatheringService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Grandparoot inside a Hollow Log.', '');
-                $this->inventoryService->petCollectsItem('Grandparoot', $pet, $pet->getName() . ' found this growing inside a Hollow Log.', $activityLog);
+                if($pet->hasLight())
+                {
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Grandparoot inside a Hollow Log.', '');
+                    $this->inventoryService->petCollectsItem('Grandparoot', $pet, $pet->getName() . ' found this growing inside a Hollow Log.', $activityLog);
+                }
+                else
+                {
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Hollow Log, but it was too dark inside to see anything.', '');
+                }
             }
 
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $this->petService->spendTime($pet, \mt_rand(30, 45));
         }
 
@@ -262,7 +270,7 @@ class GatheringService
                 $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
 
             $pet->increaseEsteem(\mt_rand(1, 2));
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::STEALTH, PetSkillEnum::DEXTERITY ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ]);
 
             $this->petService->spendTime($pet, \mt_rand(45, 60));
         }
@@ -273,13 +281,13 @@ class GatheringService
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to steal an Egg from a Bird Nest, was spotted by a parent bird, and was able to defeat it in combat!', '');
                 $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a Bird Nest, after a fight.', $activityLog);
                 $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' stole this from a Bird Nest, after a fight.', $activityLog);
-                $this->petService->gainExp($pet, 2, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::STEALTH, PetSkillEnum::DEXTERITY, PetSkillEnum::STRENGTH, PetSkillEnum::BRAWL ]);
+                $this->petService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH, PetSkillEnum::BRAWL ]);
                 $this->petService->spendTime($pet, \mt_rand(45, 75));
             }
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to steal an Egg from a Bird Nest, but was spotted by a parent bird, and chased off!', '');
-                $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::STEALTH, PetSkillEnum::DEXTERITY ]);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH, PetSkillEnum::BRAWL ]);
                 $pet->increaseEsteem(-\mt_rand(1, 2));
                 $this->petService->spendTime($pet, \mt_rand(45, 75));
             }
@@ -309,15 +317,15 @@ class GatheringService
                 if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature()) >= 25)
                     $loot[] = ArrayFunctions::pick_one([ 'Feathers', 'Talon' ]);
 
-                $this->petService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::DEXTERITY, PetSkillEnum::STRENGTH, PetSkillEnum::BRAWL, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
-                $this->petService->gainExp($pet, 1, [ PetSkillEnum::STRENGTH, PetSkillEnum::BRAWL ]);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::NATURE ]);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
                 $pet->increaseEsteem(\mt_rand(1, 2));
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to a Sandy Beach, but while looking around, was attacked by a Giant Seagull. ' . $pet->getName() . ' defeated the Giant Seagull, and took its ' . ArrayFunctions::list_nice($loot) . '.', '');
                 $didWhat = 'defeated a Giant Seagull at the Beach, and got this';
             }
             else
             {
-                $this->petService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::DEXTERITY, PetSkillEnum::STRENGTH, PetSkillEnum::BRAWL, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::NATURE ]);
                 $pet->increaseEsteem(-\mt_rand(1, 2));
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to a Sandy Beach, but was attacked and routed by a Giant Seagull.', '');
             }
@@ -381,15 +389,15 @@ class GatheringService
                 if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering()) >= 15)
                     $loot[] = 'Talon';
 
-                $this->petService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::DEXTERITY, PetSkillEnum::STRENGTH, PetSkillEnum::BRAWL, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
-                $this->petService->gainExp($pet, 1, [ PetSkillEnum::STRENGTH, PetSkillEnum::BRAWL ]);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::NATURE ]);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
                 $pet->increaseEsteem(\mt_rand(1, 2));
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found an Overgrown Garden, but while looking for food, was attacked by an Angry Mole. ' . $pet->getName() . ' defeated the Angry Mole, and took its ' . ArrayFunctions::list_nice($loot) . '.', '');
                 $didWhat = 'defeated an Angry Mole in an Overgrown Garden, and got this';
             }
             else
             {
-                $this->petService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::DEXTERITY, PetSkillEnum::STRENGTH, PetSkillEnum::BRAWL, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::NATURE ]);
                 $pet->increaseEsteem(-\mt_rand(1, 2));
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found an Overgrown Garden, but, while looking for food, was attacked and routed by an Angry Mole.', '');
             }
@@ -433,9 +441,16 @@ class GatheringService
     {
         $this->petService->spendTime($pet, \mt_rand(60, 75));
 
+        if(mt_rand(1, 4) === 1 && !$pet->hasLight())
+        {
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+            $this->petService->spendTime($pet, \mt_rand(30, 45));
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' found an Old Iron Mine, but all the ore must have been hidden deep inside, and ' . $pet->getName() . ' didn\'t have a light.', '');
+        }
+
         if(\mt_rand(1, 20) + $pet->getStrength() + $pet->getStamina() >= 10)
         {
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::STRENGTH, PetSkillEnum::STAMINA, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
             $pet->increaseFood(-1);
 
             if($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 20) === 1)
@@ -468,12 +483,14 @@ class GatheringService
                 $punctuation = '.';
             }
 
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found an Old Iron Mine, and dug up some ' . $loot . $punctuation, '');
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' dug this out of an Old Iron Mine' . $punctuation, $activityLog);
         }
         else
         {
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::STRENGTH, PetSkillEnum::STAMINA, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
+            $this->petService->spendTime($pet, \mt_rand(45, 60));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $pet->increaseFood(-2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found an Old Iron Mine, and tried to do some mining, but got too tired.', '');
         }
@@ -512,7 +529,7 @@ class GatheringService
         if(count($loot) === 0)
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' entered the island\'s Micro-Jungle, but couldn\'t find anything.', 'icons/activity-logs/confused');
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::STAMINA ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
         }
         else
         {
@@ -521,10 +538,10 @@ class GatheringService
             foreach($loot as $itemName)
                 $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in the island\'s Micro-Jungle.', $activityLog);
 
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::STAMINA ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
         }
 
-        if(mt_rand(1, 10 + $pet->getStamina()) < 8)
+        if(!$pet->hasProtectionFromHeat() && mt_rand(1, 10 + $pet->getStamina()) < 8)
         {
             $pet->increaseFood(-1);
             $pet->increaseSafety(-mt_rand(1, 2));
@@ -585,7 +602,7 @@ class GatheringService
             if($lucky)
                 $activityLog->setEntry($activityLog->getEntry() . ' (Melowatern!? Lucky~!)');
 
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::PERCEPTION ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
         }
         else if(\mt_rand(1, 20 + $pet->getIntelligence() + $pet->getPerception()) < 15)
         {
@@ -607,13 +624,13 @@ class GatheringService
                 if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering()) >= 25)
                     $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
-                $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
+                $this->petService->gainExp($pet, 2, [ PetSkillEnum::UMBRA, PetSkillEnum::NATURE ]);
                 $pet->increaseEsteem(\mt_rand(2, 3));
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' got lost in a Wild Hedgemaze, and ran into a Hedgemaze Sphinx. ' . $pet->getName() . ' was able to solve it\'s riddle, and kept exploring, coming away with ' . ArrayFunctions::list_nice($loot) . '.', '');
             }
             else
             {
-                $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::UMBRA, PetSkillEnum::NATURE, PetSkillEnum::PERCEPTION ]);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::NATURE ]);
                 $pet->increaseEsteem(-\mt_rand(1, 2));
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' got lost in a Wild Hedgemaze, and ran into a Hedgemaze Sphinx. The sphinx asked a really hard question; ' . $pet->getName() . ' wasn\'t able to answer it, and was consequentially ejected from the maze.', '');
             }
@@ -659,7 +676,7 @@ class GatheringService
         if($check < 15)
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the island\'s Volcano, but couldn\'t find anything.', 'icons/activity-logs/confused');
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::STAMINA ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
         }
         else
         {
@@ -674,10 +691,10 @@ class GatheringService
 
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this near the island\'s Volcano.', $activityLog);
 
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::PERCEPTION, PetSkillEnum::NATURE, PetSkillEnum::STAMINA ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
         }
 
-        if(mt_rand(1, 10 + $pet->getStamina()) < 10)
+        if(!$pet->hasProtectionFromHeat() && mt_rand(1, 10 + $pet->getStamina()) < 10)
         {
             $pet->increaseFood(-1);
             $pet->increaseSafety(-mt_rand(1, 2));

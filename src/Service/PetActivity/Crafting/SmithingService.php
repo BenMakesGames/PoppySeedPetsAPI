@@ -66,7 +66,7 @@ class SmithingService
                     $possibilities[] = [ $this, 'createGrapplingHook' ];
 
                 // you have to be strong to use Dark Matter; pets with Eidetic Memory won't make the mistake of trying if they're not strong enough
-                if(array_key_exists('Dark Matter', $quantities) && ($pet->getStrength() >= 4 || !$pet->hasMerit(MeritEnum::EIDETIC_MEMORY)))
+                if(array_key_exists('Dark Matter', $quantities) && $pet->getStrength() >= 4)
                     $possibilities[] = [ $this, 'createHeavyHammer' ];
             }
 
@@ -101,7 +101,7 @@ class SmithingService
             $this->petService->spendTime($pet, \mt_rand(30, 60));
 
             $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::STAMINA ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-2);
             $pet->increaseSafety(-4);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried blowing Glass, but burnt themselves, and dropped the glass :(', 'icons/activity-logs/wounded');
@@ -112,7 +112,7 @@ class SmithingService
             $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Silica Grounds', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::STAMINA ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created an Hourglass.', '');
             $this->inventoryService->petCollectsItem('Hourglass', $pet, $pet->getName() . ' created this.', $activityLog);
@@ -121,7 +121,7 @@ class SmithingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(30, 60));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::DEXTERITY, PetSkillEnum::CRAFTS, PetSkillEnum::STAMINA ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a n Hourglass, but it\'s so detailed and fiddly! Ugh!', 'icons/activity-logs/confused');
         }
     }
@@ -135,7 +135,7 @@ class SmithingService
             $this->inventoryService->loseItem('Silica Grounds', $pet->getOwner(), LocationEnum::HOME, 1);
             $pet->increaseEsteem(-1);
             $pet->increaseSafety(-\mt_rand(2, 12));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Glass, but got burned while trying! :(', 'icons/activity-logs/burn');
         }
         else if($roll >= 13)
@@ -152,7 +152,7 @@ class SmithingService
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' melted Silica Grounds and Limestone into Glass. (There\'s plenty of Limestone left over, though!)', 'items/mineral/silica-glass');
 
             $this->inventoryService->petCollectsItem('Glass', $pet, $pet->getName() . ' created this from Silica Grounds and Limestone.', $activityLog);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
             return $activityLog;
@@ -160,7 +160,7 @@ class SmithingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(45, 75));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Glass, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
@@ -180,7 +180,7 @@ class SmithingService
 
             $pet->increaseEsteem(-1);
             $pet->increaseSafety(-\mt_rand(2, 12));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Fiberglass, but got burned while trying! :(', 'icons/activity-logs/burn');
         }
         else if($roll >= 15)
@@ -189,7 +189,7 @@ class SmithingService
             $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made Fiberglass from Glass and Plastic.', 'items/resource/fiberglass');
@@ -199,7 +199,7 @@ class SmithingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(45, 75));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Fiberglass, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
@@ -213,7 +213,7 @@ class SmithingService
             $this->petService->spendTime($pet, \mt_rand(30, 60));
             $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-1);
 
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Grappling Hook, but burnt the String :(', 'icons/activity-logs/broke-string');
@@ -224,7 +224,7 @@ class SmithingService
             $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Grappling Hook from Iron Bar and String.', 'items/tool/grappling-hook');
@@ -234,7 +234,7 @@ class SmithingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(45, 75));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Grappling Hook, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
@@ -248,7 +248,7 @@ class SmithingService
         {
             $this->petService->spendTime($pet, \mt_rand(30, 60));
             $pet->increaseEsteem(-1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
             if(mt_rand(1, 2) === 1)
             {
@@ -269,7 +269,7 @@ class SmithingService
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made Yellow Scissors.', 'items/tool/scissors/yellow');
@@ -284,7 +284,7 @@ class SmithingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(45, 75));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make scissors, but getting the handle shape right is apparently frickin\' impossible >:(', 'icons/activity-logs/confused');
         }
     }
@@ -297,7 +297,7 @@ class SmithingService
         {
             $this->petService->spendTime($pet, \mt_rand(30, 60));
             $pet->increaseEsteem(-1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
             if(mt_rand(1, 2) === 1)
             {
@@ -318,7 +318,7 @@ class SmithingService
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Green Dye', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made Green Scissors.', 'items/tool/scissors/green');
@@ -328,54 +328,45 @@ class SmithingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(45, 75));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make scissors, but getting the handle shape right is apparently frickin\' impossible >:(', 'icons/activity-logs/confused');
         }
     }
 
     public function createHeavyHammer(Pet $pet): PetActivityLog
     {
-        if($pet->getStrength() < 4)
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + min($pet->getStrength(), $pet->getStamina()) + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 3)
         {
-            $this->petService->spendTime($pet, \mt_rand(10, 20));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::STRENGTH ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to make something out of Dark Matter, but the stuff\'s crazy-heavy, it turns out!', 'icons/activity-logs/confused');
+            $this->petService->spendTime($pet, \mt_rand(30, 60));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            $pet
+                ->increaseSafety(-mt_rand(4, 8))
+                ->increaseEsteem(-mt_rand(1, 2))
+            ;
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Heavy Hammer, but dropped an Iron Bar on their toes!', '');
+        }
+        else if($roll <= 17)
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 75));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Heavy Hammer, but the Dark Matter\'s was being especially difficult to work with! >:(', '');
         }
         else
         {
-            $roll = \mt_rand(1, 20 + $pet->getIntelligence() + min($pet->getStrength(), $pet->getStamina()) + $pet->getCrafts() + $pet->getSmithing());
+            $this->petService->spendTime($pet, \mt_rand(60, 75));
+            $this->inventoryService->loseItem('Dark Matter', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            if($roll <= 3)
-            {
-                $this->petService->spendTime($pet, \mt_rand(30, 60));
-                $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STRENGTH, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(3);
 
-                $pet
-                    ->increaseSafety(-mt_rand(4, 8))
-                    ->increaseEsteem(-mt_rand(1, 2))
-                ;
-
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Heavy Hammer, but dropped an Iron Bar on their toes!', '');
-            }
-            else if($roll <= 17)
-            {
-                $this->petService->spendTime($pet, \mt_rand(45, 75));
-                $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STRENGTH, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Heavy Hammer, but the Dark Matter\'s was being especially difficult to work with! >:(', '');
-            }
-            else
-            {
-                $this->petService->spendTime($pet, \mt_rand(60, 75));
-                $this->inventoryService->loseItem('Dark Matter', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-
-                $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STRENGTH, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
-                $pet->increaseEsteem(3);
-
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Heavy Hammer from an Iron Bar and some Dark Matter!', 'items/tool/hammer/heavy');
-                $this->inventoryService->petCollectsItem('Heavy Hammer', $pet, $pet->getName() . ' created this from an Iron Bar and some Dark Matter!', $activityLog);
-                return $activityLog;
-            }
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Heavy Hammer from an Iron Bar and some Dark Matter!', 'items/tool/hammer/heavy');
+            $this->inventoryService->petCollectsItem('Heavy Hammer', $pet, $pet->getName() . ' created this from an Iron Bar and some Dark Matter!', $activityLog);
+            return $activityLog;
         }
     }
 
@@ -390,7 +381,7 @@ class SmithingService
             $this->petService->spendTime($pet, \mt_rand(30, 60));
 
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $item . ', but broke the Crooked Stick! :(', 'icons/activity-logs/broke-stick');
         }
         else if($roll >= 13)
@@ -399,7 +390,7 @@ class SmithingService
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a ' . $item . ' from a Crooked Stick, and Iron Bar.', 'items/tool/scythe');
@@ -409,7 +400,7 @@ class SmithingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(45, 75));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $item . ', but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
@@ -424,7 +415,7 @@ class SmithingService
             $pet->increaseEsteem(-mt_rand(1, 3));
 
             $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Ceremonial Trident, but completely destroyed the White Cloth, leaving only String behind! :(', '');
             $this->inventoryService->petCollectsItem('String', $pet, $pet->getName() . ' accidentally destroyed a White Cloth while trying to make a Ceremonial Trident; this String was all that remained of the cloth.', $activityLog);
 
@@ -438,7 +429,7 @@ class SmithingService
             $this->petService->spendTime($pet, \mt_rand(45, 75));
 
             $this->inventoryService->loseItem($lost, $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Ceremonial Trident, but melted the heck out of the ' . $lost . '! :( ' . $pet->getName() . ' decided to make some coins out of it, instead, and got ' . $moneys . '~~m~~.', '');
         }
         else if($roll >= 17)
@@ -448,7 +439,7 @@ class SmithingService
             $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('White cloth', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            $this->petService->gainExp($pet, mt_rand(2, 3), [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, mt_rand(2, 3), [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(mt_rand(3, 5));
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Ceremonial Trident!', 'items/tool/scythe');
@@ -458,7 +449,7 @@ class SmithingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(45, 60));
-            $this->petService->gainExp($pet, mt_rand(1, 2), [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, mt_rand(1, 2), [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Ceremonial Spear, but halfway through realized that they had misremembered the item name... >_>', 'icons/activity-logs/confused');
         }
     }
@@ -472,7 +463,7 @@ class SmithingService
             $this->petService->spendTime($pet, \mt_rand(30, 60));
 
             $this->inventoryService->loseItem('Fiberglass', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Moonhammer, but splintered the Fiberglass! :(', '');
         }
         else if($roll >= 20)
@@ -482,7 +473,7 @@ class SmithingService
             $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Moon Pearl', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            $this->petService->gainExp($pet, 3, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(3);
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Moonhammer!', 'items/tool/scythe');
@@ -492,7 +483,7 @@ class SmithingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(45, 75));
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make something out of Fiberglass, but wasn\'t happy with how it was turning out.', 'icons/activity-logs/confused');
         }
     }
@@ -506,14 +497,14 @@ class SmithingService
             $this->inventoryService->loseItem('Iron Ore', $pet->getOwner(), LocationEnum::HOME, 1);
             $pet->increaseEsteem(-1);
             $pet->increaseSafety(-\mt_rand(2, 24));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to refine some Iron Ore, but got burned while trying! :(', 'icons/activity-logs/burn');
         }
         else if($roll >= 12)
         {
             $this->petService->spendTime($pet, \mt_rand(60, 75));
             $this->inventoryService->loseItem('Iron Ore', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' refined some Iron Ore into an Iron Bar.', 'items/element/iron-pure');
             $this->inventoryService->petCollectsItem('Iron Bar', $pet, $pet->getName() . ' refined this from Iron Ore.', $activityLog);
@@ -522,7 +513,7 @@ class SmithingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(45, 75));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to refine Iron Ore into an Iron Bar, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
@@ -536,14 +527,14 @@ class SmithingService
             $this->inventoryService->loseItem('Silver Ore', $pet->getOwner(), LocationEnum::HOME, 1);
             $pet->increaseEsteem(-1);
             $pet->increaseSafety(-\mt_rand(2, 12));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to refine some Silver Ore, but got burned while trying! :(', 'icons/activity-logs/burn');
         }
         else if($roll >= 12)
         {
             $this->petService->spendTime($pet, \mt_rand(60, 75));
             $this->inventoryService->loseItem('Silver Ore', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' refined some Silver Ore into a Silver Bar.', 'items/element/silver-pure');
             $this->inventoryService->petCollectsItem('Silver Bar', $pet, $pet->getName() . ' refined this from Silver Ore.', $activityLog);
@@ -552,7 +543,7 @@ class SmithingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(45, 75));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to refine Silver Ore into a Silver Bar, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
@@ -566,14 +557,14 @@ class SmithingService
             $this->inventoryService->loseItem('Gold Ore', $pet->getOwner(), LocationEnum::HOME, 1);
             $pet->increaseEsteem(-1);
             $pet->increaseSafety(-\mt_rand(2, 8));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to refine some Gold Ore, but got burned while trying! :(', 'icons/activity-logs/burn');
         }
         else if($roll >= 12)
         {
             $this->petService->spendTime($pet, \mt_rand(60, 75));
             $this->inventoryService->loseItem('Gold Ore', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' refined some Gold Ore into a Gold Bar.', 'items/element/gold-pure');
             $this->inventoryService->petCollectsItem('Gold Bar', $pet, $pet->getName() . ' refined this from Gold Ore.', $activityLog);
@@ -582,7 +573,7 @@ class SmithingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(45, 75));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to refine Gold Ore into a Gold Bar, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
@@ -596,7 +587,7 @@ class SmithingService
             $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
             $pet->increaseEsteem(-1);
             $pet->increaseSafety(-\mt_rand(2, 24));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge an Iron Key, but got burned while trying! :(', 'icons/activity-logs/burn');
         }
         else if($roll >= 12)
@@ -616,7 +607,7 @@ class SmithingService
             if($keys === 2)
                 $this->inventoryService->petCollectsItem('Iron Key', $pet, $pet->getName() . ' forged this from an Iron Bar.', $activityLog);
 
-            $this->petService->gainExp($pet, $keys, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, $keys, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem($keys === 1 ? 1 : 4);
 
             return $activityLog;
@@ -624,7 +615,7 @@ class SmithingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(45, 75));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge an Iron Key from an Iron Bar, but couldn\'t get the shape right.', 'icons/activity-logs/confused');
         }
     }
@@ -638,7 +629,7 @@ class SmithingService
             $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
             $pet->increaseEsteem(-1);
             $pet->increaseSafety(-\mt_rand(2, 24));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge a Dumbbell, but got burned while trying! :(', 'icons/activity-logs/burn');
         }
         else if($roll >= 12)
@@ -650,7 +641,7 @@ class SmithingService
 
             $this->inventoryService->petCollectsItem('Dumbbell', $pet, $pet->getName() . ' forged this from an Iron Bar.', $activityLog);
 
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
             return $activityLog;
@@ -658,7 +649,7 @@ class SmithingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(45, 75));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge a Dumbbell from an Iron Bar, but couldn\'t get the shape right.', 'icons/activity-logs/confused');
         }
     }
@@ -677,7 +668,7 @@ class SmithingService
             $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
             $pet->increaseEsteem(-1);
             $pet->increaseSafety(-\mt_rand(2, 24));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge ' . $making['description'] . ', but got burned while trying! :(', 'icons/activity-logs/burn');
         }
         else if($roll >= 14)
@@ -689,7 +680,7 @@ class SmithingService
 
             $this->inventoryService->petCollectsItem($making['item'], $pet, $pet->getName() . ' forged this from an Iron Bar.', $activityLog);
 
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
             return $activityLog;
@@ -697,7 +688,7 @@ class SmithingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(45, 75));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge ' . $making['description'] . ' from an Iron Bar, but couldn\'t get the shape right.', 'icons/activity-logs/confused');
         }
     }
@@ -713,7 +704,7 @@ class SmithingService
             $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
             $pet->increaseEsteem(-1);
             $pet->increaseSafety(-\mt_rand(2, 12));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge a Silver Key, but got burned while trying! :(', 'icons/activity-logs/burn');
         }
         else if($roll >= 12)
@@ -733,7 +724,7 @@ class SmithingService
             if($keys === 2)
                 $this->inventoryService->petCollectsItem('Silver Key', $pet, $pet->getName() . ' forged this from a Silver Bar.', $activityLog);
 
-            $this->petService->gainExp($pet, $keys, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, $keys, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem($keys === 1 ? 1 : 6);
 
             return $activityLog;
@@ -741,7 +732,7 @@ class SmithingService
         else if($reRoll >= 12)
         {
             $this->petService->spendTime($pet, \mt_rand(75, 90));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
             $moneys = mt_rand(10, 20);
             $pet->getOwner()->increaseMoneys($moneys);
@@ -752,7 +743,7 @@ class SmithingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(45, 75));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge a Silver Key from a Silver Bar, but couldn\'t get the shape right.', 'icons/activity-logs/confused');
         }
     }
@@ -768,7 +759,7 @@ class SmithingService
             $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
             $pet->increaseEsteem(-1);
             $pet->increaseSafety(-\mt_rand(2, 8));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge a Gold Key, but got burned while trying! :(', 'icons/activity-logs/burn');
         }
         else if($roll >= 12)
@@ -788,7 +779,7 @@ class SmithingService
             if($keys === 2)
                 $this->inventoryService->petCollectsItem('Gold Key', $pet, $pet->getName() . ' forged this from a Gold Bar.', $activityLog);
 
-            $this->petService->gainExp($pet, $keys, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, $keys, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem($keys === 1 ? 1 : 10);
 
             return $activityLog;
@@ -796,7 +787,7 @@ class SmithingService
         else if($reRoll >= 12)
         {
             $this->petService->spendTime($pet, \mt_rand(75, 90));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
             $moneys = mt_rand(20, 30);
             $pet->getOwner()->increaseMoneys($moneys);
@@ -807,7 +798,7 @@ class SmithingService
         else
         {
             $this->petService->spendTime($pet, \mt_rand(45, 75));
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::INTELLIGENCE, PetSkillEnum::STAMINA, PetSkillEnum::CRAFTS ]);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge a Gold Key from a Gold Bar, but couldn\'t get the shape right.', 'icons/activity-logs/confused');
         }
     }
