@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Item;
 use App\Entity\MuseumItem;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -17,6 +19,11 @@ class MuseumItemRepository extends ServiceEntityRepository
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, MuseumItem::class);
+    }
+
+    public function hasUserDonated(User $user, Item $item)
+    {
+        return $this->findOneBy([ 'user' => $user, 'item' => $item ]) !== null;
     }
 
     // /**

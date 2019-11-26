@@ -3,12 +3,16 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\PetChanges;
+use App\Repository\ItemRepository;
+use App\Repository\MuseumItemRepository;
+use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\CalendarService;
 use App\Service\InventoryService;
@@ -22,10 +26,14 @@ class HuntingService
     private $petService;
     private $userStatsRepository;
     private $calendarService;
+    private $museumItemRepository;
+    private $itemRepository;
+    private $userQuestRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetService $petService,
-        UserStatsRepository $userStatsRepository, CalendarService $calendarService
+        UserStatsRepository $userStatsRepository, CalendarService $calendarService, MuseumItemRepository $museumItemRepository,
+        ItemRepository $itemRepository, UserQuestRepository $userQuestRepository
     )
     {
         $this->responseService = $responseService;
@@ -33,6 +41,9 @@ class HuntingService
         $this->petService = $petService;
         $this->userStatsRepository = $userStatsRepository;
         $this->calendarService = $calendarService;
+        $this->museumItemRepository = $museumItemRepository;
+        $this->itemRepository = $itemRepository;
+        $this->userQuestRepository = $userQuestRepository;
     }
 
     public function adventure(Pet $pet)
@@ -64,7 +75,9 @@ class HuntingService
             case 6:
             case 7:
             case 8:
-                if($useThanksgivingPrey)
+                if($this->canRescueAnotherHouseFairy($pet->getOwner()))
+                    $activityLog = $this->rescueHouseFairy($pet);
+                else if($useThanksgivingPrey)
                     $activityLog = $this->huntedTurkey($pet);
                 else
                     $activityLog = $this->huntedGoat($pet);
@@ -116,6 +129,44 @@ class HuntingService
 
         if(mt_rand(1, 100) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);
+    }
+
+    private function canRescueAnotherHouseFairy(User $user): bool
+    {
+        if($user->getUnlockedFireplace())
+            return false;
+
+        if(!$this->museumItemRepository->hasUserDonated(
+            $user,
+            $this->itemRepository->findOneByName('House Fairy')
+        ))
+            return false;
+
+        $rescuedASecond = $this->userQuestRepository->findOrCreate($user, 'Rescued Second House Fairy', false);
+
+        if($rescuedASecond->getValue())
+            return false;
+
+        return true;
+    }
+
+    private function rescueHouseFairy(Pet $pet): PetActivityLog
+    {
+        $this->petService->spendTime($pet, mt_rand(30, 60));
+
+        $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Rescued Second House Fairy', false)
+            ->setValue(true)
+        ;
+
+        $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was out hunting, they spotted a Raccoon and Thieving Magpie fighting over a fairy! ' . $pet->getName() . ' jumped in and chased the two creatures off before tending to the fairy\'s wounds.', '');
+        $this->inventoryService->petCollectsItem('House Fairy', $pet, 'Rescued from a Raccoon and Thieving Magpie.', $activityLog);
+        $this->petService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+
+        $pet->increaseSafety(2);
+        $pet->increaseLove(2);
+        $pet->increaseEsteem(2);
+
+        return $activityLog;
     }
 
     private function failedToHunt(Pet $pet): PetActivityLog
