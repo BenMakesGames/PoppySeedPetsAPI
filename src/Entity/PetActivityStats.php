@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PetActivityStatsRepository")
@@ -25,181 +24,151 @@ class PetActivityStats
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $craftSuccess = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $craftFailure = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $craftTime = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $magicBindSuccess = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $magicBindFailure = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $magicBindTime = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $smithSuccess = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $smithFailure = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $smithTime = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $plasticPrintSuccess = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $plasticPrintFailure = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $plasticPrintTime = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $fishSuccess = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $fishFailure = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $fishTime = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $gatherSuccess = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $gatherFailure = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $gatherTime = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $huntSuccess = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $huntFailure = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $huntTime = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $protocol7Success = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $protocol7Failure = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $protocol7Time = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $programSuccess = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $programFailure = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $programTime = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $umbraSuccess = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $umbraFailure = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $umbraTime = 0;
 
@@ -210,7 +179,6 @@ class PetActivityStats
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $hangOutTime = 0;
 
@@ -221,19 +189,16 @@ class PetActivityStats
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $parkEventTime = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $other = 0;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityStats"})
      */
     private $otherTime = 0;
 

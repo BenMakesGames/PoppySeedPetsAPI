@@ -8,6 +8,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\SpiritCompanion;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityStatEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
@@ -20,6 +21,7 @@ use App\Repository\UserRepository;
 use App\Service\Filter\DaycareFilterService;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\MeritService;
+use App\Service\PetActivityStatsService;
 use App\Service\PetService;
 use App\Service\ResponseService;
 use App\Service\Typeahead\PetTypeaheadService;
@@ -481,6 +483,52 @@ class PetController extends PoppySeedPetsController
             $petActivityLogsFilterService->getResults($request->query),
             [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::PET_ACTIVITY_LOGS ]
         );
+    }
+
+    /**
+     * @Route("/{pet}/stats", methods={"GET"}, requirements={"pet"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function activityStats(
+        Pet $pet, ResponseService $responseService
+    )
+    {
+        $user = $this->getUser();
+
+        if($user->getId() !== $pet->getOwner()->getId())
+            throw new AccessDeniedHttpException();
+
+        $stats = $pet->getPetActivityStats();
+
+        $data = [
+            'byTime' => [],
+            'byActivity' => [],
+            'byActivityCombined' => [],
+        ];
+
+        foreach(PetActivityStatEnum::getValues() as $stat)
+        {
+            if(in_array($stat, PetActivityStatsService::STATS_THAT_CANT_FAIL))
+            {
+                $data['byActivity'][] = [ 'value' => $stats->{'get' . $stat}(), 'label' => $stat ];
+
+                $data['byActivityCombined'][] = [ 'value' => $stats->{'get' . $stat}(), 'label' => $stat ];
+            }
+            else
+            {
+                $success = $stats->{'get' . $stat . 'success'}();
+                $failure = $stats->{'get' . $stat . 'failure'}();
+
+                $data['byActivity'][] = [ 'value' => $success, 'label' => $stat . ' success' ];
+                $data['byActivity'][] = [ 'value' => $failure, 'label' => $stat . ' failure' ];
+
+                $data['byActivityCombined'][] = [ 'value' => $success + $failure, 'label' => $stat ];
+            }
+
+            $data['byTime'][] = [ 'value' => $stats->{'get' . $stat . 'time'}(), 'label' => $stat ];
+        }
+
+        return $responseService->success($data);
     }
 
     /**
