@@ -134,15 +134,18 @@ class HuntingService
 
     private function canRescueAnotherHouseFairy(User $user): bool
     {
+        // if you've unlocked the fireplace, then you can't rescue a second
         if($user->getUnlockedFireplace())
             return false;
 
+        // if you haven't donated a fairy, then you can't rescue a second
         if(!$this->museumItemRepository->hasUserDonated(
             $user,
             $this->itemRepository->findOneByName('House Fairy')
         ))
             return false;
 
+        // if you already rescued a second, then you can't rescue a second again :P
         $rescuedASecond = $this->userQuestRepository->findOrCreate($user, 'Rescued Second House Fairy', false);
 
         if($rescuedASecond->getValue())
