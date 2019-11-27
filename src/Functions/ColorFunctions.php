@@ -123,4 +123,21 @@ final class ColorFunctions
 
         return ColorFunctions::RGB2Hex((int)$rgb['r'], (int)$rgb['g'], (int)$rgb['b']);
     }
+
+    public static function tweakColor(string $color): string
+    {
+        $newColor = '';
+
+        for($i = 0; $i < 3; $i++)
+        {
+            $part = hexdec($color[$i * 2] . $color[$i * 2 + 1]);    // get color part as decimal
+            $part += mt_rand(-12, 12);                              // randomize
+            $part = max(0, min(255, $part));                        // keep between 0 and 255
+            $part = str_pad(dechex($part), 2, '0', STR_PAD_LEFT);   // turn back into hex
+
+            $newColor .= $part;
+        }
+
+        return $newColor;
+    }
 }

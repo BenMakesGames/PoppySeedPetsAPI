@@ -118,6 +118,7 @@ class PetController extends PoppySeedPetsController
             ->increaseEsteem(-5 * ($pet->getLevel() + 1))
             ->increaseSafety(-5 * ($pet->getLevel() + 1))
             ->increaseLove(-6 * ($pet->getLevel() + 1))
+            ->setLastInteracted(new \DateTimeImmutable())
         ;
 
         if($user->getHollowEarthPlayer()->getChosenPet() !== null && $user->getHollowEarthPlayer()->getChosenPet()->getId() === $pet->getId())

@@ -49,7 +49,7 @@ class PetShelterController extends PoppySeedPetsController
             ]);
         }
 
-        $pets = $adoptionService->getDailyPets($user);
+        $pets = $adoptionService->getDailyPets($user->getDailySeed());
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
 
@@ -98,7 +98,7 @@ class PetShelterController extends PoppySeedPetsController
         if(\strlen($petName) < 1 || \strlen($petName) > 30)
             throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
 
-        $pets = $adoptionService->getDailyPets($user);
+        $pets = $adoptionService->getDailyPets($user->getDailySeed());
 
         $petToAdopt = ArrayFunctions::find_one($pets, function(PetShelterPet $p) use($id) { return $p->id === $id; });
 

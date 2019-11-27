@@ -14,46 +14,6 @@ class AdoptionService
     private $petSpeciesRepository;
     private $calendarService;
 
-    public const PET_NAMES = [
-        'Aalina', 'Aaron', 'Abrahil', 'Aedoc', 'Aelfric', 'Alain', 'Alda', 'Alienora', 'Aliette', 'Artaca',
-        'Aureliana', 'Batu', 'Belka', 'Bezzhen', 'Biedeluue', 'Blicze', 'Ceinguled', 'Ceri', 'Ceslinus', 'Christien',
-        'Clement', 'Cyra', 'Czestobor', 'Dagena', 'Denyw', 'Disideri', 'Eileve', 'Emilija', 'Enim', 'Enynny',
-        'Erasmus', 'Eve', 'Felix', 'Fiora', 'Fluri', 'Frotlildis', 'Galine', 'Gennoveus', 'Genoveva', 'Giliana',
-        'Godelive', 'Gubin', 'Idzi', 'Jadviga', 'Jehanne', 'Kaija', 'Kain', 'Kima', 'Kint', 'Kirik',
-        'Klara', 'Kryspin', 'Leodhild', 'Leon', 'Levi', 'Lowri', 'Lucass', 'Ludmila', 'Maccos', 'Maeldoi',
-        'Magdalena', 'Makrina', 'Malik', 'Margaret', 'Marsley', 'Masayasu', 'Mateline', 'Mathias', 'Maurifius', 'Meduil',
-        'Melita', 'Meoure', 'Merewen', 'Milesent', 'Milian', 'Mold', 'Montgomery', 'Morys', 'Newt', 'Nicholina',
-        'Nilus', 'Noe', 'Oswyn', 'Paperclip', 'Perkhta', 'Pesczek', 'Regina', 'Reina', 'Rimoete', 'Rocatos',
-        'Rozalia', 'Rum', 'Runne', 'Ryd', 'Saewine', 'Sandivoi', 'Skenfrith', 'Sulimir', 'Sybil', 'Talan',
-        'Tede', 'Tephaine', 'Tetris', 'Tiecia', 'Toregene', 'Trenewydd', 'Usk', 'Vasilii', 'Vitseslav', 'Vivka',
-        'Wrexham', 'Ysabeau', 'Ystradewel', 'Zofija', 'Zygmunt'
-    ];
-
-    public const PET_HALLOWEEN_NAMES = [
-        'Pumpkin', 'Luna', 'Magic', 'Bones', 'Haunt', 'Spirit', 'Cauldron', 'Werewolf', 'Vampire',
-    ];
-
-    public const PET_CHRISTMAS_NAMES = [
-        'Holly', 'Cocoa', 'Evergreen', 'Santa', 'Dasher', 'Dancer', 'Prancer', 'Vixen', 'Comet', 'Cupid', 'Donner',
-        'Blitzen', 'Rudolph', 'Olive', 'Spirit', 'Mint', 'Sol Invictus',
-    ];
-
-    public const PET_THANKSGIVING_NAMES = [
-        'Gobbles', 'Pumpkin', 'Cranberry', 'Turkey', 'Stuffing', 'Potato', 'Gravy',
-    ];
-
-    public const PET_HANNUKAH_NAMES = [
-        'Dreidel', 'Olive Oil', 'Potato', 'Pancake', 'Gelt', 'Maccabee', 'Pączki', 'Buñuelo', 'Sufganiyah',
-    ];
-
-    public const PET_EASTER_NAMES = [
-        'Osterbaum', 'Bunny', 'Rabbit', 'Daffodil', 'Lamb', 'Pastel',
-    ];
-
-    public const PET_SOLSTICE_NAMES = [
-        'Solstice', 'Midwinter', 'Makara', 'Yaldā', 'Yule', 'Dongzhi',
-    ];
-
     public function __construct(
         PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository, CalendarService $calendarService
     )
@@ -66,11 +26,11 @@ class AdoptionService
     /**
      * @return PetShelterPet[]
      */
-    public function getDailyPets(User $user): array
+    public function getDailyPets(int $seed): array
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
 
-        mt_srand($user->getDailySeed());
+        mt_srand($seed);
 
         $numPets = mt_rand(4, 8);
         $numSeasonalPets = $this->numberOfSeasonalPets($numPets);
@@ -114,7 +74,7 @@ class AdoptionService
                 $colorA = ColorFunctions::HSL2Hex($h1, $s1, $l1);
                 $colorB = ColorFunctions::HSL2Hex($h2, $s2, $l2);
 
-                $name = ArrayFunctions::pick_one(self::PET_NAMES);
+                $name = ArrayFunctions::pick_one(PetShelterPet::PET_NAMES);
             }
             else
             {
@@ -127,10 +87,10 @@ class AdoptionService
                     ->getSingleResult()
                 ;
 
-                $colorA = $this->tweakColor($basePet->getColorA());
-                $colorB = $this->tweakColor($basePet->getColorB());
+                $colorA = ColorFunctions::tweakColor($basePet->getColorA());
+                $colorB = ColorFunctions::tweakColor($basePet->getColorB());
 
-                $name = ArrayFunctions::pick_one(self::PET_NAMES);
+                $name = ArrayFunctions::pick_one(PetShelterPet::PET_NAMES);
             }
 
             $pet = new PetShelterPet();
@@ -144,23 +104,6 @@ class AdoptionService
         }
 
         return $pets;
-    }
-
-    private function tweakColor(string $color): string
-    {
-        $newColor = '';
-
-        for($i = 0; $i < 3; $i++)
-        {
-            $part = hexdec($color[$i * 2] . $color[$i * 2 + 1]);    // get color part as decimal
-            $part += mt_rand(-12, 12);                              // randomize
-            $part = max(0, min(255, $part));                        // keep between 0 and 255
-            $part = str_pad(dechex($part), 2, '0', STR_PAD_LEFT);   // turn back into hex
-
-            $newColor .= $part;
-        }
-
-        return $newColor;
     }
 
     public function numberOfSeasonalPets(int $totalPets): int
@@ -195,24 +138,24 @@ class AdoptionService
         $monthDay = $this->calendarService->getMonthAndDay();
 
         if($this->calendarService->isHalloween())
-            return self::PET_HALLOWEEN_NAMES;
+            return PetShelterPet::PET_HALLOWEEN_NAMES;
 
         if($this->calendarService->isThanksgiving())
-            return self::PET_THANKSGIVING_NAMES;
+            return PetShelterPet::PET_THANKSGIVING_NAMES;
 
         if($this->calendarService->isEaster())
-            return self::PET_EASTER_NAMES;
+            return PetShelterPet::PET_EASTER_NAMES;
 
         // winter solstice, more or less
         if($monthDay === 1221 || $monthDay === 1222)
-            return self::PET_SOLSTICE_NAMES;
+            return PetShelterPet::PET_SOLSTICE_NAMES;
 
         // christmas colors
         if($monthDay >= 1223 && $monthDay <= 1225)
-            return self::PET_CHRISTMAS_NAMES;
+            return PetShelterPet::PET_CHRISTMAS_NAMES;
 
         if($this->calendarService->isHannukah())
-            return self::PET_HANNUKAH_NAMES;
+            return PetShelterPet::PET_HANNUKAH_NAMES;
 
         throw new \InvalidArgumentException('Today is not a day for seasonal colors.');
     }
