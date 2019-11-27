@@ -5,6 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Entity\MuseumItem;
 use App\Entity\User;
+use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Model\FilterResults;
@@ -107,7 +108,9 @@ class MuseumController extends PoppySeedPetsController
         $qb = $inventoryRepository->createQueryBuilder('i')
             ->andWhere('i.owner=:user')
             ->leftJoin('i.item', 'item')
+            ->andWhere('i.location IN (:locations)')
             ->andWhere('item.id NOT IN (SELECT miitem.id FROM App\\Entity\\MuseumItem mi LEFT JOIN mi.item miitem WHERE mi.user=:user)')
+            ->setParameter('locations', [ LocationEnum::HOME, LocationEnum::BASEMENT ])
             ->setParameter('user', $user)
             ->groupBy('item.id')
             ->orderBy('item.name', 'ASC')
@@ -208,7 +211,11 @@ class MuseumController extends PoppySeedPetsController
             throw new UnprocessableEntityHttpException('You may only donate up to 20 items at a time.');
 
         /** @var Inventory[] $inventory */
-        $inventory = $inventoryRepository->findBy([ 'id' => $inventoryIds ]);
+        $inventory = $inventoryRepository->findBy([
+            'id' => $inventoryIds,
+            'owner' => $user,
+            'location' => [ LocationEnum::HOME, LocationEnum::BASEMENT ]
+        ]);
 
         if(count($inventory) === 0)
             throw new UnprocessableEntityHttpException('No items were selected.');
