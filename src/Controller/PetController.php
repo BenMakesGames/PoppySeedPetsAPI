@@ -518,7 +518,12 @@ class PetController extends PoppySeedPetsController
         {
             if(in_array($stat, PetActivityStatsService::STATS_THAT_CANT_FAIL))
             {
-                $data['byActivity'][] = [ 'value' => $stats->{'get' . $stat}(), 'label' => PetActivityStatsService::STAT_LABELS[$stat], 'color' => PetActivityStatsService::STAT_COLORS[$stat] ];
+                $data['byActivity'][] = [
+                    'value' => $stats->{'get' . $stat}(),
+                    'deleted' => 0,
+                    'label' => PetActivityStatsService::STAT_LABELS[$stat],
+                    'color' => PetActivityStatsService::STAT_COLORS[$stat]
+                ];
 
                 $data['byActivityCombined'][] = [ 'value' => $stats->{'get' . $stat}(), 'label' => PetActivityStatsService::STAT_LABELS[$stat], 'color' => PetActivityStatsService::STAT_COLORS[$stat] ];
 
@@ -530,8 +535,12 @@ class PetController extends PoppySeedPetsController
                 $success = $stats->{'get' . $stat . 'success'}();
                 $failure = $stats->{'get' . $stat . 'failure'}();
 
-                $data['byActivity'][] = [ 'value' => $success, 'label' => PetActivityStatsService::STAT_LABELS[$stat] . ' success', 'color' => PetActivityStatsService::STAT_COLORS[$stat] ];
-                $data['byActivity'][] = [ 'value' => $failure, 'label' => PetActivityStatsService::STAT_LABELS[$stat] . ' failure', 'color' => PetActivityStatsService::STAT_COLORS[$stat] . '88' ];
+                $data['byActivity'][] = [
+                    'value' => $success + $failure,
+                    'deleted' => $failure,
+                    'label' => PetActivityStatsService::STAT_LABELS[$stat],
+                    'color' => PetActivityStatsService::STAT_COLORS[$stat]
+                ];
 
                 $data['byActivityCombined'][] = [ 'value' => $success + $failure, 'label' => PetActivityStatsService::STAT_LABELS[$stat], 'color' => PetActivityStatsService::STAT_COLORS[$stat] ];
 
@@ -545,7 +554,12 @@ class PetController extends PoppySeedPetsController
         }
 
         $data['byActivity'] = array_map(function($a) use($byActivityTotal) {
-            return [ 'label' => $a['label'], 'value' => $a['value'] / $byActivityTotal, 'color' => $a['color'] ];
+            return [
+                'label' => $a['label'],
+                'value' => $a['value'] / $byActivityTotal,
+                'percentDeleted' => $a['value'] > 0 ? $a['deleted'] / $a['value'] : 0,
+                'color' => $a['color']
+            ];
         }, $data['byActivity']);
 
         $data['byActivityCombined'] = array_map(function($a) use($byActivityCombinedTotal) {
@@ -556,7 +570,21 @@ class PetController extends PoppySeedPetsController
             return [ 'label' => $a['label'], 'value' => $a['value'] / $byTimeTotal, 'color' => $a['color'] ];
         }, $data['byTime']);
 
-        return $responseService->success($data);
+        // the chart order is important; the transition from one chart to the next (in order) teaches what the charts mean
+        return $responseService->success([
+            [
+                'title' => 'Activities, by Time Spent',
+                'data' => $data['byTime'],
+            ],
+            [
+                'title' => 'Activities, by Count',
+                'data' => $data['byActivityCombined'],
+            ],
+            [
+                'title' => 'Activity Success vs Failure',
+                'data' => $data['byActivity'],
+            ],
+        ]);
     }
 
     /**
