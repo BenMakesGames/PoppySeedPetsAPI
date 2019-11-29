@@ -55,8 +55,8 @@ class AdoptionService
 
                 shuffle($colors);
 
-                $colorA = $this->tweakColor($colors[0]);
-                $colorB = $this->tweakColor($colors[1]);
+                $colorA = ColorFunctions::tweakColor($colors[0]);
+                $colorB = ColorFunctions::tweakColor($colors[1]);
 
                 $name = ArrayFunctions::pick_one($this->getSeasonalNames());
             }

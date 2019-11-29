@@ -549,16 +549,23 @@ class GatheringService
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
         }
 
-        if(!$pet->hasProtectionFromHeat() && mt_rand(1, 10 + $pet->getStamina()) < 6)
+        if(mt_rand(1, 10 + $pet->getStamina()) < 6)
         {
-            $pet->increaseFood(-1);
-            $pet->increaseSafety(-mt_rand(1, 2));
-
-            // why need to have unlocked the greenhouse? just testing that you've been playing for a while
-            if(mt_rand(1, 20) === 1 && $pet->getOwner()->getUnlockedGreenhouse() !== null)
-                $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and I don\'t mean in a sexy way; ' . $pet->getName() . ' got a bit light-headed.');
+            if($pet->hasProtectionFromHeat())
+            {
+                $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was hot, but their ' . $pet->getTool()->getItem()->getName() . ' protected them.');
+            }
             else
-                $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and ' . $pet->getName() . ' got a bit light-headed.');
+            {
+                $pet->increaseFood(-1);
+                $pet->increaseSafety(-mt_rand(1, 2));
+
+                // why need to have unlocked the greenhouse? just testing that you've been playing for a while
+                if(mt_rand(1, 20) === 1 && $pet->getOwner()->getUnlockedGreenhouse() !== null)
+                    $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and I don\'t mean in a sexy way; ' . $pet->getName() . ' got a bit light-headed.');
+                else
+                    $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and ' . $pet->getName() . ' got a bit light-headed.');
+            }
         }
 
         // more chances to get bugs in the jungle!
@@ -707,16 +714,23 @@ class GatheringService
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
         }
 
-        if(!$pet->hasProtectionFromHeat() && mt_rand(1, 10 + $pet->getStamina()) < 8)
+        if(mt_rand(1, 10 + $pet->getStamina()) < 8)
         {
-            $pet->increaseFood(-1);
-            $pet->increaseSafety(-mt_rand(1, 2));
-
-            // why need to have unlocked the greenhouse? just testing that you've been playing for a while
-            if(mt_rand(1, 20) === 1 && $pet->getOwner()->getUnlockedGreenhouse() !== null)
-                $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and I don\'t mean in a sexy way; ' . $pet->getName() . ' got a bit light-headed.');
+            if($pet->hasProtectionFromHeat())
+            {
+                $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was hot, but their ' . $pet->getTool()->getItem()->getName() . ' protected them.');
+            }
             else
-                $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and ' . $pet->getName() . ' got a bit light-headed.');
+            {
+                $pet->increaseFood(-1);
+                $pet->increaseSafety(-mt_rand(1, 2));
+
+                // why need to have unlocked the greenhouse? just testing that you've been playing for a while
+                if(mt_rand(1, 20) === 1 && $pet->getOwner()->getUnlockedGreenhouse() !== null)
+                    $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and I don\'t mean in a sexy way; ' . $pet->getName() . ' got a bit light-headed.');
+                else
+                    $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and ' . $pet->getName() . ' got a bit light-headed.');
+            }
         }
 
         return $activityLog;
