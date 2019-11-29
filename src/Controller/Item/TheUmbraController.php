@@ -58,10 +58,11 @@ Many historical spells which are said to create something from nothing do so by 
 For example, the Red - a fruit with great cultural significance - is a good offering for spirits of fruit in general. It can be bound to ink and Paper for a fruit-summoning scroll, or sacrificed during a fall festival to ensure a good harvest.
 
 Other good offerings include:
-* Flowering wheat
-* Pure gold and silver
+* Flowering wheat, for good harvest
+* Pure gold and silver, for riches
 * Seaweed (as mentioned before)
 * Flowers; Rice Flower in particular
+* Talons & Feathers (be careful with this one!)
 ');
     }
 }
