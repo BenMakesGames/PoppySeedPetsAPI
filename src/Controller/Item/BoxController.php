@@ -402,27 +402,27 @@ class BoxController extends PoppySeedPetsItemController
         $a = mt_rand(1, 100);
         $extraItem = null;
 
-        if($a === 0 || $a === 1)
+        if($a === 1 || $a === 2)
         {
             $extraItem = [ 'name' => 'Striped Microcline', 'description' => 'a pretty, striped rock' ];
             $sand--;
         }
-        else if($a >= 2 && $a <= 5)
+        else if($a >= 3 && $a <= 6)
         {
             $extraItem = [ 'name' => 'Password', 'description' => 'someone\'s password' ];
             $sand--;
         }
-        else if($a === 6 || $a === 7)
+        else if($a === 7 || $a === 8)
         {
             $extraItem = [ 'name' => 'Garden Shovel', 'description' => 'a shovel' ];
             $sand -= 3;
         }
-        else if($a >= 8 && $a <= 10)
+        else if($a >= 9 && $a <= 11)
         {
             $extraItem = [ 'name' => 'Plastic Idol', 'description' => 'a plastic figurine of some kind' ];
             $sand--;
         }
-        else if($a === 11)
+        else if($a === 12)
         {
             $extraItem = [ 'name' => 'Species Transmigration Serum', 'description' => 'a syringe!? Goodness! That\'s exceptionally unsafe' ];
             $sand--;
