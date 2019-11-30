@@ -58,7 +58,7 @@ class PetRelationshipService
             ->setRelationship($father)
             ->setCurrentRelationship(RelationshipEnum::BFF)
             ->setRelationshipGoal(RelationshipEnum::BFF)
-            ->setMetDescription($father->getName() . ' fathered ' . $father->getName() . '!')
+            ->setMetDescription($father->getName() . ' fathered ' . $baby->getName() . '!')
         ;
 
         $motherWithBaby = (new PetRelationship())
@@ -74,7 +74,7 @@ class PetRelationshipService
             ->setRelationship($baby)
             ->setCurrentRelationship(RelationshipEnum::BFF)
             ->setRelationshipGoal(RelationshipEnum::BFF)
-            ->setMetDescription($father->getName() . ' fathered ' . $father->getName() . '!')
+            ->setMetDescription($father->getName() . ' fathered ' . $baby->getName() . '!')
         ;
 
         $this->em->persist($petWithMother);
