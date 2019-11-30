@@ -56,7 +56,7 @@ class PetSpecies
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petEncyclopedia"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petEncyclopedia", "petFriend"})
      */
     private $flipX;
 
@@ -74,13 +74,13 @@ class PetSpecies
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "userPublicProfile", "petEncyclopedia"})
+     * @Groups({"myPet", "userPublicProfile", "petEncyclopedia", "petFriend"})
      */
     private $pregnancyStyle;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"myPet", "userPublicProfile", "petEncyclopedia"})
+     * @Groups({"myPet", "userPublicProfile", "petEncyclopedia", "petFriend"})
      */
     private $eggImage;
 
