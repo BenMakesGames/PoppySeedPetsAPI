@@ -220,7 +220,11 @@ class SummoningScrollController extends PoppySeedPetsItemController
             [ 'lastInteracted' => 'ASC' ]
         );
 
-        if(!$pet)
+        if($pet)
+        {
+            $pet->setOwner($user);
+        }
+        else
         {
             $now = new \DateTimeImmutable();
 
@@ -272,7 +276,10 @@ class SummoningScrollController extends PoppySeedPetsItemController
             $message = 'You read the scroll... not ' . mt_rand(3, 6) . ' seconds later, ' . GrammarFunctions::indefiniteArticle($pet->getSpecies()->getName()) . ' ' . $pet->getSpecies()->getName() . ' named ' . $pet->getName() . ' opens the door, waves "hello", then closes it again before heading to the Pet Shelter!';
         }
         else
+        {
+            $pet->setInDaycare(false);
             $message = 'You read the scroll... not ' . mt_rand(3, 6) . ' seconds later, ' . GrammarFunctions::indefiniteArticle($pet->getSpecies()->getName()) . ' ' . $pet->getSpecies()->getName() . ' named ' . $pet->getName() . ' opens the door, and walks inside!';
+        }
 
         $em->flush();
 
