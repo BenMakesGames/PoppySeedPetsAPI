@@ -409,7 +409,7 @@ class BoxController extends PoppySeedPetsItemController
         }
         else if($a >= 2 && $a <= 5)
         {
-            $extraItem = 'Password';
+            $extraItem = [ 'name' => 'Password', 'description' => 'someone\'s password' ];
             $sand--;
         }
         else if($a === 6 || $a === 7)
@@ -424,7 +424,7 @@ class BoxController extends PoppySeedPetsItemController
         }
         else if($a === 11)
         {
-            $extraItem = 'Species Transmigration Serum';
+            $extraItem = [ 'name' => 'Species Transmigration Serum', 'description' => 'a syringe!? Goodness! That\'s exceptionally unsafe' ];
             $sand--;
         }
 
