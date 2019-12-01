@@ -130,6 +130,9 @@ class CraftingService
         if(array_key_exists('Fiberglass', $quantities))
             $possibilities[] = [ $this, 'createSimpleFiberglassItem' ];
 
+        if(array_key_exists('Glass Pendulum', $quantities) && array_key_exists('Flute', $quantities) && array_key_exists('White Cloth', $quantities))
+            $possibilities[] = [ $this, 'createDecoratedFlute' ];
+
         // pets won't try any smithing tasks if they don't feel sufficiently safe
         if($pet->getSafety() > 0)
             $possibilities = array_merge($possibilities, $this->smithingService->getCraftingPossibilities($pet, $quantities));
@@ -240,6 +243,37 @@ class CraftingService
             $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to create a Sweet Beat, but wasn\'t able to make any meaningful progress.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createDecoratedFlute(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        if($roll <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Decorated Flute, but tore the White Cloth :(', '');
+        }
+        else if($roll >= 18)
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 75), PetActivityStatEnum::CRAFT, true);
+            $this->petService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
+            $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Flute', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Glass Pendulum', $pet->getOwner(), LocationEnum::HOME, 1);
+            $pet->increaseEsteem(3);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Decorated Flute.', 'items/tool/instrument/flute-decorated');
+            $this->inventoryService->petCollectsItem('Decorated Flute', $pet, $pet->getName() . ' created this by tying a Glass Pendulum to a Flute.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' thought it might be cool to decorate a Flute, but couldn\'t think of something stylish enough.', 'icons/activity-logs/confused');
         }
     }
 
