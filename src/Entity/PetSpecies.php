@@ -74,13 +74,13 @@ class PetSpecies
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "userPublicProfile", "petEncyclopedia", "petFriend"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend"})
      */
     private $pregnancyStyle;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"myPet", "userPublicProfile", "petEncyclopedia", "petFriend"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend"})
      */
     private $eggImage;
 

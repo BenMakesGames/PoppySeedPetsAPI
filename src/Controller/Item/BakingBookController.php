@@ -33,6 +33,8 @@ class BakingBookController extends PoppySeedPetsItemController
 
 #### Recipes
 
+* Donut (Cake)
+* Donut (Yeast)
 * Flour Tortilla
 * Melon Pan
 * Meringues
@@ -64,6 +66,27 @@ Can be found as a byproduct of wine-making. (As an example, you can age some Blu
 Simply grind some Wheat into a fine powder.
 
 ## Recipes
+
+#### Donut (Cake)
+
+This donut isn\'t fried, so it\'s easier to pretend that it\'s healthy.
+
+* Baking Powder
+* Butter
+* Creamy Milk
+* Egg
+* Sugar
+* Wheat Flour
+
+#### Donut (Yeast)
+
+* Baker\'s Yeast
+* Butter
+* Creamy Milk
+* Egg
+* Oil (for fryin\'!)
+* Sugar
+* Wheat Flour
 
 #### Flour Tortilla
 
