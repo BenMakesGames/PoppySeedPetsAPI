@@ -88,6 +88,8 @@ This donut isn\'t fried, so it\'s easier to pretend that it\'s healthy.
 * Sugar
 * Wheat Flour
 
+Optionally, glaze with frosting (Sugar + the tiniest amount of water you can get away with).
+
 #### Flour Tortilla
 
 A versatile bread! (If you make quesadillas, don\'t forget to Butter, or Oil, the pan, as you would with a Grilled Cheese!)
