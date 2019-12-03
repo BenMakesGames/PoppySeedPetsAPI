@@ -12,6 +12,7 @@ use App\Entity\StatusEffect;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\SpiritCompanionStarEnum;
 use App\Enum\StatusEffectEnum;
@@ -807,7 +808,9 @@ class PetService
 
         }
 
-        $this->responseService->createActivityLog($pet, $message, 'companions/' . $companion->getImage(), $changes->compare($pet));
+        $this->responseService->createActivityLog($pet, $message, 'companions/' . $companion->getImage(), $changes->compare($pet))
+            ->setInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+        ;
     }
 
     private function hangOutWithOtherPet(PetRelationship $pet, PetRelationship $friend)
