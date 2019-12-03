@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\UserStatEnum;
@@ -49,7 +50,7 @@ class TreasureMapService
 
             if(mt_rand(1, 3) === 1)
             {
-                $this->responseService->createActivityLog($pet, $pet->getName() . ' put the treasure map down.', 'icons/activity-logs/confused');
+                $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' put the treasure map down.');
                 $pet->setTool(null);
             }
         }
@@ -72,6 +73,8 @@ class TreasureMapService
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));
 
+        $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY);
+
         if(mt_rand(1, 5) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);
     }
@@ -85,6 +88,8 @@ class TreasureMapService
         $pet->increaseEsteem(5);
 
         $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found that Thieving Magpie, and offered it a "Gold" Idol in exchange for something else. The magpie eagerly accepted.', 'items/treasure/magpie-deal');
+
+        $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY);
 
         $this->em->remove($pet->getTool());
         $pet->setTool(null);

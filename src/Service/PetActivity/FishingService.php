@@ -4,6 +4,7 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
@@ -338,7 +339,9 @@ class FishingService
 
         if(\mt_rand(1, 80) === 1 && $pet->hasMerit(MeritEnum::LUCKY))
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Waterfall Basin, and reeled in a Little Strongbox! Lucky~!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Waterfall Basin, and reeled in a Little Strongbox! Lucky~!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+            ;
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $this->inventoryService->petCollectsItem('Little Strongbox', $pet, $pet->getName() . ' was fishing in a Waterfall Basin, and one of these got caught on the line! Lucky~!', $activityLog);
 
@@ -406,7 +409,9 @@ class FishingService
         if($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 7) === 1)
         {
             $moneys = \mt_rand(10, 15) + $bonusMoney;
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fished around in the Plaza Fountain, and grabbed ' . $moneys . ' moneys! Lucky~!', 'icons/activity-logs/moneys');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fished around in the Plaza Fountain, and grabbed ' . $moneys . ' moneys! Lucky~!', 'icons/activity-logs/moneys')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+            ;
             $pet->getOwner()->increaseMoneys($moneys);
         }
         else

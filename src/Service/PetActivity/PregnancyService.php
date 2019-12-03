@@ -2,11 +2,13 @@
 namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
+use App\Entity\PetActivityLog;
 use App\Entity\PetBaby;
 use App\Entity\PetSkills;
 use App\Entity\PetSpecies;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
@@ -148,15 +150,17 @@ class PregnancyService
             $baby->setInDaycare(true);
             $pet->setInDaycare(true);
 
-            $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '! (There wasn\'t enough room at Home, so the birth took place at the Pet Shelter.)', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '! (There wasn\'t enough room at Home, so the birth took place at the Pet Shelter.)', '');
         }
         else
         {
             if($increasedPetLimit)
-                $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '! (Congrats on your first pet birth! The maximum amount of pets you can have at home has been permanently increased by one!)', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '! (Congrats on your first pet birth! The maximum amount of pets you can have at home has been permanently increased by one!)', '');
             else
-                $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '!', '');
         }
+
+        $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::GAVE_BIRTH);
 
         $this->inventoryService->receiveItem('Renaming Scroll', $pet->getOwner(), $pet->getOwner(), 'You received this when ' . $baby->getName() . ' was born.', LocationEnum::HOME);
 

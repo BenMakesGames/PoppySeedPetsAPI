@@ -6,6 +6,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SpiritCompanionStarEnum;
 use App\Functions\ArrayFunctions;
@@ -263,6 +264,7 @@ class TriDChessService implements ParkEventInterface
                 ->setEntry($activityLogEntry)
                 ->setChanges($state->compare($participant->pet))
                 ->setIcon('icons/menu/park')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
             ;
 
             $this->em->persist($log);

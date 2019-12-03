@@ -8,6 +8,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\SpiritCompanion;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
@@ -752,7 +753,9 @@ class PetController extends PoppySeedPetsController
 
         $pet->getSkills()->setTalent();
 
-        $responseService->createActivityLog($pet, str_replace('%pet.name%', $pet->getName(), $merit->getDescription()), '');
+        $responseService->createActivityLog($pet, str_replace('%pet.name%', $pet->getName(), $merit->getDescription()), '')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
+        ;
 
         $em->flush();
 
@@ -821,7 +824,9 @@ class PetController extends PoppySeedPetsController
 
         $pet->getSkills()->setExpertise();
 
-        $responseService->createActivityLog($pet, str_replace('%pet.name%', $pet->getName(), $merit->getDescription()), '');
+        $responseService->createActivityLog($pet, str_replace('%pet.name%', $pet->getName(), $merit->getDescription()), '')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
+        ;
 
         $em->flush();
 

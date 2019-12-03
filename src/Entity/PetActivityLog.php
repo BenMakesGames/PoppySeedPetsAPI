@@ -2,12 +2,16 @@
 
 namespace App\Entity;
 
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Model\PetChangesSummary;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PetActivityLogRepository")
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="interesingness_idx", columns={"interestingness"})
+ * })
  */
 class PetActivityLog
 {
@@ -47,6 +51,12 @@ class PetActivityLog
      * @Groups({"petActivityLogs"})
      */
     private $icon = '';
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"petActivityLogs"})
+     */
+    private $interestingness = 0;
 
     public function __construct()
     {
@@ -96,6 +106,9 @@ class PetActivityLog
     {
         $this->changes = $changes;
 
+        if($changes->level !== 0 || $changes->affectionLevel !== 0)
+            $this->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP);
+
         return $this;
     }
 
@@ -107,6 +120,26 @@ class PetActivityLog
     public function setIcon(string $icon): self
     {
         $this->icon = $icon;
+
+        return $this;
+    }
+
+    public function getInterestingness(): ?int
+    {
+        return $this->interestingness;
+    }
+
+    public function addInterestingness(int $interestingness): self
+    {
+        if($interestingness > $this->interestingness)
+            $this->interestingness = $interestingness;
+
+        return $this;
+    }
+
+    public function setInterestingness(int $interestingness): self
+    {
+        $this->interestingness = $interestingness;
 
         return $this;
     }

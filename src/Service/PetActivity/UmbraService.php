@@ -4,6 +4,7 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SpiritCompanionStarEnum;
@@ -160,15 +161,17 @@ class UmbraService
 
             if(mt_rand(1, 2) === 1)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. ' . $pet->getName() . ' was able to point the way; the spirit was very thankful, and insisted that ' . $pet->getName() . ' take ' . $rewards[$reward] . ' ' . $reward . '.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. ' . $pet->getName() . ' and ' . $pet->getSpiritCompanion()->getName() . ' were able to point the way; the spirit was very thankful, and insisted that ' . $pet->getName() . ' take ' . $rewards[$reward] . ' ' . $reward . '.', '');
                 $this->inventoryService->petCollectsItem($reward, $pet, $pet->getName() . ' received this from a friendly spirit as thanks for helping it navigate the Umbra.', $activityLog);
                 $pet->increaseEsteem(1);
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. ' . $pet->getName() . ' was able to point the way; the spirit was very thankful, and wished ' . $pet->getName() . ' well.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. ' . $pet->getName() . ' and ' . $pet->getSpiritCompanion()->getName() . ' were able to point the way; the spirit was very thankful, and wished ' . $pet->getName() . ' well.', '');
                 $pet->increaseEsteem(4);
             }
+
+            $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT);
 
             return $activityLog;
         }
@@ -179,7 +182,11 @@ class UmbraService
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
             if($hasRelevantSpirit)
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. It asked for directions, but ' . $pet->getName() . ' and ' . $pet->getSpiritCompanion()->getName() . ' didn\'t know how to help.', 'icons/activity-logs/confused');
+            {
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. It asked for directions, but ' . $pet->getName() . ' and ' . $pet->getSpiritCompanion()->getName() . ' didn\'t know how to help.', 'icons/activity-logs/confused')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ;
+            }
             else
                 return $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. It asked for directions, but ' . $pet->getName() . ' didn\'t know how to help.', 'icons/activity-logs/confused');
         }
@@ -191,7 +198,9 @@ class UmbraService
 
         if($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 80) === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a Little Strongbox! Lucky~!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a Little Strongbox! Lucky~!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+            ;
 
             $this->inventoryService->petCollectsItem('Little Strongbox', $pet, $pet->getName() . ' found this on the shores of a dark river in the Umbra.', $activityLog);
 
@@ -200,7 +209,9 @@ class UmbraService
 
         if(mt_rand(1, 100) === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a Little Strongbox, and took it!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a Little Strongbox, and took it!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ;
 
             $this->inventoryService->petCollectsItem('Little Strongbox', $pet, $pet->getName() . ' found this on the shores of a dark river in the Umbra.', $activityLog);
 
@@ -214,7 +225,9 @@ class UmbraService
 
         if($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 50) === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a ' . $die . '! Lucky~!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a ' . $die . '! Lucky~!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+            ;
 
             $this->inventoryService->petCollectsItem($die, $pet, $pet->getName() . ' found this on the shores of a dark river in the Umbra.', $activityLog);
 

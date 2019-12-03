@@ -3,17 +3,21 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Enum\LocationEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
+use App\Service\ResponseService;
 
 // yep. this game has a class called "PoopingService". you're welcome.
 class PoopingService
 {
     private $inventoryService;
+    private $responseService;
 
-    public function __construct(InventoryService $inventoryService)
+    public function __construct(InventoryService $inventoryService, ResponseService $responseService)
     {
         $this->inventoryService = $inventoryService;
+        $this->responseService = $responseService;
     }
 
     public function poopDarkMatter(Pet $pet)
@@ -31,5 +35,9 @@ class PoopingService
         {
             $this->inventoryService->receiveItem('Dark Matter', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' pooped this.', LocationEnum::HOME);
         }
+
+        $this->responseService->createActivityLog($pet, $pet->getName() . ', um, created some Dark Matter.', '')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+        ;
     }
 }

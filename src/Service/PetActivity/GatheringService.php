@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
@@ -436,7 +437,12 @@ class GatheringService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found an Overgrown Garden, and harvested ' . ArrayFunctions::list_nice($loot) . '.', '');
 
             if($lucky)
-                $activityLog->setEntry($activityLog->getEntry() . ' (Honeydont?! Lucky~!)');
+            {
+                $activityLog
+                    ->setEntry($activityLog->getEntry() . ' (Honeydont?! Lucky~!)')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ;
+            }
 
             $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::GATHER, true);
         }
@@ -615,7 +621,12 @@ class GatheringService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to the Wild Hedgemaze. It turns out mazes are way easier with a perfect memory! ' . $pet->getName() . ' found ' . ArrayFunctions::list_nice($loot) . '.', '');
 
             if($lucky)
-                $activityLog->setEntry($activityLog->getEntry() . ' (Melowatern!? Lucky~!)');
+            {
+                $activityLog
+                    ->setEntry($activityLog->getEntry() . ' (Melowatern!? Lucky~!)')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ;
+            }
 
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
         }
@@ -674,7 +685,12 @@ class GatheringService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wandered through a Wild Hedgemaze, and found ' . ArrayFunctions::list_nice($loot) . '.', '');
 
             if($lucky)
-                $activityLog->setEntry($activityLog->getEntry() . ' (Melowatern!? Lucky~!)');
+            {
+                $activityLog
+                    ->setEntry($activityLog->getEntry() . ' (Melowatern!? Lucky~!)')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ;
+            }
 
             $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::GATHER, true);
         }

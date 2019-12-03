@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\PetRelationshipRepository;
@@ -112,8 +113,13 @@ class PetRelationshipService
         {
             $whatASurprise = mt_rand(1, 10) === 1 ? 'Quelle surprise!' : 'What a surprise!';
 
-            $this->responseService->createActivityLog($pet, $pet->getName() . ' and ' . $otherPet->getName() . ' are living together, now! ' . $whatASurprise, 'icons/activity-logs/friend');
-            $this->responseService->createActivityLog($otherPet, $otherPet->getName() . ' and ' . $pet->getName() . ' are living together, now! ' . $whatASurprise, 'icons/activity-logs/friend');
+            $this->responseService->createActivityLog($pet, $pet->getName() . ' and ' . $otherPet->getName() . ' are living together, now! ' . $whatASurprise, 'icons/activity-logs/friend')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
+            ;
+
+            $this->responseService->createActivityLog($otherPet, $otherPet->getName() . ' and ' . $pet->getName() . ' are living together, now! ' . $whatASurprise, 'icons/activity-logs/friend')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
+            ;
         }
 
         return $relationship;
@@ -198,11 +204,13 @@ class PetRelationshipService
         $meetDescription = str_replace([ '%p1%', '%p2%'], [ $pet->getName(), $otherPet->getName() ], $howMetDescription);
 
         if($petRelationship->getCurrentRelationship() === RelationshipEnum::DISLIKE)
-            $this->responseService->createActivityLog($pet, $meetDescription . ' They didn\'t really get along, though...', 'icons/activity-logs/enemy');
+            $activityLog = $this->responseService->createActivityLog($pet, $meetDescription . ' They didn\'t really get along, though...', 'icons/activity-logs/enemy');
         else if($petRelationship->getCurrentRelationship() === RelationshipEnum::FWB || $petRelationship->getRelationshipGoal() === RelationshipEnum::FWB || $petRelationship->getRelationshipGoal() === RelationshipEnum::MATE)
-            $this->responseService->createActivityLog($pet, $meetDescription . ' (And what a cutie!)', 'icons/activity-logs/friend-cute');
+            $activityLog = $this->responseService->createActivityLog($pet, $meetDescription . ' (And what a cutie!)', 'icons/activity-logs/friend-cute');
         else
-            $this->responseService->createActivityLog($pet, $meetDescription, 'icons/activity-logs/friend');
+            $activityLog = $this->responseService->createActivityLog($pet, $meetDescription, 'icons/activity-logs/friend');
+
+        $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP);
 
         // other pet
         $otherPetRelationship = (new PetRelationship())
@@ -220,11 +228,13 @@ class PetRelationshipService
         $meetDescription = str_replace([ '%p1%', '%p2%'], [ $otherPet->getName(), $pet->getName() ], $howMetDescription);
 
         if($petRelationship->getCurrentRelationship() === RelationshipEnum::DISLIKE)
-            $this->responseService->createActivityLog($otherPet, $meetDescription . ' They didn\'t really get along, though...', 'icons/activity-logs/enemy');
+            $otherActivityPet = $this->responseService->createActivityLog($otherPet, $meetDescription . ' They didn\'t really get along, though...', 'icons/activity-logs/enemy');
         else if($otherPetRelationship->getCurrentRelationship() === RelationshipEnum::FWB || $otherPetRelationship->getRelationshipGoal() === RelationshipEnum::FWB || $otherPetRelationship->getRelationshipGoal() === RelationshipEnum::MATE)
-            $this->responseService->createActivityLog($otherPet, $meetDescription . ' (And what a cutie!)', 'icons/activity-logs/friend-cute');
+            $otherActivityPet = $this->responseService->createActivityLog($otherPet, $meetDescription . ' (And what a cutie!)', 'icons/activity-logs/friend-cute');
         else
-            $this->responseService->createActivityLog($otherPet, $meetDescription, 'icons/activity-logs/friend');
+            $otherActivityPet = $this->responseService->createActivityLog($otherPet, $meetDescription, 'icons/activity-logs/friend');
+
+        $otherActivityPet->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP);
 
         return [ $petRelationship, $otherPetRelationship ];
     }
@@ -669,6 +679,9 @@ class PetRelationshipService
         $p1->setTimeUntilChange();
         $p2->setTimeUntilChange();
 
+        foreach($logs as $log)
+            $log->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION);
+
         return $logs;
     }
 
@@ -870,6 +883,7 @@ class PetRelationshipService
             case RelationshipEnum::MATE:
                 $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wants to date ' . $p2->getPet()->getName() . '! ' . $p2->getPet()->getName() . ' feels the same way! The two are now dating! <3')->setIcon('icons/activity-logs/friend-cute');
                 $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wants to date ' . $p2->getPet()->getName() . '! ' . $p2->getPet()->getName() . ' feels the same way! The two are now dating! <3')->setIcon('icons/activity-logs/friend-cute');
+
                 $p1->setCurrentRelationship(RelationshipEnum::MATE);
                 $p2->setCurrentRelationship(RelationshipEnum::MATE);
                 break;
