@@ -116,7 +116,7 @@ class PregnancyService
         ;
 
         if($pregnancy->getAffection() > 0)
-            $pet->increaseAffectionPoints($pet->getAffectionPointsToLevel());
+            $baby->increaseAffectionPoints($baby->getAffectionPointsToLevel());
 
         $babySkills = new PetSkills();
 
