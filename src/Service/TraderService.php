@@ -55,6 +55,7 @@ class TraderService
     private const ID_UNICORN_HORN = 'unicornHorn';
     private const ID_TINFOIL_HAT_1 = 'toadstoolForTinfoilHat';
     private const ID_TINFOIL_HAT_2 = 'teaLeavesForTinfoilHat';
+    private const ID_KEY_RING = 'keyRing';
 
     private $itemRepository;
     private $inventoryService;
@@ -454,6 +455,21 @@ class TraderService
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Glass Pendulum'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Glowing Eight-sided Die'), 1) ],
                 'Ugh, take it! Those dice creep me out!'
+            );
+        }
+
+        if(($dayOfTheYear + 3) % 11 === 0 || ($dayOfTheYear + 10) % 11 === 0)
+        {
+            $offers[] = new TraderOffer(
+                self::ID_KEY_RING,
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Iron Key'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Key'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Key'), 1),
+                    TraderOfferCostOrYield::createMoney(10),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Key Ring'), 1) ],
+                ''
             );
         }
 

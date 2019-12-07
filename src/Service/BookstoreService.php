@@ -30,6 +30,7 @@ class BookstoreService
 
         $cookedSomething = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::COOKED_SOMETHING ]);
         $itemsDonatedToMuseum = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]);
+        $petsBirthed = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::PETS_BIRTHED ]);
 
         if($cookedSomething)
         {
@@ -62,6 +63,16 @@ class BookstoreService
 
             if($itemsDonatedToMuseum->getValue() >= 200)
                 $bookPrices['SOUP'] = 25;
+        }
+
+        if($petsBirthed && $petsBirthed->getValue() >= 3)
+        {
+            if($petsBirthed->getValue() >= 10)
+                $bookPrices['Renaming Scroll'] = 500;
+            else if($petsBirthed->getValue() >= 5)
+                $bookPrices['Renaming Scroll'] = 600;
+            else
+                $bookPrices['Renaming Scroll'] = 800;
         }
 
         ksort($bookPrices);
