@@ -43,7 +43,7 @@ class SpiritPolymorphPotionController extends PoppySeedPetsItemController
         $pet = $petRepository->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('There is no such pet.');
 
         if(!$pet->getSpiritCompanion())
             throw new UnprocessableEntityHttpException($pet->getName() . ' doesn\'t have a spirit companion! Let\'s not waste a perfectly-good potion!');

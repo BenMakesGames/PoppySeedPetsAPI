@@ -42,7 +42,7 @@ class EncyclopediaController extends PoppySeedPetsController
         $item = $itemRepository->findOneBy([ 'name' => $itemName ]);
 
         if(!$item)
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('There is no such item.');
 
         return $responseService->success($item, SerializationGroupEnum::ITEM_ENCYCLOPEDIA);
     }
@@ -66,7 +66,7 @@ class EncyclopediaController extends PoppySeedPetsController
         $species = $petSpeciesRepository->findOneBy([ 'name' => $speciesName ]);
 
         if(!$species)
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('There is no such species.');
 
         return $responseService->success($species, SerializationGroupEnum::PET_ENCYCLOPEDIA);
     }

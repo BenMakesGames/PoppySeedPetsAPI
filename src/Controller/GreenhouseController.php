@@ -122,7 +122,7 @@ class GreenhouseController extends PoppySeedPetsController
         $user = $this->getUser();
 
         if($plant->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('That plant does not exist.');
 
         if(new \DateTimeImmutable() < $plant->getCanNextInteract())
             throw new UnprocessableEntityHttpException('This plant is not yet ready to harvest.');
@@ -191,7 +191,7 @@ class GreenhouseController extends PoppySeedPetsController
         $user = $this->getUser();
 
         if($plant->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('That plant does not exist.');
 
         if(new \DateTimeImmutable() < $plant->getCanNextInteract())
             throw new UnprocessableEntityHttpException('This plant is not yet ready to fertilize.');
@@ -228,7 +228,7 @@ class GreenhouseController extends PoppySeedPetsController
         $user = $this->getUser();
 
         if($plant->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('That plant does not exist.');
 
         $em->remove($plant);
         $em->flush();

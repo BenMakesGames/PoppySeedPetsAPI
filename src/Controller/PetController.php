@@ -211,7 +211,7 @@ class PetController extends PoppySeedPetsController
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('There is no such pet.');
 
         $note = trim($request->request->get('note', ''));
 
@@ -236,10 +236,10 @@ class PetController extends PoppySeedPetsController
         $user = $this->getUser();
 
         if($inventory->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('That item does not exist.');
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('There is no such pet.');
 
         if($pet->getInDaycare())
             throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');
@@ -273,10 +273,10 @@ class PetController extends PoppySeedPetsController
         $user = $this->getUser();
 
         if($inventory->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('That item does not exist.');
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('There is no such pet.');
 
         if($pet->getInDaycare())
             throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');

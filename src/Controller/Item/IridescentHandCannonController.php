@@ -43,7 +43,7 @@ class IridescentHandCannonController extends PoppySeedPetsItemController
         $pet = $petRepository->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('There is no such pet.');
 
         // make sure the new hue is some minimum distance away from the old hue:
         if($color === 'A')

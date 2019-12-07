@@ -933,6 +933,14 @@ class Pet
         return $this;
     }
 
+    public function decreaseAffectionRewardsClaimed(): self
+    {
+        if($this->affectionRewardsClaimed > 0)
+            $this->affectionRewardsClaimed--;
+
+        return $this;
+    }
+
     public function getSpiritCompanion(): ?SpiritCompanion
     {
         return $this->spiritCompanion;

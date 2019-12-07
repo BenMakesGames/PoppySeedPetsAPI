@@ -359,7 +359,7 @@ class AccountController extends PoppySeedPetsController
         $now = new \DateTimeImmutable();
 
         if($now->format('m') != 7 || $now->format('d') < 3 || $now->format('d') > 5)
-            throw new NotFoundHttpException();
+            throw new AccessDeniedHttpException('It isn\'t July 4th...');
 
         $user = $this->getUser();
 

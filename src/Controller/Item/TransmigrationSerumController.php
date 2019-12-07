@@ -40,7 +40,7 @@ class TransmigrationSerumController extends PoppySeedPetsItemController
         $pet = $petRepository->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('There is no such pet.');
 
         $speciesId = $request->request->getInt('species', 0);
 

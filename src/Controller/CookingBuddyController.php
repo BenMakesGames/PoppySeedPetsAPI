@@ -36,7 +36,7 @@ class CookingBuddyController extends PoppySeedPetsController
         $user = $this->getUser();
 
         if($cookingBuddy->getOwner()->getId() !== $user->getId() || $cookingBuddy->getItem()->getName() !== 'Cooking Buddy')
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('404 Cooking Buddy Not Found');
 
         $knownRecipesFilterService->addRequiredFilter('user', $user->getId());
 
@@ -80,10 +80,10 @@ class CookingBuddyController extends PoppySeedPetsController
         $user = $this->getUser();
 
         if($cookingBuddy->getOwner()->getId() !== $user->getId() || $cookingBuddy->getItem()->getName() !== 'Cooking Buddy')
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('404 Cooking Buddy Not Found');
 
         if($knownRecipe->getUser()->getId() !== $user->getId())
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('Unknown recipe? Weird. Reload and try again.');
 
         $recipe = $knownRecipe->getRecipe();
 

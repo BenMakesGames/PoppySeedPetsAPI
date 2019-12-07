@@ -16,6 +16,29 @@ class MeritService
     }
 
     /**
+     * @return string[]
+     */
+    public function getUnlearnableMerits(Pet $pet): array
+    {
+        $petMerits = array_map(function(Merit $m) { return $m->getName(); }, $pet->getMerits());
+        $canUnlearn = array_intersect($petMerits, [
+            MeritEnum::INTROSPECTIVE,
+            MeritEnum::PROTOCOL_7,
+            MeritEnum::NATURAL_CHANNEL,
+            MeritEnum::SOOTHING_VOICE,
+            MeritEnum::BLACK_HOLE_TUM,
+            MeritEnum::EIDETIC_MEMORY,
+            MeritEnum::MOON_BOUND,
+            MeritEnum::NO_SHADOW_OR_REFLECTION,
+        ]);
+
+        if(!$pet->getPregnancy() && $pet->hasMerit(MeritEnum::VOLAGAMY))
+            $canUnlearn[] = MeritEnum::VOLAGAMY;
+
+        return $canUnlearn;
+    }
+
+    /**
      * @return Merit[]
      */
     public function getAvailableMerits(Pet $pet): array

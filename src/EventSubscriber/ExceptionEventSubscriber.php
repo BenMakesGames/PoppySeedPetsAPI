@@ -8,14 +8,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class ExceptionEventSubscriber implements EventSubscriberInterface
 {
     private $responseService;
+    private $kernel;
 
-    public function __construct(ResponseService $responseService)
+    public function __construct(ResponseService $responseService, KernelInterface $kernel)
     {
         $this->responseService = $responseService;
+        $this->kernel = $kernel;
     }
 
     public static function getSubscribedEvents()
@@ -33,7 +36,7 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
         {
             $event->setResponse($this->responseService->error(
                 $e->getStatusCode(),
-                [ $e->getMessage() ]
+                [ $e->getMessage() ? $e->getMessage() : 'Generic 4044444444444444!!1!' ]
             ));
         }
         else if($e instanceof EntityNotFoundException)
@@ -48,6 +51,13 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
             $event->setResponse($this->responseService->error(
                 Response::HTTP_NOT_FOUND,
                 [ $message ]
+            ));
+        }
+        else if($this->kernel->getEnvironment() !== 'dev')
+        {
+            $event->setResponse($this->responseService->error(
+                Response::HTTP_INTERNAL_SERVER_ERROR,
+                [ $e->getMessage() ]
             ));
         }
     }

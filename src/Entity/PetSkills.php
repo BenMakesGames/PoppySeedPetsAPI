@@ -137,6 +137,17 @@ class PetSkills
         return $this;
     }
 
+    public function decreaseStat(string $statName): self
+    {
+        if($statName === 'id' || $statName === 'pet' || !property_exists($this, $statName))
+            throw new \InvalidArgumentException('Unknown stat "' . $statName . '".');
+
+        if($this->{$statName} > 0)
+            $this->{$statName}--;
+
+        return $this;
+    }
+
     public function getStrength(): int
     {
         return $this->strength;

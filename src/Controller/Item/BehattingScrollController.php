@@ -42,7 +42,7 @@ class BehattingScrollController extends PoppySeedPetsItemController
         $pet = $petRepository->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('There is no such pet.');
 
         if($pet->hasMerit(MeritEnum::BEHATTED))
             throw new UnprocessableEntityHttpException($pet->getName() . ' already has the Behatted Merit!');

@@ -102,7 +102,7 @@ class NotificationController extends PoppySeedPetsController
         $user = $this->getUser();
 
         if($subscription->getUser()->getId() !== $user->getId())
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('That subscription does not exist.');
 
         $em->remove($subscription);
         $em->flush();

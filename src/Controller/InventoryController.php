@@ -160,7 +160,7 @@ class InventoryController extends PoppySeedPetsController
             throw new AccessDeniedHttpException('You have not yet unlocked this feature.');
 
         if($inventory->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('That item does not belong to you.');
 
         if($inventory->getLockedToOwner())
             throw new UnprocessableEntityHttpException('This item is locked to your account. It cannot be sold, traded, etc.');
