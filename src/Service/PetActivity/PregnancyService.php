@@ -10,12 +10,14 @@ use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\NumberFunctions;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\PetRelationshipService;
 use App\Service\PetService;
@@ -33,11 +35,12 @@ class PregnancyService
     private $petService;
     private $userQuestRepository;
     private $petSpeciesRepository;
+    private $userStatsRepository;
 
     public function __construct(
         EntityManagerInterface $em, InventoryService $inventoryService, PetRelationshipService $petRelationshipService,
         PetRepository $petRepository, ResponseService $responseService, PetService $petService,
-        UserQuestRepository $userQuestRepository, PetSpeciesRepository $petSpeciesRepository
+        UserQuestRepository $userQuestRepository, PetSpeciesRepository $petSpeciesRepository, UserStatsRepository $userStatsRepository
     )
     {
         $this->em = $em;
@@ -48,6 +51,7 @@ class PregnancyService
         $this->petService = $petService;
         $this->userQuestRepository = $userQuestRepository;
         $this->petSpeciesRepository = $petSpeciesRepository;
+        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function getPregnant(Pet $pet1, Pet $pet2)
@@ -178,6 +182,8 @@ class PregnancyService
             ->increaseSafety(mt_rand(8, 16))
             ->increaseFood(-mt_rand(8, 16))
         ;
+
+        $this->userStatsRepository->incrementStat($user, UserStatEnum::PETS_BIRTHED);
     }
 
     private function generateColor(string $color1, string $color2): string

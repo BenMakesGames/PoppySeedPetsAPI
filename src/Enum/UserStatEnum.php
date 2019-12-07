@@ -26,4 +26,5 @@ final class UserStatEnum
     const PETS_ADOPTED = 'Pets Adopted';
     const MAGIC_HOURGLASSES_SMASHED = 'Magic Hourglasses Smashed';
     const READ_A_SCROLL = 'Read a Scroll';
+    const PETS_BIRTHED = 'Babies Born in Your House';
 }
