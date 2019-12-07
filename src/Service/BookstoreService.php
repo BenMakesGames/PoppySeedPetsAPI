@@ -31,6 +31,7 @@ class BookstoreService
         $cookedSomething = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::COOKED_SOMETHING ]);
         $itemsDonatedToMuseum = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]);
         $petsBirthed = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::PETS_BIRTHED ]);
+        $petsAdopted = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::PETS_ADOPTED ]);
 
         if($cookedSomething)
         {
@@ -65,11 +66,13 @@ class BookstoreService
                 $bookPrices['SOUP'] = 25;
         }
 
-        if($petsBirthed && $petsBirthed->getValue() >= 3)
+        $petsAcquired = ($petsBirthed ? $petsBirthed->getValue() : 0) + ($petsAdopted ? $petsAdopted->getValue() / 10 : 0);
+
+        if($petsAcquired >= 3)
         {
-            if($petsBirthed->getValue() >= 10)
+            if($petsAcquired >= 10)
                 $bookPrices['Renaming Scroll'] = 500;
-            else if($petsBirthed->getValue() >= 5)
+            else if($petsAcquired >= 5)
                 $bookPrices['Renaming Scroll'] = 600;
             else
                 $bookPrices['Renaming Scroll'] = 800;

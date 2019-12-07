@@ -625,7 +625,7 @@ class BoxController extends PoppySeedPetsItemController
         $items[] = ArrayFunctions::pick_one([
             'Rusty Blunderbuss',
             'Rusty Rapier',
-            'Pepperbox'
+            'Pepperbox',
         ]);
 
         $items[] = ArrayFunctions::pick_one([
@@ -635,7 +635,8 @@ class BoxController extends PoppySeedPetsItemController
 
         $items[] = ArrayFunctions::pick_one([
             'Scroll of Fruit',
-            'Scroll of the Sea'
+            'Scroll of the Sea',
+            'Forgetting Scroll',
         ]);
 
         $newInventory = [];

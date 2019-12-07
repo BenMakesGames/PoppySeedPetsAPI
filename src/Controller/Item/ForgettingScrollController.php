@@ -42,9 +42,9 @@ class ForgettingScrollController extends PoppySeedPetsItemController
         if($pet->getLevel() < 10)
             throw new UnprocessableEntityHttpException('Only pets of level 10 or greater may use this scroll.');
 
-        $unlearnableSkills = array_filter(PetSkillEnum::getValues(), function(string $skill) use($pet) {
+        $unlearnableSkills = array_values(array_filter(PetSkillEnum::getValues(), function(string $skill) use($pet) {
             return $pet->getSkills()->getStat($skill) > 0;
-        });
+        }));
 
         $data = [
             'merits' => $meritService->getUnlearnableMerits($pet),
@@ -55,7 +55,7 @@ class ForgettingScrollController extends PoppySeedPetsItemController
     }
 
     /**
-     * @Route("/{inventory}/forgetMerit", methods={"PATCH"})
+     * @Route("/{inventory}/forgetMerit", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function forgetMerit(
@@ -76,8 +76,8 @@ class ForgettingScrollController extends PoppySeedPetsItemController
         if($pet->getLevel() < 10)
             throw new UnprocessableEntityHttpException('Only pets of level 10 or greater may use this scroll.');
 
-        $meritId = $request->request->getInt('merit', 0);
-        $merit = $meritRepository->find($meritId);
+        $meritName = $request->request->get('merit', '');
+        $merit = $meritRepository->findOneByName($meritName);
 
         if(!$merit)
             throw new UnprocessableEntityHttpException('You forgot to select a merit!');
@@ -85,7 +85,7 @@ class ForgettingScrollController extends PoppySeedPetsItemController
         if(!$pet->hasMerit($merit->getName()))
             throw new UnprocessableEntityHttpException($pet->getName() . ' doesn\'t have that Merit.');
 
-        if(!in_array($merit->getName(), $meritService->getAvailableMerits($pet)))
+        if(!in_array($merit->getName(), $meritService->getUnlearnableMerits($pet)))
         {
             if($merit->getName() === MeritEnum::VOLAGAMY)
                 throw new UnprocessableEntityHttpException('That merit cannot be unlearned while ' . $pet->getName() . ' ' . ($pet->getSpecies()->getEggImage() ? 'has an egg' : 'is pregnant') . '.');
@@ -106,7 +106,7 @@ class ForgettingScrollController extends PoppySeedPetsItemController
     }
 
     /**
-     * @Route("/{inventory}/forgetSkill", methods={"PATCH"})
+     * @Route("/{inventory}/forgetSkill", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function forgetSkill(
@@ -132,7 +132,7 @@ class ForgettingScrollController extends PoppySeedPetsItemController
         if(!PetSkillEnum::isAValue($skill))
             throw new UnprocessableEntityHttpException('You gotta\' select a skill to forget!');
 
-        if($pet->getSkills()->getStat($skill) > 0)
+        if($pet->getSkills()->getStat($skill) < 1)
             throw new UnprocessableEntityHttpException($pet->getName() . ' does not have any points of ' . $skill . ' to unlearn.');
 
         $em->remove($inventory);
