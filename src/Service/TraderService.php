@@ -466,7 +466,7 @@ class TraderService
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Iron Key'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Key'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Key'), 1),
-                    TraderOfferCostOrYield::createMoney(10),
+                    TraderOfferCostOrYield::createMoney(1),
                 ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Key Ring'), 1) ],
                 ''

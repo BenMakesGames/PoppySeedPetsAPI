@@ -3,14 +3,24 @@ namespace App\Controller;
 
 use App\Entity\GreenhousePlant;
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\PetSkills;
+use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
+use App\Enum\MoonPhaseEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\ColorFunctions;
+use App\Functions\DateFunctions;
 use App\Model\ItemQuantity;
 use App\Repository\GreenhousePlantRepository;
 use App\Repository\InventoryRepository;
+use App\Repository\MeritRepository;
+use App\Repository\PetRepository;
+use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
@@ -116,7 +126,8 @@ class GreenhouseController extends PoppySeedPetsController
      */
     public function harvestPlant(
         GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, UserStatsRepository $userStatsRepository
+        InventoryService $inventoryService, UserStatsRepository $userStatsRepository, PetRepository $petRepository,
+        PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository
     )
     {
         $user = $this->getUser();
@@ -157,14 +168,69 @@ class GreenhouseController extends PoppySeedPetsController
         }
         else
         {
-            $quantity = new ItemQuantity();
+            if($plant->getPlant()->getItem()->getName() === 'Tomato' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON)
+            {
+                $message = 'You harvested-- WHOA, WAIT, WHAT?! It\'s a living tomato!?';
 
-            $quantity->item = $plant->getPlant()->getItem();
-            $quantity->quantity = $yield;
+                $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
 
-            $inventoryService->giveInventory($quantity, $user, $user, $user->getName() . ' grew this in their greenhouse.', LocationEnum::HOME);
+                $tomateSkills = new PetSkills();
 
-            $message = 'You harvested ' . $yield . '× ' . $plant->getPlant()->getItem()->getName() . '!';
+                $colorA = ColorFunctions::tweakColor(ArrayFunctions::pick_one([
+                    'FF6622', 'FFCC22', '77FF22', 'FF2222', '7722FF'
+                ]));
+
+                $colorB = ColorFunctions::tweakColor(ArrayFunctions::pick_one([
+                    '007700', '009922', '00bb44'
+                ]));
+
+                $tomateName = ArrayFunctions::pick_one([
+                    'Alicante', 'Azoychka', 'Krim', 'Brandywine', 'Campari', 'Canario', 'Tomkin',
+                    'Flamenco', 'Giulietta', 'Grandero', 'Trifele', 'Jubilee', 'Juliet', 'Kumato',
+                    'Monterosa', 'Montserrat', 'Plum', 'Raf', 'Roma', 'Rutgers', 'Marzano', 'Cherry',
+                    'Nebula', 'Santorini', 'Tomaccio', 'Tamatie', 'Tamaatar', 'Matomatisi', 'Yaanyo',
+                    'Pomidor', 'Utamatisi'
+                ]);
+
+                $tomate = (new Pet())
+                    ->setOwner($user)
+                    ->setName($tomateName)
+                    ->setSpecies($petSpeciesRepository->findOneBy([ 'name' => 'Tomate' ]))
+                    ->setSkills($tomateSkills)
+                    ->setColorA($colorA)
+                    ->setColorB($colorB)
+                    ->setFavoriteFlavor(FlavorEnum::getRandomValue())
+                    ->setNeeds(mt_rand(10, 12), -9)
+                    ->addMerit($meritRepository->findOneByName(MeritEnum::MOON_BOUND))
+                ;
+
+                $em->persist($tomateSkills);
+                $em->persist($tomate);
+
+                $em->remove($plant);
+
+                if($numberOfPetsAtHome >= $user->getMaxPets())
+                {
+                    $message .= ' Seeing no space in your house, it wanders off to Daycare.';
+                    $tomate->setInDaycare(true);
+                }
+                else
+                {
+                    $message .= ' It wastes no time in setting up residence in your house.';
+                    $tomate->setInDaycare(false);
+                }
+            }
+            else
+            {
+                $quantity = new ItemQuantity();
+
+                $quantity->item = $plant->getPlant()->getItem();
+                $quantity->quantity = $yield;
+
+                $inventoryService->giveInventory($quantity, $user, $user, $user->getName() . ' grew this in their greenhouse.', LocationEnum::HOME);
+
+                $message = 'You harvested ' . $yield . '× ' . $plant->getPlant()->getItem()->getName() . '!';
+            }
         }
 
         $plantsHarvested = $userStatsRepository->incrementStat($user, UserStatEnum::HARVESTED_PLANT);
