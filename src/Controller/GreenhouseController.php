@@ -211,12 +211,12 @@ class GreenhouseController extends PoppySeedPetsController
 
                 if($numberOfPetsAtHome >= $user->getMaxPets())
                 {
-                    $message .= ' Seeing no space in your house, it wanders off to Daycare.';
+                    $message .= "\n\n" . 'Seeing no space in your house, the creature wanders off to Daycare.';
                     $tomate->setInDaycare(true);
                 }
                 else
                 {
-                    $message .= ' It wastes no time in setting up residence in your house.';
+                    $message .= "\n\n" . 'The creature wastes no time in setting up residence in your house.';
                     $tomate->setInDaycare(false);
                 }
             }
