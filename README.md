@@ -1,6 +1,6 @@
 # Poppy Seed Pets!
 
-## System Configuration
+## Install & Configure
 
 1. review `.env`; create `.env.local` containing overrides as needed 
 2. run `composer install`
