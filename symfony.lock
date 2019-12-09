@@ -102,11 +102,20 @@
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
+    "jeremeamia/superclosure": {
+        "version": "2.4.0"
+    },
+    "lavary/crunz": {
+        "version": "v2.0.4"
+    },
     "minishlink/web-push": {
         "version": "v5.2.4"
     },
     "monolog/monolog": {
         "version": "1.24.0"
+    },
+    "mtdowling/cron-expression": {
+        "version": "v1.2.1"
     },
     "nelmio/cors-bundle": {
         "version": "1.5",
@@ -298,6 +307,9 @@
     },
     "symfony/intl": {
         "version": "v4.3.1"
+    },
+    "symfony/lock": {
+        "version": "v4.3.9"
     },
     "symfony/maker-bundle": {
         "version": "1.0",

@@ -1,0 +1,12 @@
+#!/bin/bash
+now=$(date +"%Y-%m-%d-%H-%M-%S")
+fileName="maslowspets-$now.sql"
+
+read -s -p "Enter database password: " password
+echo ""
+echo "Creating database dump..."
+mysqldump --host=poppyseedpets.cy9f9hdgmuzm.us-east-1.rds.amazonaws.com --user=nectarinesalad -p$password --ignore-table=maslowspets.p$
+mysqldump --host=poppyseedpets.cy9f9hdgmuzm.us-east-1.rds.amazonaws.com --user=nectarinesalad -p$password --no-data maslowspets pet_ac$
+echo "Zipping..."
+gzip "$fileName"
+echo "Done! :D"
