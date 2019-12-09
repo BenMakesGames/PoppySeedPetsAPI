@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
@@ -91,7 +92,7 @@ class CraftingService
             }
 
             if(array_key_exists('White Cloth', $quantities))
-                $possibilities[] = [ $this, 'createStereotypicalTorch' ];
+                $possibilities[] = [ $this, 'createTorchOrFlag' ];
 
             if(array_key_exists('Toadstool', $quantities) && array_key_exists('Quintessence', $quantities))
                 $possibilities[] = [ $this, 'createChampignon' ];
@@ -132,6 +133,15 @@ class CraftingService
 
         if(array_key_exists('Glass Pendulum', $quantities) && array_key_exists('Flute', $quantities) && array_key_exists('White Cloth', $quantities))
             $possibilities[] = [ $this, 'createDecoratedFlute' ];
+
+        if(array_key_exists('White Flag', $quantities))
+        {
+            if(array_key_exists('Yellow Dye', $quantities))
+                $possibilities[] = [ $this, 'createSunFlag' ];
+
+            if(array_key_exists('Green Dye', $quantities))
+                $possibilities[] = [ $this, 'createDragonFlag' ];
+        }
 
         // pets won't try any smithing tasks if they don't feel sufficiently safe
         if($pet->getSafety() > 0)
@@ -446,9 +456,56 @@ class CraftingService
         }
     }
 
-    private function createStereotypicalTorch(Pet $pet): PetActivityLog
+    private function createSunFlag(Pet $pet): PetActivityLog
+    {
+        return $this->createFlag($pet, 'Yellow Dye', 'Sun Flag');
+    }
+
+    private function createDragonFlag(Pet $pet): PetActivityLog
+    {
+        return $this->createFlag($pet, 'Green Dye', 'Dragon Flag');
+    }
+
+    private function createFlag(Pet $pet, string $dye, string $making)
     {
         $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(15, 30), PetActivityStatEnum::CRAFT, false);
+
+            $this->inventoryService->loseItem($dye, $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $making . ', but accidentally spilt the ' . $dye . ' :(', '');
+        }
+        else if($roll >= 10)
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('White Flag', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem($dye, $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(3);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' painted a ' . $making . '.', '');
+            $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' painted this flag.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(15, 45), PetActivityStatEnum::CRAFT, false);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to paint a flag, but couldn\'t come up with a good design.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createTorchOrFlag(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        $making = ArrayFunctions::pick_one([
+            'Stereotypical Torch',
+            'White Flag'
+        ]);
 
         if($roll <= 2)
         {
@@ -458,13 +515,13 @@ class CraftingService
                 $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
                 $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
                 $pet->increaseEsteem(-1);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Stereotypical Torch, but accidentally tore the White Cloth into useless shapes :(', 'icons/activity-logs/torn-to-bits');
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $making . ', but accidentally tore the White Cloth into useless shapes :(', 'icons/activity-logs/torn-to-bits');
             }
             else
             {
                 $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
                 $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Stereotypical Torch, but accidentally split the Crooked Stick :(', 'icons/activity-logs/broke-stick');
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $making . ', but accidentally split the Crooked Stick :(', 'icons/activity-logs/broke-stick');
             }
         }
         else if($roll >= 8)
@@ -474,15 +531,15 @@ class CraftingService
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Stereotypical Torch.', '');
-            $this->inventoryService->petCollectsItem('Stereotypical Torch', $pet, $pet->getName() . ' created this from White Cloth and a Crooked Stick.', $activityLog);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a ' . $making . '.', '');
+            $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' created this from White Cloth and a Crooked Stick.', $activityLog);
             return $activityLog;
         }
         else
         {
             $this->petService->spendTime($pet, \mt_rand(15, 45), PetActivityStatEnum::CRAFT, false);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Stereotypical Torch, but couldn\'t figure it out.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $making . ', but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
 
