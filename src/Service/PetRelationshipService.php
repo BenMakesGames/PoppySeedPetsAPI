@@ -47,36 +47,40 @@ class PetRelationshipService
     public function createParentalRelationships(Pet $baby, Pet $mother, Pet $father)
     {
         $petWithMother = (new PetRelationship())
-            ->setPet($baby)
             ->setRelationship($mother)
             ->setCurrentRelationship(RelationshipEnum::BFF)
             ->setRelationshipGoal(RelationshipEnum::BFF)
             ->setMetDescription($mother->getName() . ' gave birth to ' . $baby->getName() . '!')
         ;
 
+        $baby->addPetRelationship($petWithMother);
+
         $petWithFather = (new PetRelationship())
-            ->setPet($baby)
             ->setRelationship($father)
             ->setCurrentRelationship(RelationshipEnum::BFF)
             ->setRelationshipGoal(RelationshipEnum::BFF)
             ->setMetDescription($father->getName() . ' fathered ' . $baby->getName() . '!')
         ;
 
+        $baby->addPetRelationship($petWithFather);
+
         $motherWithBaby = (new PetRelationship())
-            ->setPet($mother)
             ->setRelationship($baby)
             ->setCurrentRelationship(RelationshipEnum::BFF)
             ->setRelationshipGoal(RelationshipEnum::BFF)
             ->setMetDescription($mother->getName() . ' gave birth to ' . $baby->getName() . '!')
         ;
 
+        $mother->addPetRelationship($motherWithBaby);
+
         $fatherWithBaby = (new PetRelationship())
-            ->setPet($father)
             ->setRelationship($baby)
             ->setCurrentRelationship(RelationshipEnum::BFF)
             ->setRelationshipGoal(RelationshipEnum::BFF)
             ->setMetDescription($father->getName() . ' fathered ' . $baby->getName() . '!')
         ;
+
+        $mother->addPetRelationship($fatherWithBaby);
 
         $this->em->persist($petWithMother);
         $this->em->persist($petWithFather);
@@ -190,7 +194,6 @@ class PetRelationshipService
 
         // pet
         $petRelationship = (new PetRelationship())
-            ->setPet($pet)
             ->setRelationship($otherPet)
             ->setMetDescription($howMetSummary)
             ->setCurrentRelationship($initialRelationship)
@@ -214,7 +217,6 @@ class PetRelationshipService
 
         // other pet
         $otherPetRelationship = (new PetRelationship())
-            ->setPet($otherPet)
             ->setRelationship($pet)
             ->setMetDescription($howMetSummary)
             ->setCurrentRelationship($initialRelationship)
