@@ -235,6 +235,7 @@ class MagicBindingService
         }
     }
 
+    // note: THIS method should be private, but most methods here must be public!
     private function bindCeremonialTrident(Pet $pet, array $otherMaterials, string $makes): PetActivityLog
     {
         $umbraCheck = \mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
@@ -283,8 +284,7 @@ class MagicBindingService
         return $this->bindCeremonialTrident($pet, [ 'Seaweed', 'Sand Dollar' ], 'Ceremony of Sand and Sea');
     }
 
-
-    private function createIridescentHandCannon(Pet $pet): PetActivityLog
+    public function createIridescentHandCannon(Pet $pet): PetActivityLog
     {
         $umbraCheck = \mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
         $craftsCheck = \mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
