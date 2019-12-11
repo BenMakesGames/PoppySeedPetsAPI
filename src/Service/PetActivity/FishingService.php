@@ -72,7 +72,10 @@ class FishingService
                 break;
             case 14:
             case 15:
-                $activityLog = $this->fishedGhoti($pet);
+                if(mt_rand(1, 50) === 1)
+                    $activityLog = $this->fishedTheIsleOfRetreatingTeeth($pet);
+                else
+                    $activityLog = $this->fishedGhoti($pet);
                 break;
             case 16:
                 $activityLog = $this->fishedCoralReef($pet);
@@ -465,6 +468,23 @@ class FishingService
             $this->inventoryService->petCollectsItem('Rice', $pet, $pet->getName() . ' found this at a Flooded Paddy Field while fishing.', $activityLog);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
         }
+
+        return $activityLog;
+    }
+
+    private function fishedTheIsleOfRetreatingTeeth(Pet $pet): PetActivityLog
+    {
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at The Isle of Retreating Teeth. They weren\'t able to catch anything, but they did grab some Talo-- er, I mean, Teeth.', '')
+            ->setInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+        ;
+
+        $this->inventoryService->petCollectsItem('Talon', $pet, $pet->getName() . ' got this from The Isle of Retreating Teeth.', $activityLog);
+        $this->inventoryService->petCollectsItem('Talon', $pet, $pet->getName() . ' got this from The Isle of Retreating Teeth.', $activityLog);
+
+        if(mt_rand(1, 2) === 2)
+            $this->inventoryService->petCollectsItem('Talon', $pet, $pet->getName() . ' got this from The Isle of Retreating Teeth.', $activityLog);
+
+        $this->petService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
 
         return $activityLog;
     }
