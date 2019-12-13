@@ -14,6 +14,7 @@ use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\NumberFunctions;
+use App\Model\PetShelterPet;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
@@ -213,6 +214,27 @@ class PregnancyService
         }
     }
 
+    private const CANONICALIZED_FORBIDDEN_COMBINED_NAMES = [
+        'beaner',
+        'chink',
+        'con', // coon
+        'cunt',
+        'dago',
+        'dyke',
+        'fag',
+        'fagot', // faggot
+        'gok', // gook
+        'heb', // heeb
+        'kike',
+        'niger', // nigger
+        'prick',
+        'sket', // skeet
+        'spic',
+        'wetback',
+        'wiger', // wigger
+        'wop',
+    ];
+
     public function combineNames(string $n1, string $n2): string
     {
         if(strlen($n1) < 3)
@@ -257,6 +279,19 @@ class PregnancyService
 
         $newName = preg_replace('/ +/', ' ', strtolower($newName));
 
+        if($this->isForbiddenCombinedName($newName))
+            $newName = ArrayFunctions::pick_one(PetShelterPet::PET_NAMES);
+
         return ucwords($newName);
+    }
+
+    private function isForbiddenCombinedName(string $name)
+    {
+        $canonicalized = strtolower($name);
+        $canonicalized = preg_replace('/[^a-z0-9]/', '', $canonicalized); // remove all non-alphanums
+        $canonicalized = str_replace([ '0', '1', '2', '3', '4', '5', '7' ], [ 'o', 'i', 'z', 'e', 'a', 's', 't' ], $canonicalized); // l33t
+        $canonicalized = preg_replace('/([\s.\'-,])\1+/', '$1', $canonicalized); // remove duplicate characters (ex: "faaaaaaaaaaaag" is as bad as "fag")
+
+        return in_array($canonicalized, self::CANONICALIZED_FORBIDDEN_COMBINED_NAMES);
     }
 }

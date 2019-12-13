@@ -38,7 +38,7 @@ class MagicHourglassController extends PoppySeedPetsItemController
 
         $inventoryService->receiveItem('Silica Grounds', $user, $user, $user->getName() . ' smashed a ' . $inventory->getItem()->getName() . ', spilling these Silica Grounds on the floor.', $inventory->getLocation());
 
-        $message = 'Crazy-magic energies flow through the house, swirling and dancing with chaotic shapes that you\'re pretty sure are fractal in nature.\n\nAlso, you got Silica Grounds all over the floor.';
+        $message = 'Crazy-magic energies flow through the house, swirling and dancing with chaotic shapes that you\'re pretty sure are fractal in nature.' . "\n\n" . 'Also, you got Silica Grounds all over the floor.';
 
         if(mt_rand(1, 8) === 1)
             $message .= ' Way to go.';
