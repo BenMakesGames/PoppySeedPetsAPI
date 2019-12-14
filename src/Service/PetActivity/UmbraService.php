@@ -34,7 +34,7 @@ class UmbraService
     {
         $skill = 10 + $pet->getStamina() + $pet->getIntelligence() + $pet->getUmbra(); // psychedelics bonus is built into getUmbra()
 
-        $skill = NumberFunctions::constrain($skill, 1, 12);
+        $skill = NumberFunctions::constrain($skill, 1, 14);
 
         $roll = mt_rand(1, $skill);
 
@@ -69,6 +69,9 @@ class UmbraService
                 break;
             case 13:
                 $activityLog = $this->found2Moneys($pet);
+                break;
+            case 14:
+                $activityLog = $this->fishingAtRiver($pet);
                 break;
         }
 
@@ -280,6 +283,55 @@ class UmbraService
         {
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; ' . $pet->getName() . ' made a hasty retreat.', '');
+        }
+    }
+
+    private function fishingAtRiver(Pet $pet): PetActivityLog
+    {
+        $fishingSkill = mt_rand(1, 10 + $pet->getDexterity() + $pet->getFishing() + $pet->getUmbra());
+
+        $roll = mt_rand(1, $fishingSkill);
+
+        if($roll >= 13)
+        {
+            $prizes = [ 'Fish' ];
+
+            if(mt_rand(1, 2) == 1)
+            {
+                $prizes[] = 'Dark Scales';
+                $prizes[] = 'Seaweed';
+
+                $fish = 'some horrible, writhing thing';
+            }
+            else
+            {
+                $prizes[] = 'Quintessence';
+                $prizes[] = 'Creamy Milk';
+
+                $fish = 'an oddly-beautiful, squirming mass';
+            }
+
+            shuffle($prizes);
+
+            if($roll >= 18)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' decided to fish in a dark river. They caught ' . $fish . ', and harvested its ' . $prizes[0] . ' and ' . $prizes[1] . '.', '');
+                $this->inventoryService->petCollectsItem($prizes[0], $pet, $pet->getName() . ' got this from fishing in the Umbra.', $activityLog);
+                $this->inventoryService->petCollectsItem($prizes[1], $pet, $pet->getName() . ' got this from fishing in the Umbra.', $activityLog);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' decided to fish in a dark river. They caught ' . $fish . ', and harvested its ' . $prizes[0] . '.', '');
+                $this->inventoryService->petCollectsItem($prizes[0], $pet, $pet->getName() . ' got this from fishing in the Umbra.', $activityLog);
+            }
+
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' decided to fish in a dark river. Plenty of strange things swam by, but ' . $pet->getName() . ' didn\'t manage to catch any of them.', '');
         }
     }
 }
