@@ -71,7 +71,12 @@ class SmithingService
             }
 
             if(array_key_exists('Silver Bar', $quantities))
+            {
                 $possibilities[] = [ $this, 'createSilverKey' ];
+
+                if(array_key_exists('"Rustic" Magnifying Glass', $quantities))
+                    $possibilities[] = [ $this, 'createElvishMagnifyingGlass' ];
+            }
 
             if(array_key_exists('Gold Bar', $quantities))
                 $possibilities[] = [ $this, 'createGoldKey' ];
@@ -90,6 +95,42 @@ class SmithingService
             $possibilities[] = [ $this, 'createScythe' ];
 
         return $possibilities;
+    }
+
+    public function createElvishMagnifyingGlass(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to improve a "Rustic" Magnifying Glass, but burnt it. All that\'s left now is the Glass...', '');
+
+            $this->inventoryService->loseItem('"Rustic" Magnifying Glass', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->petCollectsItem('Glass', $pet, $pet->getName() . ' burnt a "Rustic" Magnifying Glass; this is all that remained.', $activityLog);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-2);
+
+            return $activityLog;
+        }
+        else if($roll >= 15)
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Silver', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('"Rustic" Magnifying Glass', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created an Elvish Magnifying Glass.', '');
+            $this->inventoryService->petCollectsItem('Elvish Magnifying Glass', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to tried to improve a "Rustic" Magnifying Glass, but nearly burnt it to a crisp in the process! (Nearly!)', 'icons/activity-logs/confused');
+        }
     }
 
     public function createHourglass(Pet $pet): PetActivityLog
@@ -122,7 +163,7 @@ class SmithingService
         {
             $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a n Hourglass, but it\'s so detailed and fiddly! Ugh!', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make an Hourglass, but it\'s so detailed and fiddly! Ugh!', 'icons/activity-logs/confused');
         }
     }
 

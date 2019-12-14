@@ -49,8 +49,14 @@ class ProgrammingService
         if(array_key_exists('Regex', $quantities) && array_key_exists('XOR', $quantities) && array_key_exists('String', $quantities))
             $possibilities[] = [ $this, 'createL33tH4xx0r' ];
 
-        if(array_key_exists('Hash Table', $quantities) && array_key_exists('Finite State Machine', $quantities) && array_key_exists('String', $quantities))
-            $possibilities[] = [ $this, 'createCompiler' ];
+        if(array_key_exists('Hash Table', $quantities))
+        {
+            if(array_key_exists('Finite State Machine', $quantities) && array_key_exists('String', $quantities))
+                $possibilities[] = [ $this, 'createCompiler' ];
+
+            if(array_key_exists('Elvish Magnifying Glass', $quantities))
+                $possibilities[] = [ $this, 'createRijndael' ];
+        }
 
         return $possibilities;
     }
@@ -138,7 +144,7 @@ class ProgrammingService
         {
             $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to create a Regex, but all the documentation they found online was too old.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to implement a Regex, but it was taking forever. ' . $pet->getName() . ' saved and quit for now.', 'icons/activity-logs/confused');
         }
     }
 
@@ -180,6 +186,29 @@ class ProgrammingService
             $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to bootstrap a Compiler, but only got so far.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createRijndael(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
+
+        if($roll >= 16)
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->inventoryService->loseItem('Hash Table', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Elvish Magnifying Glass', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::COMPUTER ]);
+            $pet->increaseEsteem(1);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' implemented Rijndael.', '');
+            $this->inventoryService->petCollectsItem('Rijndael', $pet, $pet->getName() . ' implemented this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to implement Rijndael, but had trouble finding good documentation. ' . $pet->getName() . ' saved and quit for now.', 'icons/activity-logs/confused');
         }
     }
 
