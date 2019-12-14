@@ -306,7 +306,11 @@ class UmbraService
             else
             {
                 $prizes[] = 'Quintessence';
-                $prizes[] = 'Creamy Milk';
+
+                if(mt_rand(1, 4) === 1)
+                    $prizes[] = 'Music Note';
+                else
+                    $prizes[] = 'Creamy Milk';
 
                 $fish = 'an oddly-beautiful, squirming mass';
             }
