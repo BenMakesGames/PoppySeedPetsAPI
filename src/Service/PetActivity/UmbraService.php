@@ -299,7 +299,11 @@ class UmbraService
             if(mt_rand(1, 2) == 1)
             {
                 $prizes[] = 'Dark Scales';
-                $prizes[] = 'Seaweed';
+
+                if(mt_rand(1, 10) === 1)
+                    $prizes[] = 'Secret Seashell';
+                else
+                    $prizes[] = 'Seaweed';
 
                 $fish = 'some horrible, writhing thing';
             }
