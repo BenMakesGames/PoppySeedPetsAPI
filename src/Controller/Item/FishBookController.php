@@ -27,6 +27,7 @@ class FishBookController extends PoppySeedPetsItemController
 
 * Fishing Rod
 * Painted Fishing Rod
+* Plastic Fishing Rod
 
 #### Recipes
 
@@ -56,6 +57,11 @@ Life as a human truly isn\'t fair.
 
 1. Prepare a palette of Yellow and Green Dye
 1. Alternate painting splotchy patches (technical term!) of green and yellow on the rod
+
+#### Plastic Fishing Rod
+
+1. Get a 3D Printer
+1. Print it!
 
 ## Recipes
 
