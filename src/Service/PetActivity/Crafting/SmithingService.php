@@ -117,7 +117,7 @@ class SmithingService
         else if($roll >= 15)
         {
             $this->petService->spendTime($pet, \mt_rand(45, 75), PetActivityStatEnum::SMITH, true);
-            $this->inventoryService->loseItem('Silver', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('"Rustic" Magnifying Glass', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
