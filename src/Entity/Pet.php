@@ -1313,6 +1313,19 @@ class Pet
         return $this;
     }
 
+    /**
+     * @return Pet[]
+     */
+    public function getParents(): array
+    {
+        $parents = [];
+
+        if($this->mom) $parents[] = $this->mom;
+        if($this->dad) $parents[] = $this->dad;
+
+        return $parents;
+    }
+
     public function hasMonogamousRelationship(Pet $exceptOtherPet)
     {
         if($this->getPoly() === 1)

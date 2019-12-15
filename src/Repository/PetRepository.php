@@ -20,6 +20,55 @@ class PetRepository extends ServiceEntityRepository
         parent::__construct($registry, Pet::class);
     }
 
+    /**
+     * @return Pet[]
+     */
+    public function findParents(Pet $pet): array
+    {
+        $parents = $pet->getParents();
+
+        if(count($parents) === 0)
+            return [];
+
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.id IN (:petParents)')
+            ->setParameter('petParents', array_map(function(Pet $p) { return $p->getId(); }, $parents))
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @return Pet[]
+     */
+    public function findSiblings(Pet $pet): array
+    {
+        $parents = $pet->getParents();
+
+        if(count($parents) === 0)
+            return [];
+
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.mom IN (:petParents) OR p.dad IN (:petParents)')
+            ->setParameter('petParents', array_map(function(Pet $p) { return $p->getId(); }, $parents))
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @return Pet[]
+     */
+    public function findChildren(Pet $pet): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.mom=:pet OR p.dad=:pet')
+            ->setParameter('pet', $pet->getId())
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     public function findPetsEligibleForParkEvent(string $eventType, int $number)
     {
         $today = new \DateTimeImmutable();

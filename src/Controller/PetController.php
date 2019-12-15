@@ -201,6 +201,28 @@ class PetController extends PoppySeedPetsController
     }
 
     /**
+     * @Route("/{pet}/familyTree", methods={"GET"})
+     */
+    public function getFamilyTree(Pet $pet, ResponseService $responseService, PetRepository $petRepository)
+    {
+        $siblings = $petRepository->findSiblings($pet);
+        $parents = $petRepository->findParents($pet);
+
+        $grandparents = [];
+        foreach($parents as $parent)
+            $grandparents = array_merge($grandparents, $petRepository->findParents($parent));
+
+        $children = $petRepository->findChildren($pet);
+
+        return $responseService->success([
+            'grandparents' => $grandparents,
+            'parents' => $parents,
+            'siblings' => $siblings,
+            'children' => $children,
+        ], SerializationGroupEnum::PET_FRIEND);
+    }
+
+    /**
      * @Route("/{pet}/updateNote", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
