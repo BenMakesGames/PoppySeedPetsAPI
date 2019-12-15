@@ -31,9 +31,11 @@ class FishBookController extends PoppySeedPetsItemController
 #### Recipes
 
 * Baked Fish Fingers
+* Basic Fish Taco
 * Fermented Fish
 * Gefilte Fish
 * Grilled Fish
+* Nigiri
 * Orange Fish
 * Sushi
 
@@ -70,6 +72,12 @@ Life as a pet truly isn\'t fair.
 1. Roll Fish in Wheat Flour and crumbs from a Slice of Bread
 1. Bake!
 
+#### Basic Fish Taco
+
+* Tortilla
+* Fish
+* Salsa
+
 #### Fermented Fish
 
 Just age some Fish with Aging Powder!
@@ -88,6 +96,13 @@ An acquired taste!
 #### Grilled Fish
 
 Just grill some Fish with Charcoal!
+
+#### Nigiri
+
+* Rice
+* Fish
+
+It couldn\'t be simpler!
 
 #### Orange Fish
 
