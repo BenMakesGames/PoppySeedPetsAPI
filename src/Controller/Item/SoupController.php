@@ -42,6 +42,18 @@ Also good with Fish, instead of chicken.
 * Tomato
 * Spicy Peps (optional)
 
+#### Fishkebab Stew
+
+This strange recipe was invented by an AI. Despite being created by something without any taste buds, it\'s quite delicious!
+
+* Fishkebab
+* Onion
+* Carrot
+* Oil
+* Butter
+
+(Don\'t throw out the stick! It might come in handy!)
+
 #### Hobak-Juk
 
 * Rice Flour
