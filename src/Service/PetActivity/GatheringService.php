@@ -398,8 +398,7 @@ class GatheringService
                 if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering()) >= 15)
                     $loot[] = 'Talon';
 
-                $this->petService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::NATURE ]);
-                $this->petService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+                $this->petService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::NATURE ]);
                 $pet->increaseEsteem(\mt_rand(1, 2));
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found an Overgrown Garden, but while looking for food, was attacked by an Angry Mole. ' . $pet->getName() . ' defeated the Angry Mole, and took its ' . ArrayFunctions::list_nice($loot) . '.', '');
                 $didWhat = 'defeated an Angry Mole in an Overgrown Garden, and got this';
@@ -423,6 +422,7 @@ class GatheringService
             if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering()) >= 25)
                 $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::NATURE ]);
 
             $lucky = false;
 

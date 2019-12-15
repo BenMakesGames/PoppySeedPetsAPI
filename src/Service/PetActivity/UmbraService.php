@@ -34,7 +34,7 @@ class UmbraService
     {
         $skill = 10 + $pet->getStamina() + $pet->getIntelligence() + $pet->getUmbra(); // psychedelics bonus is built into getUmbra()
 
-        $skill = NumberFunctions::constrain($skill, 1, 14);
+        $skill = NumberFunctions::constrain($skill, 1, 16);
 
         $roll = mt_rand(1, $skill);
 
@@ -71,7 +71,11 @@ class UmbraService
                 $activityLog = $this->found2Moneys($pet);
                 break;
             case 14:
+            case 15:
                 $activityLog = $this->fishingAtRiver($pet);
+                break;
+            case 16:
+                $activityLog = $this->gatheringAtTheNoetala($pet);
                 break;
         }
 
@@ -345,5 +349,73 @@ class UmbraService
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' decided to fish in a dark river. Plenty of strange things swam by, but ' . $pet->getName() . ' didn\'t manage to catch any of them.', '');
         }
+    }
+
+    private function gatheringAtTheNoetala(Pet $pet): PetActivityLog
+    {
+        $loot = [ 'Noetala Egg' ];
+
+        if(\mt_rand(1, 20 + $pet->getStealth() + $pet->getDexterity()) < 15)
+        {
+            $pet->increaseFood(-1);
+
+            if(\mt_rand(1, 20) + $pet->getStrength() + $pet->getBrawl() >= 20)
+            {
+                $this->petService->spendTime($pet, \mt_rand(45, 75), PetActivityStatEnum::HUNT, true);
+
+                if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getUmbra() + $pet->getGathering()) >= 25)
+                    $loot[] = 'Quintessence';
+
+                if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getUmbra() + $pet->getGathering()) >= 15)
+                    $loot[] = 'Fluff';
+
+                $this->petService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+                $pet->increaseEsteem(3);
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fell into a giant cocoon. While trying to find their way out, ' . $pet->getName() . ' was ambushed by one of Noetala\'s guard, but was able to defeat it!', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ;
+
+                $didWhat = 'defeated one of Noetala\'s guard, and took this';
+            }
+            else
+            {
+                $loot = [ 'Fluff' ];
+
+                $this->petService->spendTime($pet, \mt_rand(45, 75), PetActivityStatEnum::HUNT, false);
+
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+                $pet->increaseEsteem(-3);
+                $pet->increaseSafety(-mt_rand(4, 8));
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fell into a giant cocoon. While trying to find their way out, ' . $pet->getName() . ' was ambushed by one of Noetala\'s guard, and was wounded and covered in Fluff before being able to escape!', '');
+                $didWhat = 'was attacked by one of Noetala\'s guard, and covered in this';
+            }
+        }
+        else
+        {
+            $didWhat = 'stole this from a giant cocoon';
+
+            if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getUmbra() + $pet->getGathering()) >= 25)
+                $loot[] = 'Quintessence';
+
+            if(\mt_rand(1, 20 + $pet->getPerception() + $pet->getUmbra() + $pet->getGathering()) >= 15)
+                $loot[] = 'Fluff';
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' stumbled upon Noetala\'s giant cocoon. They snuck around inside for a bit, and made off with ' . ArrayFunctions::list_nice($loot) . '.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+            ;
+
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ]);
+
+            if(mt_rand(1, 100) === 1)
+                $activityLog->setEntry($activityLog->getEntry() . ' ("Snuck"? "Sneaked"? I dunno. One of thems.)');
+
+            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
+        }
+
+        foreach($loot as $itemName)
+            $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' ' . $didWhat . '.', $activityLog);
+
+        return $activityLog;
+
     }
 }
