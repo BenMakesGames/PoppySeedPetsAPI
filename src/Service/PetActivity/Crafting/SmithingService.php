@@ -4,6 +4,7 @@ namespace App\Service\PetActivity\Crafting;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
@@ -76,19 +77,24 @@ class SmithingService
 
                 if(array_key_exists('"Rustic" Magnifying Glass', $quantities))
                     $possibilities[] = [ $this, 'createElvishMagnifyingGlass' ];
+
+                if(array_key_exists('Glass', $quantities) && array_key_exists('Silica Grounds', $quantities))
+                    $possibilities[] = [ $this, 'createHourglass' ];
             }
 
             if(array_key_exists('Gold Bar', $quantities))
+            {
                 $possibilities[] = [ $this, 'createGoldKey' ];
+
+                if(array_key_exists('Fiberglass', $quantities) && array_key_exists('Moon Pearl', $quantities))
+                    $possibilities[] = [ $this, 'createMoonhammer' ];
+
+                if(array_key_exists('Dark Scales', $quantities) && array_key_exists('Dragon Flag', $quantities))
+                    $possibilities[] = [ $this, 'createKundravsStandard' ];
+            }
 
             if(array_key_exists('Silver Bar', $quantities) && array_key_exists('Gold Bar', $quantities) && array_key_exists('White Cloth', $quantities))
                 $possibilities[] = [ $this, 'createCeremonialTrident' ];
-
-            if(array_key_exists('Fiberglass', $quantities) && array_key_exists('Moon Pearl', $quantities) && array_key_exists('Gold Bar', $quantities))
-                $possibilities[] = [ $this, 'createMoonhammer' ];
-
-            if(array_key_exists('Silver Bar', $quantities) && array_key_exists('Glass', $quantities) && array_key_exists('Silica Grounds', $quantities))
-                $possibilities[] = [ $this, 'createHourglass' ];
         }
 
         if(array_key_exists('Crooked Stick', $quantities) && array_key_exists('Iron Bar', $quantities))
@@ -155,7 +161,9 @@ class SmithingService
             $this->inventoryService->loseItem('Silica Grounds', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created an Hourglass.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created an Hourglass.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+            ;
             $this->inventoryService->petCollectsItem('Hourglass', $pet, $pet->getName() . ' created this.', $activityLog);
             return $activityLog;
         }
@@ -233,7 +241,9 @@ class SmithingService
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made Fiberglass from Glass and Plastic.', 'items/resource/fiberglass');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made Fiberglass from Glass and Plastic.', 'items/resource/fiberglass')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+            ;
             $this->inventoryService->petCollectsItem('Fiberglass', $pet, $pet->getName() . ' created this from Glass and Plastic.', $activityLog);
             return $activityLog;
         }
@@ -268,7 +278,9 @@ class SmithingService
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Grappling Hook from Iron Bar and String.', 'items/tool/grappling-hook');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Grappling Hook from Iron Bar and String.', 'items/tool/grappling-hook')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+            ;
             $this->inventoryService->petCollectsItem('Grappling Hook', $pet, $pet->getName() . ' created this from Iron Bar and String.', $activityLog);
             return $activityLog;
         }
@@ -313,7 +325,9 @@ class SmithingService
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made Yellow Scissors.', 'items/tool/scissors/yellow');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made Yellow Scissors.', 'items/tool/scissors/yellow')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+            ;
 
             if(\mt_rand(1, 20 + ($pet->getId() % 4) * 3) >= 23)
                 $this->inventoryService->petCollectsItem('Yellow Scissors', $pet, $pet->getName() . ' created (and sharpened) this!', $activityLog);
@@ -362,7 +376,9 @@ class SmithingService
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made Green Scissors.', 'items/tool/scissors/green');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made Green Scissors.', 'items/tool/scissors/green')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+            ;
             $this->inventoryService->petCollectsItem('Green Scissors', $pet, $pet->getName() . ' created.', $activityLog);
             return $activityLog;
         }
@@ -405,7 +421,9 @@ class SmithingService
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(3);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Heavy Hammer from an Iron Bar and some Dark Matter!', 'items/tool/hammer/heavy');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Heavy Hammer from an Iron Bar and some Dark Matter!', 'items/tool/hammer/heavy')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+            ;
             $this->inventoryService->petCollectsItem('Heavy Hammer', $pet, $pet->getName() . ' created this from an Iron Bar and some Dark Matter!', $activityLog);
             return $activityLog;
         }
@@ -434,7 +452,9 @@ class SmithingService
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a ' . $item . ' from a Crooked Stick, and Iron Bar.', 'items/tool/scythe');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a ' . $item . ' from a Crooked Stick, and Iron Bar.', 'items/tool/scythe')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+            ;
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from a Crooked Stick, and Iron Bar.', $activityLog);
             return $activityLog;
         }
@@ -483,7 +503,9 @@ class SmithingService
             $this->petService->gainExp($pet, mt_rand(2, 3), [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(mt_rand(3, 5));
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Ceremonial Trident!', 'items/tool/scythe');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Ceremonial Trident!', 'items/tool/scythe')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
+            ;
             $this->inventoryService->petCollectsItem('Ceremonial Trident', $pet, $pet->getName() . ' created this from gold, silver, and cloth.', $activityLog);
             return $activityLog;
         }
@@ -517,7 +539,9 @@ class SmithingService
             $this->petService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(3);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Moonhammer!', 'items/tool/scythe');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Moonhammer!', 'items/tool/scythe')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+            ;
             $this->inventoryService->petCollectsItem('Moonhammer', $pet, $pet->getName() . ' created this from Fiberglass, gold, and a Moon Pearl.', $activityLog);
             return $activityLog;
         }
@@ -526,6 +550,43 @@ class SmithingService
             $this->petService->spendTime($pet, \mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make something out of Fiberglass, but wasn\'t happy with how it was turning out.', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createKundravsStandard(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+
+            $this->inventoryService->loseItem('Dragon Flag', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to improve a Dragon Flag, but tore the flag.', '');
+            $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' tried to improve a Dragon Flag, but tore the flag.', $activityLog);
+        }
+        else if($roll >= 20)
+        {
+            $this->petService->spendTime($pet, \mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Dragon Flag', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Dark Scales', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(3);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made Kundrav\'s Standard!', 'items/tool/scythe')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+            ;
+            $this->inventoryService->petCollectsItem('Kundrav\'s Standard', $pet, $pet->getName() . ' created this using Dark Scales, a Gold Bar, and a Dragon Flag!', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to improve a Dragon Flag, but couldn\'t come up with any cool ideas.', 'icons/activity-logs/confused');
         }
     }
 

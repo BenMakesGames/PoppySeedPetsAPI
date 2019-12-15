@@ -204,7 +204,9 @@ class FishingService
             if(mt_rand(1, 2) === 1)
             {
                 $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing, and started to reel something in, only to realize it was a huge Galloping Octopus! ' . $pet->getName() . ' beat the creature back into the sea, but not before discerping one of its Tentacles!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing, and started to reel something in, only to realize it was a huge Galloping Octopus! ' . $pet->getName() . ' beat the creature back into the sea, but not before discerping one of its Tentacles!', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ;
                 $this->inventoryService->petCollectsItem('Tentacle', $pet, $pet->getName() . ' received this from a fight with a Galloping Octopus.', $activityLog);
 
                 $pet
@@ -215,7 +217,9 @@ class FishingService
             else
             {
                 $this->petService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::HUNT, true);
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing, and started to reel something in, only to realize it was a huge Galloping Octopus! ' . $pet->getName() . ' beat the creature back into the sea, but not before discerping two of its Tentacles!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing, and started to reel something in, only to realize it was a huge Galloping Octopus! ' . $pet->getName() . ' beat the creature back into the sea, but not before discerping two of its Tentacles!', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ;
                 $this->inventoryService->petCollectsItem('Tentacle', $pet, $pet->getName() . ' received this from a fight with a Galloping Octopus.', $activityLog);
                 $this->inventoryService->petCollectsItem('Tentacle', $pet, $pet->getName() . ' received this from a fight with a Galloping Octopus.', $activityLog);
 
@@ -247,7 +251,9 @@ class FishingService
         if($fishingSkill >= 15)
         {
             $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, true);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a still-water pond. There weren\'t any fish, but there was some Algae!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a still-water pond. There weren\'t any fish, but there was some Algae!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+            ;
 
             $this->inventoryService->petCollectsItem('Algae', $pet, $pet->getName() . ' "fished" this from a still-water pond.', $activityLog);
 
@@ -475,7 +481,7 @@ class FishingService
     private function fishedTheIsleOfRetreatingTeeth(Pet $pet): PetActivityLog
     {
         $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at The Isle of Retreating Teeth. They weren\'t able to catch anything, but they did grab some Talo-- er, I mean, Teeth.', '')
-            ->setInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
         ;
 
         $this->inventoryService->petCollectsItem('Talon', $pet, $pet->getName() . ' got this from The Isle of Retreating Teeth.', $activityLog);

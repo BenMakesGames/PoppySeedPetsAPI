@@ -809,7 +809,7 @@ class PetService
         }
 
         $this->responseService->createActivityLog($pet, $message, 'companions/' . $companion->getImage(), $changes->compare($pet))
-            ->setInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+            ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
         ;
     }
 

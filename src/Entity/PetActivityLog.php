@@ -136,11 +136,4 @@ class PetActivityLog
 
         return $this;
     }
-
-    public function setInterestingness(int $interestingness): self
-    {
-        $this->interestingness = $interestingness;
-
-        return $this;
-    }
 }

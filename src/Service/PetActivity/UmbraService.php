@@ -275,7 +275,9 @@ class UmbraService
                 $prize = ArrayFunctions::pick_one($prizes);
 
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' beat it back, and claimed its ' . $prize . '!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' beat it back, and claimed its ' . $prize . '!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+            ;
             $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' defeated a gross-looking mummy with crazy-long arms, and took this.', $activityLog);
             return $activityLog;
         }
@@ -332,6 +334,8 @@ class UmbraService
                 $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' decided to fish in a dark river. They caught ' . $fish . ', and harvested its ' . $prizes[0] . '.', '');
                 $this->inventoryService->petCollectsItem($prizes[0], $pet, $pet->getName() . ' got this from fishing in the Umbra.', $activityLog);
             }
+
+            $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13);
 
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
             return $activityLog;

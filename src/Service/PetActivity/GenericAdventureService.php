@@ -4,6 +4,7 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
@@ -43,7 +44,9 @@ class GenericAdventureService
         {
             $rescuedAFairy->setValue((new \DateTimeImmutable())->format('Y-m-d H:i:s'));
 
-            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, they saw a raccoon carrying a House Fairy in its mouth. The raccoon stared at ' . $pet->getName() . ' for a moment, then dropped the House Fairy and scurried away.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, they saw a raccoon carrying a House Fairy in its mouth. The raccoon stared at ' . $pet->getName() . ' for a moment, then dropped the House Fairy and scurried away.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+            ;
             $inventory = $this->inventoryService->petCollectsItem('House Fairy', $pet, 'A startled raccoon dropped this while ' . $pet->getName() . ' was out.', $activityLog);
 
             $inventory->setLockedToOwner(true);
@@ -129,7 +132,10 @@ class GenericAdventureService
         else
             $this->inventoryService->petCollectsItem($reward[1], $pet, $comment, $activityLog);
 
-        $activityLog->setChanges($changes->compare($pet));
+        $activityLog
+            ->setChanges($changes->compare($pet))
+            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+        ;
 
         return $activityLog;
     }

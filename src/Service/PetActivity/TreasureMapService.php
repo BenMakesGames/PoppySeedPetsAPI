@@ -87,9 +87,9 @@ class TreasureMapService
         $this->petService->spendTime($pet, \mt_rand(30, 45), PetActivityStatEnum::OTHER, null);
         $pet->increaseEsteem(5);
 
-        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found that Thieving Magpie, and offered it a "Gold" Idol in exchange for something else. The magpie eagerly accepted.', 'items/treasure/magpie-deal');
-
-        $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY);
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found that Thieving Magpie, and offered it a "Gold" Idol in exchange for something else. The magpie eagerly accepted.', 'items/treasure/magpie-deal')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+        ;
 
         $this->em->remove($pet->getTool());
         $pet->setTool(null);
