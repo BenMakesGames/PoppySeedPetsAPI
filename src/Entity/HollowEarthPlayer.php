@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\EnumInvalidValueException;
 use App\Enum\HollowEarthActionTypeEnum;
 use App\Enum\HollowEarthMoveDirectionEnum;
 use Doctrine\ORM\Mapping as ORM;
@@ -177,7 +178,7 @@ class HollowEarthPlayer
     public function setCurrentDirection(string $currentDirection): self
     {
         if(!HollowEarthMoveDirectionEnum::isAValue($currentDirection))
-            throw new \InvalidArgumentException('$currentDirection must be a valid HollowEarthMoveDirectionEnum value.');
+            throw new EnumInvalidValueException(HollowEarthMoveDirectionEnum::class, $currentDirection);
 
         $this->currentDirection = $currentDirection;
 

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Inventory;
 use App\Entity\User;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -72,7 +73,7 @@ class InventoryRepository extends ServiceEntityRepository
     public function countItemsInLocation(User $user, int $location)
     {
         if(!LocationEnum::isAValue($location))
-            throw new \InvalidArgumentException('$location is not a valid LocationEnum value.');
+            throw new EnumInvalidValueException(LocationEnum::class, $location);
 
         return (int)$this->createQueryBuilder('i')
             ->select('COUNT(i.id)')

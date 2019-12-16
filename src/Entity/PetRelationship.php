@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
@@ -171,7 +172,8 @@ class PetRelationship
 
     public function setCurrentRelationship(string $currentRelationship): self
     {
-        if(!RelationshipEnum::isAValue($currentRelationship)) throw new \InvalidArgumentException('currentRelationship is not a valid RelationshipEnum value.');
+        if(!RelationshipEnum::isAValue($currentRelationship))
+            throw new EnumInvalidValueException(RelationshipEnum::class, $currentRelationship);
 
         $this->currentRelationship = $currentRelationship;
 
@@ -185,7 +187,8 @@ class PetRelationship
 
     public function setRelationshipGoal(string $relationshipGoal): self
     {
-        if(!RelationshipEnum::isAValue($relationshipGoal)) throw new \InvalidArgumentException('relationshipGoal is not a valid RelationshipEnum value.');
+        if(!RelationshipEnum::isAValue($relationshipGoal))
+            throw new EnumInvalidValueException(RelationshipEnum::class, $relationshipGoal);
 
         $this->relationshipGoal = $relationshipGoal;
 

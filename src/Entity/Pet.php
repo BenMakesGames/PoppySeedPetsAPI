@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
@@ -294,6 +295,11 @@ class Pet
      */
     private $petActivityStats;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\PetGroup", mappedBy="members")
+     */
+    private $groups;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -318,6 +324,7 @@ class Pet
         $this->motheredPets = new ArrayCollection();
         $this->fatheredPets = new ArrayCollection();
         $this->merits = new ArrayCollection();
+        $this->groups = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -874,7 +881,7 @@ class Pet
     public function setFavoriteFlavor(string $favoriteFlavor): self
     {
         if(!FlavorEnum::isAValue($favoriteFlavor))
-            throw new \InvalidArgumentException('favoriteFlavor must be a value from FlavorEnum.');
+            throw new EnumInvalidValueException(FlavorEnum::class, $favoriteFlavor);
 
         $this->favoriteFlavor = $favoriteFlavor;
 
@@ -1112,7 +1119,8 @@ class Pet
 
     public function getStatusEffect(string $statusEffect): ?StatusEffect
     {
-        if(!StatusEffectEnum::isAValue($statusEffect)) throw new \InvalidArgumentException('"' . $statusEffect . '" is not a known StatusEffectEnum value.');
+        if(!StatusEffectEnum::isAValue($statusEffect))
+            throw new EnumInvalidValueException(StatusEffectEnum::class, $statusEffect);
 
         return ArrayFunctions::find_one($this->statusEffects, function(StatusEffect $se) use($statusEffect) {
             return $se->getStatus() === $statusEffect;
@@ -1431,6 +1439,34 @@ class Pet
         // set the owning side of the relation if necessary
         if ($this !== $petActivityStats->getPet()) {
             $petActivityStats->setPet($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PetGroup[]
+     */
+    public function getGroups(): Collection
+    {
+        return $this->groups;
+    }
+
+    public function addGroup(PetGroup $group): self
+    {
+        if (!$this->groups->contains($group)) {
+            $this->groups[] = $group;
+            $group->addMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroup(PetGroup $group): self
+    {
+        if ($this->groups->contains($group)) {
+            $this->groups->removeElement($group);
+            $group->removeMember($this);
         }
 
         return $this;

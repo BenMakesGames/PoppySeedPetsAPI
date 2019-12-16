@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Merit;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -23,7 +24,7 @@ class MeritRepository extends ServiceEntityRepository
     public function findOneByName(string $name)
     {
         if(!MeritEnum::isAValue($name))
-            throw new \InvalidArgumentException('$name must be a MeritEnum value.');
+            throw new EnumInvalidValueException(MeritEnum::class, $name);
 
         return $this->findOneBy([ 'name' => $name ]);
     }

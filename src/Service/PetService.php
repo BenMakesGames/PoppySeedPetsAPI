@@ -9,6 +9,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\PetBaby;
 use App\Entity\PetRelationship;
 use App\Entity\StatusEffect;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
@@ -273,7 +274,7 @@ class PetService
 
             // consider favorite flavor:
             if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
-                throw new \Exception('pet\'s favorite flavor is invalid');
+                throw new EnumInvalidValueException(FlavorEnum::class, $pet->getFavoriteFlavor());
 
             $favoriteFlavorStrength = $food->{'get' . $pet->getFavoriteFlavor()}();
 
@@ -347,7 +348,7 @@ class PetService
 
         // consider favorite flavor:
         if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
-            throw new \Exception('pet\'s favorite flavor is invalid');
+            throw new EnumInvalidValueException(FlavorEnum::class, $pet->getFavoriteFlavor());
 
         $favoriteFlavorStrength = $food->{'get' . $pet->getFavoriteFlavor()}();
 

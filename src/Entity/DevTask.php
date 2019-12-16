@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Enum\DevTaskStatusEnum;
 use App\Enum\DevTaskTypeEnum;
+use App\Enum\EnumInvalidValueException;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -108,7 +109,7 @@ class DevTask
     public function setType(int $type): self
     {
         if(!DevTaskTypeEnum::isAValue($type))
-            throw new \InvalidArgumentException('$type is not a valid dev task type.');
+            throw new EnumInvalidValueException(DevTaskTypeEnum::class, $type);
 
         $this->type = $type;
 
@@ -123,7 +124,7 @@ class DevTask
     public function setStatus(int $status): self
     {
         if(!DevTaskStatusEnum::isAValue($status))
-            throw new \InvalidArgumentException('$status is not a valid dev task status.');
+            throw new EnumInvalidValueException(DevTaskStatusEnum::class, $status);
 
         $this->status = $status;
 

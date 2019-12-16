@@ -7,6 +7,7 @@ use App\Entity\ItemFood;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
@@ -40,7 +41,7 @@ class InventoryService
     public function countInventory(User $user, $item, int $location): int
     {
         if(!LocationEnum::isAValue($location))
-            throw new \InvalidArgumentException('location must be a valid LocationEnum value.');
+            throw new EnumInvalidValueException(LocationEnum::class, $location);
 
         if(is_string($item))
             $itemId = $this->itemRepository->findOneByName($item)->getId();
@@ -71,7 +72,7 @@ class InventoryService
     public function countTotalInventory(User $user, int $location): int
     {
         if(!LocationEnum::isAValue($location))
-            throw new \InvalidArgumentException('location must be a valid LocationEnum value.');
+            throw new EnumInvalidValueException(LocationEnum::class, $location);
 
         return (int)$this->em->createQueryBuilder()
             ->select('COUNT(i.id)')

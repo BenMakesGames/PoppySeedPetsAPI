@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\EnumInvalidValueException;
 use App\Enum\StatusEffectEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -68,7 +69,7 @@ class StatusEffect
     public function setStatus(string $status): self
     {
         if(!StatusEffectEnum::isAValue($status))
-            throw new \InvalidArgumentException('$status must be a value of type StatusEffectEnum');
+            throw new EnumInvalidValueException(StatusEffectEnum::class, $status);
 
         $this->status = $status;
 

@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityStats;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\PetActivityStatEnum;
 use App\Repository\PetActivityStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -61,7 +62,7 @@ class PetActivityStatsService
         $stat = strtolower($stat);
 
         if(!PetActivityStatEnum::isAValue($stat))
-            throw new \InvalidArgumentException('$stat must be a PetActivityStatEnum value.');
+            throw new EnumInvalidValueException(PetActivityStatEnum::class, $stat);
 
         $canFail = !in_array($stat, self::STATS_THAT_CANT_FAIL);
 

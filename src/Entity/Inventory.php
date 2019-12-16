@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -257,7 +258,7 @@ class Inventory
     public function setLocation(int $location): self
     {
         if(!LocationEnum::isAValue($location))
-            throw new \InvalidArgumentException('$location is not a valid LocationEnum value.');
+            throw new EnumInvalidValueException(LocationEnum::class, $location);
 
         $this->location = $location;
 
