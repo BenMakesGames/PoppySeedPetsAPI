@@ -32,7 +32,7 @@ class CandyMakersCookbookController extends PoppySeedPetsItemController
 
 #### Recipes
 
-* Hand Candies
+* Hard Candies
 * Soft Gummies
 * Chocolates
 
