@@ -134,6 +134,9 @@ class CraftingService
         if(array_key_exists('Glass Pendulum', $quantities) && array_key_exists('Flute', $quantities) && array_key_exists('White Cloth', $quantities))
             $possibilities[] = [ $this, 'createDecoratedFlute' ];
 
+        if(array_key_exists('Scythe', $quantities) && $quantities['Scythe']->quantity >= 2)
+            $possibilities[] = [ $this, 'createDoubleScythe' ];
+
         if(array_key_exists('White Flag', $quantities))
         {
             if(array_key_exists('Yellow Dye', $quantities))
@@ -290,6 +293,58 @@ class CraftingService
             $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' thought it might be cool to decorate a Flute, but couldn\'t think of something stylish enough.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createDoubleScythe(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 3)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            $this->inventoryService->loseItem('Scythe', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Double Scythe, but split the blade on one of the Scythes :|', '');
+            $pet->increaseEsteem(-2);
+
+            $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' "made" this by accidentally breaking the blade of a Scythe while trying to make a Double Scythe.', $activityLog);
+
+            return $activityLog;
+        }
+        else if($roll >= 14)
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $this->inventoryService->loseItem('Scythe', $pet->getOwner(), LocationEnum::HOME, 2);
+
+            // a bit of fixed PGC
+            if((($pet->getId() % 29) + ($pet->getOwner()->getId() % 31)) % 3 === 1)
+            {
+                $and = 'honestly, it looks kind of silly...';
+            }
+            else
+            {
+                $pet->increaseEsteem(5);
+                $and = 'it looks pretty bad-ass!';
+            }
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Double Scythe; ' . $and, 'items/tool/scythe/double')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+            ;
+
+            $this->inventoryService->petCollectsItem('Double Scythe', $pet, $pet->getName() . ' created this by taking the blade from one Scythe and attaching it to another.', $activityLog);
+            $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' "made" this by taking the blade off of a Scythe (to make a Double Scythe).', $activityLog);
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' thought it might be cool to make a Double Scythe, but then doubted themself...', 'icons/activity-logs/confused');
         }
     }
 
