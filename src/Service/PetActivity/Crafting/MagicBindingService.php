@@ -91,6 +91,9 @@ class MagicBindingService
             if(array_key_exists('Moon Pearl', $quantities) && array_key_exists('Blunderbuss', $quantities) && array_key_exists('Crooked Stick', $quantities))
                 $possibilities[] = [ $this, 'createIridescentHandCannon' ];
 
+            if(array_key_exists('Dark Scales', $quantities) && array_key_exists('Double Scythe', $quantities))
+                $possibilities[] = [ $this, 'createNewMoon' ];
+
             if(array_key_exists('Farmer\'s Multi-tool', $quantities) && array_key_exists('Smallish Pumpkin', $quantities))
                 $possibilities[] = [ $this, 'createGizubisShovel' ];
         }
@@ -381,9 +384,54 @@ class MagicBindingService
             $this->petService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(4);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' enchanted a Farmer\'s Multi-tool with one of Gizubi\'s rituals.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
             ;
             $this->inventoryService->petCollectsItem('Gizubi\'s Shovel', $pet, $pet->getName() . ' enchanted this.', $activityLog);
+            return $activityLog;
+        }
+
+    }
+
+    public function createNewMoon(Pet $pet): PetActivityLog
+    {
+        $umbraCheck = \mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            if(mt_rand(1, 2) === 1)
+            {
+                $pet->increaseEsteem(-2);
+                $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Double Scythe, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+            }
+            else
+            {
+                $pet->increaseEsteem(-2);
+                $this->inventoryService->loseItem('Dark Scales', $pet->getOwner(), LocationEnum::HOME, 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make New Moon, but cracked the Dark Scales :(', '');
+            }
+        }
+        else if($umbraCheck < 20)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Double Scythe, but kept messing up the spell.', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Dark Scales', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Double Scythe', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(4);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' enchanted a Double Scythe with Umbral magic...', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+            ;
+            $this->inventoryService->petCollectsItem('New Moon', $pet, $pet->getName() . ' enchanted this.', $activityLog);
             return $activityLog;
         }
 
