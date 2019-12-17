@@ -90,6 +90,9 @@ class MagicBindingService
 
             if(array_key_exists('Moon Pearl', $quantities) && array_key_exists('Blunderbuss', $quantities) && array_key_exists('Crooked Stick', $quantities))
                 $possibilities[] = [ $this, 'createIridescentHandCannon' ];
+
+            if(array_key_exists('Farmer\'s Multi-tool', $quantities) && array_key_exists('Smallish Pumpkin', $quantities))
+                $possibilities[] = [ $this, 'createGizubisShovel' ];
         }
 
         return $possibilities;
@@ -336,6 +339,51 @@ class MagicBindingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
             ;
             $this->inventoryService->petCollectsItem('Iridescent Hand Cannon', $pet, $pet->getName() . ' bound a Moon Pearl to an extended Blunderbuss, making this!', $activityLog);
+            return $activityLog;
+        }
+
+    }
+
+    public function createGizubisShovel(Pet $pet): PetActivityLog
+    {
+        $umbraCheck = \mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            if(mt_rand(1, 2) === 1)
+            {
+                $pet->increaseEsteem(-2);
+                $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Farmer\'s Multi-tool, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+            }
+            else
+            {
+                $pet->increaseEsteem(-2);
+                $this->inventoryService->loseItem('Smallish Pumpkin', $pet->getOwner(), LocationEnum::HOME, 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Gizubi\'s Shovel, but split the Smallish Pumpkin wrong, ruining the spell :(', '');
+            }
+        }
+        else if($umbraCheck < 20)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Farmer\'s Multi-tool, but kept messing up the spell.', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Smallish Pumpkin', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Farmer\'s Multi-tool', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(4);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' enchanted a Farmer\'s Multi-tool with one of Gizubi\'s rituals.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+            ;
+            $this->inventoryService->petCollectsItem('Gizubi\'s Shovel', $pet, $pet->getName() . ' enchanted this.', $activityLog);
             return $activityLog;
         }
 
