@@ -134,8 +134,14 @@ class CraftingService
         if(array_key_exists('Glass Pendulum', $quantities) && array_key_exists('Flute', $quantities) && array_key_exists('White Cloth', $quantities))
             $possibilities[] = [ $this, 'createDecoratedFlute' ];
 
-        if(array_key_exists('Scythe', $quantities) && $quantities['Scythe']->quantity >= 2)
-            $possibilities[] = [ $this, 'createDoubleScythe' ];
+        if(array_key_exists('Scythe', $quantities))
+        {
+            if($quantities['Scythe']->quantity >= 2)
+                $possibilities[] = [ $this, 'createDoubleScythe' ];
+
+            if(array_key_exists('Garden Shovel', $quantities))
+                $possibilities[] = [ $this, 'createFarmersMultiTool' ];
+        }
 
         if(array_key_exists('White Flag', $quantities))
         {
@@ -345,6 +351,50 @@ class CraftingService
             $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' thought it might be cool to make a Double Scythe, but then doubted themself...', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createFarmersMultiTool(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 3)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            // scythes can already break when making double scythes, so let's at least skew towards garden shovels here
+            $lostItem = ArrayFunctions::pick_one([ 'Scythe', 'Garden Shovel', 'Garden Shovel' ]);
+
+            $this->inventoryService->loseItem($lostItem, $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Farmer\'s Multi-tool, but split the blade of the ' . $lostItem . ' while trying to take it apart :|', '');
+            $pet->increaseEsteem(-2);
+
+            $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' "made" this by accidentally breaking the blade of a ' . $lostItem . ' while trying to make a Farmer\'s Multi-tool.', $activityLog);
+
+            return $activityLog;
+        }
+        else if($roll >= 14)
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $this->inventoryService->loseItem('Scythe', $pet->getOwner(), LocationEnum::HOME, 2);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Farmer\'s Multi-tool!', 'items/tool/shovel/multi-tool')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+            ;
+
+            $this->inventoryService->petCollectsItem('Farmer\'s Multi-tool', $pet, $pet->getName() . ' created this by combining the best parts of a Scythe and a Garden Shovel.', $activityLog);
+            $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' had this left over after making a Farmer\'s Multi-tool.', $activityLog);
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to combine a Scythe and a Garden Shovel, but couldn\'t decide which of the two tools to start with?', 'icons/activity-logs/confused');
         }
     }
 
