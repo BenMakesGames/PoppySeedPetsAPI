@@ -181,27 +181,33 @@ class ScrollController extends PoppySeedPetsItemController
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $items = [
-            'Fish', 'Fish', 'Seaweed', 'Seaweed', 'Seaweed', 'Silica Grounds', 'Silica Grounds', 'Silica Grounds'
+            'Fish',
+            'Seaweed',
+            'Silica Grounds',
+            ArrayFunctions::pick_one([ 'Fish', 'Tentacle' ]),
+            ArrayFunctions::pick_one([ 'Seaweed', 'Fish' ]),
+            ArrayFunctions::pick_one([ 'Seaweed', 'Silica Grounds' ]),
+            ArrayFunctions::pick_one([ 'Seaweed', 'Crooked Stick' ]),
         ];
 
-        if(mt_rand(1, 5) === 1) $items[] = 'Crooked Stick';
-        if(mt_rand(1, 5) === 1) $items[] = 'Mermaid Egg';
-        if(mt_rand(1, 10) === 1) $items[] = 'Glass';
-        if(mt_rand(1, 25) === 1) $items[] = 'Music Note';
-        if(mt_rand(1, 50) === 1) $items[] = 'Little Strongbox';
+        if(mt_rand(1, 4) === 1) $items[] = 'Glass';
+        if(mt_rand(1, 5) === 1) $items[] = 'Music Note';
+        if(mt_rand(1, 8) === 1) $items[] = 'Secret Seashell';
+        if(mt_rand(1, 10) === 1) $items[] = 'Mermaid Egg';
+        if(mt_rand(1, 15) === 1) $items[] = 'Iron Ore';
+        if(mt_rand(1, 20) === 1) $items[] = 'Little Strongbox';
 
         $newInventory = [];
         $location = $inventory->getLocation();
 
+        sort($items);
+
         foreach($items as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
 
-        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
-        sort($itemList);
-
         $em->flush();
 
-        return $responseService->itemActionSuccess('You read the scroll, summoning ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You read the scroll, summoning ' . ArrayFunctions::list_nice($items) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
 
     /**
