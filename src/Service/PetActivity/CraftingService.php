@@ -129,8 +129,14 @@ class CraftingService
         if(array_key_exists('String', $quantities) && array_key_exists('Paper', $quantities) && array_key_exists('Silver Key', $quantities))
             $possibilities[] = [ $this, 'createBenjaminFranklin' ];
 
-        if(array_key_exists('Hunting Spear', $quantities) && array_key_exists('Feathers', $quantities))
-            $possibilities[] = [ $this, 'createDecoratedSpear' ];
+        if(array_key_exists('Feathers', $quantities))
+        {
+            if(array_key_exists('Hunting Spear', $quantities))
+                $possibilities[] = [ $this, 'createDecoratedSpear' ];
+
+            if(array_key_exists('Fiberglass Pan Flute', $quantities) && array_key_exists('Yellow Dye', $quantities))
+                $possibilities[] = [ $this, 'createOrnatePanFlute' ];
+        }
 
         if(array_key_exists('Decorated Spear', $quantities) && array_key_exists('Quintessence', $quantities))
             $possibilities[] = [ $this, 'createVeilPiercer' ];
@@ -1175,6 +1181,48 @@ class CraftingService
             $this->petService->spendTime($pet, \mt_rand(15, 30), PetActivityStatEnum::CRAFT, false);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to decorate a Hunting Spear with Feathers, but couldn\'t get the look just right.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createOrnatePanFlute(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + \max($pet->getCrafts(), $pet->getMusic()));
+
+        if($roll <= 3)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            if(\mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('Feathers', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::MUSIC ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to decorate a Fiberglass Pan Flute, but misruffled the feathers :(', '');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::MUSIC ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to decorate a Fiberglass Pan Flute, but spilled the Yellow Dye :(', '');
+            }
+        }
+        else if($roll >= 18)
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Fiberglass Pan Flute', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Feathers', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS, PetSkillEnum::MUSIC ]);
+            $pet->increaseEsteem(3);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created an Ornate Pan Flute.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+            ;
+            $this->inventoryService->petCollectsItem('Ornate Pan Flute', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::MUSIC ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to decorate a Fiberglass Pan Flute, but couldn\'t come up with a good design.', 'icons/activity-logs/confused');
         }
     }
 
