@@ -108,7 +108,20 @@ class CraftingService
         }
 
         if(array_key_exists('Glue', $quantities) && array_key_exists('White Cloth', $quantities))
-            $possibilities[] = [ $this, 'createFabricMache' ];
+        {
+            // this is a very specific combination of materials which is shared by several crafts; to try and even
+            // things out, we make the SIMPLEST combination less likely if more-complex combinations are available...
+            $foundSomethingCooler = false;
+
+            if(array_key_exists('Fiberglass Flute', $quantities))
+            {
+                $foundSomethingCooler = true;
+                $possibilities[] = [ $this, 'createFiberglassPanFlute' ];
+            }
+
+            if(!$foundSomethingCooler || mt_rand(1, 2) === 1)
+                $possibilities[] = [ $this, 'createFabricMache' ];
+        }
 
         if(array_key_exists('String', $quantities) && array_key_exists('Glass', $quantities))
             $possibilities[] = [ $this, 'createGlassPendulum' ];
@@ -688,6 +701,56 @@ class CraftingService
             $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make some Fabric Mâché, but couldn\'t come up with a good pattern.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createFiberglassPanFlute(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + \max($pet->getMusic(), $pet->getCrafts()));
+
+        if($roll <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+
+            $lostItem = ArrayFunctions::pick_one([ 'Glue', 'White Cloth', 'Fiberglass Flute' ]);
+            $this->inventoryService->loseItem($lostItem, $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-2);
+
+            switch($lostItem)
+            {
+                case 'Fiberglass Flute':
+                    return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Fiberglass Pan Flute, but shattered the Fiberglass Flutes while trying to cut it up :|', '');
+
+                case 'Glue':
+                    return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Fiberglass Pan Flute, but accidentally spilled the Glue everywhere :|', '');
+
+                case 'White Cloth':
+                    return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Fiberglass Pan Flute, but tore the White Cloth while trying to cut it into shape :|', '');
+
+                default:
+                    throw new \Exception('Ben done fucked up: a pet was going to accidentally break a ' . $lostItem . ' while crafting, but that wasn\'t accounted for by the Fiberglass Pan Flute event code...');
+            }
+        }
+        else if($roll >= 16)
+        {
+            $this->petService->spendTime($pet, \mt_rand(60, 75), PetActivityStatEnum::CRAFT, true);
+
+            $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Glue', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Fiberglass Flute', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Fiberglass Pan Flute.', '');
+            $this->inventoryService->petCollectsItem('Fiberglass Pan Flute', $pet, $pet->getName() . ' created this by hacking a Fiberglass Flute into several pieces, and gluing them together with a ribbon of cloth.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to make a Fiberglass Pan Flute, but didn\'t feel confident about cutting the Fiberglass Flute in half.', 'icons/activity-logs/confused');
         }
     }
 
