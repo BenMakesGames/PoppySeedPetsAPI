@@ -144,8 +144,14 @@ class CraftingService
         if(array_key_exists('Crooked Fishing Rod', $quantities) && array_key_exists('Yellow Dye', $quantities) && array_key_exists('Green Dye', $quantities))
             $possibilities[] = [ $this, 'createPaintedFishingRod' ];
 
-        if(array_key_exists('Plastic Idol', $quantities) && array_key_exists('Yellow Dye', $quantities))
-            $possibilities[] = [ $this, 'createGoldIdol' ];
+        if(array_key_exists('Yellow Dye', $quantities))
+        {
+            if(array_key_exists('Plastic Idol', $quantities))
+                $possibilities[] = [ $this, 'createGoldIdol' ];
+
+            if(array_key_exists('Dumbbell', $quantities))
+                $possibilities[] = [ $this, 'createPaintedDumbbell' ];
+        }
 
         if(array_key_exists('Fiberglass', $quantities))
             $possibilities[] = [ $this, 'createSimpleFiberglassItem' ];
@@ -1314,6 +1320,24 @@ class CraftingService
         $pet->increaseEsteem(1);
         $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a "Gold" Idol.', '');
         $this->inventoryService->petCollectsItem('"Gold" Idol', $pet, $pet->getName() . ' painted this, using Yellow Dye.', $activityLog);
+        return $activityLog;
+    }
+
+    private function createPaintedDumbbell(Pet $pet): PetActivityLog
+    {
+        $this->petService->spendTime($pet, \mt_rand(45, 75), PetActivityStatEnum::CRAFT, true);
+        $this->inventoryService->loseItem('Dumbbell', $pet->getOwner(), LocationEnum::HOME, 1);
+        $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), LocationEnum::HOME, 1);
+        $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+        $pet->increaseEsteem(1);
+
+        if(mt_rand(1, 10) === 1)
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' painted emojis on a Dumbbell. (That makes them better, right?)', '');
+        else
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' painted emojis on a Dumbbell.', '');
+
+        $this->inventoryService->petCollectsItem('Painted Dumbbell', $pet, $pet->getName() . ' painted this, using Yellow Dye.', $activityLog);
+
         return $activityLog;
     }
 
