@@ -36,6 +36,7 @@ class BakingBookController extends PoppySeedPetsItemController
 * Donut (Cake)
 * Donut (Yeast)
 * Flour Tortilla
+* Laufabrauð
 * Melon Pan
 * Meringues
 * Naner Bread
@@ -97,6 +98,17 @@ A versatile bread! (If you make quesadillas, don\'t forget to Butter, or Oil, th
 * Baking Powder (or Baking Soda + Cream of Tartar)
 * Butter
 * Wheat Flour
+
+#### Laufabrauð
+
+* Baking Powder
+* Butter
+* Creamy Milk
+* Sugar
+* Wheat Flour
+* Oil (for frying)
+
+After rolling the dough into thin circles, cut a pretty design into it. Then carefully place it into the hot oil to fry it!
 
 #### Melon Pan
 
