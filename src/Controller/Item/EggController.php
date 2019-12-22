@@ -47,13 +47,13 @@ class EggController extends PoppySeedPetsItemController
             return $responseService->itemActionSuccess('You can\'t hatch it here! Take it to your house, quick!');
 
         $increasedPetLimitWithEgg = $userQuestRepository->findOrCreate($user, 'Increased Pet Limit with Weird, Blue Egg', false);
-
+        $increasedPetLimitWithMetalBox = $userQuestRepository->findOrCreate($user, 'Increased Pet Limit with Metal Box', false);
 
         $message = "Whoa! A weird creature popped out! It kind of looks like a monkey, but without arms. Also: a glowing tail. (Also: I feel like monkeys don't hatch from eggs?)";
 
         $em->remove($inventory);
 
-        if(!$increasedPetLimitWithEgg->getValue())
+        if(!$increasedPetLimitWithEgg->getValue() && !$increasedPetLimitWithMetalBox->getValue())
         {
             $user->increaseMaxPets(1);
             $increasedPetLimitWithEgg->setValue(true);
@@ -86,7 +86,7 @@ class EggController extends PoppySeedPetsItemController
         if($numberOfPetsAtHome >= $user->getMaxPets())
         {
             $newPet->setInDaycare(true);
-            $message .= "\n\nBut, you know, into the daycare it goes, I guess!";
+            $message .= "\n\nBut, you know, your house is full, so into the daycare it goes, I guess!";
         }
 
         $this->recolorPet($newPet);
@@ -95,11 +95,82 @@ class EggController extends PoppySeedPetsItemController
 
         return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true, 'reloadPets' => true ]);
     }
+    /**
+     * @Route("/metalBox/{inventory}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openMetalBox(
+        Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
+        EntityManagerInterface $em, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository
+    )
+    {
+        $this->validateInventory($inventory, 'egg/metalBox/#/open');
 
-    private function recolorPet(Pet $pet)
+        $grabber = $petSpeciesRepository->findOneBy([ 'name' => 'Grabber' ]);
+
+        if(!$grabber)
+            throw new HttpException(500, 'The species "Grabber" does not exist! :| Make Ben fix this!');
+
+        $user = $this->getUser();
+        $location = $inventory->getLocation();
+
+        if($location !== LocationEnum::HOME)
+            return $responseService->itemActionSuccess('You can\'t open it here! Take it to your house, quick!');
+
+        $increasedPetLimitWithEgg = $userQuestRepository->findOrCreate($user, 'Increased Pet Limit with Weird, Blue Egg', false);
+        $increasedPetLimitWithMetalBox = $userQuestRepository->findOrCreate($user, 'Increased Pet Limit with Metal Box', false);
+
+        $message = "Whoa! A weird creature popped out! It's some kinda' robot! But without arms?";
+
+        $em->remove($inventory);
+
+        if(!$increasedPetLimitWithEgg->getValue() && !$increasedPetLimitWithMetalBox->getValue())
+        {
+            $user->increaseMaxPets(1);
+            $increasedPetLimitWithMetalBox->setValue(true);
+
+            $message .= "\n\n(Also, your maximum pet limit at home has been increased by one! But just this once!)";
+        }
+
+        $message .= "\n\nAnyway, it's dashing around like it's excited to be here; it really seems to like you! In fact, it's already named itself after you??";
+
+        $petSkills = new PetSkills();
+
+        $em->persist($petSkills);
+
+        $newPet = (new Pet())
+            ->setSpecies($grabber)
+            ->setFavoriteFlavor(FlavorEnum::getRandomValue())
+            ->setOwner($user)
+            ->setName('Metal ' . $user->getName())
+            ->increaseLove(10)
+            ->increaseSafety(10)
+            ->increaseEsteem(10)
+            ->increaseFood(-8)
+            ->setSkills($petSkills)
+        ;
+
+        $em->persist($newPet);
+
+        $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
+
+        if($numberOfPetsAtHome >= $user->getMaxPets())
+        {
+            $newPet->setInDaycare(true);
+            $message .= "\n\nBut, you know, your house is full, so into the daycare it goes, I guess!";
+        }
+
+        $this->recolorPet($newPet, 0.2);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true, 'reloadPets' => true ]);
+    }
+
+    private function recolorPet(Pet $pet, $maxSaturation = 1)
     {
         $h = mt_rand(0, 1000) / 1000.0;
-        $s = mt_rand(mt_rand(0, 500), 1000) / 1000.0;
+        $s = mt_rand(mt_rand(0, 500), 1000) / 1000.0 * $maxSaturation;
         $l = mt_rand(mt_rand(0, 500), mt_rand(750, 1000)) / 1000.0;
 
         $strategy = mt_rand(1, 100);
@@ -116,7 +187,7 @@ class EggController extends PoppySeedPetsItemController
 
             if(mt_rand(1, 2) === 1)
             {
-                if($s < 0.5)
+                if($s < $maxSaturation / 2)
                     $s2 = $s * 2;
                 else
                     $s2 = $s / 2;
@@ -146,7 +217,7 @@ class EggController extends PoppySeedPetsItemController
         {
             // RANDOM!
             $h2 = mt_rand(0, 1000) / 1000.0;
-            $s2 = mt_rand(mt_rand(0, 500), 1000) / 1000.0;
+            $s2 = mt_rand(mt_rand(0, 500), 1000) / 1000.0 * $maxSaturation;
             $l2 = mt_rand(mt_rand(0, 500), mt_rand(750, 1000)) / 1000.0;
         }
 
