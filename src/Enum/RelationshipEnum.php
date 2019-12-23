@@ -1,7 +1,7 @@
 <?php
 namespace App\Enum;
 
-class RelationshipEnum
+final class RelationshipEnum
 {
     use Enum;
 

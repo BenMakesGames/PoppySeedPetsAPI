@@ -1,7 +1,7 @@
 <?php
 namespace App\Enum;
 
-class PetPregnancyStyleEnum
+final class PetPregnancyStyleEnum
 {
     use Enum;
 

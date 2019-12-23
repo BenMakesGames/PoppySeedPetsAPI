@@ -1,7 +1,7 @@
 <?php
 namespace App\Enum;
 
-class MoonPhaseEnum
+final class MoonPhaseEnum
 {
     public const NEW_MOON = 'new moon';
     public const WAXING_CRESCENT = 'waxing crescent';

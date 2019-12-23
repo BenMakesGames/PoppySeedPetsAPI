@@ -6,6 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserQuestRepository")
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="name_idx", columns={"name"})
+ * })
  */
 class UserQuest
 {
@@ -23,7 +26,7 @@ class UserQuest
     private $user;
 
     /**
-     * @ORM\Column(type="string", length=40)
+     * @ORM\Column(type="string", length=120)
      */
     private $name;
 
