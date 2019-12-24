@@ -162,7 +162,10 @@ class PetRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findFriendsWithFewGroups(Pet $pet)
+    /**
+     * @return Pet[]
+     */
+    public function findFriendsWithFewGroups(Pet $pet): array
     {
         $friendlyRelationships = [
             RelationshipEnum::FRIEND,

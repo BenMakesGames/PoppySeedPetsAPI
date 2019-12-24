@@ -7,6 +7,7 @@ use App\Enum\PetGroupTypeEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PetGroupRepository")
@@ -17,6 +18,7 @@ class PetGroup
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"petGroup"})
      */
     private $id;
 
@@ -27,11 +29,13 @@ class PetGroup
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"petGroup"})
      */
     private $type;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"petGroup"})
      */
     private $progress = 0;
 

@@ -18,9 +18,12 @@ class PetGroupService
         $this->petRepository = $petRepository;
     }
 
-    public function createGroup(Pet $pet): PetGroup
+    public function createGroup(Pet $pet): ?PetGroup
     {
-        $friendsWithoutGroups = $this->petRepository->findFriendsWithFewGroups($pet);
+        $availableFriends = $this->petRepository->findFriendsWithFewGroups($pet);
+
+        if(count($availableFriends) === 0)
+            return null;
 
         // @TODO: when we have more than one group type, we'll have to pick one here
         $type = PetGroupTypeEnum::BAND;
@@ -32,6 +35,13 @@ class PetGroupService
         $this->em->persist($group);
 
         $pet->addGroup($group);
+
+        shuffle($availableFriends);
+
+        $availableFriends[0]->addGroup($group);
+
+        if(count($availableFriends) >= 2)
+            $availableFriends[1]->addGroup($group);
 
         return $group;
     }
