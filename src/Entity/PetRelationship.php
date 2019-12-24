@@ -25,6 +25,7 @@ class PetRelationship
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Pet", inversedBy="petRelationships")
      * @ORM\JoinColumn(nullable=false)
+     * @var Pet
      */
     private $pet;
 
@@ -34,21 +35,6 @@ class PetRelationship
      * @Groups({"petFriend"})
      */
     private $relationship;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $intimacy = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $passion = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $commitment = 0;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -94,7 +80,7 @@ class PetRelationship
      */
     public function getRelationshipWanted(): ?string
     {
-        if($this->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
+        if($this->pet->hasMerit(MeritEnum::INTROSPECTIVE))
             return $this->relationshipGoal;
         else
             return null;
@@ -120,30 +106,6 @@ class PetRelationship
     public function setRelationship(Pet $relationship): self
     {
         $this->relationship = $relationship;
-
-        return $this;
-    }
-
-    public function getOldIntimacy(): int
-    {
-        return $this->intimacy;
-    }
-
-    public function getOldPassion(): int
-    {
-        return $this->passion;
-    }
-
-    public function getOldCommitment(): int
-    {
-        return $this->commitment;
-    }
-
-    public function setOldTriangleStats($intimacy, $passion, $commitment): self
-    {
-        $this->intimacy = $intimacy;
-        $this->passion = $passion;
-        $this->commitment = $commitment;
 
         return $this;
     }
