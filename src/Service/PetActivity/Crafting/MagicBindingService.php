@@ -48,6 +48,9 @@ class MagicBindingService
             if(array_key_exists('Blackonite', $quantities))
                 $possibilities[] = [ $this, 'createBunchOfDice' ];
 
+            if(array_key_exists('Gold Tuning Fork', $quantities))
+                $possibilities[] = [ $this, 'createAstralTuningFork' ];
+
             // magic scrolls
             if(array_key_exists('Paper', $quantities))
             {
@@ -477,6 +480,40 @@ class MagicBindingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
             ;
             $this->inventoryService->petCollectsItem('Witch\'s Broom', $pet, $pet->getName() . ' enchanted this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createAstralTuningFork(Pet $pet): PetActivityLog
+    {
+        $umbraCheck = \mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            $pet->increaseEsteem(-1);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Gold Tuning Fork, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+        }
+        else if($umbraCheck < 14)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make an Astral Tuning Fork, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Gold Tuning Fork', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' enchanted a regular old Gold Tuning Fork; now it\'s an _Astral_ Tuning Fork!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+            ;
+            $this->inventoryService->petCollectsItem('Astral Tuning Fork', $pet, $pet->getName() . ' enchanted this.', $activityLog);
             return $activityLog;
         }
     }

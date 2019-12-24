@@ -10,6 +10,12 @@ class StoryStep
      * @var string
      * @Groups({"story"})
      */
+    public $storyTitle;
+
+    /**
+     * @var string
+     * @Groups({"story"})
+     */
     public $style;
 
     /**
@@ -40,6 +46,7 @@ class StoryStep
     {
         $step = new StoryStep();
 
+        $step->storyTitle = $s->getStory()->getTitle();
         $step->style = $s->getStyle();
         $step->background = $s->getBackground();
         $step->image = $s->getImage();

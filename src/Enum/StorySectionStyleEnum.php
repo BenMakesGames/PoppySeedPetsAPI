@@ -7,4 +7,5 @@ final class StorySectionStyleEnum
 
     public const DIALOG = 'dialog';
     public const DESCRIPTION = 'description';
+    public const FULL_FRAME_PICTURE = 'fullFramePicture';
 }

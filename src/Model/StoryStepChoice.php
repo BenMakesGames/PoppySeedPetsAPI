@@ -16,4 +16,10 @@ class StoryStepChoice
      * @Groups({"story"})
      */
     public $enabled;
+
+    /**
+     * @var bool
+     * @Groups({"story"})
+     */
+    public $exitOnSelect;
 }

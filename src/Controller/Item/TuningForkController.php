@@ -23,6 +23,7 @@ class TuningForkController extends PoppySeedPetsItemController
     /**
      * @Route("/{inventory}/listen", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @throws \Exception
      */
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
@@ -33,6 +34,8 @@ class TuningForkController extends PoppySeedPetsItemController
 
         $user = $this->getUser();
 
+        $storyService->prepareStory($user, StoryEnum::SHARUMINYINKAS_DESPAIR);
+
         if($request->request->has('choice'))
         {
             $choice = trim($request->request->get('choice', ''));
@@ -40,10 +43,12 @@ class TuningForkController extends PoppySeedPetsItemController
             if($choice === '')
                 throw new UnprocessableEntityHttpException('You didn\'t choose a choice!');
 
-            $response = $storyService->makeChoice($user, StoryEnum::SHARUMINYINKAS_DESPAIR, $choice);
+            $response = $storyService->makeChoice($choice);
         }
         else
-            $response = $storyService->getStoryStep($user, StoryEnum::SHARUMINYINKAS_DESPAIR);
+            $response = $storyService->getStoryStep();
+
+        $em->flush();
 
         return $responseService->success($response, SerializationGroupEnum::STORY);
     }

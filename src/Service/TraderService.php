@@ -469,7 +469,7 @@ class TraderService
                     TraderOfferCostOrYield::createMoney(1),
                 ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Key Ring'), 1) ],
-                ''
+                'One Key Ring, comin\' right up!'
             );
         }
 
@@ -649,7 +649,10 @@ class TraderService
         return true;
     }
 
-    public function makeExchange(User $user, TraderOffer $exchange): ?string
+    /**
+     * CAREFUL: Also used by some items, to perform transmutations.
+     */
+    public function makeExchange(User $user, TraderOffer $exchange, string $itemDescription = 'Received by trading with the Trader.')
     {
         foreach($exchange->cost as $cost)
         {
@@ -683,7 +686,7 @@ class TraderService
             {
                 case CostOrYieldTypeEnum::ITEM:
                     for($i = 0; $i < $yield->quantity; $i++)
-                        $this->inventoryService->receiveItem($yield->item, $user, null, 'Received by trading with the Trader.', LocationEnum::HOME);
+                        $this->inventoryService->receiveItem($yield->item, $user, null, $itemDescription, LocationEnum::HOME);
                     break;
 
                 case CostOrYieldTypeEnum::MONEY:
@@ -691,20 +694,5 @@ class TraderService
                     break;
             }
         }
-
-        // october
-        if((int)(new \DateTimeImmutable())->format('n') === 10)
-        {
-            $quest = $this->userQuestRepository->findOrCreate($user, 'Get October Behatting Scroll', false);
-            if($quest->getValue() === false)
-            {
-                $quest->setValue(true);
-                $this->inventoryService->receiveItem('Behatting Scroll', $user, null, 'The Trader gave you this, for Halloween.', LocationEnum::HOME, true);
-
-                return 'Oh, and here, have a Behatting Scroll. It\'ll come in handy for Halloween, trust me!';
-            }
-        }
-
-        return null;
     }
 }

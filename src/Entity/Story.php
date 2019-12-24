@@ -55,4 +55,9 @@ class Story
 
         return $this;
     }
+
+    public function getQuestValue(string $value = 'Step'): string
+    {
+        return $this->getTitle() . ' - ' . $value;
+    }
 }
