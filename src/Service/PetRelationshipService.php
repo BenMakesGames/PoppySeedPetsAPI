@@ -80,7 +80,7 @@ class PetRelationshipService
             ->setMetDescription($father->getName() . ' fathered ' . $baby->getName() . '!')
         ;
 
-        $mother->addPetRelationship($fatherWithBaby);
+        $father->addPetRelationship($fatherWithBaby);
 
         $this->em->persist($petWithMother);
         $this->em->persist($petWithFather);

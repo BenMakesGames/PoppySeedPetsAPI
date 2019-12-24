@@ -1,7 +1,7 @@
 <?php
 namespace App\Enum;
 
-class DevTaskTypeEnum
+final class DevTaskTypeEnum
 {
     use Enum;
 

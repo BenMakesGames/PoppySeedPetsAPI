@@ -1,7 +1,7 @@
 <?php
 namespace App\Enum;
 
-class HollowEarthActionTypeEnum
+final class HollowEarthActionTypeEnum
 {
     use Enum;
 

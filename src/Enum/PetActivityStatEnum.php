@@ -1,7 +1,7 @@
 <?php
 namespace App\Enum;
 
-class PetActivityStatEnum
+final class PetActivityStatEnum
 {
     use Enum;
 

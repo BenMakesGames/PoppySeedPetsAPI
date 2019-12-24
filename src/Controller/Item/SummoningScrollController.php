@@ -5,6 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetSkills;
+use App\Entity\PetSpecies;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityStatEnum;
@@ -213,60 +214,31 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
-        $pet = $petRepository->findOneBy(
-            [
-                'owner' => $userRepository->findOneByEmail('the-wilds@poppyseedpets.com')
-            ],
-            [ 'lastInteracted' => 'ASC' ]
-        );
+        $pet = null;
 
-        if($pet)
+        if(mt_rand(1, 19) === 1)
         {
-            $pet->setOwner($user);
+            $pet = $this->createRandomPetOfSpecies($petSpeciesRepository->findOneBy([ 'name' => 'Sentinel' ]), $petRepository, $em);
         }
-        else
-        {
-            $now = new \DateTimeImmutable();
 
+        if($pet === null)
+        {
+            $pet = $petRepository->findOneBy(
+                [
+                    'owner' => $userRepository->findOneByEmail('the-wilds@poppyseedpets.com')
+                ],
+                [ 'lastInteracted' => 'ASC' ]
+            );
+        }
+
+        if($pet === null)
+        {
             $allSpecies = $petSpeciesRepository->findAll();
 
-            $petCount = $petRepository->createQueryBuilder('p')
-                ->select('COUNT(p.id)')
-                ->andWhere('p.birthDate<:today')
-                ->setParameter('today', $now)
-                ->getQuery()
-                ->getSingleScalarResult();
-            ;
-
-            $basePet = $petRepository->createQueryBuilder('p')
-                ->andWhere('p.birthDate<:today')
-                ->setParameter('today', $now)
-                ->setMaxResults(1)
-                ->setFirstResult(mt_rand(0, $petCount - 1))
-                ->getQuery()
-                ->getSingleResult()
-            ;
-
-            $colorA = ColorFunctions::tweakColor($basePet->getColorA());
-            $colorB = ColorFunctions::tweakColor($basePet->getColorB());
-
-            $petSkills = new PetSkills();
-
-            $em->persist($petSkills);
-
-            $pet = (new Pet())
-                ->setOwner($user)
-                ->setName(ArrayFunctions::pick_one(PetShelterPet::PET_NAMES))
-                ->setSpecies(ArrayFunctions::pick_one($allSpecies))
-                ->setColorA($colorA)
-                ->setColorB($colorB)
-                ->setFavoriteFlavor(FlavorEnum::getRandomValue())
-                ->setNeeds(mt_rand(10, 12), -9)
-                ->setSkills($petSkills)
-            ;
-
-            $em->persist($pet);
+            $pet = $this->createRandomPetOfSpecies(ArrayFunctions::pick_one($allSpecies), $petRepository, $em);
         }
+
+        $pet->setOwner($user);
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
 
@@ -284,6 +256,49 @@ class SummoningScrollController extends PoppySeedPetsItemController
         $em->flush();
 
         return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true, 'reloadPets' => $numberOfPetsAtHome < $user->getMaxPets() ]);
+    }
+
+    private function createRandomPetOfSpecies(PetSpecies $petSpecies, PetRepository $petRepository, EntityManagerInterface $em): Pet
+    {
+        $now = new \DateTimeImmutable();
+
+        $petCount = $petRepository->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->andWhere('p.birthDate<:today')
+            ->setParameter('today', $now)
+            ->getQuery()
+            ->getSingleScalarResult();
+        ;
+
+        $basePet = $petRepository->createQueryBuilder('p')
+            ->andWhere('p.birthDate<:today')
+            ->setParameter('today', $now)
+            ->setMaxResults(1)
+            ->setFirstResult(mt_rand(0, $petCount - 1))
+            ->getQuery()
+            ->getSingleResult()
+        ;
+
+        $colorA = ColorFunctions::tweakColor($basePet->getColorA());
+        $colorB = ColorFunctions::tweakColor($basePet->getColorB());
+
+        $petSkills = new PetSkills();
+
+        $em->persist($petSkills);
+
+        $pet = (new Pet())
+            ->setName(ArrayFunctions::pick_one(PetShelterPet::PET_NAMES))
+            ->setSpecies($petSpecies)
+            ->setColorA($colorA)
+            ->setColorB($colorB)
+            ->setFavoriteFlavor(FlavorEnum::getRandomValue())
+            ->setNeeds(mt_rand(10, 12), -9)
+            ->setSkills($petSkills)
+        ;
+
+        $em->persist($pet);
+
+        return $pet;
     }
 
 }

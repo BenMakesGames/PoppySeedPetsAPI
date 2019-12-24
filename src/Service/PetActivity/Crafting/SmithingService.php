@@ -86,6 +86,9 @@ class SmithingService
             {
                 $possibilities[] = [ $this, 'createGoldKey' ];
 
+                if(mt_rand(1, 3) === 1)
+                    $possibilities[] = [ $this, 'createGoldTuningFork' ];
+
                 if(array_key_exists('Fiberglass', $quantities) && array_key_exists('Moon Pearl', $quantities))
                     $possibilities[] = [ $this, 'createMoonhammer' ];
 
@@ -902,6 +905,53 @@ class SmithingService
             $this->petService->spendTime($pet, \mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge a Gold Key from a Gold Bar, but couldn\'t get the shape right.', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createGoldTuningFork(Pet $pet): PetActivityLog
+    {
+        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+        $reRoll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 2)
+        {
+            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $pet->increaseEsteem(-1);
+            $pet->increaseSafety(-\mt_rand(2, 8));
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge a Gold Tuning Fork, but got burned while trying! :(', 'icons/activity-logs/burn');
+        }
+        else if($roll >= 13)
+        {
+            $this->petService->spendTime($pet, \mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' forged a Gold Tuning Fork from a Gold Bar.', '');
+
+            $this->inventoryService->petCollectsItem('Gold Tuning Fork', $pet, $pet->getName() . ' forged this from a Gold Bar.', $activityLog);
+
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+
+            return $activityLog;
+        }
+        else if($reRoll >= 12)
+        {
+            $this->petService->spendTime($pet, \mt_rand(75, 90), PetActivityStatEnum::SMITH, true);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            $moneys = mt_rand(20, 30);
+            $pet->getOwner()->increaseMoneys($moneys);
+            $pet->increaseFood(-1);
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge a Gold Tuning Fork from a Gold Bar, but couldn\'t get the shape right, so just made ' . $moneys . ' Moneys worth of gold coins, instead.', 'icons/activity-logs/moneys');
+        }
+        else
+        {
+            $this->petService->spendTime($pet, \mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
+            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge a Gold Tuning Fork from a Gold Bar, but couldn\'t get the shape right.', 'icons/activity-logs/confused');
         }
     }
 

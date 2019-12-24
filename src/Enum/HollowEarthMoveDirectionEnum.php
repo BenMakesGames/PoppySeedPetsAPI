@@ -1,7 +1,7 @@
 <?php
 namespace App\Enum;
 
-class HollowEarthMoveDirectionEnum
+final class HollowEarthMoveDirectionEnum
 {
     use Enum;
 

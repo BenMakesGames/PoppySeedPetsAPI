@@ -682,9 +682,13 @@ class BoxController extends PoppySeedPetsItemController
             'Very Strongbox',
             'Major Scroll of Riches',
             'Major Scroll of Riches',
-            'Weird, Blue Egg',
             'Dumbbell',
         ];
+
+        $items[] = ArrayFunctions::pick_one([
+            'Weird, Blue Egg',
+            'Unexpectedly-familiar Metal Box',
+        ]);
 
         $newInventory = [];
         $location = $inventory->getLocation();

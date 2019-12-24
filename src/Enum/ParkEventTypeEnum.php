@@ -1,7 +1,7 @@
 <?php
 namespace App\Enum;
 
-class ParkEventTypeEnum
+final class ParkEventTypeEnum
 {
     use Enum;
 
