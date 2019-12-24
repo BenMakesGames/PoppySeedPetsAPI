@@ -282,7 +282,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $newInventory = [];
 
-        $beans = \mt_rand(6, \mt_rand(7, 12));
+        $beans = mt_rand(6, mt_rand(7, 12));
 
         $description = $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.';
         $location = $inventory->getLocation();
@@ -317,7 +317,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $newInventory = [];
 
-        $peppers = \mt_rand(4, \mt_rand(6, 10));
+        $peppers = mt_rand(4, mt_rand(6, 10));
 
         $description = $user->getName() . ' got this by taking apart a ' . $inventory->getItem()->getName() . '.';
         $location = $inventory->getLocation();
@@ -394,7 +394,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $this->validateInventory($inventory, 'box/sandbox/#/raid');
 
-        $sand = \mt_rand(6, \mt_rand(7, 12));
+        $sand = mt_rand(6, mt_rand(7, 12));
 
         $description = $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.';
         $location = $inventory->getLocation();

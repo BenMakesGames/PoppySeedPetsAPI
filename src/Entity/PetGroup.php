@@ -33,26 +33,22 @@ class PetGroup
     /**
      * @ORM\Column(type="integer")
      */
-    private $progress;
+    private $progress = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $skillRollTotal;
+    private $skillRollTotal = 0;
 
     /**
      * @ORM\Column(type="datetime_immutable")
      */
     private $createdOn;
 
-    /**
-     * @ORM\Column(type="string", length=40)
-     */
-    private $name;
-
     public function __construct()
     {
         $this->members = new ArrayCollection();
+        $this->createdOn = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -91,6 +87,9 @@ class PetGroup
         return $this->type;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function setType(int $type): self
     {
         if(!PetGroupTypeEnum::isAValue($type))
@@ -101,7 +100,7 @@ class PetGroup
         return $this;
     }
 
-    public function getProgress(): ?int
+    public function getProgress(): int
     {
         return $this->progress;
     }
@@ -113,7 +112,7 @@ class PetGroup
         return $this;
     }
 
-    public function getSkillRollTotal(): ?int
+    public function getSkillRollTotal(): int
     {
         return $this->skillRollTotal;
     }
@@ -128,17 +127,5 @@ class PetGroup
     public function getCreatedOn(): ?\DateTimeImmutable
     {
         return $this->createdOn;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
     }
 }

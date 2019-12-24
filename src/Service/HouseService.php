@@ -66,7 +66,7 @@ class HouseService
 
             while(count($petsWithTime) > 0)
             {
-                \shuffle($petsWithTime);
+                shuffle($petsWithTime);
 
                 for($i = count($petsWithTime) - 1; $i >= 0; $i--)
                 {

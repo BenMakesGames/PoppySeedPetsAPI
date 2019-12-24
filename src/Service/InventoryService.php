@@ -37,6 +37,7 @@ class InventoryService
     /**
      * @param User $user
      * @param Item|string|integer $item
+     * @throws EnumInvalidValueException
      */
     public function countInventory(User $user, $item, int $location): int
     {
@@ -68,6 +69,7 @@ class InventoryService
 
     /**
      * @param User $user
+     * @throws EnumInvalidValueException
      */
     public function countTotalInventory(User $user, int $location): int
     {
@@ -130,7 +132,7 @@ class InventoryService
      */
     public function serializeItemList($quantities): string
     {
-        if(\count($quantities) === 0) return '';
+        if(count($quantities) === 0) return '';
 
         \usort($quantities, function(ItemQuantity $a, ItemQuantity $b) {
             return $a->item->getId() <=> $b->item->getId();
@@ -210,7 +212,7 @@ class InventoryService
     {
         if(is_string($item)) $item = $this->itemRepository->findOneByName($item);
 
-        if($item->getFood() !== null && \mt_rand(1, 20) < 10 - $pet->getFood())
+        if($item->getFood() !== null && mt_rand(1, 20) < 10 - $pet->getFood())
         {
             if($this->petService->doEat($pet, $item, $activityLog))
                 return null;

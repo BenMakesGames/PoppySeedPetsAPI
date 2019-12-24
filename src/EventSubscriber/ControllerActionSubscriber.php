@@ -24,10 +24,10 @@ class ControllerActionSubscriber implements EventSubscriberInterface
         if ($request->getContentType() != 'json' || !$request->getContent())
             return;
 
-        $data = \json_decode($request->getContent(), true);
+        $data = json_decode($request->getContent(), true);
 
-        if (\json_last_error() !== JSON_ERROR_NONE)
-            throw new BadRequestHttpException('Invalid JSON body: ' . \json_last_error_msg());
+        if (json_last_error() !== JSON_ERROR_NONE)
+            throw new BadRequestHttpException('Invalid JSON body: ' . json_last_error_msg());
 
         $request->request->replace(is_array($data) ? $data : array());
     }

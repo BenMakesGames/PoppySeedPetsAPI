@@ -82,10 +82,10 @@ class ProgrammingService
 
     private function createStringFromPointer(Pet $pet): PetActivityLog
     {
-        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
         if($roll <= 2)
         {
-            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->inventoryService->loseItem('Pointer', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to dereference a String from a Pointer, but encountered a null exception :(', 'icons/activity-logs/null');
@@ -94,7 +94,7 @@ class ProgrammingService
         }
         else if($roll >= 10)
         {
-            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
             $this->inventoryService->loseItem('Pointer', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
             $pet->increaseEsteem(1);
@@ -104,7 +104,7 @@ class ProgrammingService
         }
         else
         {
-            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to dereference a Pointer, but couldn\'t figure out all the syntax errors.', 'icons/activity-logs/confused');
         }
@@ -112,10 +112,10 @@ class ProgrammingService
 
     private function createRegex(Pet $pet): PetActivityLog
     {
-        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
         if($roll <= 2)
         {
-            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
 
             if(mt_rand(1, 2) === 1)
@@ -131,7 +131,7 @@ class ProgrammingService
         }
         else if($roll >= 14)
         {
-            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
             $this->inventoryService->loseItem('Pointer', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Finite State Machine', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::COMPUTER ]);
@@ -142,7 +142,7 @@ class ProgrammingService
         }
         else
         {
-            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to implement a Regex, but it was taking forever. ' . $pet->getName() . ' saved and quit for now.', 'icons/activity-logs/confused');
         }
@@ -150,13 +150,13 @@ class ProgrammingService
 
     private function createCompiler(Pet $pet): PetActivityLog
     {
-        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
         if($roll <= 2)
         {
-            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
 
-            if(\mt_rand(1, 2) === 1)
+            if(mt_rand(1, 2) === 1)
             {
                 $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bootstrap a Compiler, but accidentally de-allocated a String, leaving a useless Pointer behind :(', 'icons/activity-logs/null');
@@ -171,7 +171,7 @@ class ProgrammingService
         }
         else if($roll >= 16)
         {
-            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
             $this->inventoryService->loseItem('Hash Table', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Finite State Machine', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
@@ -183,7 +183,7 @@ class ProgrammingService
         }
         else
         {
-            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to bootstrap a Compiler, but only got so far.', 'icons/activity-logs/confused');
         }
@@ -191,11 +191,11 @@ class ProgrammingService
 
     private function createRijndael(Pet $pet): PetActivityLog
     {
-        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
 
         if($roll >= 16)
         {
-            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
             $this->inventoryService->loseItem('Hash Table', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Elvish Magnifying Glass', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petService->gainExp($pet, 2, [ PetSkillEnum::COMPUTER ]);
@@ -206,7 +206,7 @@ class ProgrammingService
         }
         else
         {
-            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to implement Rijndael, but had trouble finding good documentation. ' . $pet->getName() . ' saved and quit for now.', 'icons/activity-logs/confused');
         }
@@ -214,10 +214,10 @@ class ProgrammingService
 
     private function createL33tH4xx0r(Pet $pet): PetActivityLog
     {
-        $roll = \mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
         if($roll <= 2)
         {
-            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
 
             if(mt_rand(1, 2) === 1)
@@ -235,7 +235,7 @@ class ProgrammingService
         }
         else if($roll >= 16)
         {
-            $this->petService->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
             $this->inventoryService->loseItem('Regex', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('XOR', $pet->getOwner(), LocationEnum::HOME, 1);
@@ -247,7 +247,7 @@ class ProgrammingService
         }
         else
         {
-            $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to become a l33t h4xx0r, but didn\'t have the right stuff.', 'icons/activity-logs/confused');
         }

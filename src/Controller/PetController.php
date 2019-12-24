@@ -693,7 +693,7 @@ class PetController extends PoppySeedPetsController
             'location' => LocationEnum::HOME,
         ]);
 
-        if(\count($items) !== \count($inventory))
+        if(count($items) !== count($inventory))
             throw new UnprocessableEntityHttpException('At least one of the items selected doesn\'t seem to exist??');
 
         try

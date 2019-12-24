@@ -304,22 +304,22 @@ class Pet
     {
         $this->birthDate = new \DateTimeImmutable();
         $this->lastInteracted = (new \DateTimeImmutable())->modify('-3 days');
-        $this->stomachSize = \mt_rand(16, 30);
+        $this->stomachSize = mt_rand(16, 30);
         $this->petRelationships = new ArrayCollection();
         $this->statusEffects = new ArrayCollection();
-        $this->curiosity = \mt_rand(-1, 1);
+        $this->curiosity = mt_rand(-1, 1);
 
         // 10% poly; 10% flexible; 80% monogamous
-        if(\mt_rand(1, 10) === 1)
+        if(mt_rand(1, 10) === 1)
             $this->poly = 1;
         else
-            $this->poly = \mt_rand(1, 9) === 1 ? 0 : -1;
+            $this->poly = mt_rand(1, 9) === 1 ? 0 : -1;
 
         // 2% asexual; 18% flexible; 80% sexual
-        if(\mt_rand(1, 10) === 1)
+        if(mt_rand(1, 10) === 1)
             $this->sexDrive = -1;
         else
-            $this->sexDrive = \mt_rand(1, 9) === 1 ? 0 : 1;
+            $this->sexDrive = mt_rand(1, 9) === 1 ? 0 : 1;
 
         $this->motheredPets = new ArrayCollection();
         $this->fatheredPets = new ArrayCollection();

@@ -122,7 +122,7 @@ class PetService
 
         $divideBy += 1 + ($pet->getAlcohol() / $pet->getStomachSize());
 
-        $exp = \round($exp / $divideBy);
+        $exp = round($exp / $divideBy);
 
         if($exp === 0) return;
 
@@ -151,7 +151,7 @@ class PetService
         if($pet->getLove() + $pet->getAlcohol() < 0) $divideBy++;
         if($pet->getEsteem() + $pet->getAlcohol() < 0) $divideBy++;
 
-        $points = \ceil($points / $divideBy);
+        $points = ceil($points / $divideBy);
 
         if($points === 0) return;
 
@@ -238,6 +238,7 @@ class PetService
 
     /**
      * @param Inventory[] $inventory
+     * @throws EnumInvalidValueException
      */
     public function doFeed(Pet $pet, array $inventory): PetActivityLog
     {
@@ -246,7 +247,7 @@ class PetService
         if(ArrayFunctions::any($inventory, function(Inventory $i) { return $i->getItem()->getFood() === null; }))
             throw new \InvalidArgumentException('At least one of the items selected is not edible!');
 
-        \shuffle($inventory);
+        shuffle($inventory);
 
         $petChanges = new PetChanges($pet);
         $foodsEaten = [];
@@ -305,7 +306,7 @@ class PetService
             $remainder = $foodGained % 8;
             $gain = floor($foodGained / 8);
 
-            if ($remainder > 0 && \mt_rand(1, 8) <= $remainder)
+            if ($remainder > 0 && mt_rand(1, 8) <= $remainder)
                 $gain++;
 
             $pet->increaseSafety($gain);
@@ -333,6 +334,9 @@ class PetService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function doEat(Pet $pet, Item $item, ?PetActivityLog $activityLog): bool
     {
         // intelligent pets won't eat items that provides no food; no pet will eat if their stomach is already full
@@ -360,6 +364,9 @@ class PetService
         return true;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function applyStatusEffect(Pet $pet, string $status, int $duration, int $maxDuration)
     {
         $statusEffect = $pet->getStatusEffect($status);
@@ -382,6 +389,9 @@ class PetService
 
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function applyFoodEffects(Pet $pet, ItemFood $food)
     {
         $pet->increaseAlcohol($food->getAlcohol());
@@ -473,7 +483,7 @@ class PetService
 
         if($pet->getPoison() > 0)
         {
-            if(\mt_rand(6, 24) < $pet->getPoison())
+            if(mt_rand(6, 24) < $pet->getPoison())
             {
                 $changes = new PetChanges($pet);
 
@@ -489,7 +499,7 @@ class PetService
                 $pet->increaseSafety(-mt_rand(1, $safetyVom));
                 $pet->increaseEsteem(-mt_rand(1, $safetyVom));
 
-                $this->spendTime($pet, \mt_rand(15, 30), PetActivityStatEnum::OTHER, null);
+                $this->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::OTHER, null);
 
                 $this->responseService->createActivityLog($pet, $pet->getName() . ' threw up :(', '', $changes->compare($pet));
 
@@ -499,7 +509,7 @@ class PetService
 
         $eatDesire = $pet->getStomachSize() / 2 - $pet->getFood();
 
-        if(\mt_rand(1, $pet->getStomachSize()) <= $eatDesire)
+        if(mt_rand(1, $pet->getStomachSize()) <= $eatDesire)
         {
             // TODO: eat food from house??
         }
@@ -514,7 +524,7 @@ class PetService
             $pet->getFood() > 0 &&
 
             // a random factor
-            \mt_rand(1, max(10, 5 + $pet->getLove() + $pet->getSafety() + $pet->getEsteem())) <= 3
+            mt_rand(1, max(10, 5 + $pet->getLove() + $pet->getSafety() + $pet->getEsteem())) <= 3
         )
         {
             if($this->hangOutWithFriend($pet))
@@ -523,7 +533,7 @@ class PetService
 
         if($this->meetRoommates($pet))
         {
-            $this->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
+            $this->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
             return;
         }
 
@@ -531,7 +541,7 @@ class PetService
         $craftingPossibilities = $this->craftingService->getCraftingPossibilities($pet);
         $programmingPossibilities = $this->programmingService->getCraftingPossibilities($pet);
 
-        $houseTooFull = \mt_rand(1, 10) > $pet->getOwner()->getMaxInventory() - $itemsInHouse;
+        $houseTooFull = mt_rand(1, 10) > $pet->getOwner()->getMaxInventory() - $itemsInHouse;
 
         if($houseTooFull)
         {
@@ -542,7 +552,7 @@ class PetService
 
             if(count($craftingPossibilities) === 0 && count($programmingPossibilities) === 0)
             {
-                $this->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
+                $this->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
 
                 $this->responseService->createActivityLog($pet, $description . ' ' . $pet->getName() . ' wanted to make something, but couldn\'t find any materials to work with.', '');
             }
@@ -658,7 +668,7 @@ class PetService
     {
         $changes = new PetChanges($pet);
 
-        $this->spendTime($pet, \mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
+        $this->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
 
         $companion = $pet->getSpiritCompanion();
 
@@ -819,7 +829,7 @@ class PetService
         $petChanges = new PetChanges($pet->getPet());
         $friendChanges = new PetChanges($friend->getPet());
 
-        $this->spendTime($pet->getPet(), \mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
+        $this->spendTime($pet->getPet(), mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
         $this->spendTime($friend->getPet(), mt_rand(5, 10), PetActivityStatEnum::HANG_OUT, null);
 
         $petPreviousRelationship = $pet->getCurrentRelationship();
@@ -915,13 +925,13 @@ class PetService
 
     private function doNothing(Pet $pet)
     {
-        $this->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::OTHER, null);
+        $this->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::OTHER, null);
         $this->responseService->createActivityLog($pet, $pet->getName() . ' hung around the house.', '');
     }
 
     private function pickDesire(array $petDesires)
     {
-        $totalDesire = \array_sum($petDesires);
+        $totalDesire = array_sum($petDesires);
 
         $pick = mt_rand(0, $totalDesire - 1);
 
@@ -943,40 +953,40 @@ class PetService
 
     public function generateFishingDesire(Pet $pet): int
     {
-        $desire = $pet->getDexterity() + $pet->getNature() + $pet->getFishing() + \mt_rand(1, 4);
+        $desire = $pet->getDexterity() + $pet->getNature() + $pet->getFishing() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getFishing();
 
-        return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
+        return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
     }
 
     public function generateMonsterHuntingDesire(Pet $pet): int
     {
-        $desire = $pet->getStrength() + $pet->getBrawl() + \mt_rand(1, 4);
+        $desire = $pet->getStrength() + $pet->getBrawl() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getBrawl();
 
-        return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
+        return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
     }
 
     public function generateCraftingDesire(Pet $pet): int
     {
-        $desire = $pet->getIntelligence() + $pet->getCrafts() + \mt_rand(1, 4);
+        $desire = $pet->getIntelligence() + $pet->getCrafts() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getCrafts();
 
-        return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
+        return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
     }
 
     public function generateExploreUmbraDesire(Pet $pet): int
     {
-        $desire = $pet->getStamina() + $pet->getIntelligence() + $pet->getUmbra() + \mt_rand(1, 4);
+        $desire = $pet->getStamina() + $pet->getIntelligence() + $pet->getUmbra() + mt_rand(1, 4);
 
         if($pet->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getUmbra();
@@ -998,34 +1008,34 @@ class PetService
 
     public function generateGatheringDesire(Pet $pet): int
     {
-        $desire = $pet->getPerception() + $pet->getNature() + $pet->getGathering() + \mt_rand(1, 4);
+        $desire = $pet->getPerception() + $pet->getNature() + $pet->getGathering() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getGathering();
 
-        return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
+        return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
     }
 
     public function generateHackingDesire(Pet $pet): int
     {
-        $desire = $pet->getIntelligence() + $pet->getComputer() + \mt_rand(1, 4);
+        $desire = $pet->getIntelligence() + $pet->getComputer() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getComputer();
 
-        return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
+        return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
     }
 
     public function generateProgrammingDesire(Pet $pet): int
     {
-        $desire = $pet->getIntelligence() + $pet->getComputer() + \mt_rand(1, 4);
+        $desire = $pet->getIntelligence() + $pet->getComputer() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getComputer();
 
-        return max(1, round($desire * (1 + \mt_rand(-10, 10) / 100)));
+        return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
     }
 }

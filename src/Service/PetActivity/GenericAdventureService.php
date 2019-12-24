@@ -37,7 +37,7 @@ class GenericAdventureService
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        $this->petService->spendTime($pet, \mt_rand(30, 60), PetActivityStatEnum::OTHER, null);
+        $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::OTHER, null);
 
         $rescuedAFairy = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Rescued a House Fairy from a Raccoon', null);
         if(!$rescuedAFairy->getValue())

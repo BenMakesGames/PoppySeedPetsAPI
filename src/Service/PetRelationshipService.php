@@ -135,7 +135,7 @@ class PetRelationshipService
      */
     public function introducePets(Pet $pet, Pet $otherPet, string $howMetSummary, string $howMetDescription): array
     {
-        $r = \mt_rand(1, 100);
+        $r = mt_rand(1, 100);
 
         if($r <= $pet->getSexDrive() + $otherPet->getSexDrive())
         {
@@ -940,7 +940,7 @@ class PetRelationshipService
             RelationshipEnum::FRIENDLY_RIVAL => 'just be friendly rivals',
         ];
 
-        $r = \mt_rand(1, 100);
+        $r = mt_rand(1, 100);
 
         if($p1->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
             $chanceP1ChangesMind = ceil($chanceP1ChangesMind / 4);
@@ -1031,7 +1031,7 @@ class PetRelationshipService
             RelationshipEnum::MATE => 'date',
         ];
 
-        $r = \mt_rand(1, 100);
+        $r = mt_rand(1, 100);
 
         if($r <= $chanceP1ChangesMind)
         {

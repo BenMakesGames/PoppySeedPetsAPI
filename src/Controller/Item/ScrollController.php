@@ -36,7 +36,7 @@ class ScrollController extends PoppySeedPetsItemController
         {
             $userStatsRepository->incrementStat($user, 'Misread a Scroll');
 
-            $pectin = \mt_rand(\mt_rand(3, 5), \mt_rand(6, 10));
+            $pectin = mt_rand(mt_rand(3, 5), mt_rand(6, 10));
             $location = $inventory->getLocation();
 
             for($i = 0; $i < $pectin; $i++)
@@ -55,7 +55,7 @@ class ScrollController extends PoppySeedPetsItemController
                 'Red', 'Orange', 'Apricot', 'Melowatern', 'Honeydont', 'Tomato', 'Spicy Peps'
             ];
 
-            $items = \mt_rand(5, mt_rand(6, mt_rand(7, 15)));
+            $items = mt_rand(5, mt_rand(6, mt_rand(7, 15)));
 
             $newInventory = [];
             $location = $inventory->getLocation();
@@ -227,7 +227,7 @@ class ScrollController extends PoppySeedPetsItemController
 
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
-        $moneys = \mt_rand(30, 50);
+        $moneys = mt_rand(30, 50);
 
         $item = ArrayFunctions::pick_one([ 'Little Strongbox', 'Bag of Beans' ]);
         $location = $inventory->getLocation();
@@ -258,7 +258,7 @@ class ScrollController extends PoppySeedPetsItemController
 
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
-        $moneys = \mt_rand(60, 100);
+        $moneys = mt_rand(60, 100);
 
         $item = ArrayFunctions::pick_one([ 'Striped Microcline', 'Firestone', 'Moon Pearl', 'Blackonite' ]);
         $location = $inventory->getLocation();

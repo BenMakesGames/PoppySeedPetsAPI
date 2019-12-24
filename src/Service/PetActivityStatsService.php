@@ -57,6 +57,9 @@ class PetActivityStatsService
         $this->em = $em;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function logStat(Pet $pet, string $stat, ?bool $success, int $time)
     {
         $stat = strtolower($stat);

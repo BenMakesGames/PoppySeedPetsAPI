@@ -91,7 +91,7 @@ class InventoryController extends PoppySeedPetsController
             'id' => $inventoryIds
         ]);
 
-        if(\count($inventory) !== \count($inventoryIds))
+        if(count($inventory) !== count($inventoryIds))
             throw new UnprocessableEntityHttpException('Some of the items could not be found??');
 
         $locationOfFirstItem = $inventory[0]->getLocation();
@@ -199,7 +199,7 @@ class InventoryController extends PoppySeedPetsController
             'id' => $inventoryIds
         ]);
 
-        if(\count($inventory) !== \count($inventoryIds))
+        if(count($inventory) !== count($inventoryIds))
             throw new UnprocessableEntityHttpException('Some of the items could not be found??');
 
         $givingTree = $userRepository->findOneByEmail('giving-tree@poppyseedpets.com');
@@ -268,7 +268,7 @@ class InventoryController extends PoppySeedPetsController
             'id' => $inventoryIds
         ]);
 
-        if(\count($inventory) !== \count($inventoryIds))
+        if(count($inventory) !== count($inventoryIds))
             throw new UnprocessableEntityHttpException('Some of the items could not be found??');
 
         $itemsInTargetLocation = (int)$inventoryRepository->countItemsInLocation($user, $location);

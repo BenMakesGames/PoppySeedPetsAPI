@@ -247,7 +247,7 @@ class Inventory
 
     public static function calculateBuyPrice(int $sellPrice): int
     {
-        return \ceil($sellPrice * 1.02);
+        return ceil($sellPrice * 1.02);
     }
 
     public function getLocation(): int
