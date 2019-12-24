@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\RelationshipEnum;
@@ -32,6 +33,12 @@ class PetRelationshipService
 
     /**
      * @param Pet[] $pets
+     * @param string $hangOutDescription
+     * @param string $enemyDescription
+     * @param string $meetSummary
+     * @param string $meetDescription
+     * @param int $meetChance
+     * @throws EnumInvalidValueException
      */
     public function groupGathering($pets, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetDescription, int $meetChance = 2)
     {
@@ -44,6 +51,12 @@ class PetRelationshipService
         }
     }
 
+    /**
+     * @param Pet $baby
+     * @param Pet $mother
+     * @param Pet $father
+     * @throws EnumInvalidValueException
+     */
     public function createParentalRelationships(Pet $baby, Pet $mother, Pet $father)
     {
         $petWithMother = (new PetRelationship())
@@ -88,6 +101,16 @@ class PetRelationshipService
         $this->em->persist($fatherWithBaby);
     }
 
+    /**
+     * @param Pet $p1
+     * @param Pet $p2
+     * @param string $hangOutDescription
+     * @param string $enemyDescription
+     * @param string $meetSummary
+     * @param string $meetDescription
+     * @param int $meetChance
+     * @throws EnumInvalidValueException
+     */
     public function seeAtGroupGathering(Pet $p1, Pet $p2, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetDescription, int $meetChance = 5)
     {
         if($p1->getId() === $p2->getId()) return;
@@ -100,7 +123,13 @@ class PetRelationshipService
             $this->introducePets($p1, $p2, $meetSummary, $meetDescription);
     }
 
-    public function meetRoommate(Pet $pet, Pet $otherPet)
+    /**
+     * @param Pet $pet
+     * @param Pet $otherPet
+     * @return PetRelationship|null
+     * @throws EnumInvalidValueException
+     */
+    public function meetRoommate(Pet $pet, Pet $otherPet): ?PetRelationship
     {
         $relationship = $pet->getRelationshipWith($otherPet);
 
@@ -127,11 +156,15 @@ class PetRelationshipService
         }
 
         return $relationship;
-
     }
 
     /**
+     * @param Pet $pet
+     * @param Pet $otherPet
+     * @param string $howMetSummary
+     * @param string $howMetDescription
      * @return PetRelationship[]
+     * @throws EnumInvalidValueException
      */
     public function introducePets(Pet $pet, Pet $otherPet, string $howMetSummary, string $howMetDescription): array
     {
@@ -259,7 +292,10 @@ class PetRelationshipService
     }
 
     /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
      * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
      */
     public function hangOutPrivately(PetRelationship $p1, PetRelationship $p2): array
     {
@@ -402,6 +438,7 @@ class PetRelationshipService
 
     private function sexyTimeChances(Pet $p1, Pet $p2, string $relationshipType): int
     {
+        // parent-child are implemented as BFFs, which have a tiny chance of sexy times that I don't think we need in this game :P
         if(
             ($p1->getMom() && $p1->getMom()->getId() === $p2->getId()) ||
             ($p1->getDad() && $p1->getDad()->getId() === $p2->getId()) ||
@@ -420,37 +457,31 @@ class PetRelationshipService
         switch($relationshipType)
         {
             case RelationshipEnum::BFF:
-                switch($totalDrive)
-                {
-                    case -2: return 0;
-                    case -1: return 0;
-                    case 0: return 1;
-                    case 1: return 2;
-                    case 2: return 3;
-                    default: throw new \Exception('Pets\' total sex drive was outside the possible range??');
-                }
+                return max(0, $totalDrive + 1);
 
             case RelationshipEnum::FWB:
-                switch($totalDrive)
-                {
-                    case -2: return 10;
-                    case -1: return 20;
-                    case 0: return 30;
-                    case 1: return 55;
-                    case 2: return 80;
-                    default: throw new \Exception('Pets\' total sex drive was outside the possible range??');
-                }
+                if($totalDrive <= -2)
+                    return 10;
+                else if($totalDrive === -1)
+                    return 20;
+                else if($totalDrive === 0)
+                    return 30;
+                else if($totalDrive === 1)
+                    return 55;
+                else //if($totalDrive >= 2)
+                    return 80;
 
             case RelationshipEnum::MATE:
-                switch($totalDrive)
-                {
-                    case -2: return 5;
-                    case -1: return 10;
-                    case 0: return 20;
-                    case 1: return 40;
-                    case 2: return 60;
-                    default: throw new \Exception('Pets\' total sex drive was outside the possible range??');
-                }
+                if($totalDrive <= -2)
+                    return 5;
+                else if($totalDrive === -1)
+                    return 10;
+                else if($totalDrive === 0)
+                    return 20;
+                else if($totalDrive === 1)
+                    return 40;
+                else //if($totalDrive >= 2)
+                    return 60;
 
             default:
                 return 0;
@@ -458,6 +489,8 @@ class PetRelationshipService
     }
 
     /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
      * @return PetActivityLog[]
      */
     private function hangOutPrivatelyAsFriends(PetRelationship $p1, PetRelationship $p2): array
@@ -648,7 +681,10 @@ class PetRelationshipService
     }
 
     /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
      * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
      */
     private function hangOutPrivatelySuggestingRelationshipChange(PetRelationship $p1, PetRelationship $p2): array
     {
@@ -687,6 +723,12 @@ class PetRelationshipService
         return $logs;
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelySuggestingRelationshipChangeAsFriendlyRival(PetRelationship $p1, PetRelationship $p2): array
     {
         if($p1->getRelationshipGoal() === RelationshipEnum::DISLIKE)
@@ -741,6 +783,12 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelySuggestingRelationshipChangeAsFriends(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p1->getRelationshipGoal())
@@ -771,6 +819,12 @@ class PetRelationshipService
         }
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromFriendsToBFFs(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -807,6 +861,12 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromFriendsToFWBs(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -845,6 +905,12 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelySuggestingMatesWithCompleteRejection(PetRelationship $p1, PetRelationship $p2): array
     {
         $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to date ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :\'(')->setIcon('icons/activity-logs/breakup');
@@ -860,6 +926,12 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromFriendsToMates(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -897,6 +969,12 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromBFFsToMates(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -930,7 +1008,15 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
-    private function hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama(PetRelationship $p1, PetRelationship $p2, $chanceP1ChangesMind, $chanceP2ChangesMind)
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @param int $chanceP1ChangesMind
+     * @param int $chanceP2ChangesMind
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
+    private function hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama(PetRelationship $p1, PetRelationship $p2, int $chanceP1ChangesMind, int $chanceP2ChangesMind)
     {
         $downgradeDescription = [
             RelationshipEnum::DISLIKE => 'break up entirely',
@@ -1003,6 +1089,14 @@ class PetRelationshipService
         return [ $p1Log, $p2Log ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @param $chanceP1ChangesMind
+     * @param $chanceP2ChangesMind
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama(PetRelationship $p1, PetRelationship $p2, $chanceP1ChangesMind, $chanceP2ChangesMind)
     {
         $upgradeDescription = [
@@ -1106,6 +1200,12 @@ class PetRelationshipService
         return $values[$targetRelationship] - $values[$initialRelationship];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromFriendsToDisliked(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -1161,6 +1261,12 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromFriendsToFriendlyRivals(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -1199,6 +1305,12 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelySuggestingRelationshipChangeAsBFFs(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p1->getRelationshipGoal())
@@ -1223,6 +1335,12 @@ class PetRelationshipService
         }
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromBFFsToFriends(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -1266,6 +1384,12 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromBFFsToFriendlyRivals(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -1313,6 +1437,12 @@ class PetRelationshipService
 
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromBFFsToFWBs(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -1351,6 +1481,12 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromBFFsToDisliked(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -1419,6 +1555,12 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelySuggestingRelationshipChangeAsFWBs(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p1->getRelationshipGoal())
@@ -1446,6 +1588,12 @@ class PetRelationshipService
         }
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromFWBsToMates(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -1478,6 +1626,12 @@ class PetRelationshipService
 
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromFWBsToBFFs(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -1526,6 +1680,12 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromFWBsToFriends(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -1574,6 +1734,12 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromFWBsToFriendlyRivals(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -1622,6 +1788,12 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromFWBsToDisliked(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -1674,6 +1846,12 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelySuggestingRelationshipChangeAsMates(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p1->getRelationshipGoal())
@@ -1701,6 +1879,12 @@ class PetRelationshipService
         }
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromMatesToFriendlyRivals(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -1749,6 +1933,12 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromMatesToBFFs(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -1797,6 +1987,12 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromMatesToFWBs(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -1845,6 +2041,12 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromMatesToFriends(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())
@@ -1890,6 +2092,12 @@ class PetRelationshipService
         return [ $log1, $log2 ];
     }
 
+    /**
+     * @param PetRelationship $p1
+     * @param PetRelationship $p2
+     * @return PetActivityLog[]
+     * @throws EnumInvalidValueException
+     */
     private function hangOutPrivatelyFromMatesToDisliked(PetRelationship $p1, PetRelationship $p2): array
     {
         switch($p2->getRelationshipGoal())

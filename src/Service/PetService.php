@@ -136,7 +136,8 @@ class PetService
     }
 
     /**
-     * @param string[] $stats
+     * @param Pet $pet
+     * @param int $points
      */
     public function gainAffection(Pet $pet, int $points)
     {
@@ -237,7 +238,9 @@ class PetService
     }
 
     /**
+     * @param Pet $pet
      * @param Inventory[] $inventory
+     * @return PetActivityLog
      * @throws EnumInvalidValueException
      */
     public function doFeed(Pet $pet, array $inventory): PetActivityLog
@@ -335,6 +338,10 @@ class PetService
     }
 
     /**
+     * @param Pet $pet
+     * @param Item $item
+     * @param PetActivityLog|null $activityLog
+     * @return bool
      * @throws EnumInvalidValueException
      */
     public function doEat(Pet $pet, Item $item, ?PetActivityLog $activityLog): bool
@@ -365,6 +372,10 @@ class PetService
     }
 
     /**
+     * @param Pet $pet
+     * @param string $status
+     * @param int $duration
+     * @param int $maxDuration
      * @throws EnumInvalidValueException
      */
     public function applyStatusEffect(Pet $pet, string $status, int $duration, int $maxDuration)
@@ -824,6 +835,11 @@ class PetService
         ;
     }
 
+    /**
+     * @param PetRelationship $pet
+     * @param PetRelationship $friend
+     * @throws EnumInvalidValueException
+     */
     private function hangOutWithOtherPet(PetRelationship $pet, PetRelationship $friend)
     {
         $petChanges = new PetChanges($pet->getPet());
@@ -888,6 +904,13 @@ class PetService
         return $metNewPet;
     }
 
+    /**
+     * @param Pet $pet
+     * @param int $time
+     * @param string $activityStat
+     * @param bool|null $success
+     * @throws EnumInvalidValueException
+     */
     public function spendTime(Pet $pet, int $time, string $activityStat, ?bool $success)
     {
         $pet->spendTime($time);
@@ -923,6 +946,10 @@ class PetService
         }
     }
 
+    /**
+     * @param Pet $pet
+     * @throws EnumInvalidValueException
+     */
     private function doNothing(Pet $pet)
     {
         $this->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::OTHER, null);
