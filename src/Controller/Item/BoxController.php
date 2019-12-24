@@ -128,6 +128,7 @@ class BoxController extends PoppySeedPetsItemController
             {
                 $possibleItems[] = ArrayFunctions::pick_one([
                     '4th of July Box',
+                    'New Year Box',
                     // TODO: other holiday boxes
                 ]);
             }
@@ -520,6 +521,52 @@ class BoxController extends PoppySeedPetsItemController
             $inventoryService->receiveItem('White Firework', $user, $user, $comment, $location, $lockedToOwner),
             $inventoryService->receiveItem('Blue Firework', $user, $user, $comment, $location, $lockedToOwner),
         ];
+
+        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
+
+        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
+        sort($itemList);
+
+        $em->remove($inventory);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess('Opening the box revealed ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+    }
+
+    /**
+     * @Route("/newYear/{inventory}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openNewYearBox(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/newYear/#/open');
+
+        $comment = $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.';
+
+        $location = $inventory->getLocation();
+        $lockedToOwner = $inventory->getLockedToOwner();
+
+        $newInventory = [
+            $inventoryService->receiveItem('White Firework', $user, $user, $comment, $location, $lockedToOwner),
+            $inventoryService->receiveItem('Silver Bar', $user, $user, $comment, $location, $lockedToOwner),
+            $inventoryService->receiveItem('White Cloth', $user, $user, $comment, $location, $lockedToOwner),
+        ];
+
+        $alcohol = [
+            'Blackberry Wine',
+            'Blueberry Wine',
+            'Red Wine',
+            'Eggnog',
+        ];
+
+        for($x = mt_rand(4, 5); $x > 0; $x--)
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($alcohol), $user, $user, $comment, $location, $lockedToOwner);
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
