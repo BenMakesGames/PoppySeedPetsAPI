@@ -30,9 +30,6 @@ final class GrammarFunctions
 
     public static function indefiniteArticle($word)
     {
-        // HANDLE USER-DEFINED VARIANTS
-        // TODO
-
         // HANDLE ORDINAL FORMS
         if(preg_match("/^(".self::A_ordinal_a.")/i", $word))    return 'a';
         if(preg_match("/^(".self::A_ordinal_an.")/i", $word))   return 'an';

@@ -520,11 +520,6 @@ class PetService
 
         $eatDesire = $pet->getStomachSize() / 2 - $pet->getFood();
 
-        if(mt_rand(1, $pet->getStomachSize()) <= $eatDesire)
-        {
-            // TODO: eat food from house??
-        }
-
         if($pet->hasMerit(MeritEnum::BLACK_HOLE_TUM) && mt_rand(1, 200) === 1)
         {
             $this->poopingService->poopDarkMatter($pet);
