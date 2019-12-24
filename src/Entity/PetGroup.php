@@ -109,9 +109,17 @@ class PetGroup
         return $this->progress;
     }
 
-    public function setProgress(int $progress): self
+    public function increaseProgress(int $progress): self
     {
-        $this->progress = $progress;
+        $this->progress += $progress;
+
+        return $this;
+    }
+
+    public function clearProgress(): self
+    {
+        $this->progress = 0;
+        $this->skillRollTotal = 0;
 
         return $this;
     }
@@ -121,9 +129,9 @@ class PetGroup
         return $this->skillRollTotal;
     }
 
-    public function setSkillRollTotal(int $skillRollTotal): self
+    public function increaseSkillRollTotal(int $skillRoll): self
     {
-        $this->skillRollTotal = $skillRollTotal;
+        $this->skillRollTotal += $skillRoll;
 
         return $this;
     }

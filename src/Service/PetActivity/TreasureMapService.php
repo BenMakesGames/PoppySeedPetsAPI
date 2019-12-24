@@ -10,6 +10,7 @@ use App\Enum\UserStatEnum;
 use App\Model\PetChanges;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\PetExperienceService;
 use App\Service\PetService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,20 +19,20 @@ class TreasureMapService
 {
     private $responseService;
     private $inventoryService;
-    private $petService;
     private $userStatsRepository;
     private $em;
+    private $petExperienceService;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, PetService $petService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
+        EntityManagerInterface $em, PetExperienceService $petExperienceService
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
-        $this->petService = $petService;
         $this->userStatsRepository = $userStatsRepository;
         $this->em = $em;
+        $this->petExperienceService = $petExperienceService;
     }
 
     public function doCetguelisTreasureMap(Pet $pet)
@@ -43,8 +44,8 @@ class TreasureMapService
 
         if($followMapCheck < 15)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 90), PetActivityStatEnum::GATHER, false);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 90), PetActivityStatEnum::GATHER, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to decipher Cetgueli\'s Treasure Map, but couldn\'t make sense of it.', 'icons/activity-logs/confused');
             $pet->increaseEsteem(-1);
 
@@ -56,8 +57,8 @@ class TreasureMapService
         }
         else
         {
-            $this->petService->spendTime($pet, mt_rand(60, 90), PetActivityStatEnum::GATHER, true);
-            $this->petService->gainExp($pet, 3, [ PetSkillEnum::NATURE ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 90), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE ]);
             $pet->increaseEsteem(5);
 
             $prize = 'Outrageously Strongbox';
@@ -84,7 +85,7 @@ class TreasureMapService
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        $this->petService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::OTHER, null);
         $pet->increaseEsteem(5);
 
         $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found that Thieving Magpie, and offered it a "Gold" Idol in exchange for something else. The magpie eagerly accepted.', 'items/treasure/magpie-deal')

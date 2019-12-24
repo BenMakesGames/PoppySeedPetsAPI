@@ -9,22 +9,22 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
-use App\Service\PetService;
+use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 
 class MagicBindingService
 {
     private $inventoryService;
-    private $petService;
     private $responseService;
+    private $petExperienceService;
 
     public function __construct(
-        InventoryService $inventoryService, PetService $petService, ResponseService $responseService
+        InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService
     )
     {
         $this->inventoryService = $inventoryService;
-        $this->petService = $petService;
         $this->responseService = $responseService;
+        $this->petExperienceService = $petExperienceService;
     }
 
     public function getCraftingPossibilities(Pet $pet, array $quantities): array
@@ -110,10 +110,10 @@ class MagicBindingService
 
         if($umbraCheck === 1)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Stereotypical Torch', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(-1);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Stereotypical Torch, but mishandled the Quintessence. The torch flared up, and ' . $pet->getName() . ' dropped the torch, breaking it :( Some Charcoal was left over, at least...', '');
             $this->inventoryService->petCollectsItem('Charcoal', $pet, $pet->getName() . ' accidentally created this while trying to enchant a Stereotypical Torch.', $activityLog);
@@ -121,24 +121,24 @@ class MagicBindingService
         }
         else if($umbraCheck === 2)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(-1);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Stereotypical Torch, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
         }
         else if($umbraCheck < 13)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Stereotypical Torch, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
         }
         else // success!
         {
-            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Stereotypical Torch', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' enchanted a Stereotypical Torch into a Crazy-hot Torch.', '');
             $this->inventoryService->petCollectsItem('Crazy-hot Torch', $pet, $pet->getName() . ' enchanted this.', $activityLog);
@@ -152,26 +152,26 @@ class MagicBindingService
 
         if($umbraCheck <= 2)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(-1);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a block of glowing dice, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
         }
         else if($umbraCheck < 15)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a block of glowing dice, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
         }
         else // success!
         {
             $numberOfDice = mt_rand(3, 5);
 
-            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Blackonite', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem($numberOfDice);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a block of glowing dice from a chunk of Blackonite, then gently tapped it to break the dice apart. ' . $numberOfDice . ' were made!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
@@ -190,23 +190,23 @@ class MagicBindingService
 
         if($umbraCheck <= 2)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->inventoryService->loseItem('Mermaid Egg', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(-1);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extract Quintessence from a Mermaid Egg, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
         }
         else if($umbraCheck < 12)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to extract Quintessence from a Mermaid Egg, but almost screwed it all up. ' . $pet->getName() . ' decided to take a break from it for a bit...', 'icons/activity-logs/confused');
         }
         else // success!
         {
-            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
             $this->inventoryService->loseItem('Mermaid Egg', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' successfully extracted Quintessence from a Mermaid Egg.', '');
 
@@ -222,24 +222,24 @@ class MagicBindingService
 
         if($umbraCheck <= 2)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(-1);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant an Hourglass, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
         }
         else if($umbraCheck < 15)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant an Hourglass, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
         }
         else // success!
         {
-            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Hourglass', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' enchanted an Hourglass. It\'s _magic_ now!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
@@ -256,26 +256,26 @@ class MagicBindingService
 
         if($umbraCheck <= 2)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(-1);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Ceremonial Trident, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
         }
         else if($umbraCheck < 20)
         {
-            $this->petService->spendTime($pet, mt_rand(46, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(46, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant an Ceremonial Trident, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
         }
         else // success!
         {
-            $this->petService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::MAGIC_BIND, true);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
             foreach($otherMaterials as $material)
                 $this->inventoryService->loseItem($material, $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Ceremonial Trident', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' used a Ceremonial Trident to materialize the ' . $makes . '!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
@@ -307,39 +307,39 @@ class MagicBindingService
 
         if($craftsCheck <= 2)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extend a Blunderbuss but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
         }
         else if($umbraCheck <= 2)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(-1);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Blunderbuss, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
         }
         else if($craftsCheck < 10)
         {
-            $this->petService->spendTime($pet, mt_rand(46, 60), PetActivityStatEnum::CRAFT, false);
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(46, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Blunderbuss, but didn\'t arrange the material components properly.', 'icons/activity-logs/confused');
         }
         else if($umbraCheck < 16)
         {
-            $this->petService->spendTime($pet, mt_rand(46, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(46, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Blunderbuss, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
         }
         else // success!
         {
-            $this->petService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::MAGIC_BIND, true);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Blunderbuss', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Moon Pearl', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 4, [ PetSkillEnum::UMBRA, PetSkillEnum::CRAFTS ]);
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::UMBRA, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(5);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made an Iridescent Hand Cannon by extending a Blunderbuss, and binding a Moon Pearl to it!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
@@ -356,8 +356,8 @@ class MagicBindingService
 
         if($umbraCheck <= 2)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
             if(mt_rand(1, 2) === 1)
             {
@@ -374,17 +374,17 @@ class MagicBindingService
         }
         else if($umbraCheck < 20)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Farmer\'s Multi-tool, but kept messing up the spell.', 'icons/activity-logs/confused');
         }
         else // success!
         {
-            $this->petService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Smallish Pumpkin', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Farmer\'s Multi-tool', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(4);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' enchanted a Farmer\'s Multi-tool with one of Gizubi\'s rituals.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
@@ -401,8 +401,8 @@ class MagicBindingService
 
         if($umbraCheck <= 2)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
             if(mt_rand(1, 2) === 1)
             {
@@ -419,17 +419,17 @@ class MagicBindingService
         }
         else if($umbraCheck < 20)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Double Scythe, but kept messing up the spell.', 'icons/activity-logs/confused');
         }
         else // success!
         {
-            $this->petService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Dark Scales', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Double Scythe', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(4);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' enchanted a Double Scythe with Umbral magic...', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
@@ -446,8 +446,8 @@ class MagicBindingService
 
         if($umbraCheck <= 2)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
             if(mt_rand(1, 2) === 1)
             {
@@ -464,17 +464,17 @@ class MagicBindingService
         }
         else if($umbraCheck < 14)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Witch\'s Broom, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
         }
         else // success!
         {
-            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Straw Broom', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Witch-hazel', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' enchanted a broom into a Witch\'s Broom!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
@@ -490,8 +490,8 @@ class MagicBindingService
 
         if($umbraCheck <= 2)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
             $pet->increaseEsteem(-1);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
@@ -499,16 +499,16 @@ class MagicBindingService
         }
         else if($umbraCheck < 14)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make an Astral Tuning Fork, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
         }
         else // success!
         {
-            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Gold Tuning Fork', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' enchanted a regular old Gold Tuning Fork; now it\'s an _Astral_ Tuning Fork!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
@@ -524,33 +524,33 @@ class MagicBindingService
 
         if($umbraCheck <= 2)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->inventoryService->loseItem('Paper', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-1);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a ' . $scroll . ', but accidentally tore the Paper in the process :(', 'icons/activity-logs/torn-to-bits');
         }
         else if($umbraCheck <= 3)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(-1);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a ' . $scroll . ', but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
         }
         else if($umbraCheck < 15)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a ' . $scroll . ', but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
         }
         else // success!
         {
-            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Paper', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem($uniqueIngredient, $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a ' . $scroll . '.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
@@ -601,34 +601,34 @@ class MagicBindingService
 
         if($umbraCheck <= 2)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->inventoryService->loseItem('Paper', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-1);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a Monster-summoning Scroll, but accidentally tore the Paper in the process :(', 'icons/activity-logs/torn-to-bits');
         }
         else if($umbraCheck <= 3)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(-1);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a Monster-summoning Scroll, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
         }
         else if($umbraCheck < 18)
         {
-            $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a Monster-summoning Scroll, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
         }
         else // success!
         {
-            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Paper', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Talon', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Feathers', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Monster-summoning Scroll.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)

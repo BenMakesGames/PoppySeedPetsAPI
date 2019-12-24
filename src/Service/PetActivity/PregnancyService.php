@@ -20,6 +20,7 @@ use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
 use App\Service\PetService;
 use App\Service\ResponseService;
@@ -33,15 +34,16 @@ class PregnancyService
     private $petRelationshipService;
     private $petRepository;
     private $responseService;
-    private $petService;
+    private $petExperienceService;
     private $userQuestRepository;
     private $petSpeciesRepository;
     private $userStatsRepository;
 
     public function __construct(
         EntityManagerInterface $em, InventoryService $inventoryService, PetRelationshipService $petRelationshipService,
-        PetRepository $petRepository, ResponseService $responseService, PetService $petService,
-        UserQuestRepository $userQuestRepository, PetSpeciesRepository $petSpeciesRepository, UserStatsRepository $userStatsRepository
+        PetRepository $petRepository, ResponseService $responseService, PetExperienceService $petExperienceService,
+        UserQuestRepository $userQuestRepository, PetSpeciesRepository $petSpeciesRepository,
+        UserStatsRepository $userStatsRepository
     )
     {
         $this->em = $em;
@@ -49,7 +51,7 @@ class PregnancyService
         $this->petRelationshipService = $petRelationshipService;
         $this->petRepository = $petRepository;
         $this->responseService = $responseService;
-        $this->petService = $petService;
+        $this->petExperienceService = $petExperienceService;
         $this->userQuestRepository = $userQuestRepository;
         $this->petSpeciesRepository = $petSpeciesRepository;
         $this->userStatsRepository = $userStatsRepository;
@@ -174,7 +176,7 @@ class PregnancyService
         $this->em->persist($baby);
         $this->em->remove($pregnancy);
 
-        $this->petService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::OTHER, null);
 
         // applied in a slightly weird order, because I-dunno
         $pet

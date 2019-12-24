@@ -58,6 +58,8 @@ class PetService
     private $givingTreeGatheringService;
     private $pregnancyService;
     private $petActivityStatsService;
+    private $petGroupService;
+    private $petExperienceService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService,
@@ -67,7 +69,8 @@ class PetService
         TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService,
         Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
         PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService,
-        PregnancyService $pregnancyService, PetActivityStatsService $petActivityStatsService
+        PregnancyService $pregnancyService, PetActivityStatsService $petActivityStatsService, PetGroupService $petGroupService,
+        PetExperienceService $petExperienceService
     )
     {
         $this->em = $em;
@@ -89,50 +92,8 @@ class PetService
         $this->givingTreeGatheringService = $givingTreeGatheringService;
         $this->pregnancyService = $pregnancyService;
         $this->petActivityStatsService = $petActivityStatsService;
-    }
-
-    /**
-     * @param string[] $stats
-     */
-    public function gainExp(Pet $pet, int $exp, array $stats)
-    {
-        if($pet->hasStatusEffect(StatusEffectEnum::INSPIRED))
-            $exp++;
-
-        if($exp < 0) return;
-
-        $possibleStats = array_filter($stats, function($stat) use($pet) {
-            return ($pet->{'get' . $stat}() < 20);
-        });
-
-        if(count($possibleStats) === 0) return;
-
-        if($pet->getTool() && $pet->getTool()->getItem()->getTool()->getFocusSkill())
-        {
-            if(in_array($pet->getTool()->getItem()->getTool()->getFocusSkill(), $possibleStats))
-                $exp++;
-        }
-
-        $divideBy = 1;
-
-        if($pet->getFood() + $pet->getAlcohol() < 0) $divideBy++;
-        if($pet->getSafety() + $pet->getAlcohol() < 0) $divideBy++;
-        if($pet->getLove() + $pet->getAlcohol() < 0) $divideBy++;
-        if($pet->getEsteem() + $pet->getAlcohol() < 0) $divideBy++;
-
-        $divideBy += 1 + ($pet->getAlcohol() / $pet->getStomachSize());
-
-        $exp = round($exp / $divideBy);
-
-        if($exp === 0) return;
-
-        $pet->increaseExperience($exp);
-
-        while($pet->getExperience() >= $pet->getExperienceToLevel())
-        {
-            $pet->decreaseExperience($pet->getExperienceToLevel());
-            $pet->getSkills()->increaseStat(ArrayFunctions::pick_one($possibleStats));
-        }
+        $this->petGroupService = $petGroupService;
+        $this->petExperienceService = $petExperienceService;
     }
 
     /**
@@ -401,6 +362,8 @@ class PetService
     }
 
     /**
+     * @param Pet $pet
+     * @param ItemFood $food
      * @throws EnumInvalidValueException
      */
     private function applyFoodEffects(Pet $pet, ItemFood $food)
@@ -510,15 +473,13 @@ class PetService
                 $pet->increaseSafety(-mt_rand(1, $safetyVom));
                 $pet->increaseEsteem(-mt_rand(1, $safetyVom));
 
-                $this->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::OTHER, null);
+                $this->petExperienceService->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::OTHER, null);
 
                 $this->responseService->createActivityLog($pet, $pet->getName() . ' threw up :(', '', $changes->compare($pet));
 
                 return;
             }
         }
-
-        $eatDesire = $pet->getStomachSize() / 2 - $pet->getFood();
 
         if($pet->hasMerit(MeritEnum::BLACK_HOLE_TUM) && mt_rand(1, 200) === 1)
         {
@@ -539,7 +500,7 @@ class PetService
 
         if($this->meetRoommates($pet))
         {
-            $this->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
             return;
         }
 
@@ -558,7 +519,7 @@ class PetService
 
             if(count($craftingPossibilities) === 0 && count($programmingPossibilities) === 0)
             {
-                $this->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
 
                 $this->responseService->createActivityLog($pet, $description . ' ' . $pet->getName() . ' wanted to make something, but couldn\'t find any materials to work with.', '');
             }
@@ -583,6 +544,20 @@ class PetService
         {
             $this->genericAdventureService->adventure($pet);
             return;
+        }
+
+        if(mt_rand(1, 48) === 1)
+        {
+            if(count($pet->getGroups()) > 0)
+            {
+                $this->petGroupService->doGroupActivity(ArrayFunctions::pick_one($pet->getGroups()));
+                return;
+            }
+            else
+            {
+                if($this->petGroupService->createGroup($pet))
+                    return;
+            }
         }
 
         if($pet->getTool() && $pet->getTool()->getItem()->getName() === 'Cetgueli\'s Treasure Map')
@@ -674,7 +649,7 @@ class PetService
     {
         $changes = new PetChanges($pet);
 
-        $this->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
 
         $companion = $pet->getSpiritCompanion();
 
@@ -840,8 +815,8 @@ class PetService
         $petChanges = new PetChanges($pet->getPet());
         $friendChanges = new PetChanges($friend->getPet());
 
-        $this->spendTime($pet->getPet(), mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
-        $this->spendTime($friend->getPet(), mt_rand(5, 10), PetActivityStatEnum::HANG_OUT, null);
+        $this->petExperienceService->spendTime($pet->getPet(), mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
+        $this->petExperienceService->spendTime($friend->getPet(), mt_rand(5, 10), PetActivityStatEnum::HANG_OUT, null);
 
         $petPreviousRelationship = $pet->getCurrentRelationship();
         $friendPreviousRelationship = $friend->getCurrentRelationship();
@@ -901,53 +876,11 @@ class PetService
 
     /**
      * @param Pet $pet
-     * @param int $time
-     * @param string $activityStat
-     * @param bool|null $success
-     * @throws EnumInvalidValueException
-     */
-    public function spendTime(Pet $pet, int $time, string $activityStat, ?bool $success)
-    {
-        $pet->spendTime($time);
-        $this->petActivityStatsService->logStat($pet, $activityStat, $success, $time);
-
-        if($pet->getPregnancy())
-            $pet->getPregnancy()->increaseGrowth($time);
-
-        /** @var StatusEffect[] $statusEffects */
-        $statusEffects = array_values($pet->getStatusEffects()->toArray());
-
-        for($i = count($statusEffects) - 1; $i >= 0; $i--)
-        {
-            $statusEffects[$i]->spendTime($time);
-
-            // some status effects TRANSFORM when they run out (like caffeinated -> tired)
-            if($statusEffects[$i]->getTimeRemaining() <= 0)
-            {
-                if($statusEffects[$i]->getStatus() === StatusEffectEnum::CAFFEINATED)
-                {
-                    $newTotal = ceil($statusEffects[$i]->getTotalDuration() / 2);
-                    $statusEffects[$i]
-                        ->setStatus(StatusEffectEnum::TIRED)
-                        ->setTimeRemaining($statusEffects[$i]->getTimeRemaining() + $newTotal)
-                        ->setTotalDuration($newTotal)
-                    ;
-                }
-            }
-
-            // if the status effect didn't transform (or was still out of time AFTER transforming), then delete it
-            if($statusEffects[$i]->getTimeRemaining() <= 0)
-                $pet->removeStatusEffect($statusEffects[$i]);
-        }
-    }
-
-    /**
-     * @param Pet $pet
      * @throws EnumInvalidValueException
      */
     private function doNothing(Pet $pet)
     {
-        $this->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::OTHER, null);
         $this->responseService->createActivityLog($pet, $pet->getName() . ' hung around the house.', '');
     }
 

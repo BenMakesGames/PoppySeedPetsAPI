@@ -21,6 +21,7 @@ class HollowEarthService
     private $em;
     private $inventoryService;
     private $petService;
+    private $petExperienceService;
 
     public const DICE_ITEMS = [
         'Dreidel' => 4,
@@ -31,13 +32,14 @@ class HollowEarthService
 
     public function __construct(
         HollowEarthTileRepository $hollowEarthTileRepository, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetService $petService
+        PetService $petService, PetExperienceService $petExperienceService
     )
     {
         $this->hollowEarthTileRepository = $hollowEarthTileRepository;
         $this->em = $em;
         $this->inventoryService = $inventoryService;
         $this->petService = $petService;
+        $this->petExperienceService = $petExperienceService;
     }
 
     public function unlockHollowEarth(User $user)
@@ -181,7 +183,7 @@ class HollowEarthService
 
         if(array_key_exists('exp', $event))
         {
-            $this->petService->gainExp($pet, $event['exp']['amount'], $event['exp']['stats']);
+            $this->petExperienceService->gainExp($pet, $event['exp']['amount'], $event['exp']['stats']);
             $doLog = true;
         }
 

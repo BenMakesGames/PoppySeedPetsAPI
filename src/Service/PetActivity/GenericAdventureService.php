@@ -10,25 +10,25 @@ use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
-use App\Service\PetService;
+use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 
 class GenericAdventureService
 {
     private $responseService;
     private $inventoryService;
-    private $petService;
+    private $petExperienceService;
     private $userQuestRepository;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, PetService $petService,
+        ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         UserQuestRepository $userQuestRepository
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
-        $this->petService = $petService;
         $this->userQuestRepository = $userQuestRepository;
+        $this->petExperienceService = $petExperienceService;
     }
 
     public function adventure(Pet $pet): PetActivityLog
@@ -37,7 +37,7 @@ class GenericAdventureService
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        $this->petService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::OTHER, null);
 
         $rescuedAFairy = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Rescued a House Fairy from a Raccoon', null);
         if(!$rescuedAFairy->getValue())

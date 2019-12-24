@@ -8,7 +8,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Repository\UserRepository;
 use App\Service\InventoryService;
-use App\Service\PetService;
+use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -17,18 +17,18 @@ class GivingTreeGatheringService
     private $userRepository;
     private $inventoryService;
     private $responseService;
-    private $petService;
+    private $petExperienceService;
     private $em;
 
     public function __construct(
         UserRepository $userRepository, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, PetService $petService
+        ResponseService $responseService, PetExperienceService $petExperienceService
     )
     {
         $this->responseService = $responseService;
         $this->userRepository = $userRepository;
         $this->inventoryService = $inventoryService;
-        $this->petService = $petService;
+        $this->petExperienceService = $petExperienceService;
         $this->em = $em;
     }
 
@@ -65,7 +65,7 @@ class GivingTreeGatheringService
                 ]
             );
 
-            $this->petService->spendTime($pet, mt_rand(10, 20), PetActivityStatEnum::OTHER, null);
+            $this->petExperienceService->spendTime($pet, mt_rand(10, 20), PetActivityStatEnum::OTHER, null);
 
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' visited The Giving Tree, and picked up several items that other players had discarded.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)

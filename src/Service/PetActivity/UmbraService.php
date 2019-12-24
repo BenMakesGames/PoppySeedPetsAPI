@@ -12,22 +12,22 @@ use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
-use App\Service\PetService;
+use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 
 class UmbraService
 {
-    private $petService;
     private $responseService;
     private $inventoryService;
+    private $petExperienceService;
 
     public function __construct(
-        PetService $petService, ResponseService $responseService, InventoryService $inventoryService
+        ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService
     )
     {
-        $this->petService = $petService;
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
+        $this->petExperienceService = $petExperienceService;
     }
 
     public function adventure(Pet $pet)
@@ -87,9 +87,9 @@ class UmbraService
     {
         $exp = ceil($roll / 10);
 
-        $this->petService->gainExp($pet, $exp, [ PetSkillEnum::UMBRA ]);
+        $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::UMBRA ]);
 
-        $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
 
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' crossed into the Umbra, but the Storm was too harsh; ' . $pet->getName() . ' retreated before finding anything.', 'icons/activity-logs/confused');
     }
@@ -118,15 +118,15 @@ class UmbraService
                 $this->inventoryService->petCollectsItem('Blackberries', $pet, $pet->getName() . ' harvested these exceptionally-dark Blackberries from a rock-sheltered berry bush in the Umbra.', $activityLog);
             }
 
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, 'true');
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, 'true');
 
             return $activityLog;
         }
         else
         {
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
             return $this->responseService->createActivityLog($pet, 'In the Umbra, ' . $pet->getName() . ' found an outcropping of rocks where the full force of the Storm could not reach. Some weeds were growing there, but nothing of value.', 'icons/activity-logs/confused');
         }
     }
@@ -142,9 +142,9 @@ class UmbraService
 
         if($roll >= 14)
         {
-            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
 
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
 
             if(mt_rand(1, 2) === 1)
             {
@@ -162,9 +162,9 @@ class UmbraService
         }
         else if($hasRelevantSpirit && $roll >= 11)
         {
-            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
 
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
             if(mt_rand(1, 2) === 1)
             {
@@ -184,9 +184,9 @@ class UmbraService
         }
         else
         {
-            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
 
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
             if($hasRelevantSpirit)
             {
@@ -201,7 +201,7 @@ class UmbraService
 
     private function found2Moneys(Pet $pet): PetActivityLog
     {
-        $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
         if($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 80) === 1)
         {
@@ -261,6 +261,8 @@ class UmbraService
 
         $roll = mt_rand(1, $skill);
 
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, $roll >= 13);
+
         if($roll >= 13)
         {
             $prizes = [
@@ -278,7 +280,7 @@ class UmbraService
             else
                 $prize = ArrayFunctions::pick_one($prizes);
 
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
             $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' beat it back, and claimed its ' . $prize . '!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
             ;
@@ -287,7 +289,7 @@ class UmbraService
         }
         else
         {
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; ' . $pet->getName() . ' made a hasty retreat.', '');
         }
     }
@@ -297,6 +299,8 @@ class UmbraService
         $fishingSkill = mt_rand(1, 10 + $pet->getDexterity() + $pet->getFishing() + $pet->getUmbra());
 
         $roll = mt_rand(1, $fishingSkill);
+
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::FISH, $roll >= 13);
 
         if($roll >= 13)
         {
@@ -341,12 +345,12 @@ class UmbraService
 
             $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13);
 
-            $this->petService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
             return $activityLog;
         }
         else
         {
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' decided to fish in a dark river. Plenty of strange things swam by, but ' . $pet->getName() . ' didn\'t manage to catch any of them.', '');
         }
     }
@@ -361,7 +365,7 @@ class UmbraService
 
             if(mt_rand(1, 20) + $pet->getStrength() + $pet->getBrawl() >= 20)
             {
-                $this->petService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::HUNT, true);
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::HUNT, true);
 
                 if(mt_rand(1, 20 + $pet->getPerception() + $pet->getUmbra() + $pet->getGathering()) >= 25)
                     $loot[] = 'Quintessence';
@@ -369,7 +373,7 @@ class UmbraService
                 if(mt_rand(1, 20 + $pet->getPerception() + $pet->getUmbra() + $pet->getGathering()) >= 15)
                     $loot[] = 'Fluff';
 
-                $this->petService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
                 $pet->increaseEsteem(3);
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fell into a giant cocoon. While trying to find their way out, ' . $pet->getName() . ' was ambushed by one of Noetala\'s guard, but was able to defeat it!', '')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
@@ -381,9 +385,9 @@ class UmbraService
             {
                 $loot = [ 'Fluff' ];
 
-                $this->petService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::HUNT, false);
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::HUNT, false);
 
-                $this->petService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
                 $pet->increaseEsteem(-3);
                 $pet->increaseSafety(-mt_rand(4, 8));
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fell into a giant cocoon. While trying to find their way out, ' . $pet->getName() . ' was ambushed by one of Noetala\'s guard, and was wounded and covered in Fluff before being able to escape!', '');
@@ -404,12 +408,12 @@ class UmbraService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
             ;
 
-            $this->petService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ]);
 
             if(mt_rand(1, 100) === 1)
                 $activityLog->setEntry($activityLog->getEntry() . ' ("Snuck"? "Sneaked"? I dunno. One of thems.)');
 
-            $this->petService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
         }
 
         foreach($loot as $itemName)

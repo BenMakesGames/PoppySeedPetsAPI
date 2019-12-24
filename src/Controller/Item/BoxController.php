@@ -13,7 +13,7 @@ use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
-use App\Service\PetService;
+use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,8 +31,8 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openOreBox(
-        Inventory $box, ResponseService $responseService, InventoryService $inventoryService, PetService $petService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, PetRepository $petRepository
+        Inventory $box, ResponseService $responseService, InventoryService $inventoryService, PetRepository $petRepository,
+        PetExperienceService $petExperienceService, UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -77,7 +77,7 @@ class BoxController extends PoppySeedPetsItemController
             {
                 $inventoryService->receiveItem('Fish', $user, $box->getCreatedBy(), 'Found inside a lobster inside a ' . $box->getItem()->getName() . '.', $location, $lockedToOwner);
                 $changes = new PetChanges($pet);
-                $petService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
+                $petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
                 $pet->increaseEsteem(3);
                 $message .= "\n\nA lobster claw reached out from underneath and tried to pinch you, but " . $pet->getName() . " stepped in and beat it up!\n\nThat was a little scary, but hey: +1 Fish meat!";
                 $responseService->createActivityLog($pet, 'While ' . $user->getName() . ' was sifting through a box of ore, a lobster jumped out and tried to attack them! ' . $pet->getName() . ' stepped in and saved the day! It was a little scary, but hey: +1 Fish meat!', '', $changes->compare($pet));
@@ -371,7 +371,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function listenToJukebox(
-        Inventory $inventory, ResponseService $responseService, PetRepository $petRepository, PetService $petService,
+        Inventory $inventory, ResponseService $responseService, PetRepository $petRepository, PetExperienceService $petExperienceService,
         EntityManagerInterface $em, UserQuestRepository $userQuestRepository
     )
     {
@@ -402,7 +402,7 @@ class BoxController extends PoppySeedPetsItemController
             $petNames[] = $pet->getName();
             $changes = new PetChanges($pet);
 
-            $petService->gainExp($pet, 1, [ PetSkillEnum::MUSIC ]);
+            $petExperienceService->gainExp($pet, 1, [ PetSkillEnum::MUSIC ]);
             $pet->increaseSafety(2);
 
             $responseService->createActivityLog($pet, $pet->getName() . ' listened to the Jukebox.', '', $changes->compare($pet));
