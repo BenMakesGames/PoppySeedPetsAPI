@@ -322,6 +322,7 @@ class AccountController extends PoppySeedPetsController
             throw new UnprocessableEntityHttpException('It\'s too early to collect your weekly Care Package.');
 
         $canGetHandicraftsBox = $user->getUnlockedPark() && $user->getMaxPlants() > 3;
+        $canGetGamingBox = $user->getUnlockedHollowEarth();
 
         if($type === 1)
         {
@@ -334,6 +335,10 @@ class AccountController extends PoppySeedPetsController
         else if($type === 3 && $canGetHandicraftsBox)
         {
             $newInventory = $inventoryService->receiveItem('Handicrafts Supply Box', $user, $user, $user->getName() . ' got this as a weekly Care Package.', LocationEnum::HOME, true);
+        }
+        else if($type === 4 && $canGetGamingBox)
+        {
+            $newInventory = $inventoryService->receiveItem('Gaming Box', $user, $user, $user->getName() . ' got this as a weekly Care Package.', LocationEnum::HOME, true);
         }
         else
             throw new UnprocessableEntityHttpException('Must specify a Care Package "type".');

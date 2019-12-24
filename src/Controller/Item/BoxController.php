@@ -3,11 +3,10 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Entity\PetActivityLog;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\StringFunctions;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
@@ -17,6 +16,7 @@ use App\Service\InventoryService;
 use App\Service\PetService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -175,16 +175,7 @@ class BoxController extends PoppySeedPetsItemController
         if(mt_rand(1, 4) === 1)
             $newInventory[] = $inventoryService->receiveItem('Cobbler Recipe', $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location, $inventory->getLockedToOwner());
 
-        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
-
-        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
-        sort($itemList);
-
-        $em->remove($inventory);
-
-        $em->flush();
-
-        return $responseService->itemActionSuccess('Opening the box revealed ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -210,16 +201,7 @@ class BoxController extends PoppySeedPetsItemController
         for($i = 0; $i < 4; $i++)
             $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Carrot', 'Onion', 'Celery', 'Carrot', 'Sweet Beet']), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location, $inventory->getLockedToOwner());
 
-        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
-
-        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
-        sort($itemList);
-
-        $em->remove($inventory);
-
-        $em->flush();
-
-        return $responseService->itemActionSuccess('Opening the box revealed ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -257,6 +239,63 @@ class BoxController extends PoppySeedPetsItemController
             $newInventory[] = $inventoryService->receiveItem($itemName, $user, $user, $description, $location, $inventory->getLockedToOwner());
         }
 
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+    }
+
+    /**
+     * @Route("/gaming/{inventory}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openGamingBox(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/gaming/#/open');
+
+        $location = $inventory->getLocation();
+
+        $dice = [
+            'Glowing Four-sided Die',
+            'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', // most-common
+            'Glowing Eight-sided Die'
+        ];
+
+        // two dice
+        for($i = 0; $i < 2; $i++)
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($dice), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location, $inventory->getLockedToOwner());
+
+        $itemName = ArrayFunctions::pick_one([
+            'Browser Cookie', 'Browser Cookie',
+            'Sweet Coffee Bean Tea', 'Coffee Bean Tea', 'Sweet Black Tea', // caffeine
+            'Music Note',
+            'Toadstool'
+        ]);
+
+        // one of something else
+        $newInventory[] = $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location, $inventory->getLockedToOwner());
+
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+    }
+
+    /**
+     * @param string $messagePrefix
+     * @param UserStatsRepository $userStatsRepository
+     * @param User $user
+     * @param Inventory $inventory
+     * @param Inventory[] $newInventory
+     * @param ResponseService $responseService
+     * @param EntityManagerInterface $em
+     * @return JsonResponse
+     */
+    private function countRemoveFlushAndRespond(
+        string $messagePrefix,
+        UserStatsRepository $userStatsRepository, User $user, Inventory $inventory, array $newInventory,
+        ResponseService $responseService, EntityManagerInterface $em
+    ): JsonResponse
+    {
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
         $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
@@ -266,7 +305,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('Opening the box revealed ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess($messagePrefix . ' ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
 
     /**
@@ -292,16 +331,7 @@ class BoxController extends PoppySeedPetsItemController
         for($i = 0; $i < $beans; $i++)
             $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Coffee Beans', 'Cocoa Beans', 'Beans' ]), $user, $user, $description, $location, $inventory->getLockedToOwner());
 
-        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
-
-        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
-        sort($itemList);
-
-        $em->remove($inventory);
-
-        $em->flush();
-
-        return $responseService->itemActionSuccess('You upturn the bag, finding ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $this->countRemoveFlushAndRespond('You upturn the bag, finding', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -523,16 +553,7 @@ class BoxController extends PoppySeedPetsItemController
             $inventoryService->receiveItem('Blue Firework', $user, $user, $comment, $location, $lockedToOwner),
         ];
 
-        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
-
-        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
-        sort($itemList);
-
-        $em->remove($inventory);
-
-        $em->flush();
-
-        return $responseService->itemActionSuccess('Opening the box revealed ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -569,16 +590,7 @@ class BoxController extends PoppySeedPetsItemController
         for($x = mt_rand(4, 5); $x > 0; $x--)
             $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($alcohol), $user, $user, $comment, $location, $lockedToOwner);
 
-        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
-
-        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
-        sort($itemList);
-
-        $em->remove($inventory);
-
-        $em->flush();
-
-        return $responseService->itemActionSuccess('Opening the box revealed ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -626,17 +638,9 @@ class BoxController extends PoppySeedPetsItemController
         if(mt_rand(1, 4) > 1)
             $newInventory[] = $inventoryService->receiveItem('Piece of Cetgueli\'s Map', $user, $user, $comment, $location, $inventory->getLockedToOwner());
 
-        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
-
-        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
-        sort($itemList);
-
         $em->remove($key);
-        $em->remove($inventory);
 
-        $em->flush();
-
-        return $responseService->itemActionSuccess('Opening the box revealed ' . $moneys . '~~m~~, ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed ' . $moneys . '~~m~~,', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -693,17 +697,9 @@ class BoxController extends PoppySeedPetsItemController
         foreach($items as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $inventory->getLockedToOwner());
 
-        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
-
-        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
-        sort($itemList);
-
         $em->remove($key);
-        $em->remove($inventory);
 
-        $em->flush();
-
-        return $responseService->itemActionSuccess('Opening the box revealed ' . $moneys . '~~m~~, ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed ' . $moneys . '~~m~~,', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -744,16 +740,8 @@ class BoxController extends PoppySeedPetsItemController
         foreach($items as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $inventory->getLockedToOwner());
 
-        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
-
-        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
-        sort($itemList);
-
         $em->remove($key);
-        $em->remove($inventory);
 
-        $em->flush();
-
-        return $responseService->itemActionSuccess('Opening the box revealed ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 }
