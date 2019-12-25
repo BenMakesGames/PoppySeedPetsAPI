@@ -550,7 +550,7 @@ class PetService
         {
             if(count($pet->getGroups()) > 0)
             {
-                $this->petGroupService->doGroupActivity(ArrayFunctions::pick_one($pet->getGroups()));
+                $this->petGroupService->doGroupActivity($pet, ArrayFunctions::pick_one($pet->getGroups()));
                 return;
             }
             else
