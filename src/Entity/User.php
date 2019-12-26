@@ -222,6 +222,11 @@ class User implements UserInterface
      */
     private $unlockedBeehive;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Beehive", mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $beehive;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -788,6 +793,23 @@ class User implements UserInterface
     public function setUnlockedBeehive(): self
     {
         $this->unlockedBeehive = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getBeehive(): ?Beehive
+    {
+        return $this->beehive;
+    }
+
+    public function setBeehive(Beehive $beehive): self
+    {
+        $this->beehive = $beehive;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $beehive->getUser()) {
+            $beehive->setUser($this);
+        }
 
         return $this;
     }
