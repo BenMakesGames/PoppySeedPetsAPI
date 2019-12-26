@@ -101,7 +101,7 @@ class MagpieDealController extends PoppySeedPetsItemController
      * @Route("/{inventory}/shinyMetals", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function openBakers(
+    public function getShinyMetals(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em
     )
