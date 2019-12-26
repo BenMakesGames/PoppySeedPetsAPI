@@ -13,4 +13,9 @@ $schedule->run('php bin/console app:run-park-events')
     ->everyMinute()
 ;
 
+$schedule->run('php bin/console app:buzz-buzz')
+    ->description('Updates beehives.')
+    ->everyHour()
+;
+
 return $schedule;

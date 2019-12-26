@@ -39,4 +39,5 @@ final class SerializationGroupEnum
     public const FIREPLACE_FUEL = 'fireplaceFuel';
     public const DEV_TASK = 'devTask';
     public const STORY = 'story';
+    public const MY_BEEHIVE = 'myBeehive';
 }

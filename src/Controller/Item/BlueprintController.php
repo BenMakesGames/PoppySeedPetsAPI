@@ -3,6 +3,7 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Repository\InventoryRepository;
+use App\Service\BeehiveService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -50,7 +51,7 @@ class BlueprintController extends PoppySeedPetsItemController
      */
     public function buildBeehive(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryRepository $inventoryRepository
+        InventoryRepository $inventoryRepository, BeehiveService $beehiveService
     )
     {
         $this->validateInventory($inventory, 'blueprint/beehive/#/read');
@@ -67,8 +68,11 @@ class BlueprintController extends PoppySeedPetsItemController
         }
         else
         {
-            $user->setUnlockedBeehive();
             $em->remove($inventory);
+
+            $user->setUnlockedBeehive();
+
+            $beehiveService->createBeehive($user);
 
             $em->flush();
 

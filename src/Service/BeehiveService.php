@@ -4,15 +4,35 @@ namespace App\Service;
 use App\Entity\Beehive;
 use App\Entity\User;
 use App\Functions\ArrayFunctions;
+use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class BeehiveService
 {
     private $em;
+    private $itemRepository;
 
-    public function __construct(EntityManagerInterface $em)
+    public const DESIRED_ITEMS = [
+        'Red Clover' => 18,
+        'Wheat Flower' => 18,
+        'Orange' => 12,
+        'Apricot' => 24,
+        'Red' => 12,
+        'Naner' => 16,
+        'Crooked Stick' => 8,
+        'Witch-hazel' => 18,
+        'Narcissus' => 8,
+        'Yellow Dye' => 12,
+        'Honeydont' => 36,
+        'Sunflower' => 12,
+        'Bean Milk' => 24,
+        'Creamy Milk' => 12,
+    ];
+
+    public function __construct(EntityManagerInterface $em, ItemRepository $itemRepository)
     {
         $this->em = $em;
+        $this->itemRepository = $itemRepository;
     }
 
     public function createBeehive(User $user)
@@ -21,8 +41,8 @@ class BeehiveService
             throw new \InvalidArgumentException('User already has a beehive!');
 
         $beehive = (new Beehive())
-            ->setWorkers(mt_rand(3, 4))
             ->setQueenName(ArrayFunctions::pick_one(self::QUEEN_NAMES))
+            ->setRequestedItem($this->itemRepository->findOneByName(array_rand(self::DESIRED_ITEMS)))
         ;
 
         $this->em->persist($beehive);
@@ -30,7 +50,28 @@ class BeehiveService
         $user->setBeehive($beehive);
     }
 
-    public const QUEEN_NAMES = [ // a couple are princesses; sorry
+    public function fedRequestedItem(Beehive $beehive)
+    {
+        $beehive->setFlowerPower(self::DESIRED_ITEMS[$beehive->getRequestedItem()->getName()]);
+
+        $this->rerollRequest($beehive);
+    }
+
+    public function reRollRequest(Beehive $beehive)
+    {
+        // get the current item
+        $requestedItem = $beehive->getRequestedItem()->getName();
+
+        // remove the current item from the list of possibilities
+        $possibleItems = self::DESIRED_ITEMS;
+        unset($possibleItems[$requestedItem]);
+
+        // pick a new requested item
+        $beehive->setRequestedItem($this->itemRepository->findOneByName(array_rand($possibleItems)));
+    }
+
+    // a couple of these are princesses; sorry about the non-semantic variable name:
+    public const QUEEN_NAMES = [
         'Acropolitissa', 'Adelaide', 'Adélina', 'Adosinda', 'Ædgyth', 'Ælfthryth', 'Aénor', 'Afzan', 'Agafiya',
         'Allogia', 'Amalia', 'Anglesia', 'Andregoto', 'Anka', 'Ansi', 'Aphainuchit', 'Aregund', 'Aremburga',
         'Argentaela', 'Argyra', 'Ashina', 'Aspasia', 'Astrid', 'Aud', 'Austerchild',
