@@ -7,6 +7,7 @@ use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\HollowEarthActionTypeEnum;
 use App\Enum\HollowEarthMoveDirectionEnum;
 use App\Enum\HollowEarthRequiredActionEnum;
@@ -42,7 +43,7 @@ class HollowEarthService
         $this->petExperienceService = $petExperienceService;
     }
 
-    public function unlockHollowEarth(User $user)
+    public function unlockHollowEarth(User $user): void
     {
         if($user->getUnlockedHollowEarth() === null)
             $user->setUnlockedHollowEarth();
@@ -90,7 +91,12 @@ class HollowEarthService
         return $results;
     }
 
-    public function moveTo(HollowEarthPlayer $player, int $id)
+    /**
+     * @param HollowEarthPlayer $player
+     * @param int $id
+     * @throws EnumInvalidValueException
+     */
+    public function moveTo(HollowEarthPlayer $player, int $id): void
     {
         $tile = $this->hollowEarthTileRepository->find($id);
 
@@ -105,7 +111,11 @@ class HollowEarthService
         ;
     }
 
-    public function advancePlayer(HollowEarthPlayer $player)
+    /**
+     * @param HollowEarthPlayer $player
+     * @throws EnumInvalidValueException
+     */
+    public function advancePlayer(HollowEarthPlayer $player): void
     {
         if($player->getMovesRemaining() === 0)
             throw new \InvalidArgumentException('$player does not have any moves remaining!');
@@ -153,7 +163,12 @@ class HollowEarthService
         ]);
     }
 
-    private function enterTile(HollowEarthPlayer $player, HollowEarthTile $tile)
+    /**
+     * @param HollowEarthPlayer $player
+     * @param HollowEarthTile $tile
+     * @throws EnumInvalidValueException
+     */
+    private function enterTile(HollowEarthPlayer $player, HollowEarthTile $tile): void
     {
         $player->setCurrentTile($tile);
 
@@ -166,7 +181,12 @@ class HollowEarthService
         }
     }
 
-    public function doImmediateEvent(HollowEarthPlayer $player, $event)
+    /**
+     * @param HollowEarthPlayer $player
+     * @param array $event
+     * @throws EnumInvalidValueException
+     */
+    public function doImmediateEvent(HollowEarthPlayer $player, array $event): void
     {
         $doLog = false;
         $pet = $player->getChosenPet();
@@ -189,7 +209,7 @@ class HollowEarthService
 
         if(array_key_exists('statusEffect', $event))
         {
-            $this->petService->applyStatusEffect($pet, $event['statusEffect']['status'], $event['statusEffect']['duration'], $event['statusEffect']['maxDuration']);
+            $this->petExperienceService->applyStatusEffect($pet, $event['statusEffect']['status'], $event['statusEffect']['duration'], $event['statusEffect']['maxDuration']);
             $doLog = true;
         }
 
@@ -254,15 +274,13 @@ class HollowEarthService
         );
     }
 
-    public function getResponseData(User $user)
+    public function getResponseData(User $user): array
     {
         $dice = $this->getDice($user);
 
-        $data = [
+        return [
             'player' => $user->getHollowEarthPlayer(),
             'dice' => $dice,
         ];
-
-        return $data;
     }
 }

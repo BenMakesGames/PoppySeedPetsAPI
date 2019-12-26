@@ -216,6 +216,12 @@ class User implements UserInterface
      */
     private $fireplace;
 
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"myAccount"})
+     */
+    private $unlockedBeehive;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -770,6 +776,18 @@ class User implements UserInterface
         if ($this !== $fireplace->getUser()) {
             $fireplace->setUser($this);
         }
+
+        return $this;
+    }
+
+    public function getUnlockedBeehive(): ?\DateTimeImmutable
+    {
+        return $this->unlockedBeehive;
+    }
+
+    public function setUnlockedBeehive(): self
+    {
+        $this->unlockedBeehive = new \DateTimeImmutable();
 
         return $this;
     }

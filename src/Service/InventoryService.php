@@ -21,17 +21,17 @@ class InventoryService
     private $itemRepository;
     private $em;
     private $responseService;
-    private $petService;
+    private $petExperienceService;
 
     public function __construct(
         ItemRepository $itemRepository, EntityManagerInterface $em, ResponseService $responseService,
-        PetService $petService
+        PetExperienceService $petExperienceService
     )
     {
         $this->itemRepository = $itemRepository;
         $this->responseService = $responseService;
         $this->em = $em;
-        $this->petService = $petService;
+        $this->petExperienceService = $petExperienceService;
     }
 
     /**
@@ -214,7 +214,7 @@ class InventoryService
 
         if($item->getFood() !== null && mt_rand(1, 20) < 10 - $pet->getFood())
         {
-            if($this->petService->doEat($pet, $item, $activityLog))
+            if($this->petExperienceService->doEat($pet, $item, $activityLog))
                 return null;
         }
 

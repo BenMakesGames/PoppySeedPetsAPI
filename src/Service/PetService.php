@@ -235,7 +235,7 @@ class PetService
                 continue;
             }
 
-            $this->applyFoodEffects($pet, $food);
+            $this->petExperienceService->applyFoodEffects($pet, $food);
 
             // consider favorite flavor:
             if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
@@ -296,96 +296,6 @@ class PetService
             else
                 return $this->responseService->createActivityLog($pet, 'You tried to feed ' . $pet->getName() . ', but they\'re too full to eat anymore.', '');
         }
-    }
-
-    /**
-     * @param Pet $pet
-     * @param Item $item
-     * @param PetActivityLog|null $activityLog
-     * @return bool
-     * @throws EnumInvalidValueException
-     */
-    public function doEat(Pet $pet, Item $item, ?PetActivityLog $activityLog): bool
-    {
-        // intelligent pets won't eat items that provides no food; no pet will eat if their stomach is already full
-        if(($pet->getFood() === 0 && mt_rand(1, 10 + $pet->getIntelligence()) >= 5) || $pet->getJunk() + $pet->getFood() >= $pet->getStomachSize())
-            return false;
-
-        $food = $item->getFood();
-
-        if($pet->wantsSobriety() && ($food->getAlcohol() > 0 || $food->getCaffeine() > 0 || $food->getPsychedelic() > 0))
-            return false;
-
-        $this->applyFoodEffects($pet, $food);
-
-        // consider favorite flavor:
-        if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
-            throw new EnumInvalidValueException(FlavorEnum::class, $pet->getFavoriteFlavor());
-
-        $favoriteFlavorStrength = $food->{'get' . $pet->getFavoriteFlavor()}();
-
-        $pet->increaseEsteem($favoriteFlavorStrength + $food->getLove());
-
-        if($activityLog)
-            $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $item->getName() . '.');
-
-        return true;
-    }
-
-    /**
-     * @param Pet $pet
-     * @param string $status
-     * @param int $duration
-     * @param int $maxDuration
-     * @throws EnumInvalidValueException
-     */
-    public function applyStatusEffect(Pet $pet, string $status, int $duration, int $maxDuration)
-    {
-        $statusEffect = $pet->getStatusEffect($status);
-
-        if(!$statusEffect)
-        {
-            $statusEffect = (new StatusEffect())
-                ->setStatus($status)
-            ;
-
-            $pet->addStatusEffect($statusEffect);
-
-            $this->em->persist($statusEffect);
-        }
-
-        $statusEffect
-            ->setTotalDuration(min($maxDuration, $statusEffect->getTotalDuration() + $duration))
-            ->setTimeRemaining(min($statusEffect->getTotalDuration(), $statusEffect->getTimeRemaining() + $duration))
-        ;
-
-    }
-
-    /**
-     * @param Pet $pet
-     * @param ItemFood $food
-     * @throws EnumInvalidValueException
-     */
-    private function applyFoodEffects(Pet $pet, ItemFood $food)
-    {
-        $pet->increaseAlcohol($food->getAlcohol());
-
-        $caffeine = $food->getCaffeine();
-
-        if($caffeine > 0)
-        {
-            $pet->increaseCaffeine($caffeine);
-            $this->applyStatusEffect($pet, StatusEffectEnum::CAFFEINATED, $caffeine * 60, 8 * 60);
-        }
-        else if($caffeine < 0)
-            $pet->increaseCaffeine($caffeine);
-
-        $pet->increasePsychedelic($food->getPsychedelic());
-        $pet->increaseFood($food->getFood());
-        $pet->increaseJunk($food->getJunk());
-
-        if($food->getGrantedSkill() && $pet->getSkills()->getStat($food->getGrantedSkill()) < 1)
-            $pet->getSkills()->increaseStat($food->getGrantedSkill());
     }
 
     public function runHour(Pet $pet)

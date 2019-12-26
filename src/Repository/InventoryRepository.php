@@ -39,6 +39,24 @@ class InventoryRepository extends ServiceEntityRepository
         ;
     }
 
+    public function userHasAnyOneOf(User $owner, array $itemNames): bool
+    {
+        return $this->createQueryBuilder('i')
+            ->select('COUNT(i.id)')
+            ->andWhere('i.owner=:user')
+            ->andWhere('i.location IN (:consumableLocations)')
+            ->leftJoin('i.item', 'item')
+            ->andWhere('item.name IN (:itemNames)')
+            ->setParameter('user', $owner)
+            ->setParameter('consumableLocations', Inventory::CONSUMABLE_LOCATIONS)
+            ->setParameter('itemNames', $itemNames)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleScalarResult()
+            > 0 // <-- this part is really important :P
+        ;
+    }
+
     public function findFertilizers(User $user)
     {
         return $this->createQueryBuilder('i')
