@@ -49,6 +49,12 @@ class PetGroup
      */
     private $createdOn;
 
+    /**
+     * @ORM\Column(type="string", length=40)
+     * @Groups({"petGroup"})
+     */
+    private $name;
+
     public function __construct()
     {
         $this->members = new ArrayCollection();
@@ -139,5 +145,17 @@ class PetGroup
     public function getCreatedOn(): ?\DateTimeImmutable
     {
         return $this->createdOn;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
     }
 }

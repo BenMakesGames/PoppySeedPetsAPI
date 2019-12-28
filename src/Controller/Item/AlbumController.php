@@ -6,6 +6,7 @@ use App\Functions\ArrayFunctions;
 use App\Model\ItemQuantity;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
+use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,13 +39,11 @@ class AlbumController extends PoppySeedPetsItemController
 
         $location = $inventory->getLocation();
 
-        // @TODO get items!
-
         $musicNotes = new ItemQuantity();
         $musicNotes->item = $itemRepository->findOneByName('Music Note');
         $musicNotes->quantity = mt_rand(3, 4);
 
-        $extraItem = ArrayFunctions::pick_one([ 'String', 'Quintessence' ]);
+        $extraItem = ArrayFunctions::pick_one([ 'Pointer', 'Quintessence' ]);
 
         $inventoryService->giveInventory($musicNotes, $user, $user, $user->getName() . ' got this by listening to a Single.', $location);
         $inventoryService->receiveItem($extraItem, $user, $user, $user->getName() . ' got this by listening to a Single.', $location);
@@ -71,14 +70,12 @@ class AlbumController extends PoppySeedPetsItemController
 
         $location = $inventory->getLocation();
 
-        // @TODO get items!
-
         $musicNotes = new ItemQuantity();
         $musicNotes->item = $itemRepository->findOneByName('Music Note');
         $musicNotes->quantity = mt_rand(4, 6);
 
         $genre = ArrayFunctions::pick_one(self::GENRES);
-        $extraItem = ArrayFunctions::pick_one([ 'String', 'Quintessence' ]);
+        $extraItem = ArrayFunctions::pick_one([ 'NUL', 'Quintessence' ]);
 
         $inventoryService->giveInventory($musicNotes, $user, $user, $user->getName() . ' got this by listening to an EP.', $location);
         $inventoryService->receiveItem($genre, $user, $user, $user->getName() . ' got this by listening to a Single.', $location);
@@ -106,8 +103,6 @@ class AlbumController extends PoppySeedPetsItemController
 
         $location = $inventory->getLocation();
 
-        // @TODO get items!
-
         $musicNotes = new ItemQuantity();
         $musicNotes->item = $itemRepository->findOneByName('Music Note');
         $musicNotes->quantity = mt_rand(4, 6);
@@ -115,17 +110,23 @@ class AlbumController extends PoppySeedPetsItemController
         $genre = ArrayFunctions::pick_one([ 'Salsa', 'Meringue', 'Rock', 'Rock', 'Bubblegum' ]);
 
         $extraItems = [
-            ArrayFunctions::pick_one([ 'String', 'Quintessence' ]),
-            'String',
+            ArrayFunctions::pick_one([ 'Pointer', 'Quintessence' ]),
+            'Pointer',
             'Quintessence'
         ];
 
+        sort($extraItems);
+
         $inventoryService->giveInventory($musicNotes, $user, $user, $user->getName() . ' got this by listening to an LP.', $location);
+        $inventoryService->receiveItem($genre, $user, $user, $user->getName() . ' got this by listening to a Single.', $location);
+
+        foreach($extraItems as $extraItem)
+            $inventoryService->receiveItem($extraItem, $user, $user, $user->getName() . ' got this by listening to a Single.', $location);
 
         $em->remove($inventory);
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('Ah yes: your favorite genre, ' . $genre . '.' . "\n\n" . 'You also received ' . $musicNotes->quantity . ' Music Notes, ' . ArrayFunctions::list_nice($extraItems) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
 }

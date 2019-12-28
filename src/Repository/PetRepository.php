@@ -175,7 +175,7 @@ class PetRepository extends ServiceEntityRepository
         ];
 
         $relationsihpsWithFewGroups = array_filter(
-            $pet->getPetRelationships(),
+            $pet->getPetRelationships()->toArray(),
             function(PetRelationship $r) use($friendlyRelationships, $pet)
             {
                 return

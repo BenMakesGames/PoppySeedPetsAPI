@@ -6,6 +6,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\PetBaby;
 use App\Entity\PetSkills;
 use App\Entity\PetSpecies;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -106,6 +107,10 @@ class PregnancyService
         return ArrayFunctions::pick_one($species);
     }
 
+    /**
+     * @param Pet $pet
+     * @throws EnumInvalidValueException
+     */
     public function giveBirth(Pet $pet)
     {
         $user = $pet->getOwner();
