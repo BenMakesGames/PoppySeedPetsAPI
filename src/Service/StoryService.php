@@ -134,7 +134,7 @@ class StoryService
             $requiredInventory = $this->inventoryService->deserializeItemList($choice['requiredInventory']);
 
             foreach($requiredInventory as $quantity)
-                $this->inventoryService->loseItem($quantity->item, $this->user, LocationEnum::HOME, $quantity->quantity);
+                $this->inventoryService->loseItem($quantity->item, $this->user, [ LocationEnum::HOME, LocationEnum::BASEMENT ], $quantity->quantity);
         }
     }
 
@@ -254,8 +254,7 @@ class StoryService
                 break;
 
             case StoryActionTypeEnum::LOSE_ITEM:
-                if($this->inventoryService->loseItem($action['item'], $this->user, LocationEnum::HOME) === 0)
-                    $this->inventoryService->loseItem($action['item'], $this->user, LocationEnum::BASEMENT);
+                $this->inventoryService->loseItem($action['item'], $this->user, [ LocationEnum::HOME, LocationEnum::BASEMENT ]);
                 break;
 
             case StoryActionTypeEnum::INCREMENT_STAT:

@@ -10,7 +10,6 @@ use App\Entity\User;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\ColorFunctions;
 use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
@@ -22,16 +21,18 @@ class InventoryService
     private $em;
     private $responseService;
     private $petExperienceService;
+    private $inventoryRepository;
 
     public function __construct(
         ItemRepository $itemRepository, EntityManagerInterface $em, ResponseService $responseService,
-        PetExperienceService $petExperienceService
+        PetExperienceService $petExperienceService, InventoryRepository $inventoryRepository
     )
     {
         $this->itemRepository = $itemRepository;
         $this->responseService = $responseService;
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
+        $this->inventoryRepository = $inventoryRepository;
     }
 
     /**
@@ -115,7 +116,7 @@ class InventoryService
         $items = \explode(',', $list);
         foreach($items as $item)
         {
-            list($itemId, $quantity) = \explode(':', $item);
+            [$itemId, $quantity] = \explode(':', $item);
             $itemQuantity = new ItemQuantity();
 
             $itemQuantity->item = $this->itemRepository->find($itemId);
@@ -177,6 +178,7 @@ class InventoryService
     /**
      * @param ItemQuantity|ItemQuantity[] $quantities
      * @return Inventory[]
+     * @throws EnumInvalidValueException
      */
     public function giveInventory($quantities, User $owner, User $creator, string $comment, int $location)
     {
@@ -207,6 +209,7 @@ class InventoryService
 
     /**
      * @param Item|string $item
+     * @throws EnumInvalidValueException
      */
     public function petCollectsItem($item, Pet $pet, string $comment, ?PetActivityLog $activityLog): ?Inventory
     {
@@ -254,6 +257,7 @@ class InventoryService
 
     /**
      * @param Item|string $item
+     * @throws EnumInvalidValueException
      */
     public function receiveItem($item, User $owner, ?User $creator, string $comment, int $location, bool $lockedToOwner = false): Inventory
     {
@@ -286,19 +290,26 @@ class InventoryService
 
     /**
      * @param Item|string $item
+     * @param int|int[] $location
      */
-    public function loseItem($item, User $owner, int $location, int $quantity = 1): int
+    public function loseItem($item, User $owner, $location, int $quantity = 1): int
     {
         if(is_string($item)) $item = $this->itemRepository->findOneByName($item);
 
-        $statement = $this->em->getConnection()->prepare('DELETE FROM inventory WHERE owner_id=:user AND item_id=:item AND location=:location LIMIT ' . $quantity);
-        $statement->execute([
-            'user' => $owner->getId(),
-            'item' => $item->getId(),
-            'location' => $location
-        ]);
+        $inventory = $this->inventoryRepository->findBy(
+            [
+                'owner' => $owner->getId(),
+                'item' => $item->getId(),
+                'location' => $location
+            ],
+            null,
+            $quantity
+        );
 
-        return $statement->rowCount();
+        foreach($inventory as $i)
+            $this->em->remove($i);
+
+        return count($inventory);
     }
 
     /**

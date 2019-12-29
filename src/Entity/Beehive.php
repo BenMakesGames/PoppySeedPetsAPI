@@ -191,7 +191,7 @@ class Beehive
      */
     public function getRoyalJellyPercent(): float
     {
-        return round($this->royalJellyProgress / 2000, 2);
+        return min(1, round($this->royalJellyProgress / 2000, 2));
     }
 
     /**
@@ -199,7 +199,7 @@ class Beehive
      */
     public function getHoneycombPercent(): float
     {
-        return round($this->honeycombProgress / 2000, 2);
+        return min(1, round($this->honeycombProgress / 2000, 2));
     }
 
     /**
@@ -207,6 +207,6 @@ class Beehive
      */
     public function getMiscPercent(): float
     {
-        return round($this->miscProgress / 2000, 2);
+        return min(1, round($this->miscProgress / 2000, 2));
     }
 }
