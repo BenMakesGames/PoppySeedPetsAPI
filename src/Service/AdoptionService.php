@@ -2,37 +2,74 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Model\PetShelterPet;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
+use App\Repository\UserStatsRepository;
 
 class AdoptionService
 {
     private $petRepository;
     private $petSpeciesRepository;
     private $calendarService;
+    private $userStatsRepository;
 
     public function __construct(
-        PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository, CalendarService $calendarService
+        PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository, CalendarService $calendarService,
+        UserStatsRepository $userStatsRepository
     )
     {
         $this->petRepository = $petRepository;
         $this->petSpeciesRepository = $petSpeciesRepository;
         $this->calendarService = $calendarService;
+        $this->userStatsRepository = $userStatsRepository;
+    }
+
+    public function getAdoptionFee(User $user): int
+    {
+        $statValue = $this->userStatsRepository->getStatValue($user, UserStatEnum::PETS_ADOPTED);
+
+        if($statValue <= 6)
+            return 50;
+        else if($statValue <= 28)
+            return 75;
+        else if($statValue <= 496)
+            return 100;
+        else if($statValue <= 8128)
+            return 50;
+        else
+            return 10;
+    }
+
+    private function getNumberOfPets(User $user): int
+    {
+        $statValue = $this->userStatsRepository->getStatValue($user, UserStatEnum::PETS_ADOPTED);
+
+        if($statValue <= 6)
+            return mt_rand(4, 6);
+        else if($statValue <= 28)
+            return mt_rand(5, 8);
+        else if($statValue <= 496)
+            return mt_rand(6, 10);
+        else if($statValue <= 8128)
+            return mt_rand(6, 10);
+        else
+            return mt_rand(6, 10);
     }
 
     /**
      * @return PetShelterPet[]
      */
-    public function getDailyPets(int $seed): array
+    public function getDailyPets(User $user): array
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
 
-        mt_srand($seed);
+        mt_srand($user->getDailySeed());
 
-        $numPets = mt_rand(4, 8);
+        $numPets = $this->getNumberOfPets($user);
         $numSeasonalPets = $this->numberOfSeasonalPets($numPets);
 
         $petCount = $this->petRepository->createQueryBuilder('p')
@@ -121,7 +158,7 @@ class AdoptionService
 
         // winter solstice, more or less
         if($monthDay === 1221 || $monthDay === 1222)
-            return $totalPets - 1;
+            return ceil($totalPets / 2);
 
         // christmas colors
         if($monthDay >= 1223 && $monthDay <= 1225)

@@ -32,12 +32,12 @@ class PetShelterController extends PoppySeedPetsController
      */
     public function getAvailablePets(
         AdoptionService $adoptionService, ResponseService $responseService, PetRepository $petRepository,
-        UserQuestRepository $userQuestRepository, UserService $userService
+        UserQuestRepository $userQuestRepository
     )
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
         $user = $this->getUser();
-        $costToAdopt = $userService->getAdoptionFee($user);
+        $costToAdopt = $adoptionService->getAdoptionFee($user);
         $lastAdopted = $userQuestRepository->findOneBy([ 'user' => $user, 'name' => 'Last Adopted a Pet' ]);
 
         if($lastAdopted && $lastAdopted->getValue() === $now)
@@ -49,7 +49,7 @@ class PetShelterController extends PoppySeedPetsController
             ]);
         }
 
-        $pets = $adoptionService->getDailyPets($user->getDailySeed());
+        $pets = $adoptionService->getDailyPets($user);
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
 
@@ -77,12 +77,12 @@ class PetShelterController extends PoppySeedPetsController
     public function adoptPet(
         int $id, PetRepository $petRepository, AdoptionService $adoptionService, Request $request,
         ResponseService $responseService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
-        UserQuestRepository $userQuestRepository, UserService $userService
+        UserQuestRepository $userQuestRepository
     )
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
         $user = $this->getUser();
-        $costToAdopt = $userService->getAdoptionFee($user);
+        $costToAdopt = $adoptionService->getAdoptionFee($user);
         $lastAdopted = $userQuestRepository->findOneBy([ 'user' => $user, 'name' => 'Last Adopted a Pet' ]);
 
         if($lastAdopted && $lastAdopted->getValue() === $now)
@@ -98,7 +98,7 @@ class PetShelterController extends PoppySeedPetsController
         if(\strlen($petName) < 1 || \strlen($petName) > 30)
             throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
 
-        $pets = $adoptionService->getDailyPets($user->getDailySeed());
+        $pets = $adoptionService->getDailyPets($user);
 
         $petToAdopt = ArrayFunctions::find_one($pets, function(PetShelterPet $p) use($id) { return $p->id === $id; });
 
@@ -137,7 +137,7 @@ class PetShelterController extends PoppySeedPetsController
 
         $em->flush();
 
-        $costToAdopt = $userService->getAdoptionFee($user);
+        $costToAdopt = $adoptionService->getAdoptionFee($user);
 
         return $responseService->success([ 'pets' => [], 'costToAdopt' => $costToAdopt ]);
     }
