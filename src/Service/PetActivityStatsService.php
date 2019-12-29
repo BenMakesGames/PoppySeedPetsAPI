@@ -13,6 +13,7 @@ class PetActivityStatsService
     public const STATS_THAT_CANT_FAIL = [
         PetActivityStatEnum::PARK_EVENT,
         PetActivityStatEnum::HANG_OUT,
+        PetActivityStatEnum::GROUP_BAND,
         PetActivityStatEnum::OTHER
     ];
 
