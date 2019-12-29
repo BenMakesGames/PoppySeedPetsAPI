@@ -210,7 +210,7 @@ class PetActivityStats
     /**
      * @ORM\Column(type="integer")
      */
-    private $groupBandSuccess = 0;
+    private $groupBand = 0;
 
     public function getId(): ?int
     {
@@ -673,14 +673,14 @@ class PetActivityStats
         return $this;
     }
 
-    public function getGroupBandSuccess(): ?int
+    public function getGroupBand(): ?int
     {
-        return $this->groupBandSuccess;
+        return $this->groupBand;
     }
 
-    public function increaseGroupBandSuccess(int $amount): self
+    public function increaseGroupBand(int $amount): self
     {
-        $this->groupBandSuccess += $amount;
+        $this->groupBand += $amount;
 
         return $this;
     }
