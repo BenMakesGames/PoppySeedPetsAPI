@@ -666,9 +666,9 @@ class PetActivityStats
         return $this->groupBandTime;
     }
 
-    public function setGroupBandTime(int $groupBandTime): self
+    public function increaseGroupBandTime(int $amount): self
     {
-        $this->groupBandTime = $groupBandTime;
+        $this->groupBandTime += $amount;
 
         return $this;
     }
@@ -678,9 +678,9 @@ class PetActivityStats
         return $this->groupBandSuccess;
     }
 
-    public function setGroupBandSuccess(int $groupBandSuccess): self
+    public function increaseGroupBandSuccess(int $amount): self
     {
-        $this->groupBandSuccess = $groupBandSuccess;
+        $this->groupBandSuccess += $amount;
 
         return $this;
     }
