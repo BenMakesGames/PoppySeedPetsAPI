@@ -202,6 +202,16 @@ class PetActivityStats
      */
     private $otherTime = 0;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $groupBandTime = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $groupBandSuccess = 0;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -647,6 +657,30 @@ class PetActivityStats
     public function increaseOtherTime(int $amount): self
     {
         $this->otherTime += $amount;
+
+        return $this;
+    }
+
+    public function getGroupBandTime(): ?int
+    {
+        return $this->groupBandTime;
+    }
+
+    public function setGroupBandTime(int $groupBandTime): self
+    {
+        $this->groupBandTime = $groupBandTime;
+
+        return $this;
+    }
+
+    public function getGroupBandSuccess(): ?int
+    {
+        return $this->groupBandSuccess;
+    }
+
+    public function setGroupBandSuccess(int $groupBandSuccess): self
+    {
+        $this->groupBandSuccess = $groupBandSuccess;
 
         return $this;
     }
