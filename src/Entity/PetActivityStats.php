@@ -678,7 +678,7 @@ class PetActivityStats
         return $this->groupBand;
     }
 
-    public function increaseGroupBand(int $amount): self
+    public function increaseGroupBand(int $amount = 1): self
     {
         $this->groupBand += $amount;
 
