@@ -180,7 +180,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
         foreach($petsAtHome as $pet)
         {
-            $petService->spendTime($pet, mt_rand(5, 15), PetActivityStatEnum::HUNT, $won);
+            $petExperienceService->spendTime($pet, mt_rand(5, 15), PetActivityStatEnum::HUNT, $won);
 
             $activityLog = (new PetActivityLog())
                 ->setPet($pet)
