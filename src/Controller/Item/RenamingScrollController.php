@@ -9,6 +9,7 @@ use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\ProfanityFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,7 +29,7 @@ class RenamingScrollController extends PoppySeedPetsItemController
      */
     public function readRenamingScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        PetRepository $petRepository, ProfanityFilterService $profanityFilterService
     )
     {
         $user = $this->getUser();
@@ -41,7 +42,7 @@ class RenamingScrollController extends PoppySeedPetsItemController
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException('There is no such pet.');
 
-        $petName = trim($request->request->get('name', ''));
+        $petName = $profanityFilterService->filter(trim($request->request->get('name', '')));
 
         if(\strlen($petName) < 1 || \strlen($petName) > 30)
             throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
