@@ -285,11 +285,8 @@ class PetGroupService
         return str_replace(['_', ' ,'], [' ', ','], implode(' ', $newParts));
     }
 
-    private const BAND_ACTIVITY_SENTIMENTS = [
+    private const BAND_ACTIVITY_SENTIMENT_MESSAGES = [
         'It was fun!',
-        'It was fun!',
-        'It was a good session!',
-        'It was a good session!',
         'It was a good session!',
         'It was a little stressful, but they made good progress!',
     ];
@@ -368,18 +365,23 @@ class PetGroupService
         }
         else
         {
-            $groupSentiment = ArrayFunctions::pick_one(self::BAND_ACTIVITY_SENTIMENTS);
+            $groupSentiment = ArrayFunctions::pick_one([ 0, 0, 1, 1, 1, 2 ]);
 
             foreach($group->getMembers() as $member)
             {
                 if(mt_rand(1, 8) === 1)
-                    $sentiment = ArrayFunctions::pick_one(self::BAND_ACTIVITY_SENTIMENTS);
+                    $sentiment = ArrayFunctions::pick_one([ 0, 0, 1, 1, 1, 2 ]);
                 else
                     $sentiment = $groupSentiment;
 
+                if($sentiment === 0)
+                    $member->increaseLove(mt_rand(2, 6));
+                else if($sentiment === 1)
+                    $member->increaseEsteem(mt_rand(2, 6));
+
                 $activityLog = (new PetActivityLog())
                     ->setPet($member)
-                    ->setEntry($member->getName() . ' met with the rest of the members of ' . $group->getName() . '. ' . $sentiment)
+                    ->setEntry($member->getName() . ' met with the rest of the members of ' . $group->getName() . '. ' . self::BAND_ACTIVITY_SENTIMENT_MESSAGES[$sentiment])
                     ->setIcon('items/music/note')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
