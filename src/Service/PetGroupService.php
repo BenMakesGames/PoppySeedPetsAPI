@@ -12,6 +12,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetGroupTypeEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\PetChanges;
 use App\Repository\PetRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -284,6 +285,15 @@ class PetGroupService
         return str_replace(['_', ' ,'], [' ', ','], implode(' ', $newParts));
     }
 
+    private const BAND_ACTIVITY_SENTIMENTS = [
+        'It was fun!',
+        'It was fun!',
+        'It was a good session!',
+        'It was a good session!',
+        'It was a good session!',
+        'It was a little stressful, but they made good progress!',
+    ];
+
     /**
      * @throws EnumInvalidValueException
      */
@@ -294,9 +304,12 @@ class PetGroupService
         $soothingVoiceValue = 3;
         $skill = 0;
         $progress = mt_rand(5, 12 + $bandSize * 2);
+        /** @var PetChanges[] $petChanges */ $petChanges = [];
 
         foreach($group->getMembers() as $pet)
         {
+            $petChanges[$pet->getId()] = new PetChanges($pet);
+
             $roll = mt_rand(1, 10 + $pet->getMusic());
 
             if($pet->hasMerit(MeritEnum::SOOTHING_VOICE))
@@ -337,11 +350,39 @@ class PetGroupService
             {
                 $this->inventoryService->receiveItem($item, $member->getOwner(), $member->getOwner(), $member->getName() . '\'s band made this!', LocationEnum::HOME);
 
+                $member->increaseEsteem(mt_rand(8, 12));
+
                 $activityLog = (new PetActivityLog())
                     ->setPet($member)
-                    ->setEntry($member->getName() . '\'s band made a new ' . $item . '!')
+                    ->setEntry($group->getName() . (mt_rand(1, 5) === 1 ? ' finally' : '') . ' released a new ' . $item . '!')
                     ->setIcon('items/music/note')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                    ->setChanges($petChanges[$member->getId()]->compare($member))
+                ;
+
+                $this->em->persist($activityLog);
+
+                if($member->getId() === $instigatingPet->getId())
+                    $this->responseService->addActivityLog($activityLog);
+            }
+        }
+        else
+        {
+            $groupSentiment = ArrayFunctions::pick_one(self::BAND_ACTIVITY_SENTIMENTS);
+
+            foreach($group->getMembers() as $member)
+            {
+                if(mt_rand(1, 8) === 1)
+                    $sentiment = ArrayFunctions::pick_one(self::BAND_ACTIVITY_SENTIMENTS);
+                else
+                    $sentiment = $groupSentiment;
+
+                $activityLog = (new PetActivityLog())
+                    ->setPet($member)
+                    ->setEntry($member->getName() . ' met with the rest of the members of ' . $group->getName() . '. ' . $sentiment)
+                    ->setIcon('items/music/note')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM)
+                    ->setChanges($petChanges[$member->getId()]->compare($member))
                 ;
 
                 $this->em->persist($activityLog);
