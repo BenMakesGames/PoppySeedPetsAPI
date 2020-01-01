@@ -28,6 +28,11 @@ class TestProfanityFilterCommand extends PoppySeedPetsCommand
     {
         $phrase = $this->input->getArgument('phrase');
 
-        var_dump($this->profanityFilter->filter($phrase));
+        $start = microtime(true);
+        $output = $this->profanityFilter->filter($phrase);
+        $end = microtime(true);
+
+        echo $output . "\n";
+        echo "(took " . round($end - $start, 4) . " seconds)\n";
     }
 }

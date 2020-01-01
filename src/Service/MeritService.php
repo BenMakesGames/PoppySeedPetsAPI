@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\Merit;
 use App\Entity\Pet;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
 use App\Repository\MeritRepository;
 
@@ -40,6 +41,7 @@ class MeritService
 
     /**
      * @return Merit[]
+     * @throws EnumInvalidValueException
      */
     public function getAvailableMerits(Pet $pet): array
     {
@@ -74,11 +76,11 @@ class MeritService
                     break;
 
                 case MeritEnum::BLACK_HOLE_TUM:
-                    $available = $pet->getSkills()->getStamina() >= 4;
+                    $available = $pet->hasMerit(MeritEnum::MATTER_OVER_MIND) || $pet->hasMerit(MeritEnum::FORCE_OF_NATURE);
                     break;
 
                 case MeritEnum::EIDETIC_MEMORY:
-                    $available = $pet->getSkills()->getIntelligence() >= 4;
+                    $available = $pet->hasMerit(MeritEnum::MIND_OVER_MATTER) || $pet->hasMerit(MeritEnum::FORCE_OF_WILL);
                     break;
 
                 // these Merits may NEVER be chosen; they are gained in other ways:
