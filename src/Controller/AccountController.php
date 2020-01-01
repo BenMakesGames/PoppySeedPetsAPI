@@ -264,27 +264,6 @@ class AccountController extends PoppySeedPetsController
     }
 
     /**
-     * @Route("/rename", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function rename(
-        Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        ProfanityFilterService $profanityFilterService
-    )
-    {
-        $name = $profanityFilterService->filter(trim($request->request->get('name')));
-
-        if(\strlen($name) < 2 || \strlen($name) > 30)
-            throw new UnprocessableEntityHttpException('Name must be between 2 and 30 characters long.');
-
-        $this->getUser()->setName($name);
-
-        $em->flush();
-
-        return $responseService->success();
-    }
-
-    /**
      * @Route("/search", methods={"GET"})
      */
     public function search(Request $request, UserFilterService $userFilterService, ResponseService $responseService)
