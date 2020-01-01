@@ -27,7 +27,7 @@ class ProfanityFilterService
         's+h+i+t+($|[^a])' => 'poo$1',
         'j+i+z+m*' => 'goo',
         '(^|[^a-z])c+u+m+(s*)($|[^a-z])' => '$1goo$1$2',
-        '([^s])c+u+m+i+n+g+([^s])' => '$1having fun$2',
+        '(^|[^s])c+u+m+i+n+g+($|[^s])' => '$1having fun$2',
         '(n+i+gg+e+r+|m+i+l+f+|m+o+t+h+e+r+[^a-z]*f+u+c+k+e+r+|f+a+g+|f+a+g+o+t+|r+e+t+a+r+d+|w+h+o+r+e+)s+' => 'people',
         '(n+i+gg+e+r+|m+i+l+f+|m+o+t+h+e+r+[^a-z]*f+u+c+k+e+r+|f+a+g+|f+a+g+o+t+|r+e+t+a+r+d+|w+h+o+r+e+)' => 'person',
         '(s+c+r+e+w+|b+l+o+w+|k+i+l+l+)[^a-z]*y+o+u+' => 'love you',
@@ -48,7 +48,7 @@ class ProfanityFilterService
 
         foreach(self::TRANSFORMS as $from=>$to)
         {
-            $from = str_replace([ 's', 'o', 'i', 'c' ], [ '[s$5]', '[o0]', '[i1]', '[ck]' ], $from);
+            $from = str_replace([ 's+', 's*', 'o+', 'i+', 'c+' ], [ '[s$5]+', '[s$5]*', '[o0]+', '[i1]+', '[ck]+' ], $from);
 
             $out = preg_replace('/' . $from . '/i', $to, $out);
         }
