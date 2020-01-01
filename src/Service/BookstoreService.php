@@ -70,12 +70,7 @@ class BookstoreService
 
         if($petsAcquired >= 3)
         {
-            if($petsAcquired >= 10)
-                $bookPrices['Renaming Scroll'] = 500;
-            else if($petsAcquired >= 5)
-                $bookPrices['Renaming Scroll'] = 600;
-            else
-                $bookPrices['Renaming Scroll'] = 800;
+            $bookPrices['Renaming Scroll'] = max(500, ceil(875 - 20 * $petsAcquired));
         }
 
         ksort($bookPrices);
