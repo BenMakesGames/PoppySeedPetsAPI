@@ -174,7 +174,7 @@ class PetRepository extends ServiceEntityRepository
             RelationshipEnum::MATE
         ];
 
-        $relationsihpsWithFewGroups = array_filter(
+        $relationshipsWithFewGroups = array_filter(
             $pet->getPetRelationships()->toArray(),
             function(PetRelationship $r) use($friendlyRelationships, $pet)
             {
@@ -192,6 +192,6 @@ class PetRepository extends ServiceEntityRepository
             }
         );
 
-        return array_map(function(PetRelationship $p) { return $p->getRelationship(); }, $relationsihpsWithFewGroups);
+        return array_map(function(PetRelationship $p) { return $p->getRelationship(); }, $relationshipsWithFewGroups);
     }
 }
