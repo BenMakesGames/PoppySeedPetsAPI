@@ -307,7 +307,12 @@ class InventoryService
         );
 
         foreach($inventory as $i)
+        {
+            if($i->getHolder()) $i->setHolder(null);
+            if($i->getWearer()) $i->setWearer(null);
+
             $this->em->remove($i);
+        }
 
         return count($inventory);
     }

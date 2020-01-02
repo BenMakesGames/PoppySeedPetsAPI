@@ -120,6 +120,6 @@ final class StringFunctions
         'hope', 'weight', 'event', 'corner', 'disco', 'loud', 'drum', 'machine', 'again', 'wave',
         'future', 'past', 'sleep', 'dream', 'hard', 'vine', 'sign', 'young', 'bold', 'right',
         'burn', 'word', 'sink', 'sail', 'bloom', 'upgrade', 'control', 'victory', 'switch', 'heart',
-        'climb', 'defend', 'touch', 'fall', 'follow', 'down'
+        'climb', 'defend', 'touch', 'fall', 'follow', 'down', 'parry', 'shield'
     ];
 }
