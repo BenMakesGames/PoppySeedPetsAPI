@@ -111,7 +111,6 @@ final class StringFunctions
         'grass', 'double', 'browse', 'arrow', 'boulder', 'hill', 'fluff', 'junk', 'thing', 'stuff',
         'carpet', 'floor', 'wall', 'trash', 'world', 'universe', 'start', 'finish', 'strong', 'alive',
         'kiss', 'love', 'safe', 'style', 'rain', 'bright', 'true', 'false', 'sunshine', 'tall',
-        // ^ 700!
 
         'facts', 'smile', 'face', 'grace', 'sweet', 'shine', 'funk', 'dawn', 'mind', 'flower',
         'float', 'eyes', 'night', 'simple', 'ground', 'color', 'idea', 'sound', 'rainbow', 'plan',
@@ -120,6 +119,9 @@ final class StringFunctions
         'hope', 'weight', 'event', 'corner', 'disco', 'loud', 'drum', 'machine', 'again', 'wave',
         'future', 'past', 'sleep', 'dream', 'hard', 'vine', 'sign', 'young', 'bold', 'right',
         'burn', 'word', 'sink', 'sail', 'bloom', 'upgrade', 'control', 'victory', 'switch', 'heart',
-        'climb', 'defend', 'touch', 'fall', 'follow', 'down', 'parry', 'shield'
+        'climb', 'defend', 'touch', 'fall', 'follow', 'down', 'parry', 'shield', 'student', 'master',
+        'teacher', 'professor', 'wizard', 'warrior', 'rogue', 'cake', 'dessert', 'oxygen', 'pilot', 'money',
+        'bike', 'balloon', 'sausage', 'blank', 'wedding', 'girlfriend', 'husband', 'wife', 'christmas', 'pony',
+        // ^ 800!
     ];
 }
