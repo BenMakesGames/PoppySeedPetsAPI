@@ -178,12 +178,15 @@ class PetRepository extends ServiceEntityRepository
             $pet->getPetRelationships()->toArray(),
             function(PetRelationship $r) use($friendlyRelationships, $pet)
             {
+                $otherSide = $r->getRelationship()->getRelationshipWith($pet);
+
                 return
                     //
                     $r->getCurrentRelationship() !== RelationshipEnum::BROKE_UP &&
 
                     // as long as both pets WANT a friendly relationship, they'll do this
-                    in_array($r->getRelationship()->getRelationshipWith($pet)->getRelationshipGoal(), $friendlyRelationships) &&
+                    $otherSide &&
+                    in_array($otherSide->getRelationshipGoal(), $friendlyRelationships) &&
                     in_array($r->getRelationshipGoal(), $friendlyRelationships) &&
 
                     // the pets involved must not already have too many group commitments
