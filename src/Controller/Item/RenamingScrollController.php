@@ -4,6 +4,7 @@ namespace App\Controller\Item;
 use App\Entity\Inventory;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\StringFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
@@ -44,11 +45,14 @@ class RenamingScrollController extends PoppySeedPetsItemController
 
         $petName = $profanityFilterService->filter(trim($request->request->get('name', '')));
 
-        if(\strlen($petName) < 1 || \strlen($petName) > 30)
-            throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
-
         if($petName === $pet->getName())
             throw new UnprocessableEntityHttpException('That\'s the pet\'s current name! What a waste of the scroll that would be...');
+
+        if(strlen($petName) < 1 || strlen($petName) > 30)
+            throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
+
+        if(!StringFunctions::isISO88591($petName))
+            throw new UnprocessableEntityHttpException('Your pet\'s name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
 
         $em->remove($inventory);
 

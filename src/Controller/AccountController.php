@@ -70,24 +70,30 @@ class AccountController extends PoppySeedPetsController
         if(!\filter_var($email, FILTER_VALIDATE_EMAIL))
             throw new UnprocessableEntityHttpException('Email address is not valid.');
 
-        if(\strlen($petName) < 1 || \strlen($petName) > 30)
+        if(strlen($petName) < 1 || strlen($petName) > 30)
             throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
+
+        if(!StringFunctions::isISO88591($petName))
+            throw new UnprocessableEntityHttpException('Your pet\'s name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
 
         $species = $petSpeciesRepository->findOneBy([ 'image' => $petImage ]);
 
         if(!$species || !$species->getAvailableAtSignup())
             throw new UnprocessableEntityHttpException('Must choose your pet\'s appearance.');
 
-        if(!\preg_match('/[A-Fa-f0-9]{6}/', $petColorA))
+        if(!preg_match('/[A-Fa-f0-9]{6}/', $petColorA))
             throw new UnprocessableEntityHttpException('Pet color A is not valid.');
 
-        if(!\preg_match('/[A-Fa-f0-9]{6}/', $petColorB))
+        if(!preg_match('/[A-Fa-f0-9]{6}/', $petColorB))
             throw new UnprocessableEntityHttpException('Pet color B is not valid.');
 
-        if(\strlen($name) < 2 || \strlen($name) > 30)
+        if(strlen($name) < 2 || strlen($name) > 30)
             throw new UnprocessableEntityHttpException('Name must be between 2 and 30 characters long.');
 
-        if(\strlen($password) < 10)
+        if(!StringFunctions::isISO88591($name))
+            throw new UnprocessableEntityHttpException('Your name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
+
+        if(strlen($password) < 10)
             throw new UnprocessableEntityHttpException('Pass phrase must be at least 10 characters long.');
 
         $existingUser = $userRepository->findOneBy([ 'email' => $email ]);

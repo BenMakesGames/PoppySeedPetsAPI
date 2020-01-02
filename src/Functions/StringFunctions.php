@@ -3,6 +3,12 @@ namespace App\Functions;
 
 final class StringFunctions
 {
+    public static function isISO88591(string $string): bool
+    {
+        $ISOd = iconv('UTF-8', 'ISO-8859-1//IGNORE', $string);
+        return mb_strlen($string) === strlen($ISOd);
+    }
+
     public static function randomPassword(): string
     {
         $words = [];
