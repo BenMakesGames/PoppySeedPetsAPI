@@ -308,8 +308,8 @@ class InventoryService
 
         foreach($inventory as $i)
         {
-            if($i->getHolder()) $i->setHolder(null);
-            if($i->getWearer()) $i->setWearer(null);
+            if($i->getHolder()) $i->getHolder()->setTool(null);
+            if($i->getWearer()) $i->getWearer()->setHat(null);
 
             $this->em->remove($i);
         }
