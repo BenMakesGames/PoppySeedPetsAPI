@@ -324,6 +324,7 @@ class PetGroupService
         $group
             ->increaseProgress($progress)
             ->increaseSkillRollTotal($skill)
+            ->setLastMetOn()
         ;
 
         if($group->getProgress() >= 100)

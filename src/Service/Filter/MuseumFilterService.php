@@ -1,13 +1,7 @@
 <?php
 namespace App\Service\Filter;
 
-use App\Entity\User;
-use App\Entity\UserFriend;
-use App\Repository\ItemRepository;
 use App\Repository\MuseumItemRepository;
-use App\Repository\PetSpeciesRepository;
-use App\Repository\UserRepository;
-use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 class MuseumFilterService

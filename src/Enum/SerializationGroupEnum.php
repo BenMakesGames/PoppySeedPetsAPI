@@ -28,6 +28,8 @@ final class SerializationGroupEnum
     public const PARK_EVENT = 'parkEvent';
     public const PET_FRIEND = 'petFriend';
     public const PET_GROUP = 'petGroup';
+    public const PET_GROUP_DETAILS = 'petGroupDetails';
+    public const PET_GROUP_INDEX = 'petGroupIndex';
     public const GREENHOUSE_PLANT = 'greenhousePlant';
     public const MY_SEEDS = 'mySeeds';
     public const REMINDER = 'reminder';

@@ -11,6 +11,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PetGroupRepository")
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="created_on_idx", columns={"created_on"}),
+ *     @ORM\Index(name="last_met_on_idx", columns={"last_met_on"}),
+ *     @ORM\Index(name="type_idx", columns={"type"}),
+ *     @ORM\Index(name="name_idx", columns={"name"}),
+ * })
  */
 class PetGroup
 {
@@ -18,18 +24,19 @@ class PetGroup
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"petGroup"})
+     * @Groups({"petGroup", "petGroupDetails", "petGroupIndex"})
      */
     private $id;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Pet", inversedBy="groups")
+     * @Groups({"petGroupDetails"})
      */
     private $members;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petGroup"})
+     * @Groups({"petGroup", "petGroupDetails", "petGroupIndex"})
      */
     private $type;
 
@@ -46,19 +53,27 @@ class PetGroup
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"petGroupDetails", "petGroupIndex"})
      */
     private $createdOn;
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"petGroup"})
+     * @Groups({"petGroup", "petGroupDetails", "petGroupIndex"})
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     * @Groups({"petGroupDetails", "petGroupIndex"})
+     */
+    private $lastMetOn;
 
     public function __construct()
     {
         $this->members = new ArrayCollection();
         $this->createdOn = new \DateTimeImmutable();
+        $this->lastMetOn = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -155,6 +170,18 @@ class PetGroup
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getLastMetOn(): \DateTimeImmutable
+    {
+        return $this->lastMetOn;
+    }
+
+    public function setLastMetOn(): self
+    {
+        $this->lastMetOn = new \DateTimeImmutable();
 
         return $this;
     }
