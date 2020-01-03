@@ -73,7 +73,18 @@ class BookstoreService
 
         if($petsAcquired >= 3)
         {
-            $bookPrices['Renaming Scroll'] = max(500, ceil(875 - 20 * $petsAcquired));
+            $divideBy = 1;
+
+            if($itemsDonatedToMuseum->getValue() >= 800)
+                $divideBy = 2;
+            else if($itemsDonatedToMuseum->getValue() >= 600)
+                $divideBy = 1.75;
+            else if($itemsDonatedToMuseum->getValue() >= 400)
+                $divideBy = 1.5;
+            else if($itemsDonatedToMuseum->getValue() >= 200)
+                $divideBy = 1.25;
+
+            $bookPrices['Renaming Scroll'] = ceil(max(500, ceil(860 - 20 * $petsAcquired)) / $divideBy);
         }
 
         ksort($bookPrices);
