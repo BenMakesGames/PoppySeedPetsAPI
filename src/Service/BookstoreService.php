@@ -51,7 +51,10 @@ class BookstoreService
                 $bookPrices['Pie Recipes'] = 15;
 
             if($cookedSomething->getValue() >= 50)
+            {
                 $bookPrices['Milk: The Book'] = 30;
+                $bookPrices['Fried'] = 25;
+            }
         }
 
         if($itemsDonatedToMuseum)
