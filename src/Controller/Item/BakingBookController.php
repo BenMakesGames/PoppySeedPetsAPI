@@ -39,6 +39,7 @@ class BakingBookController extends PoppySeedPetsItemController
 * Laufabrauð
 * Melon Pan
 * Meringues
+* Muffins
 * Naner Bread
 * Pancakes
 * Plain Bread
@@ -131,6 +132,18 @@ A simple bread with a cracked, cookie crust. It\'s melon-like appearance gives i
 Optionally, add Cocoa Powder for Chocolate Meringues!
 
 To make a Bizet Cake, use citrus instead of Cream of Tartar, and add Butter (for the buttercream!)
+
+#### Muffins
+
+* Wheat Flour
+* Baking Powder
+* Butter
+* Sugar
+* Egg
+* Plain Yogurt
+* Optionally: Berries, Red, pieces of Chocolate Bar
+
+In some cases, using Creamy Milk or a flavored Yogurt, instead of Plain Yogurt, may work! 
 
 #### Naner Bread
 
