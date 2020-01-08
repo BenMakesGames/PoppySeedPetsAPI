@@ -344,7 +344,7 @@ class GatheringService
             else if(mt_rand(1, 20 + $pet->getPerception() + $pet->getNature()) >= 15)
                 $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
-            if(mt_rand(1, 100) == 1)
+            if(mt_rand(1, 20) == 1)
                 $loot[] = 'Secret Seashell';
 
             if(mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering()) >= 25)
