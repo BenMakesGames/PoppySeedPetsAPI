@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Fireplace;
+use App\Entity\Inventory;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Enum\LocationEnum;
@@ -73,6 +74,118 @@ class FireplaceController extends PoppySeedPetsController
         $fuel = $inventoryRepository->findFuel($user);
 
         return $responseService->success($fuel, SerializationGroupEnum::FIREPLACE_FUEL);
+    }
+
+    /**
+     * @Route("/whelpFood", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getWhelpFood(
+        InventoryRepository $inventoryRepository, ResponseService $responseService
+    )
+    {
+        $user = $this->getUser();
+
+        if(!$user->getUnlockedFireplace() || !$user->getFireplace())
+            throw new AccessDeniedHttpException('You haven\'t got a Fireplace, yet!');
+
+        if($user->getFireplace()->getWhelpName() === null)
+            throw new AccessDeniedHttpException('You haven\'t got a Dragon Whelp, yet!');
+
+        $food = $inventoryRepository->createQueryBuilder('i')
+            ->andWhere('i.owner=:user')->setParameter('user', $user->getId())
+            ->andWhere('i.location=:home')->setParameter('home', LocationEnum::HOME)
+            ->join('i.item', 'item')
+            ->join('item.food', 'food')
+            ->andWhere('(food.spicy > 0 OR food.meaty > 0 OR food.fishy > 0)')
+            ->addOrderBy('item.name', 'ASC')
+            ->getQuery()
+            ->execute()
+        ;
+
+        return $responseService->success($food, SerializationGroupEnum::MY_INVENTORY);
+    }
+
+    /**
+     * @Route("/feedWhelp", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function feedWhelp(
+        Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
+        InventoryService $inventoryService, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+        $fireplace = $user->getFireplace();
+
+        if(!$user->getUnlockedFireplace() || !$fireplace)
+            throw new AccessDeniedHttpException('You haven\'t got a Fireplace, yet!');
+
+        if($fireplace->getWhelpName() === null)
+            throw new AccessDeniedHttpException('You haven\'t got a Dragon Whelp, yet!');
+
+        if(!$request->request->has('food'))
+            throw new UnprocessableEntityHttpException('No items were selected as food???');
+
+        $itemIds = $request->request->get('food');
+
+        if(!is_array($itemIds)) $itemIds = [ $itemIds ];
+
+        /** @var Inventory[] $items */
+        $items = $inventoryRepository->findBy([
+            'id' => $itemIds,
+            'owner' => $user->getId(),
+            'location' => LocationEnum::HOME
+        ]);
+
+        $items = array_filter($items, function(Inventory $i) {
+            return $i->getItem()->getFood() && (
+                $i->getItem()->getFood()->getFishy() > 0 || // most foods you feed the whelp are probably fishy
+                $i->getItem()->getFood()->getMeaty() > 0 ||
+                $i->getItem()->getFood()->getSpicy() > 0
+            );
+        });
+
+        if(count($items) < count($itemIds))
+            throw new UnprocessableEntityHttpException('Some of the food items selected could not be used. That shouldn\'t happen. Reload and try again, maybe?');
+
+        $loot = [];
+
+        foreach($items as $item)
+        {
+            $em->remove($item);
+
+            $fireplace->increaseWhelpFood($item->getItem()->getFood()->getFood() + $item->getItem()->getFood()->getSpicy() * 2);
+
+            while($fireplace->getWhelpFood() >= 50)
+            {
+                $fireplace->increaseWhelpFood(-50);
+
+                $r = mt_rand(1, 100);
+
+                if($r === 1)
+                    $loot[] = 'Firestone';          // 1%
+                else if($r === 2 || $r === 3)
+                    $loot[] = 'Dark Matter';        // 2%
+                else if($r <= 8)
+                    $loot[] = 'Charcoal';           // 5%
+                else if($r <= 28)
+                    $loot[] = 'Quintessence';       // 20%
+                else
+                    $loot[] = 'Liquid-hot Magma';   // 72%
+            }
+        }
+
+        sort($loot);
+
+        foreach($loot as $item)
+            $inventoryService->receiveItem($item, $user, $user, $fireplace->getWhelpName() . ' spit this up.', LocationEnum::HOME);
+
+        $em->flush();
+
+        $responseService->addActivityLog((new PetActivityLog())->setEntry($fireplace->getWhelpName() . ' spit up ' . ArrayFunctions::list_nice($loot) . '.'));
+
+        return $responseService->success();
     }
 
     /**

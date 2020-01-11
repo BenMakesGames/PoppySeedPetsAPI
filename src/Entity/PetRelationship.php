@@ -132,6 +132,9 @@ class PetRelationship
         return $this->currentRelationship;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function setCurrentRelationship(string $currentRelationship): self
     {
         if(!RelationshipEnum::isAValue($currentRelationship))
@@ -147,6 +150,9 @@ class PetRelationship
         return $this->relationshipGoal;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function setRelationshipGoal(string $relationshipGoal): self
     {
         if(!RelationshipEnum::isAValue($relationshipGoal))
@@ -164,16 +170,18 @@ class PetRelationship
 
     public function setTimeUntilChange()
     {
-        if($this->pet->hasMerit(MeritEnum::INTROSPECTIVE))
-            $this->timeUntilChange = mt_rand(mt_rand(15, 20), mt_rand(35, 40));
-        else
-            $this->timeUntilChange = mt_rand(mt_rand(20, 30), mt_rand(50, 60));
+        $this->timeUntilChange = mt_rand(mt_rand(20, 30), mt_rand(40, 50));
     }
 
-    public function decrementTimeUntilChange(): self
+    public function decrementTimeUntilChange(float $multiplier = 1): self
     {
         if($this->wantsDifferentRelationship())
-            $this->timeUntilChange--;
+        {
+            if($this->pet->hasMerit(MeritEnum::INTROSPECTIVE))
+                $this->timeUntilChange -= ceil(3 * $multiplier);
+            else
+                $this->timeUntilChange -= ceil(2 * $multiplier);
+        }
 
         return $this;
     }

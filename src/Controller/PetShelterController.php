@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Entity\PetSkills;
 use App\Enum\FlavorEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\StoryEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetShelterPet;
@@ -13,8 +14,10 @@ use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\AdoptionService;
 use App\Service\ResponseService;
+use App\Service\StoryService;
 use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -32,7 +35,7 @@ class PetShelterController extends PoppySeedPetsController
      */
     public function getAvailablePets(
         AdoptionService $adoptionService, ResponseService $responseService, PetRepository $petRepository,
-        UserQuestRepository $userQuestRepository
+        UserQuestRepository $userQuestRepository, StoryService $storyService
     )
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
@@ -58,15 +61,20 @@ class PetShelterController extends PoppySeedPetsController
         else
             $dialog = "Hello! Here to adopt a new friend?\n\nIf no one catches your eye today, come back tomorrow. We get newcomers every day!";
 
+        $data = [
+            'dialog' => $dialog,
+            'pets' => $pets,
+            'costToAdopt' => $costToAdopt,
+            'petsAtHome' => $numberOfPetsAtHome,
+            'maxPets' => $user->getMaxPets(),
+        ];
+
+        if($user->getMaxPets() > 2)
+            $data['story'] = $storyService->doStory($user, StoryEnum::AN_ABUSE_OF_POWER, new ParameterBag());
+
         return $responseService->success(
-            [
-                'dialog' => $dialog,
-                'pets' => $pets,
-                'costToAdopt' => $costToAdopt,
-                'petsAtHome' => $numberOfPetsAtHome,
-                'maxPets' => $user->getMaxPets(),
-            ],
-            SerializationGroupEnum::PET_SHELTER_PET
+            $data,
+            [ SerializationGroupEnum::PET_SHELTER_PET, SerializationGroupEnum::STORY ]
         );
     }
 
