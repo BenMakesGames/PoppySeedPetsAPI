@@ -15,7 +15,6 @@ use App\Repository\UserStatsRepository;
 use App\Service\AdoptionService;
 use App\Service\ResponseService;
 use App\Service\StoryService;
-use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
@@ -76,6 +75,24 @@ class PetShelterController extends PoppySeedPetsController
             $data,
             [ SerializationGroupEnum::PET_SHELTER_PET, SerializationGroupEnum::STORY ]
         );
+    }
+
+    /**
+     * @Route("/doStory", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function doStory(
+        Request $request, StoryService $storyService, ResponseService $responseService
+    )
+    {
+        $user = $this->getUser();
+
+        if($user->getMaxPets() <= 2)
+            throw new AccessDeniedHttpException('What? What\'s going on? I\'m confused. Reload and try again.');
+
+        $story = $storyService->doStory($user, StoryEnum::AN_ABUSE_OF_POWER, $request->request);
+
+        return $responseService->success($story, SerializationGroupEnum::STORY);
     }
 
     /**

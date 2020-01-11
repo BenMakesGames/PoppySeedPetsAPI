@@ -75,6 +75,8 @@ class JsonLogicParserService
                 return $user->getMoneys();
             else if($expression === '%user.dailySeed%')
                 return $user->getDailySeed();
+            else if($expression === '%user.unlockedBeehive%')
+                return $user->getUnlockedBeehive() !== null;
             else if(preg_match('/%user.stat.[^%]+%/', $expression))
             {
                 $stat = substr($expression, 11, strlen($expression) - 12);
