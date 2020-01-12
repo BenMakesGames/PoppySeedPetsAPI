@@ -28,7 +28,15 @@ class LetterFromTheLibraryOfFireController extends PoppySeedPetsItemController
     {
         $this->validateInventory($inventory, 'letterFromTheLibraryOfFire/#/read');
 
-        return $responseService->itemActionSuccess('# Greetings!
+        $user = $this->getUser();
+
+        if($user->getFireplace() === null)
+        {
+            return $responseService->itemActionSuccess('Weird: the letter is blank...');
+        }
+        else
+        {
+            return $responseService->itemActionSuccess('# Greetings!
 
 An anonymous benefactor has sponsored your registration as a member of the Library of Fire!
 
@@ -49,6 +57,7 @@ Please note that repairs to the north wing of floors 29 and 30 are still ongoing
 For questions & support regarding Magma Whelps, the information desk (floor 2) can put you in contact with The Offices of Doon Westergren. 
 
 The Library of Fire is always open. We look forward to seeing you!');
+        }
     }
     /**
      * @Route("/{inventory}/meltSeal", methods={"POST"})
