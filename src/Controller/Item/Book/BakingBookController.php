@@ -37,9 +37,9 @@ class BakingBookController extends PoppySeedPetsItemController
 * Donut (Cake)
 * Donut (Yeast)
 * Flour Tortilla
-* Laufabrauð
 * Melon Pan
 * Meringues
+* Muffins
 * Naner Bread
 * Pancakes
 * Plain Bread
@@ -100,17 +100,6 @@ A versatile bread! (If you make quesadillas, don\'t forget to Butter, or Oil, th
 * Butter
 * Wheat Flour
 
-#### Laufabrauð
-
-* Baking Powder
-* Butter
-* Creamy Milk
-* Sugar
-* Wheat Flour
-* Oil (for frying)
-
-After rolling the dough into thin circles, cut a pretty design into it. Then carefully place it into the hot oil to fry it!
-
 #### Melon Pan
 
 A simple bread with a cracked, cookie crust. It\'s melon-like appearance gives it its name.
@@ -132,6 +121,18 @@ A simple bread with a cracked, cookie crust. It\'s melon-like appearance gives i
 Optionally, add Cocoa Powder for Chocolate Meringues!
 
 To make a Bizet Cake, use citrus instead of Cream of Tartar, and add Butter (for the buttercream!)
+
+#### Muffins
+
+* Wheat Flour
+* Baking Powder
+* Butter
+* Sugar
+* Egg
+* Plain Yogurt
+* Optionally: Berries, Red, pieces of Chocolate Bar
+
+In some cases, using Creamy Milk or a flavored Yogurt, instead of Plain Yogurt, may work! 
 
 #### Naner Bread
 

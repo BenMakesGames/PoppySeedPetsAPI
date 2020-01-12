@@ -51,7 +51,10 @@ class BookstoreService
                 $bookPrices['Pie Recipes'] = 15;
 
             if($cookedSomething->getValue() >= 50)
+            {
                 $bookPrices['Milk: The Book'] = 30;
+                $bookPrices['Fried'] = 25;
+            }
         }
 
         if($itemsDonatedToMuseum)
@@ -70,12 +73,18 @@ class BookstoreService
 
         if($petsAcquired >= 3)
         {
-            if($petsAcquired >= 10)
-                $bookPrices['Renaming Scroll'] = 500;
-            else if($petsAcquired >= 5)
-                $bookPrices['Renaming Scroll'] = 600;
-            else
-                $bookPrices['Renaming Scroll'] = 800;
+            $divideBy = 1;
+
+            if($itemsDonatedToMuseum->getValue() >= 800)
+                $divideBy = 2;
+            else if($itemsDonatedToMuseum->getValue() >= 600)
+                $divideBy = 1.75;
+            else if($itemsDonatedToMuseum->getValue() >= 400)
+                $divideBy = 1.5;
+            else if($itemsDonatedToMuseum->getValue() >= 200)
+                $divideBy = 1.25;
+
+            $bookPrices['Renaming Scroll'] = ceil(max(500, ceil(860 - 20 * $petsAcquired)) / $divideBy);
         }
 
         ksort($bookPrices);

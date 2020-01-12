@@ -276,6 +276,9 @@ class PetRelationshipService
 
     public function hangOutPublicly(PetRelationship $p1, PetRelationship $p2, string $hangOutDescription, string $enemyDescription)
     {
+        $p1->decrementTimeUntilChange(0.5);
+        $p2->decrementTimeUntilChange(0.5);
+
         if($p1->getCurrentRelationship() === RelationshipEnum::DISLIKE || $p1->getCurrentRelationship() === RelationshipEnum::BROKE_UP)
         {
             $p1Description = str_replace([ '%p1%', '%p2%' ], [ $p1->getPet()->getName(), $p2->getPet()->getName() ], $enemyDescription);

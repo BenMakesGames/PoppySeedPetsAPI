@@ -32,7 +32,7 @@ class Pet
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent", "petFriend", "fireplaceFuel"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent", "petFriend", "fireplaceFuel", "petGroupDetails"})
      */
     private $id;
 
@@ -44,7 +44,7 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent", "petFriend", "hollowEarth"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails"})
      */
     private $name;
 
@@ -85,13 +85,13 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails"})
      */
     private $colorA;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails"})
      */
     private $colorB;
 
@@ -130,7 +130,7 @@ class Pet
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\PetSpecies")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails"})
      */
     private $species;
 
@@ -226,11 +226,6 @@ class Pet
     /**
      * @ORM\Column(type="smallint")
      */
-    private $curiosity;
-
-    /**
-     * @ORM\Column(type="smallint")
-     */
     private $poly;
 
     /**
@@ -300,6 +295,11 @@ class Pet
      */
     private $groups;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $extroverted;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -307,7 +307,7 @@ class Pet
         $this->stomachSize = mt_rand(16, 30);
         $this->petRelationships = new ArrayCollection();
         $this->statusEffects = new ArrayCollection();
-        $this->curiosity = mt_rand(-1, 1);
+        $this->extroverted = mt_rand(-1, 1);
 
         // 10% poly; 10% flexible; 80% monogamous
         if(mt_rand(1, 10) === 1)
@@ -315,11 +315,12 @@ class Pet
         else
             $this->poly = mt_rand(1, 9) === 1 ? 0 : -1;
 
-        // 2% asexual; 18% flexible; 80% sexual
-        if(mt_rand(1, 10) === 1)
-            $this->sexDrive = -1;
+        if(mt_rand(1, 5) > 1)
+            $this->sexDrive = 1; // 80% sexual
+        else if(mt_rand(1, 10) === 1)
+            $this->sexDrive = -1; // 2% asexual
         else
-            $this->sexDrive = mt_rand(1, 9) === 1 ? 0 : 1;
+            $this->sexDrive = 0; // 18% flexible
 
         $this->motheredPets = new ArrayCollection();
         $this->fatheredPets = new ArrayCollection();
@@ -1171,18 +1172,6 @@ class Pet
         return $this;
     }
 
-    public function getCuriosity(): ?int
-    {
-        return $this->curiosity;
-    }
-
-    public function setCuriosity(int $curiosity): self
-    {
-        $this->curiosity = $curiosity;
-
-        return $this;
-    }
-
     public function getPoly(): ?bool
     {
         return $this->poly;
@@ -1195,7 +1184,7 @@ class Pet
         return $this;
     }
 
-    public function getSexDrive(): ?int
+    public function getSexDrive(): int
     {
         return $this->sexDrive;
     }
@@ -1470,5 +1459,27 @@ class Pet
         }
 
         return $this;
+    }
+
+    public function getExtroverted(): int
+    {
+        return $this->extroverted;
+    }
+
+    public function setExtroverted(int $extroverted): self
+    {
+        $this->extroverted = $extroverted;
+
+        return $this;
+    }
+
+    public function getMaximumGroups(): int
+    {
+        if($this->extroverted <= -1)
+            return 1;
+        else if($this->extroverted === 0)
+            return 2;
+        else //if($this->extroverted >= 1)
+            return 3;
     }
 }

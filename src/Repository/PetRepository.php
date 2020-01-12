@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Pet;
+use App\Entity\PetRelationship;
 use App\Entity\User;
+use App\Enum\RelationshipEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -69,6 +71,9 @@ class PetRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * @return Pet[]
+     */
     public function findPetsEligibleForParkEvent(string $eventType, int $number)
     {
         $today = new \DateTimeImmutable();
@@ -155,5 +160,41 @@ class PetRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleResult()
         ;
+    }
+
+    /**
+     * @return Pet[]
+     */
+    public function findFriendsWithFewGroups(Pet $pet): array
+    {
+        $friendlyRelationships = [
+            RelationshipEnum::FRIEND,
+            RelationshipEnum::BFF,
+            RelationshipEnum::FWB,
+            RelationshipEnum::MATE
+        ];
+
+        $relationshipsWithFewGroups = array_filter(
+            $pet->getPetRelationships()->toArray(),
+            function(PetRelationship $r) use($friendlyRelationships, $pet)
+            {
+                $otherSide = $r->getRelationship()->getRelationshipWith($pet);
+
+                return
+                    //
+                    $r->getCurrentRelationship() !== RelationshipEnum::BROKE_UP &&
+
+                    // as long as both pets WANT a friendly relationship, they'll do this
+                    $otherSide &&
+                    in_array($otherSide->getRelationshipGoal(), $friendlyRelationships) &&
+                    in_array($r->getRelationshipGoal(), $friendlyRelationships) &&
+
+                    // the pets involved must not already have too many group commitments
+                    $r->getRelationship()->getGroups()->count() < $r->getRelationship()->getMaximumGroups()
+                ;
+            }
+        );
+
+        return array_map(function(PetRelationship $p) { return $p->getRelationship(); }, $relationshipsWithFewGroups);
     }
 }

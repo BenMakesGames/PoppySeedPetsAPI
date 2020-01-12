@@ -109,7 +109,7 @@ Just grill some Fish with Charcoal!
 * Rice
 * Fish
 
-It couldn\'t be simpler!
+(Psst, hey! I know this is supposed to be a book about Fish, BUT: if you marinade a slice of Tomato in Soy Sauce and Oil, and use that instead of Fish, you could make yourself a nice Tomato "Sushi"! Just sayin\'! It\'s an option!)
 
 #### Orange Fish
 

@@ -6,7 +6,9 @@ use App\Entity\StorySection;
 use App\Entity\User;
 use App\Entity\UserQuest;
 use App\Enum\LocationEnum;
+use App\Enum\SerializationGroupEnum;
 use App\Enum\StoryActionTypeEnum;
+use App\Enum\StoryEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ItemQuantity;
 use App\Model\StoryStep;
@@ -15,7 +17,9 @@ use App\Repository\ItemRepository;
 use App\Repository\StoryRepository;
 use App\Repository\StorySectionRepository;
 use App\Repository\UserQuestRepository;
+use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -27,6 +31,8 @@ class StoryService
     private $userQuestRepository;
     private $inventoryService;
     private $itemRepository;
+    private $jsonLogicParserService;
+    private $userStatsRepository;
 
     /** @var User */ private $user;
     /** @var UserQuest */ private $step;
@@ -36,7 +42,8 @@ class StoryService
 
     public function __construct(
         EntityManagerInterface $em, StoryRepository $storyRepository, StorySectionRepository $storySectionRepository,
-        UserQuestRepository $userQuestRepository, InventoryService $inventoryService, ItemRepository $itemRepository
+        UserQuestRepository $userQuestRepository, InventoryService $inventoryService, ItemRepository $itemRepository,
+        JsonLogicParserService $jsonLogicParserService, UserStatsRepository $userStatsRepository
     )
     {
         $this->em = $em;
@@ -45,12 +52,18 @@ class StoryService
         $this->userQuestRepository = $userQuestRepository;
         $this->inventoryService = $inventoryService;
         $this->itemRepository = $itemRepository;
+        $this->jsonLogicParserService = $jsonLogicParserService;
+        $this->userStatsRepository = $userStatsRepository;
     }
 
     /**
+     * @param User $user
+     * @param int $storyId
+     * @param ParameterBag $request
+     * @return StoryStep
      * @throws \Exception
      */
-    public function prepareStory(User $user, int $storyId)
+    public function doStory(User $user, int $storyId, ParameterBag $request): StoryStep
     {
         $this->story = $this->storyRepository->find($storyId);
 
@@ -61,12 +74,28 @@ class StoryService
         $this->step = $this->userQuestRepository->findOrCreate($user, $this->story->getQuestValue(), $this->story->getFirstSection()->getId());
 
         $this->setCurrentSection();
+
+        if($request->has('choice'))
+        {
+            $choice = trim($request->get('choice', ''));
+
+            if($choice === '')
+                throw new UnprocessableEntityHttpException('You didn\'t choose a choice!');
+
+            $response = $this->makeChoice($choice);
+        }
+        else
+            $response = $this->getStoryStep();
+
+        $this->em->flush();
+
+        return $response;
     }
 
     /**
      * @throws \Exception
      */
-    public function getStoryStep(): StoryStep
+    private function getStoryStep(): StoryStep
     {
         if(!$this->story) throw new \Exception('StoryService was not properly prepared!');
 
@@ -76,7 +105,7 @@ class StoryService
     /**
      * @throws \Exception
      */
-    public function makeChoice(string $userChoice): StoryStep
+    private function makeChoice(string $userChoice): StoryStep
     {
         if(!$this->story) throw new \Exception('StoryService was not properly prepared!');
 
@@ -84,7 +113,7 @@ class StoryService
             return $c['text'] === $userChoice;
         });
 
-        if(!$choice)
+        if(!$choice || !$this->choiceIsChoosable($choice))
             throw new UnprocessableEntityHttpException('There is no such option. (Maybe reload and try again?)');
 
         // in case we had to create new stuff before interpreting the actions, flush the DB
@@ -98,28 +127,28 @@ class StoryService
         return $this->serializeStorySection();
     }
 
-    private function payAnyCosts(array $choice)
+    private function payAnyCosts(array $choice): void
     {
         if(array_key_exists('requiredInventory', $choice))
         {
             $requiredInventory = $this->inventoryService->deserializeItemList($choice['requiredInventory']);
 
             foreach($requiredInventory as $quantity)
-                $this->inventoryService->loseItem($quantity->item, $this->user, LocationEnum::HOME, $quantity->quantity);
+                $this->inventoryService->loseItem($quantity->item, $this->user, [ LocationEnum::HOME, LocationEnum::BASEMENT ], $quantity->quantity);
         }
     }
 
     /**
      * @throws \Exception
      */
-    private function setCurrentSection()
+    private function setCurrentSection(): void
     {
         $this->currentSection = $this->storySectionRepository->find($this->step->getValue());
 
         if(!$this->currentSection) throw new \Exception('Uh oh! You\'re apparently on a step of the story that doesn\'t exist! This is a terrible error! Please let Ben know!');
     }
 
-    private function serializeStorySection()
+    private function serializeStorySection(): StoryStep
     {
         $storyStep = StoryStep::createFromStorySection($this->currentSection);
 
@@ -139,8 +168,22 @@ class StoryService
         return $storyStep;
     }
 
+    private function choiceIsChoosable(array $choice): bool
+    {
+        return
+            $this->choiceIsVisible($choice) &&
+            $this->choiceIsEnabled($choice)
+        ;
+    }
+
     private function choiceIsVisible(array $choice): bool
     {
+        if(array_key_exists('hideIf', $choice))
+        {
+            if($this->jsonLogicParserService->evaluate($choice['hideIf'], $this->user))
+                return false;
+        }
+
         return true;
     }
 
@@ -155,10 +198,19 @@ class StoryService
                 return false;
         }
 
+        if(array_key_exists('disabledIf', $choice))
+        {
+            if($this->jsonLogicParserService->evaluate($choice['disabledIf'], $this->user))
+                return false;
+        }
+
         return true;
     }
 
-    private function getUserInventory()
+    /**
+     * @return ItemQuantity[]
+     */
+    private function getUserInventory(): array
     {
         if(!$this->userInventory)
             $this->userInventory = $this->itemRepository->getInventoryQuantities($this->user, LocationEnum::HOME, 'name');
@@ -176,7 +228,7 @@ class StoryService
     /**
      * @throws \Exception
      */
-    private function interpretActions(array $actions)
+    private function interpretActions(array $actions): void
     {
         foreach($actions as $action)
             $this->interpretAction($action);
@@ -185,7 +237,7 @@ class StoryService
     /**
      * @throws \Exception
      */
-    private function interpretAction(array $action)
+    private function interpretAction(array $action): void
     {
         switch($action['type'])
         {
@@ -194,7 +246,25 @@ class StoryService
                 break;
 
             case StoryActionTypeEnum::RECEIVE_ITEM:
-                $this->inventoryService->receiveItem($action['item'], $this->user, null, 'Sharuminyinka made this for ' . $this->user->getName() . '.', LocationEnum::HOME);
+                $lockedToOwner = array_key_exists('locked', $action) && $action['locked'];
+                $description = str_replace([ '%user.name%' ], [ $this->user->getName() ], $action['description']);
+
+                $this->inventoryService->receiveItem($action['item'], $this->user, null, $description, LocationEnum::HOME, $lockedToOwner);
+
+                break;
+
+            case StoryActionTypeEnum::LOSE_ITEM:
+                $this->inventoryService->loseItem($action['item'], $this->user, [ LocationEnum::HOME, LocationEnum::BASEMENT ]);
+                break;
+
+            case StoryActionTypeEnum::INCREMENT_STAT:
+                $this->userStatsRepository->incrementStat($this->user, $action['stat'], array_key_exists('change', $action) ? $action['change'] : 1);
+                break;
+
+            case StoryActionTypeEnum::SET_QUEST_VALUE:
+                $this->userQuestRepository->findOrCreate($this->user, $action['quest'], $action['value'])
+                    ->setValue($action['value'])
+                ;
                 break;
 
             case StoryActionTypeEnum::EXIT:
@@ -206,9 +276,10 @@ class StoryService
     }
 
     /**
+     * @param int $newStep
      * @throws \Exception
      */
-    private function setStep(int $newStep)
+    private function setStep(int $newStep): void
     {
         $this->step->setValue($newStep);
         $this->setCurrentSection();

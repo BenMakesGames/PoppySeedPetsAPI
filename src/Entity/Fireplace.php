@@ -51,6 +51,26 @@ class Fireplace
      */
     private $points = 0;
 
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $whelpName;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $whelpFood = 0;
+
+    /**
+     * @ORM\Column(type="string", length=6, nullable=true)
+     */
+    private $whelpColorA;
+
+    /**
+     * @ORM\Column(type="string", length=6, nullable=true)
+     */
+    private $whelpColorB;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -147,5 +167,70 @@ class Fireplace
     public function getHasReward(): bool
     {
         return $this->points > 8 * 60;
+    }
+
+    public function getWhelpName(): ?string
+    {
+        return $this->whelpName;
+    }
+
+    public function setWhelpName(?string $whelpName): self
+    {
+        $this->whelpName = $whelpName;
+
+        return $this;
+    }
+
+    public function getWhelpFood(): int
+    {
+        return $this->whelpFood;
+    }
+
+    public function increaseWhelpFood(int $food): self
+    {
+        $this->whelpFood += $food;
+
+        return $this;
+    }
+
+    public function getWhelpColorA(): ?string
+    {
+        return $this->whelpColorA;
+    }
+
+    public function setWhelpColorA(string $whelpColorA): self
+    {
+        $this->whelpColorA = $whelpColorA;
+
+        return $this;
+    }
+
+    public function getWhelpColorB(): ?string
+    {
+        return $this->whelpColorB;
+    }
+
+    public function setWhelpColorB(string $whelpColorB): self
+    {
+        $this->whelpColorB = $whelpColorB;
+
+        return $this;
+    }
+
+    /**
+     * @Groups({"myFireplace"})
+     */
+    public function getWhelp()
+    {
+        if($this->getWhelpName())
+        {
+            return [
+                'name' => $this->getWhelpName(),
+                'colorA' => $this->getWhelpColorA(),
+                'colorB' => $this->getWhelpColorB()
+            ];
+        }
+        else
+            return null;
     }
 }

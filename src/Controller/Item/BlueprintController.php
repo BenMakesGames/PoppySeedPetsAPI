@@ -2,6 +2,8 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Repository\InventoryRepository;
+use App\Service\BeehiveService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -41,5 +43,44 @@ class BlueprintController extends PoppySeedPetsItemController
                 [ 'reloadInventory' => true, 'itemDeleted' => true ]
             );
         }
+    }
+
+    /**
+     * @Route("/beehive/{inventory}/read", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function buildBeehive(
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        InventoryRepository $inventoryRepository, BeehiveService $beehiveService
+    )
+    {
+        $this->validateInventory($inventory, 'blueprint/beehive/#/read');
+
+        $user = $this->getUser();
+
+        if($user->getUnlockedBeehive())
+        {
+            return $responseService->itemActionSuccess('You\'ve already got a Beehive!');
+        }
+        else if(!$inventoryRepository->userHasAnyOneOf($user, [ '"Rustic" Magnifying Glass', 'Elvish Magnifying Glass', 'Rijndael' ]))
+        {
+            return $responseService->itemActionSuccess('Goodness! It\'s so small! You\'ll need a magnifying glass of some kind...');
+        }
+        else
+        {
+            $em->remove($inventory);
+
+            $user->setUnlockedBeehive();
+
+            $beehiveService->createBeehive($user);
+
+            $em->flush();
+
+            return $responseService->itemActionSuccess(
+                'The blueprint is _super_ tiny, but with the help of a magnifying glass, you\'re able to make it all out.' . "\n\n" . 'You now have a Beehive!',
+                [ 'reloadInventory' => true, 'itemDeleted' => true ]
+            );
+        }
+
     }
 }

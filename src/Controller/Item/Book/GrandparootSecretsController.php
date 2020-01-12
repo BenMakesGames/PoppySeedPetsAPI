@@ -121,6 +121,14 @@ Subbing Aging Powder for *time itself*, Soy Sauce can be made very quickly indee
 
 Apply a little heat, and you\'re done!
 
+### Kumis
+
+An ancient fermented drink made from milk! I don\'t know if I believe that Scythians loathed rainbows, but they definitely liked Kumis.
+
+* Creamy Milk
+* Sugar (to aid fermentation)
+* Aging Powder
+
 ### Conclusion
 
 There\'s a lot more you can do with Aging Powder, of course, and you should feel free to experiment. I hope this book has opened your eyes to the possibilities that Grandparoot can bring to your kitchen!

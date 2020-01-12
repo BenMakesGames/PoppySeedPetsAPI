@@ -34,21 +34,7 @@ class TuningForkController extends PoppySeedPetsItemController
 
         $user = $this->getUser();
 
-        $storyService->prepareStory($user, StoryEnum::SHARUMINYINKAS_DESPAIR);
-
-        if($request->request->has('choice'))
-        {
-            $choice = trim($request->request->get('choice', ''));
-
-            if($choice === '')
-                throw new UnprocessableEntityHttpException('You didn\'t choose a choice!');
-
-            $response = $storyService->makeChoice($choice);
-        }
-        else
-            $response = $storyService->getStoryStep();
-
-        $em->flush();
+        $response = $storyService->doStory($user, StoryEnum::SHARUMINYINKAS_DESPAIR, $request->request);
 
         return $responseService->success($response, SerializationGroupEnum::STORY);
     }

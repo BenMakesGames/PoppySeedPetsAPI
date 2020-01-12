@@ -12,8 +12,8 @@ use App\Enum\SpiritCompanionStarEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\TriDChessParticipant;
 use App\Model\PetChanges;
+use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
-use App\Service\PetService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class TriDChessService implements ParkEventInterface
@@ -35,13 +35,15 @@ class TriDChessService implements ParkEventInterface
 
     private $round = 0;
 
-    private $petService;
+    private $petExperienceService;
     private $em;
     private $petRelationshipService;
 
-    public function __construct(PetService $petService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService)
+    public function __construct(
+        PetExperienceService $petExperienceService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService
+    )
     {
-        $this->petService = $petService;
+        $this->petExperienceService = $petExperienceService;
         $this->em = $em;
         $this->petRelationshipService = $petRelationshipService;
     }
@@ -251,7 +253,7 @@ class TriDChessService implements ParkEventInterface
                 $this->results .= $participant->pet->getName() . ' got 2nd place, and ' . $secondPlaceMoneys . '~~m~~!';
             }
 
-            $this->petService->gainExp(
+            $this->petExperienceService->gainExp(
                 $participant->pet,
                 $expGain,
                 [ PetSkillEnum::COMPUTER ]

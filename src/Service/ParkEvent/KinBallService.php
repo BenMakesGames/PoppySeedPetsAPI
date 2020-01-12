@@ -12,6 +12,7 @@ use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\KinBallTeam;
 use App\Model\PetChanges;
+use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
 use App\Service\PetService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,15 +39,17 @@ class KinBallService implements ParkEventInterface
     private $activeTeams;
     private $teamPoints;
 
-    private $petService;
     private $em;
     private $petRelationshipService;
+    private $petExperienceService;
 
-    public function __construct(PetService $petService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService)
+    public function __construct(
+        EntityManagerInterface $em, PetRelationshipService $petRelationshipService, PetExperienceService $petExperienceService
+    )
     {
-        $this->petService = $petService;
         $this->em = $em;
         $this->petRelationshipService = $petRelationshipService;
+        $this->petExperienceService = $petExperienceService;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -189,7 +192,7 @@ class KinBallService implements ParkEventInterface
                 else
                     $activityLogEntry = $participant->pet->getName() . ' played a game of Kin-Ball. ' . $participant->pet->getName() . ' wasn\'t on the winning team, but it was still a good game!';
 
-                $this->petService->gainExp(
+                $this->petExperienceService->gainExp(
                     $participant->pet,
                     $expGain,
                     [ PetSkillEnum::BRAWL ]

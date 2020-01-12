@@ -5,6 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\Merit;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\PetRelationship;
 use App\Entity\SpiritCompanion;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
@@ -34,6 +35,7 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @Route("/pet")
@@ -192,12 +194,23 @@ class PetController extends PoppySeedPetsController
      * @Route("/{pet}/friends", methods={"GET"}, requirements={"pet"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function getPetFriends(Pet $pet, ResponseService $responseService)
+    public function getPetFriends(Pet $pet, ResponseService $responseService, NormalizerInterface $normalizer)
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
             throw new AccessDeniedHttpException('This isn\'t your pet.');
 
-        return $responseService->success($pet->getPetRelationships(), SerializationGroupEnum::PET_FRIEND);
+        // sort relationships by commitment
+        $relationships = $pet->getPetRelationships()->toArray();
+
+        usort($relationships, function(PetRelationship $a, PetRelationship $b) {
+            return $b->getCommitment() <=> $a->getCommitment();
+        });
+
+        return $responseService->success([
+            'spiritCompanion' => $normalizer->normalize($pet->getSpiritCompanion(), null, [ 'groups' => SerializationGroupEnum::MY_PET ]),
+            'groups' => $normalizer->normalize($pet->getGroups(), null, [ 'groups' => SerializationGroupEnum::PET_GROUP ]),
+            'friends' => $normalizer->normalize($relationships, null, [ 'groups' => SerializationGroupEnum::PET_FRIEND ]),
+        ]);
     }
 
     /**

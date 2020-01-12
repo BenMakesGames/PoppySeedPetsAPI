@@ -25,6 +25,7 @@ class PetRelationship
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Pet", inversedBy="petRelationships")
      * @ORM\JoinColumn(nullable=false)
+     * @var Pet
      */
     private $pet;
 
@@ -34,21 +35,6 @@ class PetRelationship
      * @Groups({"petFriend"})
      */
     private $relationship;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $intimacy = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $passion = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $commitment = 0;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -94,7 +80,7 @@ class PetRelationship
      */
     public function getRelationshipWanted(): ?string
     {
-        if($this->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
+        if($this->pet->hasMerit(MeritEnum::INTROSPECTIVE))
             return $this->relationshipGoal;
         else
             return null;
@@ -124,30 +110,6 @@ class PetRelationship
         return $this;
     }
 
-    public function getOldIntimacy(): int
-    {
-        return $this->intimacy;
-    }
-
-    public function getOldPassion(): int
-    {
-        return $this->passion;
-    }
-
-    public function getOldCommitment(): int
-    {
-        return $this->commitment;
-    }
-
-    public function setOldTriangleStats($intimacy, $passion, $commitment): self
-    {
-        $this->intimacy = $intimacy;
-        $this->passion = $passion;
-        $this->commitment = $commitment;
-
-        return $this;
-    }
-
     public function getMetDescription(): ?string
     {
         return $this->metDescription;
@@ -170,6 +132,9 @@ class PetRelationship
         return $this->currentRelationship;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function setCurrentRelationship(string $currentRelationship): self
     {
         if(!RelationshipEnum::isAValue($currentRelationship))
@@ -185,6 +150,9 @@ class PetRelationship
         return $this->relationshipGoal;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function setRelationshipGoal(string $relationshipGoal): self
     {
         if(!RelationshipEnum::isAValue($relationshipGoal))
@@ -202,16 +170,18 @@ class PetRelationship
 
     public function setTimeUntilChange()
     {
-        if($this->pet->hasMerit(MeritEnum::INTROSPECTIVE))
-            $this->timeUntilChange = mt_rand(mt_rand(15, 20), mt_rand(35, 40));
-        else
-            $this->timeUntilChange = mt_rand(mt_rand(20, 30), mt_rand(50, 60));
+        $this->timeUntilChange = mt_rand(mt_rand(20, 30), mt_rand(40, 50));
     }
 
-    public function decrementTimeUntilChange(): self
+    public function decrementTimeUntilChange(float $multiplier = 1): self
     {
         if($this->wantsDifferentRelationship())
-            $this->timeUntilChange--;
+        {
+            if($this->pet->hasMerit(MeritEnum::INTROSPECTIVE))
+                $this->timeUntilChange -= ceil(3 * $multiplier);
+            else
+                $this->timeUntilChange -= ceil(2 * $multiplier);
+        }
 
         return $this;
     }

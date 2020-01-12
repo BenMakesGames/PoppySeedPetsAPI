@@ -216,6 +216,17 @@ class User implements UserInterface
      */
     private $fireplace;
 
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"myAccount"})
+     */
+    private $unlockedBeehive;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Beehive", mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $beehive;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -769,6 +780,35 @@ class User implements UserInterface
         // set the owning side of the relation if necessary
         if ($this !== $fireplace->getUser()) {
             $fireplace->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function getUnlockedBeehive(): ?\DateTimeImmutable
+    {
+        return $this->unlockedBeehive;
+    }
+
+    public function setUnlockedBeehive(): self
+    {
+        $this->unlockedBeehive = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getBeehive(): ?Beehive
+    {
+        return $this->beehive;
+    }
+
+    public function setBeehive(Beehive $beehive): self
+    {
+        $this->beehive = $beehive;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $beehive->getUser()) {
+            $beehive->setUser($this);
         }
 
         return $this;

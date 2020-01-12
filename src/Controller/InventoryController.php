@@ -223,11 +223,8 @@ class InventoryController extends PoppySeedPetsController
                     ->addComment($user->getName() . ' threw this item away, but it found its way to The Giving Tree.')
                 ;
 
-                if($i->getHolder())
-                    $i->getHolder()->setTool(null);
-
-                if($i->getWearer())
-                    $i->getWearer()->setHat(null);
+                if($i->getHolder()) $i->getHolder()->setTool(null);
+                if($i->getWearer()) $i->getWearer()->setHat(null);
             }
             else
                 $em->remove($i);

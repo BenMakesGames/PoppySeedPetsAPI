@@ -22,7 +22,7 @@ use App\Repository\PetSpeciesRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
-use App\Service\PetService;
+use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -40,7 +40,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
     public function summonSomethingUnfriendly(
         Inventory $inventory, ResponseService $responseService, PetRepository $petRepository,
         EntityManagerInterface $em, UserStatsRepository $userStatsRepository, InventoryService $inventoryService,
-        PetService $petService
+        PetExperienceService $petExperienceService
     )
     {
         $user = $this->getUser();
@@ -141,7 +141,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
         foreach($petsAtHome as $pet)
         {
-            $petService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ]);
+            $petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ]);
 
             if($won)
             {
@@ -180,7 +180,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
         foreach($petsAtHome as $pet)
         {
-            $petService->spendTime($pet, mt_rand(5, 15), PetActivityStatEnum::HUNT, $won);
+            $petExperienceService->spendTime($pet, mt_rand(5, 15), PetActivityStatEnum::HUNT, $won);
 
             $activityLog = (new PetActivityLog())
                 ->setPet($pet)

@@ -27,6 +27,9 @@ final class SerializationGroupEnum
     public const KNOWN_RECIPE = 'knownRecipe';
     public const PARK_EVENT = 'parkEvent';
     public const PET_FRIEND = 'petFriend';
+    public const PET_GROUP = 'petGroup';
+    public const PET_GROUP_DETAILS = 'petGroupDetails';
+    public const PET_GROUP_INDEX = 'petGroupIndex';
     public const GREENHOUSE_PLANT = 'greenhousePlant';
     public const MY_SEEDS = 'mySeeds';
     public const REMINDER = 'reminder';
@@ -38,4 +41,5 @@ final class SerializationGroupEnum
     public const FIREPLACE_FUEL = 'fireplaceFuel';
     public const DEV_TASK = 'devTask';
     public const STORY = 'story';
+    public const MY_BEEHIVE = 'myBeehive';
 }
