@@ -1,6 +1,7 @@
 <?php
-namespace App\Controller\Item;
+namespace App\Controller\Item\Pinata;
 
+use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Service\InventoryService;
 use App\Service\ResponseService;

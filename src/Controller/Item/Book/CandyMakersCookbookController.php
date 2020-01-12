@@ -1,6 +1,7 @@
 <?php
-namespace App\Controller\Item;
+namespace App\Controller\Item\Book;
 
+use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Service\ResponseService;
 use Symfony\Component\Routing\Annotation\Route;

@@ -1,12 +1,11 @@
 <?php
-namespace App\Controller\Item;
+namespace App\Controller\Item\PetAlteration;
 
+use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
-use App\Enum\MeritEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\InventoryRepository;
-use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
@@ -14,29 +13,28 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
- * @Route("/item/behattingScroll")
+ * @Route("/item/renamingScroll")
  */
-class BehattingScrollController extends PoppySeedPetsItemController
+class RenamingScrollController extends PoppySeedPetsItemController
 {
     /**
      * @Route("/{inventory}/read", methods={"PATCH"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function readBehattingScroll(
+    public function readRenamingScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, MeritRepository $meritRepository
+        PetRepository $petRepository
     )
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'behattingScroll');
+        $this->validateInventory($inventory, 'renamingScroll');
 
         $petId = $request->request->getInt('pet', 0);
         $pet = $petRepository->find($petId);
@@ -44,17 +42,17 @@ class BehattingScrollController extends PoppySeedPetsItemController
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException('There is no such pet.');
 
-        if($pet->hasMerit(MeritEnum::BEHATTED))
-            throw new UnprocessableEntityHttpException($pet->getName() . ' already has the Behatted Merit!');
+        $petName = trim($request->request->get('name', ''));
 
-        $merit = $meritRepository->findOneByName(MeritEnum::BEHATTED);
+        if(\strlen($petName) < 1 || \strlen($petName) > 30)
+            throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
 
-        if(!$merit)
-            throw new HttpException(500, 'The ' . MeritEnum::BEHATTED . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');
+        if($petName === $pet->getName())
+            throw new UnprocessableEntityHttpException('That\'s the pet\'s current name! What a waste of the scroll that would be...');
 
         $em->remove($inventory);
 
-        $pet->addMerit($merit);
+        $pet->setName($petName);
 
         $em->flush();
 

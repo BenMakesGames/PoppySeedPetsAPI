@@ -1,6 +1,7 @@
 <?php
-namespace App\Controller\Item;
+namespace App\Controller\Item\PetAlteration;
 
+use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
