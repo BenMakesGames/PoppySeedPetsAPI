@@ -168,7 +168,7 @@ class ScrollController extends PoppySeedPetsItemController
         }
 
         $items = [
-            'Wheat', 'Wheat', 'Wheat', 'Scythe', 'Creamy Milk', 'Egg', 'Grandparoot', 'Crooked Stick'
+            'Wheat', 'Wheat', 'Scythe', 'Creamy Milk', 'Egg', 'Grandparoot', 'Crooked Stick', 'Potato'
         ];
 
         $newInventory = [];
