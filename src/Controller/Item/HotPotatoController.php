@@ -57,7 +57,7 @@ class HotPotatoController extends PoppySeedPetsItemController
 
             $inventory
                 ->setOwner($target)
-                ->addComment($user->getName() . ' tossed this to you!')
+                ->addComment($user->getName() . ' tossed this to ' . $target->getName() . '!')
                 ->setModifiedOn()
                 ->setSellPrice(null)
             ;
