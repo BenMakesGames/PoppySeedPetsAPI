@@ -70,8 +70,10 @@ class AccountController extends PoppySeedPetsController
         if(!\filter_var($email, FILTER_VALIDATE_EMAIL))
             throw new UnprocessableEntityHttpException('Email address is not valid.');
 
-        if(strlen($petName) < 1 || strlen($petName) > 30)
+        if(strlen($petName) < 1)
             throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
+        else if(strlen($petName) > 30)
+            $petName = substr($petName, 0, 30);
 
         if(!StringFunctions::isISO88591($petName))
             throw new UnprocessableEntityHttpException('Your pet\'s name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
@@ -87,8 +89,10 @@ class AccountController extends PoppySeedPetsController
         if(!preg_match('/[A-Fa-f0-9]{6}/', $petColorB))
             throw new UnprocessableEntityHttpException('Pet color B is not valid.');
 
-        if(strlen($name) < 2 || strlen($name) > 30)
+        if(strlen($name) < 2)
             throw new UnprocessableEntityHttpException('Name must be between 2 and 30 characters long.');
+        else if(strlen($name) > 30)
+            $name = substr($name, 0, 30);
 
         if(!StringFunctions::isISO88591($name))
             throw new UnprocessableEntityHttpException('Your name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
