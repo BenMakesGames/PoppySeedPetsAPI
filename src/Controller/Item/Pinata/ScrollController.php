@@ -33,7 +33,9 @@ class ScrollController extends PoppySeedPetsItemController
 
         $em->remove($inventory);
 
-        if(mt_rand(1, 6) === 1)
+        $r = mt_rand(1, 6);
+
+        if($r === 1)
         {
             $userStatsRepository->incrementStat($user, 'Misread a Scroll');
 
@@ -47,6 +49,25 @@ class ScrollController extends PoppySeedPetsItemController
 
             return $responseService->itemActionSuccess('You begin to read the scroll, but mispronounce a line! Thick strands of Pectin stream out of the scroll, covering the floor, walls, and ceiling. In the end, you\'re able to recover ' . $pectin . ' batches of the stuff.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
         }
+        else if($r === 2 || $r === 3)
+        {
+            $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+
+            $item = ArrayFunctions::pick_one([
+                'Pamplemousse', 'Blackberries', 'Naner', 'Blueberries',
+                'Red', 'Orange', 'Apricot', 'Melowatern', 'Honeydont', 'Tomato', 'Spicy Peps'
+            ]);
+
+            $numItems = mt_rand(5, mt_rand(6, 12));
+            $location = $inventory->getLocation();
+
+            for($i = 0; $i < $numItems; $i++)
+                $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
+
+            $em->flush();
+
+            return $responseService->itemActionSuccess('You read the scroll perfectly, summoning ' . $numItems . '&times; ' . $item . '!', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        }
         else
         {
             $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
@@ -56,12 +77,12 @@ class ScrollController extends PoppySeedPetsItemController
                 'Red', 'Orange', 'Apricot', 'Melowatern', 'Honeydont', 'Tomato', 'Spicy Peps'
             ];
 
-            $items = mt_rand(5, mt_rand(6, mt_rand(7, 15)));
+            $numItems = mt_rand(5, mt_rand(6, mt_rand(7, 15)));
 
             $newInventory = [];
             $location = $inventory->getLocation();
 
-            for($i = 0; $i < $items; $i++)
+            for($i = 0; $i < $numItems; $i++)
                 $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleItems), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
 
             $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
