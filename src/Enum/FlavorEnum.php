@@ -16,6 +16,6 @@ final class FlavorEnum
     const FLORAL = 'floral';
     const FATTY = 'fatty';
     const ONIONY = 'oniony';
-    const CHEMICALY = 'chemicaly';
+    const CHEMICALLY = 'chemically';
 
 }

@@ -111,7 +111,7 @@ class ItemFood
     /**
      * @ORM\Column(type="integer")
      */
-    private $chemicaly = 0;
+    private $chemically = 0;
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true)
@@ -338,14 +338,14 @@ class ItemFood
         return $this;
     }
 
-    public function getChemicaly(): ?int
+    public function getChemically(): ?int
     {
-        return $this->chemicaly;
+        return $this->chemically;
     }
 
-    public function setChemicaly(int $chemicaly): self
+    public function setChemically(int $chemically): self
     {
-        $this->chemicaly = $chemicaly;
+        $this->chemically = $chemically;
 
         return $this;
     }
