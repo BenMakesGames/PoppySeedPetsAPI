@@ -479,4 +479,12 @@ class ItemFood
 
         return $this;
     }
+
+    /**
+     * @Groups({"myInventory", "itemEncyclopedia"})
+     */
+    public function getBringsLuck(): bool
+    {
+        return $this->chanceForBonusItem !== null;
+    }
 }
