@@ -235,7 +235,7 @@ class PetService
                 continue;
             }
 
-            $this->petExperienceService->applyFoodEffects($pet, $food);
+            $this->petExperienceService->applyFoodEffects($pet, $i->getItem());
 
             // consider favorite flavor:
             if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))

@@ -119,6 +119,16 @@ class ItemFood
      */
     private $grantedSkill;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $chanceForBonusItem;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Item")
+     */
+    private $bonusItem;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -442,6 +452,30 @@ class ItemFood
             throw new \InvalidArgumentException('$grantedSkill must be null, or a PetSkillEnum value.');
 
         $this->grantedSkill = $grantedSkill;
+
+        return $this;
+    }
+
+    public function getChanceForBonusItem(): ?int
+    {
+        return $this->chanceForBonusItem;
+    }
+
+    public function setChanceForBonusItem(?int $chanceForBonusItem): self
+    {
+        $this->chanceForBonusItem = $chanceForBonusItem;
+
+        return $this;
+    }
+
+    public function getBonusItem(): ?Item
+    {
+        return $this->bonusItem;
+    }
+
+    public function setBonusItem(?Item $bonusItem): self
+    {
+        $this->bonusItem = $bonusItem;
 
         return $this;
     }

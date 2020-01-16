@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 
+use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Entity\ItemFood;
 use App\Entity\Pet;
@@ -8,19 +9,26 @@ use App\Entity\PetActivityLog;
 use App\Entity\StatusEffect;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
+use App\Enum\LocationEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\GrammarFunctions;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetExperienceService
 {
     private $petActivityStatsService;
     private $em;
+    private $responseService;
 
-    public function __construct(PetActivityStatsService $petActivityStatsService, EntityManagerInterface $em)
+    public function __construct(
+        PetActivityStatsService $petActivityStatsService, EntityManagerInterface $em,
+        ResponseService $responseService
+    )
     {
         $this->petActivityStatsService = $petActivityStatsService;
         $this->em = $em;
+        $this->responseService = $responseService;
     }
 
     /**
@@ -129,7 +137,7 @@ class PetExperienceService
         if($pet->wantsSobriety() && ($food->getAlcohol() > 0 || $food->getCaffeine() > 0 || $food->getPsychedelic() > 0))
             return false;
 
-        $this->applyFoodEffects($pet, $food);
+        $this->applyFoodEffects($pet, $item);
 
         // consider favorite flavor:
         if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
@@ -175,12 +183,12 @@ class PetExperienceService
     }
 
     /**
-     * @param Pet $pet
-     * @param ItemFood $food
      * @throws EnumInvalidValueException
      */
-    public function applyFoodEffects(Pet $pet, ItemFood $food)
+    public function applyFoodEffects(Pet $pet, Item $item)
     {
+        $food = $item->getFood();
+
         $pet->increaseAlcohol($food->getAlcohol());
 
         $caffeine = $food->getCaffeine();
@@ -196,6 +204,22 @@ class PetExperienceService
         $pet->increasePsychedelic($food->getPsychedelic());
         $pet->increaseFood($food->getFood());
         $pet->increaseJunk($food->getJunk());
+
+        if($food->getChanceForBonusItem() !== null && mt_rand(1, $food->getChanceForBonusItem()) === 1)
+        {
+            $bonusItem = $food->getBonusItem();
+            $inventory = (new Inventory())
+                ->setItem($bonusItem)
+                ->setLocation(LocationEnum::HOME)
+                ->setOwner($pet->getOwner())
+                ->setCreatedBy($pet->getOwner())
+            ;
+            $this->em->persist($inventory);
+
+            $naniNani = ArrayFunctions::pick_one([ 'Convenient!', 'Where\'d that come from??', 'How serendipitous!', 'What are the odds!' ]);
+
+            $this->responseService->addActivityLog((new PetActivityLog())->setEntry('While eating the ' . $item->getName() . ', ' . $pet->getName() . ' spotted ' . GrammarFunctions::indefiniteArticle($bonusItem->getName()) . ' ' . $bonusItem->getName() . '! (' . $naniNani . ')'));
+        }
 
         if($food->getGrantedSkill() && $pet->getSkills()->getStat($food->getGrantedSkill()) < 1)
             $pet->getSkills()->increaseStat($food->getGrantedSkill());
