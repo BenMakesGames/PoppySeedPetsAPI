@@ -35,6 +35,7 @@ class FishBookController extends PoppySeedPetsItemController
 * Baked Fish Fingers
 * Basic Fish Taco
 * Fermented Fish
+* Fisherman\'s Pie
 * Gefilte Fish
 * Grilled Fish
 * Nigiri
@@ -90,6 +91,16 @@ Life as a pet truly isn\'t fair.
 Just age some Fish with Aging Powder!
 
 An acquired taste!
+
+#### Fisherman\'s Pie
+
+* Smashed Potatoes
+* Wheat Flour
+* Butter
+* Creamy Milk
+* Fish
+* Onion
+* Carrot (or Corn)
 
 #### Gefilte Fish
 
