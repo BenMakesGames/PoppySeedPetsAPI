@@ -157,9 +157,9 @@ class FireplaceController extends PoppySeedPetsController
 
             $fireplace->increaseWhelpFood($item->getItem()->getFood()->getFood() + $item->getItem()->getFood()->getSpicy() * 2);
 
-            while($fireplace->getWhelpFood() >= 50)
+            while($fireplace->getWhelpFood() >= 35)
             {
-                $fireplace->increaseWhelpFood(-50);
+                $fireplace->increaseWhelpFood(-35);
 
                 $r = mt_rand(1, 100);
 
@@ -176,14 +176,26 @@ class FireplaceController extends PoppySeedPetsController
             }
         }
 
-        sort($loot);
+        if(count($loot) > 0)
+        {
+            sort($loot);
 
-        foreach($loot as $item)
-            $inventoryService->receiveItem($item, $user, $user, $fireplace->getWhelpName() . ' spit this up.', LocationEnum::HOME);
+            foreach($loot as $item)
+                $inventoryService->receiveItem($item, $user, $user, $fireplace->getWhelpName() . ' spit this up.', LocationEnum::HOME);
+
+            $responseService->addActivityLog((new PetActivityLog())->setEntry($fireplace->getWhelpName() . ' spit up ' . ArrayFunctions::list_nice($loot) . '.'));
+        }
+        else
+        {
+            $adverb = ArrayFunctions::pick_one([
+                'happily', 'happily', 'happily', 'excitedly', 'blithely'
+            ]);
+
+            $responseService->addActivityLog((new PetActivityLog())->setEntry($fireplace->getWhelpName() . ' ' . $adverb . ' devoured your offering.'));
+        }
+
 
         $em->flush();
-
-        $responseService->addActivityLog((new PetActivityLog())->setEntry($fireplace->getWhelpName() . ' spit up ' . ArrayFunctions::list_nice($loot) . '.'));
 
         return $responseService->success();
     }
