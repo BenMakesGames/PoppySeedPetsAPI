@@ -61,6 +61,14 @@ This strange recipe was invented by an AI. Despite being created by something wi
 * Pumpkin
 * Beans
 
+#### Minestrone
+
+* Oil (or Butter)
+* Carrot, Celery, Onion (or Mirepoix)
+* Beans
+* Tomato
+* Noodles
+
 #### Tomato Soup
 
 * Butter
