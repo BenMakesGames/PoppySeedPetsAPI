@@ -41,9 +41,11 @@ class PetGroupService
 
     public function doGroupActivity(Pet $instigatingPet, PetGroup $group)
     {
-        // @TODO if two of the pets dislike each other, or broke up, then one of the two leaves.
-        // there's a chance that this breaks up the group entirely. if this puts the number of members
-        // below minimum, then it definitely breaks the group up unless they can find a replacement
+        if($this->checkForSplitUp($group))
+            return;
+
+        if($this->checkForRecruitment($group))
+            return;
 
         switch ($group->getType())
         {
@@ -55,6 +57,20 @@ class PetGroupService
             default:
                 throw new \Exception('Unhandled group type "' . $group->getType() . '"');
         }
+    }
+
+    private function checkForSplitUp(PetGroup $group): bool
+    {
+        // @TODO if two of the pets dislike each other, or broke up, then one of the two leaves.
+        // there's a chance that this breaks up the group entirely. if this puts the number of members
+        // below minimum, then it definitely breaks the group up unless they can find a replacement
+
+        return false;
+    }
+
+    private function checkForRecruitment(PetGroup $group): bool
+    {
+        return false;
     }
 
     /**
