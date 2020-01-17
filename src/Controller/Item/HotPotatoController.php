@@ -34,11 +34,10 @@ class HotPotatoController extends PoppySeedPetsItemController
             $inventoryService->receiveItem('Liquid-hot Magma', $user, $inventory->getCreatedBy(), 'The remains of an exploded Hot Potato.', $inventory->getLocation());
 
             $thirdItem = ArrayFunctions::pick_one([
-                'Butter',
                 'Charcoal',
-                'Oil',
                 'Glowing Six-sided Die',
-                'Sour Cream',
+                ArrayFunctions::pick_one([ 'Oil', 'Butter' ]),
+                ArrayFunctions::pick_one([ 'Sour Cream', 'Cheese' ]),
             ]);
 
             $inventoryService->receiveItem($thirdItem, $user, $inventory->getCreatedBy(), 'This exploded out of a Hot Potato.', $inventory->getLocation());

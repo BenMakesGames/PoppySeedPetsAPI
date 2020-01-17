@@ -715,12 +715,12 @@ class GatheringService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, true);
 
-            $loot = ArrayFunctions::pick_one([
-                'Liquid-hot Magma', 'Liquid-hot Magma', 'Iron Ore'
-            ]);
-
-            if(mt_rand(1, 100))
+            if(mt_rand(1, 50))
                 $loot = 'Hot Potato';
+            else if(mt_rand(1, 2) === 1)
+                $loot = 'Liquid-hot Magma';
+            else
+                $loot = ArrayFunctions::pick_one([ 'Iron Ore', 'Iron Ore', 'Silver Ore' ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the island\'s Volcano, and got ' . $loot . '.', '');
 
