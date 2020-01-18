@@ -151,11 +151,11 @@ class PetGroupService
 
     private function checkForRecruitment(Pet $instigatingPet, PetGroup $group): bool
     {
-        // if you're too big, DEFINITELY don't recruit
+        // if the group is too big, DEFINITELY don't recruit
         if(count($group->getMembers()) >= $group->getMaximumSize())
             return false;
 
-        // if you have room for more members, there's a large chance of not recruiting, anyway
+        // if the group is not in danger of disbanding, there's a large chance of NOT recruiting
         if(count($group->getMembers()) >= $group->getMinimumSize() && mt_rand(1, $group->getMembers() * 20) > 1)
             return false;
 
@@ -175,13 +175,13 @@ class PetGroupService
             ->execute()
         ;
 
-        $recruits = array_values(array_filter($recruits, function(Pet $p) {
+        $recruits = array_filter($recruits, function(Pet $p) {
             return count($p->getGroups()) < $p->getMaximumGroups();
-        }));
+        });
 
         if(count($recruits) > 0)
         {
-            $this->recruitMember($instigatingPet, $group, $recruits[0]);
+            $this->recruitMember($instigatingPet, $group, $recruits[array_key_first($recruits)]);
 
             return true;
         }
@@ -196,8 +196,13 @@ class PetGroupService
 
         foreach($group->getMembers() as $member)
         {
+            $message = $group->getName() . ' tried to recruit another member, but couldn\'t find anyone.';
+
+            if(count($group->getMembers()) < $group->getMinimumSize())
+                $message .= ' They decided to try again, later...';
+
             $log = (new PetActivityLog())
-                ->setEntry($group->getName() . ' tried to recruit another member, but couldn\'t find anyone. They decided to try again, later...')
+                ->setEntry($message)
                 ->setPet($member)
             ;
 
