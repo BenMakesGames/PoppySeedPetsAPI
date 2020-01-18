@@ -74,7 +74,7 @@ class PetGroupService
                 return 0;
 
             return $relationship->getHappiness();
-        }, 0);
+        }, $pet->getEsteem()); // starting with pet's current self-esteem
     }
 
     private function checkForSplitUp(Pet $instigatingPet, PetGroup $group): bool
@@ -101,26 +101,37 @@ class PetGroupService
         if(count($unhappyMembers) > 1)
             usort($unhappyMembers, function($a, $b) { return $a['happiness'] <=> $b['happiness']; });
 
-        $unhappiest = $unhappyMembers[0];
+        /** @var Pet $unhappiestPet */
+        $unhappiestPet = $unhappyMembers[0]['pet'];
 
         $this->takesTime($instigatingPet, $group, PetActivityStatEnum::GROUP_BAND);
-
-        $unhappiest['pet']->removeGroup($group);
 
         foreach($group->getMembers() as $member)
         {
             $changes = new PetChanges($member);
 
-            $r = $member->getRelationshipWith($unhappiest['pet']);
-
-            if($r && $r->getHappiness() < 0)
-                $member->increaseSafety(mt_rand(2, 4));
-            else
+            if($member->getId() === $unhappiestPet->getId())
+            {
                 $member->increaseEsteem(-mt_rand(2, 4));
+            }
+            else
+            {
+                $r = $member->getRelationshipWith($unhappiestPet);
+
+                if($r && $r->getHappiness() < 0)
+                    $member->increaseSafety(mt_rand(2, 4));
+                else
+                    $member->increaseLove(-mt_rand(2, 4));
+            }
+
+            $message = count($group->getMembers()) === 1
+                ? ($unhappiestPet->getName() . ' abandoned ' . $group->getName() . '...')
+                : ($unhappiestPet->getName() . ' left ' . $group->getName() . '...')
+            ;
 
             $logEntry = (new PetActivityLog())
                 ->setPet($member)
-                ->setEntry($unhappiest['pet']->getName() . ' left ' . $group->getName() . '...')
+                ->setEntry($message)
                 ->setChanges($changes->compare($member))
             ;
 
@@ -129,6 +140,11 @@ class PetGroupService
             if($instigatingPet->getId() === $member->getId())
                 $this->responseService->addActivityLog($logEntry);
         }
+
+        $unhappiestPet->removeGroup($group);
+
+        if(count($group->getMembers()) === 0)
+            $this->em->remove($group);
 
         return true;
     }
@@ -143,8 +159,8 @@ class PetGroupService
         if(count($group->getMembers()) >= $group->getMinimumSize() && mt_rand(1, $group->getMembers() * 20) > 1)
             return false;
 
-        /** @var Pet|null $recruit */
-        $recruit = $this->petRepository->createQueryBuilder('p')
+        /** @var Pet[] $recruit */
+        $recruits = $this->petRepository->createQueryBuilder('p')
             ->select('p2.*')
             ->distinct(true)
             ->innerJoin('PetRelationship', 'r', 'ON', 'r.pet = p.id')
@@ -155,17 +171,17 @@ class PetGroupService
             ->andWhere('p.id IN (:groupMembers)')
             ->andWhere('r2.currentRelationship NOT IN (:unhappyRelationships)')
             ->orderBy('p2s.music', 'DESC')
-            ->setMaxResults(1)
             ->getQuery()
-            ->getOneOrNullResult()
+            ->execute()
         ;
 
-        if($recruit !== null)
-        {
-            // @TODO: recruit!
-            $recruit->addGroup($group);
+        $recruits = array_values(array_filter($recruits, function(Pet $p) {
+            return count($p->getGroups()) < $p->getMaximumGroups();
+        }));
 
-            // @TODO: if the group was at risk of disbanding, a special message, and the pets feel extra good about it
+        if(count($recruits) > 0)
+        {
+            $this->recruitMember($instigatingPet, $group, $recruits[0]);
 
             return true;
         }
@@ -173,25 +189,98 @@ class PetGroupService
         // if you failed to recruit, and you don't have enough members, the group might disband
         if(count($group->getMembers()) === 1 || (count($group->getMembers()) < $group->getMinimumSize() && mt_rand(1, 2) === 1))
         {
-            // @TODO: disband
-
-            foreach($group->getMembers() as $member)
-            {
-                $member
-                    ->removeGroup($group)
-                    ->increaseEsteem(-mt_rand(4, 8))
-                    ->increaseLove(-mt_rand(2, 4))
-                ;
-            }
-
-            $this->em->remove($group);
+            $this->disbandGroup($instigatingPet, $group);
 
             return true;
         }
 
-        // @TODO: try again later
-        // @TODO: if the group is at risk of disbanding, an extra-sad message
+        foreach($group->getMembers() as $member)
+        {
+            $log = (new PetActivityLog())
+                ->setEntry($group->getName() . ' tried to recruit another member, but couldn\'t find anyone. They decided to try again, later...')
+                ->setPet($member)
+            ;
+
+            $this->em->persist($log);
+
+            if($member->getId() === $instigatingPet->getId())
+                $this->responseService->addActivityLog($log);
+        }
+
         return true;
+    }
+
+    private function disbandGroup(Pet $instigatingPet, PetGroup $group): void
+    {
+        foreach($group->getMembers() as $member)
+        {
+            $changes = new PetChanges($member);
+
+            $member
+                ->removeGroup($group)
+                ->increaseEsteem(-mt_rand(4, 8))
+                ->increaseLove(-mt_rand(2, 4))
+            ;
+
+            $log = (new PetActivityLog())
+                ->setEntry($group->getName() . ' tried to recruit another member, but couldn\'t find anyone. They decided to disband :(')
+                ->setPet($member)
+                ->setChanges($changes->compare($member))
+            ;
+
+            $this->em->persist($log);
+
+            if($member->getId() === $instigatingPet->getId())
+                $this->responseService->addActivityLog($log);
+        }
+
+        $this->em->remove($group);
+    }
+
+    private function recruitMember(Pet $instigatingPet, PetGroup $group, Pet $recruit): void
+    {
+        $recruit->addGroup($group);
+
+        foreach($group->getMembers() as $member)
+        {
+            $changes = new PetChanges($member);
+
+            $member
+                ->increaseLove(mt_rand(2, 4))
+                ->increaseEsteem(mt_rand(2, 4))
+            ;
+
+            if($member->getId() === $recruit->getId())
+            {
+                $message = $member->getName() . ' was invited to join ' . $group->getName() . '! They accepted!';
+            }
+            else
+            {
+                $message = $group->getName() . ' invited ' . $recruit->getName() . ' to join; they accepted!';
+
+                // if the group was at risk of disbanding, a special message, and the pets feel extra good about it
+                if(count($group->getMembers()) === $group->getMinimumSize())
+                {
+                    $message .= ' ' . $group->getName() . ' is saved!';
+
+                    $member
+                        ->increaseEsteem(mt_rand(2, 4))
+                        ->increaseSafety(mt_rand(2, 4))
+                    ;
+                }
+            }
+
+            $log = (new PetActivityLog())
+                ->setEntry($message)
+                ->setPet($member)
+                ->setChanges($changes->compare($member))
+            ;
+
+            $this->em->persist($log);
+
+            if($member->getId() === $instigatingPet->getId())
+                $this->responseService->addActivityLog($log);
+        }
     }
 
     /**
@@ -214,7 +303,7 @@ class PetGroupService
         if(count($availableFriends) < 2)
             return null;
 
-        // @TODO: when we have more than one group type, we'll have to pick one here
+        // TODO: when we have more than one group type, we'll have to pick one here
         $type = PetGroupTypeEnum::BAND;
 
         $group = (new PetGroup())
@@ -475,7 +564,7 @@ class PetGroupService
             else //if($group->getSkillRollTotal() < 150)
                 $item = 'LP';
 
-            // @TODO:
+            // TODO:
             /*
             else //if($group->getSkillRollTotal() < 200)
                 $item = '???';
