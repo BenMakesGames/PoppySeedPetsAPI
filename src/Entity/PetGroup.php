@@ -185,4 +185,22 @@ class PetGroup
 
         return $this;
     }
+
+    public function getMinimumSize(): int
+    {
+        switch($this->type)
+        {
+            case PetGroupTypeEnum::BAND: return 2;
+            default: throw new \Exception('Unhandled group type in group::getMinimumSize');
+        }
+    }
+
+    public function getMaximumSize(): int
+    {
+        switch($this->type)
+        {
+            case PetGroupTypeEnum::BAND: return 5;
+            default: throw new \Exception('Unhandled group type in group::getMaximumSize');
+        }
+    }
 }

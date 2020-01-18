@@ -14,6 +14,7 @@ use App\Enum\PetGroupTypeEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
+use App\Model\PetChangesSummary;
 use App\Repository\PetRepository;
 use App\Service\Filter\PetGroupFilterService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -82,7 +83,7 @@ class PetGroupService
 
         foreach($group->getMembers() as $member)
         {
-            $happiness = $this->getMemberHappiness($group, $member);
+            $happiness = $this->getMemberHappiness($group, $member) + mt_rand(-500, 500) / 100;
 
             if($happiness < 0)
             {
@@ -106,14 +107,91 @@ class PetGroupService
 
         $unhappiest['pet']->removeGroup($group);
 
-        // @TODO finish this :P
+        foreach($group->getMembers() as $member)
+        {
+            $changes = new PetChanges($member);
 
-        return false;
+            $r = $member->getRelationshipWith($unhappiest['pet']);
+
+            if($r && $r->getHappiness() < 0)
+                $member->increaseSafety(mt_rand(2, 4));
+            else
+                $member->increaseEsteem(-mt_rand(2, 4));
+
+            $logEntry = (new PetActivityLog())
+                ->setPet($member)
+                ->setEntry($unhappiest['pet']->getName() . ' left ' . $group->getName() . '...')
+                ->setChanges($changes->compare($member))
+            ;
+
+            $this->em->persist($logEntry);
+
+            if($instigatingPet->getId() === $member->getId())
+                $this->responseService->addActivityLog($logEntry);
+        }
+
+        return true;
     }
 
     private function checkForRecruitment(Pet $instigatingPet, PetGroup $group): bool
     {
-        return false;
+        // if you're too big, DEFINITELY don't recruit
+        if(count($group->getMembers()) >= $group->getMaximumSize())
+            return false;
+
+        // if you have room for more members, there's a large chance of not recruiting, anyway
+        if(count($group->getMembers()) >= $group->getMinimumSize() && mt_rand(1, $group->getMembers() * 20) > 1)
+            return false;
+
+        /** @var Pet|null $recruit */
+        $recruit = $this->petRepository->createQueryBuilder('p')
+            ->select('p2.*')
+            ->distinct(true)
+            ->innerJoin('PetRelationship', 'r', 'ON', 'r.pet = p.id')
+            ->leftJoin('Pet', 'p2', 'ON', 'r.relationship = p2.id AND p2.id NOT IN (:groupMembers)')
+            ->leftJoin('PetRelationship', 'r2', 'ON', 'r2.pet = p2.id AND r2.relationship IN (:groupMembers)')
+            ->leftJoin('PetSkills', 'p2s', 'ON', 'p2.skills = p2s.id')
+            ->andWhere('r.currentRelationships NOT IN (:unhappyRelationships)')
+            ->andWhere('p.id IN (:groupMembers)')
+            ->andWhere('r2.currentRelationship NOT IN (:unhappyRelationships)')
+            ->orderBy('p2s.music', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+
+        if($recruit !== null)
+        {
+            // @TODO: recruit!
+            $recruit->addGroup($group);
+
+            // @TODO: if the group was at risk of disbanding, a special message, and the pets feel extra good about it
+
+            return true;
+        }
+
+        // if you failed to recruit, and you don't have enough members, the group might disband
+        if(count($group->getMembers()) === 1 || (count($group->getMembers()) < $group->getMinimumSize() && mt_rand(1, 2) === 1))
+        {
+            // @TODO: disband
+
+            foreach($group->getMembers() as $member)
+            {
+                $member
+                    ->removeGroup($group)
+                    ->increaseEsteem(-mt_rand(4, 8))
+                    ->increaseLove(-mt_rand(2, 4))
+                ;
+            }
+
+            $this->em->remove($group);
+
+            return true;
+        }
+
+        // @TODO: try again later
+        // @TODO: if the group is at risk of disbanding, an extra-sad message
+        return true;
     }
 
     /**
