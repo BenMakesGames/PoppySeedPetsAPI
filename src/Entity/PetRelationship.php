@@ -191,6 +191,21 @@ class PetRelationship
         return $this->currentRelationship !== $this->relationshipGoal;
     }
 
+    public function getHappiness(): int
+    {
+        switch($this->currentRelationship)
+        {
+            case RelationshipEnum::BROKE_UP: return -80; break;
+            case RelationshipEnum::DISLIKE: return -35; break;
+            case RelationshipEnum::FRIENDLY_RIVAL: return 0; break;
+            case RelationshipEnum::FRIEND: return 35; break;
+            case RelationshipEnum::BFF: return 65; break;
+            case RelationshipEnum::FWB: return 70; break;
+            case RelationshipEnum::MATE: return 100; break;
+            default: return 0;
+        }
+    }
+
     public function getCommitment(): int
     {
         $commitment = 0;

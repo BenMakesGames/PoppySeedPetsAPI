@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetGroup;
+use App\Entity\PetRelationship;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
@@ -14,6 +15,7 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\PetRepository;
+use App\Service\Filter\PetGroupFilterService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetGroupService
@@ -41,10 +43,10 @@ class PetGroupService
 
     public function doGroupActivity(Pet $instigatingPet, PetGroup $group)
     {
-        if($this->checkForSplitUp($group))
+        if($this->checkForSplitUp($instigatingPet, $group))
             return;
 
-        if($this->checkForRecruitment($group))
+        if($this->checkForRecruitment($instigatingPet, $group))
             return;
 
         switch ($group->getType())
@@ -59,16 +61,57 @@ class PetGroupService
         }
     }
 
-    private function checkForSplitUp(PetGroup $group): bool
+    private function getMemberHappiness(PetGroup $group, Pet $pet)
     {
-        // @TODO if two of the pets dislike each other, or broke up, then one of the two leaves.
-        // there's a chance that this breaks up the group entirely. if this puts the number of members
-        // below minimum, then it definitely breaks the group up unless they can find a replacement
+        return array_reduce($group->getMembers(), function(Pet $member) use($pet) {
+            if($member->getId() === $pet->getId())
+                return 0;
+
+            $relationship = $pet->getRelationshipWith($member);
+
+            if($relationship === null)
+                return 0;
+
+            return $relationship->getHappiness();
+        }, 0);
+    }
+
+    private function checkForSplitUp(Pet $instigatingPet, PetGroup $group): bool
+    {
+        $unhappyMembers = [];
+
+        foreach($group->getMembers() as $member)
+        {
+            $happiness = $this->getMemberHappiness($group, $member);
+
+            if($happiness < 0)
+            {
+                $unhappyMembers[] = [
+                    'pet' => $member,
+                    'happiness' => $happiness
+                ];
+            }
+        }
+
+        if(count($unhappyMembers) === 0)
+            return false;
+
+        // sort by happiness, ascending
+        if(count($unhappyMembers) > 1)
+            usort($unhappyMembers, function($a, $b) { return $a['happiness'] <=> $b['happiness']; });
+
+        $unhappiest = $unhappyMembers[0];
+
+        $this->takesTime($instigatingPet, $group, PetActivityStatEnum::GROUP_BAND);
+
+        $unhappiest['pet']->removeGroup($group);
+
+        // @TODO finish this :P
 
         return false;
     }
 
-    private function checkForRecruitment(PetGroup $group): bool
+    private function checkForRecruitment(Pet $instigatingPet, PetGroup $group): bool
     {
         return false;
     }
