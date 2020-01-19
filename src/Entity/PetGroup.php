@@ -24,7 +24,7 @@ class PetGroup
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"petGroup", "petGroupDetails", "petGroupIndex"})
+     * @Groups({"petGroup", "petGroupDetails", "petGroupIndex", "petPublicProfile"})
      */
     private $id;
 
@@ -36,7 +36,7 @@ class PetGroup
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petGroup", "petGroupDetails", "petGroupIndex"})
+     * @Groups({"petGroup", "petGroupDetails", "petGroupIndex", "petPublicProfile"})
      */
     private $type;
 
@@ -53,13 +53,13 @@ class PetGroup
 
     /**
      * @ORM\Column(type="datetime_immutable")
-     * @Groups({"petGroupDetails", "petGroupIndex"})
+     * @Groups({"petGroupDetails", "petGroupIndex", "petPublicProfile"})
      */
     private $createdOn;
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"petGroup", "petGroupDetails", "petGroupIndex"})
+     * @Groups({"petGroup", "petGroupDetails", "petGroupIndex", "petPublicProfile"})
      */
     private $name;
 
@@ -68,6 +68,12 @@ class PetGroup
      * @Groups({"petGroupDetails", "petGroupIndex"})
      */
     private $lastMetOn;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"petGroupDetails"})
+     */
+    private $numberOfProducts = 0;
 
     public function __construct()
     {
@@ -202,5 +208,25 @@ class PetGroup
             case PetGroupTypeEnum::BAND: return 5;
             default: throw new \Exception('Unhandled group type in group::getMaximumSize');
         }
+    }
+
+    /**
+     * @Groups({"petPublicProfile"})
+     */
+    public function getMemberCount(): int
+    {
+        return $this->members->count();
+    }
+
+    public function getNumberOfProducts(): ?int
+    {
+        return $this->numberOfProducts;
+    }
+
+    public function increaseNumberOfProducts(): self
+    {
+        $this->numberOfProducts += 1;
+
+        return $this;
     }
 }

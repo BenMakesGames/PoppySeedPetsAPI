@@ -560,7 +560,10 @@ class PetGroupService
 
         if($group->getProgress() >= 100)
         {
-            $group->clearProgress();
+            $group
+                ->clearProgress()
+                ->increaseNumberOfProducts()
+            ;
 
             if($group->getSkillRollTotal() < 60)
                 $item = 'Single';

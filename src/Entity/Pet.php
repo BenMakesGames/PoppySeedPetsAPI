@@ -292,6 +292,7 @@ class Pet
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\PetGroup", mappedBy="members")
+     * @Groups({"petPublicProfile"})
      */
     private $groups;
 
