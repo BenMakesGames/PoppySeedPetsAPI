@@ -64,17 +64,21 @@ class PetGroupService
 
     private function getMemberHappiness(PetGroup $group, Pet $pet)
     {
-        return array_reduce($group->getMembers(), function(Pet $member) use($pet) {
-            if($member->getId() === $pet->getId())
-                return 0;
+        // array_reduce is NOT easier to read (and doesn't seem more CPU-efficient, especially since we have to convert toArray())
+        $happiness = $pet->getEsteem();
+
+        foreach($group->getMembers() as $member)
+        {
+            if($member->getId() === $pet->getId()) continue;
 
             $relationship = $pet->getRelationshipWith($member);
 
-            if($relationship === null)
-                return 0;
+            if($relationship === null) continue;
 
-            return $relationship->getHappiness();
-        }, $pet->getEsteem()); // starting with pet's current self-esteem
+            $happiness += $relationship->getHappiness();
+        }
+
+        return $happiness;
     }
 
     private function checkForSplitUp(Pet $instigatingPet, PetGroup $group): bool
@@ -133,6 +137,7 @@ class PetGroupService
                 ->setPet($member)
                 ->setEntry($message)
                 ->setChanges($changes->compare($member))
+                ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
             ;
 
             $this->em->persist($logEntry);
@@ -151,12 +156,14 @@ class PetGroupService
 
     private function checkForRecruitment(Pet $instigatingPet, PetGroup $group): bool
     {
+        $numMembers = count($group->getMembers());
+
         // if the group is too big, DEFINITELY don't recruit
-        if(count($group->getMembers()) >= $group->getMaximumSize())
+        if($numMembers >= $group->getMaximumSize())
             return false;
 
         // if the group is not in danger of disbanding, there's a large chance of NOT recruiting
-        if(count($group->getMembers()) >= $group->getMinimumSize() && mt_rand(1, $group->getMembers() * 20) > 1)
+        if($numMembers >= $group->getMinimumSize() && mt_rand(1, $numMembers * 20) > 1)
             return false;
 
         /** @var Pet[] $recruit */
@@ -204,6 +211,7 @@ class PetGroupService
             $log = (new PetActivityLog())
                 ->setEntry($message)
                 ->setPet($member)
+                ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
             ;
 
             $this->em->persist($log);
@@ -231,6 +239,7 @@ class PetGroupService
                 ->setEntry($group->getName() . ' tried to recruit another member, but couldn\'t find anyone. They decided to disband :(')
                 ->setPet($member)
                 ->setChanges($changes->compare($member))
+                ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
             ;
 
             $this->em->persist($log);
@@ -279,6 +288,7 @@ class PetGroupService
                 ->setEntry($message)
                 ->setPet($member)
                 ->setChanges($changes->compare($member))
+                ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
             ;
 
             $this->em->persist($log);
