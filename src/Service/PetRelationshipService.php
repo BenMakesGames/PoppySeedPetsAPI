@@ -1031,7 +1031,7 @@ class PetRelationshipService
         $downgradeDescription = [
             RelationshipEnum::DISLIKE => 'break up entirely',
             RelationshipEnum::FRIEND => 'just be friends',
-            RelationshipEnum::BFF => 'just be friends - but really good friends -',
+            RelationshipEnum::BFF => 'just be BFFs',
             RelationshipEnum::FWB => 'just be friends, but maybe still, you know, _do stuff_',
             RelationshipEnum::FRIENDLY_RIVAL => 'just be friendly rivals',
         ];
@@ -1121,7 +1121,7 @@ class PetRelationshipService
             RelationshipEnum::DISLIKE => 'break up entirely',
             RelationshipEnum::FRIENDLY_RIVAL => 'just be friendly rivals',
             RelationshipEnum::FRIEND => 'just be friends',
-            RelationshipEnum::BFF => 'just be friends - but really good friends -',
+            RelationshipEnum::BFF => 'just be BFFs -',
             RelationshipEnum::FWB => 'just be friends, but maybe still, you know, _do stuff_',
             RelationshipEnum::MATE => 'date',
         ];
@@ -1150,6 +1150,7 @@ class PetRelationshipService
             ;
 
             $p1->setCurrentRelationship($p2->getRelationshipGoal());
+            $p2->setCurrentRelationship($p2->getRelationshipGoal());
 
             if(mt_rand(1, 4) !== 1)
                 $p1->setRelationshipGoal($p2->getRelationshipGoal());
@@ -1166,6 +1167,7 @@ class PetRelationshipService
                 ->setEntry($p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()] . '. After talking for a while, ' . $p2->getPet()->getName() . ' agreed to ' . $upgradeDescription[$p1->getRelationshipGoal()] . '...')
             ;
 
+            $p1->setCurrentRelationship($p1->getRelationshipGoal());
             $p2->setCurrentRelationship($p1->getRelationshipGoal());
 
             if(mt_rand(1, 4) !== 1)
