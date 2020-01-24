@@ -11,6 +11,7 @@ use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\PetRelationshipRepository;
 use App\Service\PetActivity\PregnancyService;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetRelationshipService
@@ -32,7 +33,7 @@ class PetRelationshipService
     }
 
     /**
-     * @param Pet[] $pets
+     * @param ArrayCollection|Pet[] $pets
      * @param string $hangOutDescription
      * @param string $enemyDescription
      * @param string $meetSummary
@@ -42,12 +43,18 @@ class PetRelationshipService
      */
     public function groupGathering($pets, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetDescription, int $meetChance = 2)
     {
-        for($i = 0; $i < count($pets) - 1; $i++)
+        // array_values, because keys might not be sequential (members can leave), but we need to use array indicies.
+        // ->toArray, because we might have received a stupid ArrayCollection from Doctrine
+        if(is_array($pets))
+            $members = array_values($pets);
+        else
+            $members = $pets->toArray();
+
+        for($i = 0; $i < count($members) - 1; $i++)
         {
-            for($j = $i + 1; $j < count($pets); $j++)
-            {
-                $this->seeAtGroupGathering($pets[$i], $pets[$j], $hangOutDescription, $enemyDescription, $meetSummary, $meetDescription, $meetChance);
-            }
+            // $i + 1 prevents duplicate hang-outs
+            for($j = $i + 1; $j < count($members); $j++)
+                $this->seeAtGroupGathering($members[$i], $members[$j], $hangOutDescription, $enemyDescription, $meetSummary, $meetDescription, $meetChance);
         }
     }
 

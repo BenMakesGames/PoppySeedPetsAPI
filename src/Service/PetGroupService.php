@@ -12,12 +12,14 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetGroupTypeEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Model\PetChangesSummary;
 use App\Repository\PetRepository;
 use App\Service\Filter\PetGroupFilterService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\Expr\Join;
 
 class PetGroupService
 {
@@ -62,7 +64,7 @@ class PetGroupService
         }
     }
 
-    private function getMemberHappiness(PetGroup $group, Pet $pet)
+    public function getMemberHappiness(PetGroup $group, Pet $pet)
     {
         // array_reduce is NOT easier to read (and doesn't seem more CPU-efficient, especially since we have to convert toArray())
         $happiness = $pet->getEsteem();
@@ -168,16 +170,18 @@ class PetGroupService
 
         /** @var Pet[] $recruit */
         $recruits = $this->petRepository->createQueryBuilder('p')
-            ->select('p2.*')
+            ->select('p2')
             ->distinct(true)
-            ->innerJoin('PetRelationship', 'r', 'ON', 'r.pet = p.id')
-            ->leftJoin('Pet', 'p2', 'ON', 'r.relationship = p2.id AND p2.id NOT IN (:groupMembers)')
-            ->leftJoin('PetRelationship', 'r2', 'ON', 'r2.pet = p2.id AND r2.relationship IN (:groupMembers)')
-            ->leftJoin('PetSkills', 'p2s', 'ON', 'p2.skills = p2s.id')
-            ->andWhere('r.currentRelationships NOT IN (:unhappyRelationships)')
+            ->innerJoin('App:PetRelationship', 'r', Join::WITH, 'r.pet = p.id')
+            ->leftJoin('App:Pet', 'p2', Join::WITH, 'r.relationship = p2.id AND p2.id NOT IN (:groupMembers)')
+            ->leftJoin('App:PetRelationship', 'r2', Join::WITH, 'r2.pet = p2.id AND r2.relationship IN (:groupMembers)')
+            ->leftJoin('App:PetSkills', 'p2s', Join::WITH, 'p2.skills = p2s.id')
+            ->andWhere('r.currentRelationship NOT IN (:unhappyRelationships)')
             ->andWhere('p.id IN (:groupMembers)')
             ->andWhere('r2.currentRelationship NOT IN (:unhappyRelationships)')
             ->orderBy('p2s.music', 'DESC')
+            ->setParameter('groupMembers', $group->getMembers()->map(function(Pet $p) { return $p->getId(); }))
+            ->setParameter('unhappyRelationships', [ RelationshipEnum::BROKE_UP, RelationshipEnum::DISLIKE ])
             ->getQuery()
             ->execute()
         ;
@@ -626,7 +630,7 @@ class PetGroupService
 
                 $activityLog = (new PetActivityLog())
                     ->setPet($member)
-                    ->setEntry($member->getName() . ' met with the rest of the members of ' . $group->getName() . '. ' . self::BAND_ACTIVITY_SENTIMENT_MESSAGES[$sentiment])
+                    ->setEntry($member->getName() . ' jammed with ' . $group->getName() . '. ' . self::BAND_ACTIVITY_SENTIMENT_MESSAGES[$sentiment])
                     ->setIcon('items/music/note')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM)
                     ->setChanges($petChanges[$member->getId()]->compare($member))

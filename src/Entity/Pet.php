@@ -650,7 +650,7 @@ class Pet
     public function getSafe(): string
     {
         if($this->getSafety() >= 16)
-            return 'untouchable';
+            return 'invincible';
         else if($this->getSafety() >= 8)
             return 'safe';
         else if($this->getSafety() >= 0)
