@@ -456,7 +456,7 @@ class PetService
             return;
         }
 
-        //if(mt_rand(1, 48) === 1)
+        if(mt_rand(1, 48) === 1)
         {
             if(count($pet->getGroups()) > 0)
             {
