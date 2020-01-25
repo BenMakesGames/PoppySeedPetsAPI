@@ -12,6 +12,7 @@ use App\Repository\InventoryRepository;
 use App\Service\HollowEarthService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
@@ -73,7 +74,7 @@ class HollowEarthController extends PoppySeedPetsController
      */
     public function continueActing(
         HollowEarthService $hollowEarthService, ResponseService $responseService, EntityManagerInterface $em,
-        Request $request, InventoryRepository $inventoryRepository
+        Request $request, InventoryRepository $inventoryRepository, TransactionService $transactionService
     )
     {
         $user = $this->getUser();
@@ -114,7 +115,7 @@ class HollowEarthController extends PoppySeedPetsController
                     break;
 
                 case HollowEarthActionTypeEnum::PAY_MONEY:
-                    $this->continueActingPayMoney($action, $player, $request->request, $hollowEarthService);
+                    $this->continueActingPayMoney($action, $player, $request->request, $hollowEarthService, $transactionService);
                     break;
 
                 case HollowEarthActionTypeEnum::PET_CHALLENGE:
@@ -199,7 +200,8 @@ class HollowEarthController extends PoppySeedPetsController
     }
 
     private function continueActingPayMoney(
-        array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService
+        array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService,
+        TransactionService $transactionService
     )
     {
         if(!$params->has('payUp'))
@@ -212,7 +214,7 @@ class HollowEarthController extends PoppySeedPetsController
             if($player->getUser()->getMoneys() < $action['amount'])
                 throw new UnprocessableEntityHttpException('You don\'t have enough moneys...');
 
-            $player->getUser()->increaseMoneys(-$action['amount']);
+            $transactionService->spendMoney($player->getUser(), $action['amount'], 'Spent while exploring the Hollow Earth.');
 
             if(array_key_exists('ifPaid', $action))
             {

@@ -23,6 +23,7 @@ class HollowEarthService
     private $inventoryService;
     private $petService;
     private $petExperienceService;
+    private $transactionService;
 
     public const DICE_ITEMS = [
         'Dreidel' => 4,
@@ -33,7 +34,7 @@ class HollowEarthService
 
     public function __construct(
         HollowEarthTileRepository $hollowEarthTileRepository, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetService $petService, PetExperienceService $petExperienceService
+        PetService $petService, PetExperienceService $petExperienceService, TransactionService $transactionService
     )
     {
         $this->hollowEarthTileRepository = $hollowEarthTileRepository;
@@ -41,6 +42,7 @@ class HollowEarthService
         $this->inventoryService = $inventoryService;
         $this->petService = $petService;
         $this->petExperienceService = $petExperienceService;
+        $this->transactionService = $transactionService;
     }
 
     public function unlockHollowEarth(User $user): void
@@ -251,7 +253,9 @@ class HollowEarthService
         }
 
         if(array_key_exists('receiveMoneys', $event))
-            $player->getUser()->increaseMoneys($event['receiveMoneys']);
+        {
+            $this->transactionService->getMoney($player->getUser(), $event['receiveMoneys'], 'Received this while exploring the Hollow Earth.');
+        }
 
         if(array_key_exists('changeDirection', $event))
             $player->setCurrentDirection($event['changeDirection']);

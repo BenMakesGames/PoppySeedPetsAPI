@@ -62,10 +62,11 @@ class TraderService
     private $userStatsRepository;
     private $calendarService;
     private $userQuestRepository;
+    private $transactionService;
 
     public function __construct(
         ItemRepository $itemRepository, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
-        CalendarService $calendarService, UserQuestRepository $userQuestRepository
+        CalendarService $calendarService, UserQuestRepository $userQuestRepository, TransactionService $transactionService
     )
     {
         $this->itemRepository = $itemRepository;
@@ -73,6 +74,7 @@ class TraderService
         $this->userStatsRepository = $userStatsRepository;
         $this->calendarService = $calendarService;
         $this->userQuestRepository = $userQuestRepository;
+        $this->transactionService = $transactionService;
     }
 
     public function getOffers(User $user)
@@ -670,8 +672,10 @@ class TraderService
                     if($user->getMoneys() < $cost->quantity)
                         throw new \InvalidArgumentException('You do not have the moneys needed to make this exchange.');
 
-                    $user->increaseMoneys(-$cost->quantity);
-                    $this->userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, $cost->quantity);
+                    if(mt_rand(1, 50) === 1)
+                        $this->transactionService->spendMoney($user, $cost->quantity, 'Traded away at the Trader. (That\'s usually just called "buying", right?)');
+                    else
+                        $this->transactionService->spendMoney($user, $cost->quantity, 'Traded away at the Trader.');
 
                     break;
 
@@ -690,7 +694,11 @@ class TraderService
                     break;
 
                 case CostOrYieldTypeEnum::MONEY:
-                    $user->increaseMoneys($yield->quantity);
+                    if(mt_rand(1, 50) === 1)
+                        $this->transactionService->spendMoney($user, $yield->quantity, 'Traded for at the Trader. (That\'s usually just called "selling", right?)');
+                    else
+                        $this->transactionService->spendMoney($user, $yield->quantity, 'Traded for at the Trader.');
+
                     break;
             }
         }

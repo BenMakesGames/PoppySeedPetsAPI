@@ -15,20 +15,24 @@ use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\PetService;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 
 class Protocol7Service
 {
     private $responseService;
     private $petExperienceService;
     private $inventoryService;
+    private $transactionService;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService
+        ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
+        TransactionService $transactionService
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
+        $this->transactionService = $transactionService;
     }
 
     public function adventure(Pet $pet)
@@ -118,7 +122,7 @@ class Protocol7Service
             if(mt_rand(1, 10) === 1)
             {
                 $moneys = mt_rand(2, 4);
-                $pet->getOwner()->increaseMoneys($moneys);
+                $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' defeated ' . $baddie . ', and got this money.');
                 return $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took ' . $moneys . '~~m~~!', 'icons/activity-logs/moneys');
             }
             else

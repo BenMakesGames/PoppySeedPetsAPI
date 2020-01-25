@@ -11,20 +11,24 @@ use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 
 class SmithingService
 {
     private $inventoryService;
     private $responseService;
     private $petExperienceService;
+    private $transactionService;
 
     public function __construct(
-        InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService
+        InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
+        TransactionService $transactionService
     )
     {
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
+        $this->transactionService = $transactionService;
     }
 
     public function getCraftingPossibilities(Pet $pet, array $quantities): array
@@ -840,7 +844,7 @@ class SmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
             $moneys = mt_rand(10, 20);
-            $pet->getOwner()->increaseMoneys($moneys);
+            $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' tried to forge a Silver Key, but couldn\'t get the shape right, so just made silver coins, instead.');
             $pet->increaseFood(-1);
 
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge a Silver Key from a Silver Bar, but couldn\'t get the shape right, so just made ' . $moneys . ' Moneys worth of silver coins, instead.', 'icons/activity-logs/moneys');
@@ -895,7 +899,7 @@ class SmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
             $moneys = mt_rand(20, 30);
-            $pet->getOwner()->increaseMoneys($moneys);
+            $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' tried to forge a Gold Key, but couldn\'t get the shape right, so just made gold coins, instead.');
             $pet->increaseFood(-1);
 
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge a Gold Key from a Gold Bar, but couldn\'t get the shape right, so just made ' . $moneys . ' Moneys worth of gold coins, instead.', 'icons/activity-logs/moneys');
@@ -942,7 +946,7 @@ class SmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
             $moneys = mt_rand(20, 30);
-            $pet->getOwner()->increaseMoneys($moneys);
+            $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' tried to forge a Gold Turning Fork, but couldn\'t get the shape right, so just made gold coins, instead.');
             $pet->increaseFood(-1);
 
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge a Gold Tuning Fork from a Gold Bar, but couldn\'t get the shape right, so just made ' . $moneys . ' Moneys worth of gold coins, instead.', 'icons/activity-logs/moneys');

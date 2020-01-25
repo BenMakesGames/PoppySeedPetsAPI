@@ -7,6 +7,7 @@ use App\Repository\InventoryRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,7 +24,8 @@ class CryptocurrencyWalletController extends PoppySeedPetsItemController
      */
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository
+        InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository,
+        TransactionService $transactionService
     )
     {
         $this->validateInventory($inventory, 'cryptocurrencyWallet/#/unlock');
@@ -39,7 +41,7 @@ class CryptocurrencyWalletController extends PoppySeedPetsItemController
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
-        $user->increaseMoneys($moneys);
+        $transactionService->getMoney($user, $moneys, 'Found inside a ' . $inventory->getItem()->getName() . '.');
 
         $em->remove($inventory);
         $em->remove($key);

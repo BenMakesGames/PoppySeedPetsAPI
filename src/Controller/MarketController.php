@@ -9,6 +9,7 @@ use App\Repository\InventoryRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\Filter\MarketFilterService;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,7 +44,8 @@ class MarketController extends PoppySeedPetsController
      */
     public function buy(
         Request $request, ResponseService $responseService, AdapterInterface $cache, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository
+        UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
+        TransactionService $transactionService
     )
     {
         $user = $this->getUser();
@@ -92,12 +94,11 @@ class MarketController extends PoppySeedPetsController
 
         try
         {
-            $buy->getOwner()->increaseMoneys($buy->getSellPrice());
+            $transactionService->getMoney($buy->getOwner(), $buy->getSellPrice(), 'Sold ' . $buy->getItem()->getName() . ' in the Market.');
             $userStatsRepository->incrementStat($buy->getOwner(), UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $buy->getSellPrice());
             $userStatsRepository->incrementStat($buy->getOwner(), UserStatEnum::ITEMS_SOLD_IN_MARKET, 1);
 
-            $user->increaseMoneys(-$buy->getBuyPrice());
-            $userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, $buy->getBuyPrice());
+            $transactionService->spendMoney($user, $buy->getBuyPrice(), 'Bought ' . $buy->getItem()->getName() . ' in the Market.');
             $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_BOUGHT_IN_MARKET, 1);
 
             $buy

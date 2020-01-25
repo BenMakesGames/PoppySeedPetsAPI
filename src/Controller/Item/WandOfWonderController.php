@@ -11,6 +11,7 @@ use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -26,7 +27,8 @@ class WandOfWonderController extends PoppySeedPetsItemController
      */
     public function pointWandOfWonder(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
-        EntityManagerInterface $em, InventoryService $inventoryService, PetRepository $petRepository
+        EntityManagerInterface $em, InventoryService $inventoryService, PetRepository $petRepository,
+        TransactionService $transactionService
     )
     {
         $this->validateInventory($inventory, 'wandOfWonder/#/point');
@@ -88,8 +90,8 @@ class WandOfWonderController extends PoppySeedPetsItemController
                 break;
 
             case 'oneMoney':
-                $itemActionDescription = 'The wand begins to glow and shake violently. You hold on with all your might until, at last, it coughs up a single ~~m~~. (Lame!)';
-                $user->increaseMoneys(1);
+                $itemActionDescription = 'The wand begins to glow and shake violently. You hold on with all your might until, at last, it spits out a single ~~m~~. (Lame!)';
+                $transactionService->getMoney($user, 1, 'Anticlimactically discharged by a Wand of Wonder.');
                 break;
 
             case 'yellowDye':

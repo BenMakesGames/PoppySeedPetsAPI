@@ -15,6 +15,7 @@ use App\Model\PetChanges;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
 use App\Service\PetService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class KinBallService implements ParkEventInterface
@@ -42,14 +43,17 @@ class KinBallService implements ParkEventInterface
     private $em;
     private $petRelationshipService;
     private $petExperienceService;
+    private $transactionService;
 
     public function __construct(
-        EntityManagerInterface $em, PetRelationshipService $petRelationshipService, PetExperienceService $petExperienceService
+        EntityManagerInterface $em, PetRelationshipService $petRelationshipService, PetExperienceService $petExperienceService,
+        TransactionService $transactionService
     )
     {
         $this->em = $em;
         $this->petRelationshipService = $petRelationshipService;
         $this->petExperienceService = $petExperienceService;
+        $this->transactionService = $transactionService;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -186,7 +190,7 @@ class KinBallService implements ParkEventInterface
                 if($winningTeamIndex === $teamIndex)
                 {
                     $expGain++;
-                    $participant->pet->getOwner()->increaseMoneys($skillAverage);
+                    $this->transactionService->getMoney($participant->pet->getOwner(), $skillAverage, $participant->pet->getName() . ' earned this in a game of Kin-Ball!');
                     $activityLogEntry = $participant->pet->getName() . ' played a game of Kin-Ball, and was on the winning team! They received ' . $skillAverage . '~~m~~!';
                 }
                 else

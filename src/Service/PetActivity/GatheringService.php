@@ -12,21 +12,24 @@ use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 
 class GatheringService
 {
     private $responseService;
     private $inventoryService;
     private $petExperienceService;
+    private $transactionService;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService,
-        PetExperienceService $petExperienceService
+        ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
+        TransactionService $transactionService
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
+        $this->transactionService = $transactionService;
     }
 
     public function adventure(Pet $pet)
@@ -350,7 +353,7 @@ class GatheringService
             if(mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering()) >= 25)
             {
                 $moneys = mt_rand(4, 12);
-                $pet->getOwner()->increaseMoneys($moneys);
+                $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' found this on a Sandy Beach.');
                 $lootList = $loot;
                 $lootList[] = $moneys . '~~m~~';
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to a Sandy Beach, and found ' . ArrayFunctions::list_nice($lootList) . '.', '');

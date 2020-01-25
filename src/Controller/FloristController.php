@@ -8,6 +8,7 @@ use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\GrammarFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
@@ -17,6 +18,7 @@ use App\Service\Filter\UserFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\SessionService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -48,7 +50,7 @@ class FloristController extends PoppySeedPetsController
      */
     public function send(
         Request $request, UserRepository $userRepository, InventoryService $inventoryService, ResponseService $responseService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
     )
     {
         $user = $this->getUser();
@@ -73,11 +75,14 @@ class FloristController extends PoppySeedPetsController
             throw new UnprocessableEntityHttpException('"Hm. I don\'t know who that is."');
 
         if($recipient->getId() === $this->getUser()->getId())
+        {
             $flowerName = 'Narcissus';
+            $transactionMessage = 'Bought ' . GrammarFunctions::indefiniteArticle($flowerName) . ' ' . $flowerName . ' for yourself at the Florist. Received a Narcissus instead...';
+        }
+        else
+            $transactionMessage = 'Bought ' . GrammarFunctions::indefiniteArticle($flowerName) . ' ' . $flowerName . ' for ' . $recipient->getName() . ' at the Florist.';
 
-        $user->increaseMoneys(-10);
-
-        $userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, 10);
+        $transactionService->spendMoney($user, 10, $transactionMessage);
 
         $inventoryService->receiveItem($flowerName, $recipient, $user, $user->getName() . ' bought this for you at The Florist\'s.', LocationEnum::HOME);
 

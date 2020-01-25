@@ -12,6 +12,7 @@ use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 
 class GenericAdventureService
 {
@@ -19,16 +20,18 @@ class GenericAdventureService
     private $inventoryService;
     private $petExperienceService;
     private $userQuestRepository;
+    private $transactionService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        UserQuestRepository $userQuestRepository
+        UserQuestRepository $userQuestRepository, TransactionService $transactionService
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->userQuestRepository = $userQuestRepository;
         $this->petExperienceService = $petExperienceService;
+        $this->transactionService = $transactionService;
     }
 
     public function adventure(Pet $pet): PetActivityLog
@@ -128,7 +131,9 @@ class GenericAdventureService
         }
 
         if($reward[1] === 'moneys')
-            $pet->getOwner()->increaseMoneys($reward[0]);
+        {
+            $this->transactionService->getMoney($pet->getOwner(), $reward[0], $comment);
+        }
         else
             $this->inventoryService->petCollectsItem($reward[1], $pet, $comment, $activityLog);
 
@@ -139,5 +144,4 @@ class GenericAdventureService
 
         return $activityLog;
     }
-
 }

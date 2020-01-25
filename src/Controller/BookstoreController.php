@@ -4,12 +4,11 @@ namespace App\Controller;
 use App\Entity\Item;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
-use App\Enum\UserStatEnum;
 use App\Repository\ItemRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\BookstoreService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -59,7 +58,7 @@ class BookstoreController extends PoppySeedPetsController
      */
     public function buyBook(
         Item $book, BookstoreService $bookstoreService, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, UserStatsRepository $userStatsRepository
+        ResponseService $responseService, TransactionService $transactionService
     )
     {
         $user = $this->getUser();
@@ -76,8 +75,7 @@ class BookstoreController extends PoppySeedPetsController
             throw new UnprocessableEntityHttpException('You don\'t have enough money to buy ' . $book->getName() . '.');
 
         $cost = $bookPrices[$book->getName()];
-        $user->increaseMoneys(-$cost);
-        $userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, $cost);
+        $transactionService->spendMoney($user, $cost, 'You bought ' . $book->getName() . ' from the Bookstore.');
 
         $inventoryService->receiveItem($book, $user, null, $user->getName() . ' bought this from the Book Store.', LocationEnum::HOME);
 

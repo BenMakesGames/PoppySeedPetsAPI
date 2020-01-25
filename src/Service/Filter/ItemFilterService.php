@@ -33,6 +33,7 @@ class ItemFilterService
                 'equipable' => [ $this, 'filterEquipable' ],
                 'equipStats' => [ $this, 'filterEquipStats' ],
                 'notDonatedBy' => [ $this, 'filterNotDonatedBy' ],
+                'aHat' => [ $this, 'filterAHat' ],
             ]
         );
     }
@@ -87,6 +88,14 @@ class ItemFilterService
         {
             $qb->andWhere('food.' . $stat . ' > 0');
         }
+    }
+
+    public function filterAHat(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('i.hat IS NULL');
+        else
+            $qb->andWhere('i.hat IS NOT NULL');
     }
 
     public function filterEquipable(QueryBuilder $qb, $value)

@@ -9,6 +9,7 @@ use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -238,7 +239,7 @@ class ScrollController extends PoppySeedPetsItemController
      */
     public function invokeMinorRichesScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
     )
     {
         $user = $this->getUser();
@@ -254,7 +255,10 @@ class ScrollController extends PoppySeedPetsItemController
         $item = ArrayFunctions::pick_one([ 'Little Strongbox', 'Bag of Beans' ]);
         $location = $inventory->getLocation();
 
-        $user->increaseMoneys($moneys);
+        if(mt_rand(1, 10) === 1)
+            $transactionService->getMoney($user, $moneys, 'Conjured by a Scroll of Minor Riches. (Hopefully not out of a bank, or dragon\'s hoard, or something...)');
+        else
+            $transactionService->getMoney($user, $moneys, 'Conjured by a Scroll of Minor Riches.');
 
         $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
 
@@ -269,7 +273,7 @@ class ScrollController extends PoppySeedPetsItemController
      */
     public function invokeMajorRichesScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
     )
     {
         $user = $this->getUser();
@@ -285,7 +289,10 @@ class ScrollController extends PoppySeedPetsItemController
         $item = ArrayFunctions::pick_one([ 'Striped Microcline', 'Firestone', 'Moon Pearl', 'Blackonite' ]);
         $location = $inventory->getLocation();
 
-        $user->increaseMoneys($moneys);
+        if(mt_rand(1, 10) === 1)
+            $transactionService->getMoney($user, $moneys, 'Conjured by a Scroll of Major Riches. (Hopefully not out of a bank, or dragon\'s hoard, or something...)');
+        else
+            $transactionService->getMoney($user, $moneys, 'Conjured by a Scroll of Major Riches.');
 
         $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
 

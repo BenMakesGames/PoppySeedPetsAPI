@@ -14,6 +14,7 @@ use App\Model\ParkEvent\TriDChessParticipant;
 use App\Model\PetChanges;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class TriDChessService implements ParkEventInterface
@@ -38,14 +39,17 @@ class TriDChessService implements ParkEventInterface
     private $petExperienceService;
     private $em;
     private $petRelationshipService;
+    private $transactionService;
 
     public function __construct(
-        PetExperienceService $petExperienceService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService
+        PetExperienceService $petExperienceService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService,
+        TransactionService $transactionService
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->em = $em;
         $this->petRelationshipService = $petRelationshipService;
+        $this->transactionService = $transactionService;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -238,7 +242,7 @@ class TriDChessService implements ParkEventInterface
             if($wins === $this->round)
             {
                 $expGain++;
-                $participant->pet->getOwner()->increaseMoneys($firstPlaceMoneys);
+                $this->transactionService->getMoney($participant->pet->getOwner(), $firstPlaceMoneys, $participant->pet->getName() . ' earned this by getting 1st place in a Tri-D Chess tournament!');
                 $activityLogEntry = $participant->pet->getName() . ' played in a Tri-D chess tournament, and won! The whole thing!';
             }
             else if($wins === 0)
@@ -249,7 +253,7 @@ class TriDChessService implements ParkEventInterface
             if($wins === $this->round - 1)
             {
                 $expGain++;
-                $participant->pet->getOwner()->increaseMoneys($secondPlaceMoneys);
+                $this->transactionService->getMoney($participant->pet->getOwner(), $firstPlaceMoneys, $participant->pet->getName() . ' earned this by getting 2nd place in a Tri-D Chess tournament!');
                 $this->results .= $participant->pet->getName() . ' got 2nd place, and ' . $secondPlaceMoneys . '~~m~~!';
             }
 

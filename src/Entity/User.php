@@ -398,6 +398,7 @@ class User implements UserInterface
         return $this->moneys;
     }
 
+    // should only be called from TransactionService
     public function increaseMoneys(int $amount): self
     {
         $this->moneys += $amount;

@@ -16,6 +16,7 @@ use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -600,7 +601,8 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openLittleStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
+        TransactionService $transactionService
     )
     {
         $user = $this->getUser();
@@ -616,7 +618,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $moneys = mt_rand(10, mt_rand(20, mt_rand(50, mt_rand(100, 200)))); // averages 35?
 
-        $user->increaseMoneys($moneys);
+        $transactionService->getMoney($user, $moneys, 'Found inside a ' . $inventory->getItem()->getName() . '.');
 
         $possibleItems = [
             'Silver Bar', 'Silver Bar',
@@ -650,7 +652,8 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openVeryStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
+        TransactionService $transactionService
     )
     {
         $user = $this->getUser();
@@ -666,7 +669,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $moneys = mt_rand(15, mt_rand(45, mt_rand(100, mt_rand(200, 300)))); // averages 50?
 
-        $user->increaseMoneys($moneys);
+        $transactionService->getMoney($user, $moneys, 'Found inside a ' . $inventory->getItem()->getName() . '.');
 
         $items = [
             'Silver Bar',

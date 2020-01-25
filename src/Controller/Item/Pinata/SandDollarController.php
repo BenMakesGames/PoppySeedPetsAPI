@@ -5,6 +5,7 @@ use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -20,14 +21,14 @@ class SandDollarController extends PoppySeedPetsItemController
      */
     public function read(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, TransactionService $transactionService
     )
     {
         $this->validateInventory($inventory, 'sandDollar/#/loot');
 
         $user = $this->getUser();
 
-        $user->increaseMoneys(1);
+        $transactionService->getMoney($user, 1, 'Found inside a Sand Dollar.');
 
         $location = $inventory->getLocation();
 

@@ -32,6 +32,7 @@ class InventoryFilterService
                 'foodFlavors' => [ $this, 'filterFoodFlavors' ],
                 'equipable' => [ $this, 'filterEquipable' ],
                 'equipStats' => [ $this, 'filterEquipStats' ],
+                'aHat' => [ $this, 'filterAHat' ],
             ]
         );
     }
@@ -99,6 +100,15 @@ class InventoryFilterService
         {
             $qb->andWhere('food.' . $stat . ' > 0');
         }
+    }
+
+
+    public function filterAHat(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('item.hat IS NULL');
+        else
+            $qb->andWhere('item.hat IS NOT NULL');
     }
 
     public function filterEquipable(QueryBuilder $qb, $value)

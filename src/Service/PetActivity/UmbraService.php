@@ -14,20 +14,24 @@ use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 
 class UmbraService
 {
     private $responseService;
     private $inventoryService;
     private $petExperienceService;
+    private $transactionService;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService
+        ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
+        TransactionService $transactionService
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
+        $this->transactionService = $transactionService;
     }
 
     public function adventure(Pet $pet)
@@ -250,7 +254,7 @@ class UmbraService
             return $activityLog;
         }
 
-        $pet->getOwner()->increaseMoneys(2);
+        $this->transactionService->getMoney($pet->getOwner(), 2, $pet->getName() . ' found this on the shores of a dark river in the Umbra.');
 
         return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted 2~~m~~. No one else was around, so...', 'icons/activity-logs/moneys');
     }

@@ -15,6 +15,7 @@ use App\Repository\UserStatsRepository;
 use App\Service\AdoptionService;
 use App\Service\ResponseService;
 use App\Service\StoryService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
@@ -102,7 +103,7 @@ class PetShelterController extends PoppySeedPetsController
     public function adoptPet(
         int $id, PetRepository $petRepository, AdoptionService $adoptionService, Request $request,
         ResponseService $responseService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
-        UserQuestRepository $userQuestRepository
+        UserQuestRepository $userQuestRepository, TransactionService $transactionService
     )
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
@@ -150,8 +151,8 @@ class PetShelterController extends PoppySeedPetsController
 
         $em->persist($newPet);
 
-        $user->increaseMoneys(-$costToAdopt);
-        $userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, $costToAdopt);
+        $transactionService->spendMoney($user, $costToAdopt, 'Adopt a new pet at the Portal.');
+
         $userStatsRepository->incrementStat($user, UserStatEnum::PETS_ADOPTED, 1);
 
         $now = (new \DateTimeImmutable())->format('Y-m-d');

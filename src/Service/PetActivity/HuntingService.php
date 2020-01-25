@@ -21,6 +21,7 @@ use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\PetService;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 
 class HuntingService
 {
@@ -32,11 +33,13 @@ class HuntingService
     private $itemRepository;
     private $userQuestRepository;
     private $petExperienceService;
+    private $transactionService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         CalendarService $calendarService, MuseumItemRepository $museumItemRepository, ItemRepository $itemRepository,
-        UserQuestRepository $userQuestRepository, PetExperienceService $petExperienceService
+        UserQuestRepository $userQuestRepository, PetExperienceService $petExperienceService,
+        TransactionService $transactionService
     )
     {
         $this->responseService = $responseService;
@@ -47,6 +50,7 @@ class HuntingService
         $this->itemRepository = $itemRepository;
         $this->userQuestRepository = $userQuestRepository;
         $this->petExperienceService = $petExperienceService;
+        $this->transactionService = $transactionService;
     }
 
     public function adventure(Pet $pet)
@@ -426,7 +430,7 @@ class HuntingService
 
             $moneysLost = mt_rand(1, 2);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
-            $pet->getOwner()->increaseMoneys(-$moneysLost);
+            $this->transactionService->spendMoney($pet->getOwner(), $moneysLost, $pet->getName() . ' was outsmarted by a Thieving Magpie, who stole this money.', false);
             $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::MONEYS_STOLEN_BY_THIEVING_MAGPIES, $moneysLost);
             $pet->increaseEsteem(-2);
             $pet->increaseSafety(-2);
@@ -443,7 +447,7 @@ class HuntingService
             if(mt_rand(1, 4) === 1)
             {
                 $moneys = mt_rand(2, 5);
-                $pet->getOwner()->increaseMoneys($moneys);
+                $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' pounched on a Thieving Magpie, and liberated this money.');
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' pounced on a Thieving Magpie, and liberated its ' . $moneys . ' moneys.', 'icons/activity-logs/moneys');
             }
             else
