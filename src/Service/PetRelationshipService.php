@@ -1126,13 +1126,13 @@ class PetRelationshipService
             RelationshipEnum::MATE => 'date',
         ];
 
-        $downgradeDescription2 = [
-            RelationshipEnum::DISLIKE => 'break up entirely',
-            RelationshipEnum::FRIENDLY_RIVAL => 'be friendly rivals',
-            RelationshipEnum::FRIEND => 'be friends',
-            RelationshipEnum::BFF => 'be BFFs',
-            RelationshipEnum::FWB => 'be FWBs',
-            RelationshipEnum::MATE => 'date',
+        $descriptioning = [
+            RelationshipEnum::DISLIKE => 'breaking up entirely',
+            RelationshipEnum::FRIENDLY_RIVAL => 'being friendly rivals',
+            RelationshipEnum::FRIEND => 'being friends',
+            RelationshipEnum::BFF => 'being BFFs',
+            RelationshipEnum::FWB => 'being FWBs',
+            RelationshipEnum::MATE => 'dating',
         ];
 
         $r = mt_rand(1, 100);
@@ -1141,36 +1141,36 @@ class PetRelationshipService
         {
             $p1Log = (new PetActivityLog())
                 ->setPet($p1->getPet())
-                ->setEntry($p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()] . '. After talking for a while, ' . $p1->getPet()->getName() . ' agreed to ' . $downgradeDescription2[$p2->getRelationshipGoal()] . '...')
+                ->setEntry($p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()] . '. ' . $p1->getPet()->getName() . ' thought for a bit, and agreed to try ' . $descriptioning[$p2->getRelationshipGoal()] . '!')
             ;
 
             $p2Log = (new PetActivityLog())
                 ->setPet($p2->getPet())
-                ->setEntry($p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()] . '. After talking for a while, ' . $p1->getPet()->getName() . ' agreed to ' . $downgradeDescription2[$p2->getRelationshipGoal()] . '...')
+                ->setEntry($p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()] . '. ' . $p1->getPet()->getName() . ' thought for a bit, and agreed to try ' . $descriptioning[$p2->getRelationshipGoal()] . '!')
             ;
 
             $p1->setCurrentRelationship($p2->getRelationshipGoal());
             $p2->setCurrentRelationship($p2->getRelationshipGoal());
 
-            if(mt_rand(1, 4) !== 1)
+            if(mt_rand(1, 3) !== 1)
                 $p1->setRelationshipGoal($p2->getRelationshipGoal());
         }
         else if($r < $chanceP1ChangesMind + $chanceP2ChangesMind)
         {
             $p1Log = (new PetActivityLog())
                 ->setPet($p1->getPet())
-                ->setEntry($p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()] . '. After talking for a while, ' . $p2->getPet()->getName() . ' agreed to ' . $upgradeDescription[$p1->getRelationshipGoal()] . '...')
+                ->setEntry($p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()] . '. ' . $p2->getPet()->getName() . ' thought for a bit, and agreed to try ' . $descriptioning[$p1->getRelationshipGoal()] . '!')
             ;
 
             $p2Log = (new PetActivityLog())
                 ->setPet($p2->getPet())
-                ->setEntry($p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()] . '. After talking for a while, ' . $p2->getPet()->getName() . ' agreed to ' . $upgradeDescription[$p1->getRelationshipGoal()] . '...')
+                ->setEntry($p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()] . '. ' . $p2->getPet()->getName() . ' thought for a bit, and agreed to try ' . $descriptioning[$p1->getRelationshipGoal()] . '!')
             ;
 
             $p1->setCurrentRelationship($p1->getRelationshipGoal());
             $p2->setCurrentRelationship($p1->getRelationshipGoal());
 
-            if(mt_rand(1, 4) !== 1)
+            if(mt_rand(1, 3) !== 1)
                 $p2->setRelationshipGoal($p1->getRelationshipGoal());
         }
         else // break up
