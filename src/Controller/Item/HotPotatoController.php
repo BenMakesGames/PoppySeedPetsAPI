@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Enum\LocationEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\UserRepository;
 use App\Service\InventoryService;
@@ -57,6 +58,7 @@ class HotPotatoController extends PoppySeedPetsItemController
             $inventory
                 ->setOwner($target)
                 ->addComment($user->getName() . ' tossed this to ' . $target->getName() . '!')
+                ->setLocation(LocationEnum::HOME)
                 ->setModifiedOn()
                 ->setSellPrice(null)
             ;
