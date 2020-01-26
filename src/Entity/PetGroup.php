@@ -218,7 +218,7 @@ class PetGroup
         return $this->members->count();
     }
 
-    public function getNumberOfProducts(): ?int
+    public function getNumberOfProducts(): int
     {
         return $this->numberOfProducts;
     }
