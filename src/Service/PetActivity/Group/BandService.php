@@ -15,6 +15,7 @@ use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class BandService
@@ -24,10 +25,11 @@ class BandService
     private $inventoryService;
     private $responseService;
     private $petExperienceService;
+    private $transactionService;
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, InventoryService $inventoryService,
-        ResponseService $responseService, PetExperienceService $petExperienceService
+        ResponseService $responseService, PetExperienceService $petExperienceService, TransactionService $transactionService
     )
     {
         $this->em = $em;
@@ -35,6 +37,7 @@ class BandService
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
+        $this->transactionService = $transactionService;
     }
 
     private const ADJECTIVE_LIST = [
@@ -190,12 +193,13 @@ class BandService
         {
             $r = mt_rand(1, 100);
 
-            if ($r <= 50)
+            if ($r <= 75)
                 $this->receiveFanMail($instigatingPet, $group);
-            else if ($r <= 75)
+            else //if ($r <= 75)
                 $this->receiveRoyalties($instigatingPet, $group);
-            else
-                $this->receiveRandomItem($instigatingPet, $group);
+            // TODO:
+            //else
+            //    $this->receiveRandomItem($instigatingPet, $group);
         }
         else
             $this->produceAlbum($instigatingPet, $group);
@@ -205,7 +209,7 @@ class BandService
 
     private const FAN_MAIL_FEELS = [
         'delighted!', 'touched.', 'very proud.',
-        'ecstatic!', 'surprised!', 'moved.'
+        'ecstatic!', 'moved.'
     ];
 
     public function receiveFanMail(Pet $instigatingPet, PetGroup $group)
@@ -214,11 +218,45 @@ class BandService
         {
             $changes = new PetChanges($pet);
 
-            $feels = self::FAN_MAIL_FEELS[(floor($pet->getLevel() / 10 + $pet->getId()) * 89) % count(self::FAN_MAIL_FEELS)];
+            $feels = self::FAN_MAIL_FEELS[($pet->getId() * 89) % count(self::FAN_MAIL_FEELS)];
+
+            $pet
+                ->increaseEsteem(mt_rand(6, 12))
+                ->increaseLove(mt_rand(2, 4))
+            ;
 
             $activityLog = (new PetActivityLog())
                 ->setPet($pet)
                 ->setEntry($group->getName() . ' received some fan mail! ' . $pet->getName() . ' was ' . $feels)
+                ->setIcon('items/music/note')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->setChanges($changes->compare($pet))
+            ;
+
+            $this->em->persist($activityLog);
+
+            if($pet->getId() === $instigatingPet->getId())
+                $this->responseService->addActivityLog($activityLog);
+        }
+    }
+
+    public function receiveRoyalties(Pet $instigatingPet, PetGroup $group)
+    {
+        $moneys = mt_rand(1, 3) + floor(
+            sqrt($group->getNumberOfProducts() * 10) / count($group->getMembers())
+        );
+
+        foreach($group->getMembers() as $pet)
+        {
+            $changes = new PetChanges($pet);
+
+            $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' collected royalties from ' . $group->getName() . ' sales!');
+
+            $pet->increaseEsteem(mt_rand(4, 8));
+
+            $activityLog = (new PetActivityLog())
+                ->setPet($pet)
+                ->setEntry($group->getName() . ' collected royalties from ' . $group->getName() . ' sales!')
                 ->setIcon('items/music/note')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))
