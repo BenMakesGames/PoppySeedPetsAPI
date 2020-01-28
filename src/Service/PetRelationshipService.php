@@ -48,7 +48,7 @@ class PetRelationshipService
         if(is_array($pets))
             $members = array_values($pets);
         else
-            $members = $pets->toArray();
+            $members = array_values($pets->toArray());
 
         for($i = 0; $i < count($members) - 1; $i++)
         {
