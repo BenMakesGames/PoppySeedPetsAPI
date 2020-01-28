@@ -695,9 +695,9 @@ class TraderService
 
                 case CostOrYieldTypeEnum::MONEY:
                     if(mt_rand(1, 50) === 1)
-                        $this->transactionService->spendMoney($user, $yield->quantity, 'Traded for at the Trader. (That\'s usually just called "selling", right?)');
+                        $this->transactionService->getMoney($user, $yield->quantity, 'Traded for at the Trader. (That\'s usually just called "selling", right?)');
                     else
-                        $this->transactionService->spendMoney($user, $yield->quantity, 'Traded for at the Trader.');
+                        $this->transactionService->getMoney($user, $yield->quantity, 'Traded for at the Trader.');
 
                     break;
             }
