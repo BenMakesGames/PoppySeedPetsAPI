@@ -58,9 +58,13 @@ class MagpieDealController extends PoppySeedPetsItemController
 
         $location = $inventory->getLocation();
 
-        $newInventory = [];
+        $newInventory = [
+            $inventoryService->receiveItem('Feathers', $user, $user, $user->getName() . ' got this from a Magpie\'s Deal.', $location),
+            $inventoryService->receiveItem('Feathers', $user, $user, $user->getName() . ' got this from a Magpie\'s Deal.', $location),
+            $inventoryService->receiveItem('Egg', $user, $user, $user->getName() . ' got this from a Magpie\'s Deal.', $location),
+        ];
 
-        for($i = 0; $i < 6; $i++)
+        for($i = 0; $i < 3; $i++)
             $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Feathers', 'Egg' ]), $user, $user, $user->getName() . ' got this from a Magpie\'s Deal.', $location);
 
         $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
