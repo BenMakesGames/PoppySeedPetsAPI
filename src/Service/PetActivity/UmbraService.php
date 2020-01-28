@@ -9,6 +9,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SpiritCompanionStarEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\GrammarFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
@@ -68,9 +69,14 @@ class UmbraService
             case 11:
                 $activityLog = $this->fightEvilSpirit($pet);
                 break;
+
             case 12:
-                $activityLog = $this->foundNothing($pet, $roll);
+                if($pet->getOwner()->getFireplace()->getWhelpName() !== null)
+                    $activityLog = $this->visitLibraryOfFire($pet);
+                else
+                    $activityLog = $this->foundNothing($pet, $roll);
                 break;
+
             case 13:
                 $activityLog = $this->found2Moneys($pet);
                 break;
@@ -96,6 +102,54 @@ class UmbraService
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
 
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' crossed into the Umbra, but the Storm was too harsh; ' . $pet->getName() . ' retreated before finding anything.', 'icons/activity-logs/confused');
+    }
+
+    private function visitLibraryOfFire(Pet $pet): PetActivityLog
+    {
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, 'true');
+
+        if(mt_rand(1, 10) === 1)
+        {
+            // visit the library's arboretum
+
+            if(mt_rand(1, 5) === 1)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Library of Fire\'s arboretum, and found the brick with your name on it!', '');
+
+                $pet
+                    ->increaseEsteem(mt_rand(3, 6))
+                    ->increaseSafety(mt_rand(2, 4))
+                ;
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Library of Fire\'s arboretum.', '');
+
+                $pet->increaseSafety(mt_rand(2, 4));
+            }
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+        }
+        else
+        {
+            // visit a floor of the library and read some books
+
+            $floor = mt_rand(8, 414);
+
+            if($floor === 29)
+                $floor = 28;
+            else if($floor === 30)
+                $floor = 31;
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the ' . $floor . GrammarFunctions::ordinal($floor) . ' floor of the Library of Fire, and read a random book...', '');
+
+            $this->petExperienceService->gainExp($pet, mt_rand(1, 2), PetSkillEnum::getValues());
+            $pet->increaseSafety(mt_rand(2, 4));
+        }
+
+        $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY);
+
+        return $activityLog;
     }
 
     private function foundScragglyBush(Pet $pet): PetActivityLog

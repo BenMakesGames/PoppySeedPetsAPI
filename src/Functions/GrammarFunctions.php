@@ -66,4 +66,15 @@ final class GrammarFunctions
         // OTHERWISE, GUESS "a"
         return 'a';
     }
+
+    // from https://stackoverflow.com/questions/3109978/display-numbers-with-ordinal-suffix-in-php
+    public static function ordinal(int $number)
+    {
+        $ends = [ 'th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th' ];
+
+        if((($number % 100) >= 11) && (($number%100) <= 13))
+            return 'th';
+        else
+            return $ends[$number % 10];
+    }
 }
