@@ -213,6 +213,15 @@ class PetExperienceService
                 ->setLocation(LocationEnum::HOME)
                 ->setOwner($pet->getOwner())
                 ->setCreatedBy($pet->getOwner())
+                ->addComment(
+                    'While eating ' . $item->getName() . ', ' . $pet->getName() . ' happened to spot this! ' .
+                    ArrayFunctions::pick_one([
+                        '', '... Sure!', '... Why not?', 'As you do!', 'A happy coincidence!', 'Weird!',
+                        'Inexplicable, but not unwelcome!', '(Where was it up until this point, I wonder??)',
+                        'These things happen. Apparently.', '👍', 'Wild!', 'How\'s _that_ work?',
+                        '(I guess eating ' . $item->getName() . ' really _does_ bring good fortune! Who knew!)'
+                    ])
+                )
             ;
             $this->em->persist($inventory);
 
