@@ -25,7 +25,7 @@ class CryptocurrencyWalletController extends PoppySeedPetsItemController
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository,
-        TransactionService $transactionService
+        TransactionService $transactionService, InventoryService $inventoryService
     )
     {
         $this->validateInventory($inventory, 'cryptocurrencyWallet/#/unlock');
@@ -37,17 +37,28 @@ class CryptocurrencyWalletController extends PoppySeedPetsItemController
         if(!$key)
             throw new UnprocessableEntityHttpException('It\'s locked! (It\'s got a little lock on it, and everything!) You\'ll need a Password to open it...');
 
-        $moneys = mt_rand(mt_rand(5, 15), mt_rand(20, mt_rand(25, 95)));
-
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
-        $transactionService->getMoney($user, $moneys, 'Found inside a ' . $inventory->getItem()->getName() . '.');
+        if(mt_rand(1, 20) === 1)
+        {
+            $moneys = mt_rand(mt_rand(5, 15), mt_rand(20, mt_rand(25, 95)));
+
+            $transactionService->getMoney($user, $moneys, 'Found inside a ' . $inventory->getItem()->getName() . '.');
+
+            $message = 'You decrypt the wallet, receiving ' . $moneys . '~~m~~.';
+        }
+        else
+        {
+            $inventoryService->receiveItem('Magic Smoke', $user, $user, 'Escaped from a Cryptocurrency Wallet, ruining it.', $inventory->getLocation());
+
+            $message = 'While waiting for the wallet to decrypt, some Magic Smoke escapes from it! Noooooo!';
+        }
 
         $em->remove($inventory);
         $em->remove($key);
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You decrypt the wallet, receiving ' . $moneys . '~~m~~.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
 }

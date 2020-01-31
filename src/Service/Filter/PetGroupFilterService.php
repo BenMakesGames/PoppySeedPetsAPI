@@ -26,6 +26,7 @@ class PetGroupFilterService
             ],
             [
                 'type' => [ $this, 'filterType' ],
+                'withPetsOwnedBy' => [ $this, 'filterWithPetsOwnedBy' ],
             ]
         );
     }
@@ -41,5 +42,19 @@ class PetGroupFilterService
             ->andWhere('g.type = :type')
             ->setParameter('type', $value)
         ;
+    }
+    
+    public function filterWithPetsOwnedBy(QueryBuilder $qb, $value)
+    {
+        if(is_numeric($value) && (int)$value == $value)
+        {
+            if(!in_array('p', $qb->getAllAliases()))
+                $qb->leftJoin('g.members', 'p');
+            
+            $qb
+                ->andWhere('p.owner=:owner')
+                ->setParameter('owner', $value)
+            ;
+        }
     }
 }

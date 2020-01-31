@@ -34,6 +34,9 @@ class MagicBindingService
         if(array_key_exists('Mermaid Egg', $quantities))
             $possibilities[] = [ $this, 'mermaidEggToQuint' ];
 
+        if(array_key_exists('Magic Smoke', $quantities))
+            $possibilities[] = [ $this, 'magicSmokeToQuint' ];
+
         if(array_key_exists('Quintessence', $quantities))
         {
             if(array_key_exists('Gold Trifecta', $quantities))
@@ -214,6 +217,47 @@ class MagicBindingService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' successfully extracted Quintessence from a Mermaid Egg.', '');
 
             $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' extracted this from a Mermaid Egg.', $activityLog);
+
+            return $activityLog;
+        }
+    }
+
+    public function magicSmokeToQuint(Pet $pet): PetActivityLog
+    {
+        $umbraCheck = mt_rand(1, 20 + floor(($pet->getUmbra() + $pet->getComputer()) / 2) + $pet->getIntelligence() + $pet->getDexterity());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->inventoryService->loseItem('Magic Smoke', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::COMPUTER ]);
+            $pet->increaseEsteem(-1);
+
+            if(mt_rand(1, 2) === 1)
+            {
+                $pet->increasePsychedelic(mt_rand(1, 3));
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extract Quintessence from Magic Smoke, but accidentally breathed the smoke in :(', '');
+            }
+            else
+            {
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extract Quintessence from Magic Smoke, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+            }
+        }
+        else if($umbraCheck < 12)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::COMPUTER ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to extract Quintessence from Magic Smoke, but almost screwed it all up. ' . $pet->getName() . ' decided to take a break from it for a bit...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Magic Smoke', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::COMPUTER ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' successfully extracted Quintessence from Magic Smoke.', '');
+
+            $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' extracted this from Magic Smoke.', $activityLog);
 
             return $activityLog;
         }
