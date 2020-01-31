@@ -51,10 +51,7 @@ class CraftingService
 
         if(array_key_exists('Fluff', $quantities))
         {
-            $possibilities[] = [ $this, 'createStringFromFluff' ];
-
-            if($quantities['Fluff']->quantity >= 2)
-                $possibilities[] = [ $this, 'createWhiteCloth' ];
+            $possibilities[] = [ $this, 'spinFluff' ];
         }
 
         if(array_key_exists('Tea Leaves', $quantities))
@@ -107,20 +104,26 @@ class CraftingService
                 $possibilities[] = [ $this, 'createSweetBeat' ];
         }
 
-        if(array_key_exists('Glue', $quantities) && array_key_exists('White Cloth', $quantities))
+        if(array_key_exists('Glue', $quantities))
         {
-            // this is a very specific combination of materials which is shared by several crafts; to try and even
-            // things out, we make the SIMPLEST combination less likely if more-complex combinations are available...
-            $foundSomethingCooler = false;
-
-            if(array_key_exists('Fiberglass Flute', $quantities))
+            if(array_key_exists('White Cloth', $quantities))
             {
-                $foundSomethingCooler = true;
-                $possibilities[] = [ $this, 'createFiberglassPanFlute' ];
+                // this is a very specific combination of materials which is shared by several crafts; to try and even
+                // things out, we make the SIMPLEST combination less likely if more-complex combinations are available...
+                $foundSomethingCooler = false;
+
+                if(array_key_exists('Fiberglass Flute', $quantities))
+                {
+                    $foundSomethingCooler = true;
+                    $possibilities[] = [ $this, 'createFiberglassPanFlute' ];
+                }
+
+                if(!$foundSomethingCooler || mt_rand(1, 2) === 1)
+                    $possibilities[] = [ $this, 'createFabricMache' ];
             }
 
-            if(!$foundSomethingCooler || mt_rand(1, 2) === 1)
-                $possibilities[] = [ $this, 'createFabricMache' ];
+            if(array_key_exists('Gold Triangle', $quantities) && $quantities['Gold Triangle'] >= 3)
+                $possibilities[] = [ $this, 'createGoldTrifecta' ];
         }
 
         if(array_key_exists('String', $quantities) && array_key_exists('Glass', $quantities))
@@ -423,31 +426,40 @@ class CraftingService
         }
     }
 
-    private function createStringFromFluff(Pet $pet): PetActivityLog
+    private function spinFluff(Pet $pet): PetActivityLog
     {
+        $making = ArrayFunctions::pick_one([ 'String', 'White Cloth' ]);
+
+        $difficulty = $making === 'String' ? 10 : 13;
+
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
         if($roll <= 2)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->inventoryService->loseItem('Fluff', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spin some Fluff into String, but messed it up; the Fluff was wasted :(', '');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spin some Fluff into ' . $making . ', but messed it up; the Fluff was wasted :(', '');
         }
-        else if($roll >= 10)
+        else if($roll >= $difficulty)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
             $this->inventoryService->loseItem('Fluff', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' spun some Fluff into String.', 'items/resource/string');
-            $this->inventoryService->petCollectsItem('String', $pet, $pet->getName() . ' spun this from Fluff.', $activityLog);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' spun some Fluff into ' . $making . '.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $difficulty)
+            ;
+
+            $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' spun this from Fluff.', $activityLog);
+
             return $activityLog;
         }
         else
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spin some Fluff into String, but couldn\'t figure it out.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spin some Fluff into ' . $making . ', but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
 
@@ -521,34 +533,6 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to extract ' . $itemName . ' from some Scales, but wasn\'t sure how to start.', 'icons/activity-logs/confused');
-        }
-    }
-
-    private function createWhiteCloth(Pet $pet): PetActivityLog
-    {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
-        if($roll <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, false);
-            $this->inventoryService->loseItem('Fluff', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spin some Fluff into String, but messed it up; a Fluff was wasted :(', '');
-        }
-        else if($roll >= 15)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('Fluff', $pet->getOwner(), LocationEnum::HOME, 2);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(1);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' weaved some Fluff into White Cloth.', '');
-            $this->inventoryService->petCollectsItem('White Cloth', $pet, $pet->getName() . ' weaved this from Fluff.', $activityLog);
-            return $activityLog;
-        }
-        else
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to weave some Fluff into White Cloth, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
 
@@ -713,6 +697,44 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make some Fabric Mâché, but couldn\'t come up with a good pattern.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createGoldTrifecta(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->inventoryService->loseItem('Glue', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-2);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Gold Trifecta, but messed up and wasted the Glu :(', '');
+        }
+        else if($roll >= 13)
+        {
+            $possibleItems = [ 'Fabric Mâché Basket' ];
+            $item = ArrayFunctions::pick_one($possibleItems);
+
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Gold Triangle', $pet->getOwner(), LocationEnum::HOME, 3);
+            $this->inventoryService->loseItem('Glue', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a ' . $item . '.', '');
+            $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created by gluing together three Gold Triangles.', $activityLog);
+
+            if(mt_rand(1, 2) === 1) $this->inventoryService->petCollectsItem('String', $pet, $pet->getName() . ' recovered this when creating a Gold Trifecta.', $activityLog);
+            if(mt_rand(1, 2) === 1) $this->inventoryService->petCollectsItem('String', $pet, $pet->getName() . ' recovered this when creating a Gold Trifecta.', $activityLog);
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to make a Gold Trifecta, but wasn\'t sure how to begin...', 'icons/activity-logs/confused');
         }
     }
 
