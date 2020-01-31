@@ -8,12 +8,12 @@ use App\Enum\UserStatEnum;
 use App\Repository\InventoryRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\Filter\MarketFilterService;
+use App\Service\Filter\TransactionFilterService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -122,5 +122,19 @@ class MarketController extends PoppySeedPetsController
         }
 
         return $responseService->success();
+    }
+
+    /**
+     * @Route("/transactionHistory", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function history(Request $request, ResponseService $responseService, TransactionFilterService $transactionFilterService)
+    {
+        $transactionFilterService->setUser($this->getUser());
+
+        return $responseService->success(
+            $transactionFilterService->getResults($request->query),
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MY_TRANSACTION ]
+        );
     }
 }

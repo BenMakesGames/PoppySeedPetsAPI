@@ -42,4 +42,5 @@ final class SerializationGroupEnum
     public const DEV_TASK = 'devTask';
     public const STORY = 'story';
     public const MY_BEEHIVE = 'myBeehive';
+    public const MY_TRANSACTION = 'myTransaction';
 }
