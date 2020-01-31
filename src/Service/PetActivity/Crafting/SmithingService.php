@@ -90,7 +90,7 @@ class SmithingService
             {
                 $possibilities[] = [ $this, 'createGoldKey' ];
 
-                if(mt_rand(1, 3) === 1)
+                if(mt_rand(1, 2) === 1)
                     $possibilities[] = [ $this, 'createGoldTuningFork' ];
 
                 if(array_key_exists('Fiberglass', $quantities) && array_key_exists('Moon Pearl', $quantities))
@@ -98,6 +98,9 @@ class SmithingService
 
                 if(array_key_exists('Dark Scales', $quantities) && array_key_exists('Dragon Flag', $quantities))
                     $possibilities[] = [ $this, 'createKundravsStandard' ];
+
+                if(array_key_exists('String', $quantities))
+                    $possibilities[] = [ $this, 'createGoldTriangle' ];
             }
 
             if(array_key_exists('Silver Bar', $quantities) && array_key_exists('Gold Bar', $quantities) && array_key_exists('White Cloth', $quantities))
@@ -285,10 +288,10 @@ class SmithingService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Grappling Hook from Iron Bar and String.', 'items/tool/grappling-hook')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Grappling Hook from Iron Bar, and String.', 'items/tool/grappling-hook')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
             ;
-            $this->inventoryService->petCollectsItem('Grappling Hook', $pet, $pet->getName() . ' created this from Iron Bar and String.', $activityLog);
+            $this->inventoryService->petCollectsItem('Grappling Hook', $pet, $pet->getName() . ' created this from Iron Bar, and String.', $activityLog);
             return $activityLog;
         }
         else
@@ -297,6 +300,44 @@ class SmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Grappling Hook, but couldn\'t figure it out.', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createGoldTriangle(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + max($pet->getCrafts(), $pet->getMusic()) + $pet->getSmithing());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::MUSIC ]);
+            $pet->increaseEsteem(-1);
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Gold Triangle, but burnt the String :(', 'icons/activity-logs/broke-string');
+        }
+        else if($roll >= 13)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::MUSIC ]);
+            $pet->increaseEsteem(1);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Gold Triangle from Gold Bar, and String.', 'items/tool/instrument/gold-triangle')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+            ;
+            $this->inventoryService->petCollectsItem('Grappling Hook', $pet, $pet->getName() . ' created this from Gold Bar, and String.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Gold Triangle, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
 
