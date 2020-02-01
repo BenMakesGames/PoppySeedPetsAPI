@@ -1,5 +1,5 @@
 <?php
-namespace App\Service\PetActivity;
+namespace App\Service\PetActivity\Crafting;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
@@ -43,6 +43,9 @@ class ProgrammingService
 
             if(array_key_exists('Finite State Machine', $quantities))
                 $possibilities[] = [ $this, 'createRegex' ];
+
+            if(array_key_exists('NUL', $quantities) && array_key_exists('Plastic Fishing Rod', $quantities))
+                $possibilities[] = [ $this, 'createPhishingRod' ];
         }
 
         if(array_key_exists('Regex', $quantities) && array_key_exists('XOR', $quantities) && array_key_exists('String', $quantities))
@@ -249,6 +252,38 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to become a l33t h4xx0r, but didn\'t have the right stuff.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createPhishingRod(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+
+            $this->inventoryService->loseItem('Pointer', $pet->getOwner(), LocationEnum::HOME, 1);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a Phishing Rod, but lost their Pointer to garbage collection :(', 'icons/activity-logs/null');
+            return $activityLog;
+        }
+        else if($roll >= 16)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->inventoryService->loseItem('Plastic Fishing Rod', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Pointer', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('NUL', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+            $pet->increaseEsteem(1);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Phishing Rod.', '');
+            $this->inventoryService->petCollectsItem('Phishing Rod', $pet, $pet->getName() . ' made this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' considered making a Phishing Rod, but ended up boondoggling.', 'icons/activity-logs/confused');
         }
     }
 }

@@ -31,7 +31,7 @@ use App\Service\PetActivity\GivingTreeGatheringService;
 use App\Service\PetActivity\HuntingService;
 use App\Service\PetActivity\PoopingService;
 use App\Service\PetActivity\PregnancyService;
-use App\Service\PetActivity\ProgrammingService;
+use App\Service\PetActivity\Crafting\ProgrammingService;
 use App\Service\PetActivity\Protocol7Service;
 use App\Service\PetActivity\TreasureMapService;
 use App\Service\PetActivity\UmbraService;
