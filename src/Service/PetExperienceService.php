@@ -14,6 +14,7 @@ use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetExperienceService
@@ -21,15 +22,17 @@ class PetExperienceService
     private $petActivityStatsService;
     private $em;
     private $responseService;
+    private $itemRepository;
 
     public function __construct(
         PetActivityStatsService $petActivityStatsService, EntityManagerInterface $em,
-        ResponseService $responseService
+        ResponseService $responseService, ItemRepository $itemRepository
     )
     {
         $this->petActivityStatsService = $petActivityStatsService;
         $this->em = $em;
         $this->responseService = $responseService;
+        $this->itemRepository = $itemRepository;
     }
 
     /**
@@ -237,7 +240,7 @@ class PetExperienceService
         if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && mt_rand(1, 100) < $food->getFood() + $food->getJunk())
         {
             $inventory = (new Inventory())
-                ->setItem($bonusItem)
+                ->setItem($this->itemRepository->findOneByName('Moth'))
                 ->setLocation(LocationEnum::HOME)
                 ->setOwner($pet->getOwner())
                 ->setCreatedBy($pet->getOwner())
