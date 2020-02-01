@@ -139,7 +139,7 @@ class ProgrammingService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' upgraded a Finite State Machine into a Regex.', '');
-            $this->inventoryService->petCollectsItem('Regex', $pet, $pet->getName() . ' build this from a Finite State Machine.', $activityLog);
+            $this->inventoryService->petCollectsItem('Regex', $pet, $pet->getName() . ' built this from a Finite State Machine.', $activityLog);
             return $activityLog;
         }
         else
