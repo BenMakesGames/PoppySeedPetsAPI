@@ -19,11 +19,13 @@ use App\Enum\SpiritCompanionStarEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\ColorFunctions;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\CraftingService;
+use App\Service\PetActivity\DreamingService;
 use App\Service\PetActivity\FishingService;
 use App\Service\PetActivity\GatheringService;
 use App\Service\PetActivity\GenericAdventureService;
@@ -60,6 +62,7 @@ class PetService
     private $petActivityStatsService;
     private $petGroupService;
     private $petExperienceService;
+    private $dreamingService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService,
@@ -70,7 +73,7 @@ class PetService
         Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
         PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService,
         PregnancyService $pregnancyService, PetActivityStatsService $petActivityStatsService, PetGroupService $petGroupService,
-        PetExperienceService $petExperienceService
+        PetExperienceService $petExperienceService, DreamingService $dreamingService
     )
     {
         $this->em = $em;
@@ -94,6 +97,7 @@ class PetService
         $this->petActivityStatsService = $petActivityStatsService;
         $this->petGroupService = $petGroupService;
         $this->petExperienceService = $petExperienceService;
+        $this->dreamingService = $dreamingService;
     }
 
     /**
@@ -243,6 +247,9 @@ class PetService
 
             $favoriteFlavorStrength = $food->{'get' . $pet->getFavoriteFlavor()}();
 
+            if($pet->hasMerit(MeritEnum::LOLLIGOVORE) && $i->getItem()->containsTentacles())
+                $favoriteFlavorStrength += 2;
+
             $bonusLoveAndEsteem = $food->getLove() + $favoriteFlavorStrength;
 
             $pet
@@ -391,9 +398,27 @@ class PetService
             }
         }
 
-        if($pet->hasMerit(MeritEnum::BLACK_HOLE_TUM) && mt_rand(1, 200) === 1)
+        if($pet->hasMerit(MeritEnum::BLACK_HOLE_TUM) && mt_rand(1, 180) === 1)
         {
             $this->poopingService->poopDarkMatter($pet);
+        }
+
+        if($pet->hasMerit(MeritEnum::HYPERCHROMATIC))
+        {
+            if(mt_rand(1, 250) === 1)
+            {
+                $pet
+                    ->setColorA(ColorFunctions::RGB2Hex(mt_rand(0, 255), mt_rand(0, 255), mt_rand(0, 255)))
+                    ->setColorB(ColorFunctions::RGB2Hex(mt_rand(0, 255), mt_rand(0, 255), mt_rand(0, 255)))
+                ;
+            }
+            else
+            {
+                $pet
+                    ->setColorA(ColorFunctions::tweakColor($pet->getColorA(), 4))
+                    ->setColorB(ColorFunctions::tweakColor($pet->getColorB(), 4))
+                ;
+            }
         }
 
         if(
@@ -411,6 +436,12 @@ class PetService
         if($this->meetRoommates($pet))
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
+            return;
+        }
+
+        if($pet->hasMerit(MeritEnum::DREAMWALKER) && mt_rand(1, 200) === 1)
+        {
+            $this->dreamingService->dream($pet);
             return;
         }
 
@@ -731,7 +762,7 @@ class PetService
         $petPreviousRelationship = $pet->getCurrentRelationship();
         $friendPreviousRelationship = $friend->getCurrentRelationship();
 
-        list($petLog, $friendLog) = $this->petRelationshipService->hangOutPrivately($pet, $friend);
+        [$petLog, $friendLog] = $this->petRelationshipService->hangOutPrivately($pet, $friend);
 
         if($petPreviousRelationship !== $pet->getCurrentRelationship())
         {

@@ -3,11 +3,13 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
+use App\Enum\MeritEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
+use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
@@ -31,7 +33,7 @@ class IridescentHandCannonController extends PoppySeedPetsItemController
      */
     public function fireHandCannon(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, ItemRepository $itemRepository
+        PetRepository $petRepository, ItemRepository $itemRepository, MeritRepository $meritRepository
     )
     {
         $user = $this->getUser();
@@ -45,6 +47,9 @@ class IridescentHandCannonController extends PoppySeedPetsItemController
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException('There is no such pet.');
+
+        if($pet->hasMerit(MeritEnum::HYPERCHROMATIC))
+            $pet->removeMerit($meritRepository->findOneByName(MeritEnum::HYPERCHROMATIC));
 
         // make sure the new hue is some minimum distance away from the old hue:
         if($color === 'A')

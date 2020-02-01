@@ -10,6 +10,7 @@ use App\Entity\StatusEffect;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
@@ -145,6 +146,9 @@ class PetExperienceService
 
         $favoriteFlavorStrength = $food->{'get' . $pet->getFavoriteFlavor()}();
 
+        if($pet->hasMerit(MeritEnum::LOLLIGOVORE) && $item->containsTentacles())
+            $favoriteFlavorStrength += 2;
+
         $pet->increaseEsteem($favoriteFlavorStrength + $food->getLove());
 
         if($activityLog)
@@ -228,6 +232,20 @@ class PetExperienceService
             $naniNani = ArrayFunctions::pick_one([ 'Convenient!', 'Where\'d that come from??', 'How serendipitous!', 'What are the odds!' ]);
 
             $this->responseService->addActivityLog((new PetActivityLog())->setEntry('While eating the ' . $item->getName() . ', ' . $pet->getName() . ' spotted ' . GrammarFunctions::indefiniteArticle($bonusItem->getName()) . ' ' . $bonusItem->getName() . '! (' . $naniNani . ')'));
+        }
+
+        if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && mt_rand(1, 100) < $food->getFood() + $food->getJunk())
+        {
+            $inventory = (new Inventory())
+                ->setItem($bonusItem)
+                ->setLocation(LocationEnum::HOME)
+                ->setOwner($pet->getOwner())
+                ->setCreatedBy($pet->getOwner())
+                ->addComment('After eating ' . $item->getName() . ', ' . $pet->getName() . ' burped up a Moth!')
+            ;
+            $this->em->persist($inventory);
+
+            $this->responseService->addActivityLog((new PetActivityLog())->setEntry('After eating ' . $item->getName() . ', burped up a Moth!'));
         }
 
         if($food->getGrantedSkill() && $pet->getSkills()->getStat($food->getGrantedSkill()) < 1)

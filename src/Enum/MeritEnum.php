@@ -30,6 +30,17 @@ final class MeritEnum
     public const FORCE_OF_NATURE = 'Force of Nature';
     public const BALANCE = 'Balance';
 
+    // every pet gets one
+    public const BURPS_MOTHS = 'Burps Moths';
+    public const NAIVE = 'Naïve'; // treats rivals as friends; treats fwbs as mates; always gives in to relationship changes
+    public const GOURMAND = 'Gourmand'; // larger stomach
+    public const SPECTRAL = 'Spectral'; // opacity = 75%; +1 stealth
+    public const PREHENSILE_TONGUE = 'Prehensile Tongue'; // +1 dex; ";P" instead of ";)"
+    public const LOLLIGOVORE = 'Lolligovore'; // bonus from eating tentacles
+    public const HYPERCHROMATIC = 'Hyperchromatic'; // randomly changes colors
+    public const DREAMWALKER = 'Dreamwalker'; // gets items from dreams
+    public const EXTROVERTED = 'Extroverted'; // can be in up to 4 groups
+
     // not yet implemented
     //public const PAST_LIFE = 'Past Life';
 }

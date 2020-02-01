@@ -697,7 +697,11 @@ class Pet
 
     public function getStomachSize(): int
     {
-        return $this->stomachSize + ($this->hasMerit(MeritEnum::BLACK_HOLE_TUM) ? 6 : 0);
+        return
+            $this->stomachSize +
+            ($this->hasMerit(MeritEnum::BLACK_HOLE_TUM) ? 6 : 0) +
+            ($this->hasMerit(MeritEnum::GOURMAND) ? 4 : 0)
+        ;
     }
 
     public function getLastInteracted(): \DateTimeImmutable
@@ -771,7 +775,10 @@ class Pet
 
     public function getDexterity(): int
     {
-        return $this->getSkills()->getDexterity();
+        return
+            $this->getSkills()->getDexterity() +
+            ($this->hasMerit(MeritEnum::PREHENSILE_TONGUE) ? 1 : 0)
+        ;
     }
 
     public function getStrength(): int
@@ -829,7 +836,8 @@ class Pet
         return
             $this->getSkills()->getStealth() +
             ($this->getTool() ? $this->getTool()->getItem()->getTool()->getStealth() : 0) +
-            ($this->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION) ? 1 : 0)
+            ($this->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION) ? 1 : 0) +
+            ($this->hasMerit(MeritEnum::SPECTRAL) ? 1 : 0)
         ;
     }
 
@@ -1476,6 +1484,9 @@ class Pet
 
     public function getMaximumGroups(): int
     {
+        if($this->hasMerit(MeritEnum::EXTROVERTED))
+            return 4;
+
         if($this->extroverted <= -1)
             return 1;
         else if($this->extroverted === 0)

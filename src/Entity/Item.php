@@ -233,4 +233,9 @@ class Item
     {
         return (int)(($this->fuel / 1440) * 10);
     }
+
+    public function containsTentacles(): bool
+    {
+        return strpos($this->name, 'Tentacle') !== false;
+    }
 }

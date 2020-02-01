@@ -286,7 +286,19 @@ class PetRelationshipService
         $p1->decrementTimeUntilChange(0.5);
         $p2->decrementTimeUntilChange(0.5);
 
-        if($p1->getCurrentRelationship() === RelationshipEnum::DISLIKE || $p1->getCurrentRelationship() === RelationshipEnum::BROKE_UP)
+        if($p1->getCurrentRelationship() === RelationshipEnum::DISLIKE)
+        {
+            if($p1->getPet()->hasMerit(MeritEnum::NAIVE))
+                $p1Description = null;
+            else
+                $p1Description = str_replace([ '%p1%', '%p2%' ], [ $p1->getPet()->getName(), $p2->getPet()->getName() ], $enemyDescription);
+
+            if($p2->getPet()->hasMerit(MeritEnum::NAIVE))
+                $p2Description = null;
+            else
+                $p2Description = str_replace([ '%p1%', '%p2%' ], [ $p2->getPet()->getName(), $p1->getPet()->getName() ], $enemyDescription);
+        }
+        else if($p1->getCurrentRelationship() === RelationshipEnum::BROKE_UP)
         {
             $p1Description = str_replace([ '%p1%', '%p2%' ], [ $p1->getPet()->getName(), $p2->getPet()->getName() ], $enemyDescription);
             $p2Description = str_replace([ '%p1%', '%p2%' ], [ $p2->getPet()->getName(), $p1->getPet()->getName() ], $enemyDescription);
@@ -297,8 +309,8 @@ class PetRelationshipService
             $p2Description = str_replace([ '%p1%', '%p2%' ], [ $p2->getPet()->getName(), $p1->getPet()->getName() ], $hangOutDescription);
         }
 
-        $this->responseService->createActivityLog($p1->getPet(), $p1Description, '');
-        $this->responseService->createActivityLog($p2->getPet(), $p2Description, '');
+        if($p1Description) $this->responseService->createActivityLog($p1->getPet(), $p1Description, '');
+        if($p2Description) $this->responseService->createActivityLog($p2->getPet(), $p2Description, '');
     }
 
     /**
@@ -498,6 +510,14 @@ class PetRelationshipService
         }
     }
 
+    private function sexyTimesEmoji(Pet $p1, Pet $p2)
+    {
+        if($p1->hasMerit(MeritEnum::PREHENSILE_TONGUE) || $p2->hasMerit(MeritEnum::PREHENSILE_TONGUE))
+            return ';P';
+        else
+            return ';)';
+    }
+
     /**
      * @param PetRelationship $p1
      * @param PetRelationship $p2
@@ -520,7 +540,7 @@ class PetRelationshipService
             {
                 if(mt_rand(1, 100) <= $this->sexyTimeChances($pet, $friend, $p1->getCurrentRelationship()))
                 {
-                    $message = $pet->getName() . ' hung out with ' . $friend->getName() . '. They had fun! ;)';
+                    $message = $pet->getName() . ' hung out with ' . $friend->getName() . '. They had fun! ' . $this->sexyTimesEmoji($pet, $friend);
 
                     $pet
                         ->increaseLove(mt_rand(2, 4))
@@ -899,8 +919,8 @@ class PetRelationshipService
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 80, 15);
 
             case RelationshipEnum::FWB:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' said that they\'d like to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' feels the same way ;)')->setIcon('icons/activity-logs/friend-cute');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said that they\'d like to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' feels the same way ;)')->setIcon('icons/activity-logs/friend-cute');
+                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' said that they\'d like to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' feels the same way ' . $this->sexyTimesEmoji($p1->getPet(), $p2->getPet()))->setIcon('icons/activity-logs/friend-cute');
+                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said that they\'d like to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' feels the same way ' . $this->sexyTimesEmoji($p1->getPet(), $p2->getPet()))->setIcon('icons/activity-logs/friend-cute');
                 $p1->setCurrentRelationship(RelationshipEnum::FWB);
                 $p2->setCurrentRelationship(RelationshipEnum::FWB);
                 break;
@@ -1136,6 +1156,20 @@ class PetRelationshipService
         ];
 
         $r = mt_rand(1, 100);
+
+        // naive pets always accept relationship changes
+        if($p1->getPet()->hasMerit(MeritEnum::NAIVE)) $chanceP1ChangesMind = 100;
+
+        if($p2->getPet()->hasMerit(MeritEnum::NAIVE))
+        {
+            $chanceP2ChangesMind = 100;
+
+            if($chanceP1ChangesMind === 100)
+            {
+                $chanceP1ChangesMind = 50;
+                $chanceP2ChangesMind = 50;
+            }
+        }
 
         if($r <= $chanceP1ChangesMind)
         {
@@ -1477,8 +1511,8 @@ class PetRelationshipService
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 70, 25);
 
             case RelationshipEnum::FWB:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' said that they\'d like to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' feels the same way ;)')->setIcon('icons/activity-logs/friend-cute');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said that they\'d like to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' feels the same way ;)')->setIcon('icons/activity-logs/friend-cute');
+                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' said that they\'d like to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' feels the same way ' . $this->sexyTimesEmoji($p1->getPet(), $p2->getPet()))->setIcon('icons/activity-logs/friend-cute');
+                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said that they\'d like to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' feels the same way ' . $this->sexyTimesEmoji($p1->getPet(), $p2->getPet()))->setIcon('icons/activity-logs/friend-cute');
                 $p1->setCurrentRelationship(RelationshipEnum::FWB);
                 $p2->setCurrentRelationship(RelationshipEnum::FWB);
                 break;
@@ -2035,8 +2069,8 @@ class PetRelationshipService
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 35, 35);
 
             case RelationshipEnum::FWB:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to just be FWBs; unexpectedly, ' . $p2->getPet()->getName() . ' actually feels the same way! ;)')->setIcon('icons/activity-logs/friend-cute');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry('Unexpectedly, ' . $p1->getPet()->getName() . ' wanted to just be FWBs; ' . $p2->getPet()->getName() . ' actually feels the same way! ;)')->setIcon('icons/activity-logs/friend-cute');
+                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to just be FWBs; unexpectedly, ' . $p2->getPet()->getName() . ' actually feels the same way!' . $this->sexyTimesEmoji($p1->getPet(), $p2->getPet()))->setIcon('icons/activity-logs/friend-cute');
+                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry('Unexpectedly, ' . $p1->getPet()->getName() . ' wanted to just be FWBs; ' . $p2->getPet()->getName() . ' actually feels the same way!' . $this->sexyTimesEmoji($p1->getPet(), $p2->getPet()))->setIcon('icons/activity-logs/friend-cute');
 
                 $p1->setCurrentRelationship(RelationshipEnum::FWB);
                 $p2->setCurrentRelationship(RelationshipEnum::FWB);

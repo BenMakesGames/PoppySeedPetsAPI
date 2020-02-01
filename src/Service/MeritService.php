@@ -83,21 +83,16 @@ class MeritService
                     $available = $pet->hasMerit(MeritEnum::MIND_OVER_MATTER) || $pet->hasMerit(MeritEnum::FORCE_OF_WILL);
                     break;
 
-                // these Merits may NEVER be chosen; they are gained in other ways:
-                case MeritEnum::MODERATION:
-                case MeritEnum::MIND_OVER_MATTER:
-                case MeritEnum::MATTER_OVER_MIND:
-                case MeritEnum::BALANCE:
-                case MeritEnum::FORCE_OF_WILL:
-                case MeritEnum::FORCE_OF_NATURE:
-                case MeritEnum::BEHATTED:
-                    $available = false;
+                // these merits are ALWAYS available
+                case MeritEnum::MOON_BOUND:
+                case MeritEnum::SPIRIT_COMPANION:
+                case MeritEnum::NO_SHADOW_OR_REFLECTION:
+                    $available = true;
                     break;
 
-                // all other Merits can ALWAYS be chosen:
+                // all other Merits can NEVER be chosen:
                 default:
-                    // moon-bound, spirit companion, no shadow or reflection
-                    $available = true;
+                    $available = false;
             }
 
             if($available)

@@ -158,6 +158,14 @@ class PetRelationship
         if(!RelationshipEnum::isAValue($relationshipGoal))
             throw new EnumInvalidValueException(RelationshipEnum::class, $relationshipGoal);
 
+        if($this->getPet()->hasMerit(MeritEnum::NAIVE))
+        {
+            if($relationshipGoal === RelationshipEnum::FRIENDLY_RIVAL)
+                $relationshipGoal = RelationshipEnum::FRIEND;
+            else if($relationshipGoal === RelationshipEnum::FWB)
+                $relationshipGoal = RelationshipEnum::MATE;
+        }
+
         $this->relationshipGoal = $relationshipGoal;
 
         return $this;
