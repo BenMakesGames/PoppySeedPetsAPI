@@ -71,7 +71,7 @@ class UmbraService
                 break;
 
             case 12:
-                if($pet->getOwner()->getFireplace()->getWhelpName() !== null)
+                if($pet->getOwner()->getFireplace() && $pet->getOwner()->getFireplace()->getWhelpName())
                     $activityLog = $this->visitLibraryOfFire($pet);
                 else
                     $activityLog = $this->foundNothing($pet, $roll);
