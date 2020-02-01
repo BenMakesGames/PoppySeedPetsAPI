@@ -135,7 +135,7 @@ class AccountController extends PoppySeedPetsController
                 FlavorEnum::EARTHY, FlavorEnum::FRUITY, FlavorEnum::CREAMY, FlavorEnum::MEATY, FlavorEnum::PLANTY,
                 FlavorEnum::FISHY, FlavorEnum::FATTY,
             ]))
-            ->addMerit($meritRepository->getRandomStartingMerit())
+            ->addMerit($meritRepository->getRandomFirstPetStartingMerit())
         ;
 
         $em->persist($pet);

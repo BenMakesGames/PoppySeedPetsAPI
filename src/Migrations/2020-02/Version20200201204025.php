@@ -66,18 +66,18 @@ final class Version20200201204025 extends AbstractMigration
         $this->addSql('ALTER TABLE pet_species ADD CONSTRAINT FK_BB4177F42BA517AC FOREIGN KEY (sheds_id) REFERENCES item (id)');
         $this->addSql('CREATE INDEX IDX_BB4177F42BA517AC ON pet_species (sheds_id)');
 
-        $this->addSql(`INSERT INTO merit (name, description) VALUES
+        $this->addSql("INSERT INTO merit (name, description) VALUES
 ('Burps Moths', 'When fed, %pet.name% may burp up a Moth...'),
 ('Naïve', '%pet.name% believes in friendship! And always agrees to relationship changes...'),
 ('Gourmand', '%pet.name% has a slightly-larger stomach.'),
 ('Spectral', '%pet.name% is... not entirely opaque...'),
-('Prehensile Tongue', 'Remember all those times you thought "man, I wish I had a third arm"? %pet.name% has never had to think that.'),
+('Prehensile Tongue', 'Remember all those times you thought \"man, I wish I had a third arm\"? %pet.name% has never had to think that.'),
 ('Lolligovore', '%pet.name% really likes eating Tentacles.'),
-('Hyperchromatic', '%pet.name%\'s colors shift and change over time, sometimes abruptly.'),
+('Hyperchromatic', '%pet.name%\\'s colors shift and change over time, sometimes abruptly.'),
 ('Dreamwalker', '%pet.name% can pull objects out of their dreams.'),
 ('Extroverted', '%pet.name% will join more groups than most.'),
 ('Sheds', '%pet.name% sheds.'),
-('Darkvision', '%pet.name% can see in the dark without the help of a tool.');`);
+('Darkvision', '%pet.name% can see in the dark without the help of a tool.');");
     }
 
     public function down(Schema $schema) : void

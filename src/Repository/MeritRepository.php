@@ -31,6 +31,17 @@ class MeritRepository extends ServiceEntityRepository
         MeritEnum::DARKVISION,
     ];
 
+    public const POSSIBLE_FIRST_PET_STARTING_MERITS = [
+        MeritEnum::BURPS_MOTHS,
+        MeritEnum::GOURMAND,
+        MeritEnum::PREHENSILE_TONGUE,
+        MeritEnum::LOLLIGOVORE,
+        MeritEnum::DREAMWALKER,
+        MeritEnum::EXTROVERTED,
+        MeritEnum::SHEDS,
+        MeritEnum::DARKVISION,
+    ];
+
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Merit::class);
@@ -47,5 +58,10 @@ class MeritRepository extends ServiceEntityRepository
     public function getRandomStartingMerit(): Merit
     {
         return $this->findOneBy([ 'name' => ArrayFunctions::pick_one(self::POSSIBLE_STARTING_MERITS) ]);
+    }
+
+    public function getRandomFirstPetStartingMerit(): Merit
+    {
+        return $this->findOneBy([ 'name' => ArrayFunctions::pick_one(self::POSSIBLE_FIRST_PET_STARTING_MERITS) ]);
     }
 }
