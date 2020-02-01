@@ -226,7 +226,7 @@ class TriDChessService implements ParkEventInterface
         foreach($this->participants as $participant)
             $skillTotal += $participant->skill;
 
-        $firstPlaceMoneys = ceil($skillTotal * $this->round / 10);
+        $firstPlaceMoneys = floor(mt_rand(23, 27) / 10 * sqrt($skillTotal * $this->round / 10));
         $secondPlaceMoneys = ceil($firstPlaceMoneys * 3 / 4);
 
         $this->results .= '**' . $this->winners[0]->pet->getName() . ' wins the tournament, and ' . $firstPlaceMoneys . '~~m~~!**' . "<br>\n";
@@ -253,7 +253,7 @@ class TriDChessService implements ParkEventInterface
             if($wins === $this->round - 1)
             {
                 $expGain++;
-                $this->transactionService->getMoney($participant->pet->getOwner(), $firstPlaceMoneys, $participant->pet->getName() . ' earned this by getting 2nd place in a Tri-D Chess tournament!');
+                $this->transactionService->getMoney($participant->pet->getOwner(), $secondPlaceMoneys, $participant->pet->getName() . ' earned this by getting 2nd place in a Tri-D Chess tournament!');
                 $this->results .= $participant->pet->getName() . ' got 2nd place, and ' . $secondPlaceMoneys . '~~m~~!';
             }
 
