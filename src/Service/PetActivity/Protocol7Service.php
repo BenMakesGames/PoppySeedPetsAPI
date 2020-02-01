@@ -37,7 +37,7 @@ class Protocol7Service
 
     public function adventure(Pet $pet)
     {
-        $maxSkill = 10 + $pet->getIntelligence() + $pet->getComputer() - $pet->getAlcohol();
+        $maxSkill = 10 + $pet->getIntelligence() + $pet->getScience() - $pet->getAlcohol();
 
         $maxSkill = NumberFunctions::constrain($maxSkill, 1, 16);
 
@@ -87,7 +87,7 @@ class Protocol7Service
     {
         $exp = ceil($roll / 10);
 
-        $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::COMPUTER ]);
+        $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::SCIENCE ]);
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, but got lost.', 'icons/activity-logs/confused');
@@ -95,7 +95,7 @@ class Protocol7Service
 
     private function foundLayer01(Pet $pet): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
 
         $monster = ArrayFunctions::pick_one([
             [
@@ -117,7 +117,7 @@ class Protocol7Service
         if($success)
         {
             $pet->increaseEsteem(1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
 
             if(mt_rand(1, 10) === 1)
             {
@@ -136,14 +136,14 @@ class Protocol7Service
         }
         else
         {
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 01 of Project-E, but got hopelessly distracted by ' . $baddie . '.', '');
         }
     }
 
     private function foundLayer02(Pet $pet): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
 
         $monster = ArrayFunctions::pick_one([
             [
@@ -169,7 +169,7 @@ class Protocol7Service
         if($success)
         {
             $pet->increaseEsteem(1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 02 of Project-E, but defeated it, and took its ' . $loot . '!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
             ;
@@ -178,14 +178,14 @@ class Protocol7Service
         }
         else
         {
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 02 of Project-E, but ' . $baddie . ' hijacked their session.', '');
         }
     }
 
     private function foundLayer03(Pet $pet): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
 
         $monster = ArrayFunctions::pick_one([
             [
@@ -212,7 +212,7 @@ class Protocol7Service
         {
             $pet->increaseSafety(2);
             $pet->increaseEsteem(2);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::COMPUTER ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 03 of Project-E, but defeated it, and took its ' . $loot . '!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
             ;
@@ -222,14 +222,14 @@ class Protocol7Service
         else
         {
             $pet->increaseSafety(-1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 03 of Project-E, but ' . $baddie . ' caused them to crash out.', '');
         }
     }
 
     private function foundLayer04(Pet $pet): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer());
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
 
         $monster = ArrayFunctions::pick_one([
             [
@@ -252,7 +252,7 @@ class Protocol7Service
         {
             $pet->increaseSafety(2);
             $pet->increaseEsteem(2);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::COMPUTER ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 04 of Project-E, but defeated it, and took its ' . $loot . '!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
             ;
@@ -262,7 +262,7 @@ class Protocol7Service
         else
         {
             $pet->increaseSafety(-1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 04 of Project-E, but their service was disrupted by ' . $baddie . '.', '');
         }
     }

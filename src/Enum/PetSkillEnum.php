@@ -11,5 +11,5 @@ final class PetSkillEnum
     public const UMBRA = 'umbra';
     public const CRAFTS = 'crafts';
     public const MUSIC = 'music';
-    public const COMPUTER = 'computer';
+    public const SCIENCE = 'science';
 }

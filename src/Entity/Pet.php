@@ -870,9 +870,9 @@ class Pet
         return $this->getTool() ? $this->getTool()->getItem()->getTool()->getGathering() : 0;
     }
 
-    public function getComputer(): int
+    public function getScience(): int
     {
-        return $this->getSkills()->getComputer() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getComputer() : 0);
+        return $this->getSkills()->getScience() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getScience() : 0);
     }
 
     public function getFavoriteFlavor(): string

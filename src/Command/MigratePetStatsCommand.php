@@ -97,7 +97,7 @@ class MigratePetStatsCommand extends Command
 
                         case 'intelligence':
                             $skill->setIntelligence($skill->getIntelligence() - 1);
-                            $skill->increaseStat(ArrayFunctions::pick_one([ PetSkillEnum::CRAFTS, PetSkillEnum::CRAFTS, PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA, PetSkillEnum::COMPUTER ]));
+                            $skill->increaseStat(ArrayFunctions::pick_one([ PetSkillEnum::CRAFTS, PetSkillEnum::CRAFTS, PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA, PetSkillEnum::SCIENCE ]));
                             break;
 
                         case 'perception':

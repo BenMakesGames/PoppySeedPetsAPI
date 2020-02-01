@@ -884,22 +884,22 @@ class PetService
 
     public function generateHackingDesire(Pet $pet): int
     {
-        $desire = $pet->getIntelligence() + $pet->getComputer() + mt_rand(1, 4);
+        $desire = $pet->getIntelligence() + $pet->getScience() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
-            $desire += $pet->getTool()->getItem()->getTool()->getComputer();
+            $desire += $pet->getTool()->getItem()->getTool()->getScience();
 
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
     }
 
     public function generateProgrammingDesire(Pet $pet): int
     {
-        $desire = $pet->getIntelligence() + $pet->getComputer() + mt_rand(1, 4);
+        $desire = $pet->getIntelligence() + $pet->getScience() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
-            $desire += $pet->getTool()->getItem()->getTool()->getComputer();
+            $desire += $pet->getTool()->getItem()->getTool()->getScience();
 
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
     }

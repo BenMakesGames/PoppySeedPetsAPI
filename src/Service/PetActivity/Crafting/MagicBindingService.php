@@ -224,13 +224,13 @@ class MagicBindingService
 
     public function magicSmokeToQuint(Pet $pet): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + floor(($pet->getUmbra() + $pet->getComputer()) / 2) + $pet->getIntelligence() + $pet->getDexterity());
+        $umbraCheck = mt_rand(1, 20 + floor(($pet->getUmbra() + $pet->getScience()) / 2) + $pet->getIntelligence() + $pet->getDexterity());
 
         if($umbraCheck <= 2)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->inventoryService->loseItem('Magic Smoke', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::COMPUTER ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::SCIENCE ]);
             $pet->increaseEsteem(-1);
 
             if(mt_rand(1, 2) === 1)
@@ -246,14 +246,14 @@ class MagicBindingService
         else if($umbraCheck < 12)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::COMPUTER ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::SCIENCE ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to extract Quintessence from Magic Smoke, but almost screwed it all up. ' . $pet->getName() . ' decided to take a break from it for a bit...', 'icons/activity-logs/confused');
         }
         else // success!
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
             $this->inventoryService->loseItem('Magic Smoke', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::COMPUTER ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::SCIENCE ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' successfully extracted Quintessence from Magic Smoke.', '');
 

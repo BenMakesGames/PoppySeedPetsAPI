@@ -50,13 +50,13 @@ class PlasticPrinterService
     private function printerActingUp(Pet $pet): PetActivityLog
     {
         $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::COMPUTER ]);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ]);
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Plastic Fishing Rod, but the 3D Printer kept acting up.', 'icons/activity-logs/confused');
     }
 
     public function createPlasticFishingRod(Pet $pet): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer() + max($pet->getCrafts(), $pet->getNature()));
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + max($pet->getCrafts(), $pet->getNature()));
 
         if($roll <= 3)
         {
@@ -64,13 +64,13 @@ class PlasticPrinterService
             if(mt_rand(1, 2) === 1)
             {
                 $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
                 return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Plastic Fishing Rod, but broke the String :(', 'icons/activity-logs/broke-string');
             }
             else
             {
                 $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
                 return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Plastic Fishing Rod, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
 
             }
@@ -80,7 +80,7 @@ class PlasticPrinterService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
             $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Plastic Fishing Rod.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
@@ -96,14 +96,14 @@ class PlasticPrinterService
 
     public function createEvilFeatherDuster(Pet $pet): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer() + max($pet->getCrafts(), $pet->getNature()));
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + max($pet->getCrafts(), $pet->getNature()));
 
         if($roll <= 3)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
 
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make an Evil Feather Duster, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
         }
         else if($roll >= 16)
@@ -111,7 +111,7 @@ class PlasticPrinterService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
             $this->inventoryService->loseItem('Black Feathers', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created an Evil Feather Duster.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
@@ -127,21 +127,21 @@ class PlasticPrinterService
 
     public function createPlasticBucket(Pet $pet): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer() + $pet->getCrafts());
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts());
 
         if($roll <= 3)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
 
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Plastic Fishing Rod, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
         }
         else if($roll >= 10)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Small Plastic Bucket.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
@@ -157,21 +157,21 @@ class PlasticPrinterService
 
     public function createPlasticIdol(Pet $pet): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getComputer() + $pet->getCrafts());
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts());
 
         if($roll <= 3)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
 
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Plastic Idol, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
         }
         else if($roll >= 13)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::COMPUTER, PetSkillEnum::CRAFTS ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Plastic Idol.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)

@@ -74,7 +74,7 @@ class PetSkills
     /**
      * @ORM\Column(type="integer")
      */
-    private $computer = 0;
+    private $science = 0;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="skills")
@@ -114,7 +114,7 @@ class PetSkills
     public function getTotal(): int
     {
         return
-            $this->nature + $this->brawl + $this->umbra + $this->stealth + $this->crafts + $this->music + $this->computer
+            $this->nature + $this->brawl + $this->umbra + $this->stealth + $this->crafts + $this->music + $this->science
         ;
     }
 
@@ -285,14 +285,14 @@ class PetSkills
         return $this;
     }
 
-    public function getComputer(): int
+    public function getScience(): int
     {
-        return $this->computer;
+        return $this->science;
     }
 
-    public function setComputer(int $computer): self
+    public function setScience(int $science): self
     {
-        $this->computer = $computer;
+        $this->science = $science;
 
         return $this;
     }

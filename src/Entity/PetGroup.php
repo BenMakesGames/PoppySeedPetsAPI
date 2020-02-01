@@ -197,6 +197,7 @@ class PetGroup
         switch($this->type)
         {
             case PetGroupTypeEnum::BAND: return 2;
+            case PetGroupTypeEnum::ASTRONOMY: return 2;
             default: throw new \Exception('Unhandled group type in group::getMinimumSize');
         }
     }
@@ -206,6 +207,7 @@ class PetGroup
         switch($this->type)
         {
             case PetGroupTypeEnum::BAND: return 5;
+            case PetGroupTypeEnum::ASTRONOMY: return 6;
             default: throw new \Exception('Unhandled group type in group::getMaximumSize');
         }
     }

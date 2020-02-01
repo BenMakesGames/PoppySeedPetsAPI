@@ -64,7 +64,7 @@ class MeritService
                     break;
 
                 case MeritEnum::PROTOCOL_7:
-                    $available = $pet->getSkills()->getComputer() > 0 || $pet->getLevel() >= 10;
+                    $available = $pet->getSkills()->getScience() > 0 || $pet->getLevel() >= 10;
                     break;
 
                 case MeritEnum::NATURAL_CHANNEL:

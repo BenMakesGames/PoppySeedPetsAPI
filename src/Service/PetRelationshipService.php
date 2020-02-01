@@ -354,7 +354,7 @@ class PetRelationshipService
             'knowledge of the umbra' => $p1->getPet()->getUmbra(),
             'raw strength' => $p1->getPet()->getStrength(),
             'fighting prowess' => $p1->getPet()->getBrawl(),
-            'l33t haxxing skillz' => $p1->getPet()->getComputer(),
+            'l33t haxxing skillz' => $p1->getPet()->getScience(),
             'crafting skill' => $p1->getPet()->getCrafts(),
             'musical ability' => $p1->getPet()->getMusic(),
         ];
@@ -363,7 +363,7 @@ class PetRelationshipService
             'knowledge of the umbra' => $p2->getPet()->getUmbra(),
             'raw strength' => $p2->getPet()->getStrength(),
             'fighting prowess' => $p2->getPet()->getBrawl(),
-            'l33t haxxing skillz' => $p2->getPet()->getComputer(),
+            'l33t haxxing skillz' => $p2->getPet()->getScience(),
             'crafting skill' => $p2->getPet()->getCrafts(),
             'musical ability' => $p2->getPet()->getMusic(),
         ];
@@ -372,7 +372,7 @@ class PetRelationshipService
             'knowledge of the umbra' => $p1->getPet()->getUmbra() + $p2->getPet()->getUmbra(),
             'raw strength' => $p1->getPet()->getStrength() + $p2->getPet()->getStrength(),
             'fighting prowess' => $p1->getPet()->getBrawl() + $p2->getPet()->getBrawl(),
-            'l33t haxxing skillz' => $p1->getPet()->getComputer() + $p2->getPet()->getComputer(),
+            'l33t haxxing skillz' => $p1->getPet()->getScience() + $p2->getPet()->getScience(),
             'crafting skill' => $p1->getPet()->getCrafts() + $p2->getPet()->getCrafts(),
             'musical ability' => $p1->getPet()->getMusic() + $p2->getPet()->getMusic(),
         ];

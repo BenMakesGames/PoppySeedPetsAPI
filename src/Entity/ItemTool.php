@@ -12,7 +12,7 @@ class ItemTool
 {
     public const MODIFIER_FIELDS = [
         'stealth', 'nature', 'brawl', 'umbra', 'crafts', 'fishing', 'gathering',
-        'music', 'smithing', 'computer'
+        'music', 'smithing', 'science'
     ];
 
     /**
@@ -70,7 +70,7 @@ class ItemTool
     /**
      * @ORM\Column(type="integer")
      */
-    private $computer = 0;
+    private $science = 0;
 
     /**
      * @ORM\Column(type="float")
@@ -231,14 +231,14 @@ class ItemTool
         return $this;
     }
 
-    public function getComputer(): ?int
+    public function getScience(): ?int
     {
-        return $this->computer;
+        return $this->science;
     }
 
-    public function setComputer(int $computer): self
+    public function setScience(int $science): self
     {
-        $this->computer = $computer;
+        $this->science = $science;
 
         return $this;
     }

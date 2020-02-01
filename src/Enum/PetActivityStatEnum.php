@@ -17,6 +17,6 @@ final class PetActivityStatEnum
     public const UMBRA = 'umbra';
     public const PARK_EVENT = 'parkevent';
     public const HANG_OUT = 'hangout';
-    public const GROUP_BAND = 'groupband';
+    public const GROUP_ACTIVITY = 'groupband';
     public const OTHER = 'other';
 }

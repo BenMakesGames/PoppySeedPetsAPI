@@ -12,6 +12,7 @@ use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\PetRepository;
+use App\Service\PetActivity\Group\AstronomyClubService;
 use App\Service\PetActivity\Group\BandService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr\Join;
@@ -23,10 +24,11 @@ class PetGroupService
     private $responseService;
     private $petExperienceService;
     private $bandService;
+    private $astronomyClubService;
 
     public function __construct(
         EntityManagerInterface $em, PetRepository $petRepository, ResponseService $responseService,
-        PetExperienceService $petExperienceService, BandService $bandService
+        PetExperienceService $petExperienceService, BandService $bandService, AstronomyClubService $astronomyClubService
     )
     {
         $this->em = $em;
@@ -34,6 +36,7 @@ class PetGroupService
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
         $this->bandService = $bandService;
+        $this->astronomyClubService = $astronomyClubService;
     }
 
     public function doGroupActivity(Pet $instigatingPet, PetGroup $group)
@@ -44,11 +47,16 @@ class PetGroupService
         if($this->checkForRecruitment($instigatingPet, $group))
             return;
 
+        $this->takesTime($instigatingPet, $group);
+
         switch ($group->getType())
         {
             case PetGroupTypeEnum::BAND:
-                $this->takesTime($instigatingPet, $group, PetActivityStatEnum::GROUP_BAND);
                 $this->bandService->meet($instigatingPet, $group);
+                break;
+
+            case PetGroupTypeEnum::ASTRONOMY:
+                $this->astronomyClubService->meet($instigatingPet, $group);
                 break;
 
             default:
@@ -102,7 +110,7 @@ class PetGroupService
         /** @var Pet $unhappiestPet */
         $unhappiestPet = $unhappyMembers[0]['pet'];
 
-        $this->takesTime($instigatingPet, $group, PetActivityStatEnum::GROUP_BAND);
+        $this->takesTime($instigatingPet, $group, PetActivityStatEnum::GROUP_ACTIVITY);
 
         foreach($group->getMembers() as $member)
         {
@@ -297,13 +305,13 @@ class PetGroupService
     /**
      * @throws EnumInvalidValueException
      */
-    private function takesTime(Pet $instigatingPet, PetGroup $group, string $petActivity)
+    private function takesTime(Pet $instigatingPet, PetGroup $group)
     {
         foreach($group->getMembers() as $member)
         {
             $time = ($member->getId() === $instigatingPet->getId()) ? mt_rand(45, 60) : 5;
 
-            $this->petExperienceService->spendTime($member, $time, $petActivity, true);
+            $this->petExperienceService->spendTime($member, $time, PetActivityStatEnum::GROUP_ACTIVITY, true);
         }
     }
 
@@ -314,8 +322,23 @@ class PetGroupService
         if(count($availableFriends) < 2)
             return null;
 
-        // TODO: when we have more than one group type, we'll have to pick one here
-        $type = PetGroupTypeEnum::BAND;
+        $groupTypePreferences = [
+            [
+                'type' => PetGroupTypeEnum::BAND,
+                'description' => 'band',
+                'icon' => 'groups/band',
+                'preference' => 5 + $pet->getMusic(),
+            ],
+            [
+                'type' => PetGroupTypeEnum::ASTRONOMY,
+                'description' => 'astronomy lab',
+                'icon' => 'groups/astronomy',
+                'preference' => 5 + $pet->getScience(),
+            ]
+        ];
+
+        $groupType = ArrayFunctions::pick_one_weighted($groupTypePreferences, function($t) { return $t['preference']; });
+        $type = $groupType['type'];
 
         $group = (new PetGroup())
             ->setType($type)
@@ -331,6 +354,12 @@ class PetGroupService
             case PetGroupTypeEnum::BAND:
                 usort($availableFriends, function (Pet $a, Pet $b) {
                     return $b->getMusic() <=> $a->getMusic();
+                });
+                break;
+
+            case PetGroupTypeEnum::ASTRONOMY:
+                usort($availableFriends, function (Pet $a, Pet $b) {
+                    return $b->getScience() <=> $a->getScience();
                 });
                 break;
 
@@ -365,7 +394,7 @@ class PetGroupService
 
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, true);
 
-        $this->responseService->createActivityLog($pet, $pet->getName() . ' started a new band with ' . ArrayFunctions::list_nice($friendNames) . '.', 'items/music/note');
+        $this->responseService->createActivityLog($pet, $pet->getName() . ' started a new ' . $groupType['description'] . ' with ' . ArrayFunctions::list_nice($friendNames) . '.', $groupType['icon']);
 
         return $group;
     }
@@ -376,6 +405,8 @@ class PetGroupService
         {
             case PetGroupTypeEnum::BAND:
                 return $this->bandService->generateBandName();
+            case PetGroupTypeEnum::ASTRONOMY:
+                return $this->astronomyClubService->generateGroupName();
             default:
                 throw new \Exception('Ben forgot to program group names for groups of type "' . $type . '"! (Bad Ben!)');
         }
