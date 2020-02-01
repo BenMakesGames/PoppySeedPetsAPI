@@ -15,9 +15,16 @@ class TriDChessParticipant
     public function __construct(Pet $pet)
     {
         $this->pet = $pet;
-        $this->skill = 1 + $pet->getSkills()->getIntelligence() * 3 + $pet->getSkills()->getPerception() * 1;
+        $this->skill = self::getSkill($pet);
+    }
+
+    public static function getSkill(Pet $pet)
+    {
+        $skill = 1 + $pet->getSkills()->getIntelligence() * 3 + $pet->getSkills()->getPerception() * 1;
 
         if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
-            $this->skill += ceil($pet->getSkills()->getIntelligence() / 4);
+            $skill += ceil($pet->getSkills()->getIntelligence() / 4);
+
+        return $skill;
     }
 }

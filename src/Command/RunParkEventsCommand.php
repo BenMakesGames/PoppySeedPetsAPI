@@ -6,6 +6,8 @@ use App\Entity\ParkEvent;
 use App\Entity\Pet;
 use App\Enum\ParkEventTypeEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\ParkEvent\KinBallParticipant;
+use App\Model\ParkEvent\TriDChessParticipant;
 use App\Repository\PetRepository;
 use App\Service\ParkEvent\KinBallService;
 use App\Service\ParkEvent\TriDChessService;
@@ -94,13 +96,22 @@ class RunParkEventsCommand extends Command
 
     private function playKinBall(): ?ParkEvent
     {
-        $pets = $this->petRepository->findPetsEligibleForParkEvent(ParkEventTypeEnum::KIN_BALL, 12);
+        $idealNumberOfPets = 12;
 
-        echo 'Found ' . count($pets) . ' pets.' . "\n";
+        $pets = $this->petRepository->findPetsEligibleForParkEvent(ParkEventTypeEnum::KIN_BALL, $idealNumberOfPets * 3);
+
+        $pets = $this->sliceSimilarLevel($pets, $idealNumberOfPets, function(Pet $a, Pet $b) {
+            return KinBallParticipant::getSkill($a) <=> KinBallParticipant::getSkill($b);
+        });
+
+        echo 'Found ' . count($pets) . ' ' . (count($pets) === 1 ? 'pet' : 'pets') . '.' . "\n";
 
         // not enough interested pets? get outta' here!
         if(!$this->kinBallService->isGoodNumberOfPets(count($pets)))
             return null;
+
+        foreach($pets as $pet)
+            echo '* ' . $pet->getName() . ' (#' . $pet->getId() . ') - skill ' . KinBallParticipant::getSkill($pet) . "\n";
 
         return $this->kinBallService->play($pets);
     }
@@ -109,19 +120,39 @@ class RunParkEventsCommand extends Command
     {
         $idealNumberOfPets = ArrayFunctions::pick_one([ 8, 16, 16 ]);
 
-        $pets = $this->petRepository->findPetsEligibleForParkEvent(ParkEventTypeEnum::TRI_D_CHESS, $idealNumberOfPets);
+        $pets = $this->petRepository->findPetsEligibleForParkEvent(ParkEventTypeEnum::TRI_D_CHESS, $idealNumberOfPets * 3);
+
+        $pets = $this->sliceSimilarLevel($pets, $idealNumberOfPets, function(Pet $a, Pet $b) {
+            return TriDChessParticipant::getSkill($a) <=> TriDChessParticipant::getSkill($b);
+        });
 
         echo 'Found ' . count($pets) . ' ' . (count($pets) === 1 ? 'pet' : 'pets') . '.' . "\n";
 
-        if(count($pets) > 32)
-            $pets = array_slice($pets, 0, 32);
-        else if(count($pets) < 32 && count($pets) > 16)
-            $pets = array_slice($pets, 0, 16);
-        else if(count($pets) < 16 && count($pets) > 8)
+        if(count($pets) < 16 && count($pets) > 8)
             $pets = array_slice($pets, 0, 8);
         else if(count($pets) < 8)
             return null;
 
+        foreach($pets as $pet)
+            echo '* ' . $pet->getName() . ' (#' . $pet->getId() . ') - skill ' . TriDChessParticipant::getSkill($pet) . "\n";
+
         return $this->triDChessService->play($pets);
+    }
+
+    /**
+     * @param Pet[] $pets
+     * @return Pet[]
+     */
+    private function sliceSimilarLevel(array $pets, int $numberWanted, callable $sortMethod): array
+    {
+        if(count($pets) < $numberWanted)
+            return $pets;
+
+        usort($pets, $sortMethod);
+
+        // pick one of the two ends
+        $offset = mt_rand(1, 2) === 1 ? 0 : count($pets) - $numberWanted;
+
+        return array_slice($pets, $offset, $numberWanted);
     }
 }
