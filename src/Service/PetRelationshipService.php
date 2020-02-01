@@ -69,6 +69,7 @@ class PetRelationshipService
         $petWithMother = (new PetRelationship())
             ->setRelationship($mother)
             ->setCurrentRelationship(RelationshipEnum::BFF)
+            ->setPet($baby)
             ->setRelationshipGoal(RelationshipEnum::BFF)
             ->setMetDescription($mother->getName() . ' gave birth to ' . $baby->getName() . '!')
         ;
@@ -78,6 +79,7 @@ class PetRelationshipService
         $petWithFather = (new PetRelationship())
             ->setRelationship($father)
             ->setCurrentRelationship(RelationshipEnum::BFF)
+            ->setPet($baby)
             ->setRelationshipGoal(RelationshipEnum::BFF)
             ->setMetDescription($father->getName() . ' fathered ' . $baby->getName() . '!')
         ;
@@ -87,6 +89,7 @@ class PetRelationshipService
         $motherWithBaby = (new PetRelationship())
             ->setRelationship($baby)
             ->setCurrentRelationship(RelationshipEnum::BFF)
+            ->setPet($mother)
             ->setRelationshipGoal(RelationshipEnum::BFF)
             ->setMetDescription($mother->getName() . ' gave birth to ' . $baby->getName() . '!')
         ;
@@ -96,6 +99,7 @@ class PetRelationshipService
         $fatherWithBaby = (new PetRelationship())
             ->setRelationship($baby)
             ->setCurrentRelationship(RelationshipEnum::BFF)
+            ->setPet($father)
             ->setRelationshipGoal(RelationshipEnum::BFF)
             ->setMetDescription($father->getName() . ' fathered ' . $baby->getName() . '!')
         ;
@@ -237,6 +241,7 @@ class PetRelationshipService
             ->setRelationship($otherPet)
             ->setMetDescription($howMetSummary)
             ->setCurrentRelationship($initialRelationship)
+            ->setPet($pet)
             ->setRelationshipGoal(ArrayFunctions::pick_one($possibleRelationships))
         ;
 
@@ -260,6 +265,7 @@ class PetRelationshipService
             ->setRelationship($pet)
             ->setMetDescription($howMetSummary)
             ->setCurrentRelationship($initialRelationship)
+            ->setPet($otherPet)
             ->setRelationshipGoal(ArrayFunctions::pick_one($possibleRelationships))
         ;
 
