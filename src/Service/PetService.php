@@ -545,7 +545,7 @@ class PetService
 
             if($friendRelationship === false)
             {
-                throw new \Exception($pet->getName() . ' knows ' . $friend->getName() . ', but not the other way around! This is a bug, and should never happen! Make Ben fix it!');
+                throw new \Exception($pet->getName() . ' (#' . $pet->getId() . ') knows ' . $friend->getName() . ' (#' . $friend->getId() . '), but not the other way around! This is a bug, and should never happen! Make Ben fix it!');
             }
 
             // hang out with selected pet
