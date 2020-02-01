@@ -146,7 +146,7 @@ class PetShelterController extends PoppySeedPetsController
             ->setFavoriteFlavor(FlavorEnum::getRandomValue())
             ->setNeeds(mt_rand(10, 12), -9)
             ->setSkills($petSkills)
-            ->addMerit($meritRepository->getRandomStartingMerit())
+            ->addMerit($meritRepository->getRandomAdoptedPetStartingMerit())
         ;
 
         if($numberOfPetsAtHome >= $user->getMaxPets())

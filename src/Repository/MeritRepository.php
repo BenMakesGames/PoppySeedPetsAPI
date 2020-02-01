@@ -64,4 +64,13 @@ class MeritRepository extends ServiceEntityRepository
     {
         return $this->findOneBy([ 'name' => ArrayFunctions::pick_one(self::POSSIBLE_FIRST_PET_STARTING_MERITS) ]);
     }
+
+    public function getRandomAdoptedPetStartingMerit(): Merit
+    {
+        $possibleMerits = array_filter(self::POSSIBLE_STARTING_MERITS, function(string $m) {
+            return $m !== MeritEnum::HYPERCHROMATIC;
+        });
+
+        return $this->findOneBy([ 'name' => ArrayFunctions::pick_one($possibleMerits) ]);
+    }
 }
