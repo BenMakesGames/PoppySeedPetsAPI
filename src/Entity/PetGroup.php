@@ -58,7 +58,7 @@ class PetGroup
     private $createdOn;
 
     /**
-     * @ORM\Column(type="string", length=40)
+     * @ORM\Column(type="string", length=60)
      * @Groups({"petGroup", "petGroupDetails", "petGroupIndex", "petPublicProfile"})
      */
     private $name;

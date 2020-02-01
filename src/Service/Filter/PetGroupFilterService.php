@@ -27,6 +27,7 @@ class PetGroupFilterService
             [
                 'type' => [ $this, 'filterType' ],
                 'withPetsOwnedBy' => [ $this, 'filterWithPetsOwnedBy' ],
+                'name' => [ $this, 'filterName' ],
             ]
         );
     }
@@ -43,7 +44,15 @@ class PetGroupFilterService
             ->setParameter('type', $value)
         ;
     }
-    
+
+    public function filterName(QueryBuilder $qb, $value)
+    {
+        $qb
+            ->andWhere('g.name LIKE :name')
+            ->setParameter('name', '%' . $value . '%')
+        ;
+    }
+
     public function filterWithPetsOwnedBy(QueryBuilder $qb, $value)
     {
         if(is_numeric($value) && (int)$value == $value)
