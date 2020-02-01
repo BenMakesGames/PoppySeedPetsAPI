@@ -212,7 +212,7 @@ class GatheringService
     {
         if(mt_rand(1, 4) === 1)
         {
-            if(!$pet->hasLight())
+            if(!$pet->canSeeInTheDark())
             {
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Hollow Log, but it was too dark inside to see anything.', '');
 
@@ -245,7 +245,7 @@ class GatheringService
             }
             else
             {
-                if($pet->hasLight())
+                if($pet->canSeeInTheDark())
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Grandparoot inside a Hollow Log.', '');
                     $this->inventoryService->petCollectsItem('Grandparoot', $pet, $pet->getName() . ' found this growing inside a Hollow Log.', $activityLog);
@@ -455,7 +455,7 @@ class GatheringService
 
     private function foundIronMine(Pet $pet): PetActivityLog
     {
-        if(mt_rand(1, 4) === 1 && !$pet->hasLight())
+        if(mt_rand(1, 4) === 1 && !$pet->canSeeInTheDark())
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::GATHER, false);

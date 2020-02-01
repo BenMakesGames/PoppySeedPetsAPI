@@ -16,6 +16,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\PetShelterPet;
+use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
@@ -39,12 +40,13 @@ class PregnancyService
     private $userQuestRepository;
     private $petSpeciesRepository;
     private $userStatsRepository;
+    private $meritRepository;
 
     public function __construct(
         EntityManagerInterface $em, InventoryService $inventoryService, PetRelationshipService $petRelationshipService,
         PetRepository $petRepository, ResponseService $responseService, PetExperienceService $petExperienceService,
         UserQuestRepository $userQuestRepository, PetSpeciesRepository $petSpeciesRepository,
-        UserStatsRepository $userStatsRepository
+        UserStatsRepository $userStatsRepository, MeritRepository $meritRepository
     )
     {
         $this->em = $em;
@@ -56,6 +58,7 @@ class PregnancyService
         $this->userQuestRepository = $userQuestRepository;
         $this->petSpeciesRepository = $petSpeciesRepository;
         $this->userStatsRepository = $userStatsRepository;
+        $this->meritRepository = $meritRepository;
     }
 
     public function getPregnant(Pet $pet1, Pet $pet2)
@@ -125,6 +128,7 @@ class PregnancyService
             ->setDad($pregnancy->getOtherParent())
             ->setName($this->combineNames($pregnancy->getParent()->getName(), $pregnancy->getOtherParent()->getName()))
             ->setFavoriteFlavor(FlavorEnum::getRandomValue())
+            ->addMerit($this->meritRepository->getRandomStartingMerit())
         ;
 
         if($pregnancy->getAffection() > 0)

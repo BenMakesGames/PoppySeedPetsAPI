@@ -202,6 +202,7 @@ class GreenhouseController extends PoppySeedPetsController
                     ->setFavoriteFlavor(FlavorEnum::getRandomValue())
                     ->setNeeds(mt_rand(10, 12), -9)
                     ->addMerit($meritRepository->findOneByName(MeritEnum::MOON_BOUND))
+                    ->addMerit($meritRepository->getRandomStartingMerit())
                 ;
 
                 $em->persist($tomateSkills);

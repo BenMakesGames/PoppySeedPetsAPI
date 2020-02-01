@@ -9,6 +9,7 @@ use App\Enum\StoryEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetShelterPet;
+use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
@@ -103,7 +104,8 @@ class PetShelterController extends PoppySeedPetsController
     public function adoptPet(
         int $id, PetRepository $petRepository, AdoptionService $adoptionService, Request $request,
         ResponseService $responseService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
-        UserQuestRepository $userQuestRepository, TransactionService $transactionService
+        UserQuestRepository $userQuestRepository, TransactionService $transactionService,
+        MeritRepository $meritRepository
     )
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
@@ -144,6 +146,7 @@ class PetShelterController extends PoppySeedPetsController
             ->setFavoriteFlavor(FlavorEnum::getRandomValue())
             ->setNeeds(mt_rand(10, 12), -9)
             ->setSkills($petSkills)
+            ->addMerit($meritRepository->getRandomStartingMerit())
         ;
 
         if($numberOfPetsAtHome >= $user->getMaxPets())

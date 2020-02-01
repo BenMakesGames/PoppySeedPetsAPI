@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Merit;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
+use App\Functions\ArrayFunctions;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -16,6 +17,20 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class MeritRepository extends ServiceEntityRepository
 {
+    public const POSSIBLE_STARTING_MERITS = [
+        MeritEnum::BURPS_MOTHS,
+        MeritEnum::NAIVE,
+        MeritEnum::GOURMAND,
+        MeritEnum::SPECTRAL,
+        MeritEnum::PREHENSILE_TONGUE,
+        MeritEnum::LOLLIGOVORE,
+        MeritEnum::HYPERCHROMATIC,
+        MeritEnum::DREAMWALKER,
+        MeritEnum::EXTROVERTED,
+        MeritEnum::SHEDS,
+        MeritEnum::DARKVISION,
+    ];
+
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Merit::class);
@@ -27,5 +42,10 @@ class MeritRepository extends ServiceEntityRepository
             throw new EnumInvalidValueException(MeritEnum::class, $name);
 
         return $this->findOneBy([ 'name' => $name ]);
+    }
+
+    public function getRandomStartingMerit(): Merit
+    {
+        return $this->findOneBy([ 'name' => ArrayFunctions::pick_one(self::POSSIBLE_STARTING_MERITS) ]);
     }
 }

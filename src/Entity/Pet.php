@@ -811,9 +811,12 @@ class Pet
         return $this->getSkills()->getPerception();
     }
 
-    public function hasLight(): bool
+    public function canSeeInTheDark(): bool
     {
-        return $this->getTool() ? $this->getTool()->getItem()->getTool()->getProvidesLight() : false;
+        return
+            $this->hasMerit(MeritEnum::DARKVISION) ||
+            ($this->getTool() && $this->getTool()->getItem()->getTool()->getProvidesLight())
+        ;
     }
 
     public function hasProtectionFromHeat(): bool

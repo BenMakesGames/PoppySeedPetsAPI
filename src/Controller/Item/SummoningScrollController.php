@@ -17,6 +17,7 @@ use App\Functions\GrammarFunctions;
 use App\Model\PetChanges;
 use App\Model\PetShelterPet;
 use App\Model\SummoningScrollMonster;
+use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserRepository;
@@ -258,7 +259,10 @@ class SummoningScrollController extends PoppySeedPetsItemController
         return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true, 'reloadPets' => $numberOfPetsAtHome < $user->getMaxPets() ]);
     }
 
-    private function createRandomPetOfSpecies(PetSpecies $petSpecies, PetRepository $petRepository, EntityManagerInterface $em): Pet
+    private function createRandomPetOfSpecies(
+        PetSpecies $petSpecies, PetRepository $petRepository, EntityManagerInterface $em,
+        MeritRepository $meritRepository
+    ): Pet
     {
         $now = new \DateTimeImmutable();
 
@@ -294,6 +298,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
             ->setFavoriteFlavor(FlavorEnum::getRandomValue())
             ->setNeeds(mt_rand(10, 12), -9)
             ->setSkills($petSkills)
+            ->addMerit($meritRepository->getRandomStartingMerit())
         ;
 
         $em->persist($pet);

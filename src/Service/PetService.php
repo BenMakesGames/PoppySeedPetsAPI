@@ -403,6 +403,11 @@ class PetService
             $this->poopingService->poopDarkMatter($pet);
         }
 
+        if($pet->hasMerit(MeritEnum::SHEDS) && mt_rand(1, 180) === 1)
+        {
+            $this->poopingService->shed($pet);
+        }
+
         if($pet->hasMerit(MeritEnum::HYPERCHROMATIC))
         {
             if(mt_rand(1, 250) === 1)

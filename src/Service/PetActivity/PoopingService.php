@@ -20,6 +20,15 @@ class PoopingService
         $this->responseService = $responseService;
     }
 
+    public function shed(Pet $pet)
+    {
+        $this->inventoryService->receiveItem($pet->getSpecies()->getSheds(), $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' shed this.', LocationEnum::HOME);
+
+        $this->responseService->createActivityLog($pet, $pet->getName() . ' shed some ' . $pet->getSpecies()->getSheds()->getName() . '.', '')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+        ;
+    }
+
     public function poopDarkMatter(Pet $pet)
     {
         if(mt_rand(1, 20) === 1)

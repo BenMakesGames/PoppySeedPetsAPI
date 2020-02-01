@@ -108,6 +108,12 @@ class PetSpecies
      */
     private $availableFromBreeding;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Item")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $sheds;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -309,5 +315,17 @@ class PetSpecies
     public function getAvailableForTransmigration(): bool
     {
         return $this->getAvailableAtSignup() || $this->getAvailableFromBreeding() || $this->getAvailableFromPetShelter();
+    }
+
+    public function getSheds(): ?Item
+    {
+        return $this->sheds;
+    }
+
+    public function setSheds(?Item $sheds): self
+    {
+        $this->sheds = $sheds;
+
+        return $this;
     }
 }

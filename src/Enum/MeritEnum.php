@@ -30,7 +30,7 @@ final class MeritEnum
     public const FORCE_OF_NATURE = 'Force of Nature';
     public const BALANCE = 'Balance';
 
-    // every pet gets one
+    // every pet gets one (list is in MeritRepository::POSSIBLE_STARTING_MERITS)
     public const BURPS_MOTHS = 'Burps Moths';
     public const NAIVE = 'Naïve'; // treats rivals as friends; treats fwbs as mates; always gives in to relationship changes
     public const GOURMAND = 'Gourmand'; // larger stomach
@@ -40,6 +40,8 @@ final class MeritEnum
     public const HYPERCHROMATIC = 'Hyperchromatic'; // randomly changes colors
     public const DREAMWALKER = 'Dreamwalker'; // gets items from dreams
     public const EXTROVERTED = 'Extroverted'; // can be in up to 4 groups
+    public const SHEDS = 'Sheds';
+    public const DARKVISION = 'Darkvision'; // can see in the dark
 
     // not yet implemented
     //public const PAST_LIFE = 'Past Life';

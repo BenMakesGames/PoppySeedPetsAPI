@@ -14,6 +14,7 @@ use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\StringFunctions;
 use App\Repository\InventoryRepository;
+use App\Repository\MeritRepository;
 use App\Repository\PassphraseResetRequestRepository;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
@@ -52,7 +53,7 @@ class AccountController extends PoppySeedPetsController
         Request $request, EntityManagerInterface $em, ResponseService $responseService,
         SessionService $sessionService, UserRepository $userRepository, PetSpeciesRepository $petSpeciesRepository,
         UserPasswordEncoderInterface $userPasswordEncoder, InventoryService $inventoryService,
-        ProfanityFilterService $profanityFilterService
+        ProfanityFilterService $profanityFilterService, MeritRepository $meritRepository
     )
     {
         $petName = $profanityFilterService->filter(trim($request->request->get('petName')));
@@ -134,6 +135,7 @@ class AccountController extends PoppySeedPetsController
                 FlavorEnum::EARTHY, FlavorEnum::FRUITY, FlavorEnum::CREAMY, FlavorEnum::MEATY, FlavorEnum::PLANTY,
                 FlavorEnum::FISHY, FlavorEnum::FATTY,
             ]))
+            ->addMerit($meritRepository->getRandomStartingMerit())
         ;
 
         $em->persist($pet);
