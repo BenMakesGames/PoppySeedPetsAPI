@@ -237,18 +237,18 @@ class PetExperienceService
             $this->responseService->addActivityLog((new PetActivityLog())->setEntry('While eating the ' . $item->getName() . ', ' . $pet->getName() . ' spotted ' . GrammarFunctions::indefiniteArticle($bonusItem->getName()) . ' ' . $bonusItem->getName() . '! (' . $naniNani . ')'));
         }
 
-        if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && mt_rand(1, 100) < $food->getFood() + $food->getJunk())
+        if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && mt_rand(1, 200) < $food->getFood() + $food->getJunk())
         {
             $inventory = (new Inventory())
                 ->setItem($this->itemRepository->findOneByName('Moth'))
                 ->setLocation(LocationEnum::HOME)
                 ->setOwner($pet->getOwner())
                 ->setCreatedBy($pet->getOwner())
-                ->addComment('After eating ' . $item->getName() . ', ' . $pet->getName() . ' burped up a Moth!')
+                ->addComment('After eating ' . $item->getName() . ', ' . $pet->getName() . ' burped this up!')
             ;
             $this->em->persist($inventory);
 
-            $this->responseService->addActivityLog((new PetActivityLog())->setEntry('After eating ' . $item->getName() . ', burped up a Moth!'));
+            $this->responseService->addActivityLog((new PetActivityLog())->setEntry('After eating ' . $item->getName() . ', ' . $pet->getName() . ' burped up a Moth!'));
         }
 
         if($food->getGrantedSkill() && $pet->getSkills()->getStat($food->getGrantedSkill()) < 1)
