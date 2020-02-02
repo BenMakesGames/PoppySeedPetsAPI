@@ -63,6 +63,7 @@ class PetGroupFilterService
             $qb
                 ->andWhere('p.owner=:owner')
                 ->setParameter('owner', $value)
+                ->groupBy('g')
             ;
         }
     }
