@@ -75,6 +75,9 @@ class ResponseService
 
         $responseData['event'] = $this->calendarService->getEventData($this->security->getUser());
 
+        if($this->security->getUser() && $this->security->getUser()->getIsAdmin())
+            $responseData['serializationGroups'] = $groups;
+
         $this->injectUserData($responseData);
 
         $json = $this->serializer->serialize($responseData, 'json', [

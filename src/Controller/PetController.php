@@ -22,6 +22,7 @@ use App\Repository\PetRepository;
 use App\Repository\UserRepository;
 use App\Service\Filter\DaycareFilterService;
 use App\Service\Filter\PetActivityLogsFilterService;
+use App\Service\Filter\PetFilterService;
 use App\Service\MeritService;
 use App\Service\PetActivityStatsService;
 use App\Service\PetService;
@@ -42,6 +43,17 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  */
 class PetController extends PoppySeedPetsController
 {
+    /**
+     * @Route("", methods={"GET"})
+     */
+    public function searchPets(Request $request, ResponseService $responseService, PetFilterService $petFilterService)
+    {
+        return $responseService->success(
+            $petFilterService->getResults($request->query),
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::PET_PUBLIC_PROFILE ]
+        );
+    }
+
     /**
      * @Route("/my", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")

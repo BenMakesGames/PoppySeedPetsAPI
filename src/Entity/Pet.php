@@ -137,7 +137,7 @@ class Pet
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Inventory", inversedBy="holder")
      * @ORM\JoinColumn(onDelete="SET NULL")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
      */
     private $tool;
 
@@ -172,7 +172,7 @@ class Pet
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\SpiritCompanion", inversedBy="pet", cascade={"persist", "remove"})
      * @ORM\JoinColumn(onDelete="CASCADE")
-     * @Groups({"myPet", "parkEvent", "hollowEarth"})
+     * @Groups({"myPet", "parkEvent", "hollowEarth", "petPublicProfile", "petGroupDetails"})
      */
     private $spiritCompanion;
 
@@ -220,6 +220,7 @@ class Pet
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"petPublicProfile"})
      */
     private $inDaycare = false;
 
@@ -236,7 +237,7 @@ class Pet
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\PetBaby", inversedBy="parent", cascade={"persist", "remove"})
      * @ORM\JoinColumn(onDelete="CASCADE")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petFriend"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petFriend", "petGroupDetails"})
      */
     private $pregnancy;
 
@@ -262,7 +263,7 @@ class Pet
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Merit")
-     * @Groups({"myPet"})
+     * @Groups({"myPet", "petPublicProfile", "petGroupDetails", "parkEvent"})
      */
     private $merits;
 

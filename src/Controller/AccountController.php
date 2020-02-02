@@ -531,4 +531,12 @@ class AccountController extends PoppySeedPetsController
 
         return $responseService->success($data);
     }
+
+    /**
+     * @Route("/{user}/minimal", methods={"GET"}, requirements={"user"="\d+"})
+     */
+    public function getProfileMinimal(User $user, ResponseService $responseService)
+    {
+        return $responseService->success($user, [ SerializationGroupEnum::USER_PUBLIC_PROFILE ]);
+    }
 }
