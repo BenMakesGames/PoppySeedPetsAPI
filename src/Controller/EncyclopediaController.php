@@ -5,9 +5,11 @@ use App\Entity\Item;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
+use App\Repository\MeritRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\RecipeRepository;
 use App\Service\Filter\ItemFilterService;
+use App\Service\Filter\MeritFilterService;
 use App\Service\Filter\PetSpeciesFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -69,6 +71,19 @@ class EncyclopediaController extends PoppySeedPetsController
             throw new NotFoundHttpException('There is no such species.');
 
         return $responseService->success($species, SerializationGroupEnum::PET_ENCYCLOPEDIA);
+    }
+    /**
+     * @Route("/merit", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getMerits(
+        ResponseService $responseService, MeritFilterService $meritFilterService, Request $request
+    )
+    {
+        return $responseService->success(
+            $meritFilterService->getResults($request->query),
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MERIT_ENCYCLOPEDIA ]
+        );
     }
 
 }
