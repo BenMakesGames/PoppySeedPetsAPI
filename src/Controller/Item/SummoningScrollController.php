@@ -204,7 +204,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
     public function summonSomethingFriendly(
         Inventory $inventory, ResponseService $responseService, PetRepository $petRepository,
         UserRepository $userRepository, UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
-        PetSpeciesRepository $petSpeciesRepository
+        PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository
     )
     {
         $user = $this->getUser();
@@ -219,7 +219,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
         if(mt_rand(1, 19) === 1)
         {
-            $pet = $this->createRandomPetOfSpecies($petSpeciesRepository->findOneBy([ 'name' => 'Sentinel' ]), $petRepository, $em);
+            $pet = $this->createRandomPetOfSpecies($petSpeciesRepository->findOneBy([ 'name' => 'Sentinel' ]), $petRepository, $em, $meritRepository);
         }
 
         if($pet === null)
@@ -236,7 +236,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
         {
             $allSpecies = $petSpeciesRepository->findAll();
 
-            $pet = $this->createRandomPetOfSpecies(ArrayFunctions::pick_one($allSpecies), $petRepository, $em);
+            $pet = $this->createRandomPetOfSpecies(ArrayFunctions::pick_one($allSpecies), $petRepository, $em, $meritRepository);
         }
 
         $pet->setOwner($user);
