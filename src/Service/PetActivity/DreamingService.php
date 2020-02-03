@@ -67,39 +67,39 @@ class DreamingService
 
         $dream = ArrayFunctions::pick_one([
             [
-                '%dreamer% was %wandering% %location1%, when they spotted a %pet_adjective% %species%. It whispered something, but %dreamer% can\'t remember what, and gave %dreamer% %item%.',
+                'In a dream, %dreamer% was %wandering% %location1%, when they spotted a %pet_adjective% %species%. It whispered something, but %dreamer% can\'t remember what, and gave %dreamer% %item%.',
                 'A %pet_adjective% %species% gave this to %dreamer% in a dream.',
             ],
             [
-                'While %wandering% %location1%, %dreamer% spotted %item%. They grabbed it, and when they looked up, they were %location2%.',
+                'While %wandering% %location1% in a dream, %dreamer% spotted %item%. They grabbed it, and when they looked up, they were %location2%.',
                 '%dreamer% found this while %wandering% %location% in a dream.',
             ],
             [
-                '%dreamer% tripped over %item%, and tumbled into a pit %location1%. The %item% fell in, too, and %dreamer% grabbed it, and ate it.',
+                '%dreamer% dreamed they tripped over %item%, and tumbled into a pit %location1%. The %item% fell in, too, and %dreamer% grabbed it, and ate it.',
                 '%dreamer% ate this while falling in a dream.',
             ],
             [
-                '%dreamer% and a friend were %wandering% %location%. The friend reached into their pocket and pulled out something covered in cloth. %dreamer% lifted up the cloth, and found %item%. When they looked up, their friend was gone.',
+                'In a dream, %dreamer% and a friend were %wandering% %location%. The friend reached into their pocket and pulled out something covered in cloth. %dreamer% lifted up the cloth, and found %item%. When they looked up, their friend was gone.',
                 '%dreamer% received this from a friend in a dream.'
             ],
             [
-                '%dreamer% and a %species% were making out on %surface%. A %item% got in the way, so %dreamer% tossed it aside.',
+                '%dreamer% dreamed that they were making out with a %species% on %surface%. A %item% got in the way, so %dreamer% tossed it aside.',
                 '%dreamer%, um, found this in a dream.'
             ],
             [
-                '%dreamer% got in a fight with a %species% %location1%. The %species% threw %item% at %dreamer%, and declared victory! >:(',
+                'In a dream, %dreamer% got in a fight with a %species% %location1%. The %species% threw %item% at %dreamer%, and declared victory! >:(',
                 'A stupid %species% threw this at %dreamer% in a dream.',
             ],
             [
-                '%dreamer% and a friend went out to eat, and ordered %item%. When it arrived, it was %more% than expected!',
+                'In a dream, %dreamer% and a friend went out to eat, and ordered %item%. When it arrived, it was %more% than expected!',
                 '%dreamer% ordered this at a restaurant in a dream.',
             ],
             [
-                '%dreamer% saw their parents, but couldn\'t make them out. They hummed a familiar tune, and handed %dreamer% %item%.',
+                '%dreamer% saw their parents in a dream, but couldn\'t make them out. They hummed a familiar tune, and handed %dreamer% %item%.',
                 '%dreamer% got this from their parents in a dream.',
             ],
             [
-                '%dreamer% found a secret compartment %location1%. They crawled inside, and arrived %location2%. On %surface%, there was %item%. %dreamer% took it.',
+                'In a dream, %dreamer% found a secret compartment %location1%. They crawled inside, and arrived %location2%. On %surface%, there was %item%. %dreamer% took it.',
                 '%dreamer% found this on %surface% %location2% in a dream.',
             ]
         ]);
@@ -107,6 +107,7 @@ class DreamingService
         $locationIndicies = array_rand(self::LOCATIONS, 2);
 
         $replacements = [
+            '%item%' => $item,
             '%dreamer%' => $pet->getName(),
             '%location1%' => self::LOCATIONS[$locationIndicies[0]],
             '%location2%' => self::LOCATIONS[$locationIndicies[1]],
