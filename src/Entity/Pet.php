@@ -276,7 +276,7 @@ class Pet
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Inventory", inversedBy="wearer")
      * @ORM\JoinColumn(onDelete="SET NULL")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
      */
     private $hat;
 
