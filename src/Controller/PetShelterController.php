@@ -154,7 +154,7 @@ class PetShelterController extends PoppySeedPetsController
 
         $em->persist($newPet);
 
-        $transactionService->spendMoney($user, $costToAdopt, 'Adopt a new pet at the Portal.');
+        $transactionService->spendMoney($user, $costToAdopt, 'Adopted a new pet.');
 
         $userStatsRepository->incrementStat($user, UserStatEnum::PETS_ADOPTED, 1);
 
