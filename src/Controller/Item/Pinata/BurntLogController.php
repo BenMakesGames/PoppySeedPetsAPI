@@ -44,7 +44,7 @@ class BurntLogController extends PoppySeedPetsItemController
             $charcoalReceived = 'Charcoal, Liquid-hot Magma';
             $inventoryService->receiveItem('Liquid-hot Magma', $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);
         }
-        else if(mt_rand(1, 10) === 1)
+        else if(mt_rand(1, 8) === 1)
         {
             $charcoalReceived = 'two Charcoal, a Letter from the Library of Fire';
             $inventoryService->receiveItem('Letter from the Library of Fire', $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);
