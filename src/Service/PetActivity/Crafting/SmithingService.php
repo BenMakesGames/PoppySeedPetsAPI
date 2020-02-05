@@ -329,7 +329,7 @@ class SmithingService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Gold Triangle from Gold Bar, and String.', 'items/tool/instrument/gold-triangle')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
             ;
-            $this->inventoryService->petCollectsItem('Grappling Hook', $pet, $pet->getName() . ' created this from Gold Bar, and String.', $activityLog);
+            $this->inventoryService->petCollectsItem('Gold Triangle', $pet, $pet->getName() . ' created this from Gold Bar, and String.', $activityLog);
             return $activityLog;
         }
         else
