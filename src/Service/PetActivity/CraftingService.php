@@ -122,7 +122,7 @@ class CraftingService
                     $possibilities[] = [ $this, 'createFabricMache' ];
             }
 
-            if(array_key_exists('Gold Triangle', $quantities) && $quantities['Gold Triangle'] >= 3)
+            if(array_key_exists('Gold Triangle', $quantities) && $quantities['Gold Triangle']->quantity >= 3)
                 $possibilities[] = [ $this, 'createGoldTrifecta' ];
         }
 
