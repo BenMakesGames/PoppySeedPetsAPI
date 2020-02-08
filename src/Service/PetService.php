@@ -2,13 +2,10 @@
 namespace App\Service;
 
 use App\Entity\Inventory;
-use App\Entity\Item;
-use App\Entity\ItemFood;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetBaby;
 use App\Entity\PetRelationship;
-use App\Entity\StatusEffect;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
@@ -16,7 +13,6 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\SpiritCompanionStarEnum;
-use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
