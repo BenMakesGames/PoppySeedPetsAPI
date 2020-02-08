@@ -20,6 +20,7 @@ final class MeritEnum
 
     // obtained through items
     public const BEHATTED = 'Behatted';
+    public const MIRRORED = 'Mirrored'; // flips graphic
 
     // obtained through house time spent
     public const MIND_OVER_MATTER = 'Mind Over Matter';

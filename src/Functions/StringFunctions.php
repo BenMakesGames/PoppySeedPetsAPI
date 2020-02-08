@@ -9,6 +9,11 @@ final class StringFunctions
         return mb_strlen($string) === strlen($ISOd);
     }
 
+    public static function startsWith(string $haystack, string $needle)
+    {
+        return strpos($haystack, $needle) === 0;
+    }
+
     public static function randomPassword(): string
     {
         $words = [];

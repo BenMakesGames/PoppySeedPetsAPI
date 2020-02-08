@@ -1,6 +1,7 @@
 <?php
 namespace App\EventSubscriber;
 
+use App\Functions\StringFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -34,9 +35,14 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
 
         if($e instanceof HttpException)
         {
+            if($e->getMessage() && strpos($e->getMessage(), 'App\\Entity\\Inventory') !== false)
+                $message = 'That item doesn\'t exist... weird. Maybe it got used up? Reload and try again.';
+            else
+                $message = $e->getMessage() ? $e->getMessage() : 'Generic 4044444444444444!!1!';
+
             $event->setResponse($this->responseService->error(
-                $e->getStatusCode(),
-                [ $e->getMessage() ? $e->getMessage() : 'Generic 4044444444444444!!1!' ]
+                Response::HTTP_NOT_FOUND,
+                [ $message ]
             ));
         }
         else if($e instanceof EntityNotFoundException)
