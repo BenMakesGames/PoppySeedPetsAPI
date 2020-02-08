@@ -51,13 +51,19 @@ class MagicMirrorController extends PoppySeedPetsItemController
             throw new HttpException(500, 'The ' . MeritEnum::MIRRORED . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');
 
         if($pet->hasMerit(MeritEnum::MIRRORED))
+        {
             $pet->removeMerit($merit);
+            $messageExtra = $pet->getName() . ' is no longer Mirrored.';
+        }
         else
+        {
             $pet->addMerit($merit);
+            $messageExtra = $pet->getName() . ' has become Mirrored!';
+        }
 
         $em->remove($inventory);
         $em->flush();
 
-        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess($pet->getName() . ' stared so hard at the mirror, it shattered! ' . $messageExtra, [ 'itemDeleted' => true ]);
     }
 }

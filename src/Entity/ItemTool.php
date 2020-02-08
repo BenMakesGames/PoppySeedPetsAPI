@@ -118,6 +118,12 @@ class ItemTool
      */
     private $protectionFromHeat = false;
 
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
+     */
+    private $alwaysInFront = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -385,6 +391,18 @@ class ItemTool
     public function setProtectionFromHeat(bool $protectionFromHeat): self
     {
         $this->protectionFromHeat = $protectionFromHeat;
+
+        return $this;
+    }
+
+    public function getAlwaysInFront(): ?bool
+    {
+        return $this->alwaysInFront;
+    }
+
+    public function setAlwaysInFront(bool $alwaysInFront): self
+    {
+        $this->alwaysInFront = $alwaysInFront;
 
         return $this;
     }
