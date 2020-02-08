@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
+use App\Enum\LoveLanguageEnum;
 use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
 use App\Enum\PetPregnancyStyleEnum;
@@ -302,6 +303,11 @@ class Pet
      */
     private $extroverted;
 
+    /**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $loveLanguage;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -328,6 +334,8 @@ class Pet
         $this->fatheredPets = new ArrayCollection();
         $this->merits = new ArrayCollection();
         $this->groups = new ArrayCollection();
+
+        $this->loveLanguage = LoveLanguageEnum::getRandomValue();
     }
 
     public function getId(): ?int
@@ -1497,5 +1505,17 @@ class Pet
             return 2;
         else //if($this->extroverted >= 1)
             return 3;
+    }
+
+    public function getLoveLanguage(): ?string
+    {
+        return $this->loveLanguage;
+    }
+
+    public function setLoveLanguage(string $loveLanguage): self
+    {
+        $this->loveLanguage = $loveLanguage;
+
+        return $this;
     }
 }
