@@ -25,6 +25,7 @@ class ReversableController extends PoppySeedPetsItemController
     private const FLIPS = [
         'Small Plastic Bucket' => 'Upside-down Plastic Bucket',
         'Shiny Pail' => 'Upside-down Shiny Pail',
+        'Small, Yellow Plastic Bucket' => 'Upside-down, Yellow Plastic Bucket',
     ];
 
     /**

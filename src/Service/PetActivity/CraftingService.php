@@ -151,9 +151,14 @@ class CraftingService
         {
             if(array_key_exists('Plastic Idol', $quantities))
                 $possibilities[] = [ $this, 'createGoldIdol' ];
+            else
+            {
+                if(array_key_exists('Small Plastic Bucket', $quantities))
+                    $possibilities[] = [ $this, 'createYellowBucket' ];
 
-            if(array_key_exists('Dumbbell', $quantities))
-                $possibilities[] = [ $this, 'createPaintedDumbbell' ];
+                if(array_key_exists('Dumbbell', $quantities))
+                    $possibilities[] = [ $this, 'createPaintedDumbbell' ];
+            }
         }
 
         if(array_key_exists('Fiberglass', $quantities))
@@ -1339,6 +1344,18 @@ class CraftingService
         $pet->increaseEsteem(1);
         $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a "Gold" Idol.', '');
         $this->inventoryService->petCollectsItem('"Gold" Idol', $pet, $pet->getName() . ' painted this, using Yellow Dye.', $activityLog);
+        return $activityLog;
+    }
+
+    private function createYellowBucket(Pet $pet): PetActivityLog
+    {
+        $this->petExperienceService->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::CRAFT, true);
+        $this->inventoryService->loseItem('Small Plastic Bucket', $pet->getOwner(), LocationEnum::HOME, 1);
+        $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), LocationEnum::HOME, 1);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+        $pet->increaseEsteem(1);
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' dunked a Small Plastic Bucket into some Yellow Dye.', '');
+        $this->inventoryService->petCollectsItem('Small, Yellow Plastic Bucket', $pet, $pet->getName() . ' "painted" this, using Yellow Dye.', $activityLog);
         return $activityLog;
     }
 
