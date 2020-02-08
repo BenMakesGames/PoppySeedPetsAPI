@@ -124,6 +124,9 @@ class CraftingService
 
             if(array_key_exists('Gold Triangle', $quantities) && $quantities['Gold Triangle']->quantity >= 3)
                 $possibilities[] = [ $this, 'createGoldTrifecta' ];
+
+            if(array_key_exists('Cooking Buddy', $quantities) && array_key_exists('Antenna', $quantities))
+                $possibilities[] = [ $this, 'createAlienCookingBuddy' ];
         }
 
         if(array_key_exists('String', $quantities) && array_key_exists('Glass', $quantities))
@@ -715,7 +718,7 @@ class CraftingService
             $this->inventoryService->loseItem('Glue', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-2);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Gold Trifecta, but messed up and wasted the Glu :(', '');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Gold Trifecta, but messed up and wasted the Glue :(', '');
         }
         else if($roll >= 13)
         {
@@ -737,6 +740,42 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to make a Gold Trifecta, but wasn\'t sure how to begin...', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createAlienCookingBuddy(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->inventoryService->loseItem('Glue', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-2);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to glue some Antennae onto a Cooking Buddy, but messed up and wasted the Glue :(', '');
+        }
+        else if($roll >= 10)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Cooking Buddy', $pet->getOwner(), LocationEnum::HOME, 3);
+            $this->inventoryService->loseItem('Glue', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Antenna', $pet->getOwner(), LocationEnum::HOME, 3);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet
+                ->increaseEsteem(4)
+                ->increaseSafety(2)
+            ;
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' cracked themselves up by created a Cooking "Alien".', '');
+            $this->inventoryService->petCollectsItem('Cooking "Alien"', $pet, $pet->getName() . ' created by gluing some Antennae on a Cooking Buddy.', $activityLog);
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to do something silly to a Cooking Buddy, but couldn\'t decide what...', 'icons/activity-logs/confused');
         }
     }
 
