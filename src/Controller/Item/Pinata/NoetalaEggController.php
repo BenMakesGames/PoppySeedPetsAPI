@@ -30,7 +30,7 @@ class NoetalaEggController extends PoppySeedPetsItemController
 
         $location = $inventory->getLocation();
 
-        $inventoryService->receiveItem('Quinacridone Magenta', $user, $user, 'This oozed out of a Noetala Egg that ' . $user->getName() . ' opened.', $location);
+        $inventoryService->receiveItem('Quinacridone Magenta Dye', $user, $user, 'This oozed out of a Noetala Egg that ' . $user->getName() . ' opened.', $location);
 
         // 75% chance of more Fluff
         $includeFluff = mt_rand(1, 4) != 1;
