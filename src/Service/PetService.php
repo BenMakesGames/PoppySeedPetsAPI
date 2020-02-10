@@ -763,7 +763,7 @@ class PetService
         $petPreviousRelationship = $pet->getCurrentRelationship();
         $friendPreviousRelationship = $friend->getCurrentRelationship();
 
-        [$petLog, $friendLog] = $this->petRelationshipService->hangOutPrivately($pet, $friend);
+        [ $petLog, $friendLog ] = $this->petRelationshipService->hangOutPrivately($pet, $friend);
 
         if($petPreviousRelationship !== $pet->getCurrentRelationship())
         {
@@ -787,6 +787,9 @@ class PetService
 
         $petLog->setChanges($petChanges->compare($pet->getPet()));
         $friendLog->setChanges($friendChanges->compare($friend->getPet()));
+
+        $this->em->persist($petLog);
+        $this->em->persist($friendLog);
 
         $this->responseService->addActivityLog($petLog);
     }

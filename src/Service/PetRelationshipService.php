@@ -1347,9 +1347,6 @@ class PetRelationshipService
             $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
         }
 
-        $this->em->persist($p1Log);
-        $this->em->persist($p2Log);
-
         return [ $p1Log, $p2Log ];
     }
 
