@@ -758,9 +758,9 @@ class CraftingService
         else if($roll >= 10)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('Cooking Buddy', $pet->getOwner(), LocationEnum::HOME, 3);
+            $this->inventoryService->loseItem('Cooking Buddy', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Glue', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Antenna', $pet->getOwner(), LocationEnum::HOME, 3);
+            $this->inventoryService->loseItem('Antenna', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet
                 ->increaseEsteem(4)
