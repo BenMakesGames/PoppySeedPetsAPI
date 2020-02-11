@@ -571,6 +571,9 @@ class PetRelationshipService
                     [ $receiver->getName() . ' thought it was a little silly, but very cute.', $receiver->getName() . ' loved it! ' . $giver->getName() . ' was delighted!', $receiver->getName() . ' loved it!' ][$side]
                 ;
                 break;
+
+            default:
+                throw new \InvalidArgumentException('Unknown love language "' . $expression . '"');
         }
 
         return $message;
