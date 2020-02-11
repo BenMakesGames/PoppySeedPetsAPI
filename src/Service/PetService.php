@@ -102,8 +102,6 @@ class PetService
      */
     public function gainAffection(Pet $pet, int $points)
     {
-        if($pet->getInDaycare()) throw new \InvalidArgumentException('Pets in daycare cannot be interacted with.');
-
         if($points === 0) return;
 
         $divideBy = 1;
