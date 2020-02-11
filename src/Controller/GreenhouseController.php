@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetSkills;
+use App\Enum\BirdBathBirdEnum;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
@@ -49,7 +50,7 @@ class GreenhouseController extends PoppySeedPetsController
     {
         $user = $this->getUser();
 
-        if($user->getUnlockedGreenhouse() === null)
+        if(!$user->getGreenhouse())
             throw new AccessDeniedHttpException('You haven\'t purchased a Greenhouse plot yet.');
 
         $weeds = $userQuestRepository->findOrCreate($user, 'Greenhouse Weeds', (new \DateTimeImmutable())->modify('+8 hours')->format('Y-m-d H:i:s'));
@@ -75,11 +76,12 @@ class GreenhouseController extends PoppySeedPetsController
 
         return $responseService->success(
             [
+                'greenhouse' => $user->getGreenhouse(),
                 'weeds' => $weedText,
                 'plants' => $greenhousePlantRepository->findBy([ 'owner' => $user->getId() ]),
                 'fertilizer' => $inventoryRepository->findFertilizers($user),
             ],
-            [ SerializationGroupEnum::GREENHOUSE_PLANT ]
+            [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE ]
         );
     }
 
@@ -104,20 +106,56 @@ class GreenhouseController extends PoppySeedPetsController
         $weeds->setValue((new \DateTimeImmutable())->modify('+18 hours')->format('Y-m-d H:i:s'));
 
         if(mt_rand(1, 4) === 1)
-            $itemName = null;
+            $itemName = ArrayFunctions::pick_one([ 'Fluff', 'Red Clover', 'Talon', 'Feathers' ]);
         else
-        {
-            if(mt_rand(1, 3) === 1)
-                $itemName = ArrayFunctions::pick_one([ 'Fluff', 'Fluff', 'Red Clover', 'Talon', 'Feathers' ]);
-            else
-                $itemName = 'Crooked Stick';
+            $itemName = ArrayFunctions::pick_one([ 'Fluff', 'Crooked Stick', 'Crooked Stick' ]);
 
-            $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this while weeding their Greenhouse.', LocationEnum::HOME);
-        }
+        $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this while weeding their Greenhouse.', LocationEnum::HOME);
 
         $em->flush();
 
         return $responseService->success($itemName);
+    }
+
+    /**
+     * @Route("/talkToVisitingBird", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function talkToBird(
+        ResponseService $responseService, EntityManagerInterface $em, InventoryService $inventoryService
+    )
+    {
+        $user = $this->getUser();
+
+        if(!$user->getGreenhouse())
+            throw new AccessDeniedHttpException('You haven\'t purchased a Greenhouse plot yet.');
+
+        if(!$user->getGreenhouse()->getVisitingBird())
+            throw new NotFoundHttpException('Hm... there\'s no bird here. Reload, maybe??');
+
+        switch($user->getGreenhouse()->getVisitingBird())
+        {
+            case BirdBathBirdEnum::OWL:
+                $inventoryService->receiveItem('Owl\'s Gift', $user, $user, 'Left behind by a huge owl that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
+                $message = 'As you approach the owl, it tilts its head at you. You freeze, and stare at each other for a few seconds before the owl flies off. After you\'re certain it\'s gone, you approach the Bird Bath, and find a small package inside!';
+                break;
+
+            case BirdBathBirdEnum::RAVEN:
+                $inventoryService->receiveItem('Black Feathers', $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
+                $message = 'As you approach the raven, it turns to face you. You freeze, and stare at each other for a few seconds before the raven flies off in a flurry of Black Feathers!';
+                break;
+
+            default:
+                throw new \Exception('Ben has done something wrong, and not accounted for this type of bird!');
+        }
+
+        $user->getGreenhouse()->setVisitingBird(null);
+
+        $em->flush();
+
+        $responseService->addActivityLog((new PetActivityLog())->setEntry($message));
+
+        return $responseService->success();
     }
 
     /**
@@ -237,7 +275,7 @@ class GreenhouseController extends PoppySeedPetsController
         $plantsHarvested = $userStatsRepository->incrementStat($user, UserStatEnum::HARVESTED_PLANT);
 
         if($plantsHarvested->getValue() === 3)
-            $user->increaseMaxPlants(3);
+            $user->getGreenhouse()->increaseMaxPlants(3);
 
         $em->flush();
 

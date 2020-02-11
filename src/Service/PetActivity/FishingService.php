@@ -105,8 +105,27 @@ class FishingService
 
     private function failedToFish(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::FISH, false);
-        return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to fish, but couldn\'t find a quiet place to do so.', 'icons/activity-logs/confused');
+        if($pet->getOwner()->getGreenhouse() && $pet->getOwner()->getGreenhouse()->getHasBirdBath() && !$pet->getOwner()->getGreenhouse()->getVisitingBird())
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::OTHER, false);
+
+            if($pet->getSkills()->getBrawl() < 5)
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+
+            $pet
+                ->increaseSafety(mt_rand(1, 2))
+                ->increaseEsteem(mt_rand(1, 2))
+            ;
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' watched some small birds play in the Greenhouse Bird Feeder.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::FISH, false);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to fish, but couldn\'t find a quiet place to do so.', 'icons/activity-logs/confused');
+        }
     }
 
     private function creditLackOfReflection(PetActivityLog $activityLog)

@@ -152,7 +152,7 @@ class ScrollController extends PoppySeedPetsItemController
 
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
-        if($user->getUnlockedGreenhouse())
+        if($user->getGreenhouse())
         {
             $expandedGreenhouseWithFarmerScroll = $userQuestRepository->findOrCreate($user, 'Expanded Greenhouse with Farmer Scroll', false);
 
@@ -160,7 +160,7 @@ class ScrollController extends PoppySeedPetsItemController
             {
                 $expandedGreenhouseWithFarmerScroll->setValue(true);
 
-                $user->increaseMaxPlants(1);
+                $user->getGreenhouse()->increaseMaxPlants(1);
 
                 $em->flush();
 

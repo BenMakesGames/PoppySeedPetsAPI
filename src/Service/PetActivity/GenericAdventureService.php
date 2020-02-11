@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\BirdBathBirdEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
@@ -57,6 +58,19 @@ class GenericAdventureService
             $pet->increaseEsteem(4);
 
             $activityLog->setChanges($changes->compare($pet));
+
+            return $activityLog;
+        }
+
+        if($pet->getOwner()->getGreenhouse() && $pet->getOwner()->getGreenhouse()->getHasBirdBath() && !$pet->getOwner()->getGreenhouse()->getVisitingBird() && mt_rand(1, 20) === 1)
+        {
+            $bird = BirdBathBirdEnum::getRandomValue();
+
+            $pet->getOwner()->getGreenhouse()->setVisitingBird($bird);
+
+            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, they saw a huge ' . $bird . ' swoop into the Greenhouse and land on the Bird Bath!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ;
 
             return $activityLog;
         }

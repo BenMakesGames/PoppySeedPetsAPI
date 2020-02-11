@@ -167,12 +167,6 @@ class User implements UserInterface
     private $greenhousePlants;
 
     /**
-     * @ORM\Column(type="integer")
-     * @Groups({"myAccount"})
-     */
-    private $maxPlants = 3;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\UserSession", mappedBy="user", orphanRemoval=true)
      */
     private $userSessions;
@@ -226,6 +220,11 @@ class User implements UserInterface
      * @ORM\OneToOne(targetEntity="App\Entity\Beehive", mappedBy="user", cascade={"persist", "remove"})
      */
     private $beehive;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Greenhouse", mappedBy="owner", cascade={"persist", "remove"})
+     */
+    private $greenhouse;
 
     public function __construct()
     {
@@ -649,16 +648,12 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * @Groups({"myAccount"})
+     */
     public function getMaxPlants(): int
     {
-        return $this->maxPlants;
-    }
-
-    public function increaseMaxPlants(int $amount): self
-    {
-        $this->maxPlants += $amount;
-
-        return $this;
+        return $this->getGreenhouse() ? $this->getGreenhouse()->getMaxPlants() : 0;
     }
 
     /**
@@ -810,6 +805,23 @@ class User implements UserInterface
         // set the owning side of the relation if necessary
         if ($this !== $beehive->getUser()) {
             $beehive->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function getGreenhouse(): ?Greenhouse
+    {
+        return $this->greenhouse;
+    }
+
+    public function setGreenhouse(Greenhouse $greenhouse): self
+    {
+        $this->greenhouse = $greenhouse;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $greenhouse->getOwner()) {
+            $greenhouse->setOwner($this);
         }
 
         return $this;

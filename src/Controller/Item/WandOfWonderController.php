@@ -50,7 +50,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
             'recolorAPet',
         ];
 
-        if($user->getUnlockedGreenhouse() && !$expandedGreenhouseWithWand->getValue())
+        if($user->getGreenhouse() && !$expandedGreenhouseWithWand->getValue())
             $possibleEffects[] = 'expandGreenhouse';
 
         $effect = ArrayFunctions::pick_one($possibleEffects);
@@ -85,7 +85,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
 
             case 'expandGreenhouse':
                 $itemActionDescription = 'You hear the earth shift in your Greenhouse! WHAT COULD IT MEAN!?!?';
-                $user->increaseMaxPlants(1);
+                $user->getGreenhouse()->increaseMaxPlants(1);
                 $expandedGreenhouseWithWand->setValue(true);
                 break;
 

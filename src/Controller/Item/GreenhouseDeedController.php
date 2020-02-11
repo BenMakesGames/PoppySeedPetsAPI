@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Item;
 
+use App\Entity\Greenhouse;
 use App\Entity\Inventory;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -25,18 +26,24 @@ class GreenhouseDeedController extends PoppySeedPetsItemController
 
         $user = $this->getUser();
 
-        if($user->getUnlockedGreenhouse())
+        if($user->getGreenhouse())
         {
             return $responseService->itemActionSuccess('You\'ve already claimed a plot in the Greenhouse.');
         }
         else
         {
-            $user->setUnlockedGreenhouse();
-            $em->remove($inventory);
+            $greenhouse = new Greenhouse();
 
+            $user
+                ->setUnlockedGreenhouse()
+                ->setGreenhouse($greenhouse)
+            ;
+
+            $em->persist($greenhouse);
+            $em->remove($inventory);
             $em->flush();
 
-            return $responseService->itemActionSuccess('You now own a plot in the Greenhouse!', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess('You now own a plot in the Greenhouse!', [ 'itemDeleted' => true ]);
         }
     }
 }
