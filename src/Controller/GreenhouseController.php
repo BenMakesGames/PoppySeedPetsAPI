@@ -136,8 +136,17 @@ class GreenhouseController extends PoppySeedPetsController
         switch($user->getGreenhouse()->getVisitingBird())
         {
             case BirdBathBirdEnum::OWL:
-                $inventoryService->receiveItem('Owl\'s Gift', $user, $user, 'Left behind by a huge owl that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
-                $message = 'As you approach the owl, it tilts its head at you. You freeze, and stare at each other for a few seconds before the owl flies off. After you\'re certain it\'s gone, you approach the Bird Bath, and find a small package inside!';
+                $scroll = ArrayFunctions::pick_one([
+                    'Behatting Scroll',
+                    'Behatting Scroll',
+                    'Behatting Scroll',
+                    'Renaming Scroll',
+                    'Renaming Scroll',
+                    'Forgetting Scroll',
+                ]);
+
+                $inventoryService->receiveItem($scroll, $user, $user, 'Left behind by a huge owl that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
+                $message = 'As you approach the owl, it tilts its head at you. You freeze, and stare at each other for a few seconds before the owl flies off, dropping some kind of scroll as it goes!';
                 break;
 
             case BirdBathBirdEnum::RAVEN:

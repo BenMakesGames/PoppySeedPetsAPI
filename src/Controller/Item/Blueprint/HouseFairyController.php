@@ -1,12 +1,11 @@
 <?php
-namespace App\Controller\Item;
+namespace App\Controller\Item\Blueprint;
 
+use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Fireplace;
 use App\Entity\Inventory;
-use App\Enum\LocationEnum;
 use App\Repository\InventoryRepository;
 use App\Repository\UserQuestRepository;
-use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;

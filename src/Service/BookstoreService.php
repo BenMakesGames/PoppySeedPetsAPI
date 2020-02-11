@@ -69,6 +69,11 @@ class BookstoreService
                 $bookPrices['SOUP'] = 25;
         }
 
+        if($user->getGreenhouse() && $user->getGreenhouse()->getMaxPlants() > 6)
+        {
+            $bookPrices['Bird Bath Blueprint'] = 200;
+        }
+
         $petsAcquired = ($petsBirthed ? $petsBirthed->getValue() : 0) + ($petsAdopted ? $petsAdopted->getValue() / 10 : 0);
 
         if($petsAcquired >= 3)
