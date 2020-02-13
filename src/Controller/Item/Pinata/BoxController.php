@@ -169,8 +169,14 @@ class BoxController extends PoppySeedPetsItemController
 
         $location = $inventory->getLocation();
 
-        for($i = 0; $i < 10; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Corn', 'Wheat', 'Rice' ]), $user, $user, $user->getName() . ' got this from a Cereal Box.', $location, $inventory->getLockedToOwner());
+        $message = $user->getName() . ' got this from a Cereal Box.';
+
+        $newInventory[] = $inventoryService->receiveItem('Corn', $user, $user, $message, $location, $inventory->getLockedToOwner());
+        $newInventory[] = $inventoryService->receiveItem('Wheat', $user, $user, $message, $location, $inventory->getLockedToOwner());
+        $newInventory[] = $inventoryService->receiveItem('Rice', $user, $user, $message, $location, $inventory->getLockedToOwner());
+
+        for($i = 0; $i < 7; $i++)
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Corn', 'Wheat', 'Rice' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
 
         return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
