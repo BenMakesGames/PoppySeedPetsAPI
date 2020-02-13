@@ -197,7 +197,7 @@ class HuntingService
                 ->increaseEsteem(mt_rand(1, 2))
             ;
 
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' watched some small birds play in the Greenhouse Bird Feeder.', '')
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' watched some small birds play in the Greenhouse Bird Bath.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
         }
