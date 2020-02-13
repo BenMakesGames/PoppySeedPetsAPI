@@ -41,7 +41,7 @@ class CalendarService
         return $this->monthAndDay >= 1029 && $this->monthAndDay <= 1031;
     }
 
-    public function isPiDay(): bool
+    public function isPiDayOrWhiteDay(): bool
     {
         return $this->monthAndDay === 314;
     }
@@ -65,6 +65,11 @@ class CalendarService
         $hanukkahNo = (int)($jdCurrent - $hanukkahStart + 1);
 
         return $hanukkahNo >= 1 && $hanukkahNo <= 8;
+    }
+
+    public function isValentines(): bool
+    {
+        return $this->monthAndDay === 214;
     }
 
     public function isEaster(): bool

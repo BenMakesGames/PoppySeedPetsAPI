@@ -46,6 +46,14 @@ class PetShelterPet
         'Solstice', 'Midwinter', 'Makara', 'Yaldā', 'Yule', 'Dongzhi',
     ];
 
+    public const PET_VALENTINES_NAMES = [
+        'Isabeau', 'Margery', 'Lace', 'Coupon', 'Cariño',
+    ];
+
+    public const PET_WHITE_DAY_NAMES = [
+        'Marshmallow', 'Trắng', 'Cake', 'Cookie', 'Doki-doki', 'Lace',
+    ];
+
     /**
      * @var int
      * @Groups({"petShelterPet"})

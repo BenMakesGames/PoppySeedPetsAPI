@@ -156,6 +156,9 @@ class AdoptionService
         if($this->calendarService->isEaster())
             return mt_rand(1, 2);
 
+        if($this->calendarService->isValentines() || $this->calendarService->isPiDayOrWhiteDay())
+            return 2;
+
         // winter solstice, more or less
         if($monthDay === 1221 || $monthDay === 1222)
             return ceil($totalPets / 2);
@@ -183,6 +186,12 @@ class AdoptionService
         if($this->calendarService->isEaster())
             return PetShelterPet::PET_EASTER_NAMES;
 
+        if($this->calendarService->isValentines())
+            return PetShelterPet::PET_VALENTINES_NAMES;
+
+        if($this->calendarService->isPiDayOrWhiteDay())
+            return PetShelterPet::PET_WHITE_DAY_NAMES;
+
         // winter solstice, more or less
         if($monthDay === 1221 || $monthDay === 1222)
             return PetShelterPet::PET_SOLSTICE_NAMES;
@@ -209,6 +218,12 @@ class AdoptionService
 
         if($this->calendarService->isEaster())
             return $this->getEasterColors();
+
+        if($this->calendarService->isValentines())
+            return $this->getValentinesColors();
+
+        if($this->calendarService->isPiDayOrWhiteDay())
+            return $this->getWhiteDayColors();
 
         // winter solstice, more or less
         if($monthDay === 1221 || $monthDay === 1222)
@@ -253,5 +268,15 @@ class AdoptionService
     public function getEasterColors(): array
     {
         return [ 'FFCCFF', '99CCFF', 'FFFF99', 'FF9999' ];
+    }
+
+    public function getValentinesColors(): array
+    {
+        return [ 'F17B7B', 'F8F8F8', 'FF0000', 'EF85FF' ];
+    }
+
+    public function getWhiteDayColors(): array
+    {
+        return [ 'FFFFFF' ];
     }
 }
