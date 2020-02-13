@@ -7,4 +7,5 @@ class BirdBathBirdEnum
 
     public const OWL = 'owl';
     public const RAVEN = 'raven';
+    public const TOUCAN = 'toucan';
 }

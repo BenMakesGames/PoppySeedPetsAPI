@@ -151,6 +151,30 @@ class BoxController extends PoppySeedPetsItemController
 
         return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
+
+    /**
+     * @Route("/cereal/{inventory}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openCerealBox(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/cereal/#/open');
+
+        $newInventory = [];
+
+        $location = $inventory->getLocation();
+
+        for($i = 0; $i < 10; $i++)
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Corn', 'Wheat', 'Rice' ]), $user, $user, $user->getName() . ' got this from a Cereal Box.', $location, $inventory->getLockedToOwner());
+
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+    }
+
     /**
      * @Route("/bakers/{inventory}/open", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")

@@ -154,6 +154,11 @@ class GreenhouseController extends PoppySeedPetsController
                 $message = 'As you approach the raven, it turns to face you. You freeze, and stare at each other for a few seconds before the raven flies off in a flurry of Black Feathers!';
                 break;
 
+            case BirdBathBirdEnum::TOUCAN:
+                $inventoryService->receiveItem('Cereal Box', $user, $user, 'Left behind by a huge toucan that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
+                $message = 'As you approach the toucan, it turns to face you. You freeze, and stare at each other for a few seconds before the toucan flies off, leaving a Cereal Box behind.';
+                break;
+
             default:
                 throw new \Exception('Ben has done something wrong, and not accounted for this type of bird!');
         }
