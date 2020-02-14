@@ -126,6 +126,9 @@ class BoxController extends PoppySeedPetsItemController
                 'Pepperbox',
             ];
 
+            if(mt_rand(1, 5) === 0)
+                $possibleItems[] = 'Cereal Box';
+
             if(mt_rand(1, 20) === 0)
             {
                 $possibleItems[] = ArrayFunctions::pick_one([
