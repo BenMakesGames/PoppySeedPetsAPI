@@ -13,6 +13,7 @@ use App\Repository\KnownRecipesRepository;
 use App\Repository\RecipeRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
+use App\Service\CalendarService;
 use App\Service\Filter\InventoryFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -121,7 +122,10 @@ class InventoryController extends PoppySeedPetsController
 
         $userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING);
 
-        if($inventoryService->countInventory($user, 'Cooking Buddy', $locationOfFirstItem) > 0)
+        if(
+            $inventoryService->countInventory($user, 'Cooking Buddy', $locationOfFirstItem) > 0 ||
+            $inventoryService->countInventory($user, 'Cooking "Alien"', $locationOfFirstItem) > 0
+        )
         {
             $alreadyKnownRecipe = $knownRecipesRepository->findOneBy([
                 'user' => $user,
@@ -186,7 +190,8 @@ class InventoryController extends PoppySeedPetsController
      */
     public function throwAway(
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, UserRepository $userRepository
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, UserRepository $userRepository,
+        CalendarService $calendarService
     )
     {
         $user = $this->getUser();
@@ -207,6 +212,8 @@ class InventoryController extends PoppySeedPetsController
         if(!$givingTree)
             throw new HttpException(500, 'The "Giving Tree" NPC does not exist in the database!');
 
+        $givingTreeHoliday = $calendarService->isValentines() || $calendarService->isPiDayOrWhiteDay();
+
         foreach($inventory as $i)
         {
             if($i->getItem()->hasUseAction('bug/#/putOutside'))
@@ -214,7 +221,7 @@ class InventoryController extends PoppySeedPetsController
                 $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_PUT_OUTSIDE);
                 $em->remove($i);
             }
-            else if(mt_rand(1, 10) === 1 && !$i->getLockedToOwner())
+            else if((mt_rand(1, 10) === 1 || $givingTreeHoliday) && !$i->getLockedToOwner())
             {
                 $i
                     ->setOwner($givingTree)
