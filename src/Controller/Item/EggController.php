@@ -9,6 +9,7 @@ use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
+use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
@@ -30,7 +31,8 @@ class EggController extends PoppySeedPetsItemController
      */
     public function hatchWeirdBlueEgg(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
-        EntityManagerInterface $em, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository
+        EntityManagerInterface $em, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository,
+        MeritRepository $meritRepository
     )
     {
         $this->validateInventory($inventory, 'egg/weird-blue/#/hatch');
@@ -77,6 +79,7 @@ class EggController extends PoppySeedPetsItemController
             ->increaseEsteem(10)
             ->increaseFood(-8)
             ->setSkills($petSkills)
+            ->addMerit($meritRepository->getRandomStartingMerit())
         ;
 
         $em->persist($newPet);
@@ -101,7 +104,8 @@ class EggController extends PoppySeedPetsItemController
      */
     public function openMetalBox(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
-        EntityManagerInterface $em, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository
+        EntityManagerInterface $em, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository,
+        MeritRepository $meritRepository
     )
     {
         $this->validateInventory($inventory, 'egg/metalBox/#/open');
@@ -148,6 +152,7 @@ class EggController extends PoppySeedPetsItemController
             ->increaseEsteem(10)
             ->increaseFood(-8)
             ->setSkills($petSkills)
+            ->addMerit($meritRepository->getRandomStartingMerit())
         ;
 
         $em->persist($newPet);
