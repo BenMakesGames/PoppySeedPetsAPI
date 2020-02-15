@@ -317,7 +317,7 @@ class TraderService
                 'sunflower',
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Wheat Flower'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Sunflower'), 1) ],
-                'Have a nice Sunday!'
+                'Ooh, you doing some Beehive stuff? Or making one of those Night and Day swords? Well, have a happy Sunday, regardless!'
             );
         }
 
