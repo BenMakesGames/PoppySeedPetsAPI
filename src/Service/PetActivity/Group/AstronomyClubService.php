@@ -106,6 +106,8 @@ class AstronomyClubService
                 $newParts[] = ArrayFunctions::pick_one(self::NUMBER_LIST);
             else if($part === '%suffix%')
                 $newParts[] = ArrayFunctions::pick_one(self::SUFFIX_LIST);
+            else if($part === '%prefix%')
+                $newParts[] = ArrayFunctions::pick_one(self::PREFIX_LIST);
             else
                 $newParts[] = $part;
         }
