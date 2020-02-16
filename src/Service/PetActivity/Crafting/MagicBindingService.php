@@ -3,6 +3,7 @@ namespace App\Service\PetActivity\Crafting;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
@@ -37,6 +38,15 @@ class MagicBindingService
         if(array_key_exists('Magic Smoke', $quantities))
             $possibilities[] = [ $this, 'magicSmokeToQuint' ];
 
+        if(array_key_exists('Wings', $quantities))
+        {
+            if(array_key_exists('Talon', $quantities) && array_key_exists('Paper', $quantities))
+                $possibilities[] = [ $this, 'createSummoningScroll' ];
+
+            if(array_key_exists('Painted Dumbbell', $quantities) && array_key_exists('Glass', $quantities) && array_key_exists('Quinacridone Magenta Dye', $quantities))
+                $possibilities[] = [ $this, 'createSmilingWand' ];
+        }
+
         if(array_key_exists('Quintessence', $quantities))
         {
             if(array_key_exists('Gold Trifecta', $quantities))
@@ -59,6 +69,9 @@ class MagicBindingService
 
             if(array_key_exists('Mirror', $quantities) && array_key_exists('Crooked Stick', $quantities))
                 $possibilities[] = [ $this, 'createMagicMirror' ];
+
+            if(array_key_exists('Feathers', $quantities))
+                $possibilities[] = [ $this, 'createWings' ];
 
             // magic scrolls
             if(array_key_exists('Paper', $quantities))
@@ -83,9 +96,6 @@ class MagicBindingService
 
                 if(array_key_exists('Musical Scales', $quantities))
                     $possibilities[] = [ $this, 'createMusicScroll' ];
-
-                if(array_key_exists('Talon', $quantities) && array_key_exists('Feathers', $quantities))
-                    $possibilities[] = [ $this, 'createSummoningScroll' ];
             }
 
             if(array_key_exists('Ceremonial Trident', $quantities))
@@ -119,6 +129,9 @@ class MagicBindingService
         return $possibilities;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createCrazyHotTorch(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
@@ -161,6 +174,9 @@ class MagicBindingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createBunchOfDice(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
@@ -199,6 +215,9 @@ class MagicBindingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function mermaidEggToQuint(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getDexterity());
@@ -231,6 +250,9 @@ class MagicBindingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function magicSmokeToQuint(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + floor(($pet->getUmbra() + $pet->getScience()) / 2) + $pet->getIntelligence() + $pet->getDexterity());
@@ -272,6 +294,9 @@ class MagicBindingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createMagicHourglass(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
@@ -305,7 +330,10 @@ class MagicBindingService
         }
     }
 
-    // note: THIS method should be private, but most methods here must be public!
+    /**
+     * note: THIS method should be private, but most methods here must be public!
+     * @throws EnumInvalidValueException
+     */
     private function bindCeremonialTrident(Pet $pet, array $otherMaterials, string $makes): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
@@ -341,21 +369,33 @@ class MagicBindingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createCeremonyOfShadows(Pet $pet): PetActivityLog
     {
         return $this->bindCeremonialTrident($pet, [ 'Blackonite' ], 'Ceremony of Shadows');
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createCeremonyOfFire(Pet $pet): PetActivityLog
     {
         return $this->bindCeremonialTrident($pet, [ 'Firestone' ], 'Ceremony of Fire');
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createCeremonyOfSandAndSea(Pet $pet): PetActivityLog
     {
         return $this->bindCeremonialTrident($pet, [ 'Seaweed', 'Sand Dollar' ], 'Ceremony of Sand and Sea');
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createIridescentHandCannon(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
@@ -385,7 +425,7 @@ class MagicBindingService
         else if($umbraCheck < 16)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(46, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Blunderbuss, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
         }
         else // success!
@@ -403,9 +443,65 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Iridescent Hand Cannon', $pet, $pet->getName() . ' bound a Moon Pearl to an extended Blunderbuss, making this!', $activityLog);
             return $activityLog;
         }
-
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
+    public function createSmilingWand(Pet $pet): PetActivityLog
+    {
+        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
+
+        if($craftsCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to decorate a Painted Dumbbell but broke the Glass :(', 'icons/activity-logs/broke-glass');
+        }
+        else if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->inventoryService->loseItem('Wings', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(-1);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Painted Dumbbell, but accidentally disenchanted the Wings :(', '');
+            $this->inventoryService->petCollectsItem('Feathers', $pet, 'Left over after ' . $pet->getName() . ' accidentally disenchanted some Wings...', $activityLog);
+            return $activityLog;
+        }
+        else if($craftsCheck < 10)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(46, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Painted Dumbbell, but didn\'t arrange the material components properly.', 'icons/activity-logs/confused');
+        }
+        else if($umbraCheck < 16)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(46, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Painted Dumbbell, but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Wings', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Quinacridone Magenta Dye', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Painted Dumbbell', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::UMBRA, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(5);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Smiling Wand by decorating & enchanting a Painted Dumbbell!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+            ;
+            $this->inventoryService->petCollectsItem('Smiling Wand', $pet, $pet->getName() . ' made this by decorating & enchanting a Painted Dumbbell!', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createGizubisShovel(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
@@ -451,6 +547,9 @@ class MagicBindingService
 
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createNewMoon(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
@@ -495,6 +594,9 @@ class MagicBindingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createNightAndDay(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
@@ -541,6 +643,9 @@ class MagicBindingService
 
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createWitchsBroom(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
@@ -585,6 +690,9 @@ class MagicBindingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createMagicMirror(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
@@ -629,6 +737,9 @@ class MagicBindingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createAstralTuningFork(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
@@ -663,6 +774,46 @@ class MagicBindingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
+    public function createWings(Pet $pet): PetActivityLog
+    {
+        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            $pet->increaseEsteem(-1);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bind some Wings, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+        }
+        else if($umbraCheck < 14)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bind some Wings, but kept mixing up the steps.', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Feathers', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' bound some Wings.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+            ;
+            $this->inventoryService->petCollectsItem('Wings', $pet, $pet->getName() . ' bound this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createGoldTriskaidecta(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
@@ -697,6 +848,9 @@ class MagicBindingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createGenericScroll(Pet $pet, string $uniqueIngredient, string $scroll): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
@@ -739,41 +893,65 @@ class MagicBindingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createFruitScroll(Pet $pet): PetActivityLog
     {
         return $this->createGenericScroll($pet, 'Red', 'Scroll of Fruit');
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createFarmerScroll(Pet $pet): PetActivityLog
     {
         return $this->createGenericScroll($pet, 'Wheat Flower', 'Farmer\'s Scroll');
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createFlowerScroll(Pet $pet): PetActivityLog
     {
         return $this->createGenericScroll($pet, 'Rice Flower', 'Scroll of Flowers');
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createSeaScroll(Pet $pet): PetActivityLog
     {
         return $this->createGenericScroll($pet, 'Seaweed', 'Scroll of the Sea');
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createSilverScroll(Pet $pet): PetActivityLog
     {
         return $this->createGenericScroll($pet, 'Silver Bar', 'Minor Scroll of Riches');
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createGoldScroll(Pet $pet): PetActivityLog
     {
         return $this->createGenericScroll($pet, 'Gold Bar', 'Major Scroll of Riches');
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createMusicScroll(Pet $pet): PetActivityLog
     {
         return $this->createGenericScroll($pet, 'Musical Scales', 'Scroll of Songs');
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createSummoningScroll(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
@@ -803,10 +981,9 @@ class MagicBindingService
         else // success!
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
-            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Wings', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Paper', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Talon', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Feathers', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Monster-summoning Scroll.', '')
