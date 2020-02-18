@@ -76,8 +76,8 @@ class FloristController extends PoppySeedPetsController
 
         if($recipient->getId() === $this->getUser()->getId())
         {
-            $flowerName = 'Narcissus';
             $transactionMessage = 'Bought ' . GrammarFunctions::indefiniteArticle($flowerName) . ' ' . $flowerName . ' for yourself at the Florist. Received a Narcissus instead...';
+            $flowerName = 'Narcissus';
         }
         else
             $transactionMessage = 'Bought ' . GrammarFunctions::indefiniteArticle($flowerName) . ' ' . $flowerName . ' for ' . $recipient->getName() . ' at the Florist.';
