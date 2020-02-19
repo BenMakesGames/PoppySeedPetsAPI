@@ -89,7 +89,7 @@ class DreamingService
                 '%dreamer% ate this while falling in a dream.',
             ],
             [
-                'In a dream, %dreamer% and a friend were %wandering% %location%. The friend reached into their pocket and pulled out something covered in cloth. %dreamer% lifted up the cloth, and found %item%. When they looked up, their friend was gone.',
+                'In a dream, %dreamer% and a friend were %wandering% %location1%. The friend reached into their pocket and pulled out something covered in cloth. %dreamer% lifted up the cloth, and found %item%. When they looked up, their friend was gone.',
                 '%dreamer% received this from a friend in a dream.'
             ],
             [
