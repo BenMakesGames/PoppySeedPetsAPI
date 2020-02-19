@@ -55,14 +55,24 @@ class DreamingService
     public function dream(Pet $pet): PetActivityLog
     {
         $item = ArrayFunctions::pick_one([
-            'Renaming Scroll', 'Behatting Scroll', 'Unicorn Horn', 'Compass (the Math Kind)', 'Password',
-            'Beans', 'Chocomilk', 'Dark Matter', 'Pointer', 'Magic Smoke', 'Useless Fizz', 'Cobbler Recipe',
-            'Honeydont', 'Crooked Stick', 'Seaweed', 'Tentacle', 'Secret Seashell', 'Plastic Idol', 'Fig',
-            'Silica Grounds', 'Smallish Pumpkin', 'Paper Bag', 'Feathers', 'Gold Triangle', 'Single',
-            'Sweet Beet', 'Mysterious Seed', 'Tomato "Sushi"', 'Tentacle Onigiri', 'Candle', 'Wheat Flower',
-            'Sweet Coffee Bean Tea with Mammal Extract', 'Trout Yogurt', 'Bungee Cord', 'Paper', 'Sunflower',
-            'Striped Microcline', 'Stroganoff Recipe', 'Spirit Polymorph Potion Recipe', 'Giant Turkey Leg',
-            'Handicrafts Supply Box',
+            'Beans', 'Bungee Cord',
+            'Candle', 'Chanterelle', 'Chocomilk', 'Cobbler Recipe', 'Compass (the Math Kind)', 'Crooked Stick',
+            'Egg',
+            'Feathers', 'Fig', 'Fluff',
+            'Giant Turkey Leg', 'Ginger', 'Gold Triangle',
+            'Handicrafts Supply Box', 'Honeydont',
+            'Iron Key',
+            'Music Note', 'Mysterious Seed',
+            'Oil', 'Orange',
+            'Paper', 'Paper Bag', 'Password', 'Plastic', 'Plastic Idol', 'Purple Violet',
+            'Quintessence',
+            'Red',
+            'Seaweed', 'Secret Seashell', 'Silica Grounds', 'Single', 'Smallish Pumpkin',
+            'Spirit Polymorph Potion Recipe', 'String', 'Striped Microcline', 'Stroganoff Recipe', 'Sunflower',
+            'Sweet Beet', 'Sweet Coffee Bean Tea with Mammal Extract',
+            'Tentacle', 'Tentacle Onigiri', 'Tomato "Sushi"', 'Trout Yogurt',
+            'Unicorn Horn', 'Useless Fizz',
+            'Wheat Flower', 'Witch-hazel',
         ]);
 
         $dream = ArrayFunctions::pick_one([
