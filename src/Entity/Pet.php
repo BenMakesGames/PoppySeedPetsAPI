@@ -308,6 +308,16 @@ class Pet
      */
     private $loveLanguage;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isGrandparent = false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $claimedGrandparentMerit = false;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -1515,6 +1525,30 @@ class Pet
     public function setLoveLanguage(string $loveLanguage): self
     {
         $this->loveLanguage = $loveLanguage;
+
+        return $this;
+    }
+
+    public function getIsGrandparent(): ?bool
+    {
+        return $this->isGrandparent;
+    }
+
+    public function setIsGrandparent(bool $isGrandparent): self
+    {
+        $this->isGrandparent = $isGrandparent;
+
+        return $this;
+    }
+
+    public function getClaimedGrandparentMerit(): ?bool
+    {
+        return $this->claimedGrandparentMerit;
+    }
+
+    public function setClaimedGrandparentMerit(bool $claimedGrandparentMerit): self
+    {
+        $this->claimedGrandparentMerit = $claimedGrandparentMerit;
 
         return $this;
     }

@@ -195,6 +195,10 @@ class PregnancyService
             ->increaseFood(-mt_rand(8, 16))
         ;
 
+        // grandparents get cool stuff :P
+        if($pet->getMom()) $pet->getMom()->setIsGrandparent(true);
+        if($pet->getDad()) $pet->getDad()->setIsGrandparent(true);
+
         $this->userStatsRepository->incrementStat($user, UserStatEnum::PETS_BIRTHED);
     }
 
