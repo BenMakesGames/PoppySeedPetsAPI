@@ -335,19 +335,25 @@ class PetService
             $pet->increasePoison(2);
         }
 
-        if($pet->getSafety() > 0 && mt_rand(1, 2) === 1)
+        $safetyRestingPoint = $pet->hasMerit(MeritEnum::NOTHING_TO_FEAR) ? 8 : 0;
+
+        if($pet->getSafety() > $safetyRestingPoint && mt_rand(1, 2) === 1)
             $pet->increaseSafety(-1);
-        else if($pet->getSafety() < 0)
+        else if($pet->getSafety() < $safetyRestingPoint)
             $pet->increaseSafety(1);
 
-        if($pet->getLove() > 0 && mt_rand(1, 2) === 1)
+        $loveRestingPoint = $pet->hasMerit(MeritEnum::EVERLASTING_LOVE) ? 8 : 0;
+
+        if($pet->getLove() > $loveRestingPoint && mt_rand(1, 2) === 1)
             $pet->increaseLove(-1);
-        else if($pet->getLove() < 0 && mt_rand(1, 2) === 1)
+        else if($pet->getLove() < $loveRestingPoint && mt_rand(1, 2) === 1)
             $pet->increaseLove(1);
 
-        if($pet->getEsteem() > 0)
+        $esteemRestingPoint = $pet->hasMerit(MeritEnum::NEVER_EMBARRASSED) ? 8 : 0;
+
+        if($pet->getEsteem() > $esteemRestingPoint)
             $pet->increaseEsteem(-1);
-        else if($pet->getEsteem() < 0 && mt_rand(1, 2) === 1)
+        else if($pet->getEsteem() < $esteemRestingPoint && mt_rand(1, 2) === 1)
             $pet->increaseEsteem(1);
 
         $pregnancy = $pet->getPregnancy();

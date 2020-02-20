@@ -1529,7 +1529,7 @@ class Pet
         return $this;
     }
 
-    public function getIsGrandparent(): ?bool
+    public function getIsGrandparent(): bool
     {
         return $this->isGrandparent;
     }
@@ -1541,14 +1541,14 @@ class Pet
         return $this;
     }
 
-    public function getClaimedGrandparentMerit(): ?bool
+    public function getClaimedGrandparentMerit(): bool
     {
         return $this->claimedGrandparentMerit;
     }
 
-    public function setClaimedGrandparentMerit(bool $claimedGrandparentMerit): self
+    public function setClaimedGrandparentMerit(): self
     {
-        $this->claimedGrandparentMerit = $claimedGrandparentMerit;
+        $this->claimedGrandparentMerit = true;
 
         return $this;
     }

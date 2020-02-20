@@ -9,6 +9,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
+use App\Repository\MeritRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -22,10 +23,11 @@ class GenericAdventureService
     private $petExperienceService;
     private $userQuestRepository;
     private $transactionService;
+    private $meritRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        UserQuestRepository $userQuestRepository, TransactionService $transactionService
+        UserQuestRepository $userQuestRepository, TransactionService $transactionService, MeritRepository $meritRepository
     )
     {
         $this->responseService = $responseService;
@@ -33,10 +35,42 @@ class GenericAdventureService
         $this->userQuestRepository = $userQuestRepository;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
+        $this->meritRepository = $meritRepository;
     }
 
     public function adventure(Pet $pet): PetActivityLog
     {
+        if($pet->getIsGrandparent() && !$pet->getClaimedGrandparentMerit())
+        {
+            /** @var string $newMerit */
+            $newMerit = ArrayFunctions::pick_one([
+                MeritEnum::NEVER_EMBARRASSED, MeritEnum::EVERLASTING_LOVE, MeritEnum::NOTHING_TO_FEAR
+            ]);
+
+            $changes = new PetChanges($pet);
+
+            $pet
+                ->addMerit($this->meritRepository->findOneByName($newMerit))
+                ->setClaimedGrandparentMerit()
+            ;
+
+            switch($newMerit)
+            {
+                case MeritEnum::NEVER_EMBARRASSED: $pet->increaseEsteem(72); break;
+                case MeritEnum::EVERLASTING_LOVE: $pet->increaseLove(72); break;
+                case MeritEnum::NOTHING_TO_FEAR: $pet->increaseSafety(72); break;
+            }
+
+            $activityLog = (new PetActivityLog())
+                ->setPet($pet)
+                ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
+                ->setEntry($pet->getName() . ', having become a grandparent, has been thinking about their life up until this point, and adopted a new philosophy: ' . $newMerit . '!')
+                ->setChanges($changes->compare($pet))
+            ;
+
+            return $activityLog;
+        }
+
         $level = $pet->getLevel();
         $activityLog = null;
         $changes = new PetChanges($pet);

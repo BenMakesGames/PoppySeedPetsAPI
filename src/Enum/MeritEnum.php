@@ -31,6 +31,11 @@ final class MeritEnum
     public const FORCE_OF_NATURE = 'Force of Nature';
     public const BALANCE = 'Balance';
 
+    // available by becoming a grandparent pet
+    public const NEVER_EMBARRASSED = 'Never Embarrassed';
+    public const EVERLASTING_LOVE = 'Everlasting Love';
+    public const NOTHING_TO_FEAR = 'Nothing to Fear';
+
     // every pet gets one (list is in MeritRepository::POSSIBLE_STARTING_MERITS)
     public const BURPS_MOTHS = 'Burps Moths';
     public const NAIVE = 'Naïve'; // treats rivals as friends; treats fwbs as mates; always gives in to relationship changes
