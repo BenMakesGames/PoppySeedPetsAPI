@@ -87,9 +87,6 @@
     "fgrosse/phpasn1": {
         "version": "v2.1.1"
     },
-    "fig/link-util": {
-        "version": "1.0.0"
-    },
     "guzzlehttp/guzzle": {
         "version": "6.3.3"
     },
@@ -240,6 +237,9 @@
     },
     "symfony/dotenv": {
         "version": "v4.3.1"
+    },
+    "symfony/error-handler": {
+        "version": "v4.4.4"
     },
     "symfony/event-dispatcher": {
         "version": "v4.3.1"
