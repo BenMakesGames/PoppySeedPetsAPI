@@ -7,7 +7,7 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
 use App\Functions\ArrayFunctions;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Merit|null find($id, $lockMode = null, $lockVersion = null)
@@ -42,7 +42,7 @@ class MeritRepository extends ServiceEntityRepository
         MeritEnum::DARKVISION,
     ];
 
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Merit::class);
     }

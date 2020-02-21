@@ -63,7 +63,7 @@ Other good offerings include:
 * Pure gold and silver, for riches
 * Seaweed (as mentioned before)
 * Flowers; Rice Flower in particular
-* Talons & Feathers (be careful with this one!)
+* Talons & Wings (be careful with this one!)
 ');
     }
 }

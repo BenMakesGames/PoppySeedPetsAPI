@@ -7,7 +7,7 @@ use App\Entity\PetRelationship;
 use App\Entity\User;
 use App\Enum\RelationshipEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Pet|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,7 +17,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class PetRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Pet::class);
     }

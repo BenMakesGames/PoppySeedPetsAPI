@@ -43,6 +43,7 @@ class BakingBookController extends PoppySeedPetsItemController
 * Naner Bread
 * Pancakes
 * Plain Bread
+* Shortbread Cookies
 * Sugar Cookies (World\'s Best!)
 
 ## Basic Ingredients
@@ -161,6 +162,14 @@ The milk provides enough acidity for this recipe, so Cream of Tartar (or Baking 
 * Creamy Milk
 * Sugar
 * Wheat Flour
+
+#### Shortbread Cookies
+
+* Butter
+* Sugar
+* Wheat Flour
+
+(Don\'t forget the Sugar, or you\'ll just end up with Pie Crust!)  
 
 #### Sugar Cookies (World\'s Best!)
 

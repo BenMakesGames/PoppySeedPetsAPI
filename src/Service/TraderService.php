@@ -186,11 +186,7 @@ class TraderService
         }
 
         if($leapDay)
-        {
             $dialog = "A Leap Day! I wouldn't miss this for anything!\n\nAnd happy Leap Day Birthday to anyone out there who was born on Leap Day! It's gotta' be, like - what? - one in every 1461 people? Something like that!";
-            // TODO: add a special Leap Day item, and a special Leap Day Birthday item (Leap Day Birthday Cake?)
-            //$offers[] = [];
-        }
 
         return [
             'dialog' => $dialog,
