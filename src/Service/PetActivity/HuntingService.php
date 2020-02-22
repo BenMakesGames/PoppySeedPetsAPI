@@ -366,11 +366,28 @@ class HuntingService
 
     private function huntedScarecrow(Pet $pet): PetActivityLog
     {
-        $skill = 10 + $pet->getStrength() + $pet->getBrawl();
+        $brawlRoll = mt_rand(1, 10 + $pet->getStrength() + $pet->getBrawl());
+        $stealthSkill = mt_rand(1, 10 + $pet->getDexterity() + $pet->getStealth());
 
         $pet->increaseFood(-1);
 
-        if(mt_rand(1, $skill) >= 7)
+        if($stealthSkill >= 10)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH ]);
+            $pet->increaseEsteem(1);
+
+            $itemName = ArrayFunctions::pick_one([ 'Wheat', 'Rice' ]);
+            $bodyPart = ArrayFunctions::pick_one([ 'left', 'right' ]) . ' ' . ArrayFunctions::pick_one([ 'leg', 'arm' ]);
+
+            $moneys = mt_rand(1, mt_rand(2, mt_rand(3, 5)));
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' snuck up on a Scarecrow, and picked its pockets... and also its ' . $bodyPart . '! ' . $pet->getName() . ' walked away with ' . $moneys . '~~m~~, and some ' . $itemName . '.', '');
+            $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' stole this from a Scarecrow\'s ' . $bodyPart .'.', $activityLog);
+            $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' stole this from a Scarecrow.');
+        }
+        else if($brawlRoll >= 8)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
 
@@ -384,6 +401,7 @@ class HuntingService
                 if(mt_rand(1, 10 + $pet->getPerception() + $pet->getNature()) >= 10)
                 {
                     $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+                    $pet->increaseEsteem(1);
 
                     if(mt_rand(1, 2) === 1)
                         $this->inventoryService->petCollectsItem('Wheat', $pet, $pet->getName() . ' took this from a Wheat Farm, after beating up its Scarecrow.', $activityLog);
@@ -399,6 +417,8 @@ class HuntingService
                 if(mt_rand(1, 10 + $pet->getPerception() + $pet->getNature()) >= 10)
                 {
                     $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+                    $pet->increaseEsteem(1);
+
                     $this->inventoryService->petCollectsItem('Rice', $pet, $pet->getName() . ' took this from a Rice Farm, after beating up its Scarecrow.', $activityLog);
                 }
             }
