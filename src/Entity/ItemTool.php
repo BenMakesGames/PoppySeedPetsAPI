@@ -321,7 +321,7 @@ class ItemTool
             $value = $this->{'get' . $modifier}();
 
             if($value !== 0)
-                $modifiers[] = self::rate($value) . ' ' . $modifier;
+                $modifiers[] = ($value > 0 ? '+' : '') . $value . ' ' . $modifier;
         }
 
         if($this->getProvidesLight())

@@ -125,6 +125,7 @@ class Pet
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\PetSkills", inversedBy="pet", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"myPet"})
      */
     private $skills;
 

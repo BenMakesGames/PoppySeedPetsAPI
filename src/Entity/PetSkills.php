@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PetSkillsRepository")
@@ -38,41 +39,49 @@ class PetSkills
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"myPet"})
      */
     private $stealth = 0;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"myPet"})
      */
     private $stamina = 0;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"myPet"})
      */
     private $nature = 0;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"myPet"})
      */
     private $brawl = 0;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"myPet"})
      */
     private $umbra = 0;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"myPet"})
      */
     private $crafts = 0;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"myPet"})
      */
     private $music = 0;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"myPet"})
      */
     private $science = 0;
 
