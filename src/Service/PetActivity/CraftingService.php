@@ -127,6 +127,9 @@ class CraftingService
 
             if(array_key_exists('Cooking Buddy', $quantities) && array_key_exists('Antenna', $quantities))
                 $possibilities[] = [ $this, 'createAlienCookingBuddy' ];
+
+            if(array_key_exists('Iron Sword', $quantities) && array_key_exists('Laser Pointer', $quantities))
+                $possibilities[] = [ $this, 'createLaserGuidedSword' ];
         }
 
         if(array_key_exists('String', $quantities) && array_key_exists('Glass', $quantities))
@@ -1477,6 +1480,43 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' spent a while trying to repair a Rusty Rapier, but wasn\'t able to make any progress.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createLaserGuidedSword(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getScience(), $pet->getCrafts()));
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->inventoryService->loseItem('Glue', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ]);
+            $pet->increaseEsteem(-2);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Laser-guided Sword, but messed up and wasted the Glue :(', '');
+        }
+        else if($roll >= 14)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Iron Sword', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Glue', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Laser Pointer', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Laser-guided Sword.', '');
+
+            if(mt_rand(1, 4) === 1)
+                $this->inventoryService->petCollectsItem('Laser-guided Sword', $pet, $pet->getName() . ' created by gluing a Laser Pointer to a sword. Naturally.', $activityLog);
+            else
+                $this->inventoryService->petCollectsItem('Laser-guided Sword', $pet, $pet->getName() . ' created by gluing a Laser Pointer to a sword.', $activityLog);
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to improve an Iron Sword, but wasn\'t sure how to begin...', 'icons/activity-logs/confused');
         }
     }
 }

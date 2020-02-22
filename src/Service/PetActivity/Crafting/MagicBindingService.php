@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
@@ -125,14 +126,11 @@ class MagicBindingService
                     $possibilities[] = [ $this, 'createNightAndDay' ];
             }
 
-            /*
-            // @TODO
             if(array_key_exists('Iron Sword', $quantities))
             {
                 if(array_key_exists('Musical Scales', $quantities))
                     $possibilities[] = [ $this, 'createDancingSword' ];
             }
-            */
         }
 
         return $possibilities;
@@ -649,7 +647,62 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Night and Day', $pet, $pet->getName() . ' enchanted this.', $activityLog);
             return $activityLog;
         }
+    }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
+    public function createDancingSword(Pet $pet): PetActivityLog
+    {
+        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + max($pet->getPerception(), ceil($pet->getMusic() / 4)));
+
+        if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+
+            $pet->increaseEsteem(-2);
+
+            if(mt_rand(1, 2) === 1)
+            {
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+                $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant an Iron Sword, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+            }
+            else
+            {
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::MUSIC ]);
+                $this->inventoryService->loseItem('Musical Scales', $pet->getOwner(), LocationEnum::HOME, 1);
+
+                for($i = 0; $i < 6; $i++)
+                    $this->inventoryService->petCollectsItem('Music Note', $pet, $pet->getName() . ' accidentally broke apart Musical Scales into Music Notes, of which this is one.', null);
+
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bind a Dancing Sword, but accidentally dropped the Musical Scales, scattering Music Notes everywhere, and breaking one.', '');
+            }
+        }
+        else if($umbraCheck < 18)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::MUSIC ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant an Iron Sword, but kept messing up the song.', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Musical Scales', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Iron Sword', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA, PetSkillEnum::MUSIC ]);
+            $pet
+                ->increaseEsteem(4)
+                ->increaseSafety(2)
+            ;
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' bound a Dancing Sword...', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+            ;
+            $this->inventoryService->petCollectsItem('Dancing Sword', $pet, $pet->getName() . ' enchanted this.', $activityLog);
+            return $activityLog;
+        }
     }
 
     /**

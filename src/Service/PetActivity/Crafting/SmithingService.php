@@ -110,6 +110,9 @@ class SmithingService
 
                 if(array_key_exists('Chanterelle', $quantities) && array_key_exists('Flute', $quantities))
                     $possibilities[] = [ $this, 'createFungalClarinet' ];
+
+                if(array_key_exists('Glass', $quantities))
+                    $possibilities[] = [ $this, 'createGoldTelescope' ];
             }
 
             if(array_key_exists('Silver Bar', $quantities) && array_key_exists('Gold Bar', $quantities) && array_key_exists('White Cloth', $quantities))
@@ -1089,6 +1092,58 @@ class SmithingService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge a Gold Tuning Fork from a Gold Bar, but couldn\'t get the shape right.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createGoldTelescope(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 3)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+
+            if(mt_rand(1, 20 + $pet->getDexterity() + $pet->getStamina()) >= 18)
+            {
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+                $pet->increaseEsteem(2);
+                $pet->increaseSafety(-4);
+
+                if(mt_rand(1, 4) === 1)
+                {
+                    $pet->increaseEsteem(2);
+                    return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make a lens from a piece of glass, and cut themselves! :( They managed to save the glass, though! ' . $pet->getName() . ' is kind of proud of that.', 'icons/activity-logs/wounded');
+                }
+                else
+                    return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make a lens from a piece of glass, and cut themselves! :( They managed to save the glass, though!', 'icons/activity-logs/wounded');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+                $pet->increaseEsteem(-2);
+                $pet->increaseSafety(-4);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make a lens from a piece of glass, but cut themselves, and dropped the glass :(', 'icons/activity-logs/wounded');
+            }
+        }
+        else if($roll >= 15)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Gold Telescope.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+            ;
+            $this->inventoryService->petCollectsItem('Gold Telescope', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a telescope, but almost broke the glass, and gave up.', 'icons/activity-logs/confused');
         }
     }
 

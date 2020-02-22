@@ -19,7 +19,7 @@ class LinensController extends PoppySeedPetsItemController
      * @Route("/{inventory}/rummage", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function openFruitBasket(
+    public function rummageThroughLinens(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em
     )
@@ -33,7 +33,7 @@ class LinensController extends PoppySeedPetsItemController
         $numberOfCloth = mt_rand(2, 3);
 
         for($i = 0; $i < $numberOfCloth; $i++)
-            $inventoryService->receiveItem($numberOfCloth, $user, $user, $user->getName() . ' found this in a pile of Linens and Things.', $location, $lockedToOwner);
+            $inventoryService->receiveItem('White Cloth', $user, $user, $user->getName() . ' found this in a pile of Linens and Things.', $location, $lockedToOwner);
 
         $em->remove($inventory);
 
