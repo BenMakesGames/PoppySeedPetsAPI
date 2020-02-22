@@ -156,7 +156,7 @@ class AstronomyClubService
                 $item = null;
                 $description = null;
             }
-            else if($reward < 20)
+            else if($reward < 20) // 10%
             {
                 $item = 'Silica Grounds';
                 $description = 'a cloud of space dust';
@@ -164,17 +164,22 @@ class AstronomyClubService
                 if(mt_rand(1, 20) === 1)
                     $description .= '-- I mean, Silica Grounds';
             }
-            else if($reward < 30)
+            else if($reward < 30) // 10%
             {
                 $item = 'NUL';
                 $description = 'some old radio transmissions from Earth';
             }
-            else if($reward < 50)
+            else if($reward < 35) // 5%
             {
                 $item = 'Moon Pearl';
                 $description = 'Moon Pearls';
             }
-            else if($reward < 60)
+            else if($reward < 50) // 15%
+            {
+                $item = 'Planetary Ring';
+                $description = 'a Planetary Ring';
+            }
+            else if($reward < 60) // 10%
             {
                 $item = 'Paper';
                 $description = 'Paper';
