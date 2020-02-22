@@ -124,6 +124,15 @@ class MagicBindingService
                 if(array_key_exists('Sunflower', $quantities) && array_key_exists('Dark Matter', $quantities))
                     $possibilities[] = [ $this, 'createNightAndDay' ];
             }
+
+            /*
+            // @TODO
+            if(array_key_exists('Iron Sword', $quantities))
+            {
+                if(array_key_exists('Musical Scales', $quantities))
+                    $possibilities[] = [ $this, 'createDancingSword' ];
+            }
+            */
         }
 
         return $possibilities;

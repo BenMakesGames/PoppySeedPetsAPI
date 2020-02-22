@@ -1179,6 +1179,7 @@ class PetRelationshipService
             RelationshipEnum::BFF => 'just be BFFs',
             RelationshipEnum::FWB => 'just be friends, but maybe still, you know, _do stuff_',
             RelationshipEnum::FRIENDLY_RIVAL => 'just be friendly rivals',
+            RelationshipEnum::MATE => 'date',
         ];
 
         $r = mt_rand(1, 100);
