@@ -39,7 +39,7 @@ class UmbraService
     {
         $skill = 10 + $pet->getStamina() + $pet->getIntelligence() + $pet->getUmbra(); // psychedelics bonus is built into getUmbra()
 
-        $skill = NumberFunctions::constrain($skill, 1, 16);
+        $skill = NumberFunctions::constrain($skill, 1, 17);
 
         $roll = mt_rand(1, $skill);
 
@@ -86,6 +86,9 @@ class UmbraService
                 break;
             case 16:
                 $activityLog = $this->gatheringAtTheNoetala($pet);
+                break;
+            case 17:
+                $activityLog = $this->foundVampireCastle($pet);
                 break;
         }
 
@@ -478,6 +481,73 @@ class UmbraService
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' ' . $didWhat . '.', $activityLog);
 
         return $activityLog;
+    }
 
+    private function foundVampireCastle(Pet $pet)
+    {
+        $umbraCheck = mt_rand(1, 10 + $pet->getUmbra() + $pet->getPerception());
+
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
+
+        if($umbraCheck >= 12)
+        {
+            // realize it's vampires; chance to steal
+            $stealthCheck = mt_rand(1, 20 + $pet->getStealth() + $pet->getDexterity());
+
+            if($stealthCheck >= 16)
+            {
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ]);
+                $loot = ArrayFunctions::pick_one([ 'Blood Wine', 'Linens and Things' ]);
+
+                $pet->increaseEsteem(2);
+
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' stumbled upon a castle that was obviously home to vampires. They snuck around inside for a while, and made off with some ' . $loot . '.', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ;
+
+                $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this from a vampire castle.', $activityLog);
+            }
+            else
+            {
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ]);
+
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' stumbled upon a castle that was obviously home to vampires. They snuck around inside for a while, but couldn\'t find a good opportunity to steal anything.', 'icons/activity-logs/confused');
+            }
+        }
+        else
+        {
+            // don't realize; get in a fight
+            $brawlCheck = mt_rand(1, 20 + $pet->getDexterity() + $pet->getStrength() + $pet->getBrawl());
+
+            if($brawlCheck >= 20)
+            {
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+                $loot = ArrayFunctions::pick_one([ 'Cloth', 'Talon', 'Quintessence' ]);
+
+                $pet
+                    ->increaseEsteem(2)
+                    ->increaseSafety(2)
+                ;
+
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' stumbled upon a castle. While exploring it, a vampire attacked them! ' . $pet->getName() . ' was able to drive them away, however, and even nab ' . $loot . '!', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ;
+
+                $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' beat up a vampire and took this.', $activityLog);
+            }
+            else
+            {
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+
+                $pet
+                    ->increaseEsteem(-2)
+                    ->increaseSafety(-2)
+                ;
+
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' stumbled upon a castle. While exploring it, a vampire attacked them! ' . $pet->getName() . ', caught completely by surprised, was forced to flee...', '');
+            }
+        }
+
+        return $activityLog;
     }
 }

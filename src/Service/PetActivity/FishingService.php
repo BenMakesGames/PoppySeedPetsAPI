@@ -439,23 +439,28 @@ class FishingService
 
     private function fishedPlazaFountain(Pet $pet, int $bonusMoney): PetActivityLog
     {
+        if(mt_rand(1, 10 + $pet->getStealth() + $pet->getDexterity()) >= 10)
+            $bonusMoney += mt_rand(1, 3);
+
         if($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 7) === 1)
         {
             $moneys = mt_rand(10, 15) + $bonusMoney;
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fished around in the Plaza fountain, and grabbed ' . $moneys . ' moneys! Lucky~!', 'icons/activity-logs/moneys')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fished around in the Plaza fountain while no one was looking, and grabbed ' . $moneys . ' moneys! Lucky~!', 'icons/activity-logs/moneys')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
             ;
         }
         else
         {
             $moneys = mt_rand(2, 9) + $bonusMoney;
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fished around in the Plaza fountain, and grabbed ' . $moneys . ' moneys.', 'icons/activity-logs/moneys');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fished around in the Plaza fountain while no one was looking, and grabbed ' . $moneys . ' moneys.', 'icons/activity-logs/moneys');
         }
 
         if(mt_rand(1, 20) === 1)
-            $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' fished this out of the Plaza fountain. (That seems like it shouldn\'t be allowed...)');
+            $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' fished this out of the Plaza fountain while no one was looking. (That seems like it shouldn\'t be allowed...)');
         else
-            $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' fished this out of the Plaza fountain.');
+            $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' fished this out of the Plaza fountain while no one was looking.');
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH ]);
 
         $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::FISH, true);
 
