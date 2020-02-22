@@ -19,21 +19,25 @@ class PetSkills
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"myPet"})
      */
     private $strength = 0;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"myPet"})
      */
     private $dexterity = 0;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"myPet"})
      */
     private $intelligence = 0;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"myPet"})
      */
     private $perception = 0;
 
