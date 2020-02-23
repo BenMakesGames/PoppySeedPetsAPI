@@ -116,7 +116,10 @@ class GenericAdventureService
         ];
 
         if($level >= 5)
+        {
             $possibleRewards[] = [ 'a ', 'Sand Dollar' ];
+            $possibleRewards[] = [ '', 'Ants on a Log' ];
+        }
 
         if($level >= 10)
         {
@@ -140,14 +143,20 @@ class GenericAdventureService
             $possibleRewards[] = [ mt_rand(6, 12), 'moneys' ];
         }
 
-        if($level >= 30)
+        if($level >= 25)
         {
             $possibleRewards[] = [ '', 'Gold Ore' ];
-            $possibleRewards[] = [ 'a', 'Fruit Basket' ];
+            $possibleRewards[] = [ 'a ', 'Fruit Basket' ];
+            $possibleRewards[] = [ 'a ', 'Secret Seashell' ];
         }
 
-        if($level >= 40)
+        if($level >= 30)
+        {
             $possibleRewards[] = [ mt_rand(10, 20), 'moneys' ];
+
+            if(mt_rand(1, 20) === 1)
+                $possibleRewards[] = [ 'a ', 'Species Transmigration Serum' ];
+        }
 
         $reward = ArrayFunctions::pick_one($possibleRewards);
 
