@@ -84,9 +84,12 @@ class CraftingService
                 if(array_key_exists('Overly-long Spear', $quantities))
                     $possibilities[] = [ $this, 'createRidiculouslyLongSpear' ];
 
-                if(array_key_exists('Wheat', $quantities) || array_key_exists('Rice', $quantities))
-                    $possibilities[] = [ $this, 'createStrawBroom' ];
+                if(array_key_exists('Corn', $quantities) && array_key_exists('Rice', $quantities))
+                    $possibilities[] = [ $this, 'createHarvestStaff' ];
             }
+
+            if(array_key_exists('Glue', $quantities) && (array_key_exists('Wheat', $quantities) || array_key_exists('Rice', $quantities)))
+                $possibilities[] = [ $this, 'createStrawBroom' ];
 
             if(array_key_exists('White Cloth', $quantities))
                 $possibilities[] = [ $this, 'createTorchOrFlag' ];
@@ -1117,9 +1120,9 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             if(mt_rand(1, 2) === 1)
             {
-                $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->inventoryService->loseItem('Glue', $pet->getOwner(), LocationEnum::HOME, 1);
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a broom, but broke the String :(', 'icons/activity-logs/broke-string');
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a broom, but spilled the Glue :(', '');
             }
             else
             {
@@ -1131,11 +1134,10 @@ class CraftingService
         else if($craftsCheck >= 13)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Glue', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            if($this->inventoryService->loseItem('Rice', $pet->getOwner(), LocationEnum::HOME, 1) === 0)
-                $this->inventoryService->loseItem('Wheat', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseOneOf([ 'Rice', 'Wheat' ], $pet->getOwner(), LocationEnum::HOME);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
@@ -1148,6 +1150,56 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a broom, but couldn\'t quite figure it out.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createHarvestStaff(Pet $pet): PetActivityLog
+    {
+        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
+
+        if($craftsCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            if($pet->getFood() <= 4)
+            {
+                $food = ArrayFunctions::pick_one([ 'Rice', 'Corn' ]);
+                $this->inventoryService->loseOneOf($food, $pet->getOwner(), LocationEnum::HOME);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+                $pet->increaseFood(4);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make a Harvest Staff, but got hungry, and ate the ' . $food . ' :(', '');
+            }
+            else if(mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Harvest Staff, but broke the String :(', 'icons/activity-logs/broke-string');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a staff, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
+            }
+        }
+        else if($craftsCheck >= 15)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Rice', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Corn', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Harvest Staff.', '');
+            $this->inventoryService->petCollectsItem('Harvest Staff', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a staff, but couldn\'t decide what kind...', 'icons/activity-logs/confused');
         }
     }
 

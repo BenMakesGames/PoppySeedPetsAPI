@@ -112,8 +112,7 @@ class ProgrammingService
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            if($this->inventoryService->loseItem('Silver', $pet->getOwner(), LocationEnum::HOME, 1) === 0)
-                $this->inventoryService->loseItem('Gold', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseOneOf([ 'Silver', 'Gold' ], $pet->getOwner(), LocationEnum::HOME);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' 3D printed & wired a Laser Pointer.', 'items/resource/string')

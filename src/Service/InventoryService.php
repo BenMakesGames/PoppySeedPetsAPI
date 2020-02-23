@@ -318,6 +318,23 @@ class InventoryService
     }
 
     /**
+     * @param Item[]|string[] $itemList
+     * @param int|int[] $location
+     */
+    public function loseOneOf($itemList, User $owner, $location): bool
+    {
+        shuffle($itemList);
+
+        foreach($itemList as $item)
+        {
+            if($this->loseItem($item, $owner, $location, 1) > 0)
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
      * @param ItemQuantity[] $quantities
      */
     public function totalFood($quantities): ItemFood
