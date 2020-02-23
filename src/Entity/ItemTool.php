@@ -339,7 +339,7 @@ class ItemTool
             $modifiers[] = 'learn faster when using ' . $this->getFocusSkill();
 
         if($this->getIsRanged())
-            $modifier[] = 'is only useful at a distance';
+            $modifiers[] = 'is only useful at a distance';
 
         return $modifiers;
     }
