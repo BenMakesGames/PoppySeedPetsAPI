@@ -124,6 +124,11 @@ class ItemTool
      */
     private $alwaysInFront = false;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isRanged = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -333,6 +338,9 @@ class ItemTool
         if($this->getFocusSkill())
             $modifiers[] = 'learn faster when using ' . $this->getFocusSkill();
 
+        if($this->getIsRanged())
+            $modifier[] = 'is only useful at a distance';
+
         return $modifiers;
     }
 
@@ -403,6 +411,18 @@ class ItemTool
     public function setAlwaysInFront(bool $alwaysInFront): self
     {
         $this->alwaysInFront = $alwaysInFront;
+
+        return $this;
+    }
+
+    public function getIsRanged(): ?bool
+    {
+        return $this->isRanged;
+    }
+
+    public function setIsRanged(bool $isRanged): self
+    {
+        $this->isRanged = $isRanged;
 
         return $this;
     }

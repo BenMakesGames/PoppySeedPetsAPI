@@ -881,7 +881,7 @@ class CraftingService
 
     private function createWoodenSword(Pet $pet): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getBrawl()));
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getSkills()->getBrawl()));
 
         if($roll <= 3)
         {
@@ -1071,7 +1071,7 @@ class CraftingService
 
     private function createHuntingSpear(Pet $pet): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getBrawl()));
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getSkills()->getBrawl()));
 
         if($roll <= 3)
         {
@@ -1205,7 +1205,7 @@ class CraftingService
 
     private function createVeryLongSpear(Pet $pet): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getBrawl()));
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getSkills()->getBrawl()));
 
         if($roll <= 3)
         {
@@ -1245,7 +1245,7 @@ class CraftingService
 
     private function createRidiculouslyLongSpear(Pet $pet): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getBrawl()));
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getSkills()->getBrawl()));
 
         if($roll <= 3)
         {

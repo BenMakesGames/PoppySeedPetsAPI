@@ -50,77 +50,77 @@ class SmithingService
         if(array_key_exists('Glass', $quantities) && array_key_exists('Plastic', $quantities))
             $possibilities[] = [ $this, 'createFiberglass' ];
 
-        if(mt_rand(1, 10 + $pet->getCrafts() + $pet->getIntelligence() + $pet->getSmithing()) >= 10)
+        if(array_key_exists('Fiberglass', $quantities) && array_key_exists('String', $quantities))
+            $possibilities[] = [ $this, 'createFiberglassBow' ];
+
+        if(array_key_exists('Iron Bar', $quantities))
         {
-            if(array_key_exists('Iron Bar', $quantities))
+            $possibilities[] = [ $this, 'createIronKey' ];
+            $possibilities[] = [ $this, 'createBasicIronCraft' ];
+
+            if(array_key_exists('Plastic', $quantities))
             {
-                $possibilities[] = [ $this, 'createIronKey' ];
-                $possibilities[] = [ $this, 'createBasicIronCraft' ];
+                if(array_key_exists('Yellow Dye', $quantities))
+                    $possibilities[] = [ $this, 'createYellowScissors' ];
 
-                if(array_key_exists('Plastic', $quantities))
-                {
-                    if(array_key_exists('Yellow Dye', $quantities))
-                        $possibilities[] = [ $this, 'createYellowScissors' ];
-
-                    if(array_key_exists('Green Dye', $quantities))
-                        $possibilities[] = [ $this, 'createGreenScissors' ];
-                }
-
-                if(array_key_exists('String', $quantities))
-                    $possibilities[] = [ $this, 'createGrapplingHook' ];
-
-                if(array_key_exists('Dark Matter', $quantities) && $pet->getStrength() >= 3)
-                    $possibilities[] = [ $this, 'createHeavyHammer' ];
-
-                if(array_key_exists('Mirror', $quantities))
-                    $possibilities[] = [ $this, 'createMirrorShield' ];
+                if(array_key_exists('Green Dye', $quantities))
+                    $possibilities[] = [ $this, 'createGreenScissors' ];
             }
 
-            if(array_key_exists('Silver Bar', $quantities))
-            {
-                $possibilities[] = [ $this, 'createSilverKey' ];
+            if(array_key_exists('Crooked Stick', $quantities) && array_key_exists('Iron Bar', $quantities))
+                $possibilities[] = [ $this, 'createScythe' ];
 
-                if(array_key_exists('"Rustic" Magnifying Glass', $quantities))
-                    $possibilities[] = [ $this, 'createElvishMagnifyingGlass' ];
+            if(array_key_exists('String', $quantities))
+                $possibilities[] = [ $this, 'createGrapplingHook' ];
 
-                if(array_key_exists('Glass', $quantities))
-                {
-                    if(array_key_exists('Silica Grounds', $quantities))
-                        $possibilities[] = [ $this, 'createHourglass' ];
-                    else
-                        $possibilities[] = [ $this, 'createMirror' ];
-                }
-            }
+            if(array_key_exists('Dark Matter', $quantities) && $pet->getStrength() >= 3)
+                $possibilities[] = [ $this, 'createHeavyHammer' ];
 
-            if(array_key_exists('Gold Bar', $quantities))
-            {
-                $possibilities[] = [ $this, 'createGoldKey' ];
-
-                if(mt_rand(1, 2) === 1)
-                    $possibilities[] = [ $this, 'createGoldTuningFork' ];
-
-                if(array_key_exists('Fiberglass', $quantities) && array_key_exists('Moon Pearl', $quantities))
-                    $possibilities[] = [ $this, 'createMoonhammer' ];
-
-                if(array_key_exists('Dark Scales', $quantities) && array_key_exists('Dragon Flag', $quantities))
-                    $possibilities[] = [ $this, 'createKundravsStandard' ];
-
-                if(array_key_exists('String', $quantities))
-                    $possibilities[] = [ $this, 'createGoldTriangle' ];
-
-                if(array_key_exists('Chanterelle', $quantities) && array_key_exists('Flute', $quantities))
-                    $possibilities[] = [ $this, 'createFungalClarinet' ];
-
-                if(array_key_exists('Glass', $quantities))
-                    $possibilities[] = [ $this, 'createGoldTelescope' ];
-            }
-
-            if(array_key_exists('Silver Bar', $quantities) && array_key_exists('Gold Bar', $quantities) && array_key_exists('White Cloth', $quantities))
-                $possibilities[] = [ $this, 'createCeremonialTrident' ];
+            if(array_key_exists('Mirror', $quantities))
+                $possibilities[] = [ $this, 'createMirrorShield' ];
         }
 
-        if(array_key_exists('Crooked Stick', $quantities) && array_key_exists('Iron Bar', $quantities))
-            $possibilities[] = [ $this, 'createScythe' ];
+        if(array_key_exists('Silver Bar', $quantities))
+        {
+            $possibilities[] = [ $this, 'createSilverKey' ];
+
+            if(array_key_exists('"Rustic" Magnifying Glass', $quantities))
+                $possibilities[] = [ $this, 'createElvishMagnifyingGlass' ];
+
+            if(array_key_exists('Glass', $quantities))
+            {
+                if(array_key_exists('Silica Grounds', $quantities))
+                    $possibilities[] = [ $this, 'createHourglass' ];
+                else
+                    $possibilities[] = [ $this, 'createMirror' ];
+            }
+        }
+
+        if(array_key_exists('Gold Bar', $quantities))
+        {
+            $possibilities[] = [ $this, 'createGoldKey' ];
+
+            if(mt_rand(1, 2) === 1)
+                $possibilities[] = [ $this, 'createGoldTuningFork' ];
+
+            if(array_key_exists('Fiberglass', $quantities) && array_key_exists('Moon Pearl', $quantities))
+                $possibilities[] = [ $this, 'createMoonhammer' ];
+
+            if(array_key_exists('Dark Scales', $quantities) && array_key_exists('Dragon Flag', $quantities))
+                $possibilities[] = [ $this, 'createKundravsStandard' ];
+
+            if(array_key_exists('String', $quantities))
+                $possibilities[] = [ $this, 'createGoldTriangle' ];
+
+            if(array_key_exists('Chanterelle', $quantities) && array_key_exists('Flute', $quantities))
+                $possibilities[] = [ $this, 'createFungalClarinet' ];
+
+            if(array_key_exists('Glass', $quantities))
+                $possibilities[] = [ $this, 'createGoldTelescope' ];
+        }
+
+        if(array_key_exists('Silver Bar', $quantities) && array_key_exists('Gold Bar', $quantities) && array_key_exists('White Cloth', $quantities))
+            $possibilities[] = [ $this, 'createCeremonialTrident' ];
 
         return $possibilities;
     }
@@ -599,6 +599,43 @@ class SmithingService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $item . ', but couldn\'t figure it out.', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createFiberglassBow(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 3)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-1);
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Fiberglass Bow, but burnt the String :(', 'icons/activity-logs/broke-string');
+        }
+        else if($roll >= 14)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Fiberglass', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Fiberglass Bow.', 'items/tool/bow/fiberglass')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+            ;
+            $this->inventoryService->petCollectsItem('Fiberglass Bow', $pet, $pet->getName() . ' created this from Fiberglass, and String.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Fiberglass Bow, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
 

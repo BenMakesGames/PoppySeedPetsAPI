@@ -210,7 +210,7 @@ class FishingService
 
     private function fishedGallopingOctopus(Pet $pet): PetActivityLog
     {
-        $fightSkill = mt_rand(1, 10 + $pet->getDexterity() + $pet->getFishing() + $pet->getBrawl() + $pet->getStrength());
+        $fightSkill = mt_rand(1, 10 + $pet->getDexterity() + $pet->getFishing() + $pet->getBrawl(false) + $pet->getStrength());
 
         if($fightSkill <= 3)
         {

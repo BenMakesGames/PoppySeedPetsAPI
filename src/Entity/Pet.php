@@ -849,9 +849,13 @@ class Pet
         return $this->getSkills()->getNature() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getNature() : 0);
     }
 
-    public function getBrawl(): int
+    public function getBrawl($allowRanged = true): int
     {
-        return $this->getSkills()->getBrawl() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getBrawl() : 0);
+        return
+            $this->getSkills()->getBrawl() +
+            // the pet has a tool, and: either it's not ranged, or ranged weapons are allowed
+            (($this->getTool() && (!$this->getTool()->getItem()->getTool()->getIsRanged() || $allowRanged)) ? $this->getTool()->getItem()->getTool()->getBrawl() : 0)
+        ;
     }
 
     public function getStealth(): int
