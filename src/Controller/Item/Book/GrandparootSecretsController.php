@@ -131,7 +131,7 @@ An ancient fermented drink made from milk! I don\'t know if I believe that Scyth
 
 ### Conclusion
 
-There\'s a lot more you can do with Aging Powder, of course, and you should feel free to experiment. I hope this book has opened your eyes to the possibilities that Grandparoot can bring to your kitchen!
+There\'s a lot more you can do with Aging Powder, of course, and you should feel free to experiment. (I\'ve heard some plants, such as Onion, and Wheat, respond incredibly well to Aging Powder, for example!) I hope this book has opened your eyes to the possibilities that Grandparoot can bring to your kitchen!
 
 Happy cooking!
 ');
