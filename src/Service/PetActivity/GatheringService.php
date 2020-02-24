@@ -36,7 +36,7 @@ class GatheringService
     {
         $maxSkill = 10 + $pet->getPerception() + $pet->getNature() + $pet->getGathering() - $pet->getAlcohol() - $pet->getPsychedelic();
 
-        if($maxSkill > 19) $maxSkill = 19;
+        if($maxSkill > 20) $maxSkill = 20;
         else if($maxSkill < 1) $maxSkill = 1;
 
         $roll = mt_rand(1, $maxSkill);
@@ -93,6 +93,7 @@ class GatheringService
                 $activityLog = $this->foundWildHedgemaze($pet);
                 break;
             case 19:
+            case 20:
                 $activityLog = $this->foundVolcano($pet);
                 break;
         }
@@ -716,16 +717,21 @@ class GatheringService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the island\'s Volcano, but couldn\'t find anything.', 'icons/activity-logs/confused');
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
         }
+        else if(mt_rand(1, max(10, 50 - $pet->getSkills()->getIntelligence())) === 1)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::GATHER, true);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed to the top of the island\'s Volcano, and captured some Lightning in a Bottle!', '');
+
+            $this->inventoryService->petCollectsItem('Lightning in a Bottle', $pet, $pet->getName() . ' captured this on the top of the island\'s Volcano!', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
+        }
         else
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, true);
 
-            if(mt_rand(1, 50))
-                $loot = 'Hot Potato';
-            else if(mt_rand(1, 2) === 1)
-                $loot = 'Liquid-hot Magma';
-            else
-                $loot = ArrayFunctions::pick_one([ 'Iron Ore', 'Iron Ore', 'Silver Ore' ]);
+            $loot = ArrayFunctions::pick_one([ 'Iron Ore', 'Silver Ore', 'Liquid-hot Magma', 'Hot Potato' ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the island\'s Volcano, and got ' . $loot . '.', '');
 
