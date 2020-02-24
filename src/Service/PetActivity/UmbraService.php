@@ -526,7 +526,7 @@ class UmbraService
             if($brawlCheck >= 20)
             {
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
-                $loot = ArrayFunctions::pick_one([ 'Cloth', 'Talon', 'Quintessence' ]);
+                $loot = ArrayFunctions::pick_one([ 'White Cloth', 'Talon', 'Quintessence' ]);
 
                 $pet
                     ->increaseEsteem(2)
