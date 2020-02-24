@@ -1195,6 +1195,7 @@ class PetRelationshipService
             $originalGoal = $p1->getRelationshipGoal();
 
             $p1->setCurrentRelationship($p2->getRelationshipGoal());
+            $p2->setCurrentRelationship($p2->getRelationshipGoal());
 
             if(mt_rand(1, 4) !== 1)
                 $p1->setRelationshipGoal($p2->getRelationshipGoal());
@@ -1211,6 +1212,7 @@ class PetRelationshipService
         }
         else if($r < $chanceP1ChangesMind + $chanceP2ChangesMind)
         {
+            $p1->setCurrentRelationship($p1->getRelationshipGoal());
             $p2->setCurrentRelationship($p1->getRelationshipGoal());
 
             if(mt_rand(1, 4) !== 1)
@@ -1267,7 +1269,7 @@ class PetRelationshipService
             RelationshipEnum::DISLIKE => 'break up entirely',
             RelationshipEnum::FRIENDLY_RIVAL => 'just be friendly rivals',
             RelationshipEnum::FRIEND => 'just be friends',
-            RelationshipEnum::BFF => 'just be BFFs -',
+            RelationshipEnum::BFF => 'just be BFFs',
             RelationshipEnum::FWB => 'just be friends, but maybe still, you know, _do stuff_',
             RelationshipEnum::MATE => 'date',
         ];

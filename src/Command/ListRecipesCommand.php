@@ -10,6 +10,7 @@ use App\Repository\RecipeRepository;
 use App\Service\InventoryService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\Question;
 
 class ListRecipesCommand extends PoppySeedPetsCommand
@@ -37,28 +38,76 @@ class ListRecipesCommand extends PoppySeedPetsCommand
         $this
             ->setName('app:list-recipes')
             ->setDescription('Lists all the recipes in the game.')
-            ->addArgument('search', InputArgument::OPTIONAL, 'Only recipes containing this text will be listed.')
+            ->addOption('name', null, InputOption::VALUE_OPTIONAL, 'Only recipes containing this text will be listed.')
+            ->addOption('ingredients', 'i', InputOption::VALUE_OPTIONAL, 'SEMICOLON separated list of ingredient names; only exact matches will be found.')
         ;
     }
 
     protected function doCommand()
     {
-        $search = trim($this->input->getArgument('search'));
+        $searchName = trim($this->input->getOption('name'));
+        $searchIngredients = trim($this->input->getOption('ingredients'));
 
-        if($search)
+        $qb = $this->recipeRepository->createQueryBuilder('r');
+
+        if($searchName)
         {
-            $recipes = $this->recipeRepository->createQueryBuilder('r')
+            $qb
                 ->andWhere('r.name LIKE :search')
-                ->setParameter('search', '%' . $search . '%')
-                ->getQuery()
-                ->getResult()
+                ->setParameter('name', '%' . $searchName . '%')
             ;
         }
-        else
-            $recipes = $this->recipeRepository->findAll();
+
+        if($searchIngredients)
+        {
+            $ingredientNames = explode(';', $searchIngredients);
+
+            $itemQuantities = $this->createQuantitiesFromList($ingredientNames);
+
+            $list = $this->inventoryService->serializeItemList($itemQuantities);
+
+            $qb
+                ->andWhere('r.ingredients=:ingredients')
+                ->setParameter('ingredients', $list)
+            ;
+        }
+
+        $recipes = $qb
+            ->getQuery()
+            ->getResult()
+        ;
 
         foreach($recipes as $recipe)
             $this->showRecipe($recipe);
+    }
+
+    /**
+     * @param string[] $items
+     * @return ItemQuantity[]
+     */
+    private function createQuantitiesFromList(array $items): array
+    {
+        $counts = [];
+
+        foreach($items as $item)
+            $counts[$item] = array_key_exists($item, $counts) ? ($counts[$item] + 1) : 1;
+
+        $quantities = [];
+
+        foreach($counts as $itemName=>$quantity)
+        {
+            $q = new ItemQuantity();
+
+            $q->item = $this->itemRepository->findOneByName($itemName);
+            $q->quantity = $quantity;
+
+            if($q->item === null)
+                throw new \Exception('There is no item called "' . $itemName . '"');
+
+            $quantities[] = $q;
+        }
+
+        return $quantities;
     }
 
     private function showRecipe(Recipe $recipe)
