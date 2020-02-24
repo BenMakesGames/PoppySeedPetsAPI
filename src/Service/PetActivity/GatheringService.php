@@ -303,10 +303,6 @@ class GatheringService
 
     private function foundBeach(Pet $pet): PetActivityLog
     {
-        $possibleLoot = [
-            'Fish', 'Silica Grounds', 'Seaweed'
-        ];
-
         $loot = [];
         $didWhat = 'found this at a Sandy Beach';
 
@@ -340,6 +336,10 @@ class GatheringService
         }
         else
         {
+            $possibleLoot = [
+                'Scales', 'Silica Grounds', 'Seaweed', 'Coconut',
+            ];
+
             $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
             if($pet->getTool() && $pet->getTool()->getItem()->getTool()->getFishing() > 0)
@@ -352,16 +352,18 @@ class GatheringService
 
             if(mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering()) >= 25)
             {
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::NATURE ]);
                 $moneys = mt_rand(4, 12);
                 $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' found this on a Sandy Beach.');
                 $lootList = $loot;
                 $lootList[] = $moneys . '~~m~~';
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to a Sandy Beach, and found ' . ArrayFunctions::list_nice($lootList) . '.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to a Sandy Beach, and stole ' . ArrayFunctions::list_nice($lootList) . ' while the seagulls weren\'t paying attention.', '');
                 $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::GATHER, true);
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to a Sandy Beach, and found ' . ArrayFunctions::list_nice($loot) . '.', '');
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::NATURE ]);
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to a Sandy Beach, and stole ' . ArrayFunctions::list_nice($loot) . ' while the seagulls weren\'t paying attention.', '');
                 $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, true);
             }
         }
