@@ -18,6 +18,7 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -54,15 +55,15 @@ class BlueprintController extends PoppySeedPetsItemController
                 $petService, $responseService,
                 $pet,
                 PetSkillEnum::CRAFTS,
-                $pet->getName() . ' helps you build the Basement. Together, you\'re done in no time! (Video game logic!)',
+                $pet->getName() . ' helps you build the Basement. Together, you\'re done in no time! (Video game logic!) ("Basement" has been added to the menu!)',
                 $pet->getName() . ' helped ' . $user->getName() . ' "build" a Basement!'
             );
 
             $em->flush();
 
             return $responseService->itemActionSuccess(
-                'You now have a Basement! (Somehow?? (Shh, just accept it...))',
-                [ 'reloadInventory' => true, 'itemDeleted' => true ]
+                null,
+                [ 'itemDeleted' => true ]
             );
         }
     }
@@ -81,13 +82,21 @@ class BlueprintController extends PoppySeedPetsItemController
 
         $user = $this->getUser();
 
+        $magnifyingGlasses = [
+            '"Rustic" Magnifying Glass',
+            'Elvish Magnifying Glass',
+            'Rijndael',
+            'Shiny Pail',
+            'Upside-down Shiny Pail'
+        ];
+
         if($user->getUnlockedBeehive())
         {
-            return $responseService->itemActionSuccess('You\'ve already got a Beehive!');
+            throw new UnprocessableEntityHttpException('You\'ve already got a Beehive!');
         }
-        else if(!$inventoryRepository->userHasAnyOneOf($user, [ '"Rustic" Magnifying Glass', 'Elvish Magnifying Glass', 'Rijndael' ]))
+        else if(!$inventoryRepository->userHasAnyOneOf($user, $magnifyingGlasses))
         {
-            return $responseService->itemActionSuccess('Goodness! It\'s so small! You\'ll need a magnifying glass of some kind...');
+            throw new UnprocessableEntityHttpException('Goodness! It\'s so small! You\'ll need a magnifying glass of some kind...');
         }
         else
         {
@@ -103,18 +112,14 @@ class BlueprintController extends PoppySeedPetsItemController
                 $petService, $responseService,
                 $pet,
                 PetSkillEnum::CRAFTS,
-                'You and ' . $pet->getName() . ' put together a Beehive together!',
+                'The blueprint is _super_ tiny, but with the help of a magnifying glass, you\'re able to make it all out, and you and ' . $pet->getName() . ' put the thing together! ("Beehive" has been added to the menu!)',
                 $pet->getName() . ' put a Beehive together with ' . $user->getName() . '!'
             );
 
             $em->flush();
 
-            return $responseService->itemActionSuccess(
-                'The blueprint is _super_ tiny, but with the help of a magnifying glass, you\'re able to make it all out.' . "\n\n" . 'You now have a Beehive!',
-                [ 'reloadInventory' => true, 'itemDeleted' => true ]
-            );
+            return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
         }
-
     }
 
     /**
@@ -149,7 +154,7 @@ class BlueprintController extends PoppySeedPetsItemController
                 $petService, $responseService,
                 $pet,
                 PetSkillEnum::CRAFTS,
-                'You and ' . $pet->getName() . ' clear out a space in the public Greenhouse!',
+                'You and ' . $pet->getName() . ' clear out a space in the public Greenhouse! ("Greenhouse" has been added to the menu!)',
                 $pet->getName() . ' cleared out a space in the public Greenhouse with ' . $user->getName() . '!'
             );
 
