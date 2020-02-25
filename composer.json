@@ -6,6 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "*",
+        "ext-pdo": "*",
         "abraham/twitteroauth": "^1.0",
         "lavary/crunz": "^2.0",
         "minishlink/web-push": "^5.2",
