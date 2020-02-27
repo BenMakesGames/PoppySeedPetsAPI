@@ -68,6 +68,9 @@ class ProgrammingService
                 $possibilities[] = [ $this, 'createRijndael' ];
         }
 
+        if(array_key_exists('Lightning in a Bottle', $quantities) && array_key_exists('Iron Sword', $quantities))
+            $possibilities[] = [ $this, 'createLightningSword' ];
+
         return $possibilities;
     }
 
@@ -361,6 +364,44 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' considered making a Phishing Rod, but ended up boondoggling.', 'icons/activity-logs/confused');
+        }
+    }
+
+    /**
+     * @throws EnumInvalidValueException
+     */
+    private function createLightningSword(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+
+            $this->inventoryService->loseItem('Lightning in a Bottle', $pet->getOwner(), LocationEnum::HOME, 1);
+            $pet->increaseSafety(-mt_rand(4, 8));
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to electrify an Iron Sword, but the lightning escaped, and ' . $pet->getName() . ' got shocked :(', '');
+            return $activityLog;
+        }
+        else if($roll >= 18)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Lightning in a Bottle', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Iron Sword', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(3);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' electrified an Iron Sword; now it\'s a _Lightning_ Sword!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+            ;
+            $this->inventoryService->petCollectsItem('Lightning Sword', $pet, $pet->getName() . ' implemented this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to electrify an Iron Sword, but the lightning was arcing and sparking violently, so ' . $pet->getName() . ' decided to wait a bit...', 'icons/activity-logs/confused');
         }
     }
 }
