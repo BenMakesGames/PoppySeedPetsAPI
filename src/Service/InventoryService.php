@@ -215,6 +215,19 @@ class InventoryService
     {
         if(is_string($item)) $item = $this->itemRepository->findOneByName($item);
 
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool()->getWhenGather() && $item->getName() === $pet->getTool()->getItem()->getTool()->getWhenGather()->getName())
+        {
+            $extraItem = (new Inventory())
+                ->setOwner($pet->getOwner())
+                ->setCreatedBy($pet->getOwner())
+                ->setItem($pet->getTool()->getItem()->getTool()->getWhenGatherAlsoGather())
+                ->addComment($pet->getName() . ' got this by collecting ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
+                ->setLocation(LocationEnum::HOME)
+            ;
+
+            $this->em->persist($extraItem);
+        }
+
         if($item->getFood() !== null && mt_rand(1, 20) < 10 - $pet->getFood())
         {
             if($this->petExperienceService->doEat($pet, $item, $activityLog))

@@ -129,6 +129,16 @@ class ItemTool
      */
     private $isRanged = false;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Item")
+     */
+    private $whenGather;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Item")
+     */
+    private $whenGatherAlsoGather;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -338,6 +348,9 @@ class ItemTool
         if($this->getFocusSkill())
             $modifiers[] = 'learn faster when using ' . $this->getFocusSkill();
 
+        if($this->getWhenGather() && $this->getWhenGatherAlsoGather())
+            $modifiers[] = 'when the pet collects ' . $this->getWhenGather()->getName() . ', it also gets ' . $this->getWhenGatherAlsoGather()->getName();
+
         if($this->getIsRanged())
             $modifiers[] = 'is only useful at a distance';
 
@@ -423,6 +436,30 @@ class ItemTool
     public function setIsRanged(bool $isRanged): self
     {
         $this->isRanged = $isRanged;
+
+        return $this;
+    }
+
+    public function getWhenGather(): ?Item
+    {
+        return $this->whenGather;
+    }
+
+    public function setWhenGather(?Item $whenGather): self
+    {
+        $this->whenGather = $whenGather;
+
+        return $this;
+    }
+
+    public function getWhenGatherAlsoGather(): ?Item
+    {
+        return $this->whenGatherAlsoGather;
+    }
+
+    public function setWhenGatherAlsoGather(?Item $whenGatherAlsoGather): self
+    {
+        $this->whenGatherAlsoGather = $whenGatherAlsoGather;
 
         return $this;
     }
