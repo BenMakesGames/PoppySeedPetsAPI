@@ -349,7 +349,12 @@ class ItemTool
             $modifiers[] = 'learn faster when using ' . $this->getFocusSkill();
 
         if($this->getWhenGather() && $this->getWhenGatherAlsoGather())
-            $modifiers[] = 'when the pet collects ' . $this->getWhenGather()->getName() . ', it also gets ' . $this->getWhenGatherAlsoGather()->getName();
+        {
+            if($this->getWhenGather()->getId() === $this->getWhenGatherAlsoGather()->getId())
+                $modifiers[] = 'when the pet collects ' . $this->getWhenGather()->getName() . ', it gets another ' . $this->getWhenGatherAlsoGather()->getName();
+            else
+                $modifiers[] = 'when the pet collects ' . $this->getWhenGather()->getName() . ', it also gets ' . $this->getWhenGatherAlsoGather()->getName();
+        }
 
         if($this->getIsRanged())
             $modifiers[] = 'is only useful at a distance';
