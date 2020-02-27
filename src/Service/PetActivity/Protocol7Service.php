@@ -39,7 +39,7 @@ class Protocol7Service
     {
         $maxSkill = 10 + $pet->getIntelligence() + $pet->getScience() - $pet->getAlcohol();
 
-        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 16);
+        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 17);
 
         $roll = mt_rand(1, $maxSkill);
 
@@ -57,7 +57,7 @@ class Protocol7Service
             case 5:
             case 6:
             case 7:
-                $activityLog = $this->foundLayer01($pet);
+                $activityLog = $this->encounterGarbageCollector($pet);
                 break;
             case 8:
             case 9:
@@ -67,12 +67,15 @@ class Protocol7Service
             case 11:
             case 12:
             case 13:
-                $activityLog = $this->foundLayer03($pet);
+                $activityLog = $this->foundProtectedSector($pet);
                 break;
             case 14:
             case 15:
             case 16:
-                $activityLog = $this->foundLayer04($pet);
+                $activityLog = $this->exploreInsecurePort($pet);
+                break;
+            case 17:
+                $activityLog = $this->repairShortedCircuit($pet);
                 break;
         }
 
@@ -93,7 +96,7 @@ class Protocol7Service
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, but got lost.', 'icons/activity-logs/confused');
     }
 
-    private function foundLayer01(Pet $pet): PetActivityLog
+    private function encounterGarbageCollector(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getDexterity() + $pet->getIntelligence() + $pet->getScience());
 
@@ -161,7 +164,7 @@ class Protocol7Service
         }
     }
 
-    private function foundLayer03(Pet $pet): PetActivityLog
+    private function foundProtectedSector(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
 
@@ -191,7 +194,7 @@ class Protocol7Service
             $pet->increaseSafety(2);
             $pet->increaseEsteem(2);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 03 of Project-E, but defeated it, and took its ' . $loot . '!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in a protected sector of Project-E, but defeated it, and took its ' . $loot . '!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
             ;
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.', $activityLog);
@@ -201,11 +204,11 @@ class Protocol7Service
         {
             $pet->increaseSafety(-1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 03 of Project-E, but ' . $baddie . ' caused them to crash out.', '');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to access a protected sector of Project-E, but couldn\'t get elevated permissions.', '');
         }
     }
 
-    private function foundLayer04(Pet $pet): PetActivityLog
+    private function exploreInsecurePort(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
 
@@ -231,7 +234,7 @@ class Protocol7Service
             $pet->increaseSafety(2);
             $pet->increaseEsteem(2);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 04 of Project-E, but defeated it, and took its ' . $loot . '!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' on an insecure port in Project-E, but defeated it, and took its ' . $loot . '!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
             ;
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.', $activityLog);
@@ -241,7 +244,60 @@ class Protocol7Service
         {
             $pet->increaseSafety(-1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 04 of Project-E, but their service was disrupted by ' . $baddie . '.', '');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed an insecure port in Project-E, but their service was disrupted by ' . $baddie . '.', '');
         }
+    }
+
+    private function repairShortedCircuit(Pet $pet): PetActivityLog
+    {
+        $check = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+
+        if($check < 15)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . '\'s line was suddenly shorted while they were exploring Project-E!', 'icons/activity-logs/confused');
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+        }
+        else if(mt_rand(1, max(10, 50 - $pet->getSkills()->getIntelligence())) === 1)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::PROTOCOL_7, true);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . '\'s line was suddenly shorted while they were exploring Project-E. ' . $pet->getName() . ' managed to capture some Lightning in a Bottle before being forcefully disconnected!', '');
+
+            $this->inventoryService->petCollectsItem('Lightning in a Bottle', $pet, $pet->getName() . ' captured this on a shorted line of Project-E!', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . '\'s line was suddenly shorted while they were exploring Project-E. ' . $pet->getName() . ' managed to grab a couple Pointers before being forcefully disconnected,', '');
+
+            $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' captured this on a shorted line of Project-E!', $activityLog);
+            $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' captured this on a shorted line of Project-E!', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+        }
+
+        if(mt_rand(1, 10 + $pet->getStamina()) < 8)
+        {
+            if($pet->hasProtectionFromHeat())
+            {
+                $activityLog->setEntry($activityLog->getEntry() . ' Their ' . $pet->getTool()->getItem()->getName() . ' protected them from the sudden burst of energy.')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ;
+            }
+            else
+            {
+                $pet->increaseFood(-1);
+                $pet->increaseSafety(-mt_rand(2, 3));
+
+                $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' was unprotected from the sudden burst of energy, and received a minor singe.');
+            }
+        }
+
+        return $activityLog;
     }
 }
