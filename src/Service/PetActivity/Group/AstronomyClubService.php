@@ -153,33 +153,34 @@ class AstronomyClubService
 
             if($reward < 10)
             {
-                $item = null;
-                $description = null;
-            }
-            else if($reward < 20) // 10%
-            {
                 $item = 'Silica Grounds';
                 $description = 'a cloud of space dust';
 
                 if(mt_rand(1, 20) === 1)
                     $description .= '-- I mean, Silica Grounds';
             }
-            else if($reward < 30) // 10%
+            else if($reward < 20) // 10%
             {
                 $item = 'NUL';
                 $description = 'some old radio transmissions from Earth';
             }
-            else if($reward < 35) // 5%
+            else if($reward < 25) // 5%
             {
-                $item = 'Moon Pearl';
-                $description = 'Moon Pearls';
+                $item = 'Tentacle';
+                $description = 'a tentacle';
+                $messageTemplate = '%pet% discovered %this% while exploring the cosmos with %group%! (H-- how did that get there??)';
             }
-            else if($reward < 50) // 15%
+            else if($reward < 40) // 15%
             {
                 $item = 'Planetary Ring';
                 $description = 'a Planetary Ring';
             }
-            else if($reward < 60) // 10%
+            else if($reward < 45) // 5%
+            {
+                $item = 'Moon Pearl';
+                $description = 'Moon Pearls';
+            }
+            else if($reward < 55) // 10%
             {
                 $item = 'Paper';
                 $description = 'Paper';
