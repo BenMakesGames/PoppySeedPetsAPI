@@ -95,49 +95,27 @@ class Protocol7Service
 
     private function foundLayer01(Pet $pet): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $roll = mt_rand(1, 20 + $pet->getDexterity() + $pet->getIntelligence() + $pet->getScience());
 
-        $monster = ArrayFunctions::pick_one([
-            [
-                'name' => 'an overflowed buffer',
-                'loot' => [ 'Pointer' ]
-            ],
-            [
-                'name' => 'a Pop-under Ad',
-                'loot' => [ 'Pointer' ],
-            ]
-        ]);
-
-        $baddie = $monster['name'];
-        $loot = ArrayFunctions::pick_one($monster['loot']);
         $success = $roll >= 10;
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, $success);
 
         if($success)
         {
             $pet->increaseEsteem(1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
 
-            if(mt_rand(1, 10) === 1)
-            {
-                $moneys = mt_rand(2, 4);
-                $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' defeated ' . $baddie . ', and got this money.');
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took ' . $moneys . '~~m~~!', 'icons/activity-logs/moneys');
-            }
-            else
-            {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was assaulted by ' . $baddie . ' in Layer 01 of Project-E, but defeated it, and took its ' . $loot . '!', '')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
-                ;
-                $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.', $activityLog);
-                return $activityLog;
-            }
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' saw a Garbage Collector in Project-E, and took one of the Pointers it was discarding.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+            ;
+            $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' took this from a Garbage Collector in Project-E.', $activityLog);
+            return $activityLog;
         }
         else
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Layer 01 of Project-E, but got hopelessly distracted by ' . $baddie . '.', '');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' saw a Garbage Collector passing by in Project-E, but couldn\'t catch up to it.', '');
         }
     }
 
