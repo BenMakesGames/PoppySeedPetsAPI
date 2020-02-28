@@ -66,6 +66,7 @@ class PetRelationship
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"petFriend"})
      */
     private $lastMet;
 

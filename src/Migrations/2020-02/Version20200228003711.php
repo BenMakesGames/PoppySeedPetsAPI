@@ -23,6 +23,7 @@ final class Version20200228003711 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE pet_relationship ADD last_met DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
+        $this->addSql('UPDATE pet_relationship SET last_met=met_on');
     }
 
     public function down(Schema $schema) : void

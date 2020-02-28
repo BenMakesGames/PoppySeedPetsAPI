@@ -318,6 +318,9 @@ class PetRelationshipService
         $p1->decrementTimeUntilChange(0.5);
         $p2->decrementTimeUntilChange(0.5);
 
+        $p1->setLastMet();
+        $p2->setLastMet();
+
         if($p1->getCurrentRelationship() === RelationshipEnum::DISLIKE)
         {
             if($p1->getPet()->hasMerit(MeritEnum::NAIVE))
@@ -353,6 +356,9 @@ class PetRelationshipService
      */
     public function hangOutPrivately(PetRelationship $p1, PetRelationship $p2): array
     {
+        $p1->setLastMet();
+        $p2->setLastMet();
+
         if($p1->wantsDifferentRelationship() && $p1->getTimeUntilChange() <= 1)
             return $this->relationshipChangeService->hangOutPrivatelySuggestingRelationshipChange($p1, $p2);
         else if($p2->wantsDifferentRelationship() && $p2->getTimeUntilChange() <= 1)
