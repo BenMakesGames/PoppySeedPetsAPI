@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 
+use App\Entity\MuseumItem;
 use App\Entity\Story;
 use App\Entity\StorySection;
 use App\Entity\User;
@@ -251,6 +252,17 @@ class StoryService
 
                 $this->inventoryService->receiveItem($action['item'], $this->user, null, $description, LocationEnum::HOME, $lockedToOwner);
 
+                break;
+
+            case StoryActionTypeEnum::DONATE_ITEM:
+                $museumItem = (new MuseumItem())
+                    ->setUser($this->user)
+                    ->setItem($this->itemRepository->findOneByName($action['item']))
+                    ->setCreatedBy(null)
+                    ->setComments([ $action['description'] ])
+                ;
+
+                $this->em->persist($museumItem);
                 break;
 
             case StoryActionTypeEnum::LOSE_ITEM:
