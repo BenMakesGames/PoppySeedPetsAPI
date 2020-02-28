@@ -110,7 +110,7 @@ class PetGroupService
         /** @var Pet $unhappiestPet */
         $unhappiestPet = $unhappyMembers[0]['pet'];
 
-        $this->takesTime($instigatingPet, $group, PetActivityStatEnum::GROUP_ACTIVITY);
+        $this->takesTime($instigatingPet, $group);
 
         foreach($group->getMembers() as $member)
         {

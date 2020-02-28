@@ -64,9 +64,15 @@ class PetRelationship
      */
     private $timeUntilChange;
 
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     */
+    private $lastMet;
+
     public function __construct()
     {
         $this->metOn = new \DateTimeImmutable();
+        $this->lastMet = new \DateTimeImmutable();
         $this->timeUntilChange = mt_rand(mt_rand(20, 30), mt_rand(50, 80));
     }
 
@@ -233,5 +239,17 @@ class PetRelationship
             $commitment += round($commitment / 4);
 
         return $commitment;
+    }
+
+    public function getLastMet(): \DateTimeImmutable
+    {
+        return $this->lastMet;
+    }
+
+    public function setLastMet(): self
+    {
+        $this->lastMet = new \DateTimeImmutable();
+
+        return $this;
     }
 }

@@ -298,6 +298,21 @@ class PetRelationshipService
         return [ $petRelationship, $otherPetRelationship ];
     }
 
+    public function calculateRelationshipDistance($initialRelationship, $targetRelationship): int
+    {
+        $values = [
+            RelationshipEnum::BROKE_UP => -2,
+            RelationshipEnum::DISLIKE => 0,
+            RelationshipEnum::FRIENDLY_RIVAL => 2,
+            RelationshipEnum::FRIEND => 3,
+            RelationshipEnum::BFF => 6,
+            RelationshipEnum::FWB => 8,
+            RelationshipEnum::MATE => 10,
+        ];
+
+        return $values[$targetRelationship] - $values[$initialRelationship];
+    }
+
     public function hangOutPublicly(PetRelationship $p1, PetRelationship $p2, string $hangOutDescription, string $enemyDescription)
     {
         $p1->decrementTimeUntilChange(0.5);

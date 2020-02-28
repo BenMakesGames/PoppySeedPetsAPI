@@ -764,6 +764,9 @@ class PetService
         $this->petExperienceService->spendTime($pet->getPet(), mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
         $this->petExperienceService->spendTime($friend->getPet(), mt_rand(5, 10), PetActivityStatEnum::HANG_OUT, null);
 
+        $pet->setLastMet();
+        $friend->setLastMet();
+
         $petPreviousRelationship = $pet->getCurrentRelationship();
         $friendPreviousRelationship = $friend->getCurrentRelationship();
 

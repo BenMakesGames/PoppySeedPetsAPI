@@ -539,21 +539,6 @@ class RelationshipChangeService
         return [ $p1Log, $p2Log ];
     }
 
-    public function calculateRelationshipDistance($initialRelationship, $targetRelationship): int
-    {
-        $values = [
-            RelationshipEnum::BROKE_UP => -2,
-            RelationshipEnum::DISLIKE => 0,
-            RelationshipEnum::FRIENDLY_RIVAL => 2,
-            RelationshipEnum::FRIEND => 3,
-            RelationshipEnum::BFF => 6,
-            RelationshipEnum::FWB => 8,
-            RelationshipEnum::MATE => 10,
-        ];
-
-        return $values[$targetRelationship] - $values[$initialRelationship];
-    }
-
     /**
      * @param PetRelationship $p1
      * @param PetRelationship $p2
