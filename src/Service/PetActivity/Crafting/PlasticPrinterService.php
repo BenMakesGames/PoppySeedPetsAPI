@@ -131,6 +131,7 @@ class PlasticPrinterService
         $item = ArrayFunctions::pick_one([
             'Small Plastic Bucket',
             'Plastic Shovel',
+            'Egg Carton',
         ]);
 
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts());
