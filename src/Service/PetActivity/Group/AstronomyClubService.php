@@ -180,11 +180,16 @@ class AstronomyClubService
                 $item = 'Moon Pearl';
                 $description = 'Moon Pearls';
             }
-            else if($reward < 55) // 10%
+            else if($reward < 50) // 5%
             {
                 $item = 'Paper';
                 $description = 'Paper';
                 $messageTemplate = '%group% wrote this Paper based on their findings.';
+            }
+            else if($reward < 55) // 5%
+            {
+                $item = 'Everice';
+                $description = 'a cube of Everice';
             }
             else
             {

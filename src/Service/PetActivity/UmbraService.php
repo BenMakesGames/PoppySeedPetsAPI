@@ -39,7 +39,7 @@ class UmbraService
     {
         $skill = 10 + $pet->getStamina() + $pet->getIntelligence() + $pet->getUmbra(); // psychedelics bonus is built into getUmbra()
 
-        $skill = NumberFunctions::constrain($skill, 1, 17);
+        $skill = NumberFunctions::constrain($skill, 1, 18);
 
         $roll = mt_rand(1, $skill);
 
@@ -89,6 +89,9 @@ class UmbraService
                 break;
             case 17:
                 $activityLog = $this->foundVampireCastle($pet);
+                break;
+            case 18:
+                $activityLog = $this->frozenQuag($pet);
                 break;
         }
 
@@ -550,6 +553,43 @@ class UmbraService
 
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' stumbled upon a castle. While exploring it, a vampire attacked them! ' . $pet->getName() . ', caught completely by surprised, was forced to flee...', '');
             }
+        }
+
+        return $activityLog;
+    }
+
+    private function frozenQuag(Pet $pet): PetActivityLog
+    {
+        if(!$pet->canSeeInTheDark())
+        {
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::UMBRA, false);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wandered into a deep, dark part of the Umbra, but they didn\'t have a light, so turned back...', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ;
+        }
+
+        $pet->increaseFood(-1);
+
+        if(mt_rand(1, 20) + $pet->getUmbra() + $pet->getPerception() >= 18)
+        {
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::GATHER, true);
+
+            if($pet->getTool() && $pet->getTool()->getItem()->getTool()->getProvidesLight())
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wandered into a frozen quag deep in the Umbra. The light of their ' . $pet->getTool()->getItem()->getName() . ' caught on a cube of Everice, which ' . $pet->getName() . ' took!', '');
+            else
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wandered into a frozen quag deep in the Umbra, and happened to spot a cube of Everice!', '');
+
+            $this->inventoryService->petCollectsItem('Everice', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::GATHER, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' crept through a frozen quag deep in the Umbra, but all they found was a Crooked Stick.', '');
+            $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
         }
 
         return $activityLog;
