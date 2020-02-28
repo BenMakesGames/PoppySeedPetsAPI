@@ -3,6 +3,7 @@ namespace App\Service\PetActivity\Relationship;
 
 use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
+use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -50,18 +51,45 @@ class FriendlyRivalsService
         arsort($combinedSkills);
         $combinedSkills = array_splice($combinedSkills, 0, 3, true);
 
+        // the pets may not compete, if they actually have different goals
+        if ($p1->getRelationshipGoal() !== RelationshipEnum::FRIENDLY_RIVAL && mt_rand(1, 3) === 1)
+        {
+            if ($p2->getRelationshipGoal() !== RelationshipEnum::FRIENDLY_RIVAL)
+                $message = $p1->getPet()->getName() . ' and ' . $p2->getPet()->getName() . ' met to brag about their ' . array_key_first($combinedSkills) . ', but realized that neither were really feeling up to it, so called the contest off.';
+            else
+                $message = $p1->getPet()->getName() . ' and ' . $p2->getPet()->getName() . ' met to brag about their ' . array_key_first($combinedSkills) . ', but ' . $p1->getPet()->getName() . ' wasn\'t really feeling it. ' . $p2->getPet()->getName() . ' accepted the win.';
+
+            $p1->decrementTimeUntilChange();
+            $p2->decrementTimeUntilChange();
+
+            return $this->createLogs($message);
+        }
+
+        if ($p2->getRelationshipGoal() !== RelationshipEnum::FRIENDLY_RIVAL && mt_rand(1, 3) === 1)
+        {
+            if ($p1->getRelationshipGoal() !== RelationshipEnum::FRIENDLY_RIVAL)
+                $message = $p1->getPet()->getName() . ' and ' . $p2->getPet()->getName() . ' met to brag about their ' . array_key_first($combinedSkills) . ', but realized that neither were really feeling up to it, so called the conetest off.';
+            else
+                $message = $p1->getPet()->getName() . ' and ' . $p2->getPet()->getName() . ' met to brag about their ' . array_key_first($combinedSkills) . ', but ' . $p2->getPet()->getName() . ' wasn\'t really feeling it. ' . $p1->getPet()->getName() . ' accepted the win.';
+
+            $p1->decrementTimeUntilChange();
+            $p2->decrementTimeUntilChange();
+
+            return $this->createLogs($message);
+        }
+
         $message = $p1->getPet()->getName() . ' and ' . $p2->getPet()->getName() . ' met to compare their accomplishments, but just ended up bickering over which types of accomplishments are even worth mentioning.';
 
-        foreach($combinedSkills as $description=>$skill)
+        foreach ($combinedSkills as $description => $skill)
         {
-            if(mt_rand(1, 2) === 1)
+            if (mt_rand(1, 2) === 1)
             {
                 $message = $p1->getPet()->getName() . ' and ' . $p2->getPet()->getName() . ' met to brag about their ' . $description . '. ';
 
                 $p1Roll = mt_rand(1, max(2, $p1Skills[$description] + 2));
                 $p2Roll = mt_rand(1, max(2, $p2Skills[$description] + 2));
 
-                if($p1Roll > ceil($p2Roll * 1.25))
+                if ($p1Roll > ceil($p2Roll * 1.25))
                 {
                     $message .= $p1->getPet()->getName() . ' was clearly the more accomplished of the two! ';
 
@@ -72,7 +100,7 @@ class FriendlyRivalsService
                         $p2->getPet()->getName() . ' called shenanigans, demanding a rematch! The true master will be decided _next_ time!',
                     ]);
                 }
-                else if($p2Roll > ceil($p1Roll * 1.25))
+                else if ($p2Roll > ceil($p1Roll * 1.25))
                 {
                     $message .= $p2->getPet()->getName() . ' was clearly the more accomplished of the two! ';
 
@@ -96,7 +124,14 @@ class FriendlyRivalsService
             }
         }
 
+        return $this->createLogs($message);
+    }
 
+    /**
+     * @return PetActivityLog[]
+     */
+    private function createLogs(string $message): array
+    {
         $p1Log = (new PetActivityLog())
             ->setPet($p1->getPet())
             ->setEntry($message)
