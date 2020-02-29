@@ -41,7 +41,7 @@ class PlasticPrinterService
             if(array_key_exists('String', $quantities))
                 $possibilities[] = [ $this, 'createPlasticFishingRod' ];
 
-            if(array_key_exists('Green Dye', $quantities) && array_key_exists('Yellow Dye', $quantities))
+            if(array_key_exists('Green Dye', $quantities))
                 $possibilities[] = [ $this, 'createAlienLaser' ];
 
             if(array_key_exists('Black Feathers', $quantities))
