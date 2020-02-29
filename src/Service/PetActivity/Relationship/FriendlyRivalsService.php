@@ -1,6 +1,7 @@
 <?php
 namespace App\Service\PetActivity\Relationship;
 
+use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
 use App\Enum\RelationshipEnum;
@@ -62,7 +63,7 @@ class FriendlyRivalsService
             $p1->decrementTimeUntilChange();
             $p2->decrementTimeUntilChange();
 
-            return $this->createLogs($message);
+            return $this->createLogs($p1->getPet(), $p2->getPet(), $message);
         }
 
         if ($p2->getRelationshipGoal() !== RelationshipEnum::FRIENDLY_RIVAL && mt_rand(1, 3) === 1)
@@ -75,7 +76,7 @@ class FriendlyRivalsService
             $p1->decrementTimeUntilChange();
             $p2->decrementTimeUntilChange();
 
-            return $this->createLogs($message);
+            return $this->createLogs($p1->getPet(), $p2->getPet(), $message);
         }
 
         $message = $p1->getPet()->getName() . ' and ' . $p2->getPet()->getName() . ' met to compare their accomplishments, but just ended up bickering over which types of accomplishments are even worth mentioning.';
@@ -124,16 +125,16 @@ class FriendlyRivalsService
             }
         }
 
-        return $this->createLogs($message);
+        return $this->createLogs($p1->getPet(), $p2->getPet(), $message);
     }
 
     /**
      * @return PetActivityLog[]
      */
-    private function createLogs(string $message): array
+    private function createLogs(Pet $p1, Pet $p2, string $message): array
     {
         $p1Log = (new PetActivityLog())
-            ->setPet($p1->getPet())
+            ->setPet($p1)
             ->setEntry($message)
             ->setIcon('icons/activity-logs/friend')
         ;
@@ -141,7 +142,7 @@ class FriendlyRivalsService
         $this->em->persist($p1Log);
 
         $p2Log = (new PetActivityLog())
-            ->setPet($p2->getPet())
+            ->setPet($p2)
             ->setEntry($message)
             ->setIcon('icons/activity-logs/friend')
         ;
@@ -150,5 +151,4 @@ class FriendlyRivalsService
 
         return [ $p1Log, $p2Log ];
     }
-
 }
