@@ -4,6 +4,7 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetBaby;
+use App\Entity\PetRelationship;
 use App\Entity\PetSkills;
 use App\Entity\PetSpecies;
 use App\Enum\EnumInvalidValueException;
@@ -11,6 +12,7 @@ use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\RelationshipEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
@@ -23,17 +25,13 @@ use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
-use App\Service\PetRelationshipService;
-use App\Service\PetService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\Location;
 
 class PregnancyService
 {
     private $em;
     private $inventoryService;
-    private $petRelationshipService;
     private $petRepository;
     private $responseService;
     private $petExperienceService;
@@ -43,15 +41,14 @@ class PregnancyService
     private $meritRepository;
 
     public function __construct(
-        EntityManagerInterface $em, InventoryService $inventoryService, PetRelationshipService $petRelationshipService,
-        PetRepository $petRepository, ResponseService $responseService, PetExperienceService $petExperienceService,
+        EntityManagerInterface $em, InventoryService $inventoryService, PetRepository $petRepository,
+        ResponseService $responseService, PetExperienceService $petExperienceService,
         UserQuestRepository $userQuestRepository, PetSpeciesRepository $petSpeciesRepository,
         UserStatsRepository $userStatsRepository, MeritRepository $meritRepository
     )
     {
         $this->em = $em;
         $this->inventoryService = $inventoryService;
-        $this->petRelationshipService = $petRelationshipService;
         $this->petRepository = $petRepository;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
@@ -140,7 +137,7 @@ class PregnancyService
 
         $baby->setSkills($babySkills);
 
-        $this->petRelationshipService->createParentalRelationships($baby, $pregnancy->getParent(), $pregnancy->getOtherParent());
+        $this->createParentalRelationships($baby, $pregnancy->getParent(), $pregnancy->getOtherParent());
 
         $numberOfPetsAtHome = $this->petRepository->getNumberAtHome($user);
 
@@ -308,5 +305,59 @@ class PregnancyService
         $canonicalized = preg_replace('/([\s.\'-,])\1+/', '$1', $canonicalized); // remove duplicate characters (ex: "faaaaaaaaaaaag" is as bad as "fag")
 
         return in_array($canonicalized, self::CANONICALIZED_FORBIDDEN_COMBINED_NAMES);
+    }
+
+    /**
+     * @param Pet $baby
+     * @param Pet $mother
+     * @param Pet $father
+     * @throws EnumInvalidValueException
+     */
+    private function createParentalRelationships(Pet $baby, Pet $mother, Pet $father)
+    {
+        $petWithMother = (new PetRelationship())
+            ->setRelationship($mother)
+            ->setCurrentRelationship(RelationshipEnum::BFF)
+            ->setPet($baby)
+            ->setRelationshipGoal(RelationshipEnum::BFF)
+            ->setMetDescription($mother->getName() . ' gave birth to ' . $baby->getName() . '!')
+        ;
+
+        $baby->addPetRelationship($petWithMother);
+
+        $petWithFather = (new PetRelationship())
+            ->setRelationship($father)
+            ->setCurrentRelationship(RelationshipEnum::BFF)
+            ->setPet($baby)
+            ->setRelationshipGoal(RelationshipEnum::BFF)
+            ->setMetDescription($father->getName() . ' fathered ' . $baby->getName() . '!')
+        ;
+
+        $baby->addPetRelationship($petWithFather);
+
+        $motherWithBaby = (new PetRelationship())
+            ->setRelationship($baby)
+            ->setCurrentRelationship(RelationshipEnum::BFF)
+            ->setPet($mother)
+            ->setRelationshipGoal(RelationshipEnum::BFF)
+            ->setMetDescription($mother->getName() . ' gave birth to ' . $baby->getName() . '!')
+        ;
+
+        $mother->addPetRelationship($motherWithBaby);
+
+        $fatherWithBaby = (new PetRelationship())
+            ->setRelationship($baby)
+            ->setCurrentRelationship(RelationshipEnum::BFF)
+            ->setPet($father)
+            ->setRelationshipGoal(RelationshipEnum::BFF)
+            ->setMetDescription($father->getName() . ' fathered ' . $baby->getName() . '!')
+        ;
+
+        $father->addPetRelationship($fatherWithBaby);
+
+        $this->em->persist($petWithMother);
+        $this->em->persist($petWithFather);
+        $this->em->persist($motherWithBaby);
+        $this->em->persist($fatherWithBaby);
     }
 }

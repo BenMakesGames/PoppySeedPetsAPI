@@ -54,7 +54,7 @@ class IncreaseTimeCommand extends Command
             [ 'now' => (new \DateTimeImmutable())->format('Y-m-d') ]
         );
 
-        // delete expired sessions...
+        // delete old device stats...
         $this->em->getConnection()->executeQuery(
             'DELETE FROM device_stats WHERE time<:oneMonthAgo',
             [ 'oneMonthAgo' => (new \DateTimeImmutable())->modify('-1 month')->format('Y-m-d') ]

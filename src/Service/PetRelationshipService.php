@@ -5,7 +5,6 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
 use App\Enum\EnumInvalidValueException;
-use App\Enum\LoveLanguageEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\RelationshipEnum;
@@ -67,60 +66,6 @@ class PetRelationshipService
             for($j = $i + 1; $j < count($members); $j++)
                 $this->seeAtGroupGathering($members[$i], $members[$j], $hangOutDescription, $enemyDescription, $meetSummary, $meetDescription, $meetChance);
         }
-    }
-
-    /**
-     * @param Pet $baby
-     * @param Pet $mother
-     * @param Pet $father
-     * @throws EnumInvalidValueException
-     */
-    public function createParentalRelationships(Pet $baby, Pet $mother, Pet $father)
-    {
-        $petWithMother = (new PetRelationship())
-            ->setRelationship($mother)
-            ->setCurrentRelationship(RelationshipEnum::BFF)
-            ->setPet($baby)
-            ->setRelationshipGoal(RelationshipEnum::BFF)
-            ->setMetDescription($mother->getName() . ' gave birth to ' . $baby->getName() . '!')
-        ;
-
-        $baby->addPetRelationship($petWithMother);
-
-        $petWithFather = (new PetRelationship())
-            ->setRelationship($father)
-            ->setCurrentRelationship(RelationshipEnum::BFF)
-            ->setPet($baby)
-            ->setRelationshipGoal(RelationshipEnum::BFF)
-            ->setMetDescription($father->getName() . ' fathered ' . $baby->getName() . '!')
-        ;
-
-        $baby->addPetRelationship($petWithFather);
-
-        $motherWithBaby = (new PetRelationship())
-            ->setRelationship($baby)
-            ->setCurrentRelationship(RelationshipEnum::BFF)
-            ->setPet($mother)
-            ->setRelationshipGoal(RelationshipEnum::BFF)
-            ->setMetDescription($mother->getName() . ' gave birth to ' . $baby->getName() . '!')
-        ;
-
-        $mother->addPetRelationship($motherWithBaby);
-
-        $fatherWithBaby = (new PetRelationship())
-            ->setRelationship($baby)
-            ->setCurrentRelationship(RelationshipEnum::BFF)
-            ->setPet($father)
-            ->setRelationshipGoal(RelationshipEnum::BFF)
-            ->setMetDescription($father->getName() . ' fathered ' . $baby->getName() . '!')
-        ;
-
-        $father->addPetRelationship($fatherWithBaby);
-
-        $this->em->persist($petWithMother);
-        $this->em->persist($petWithFather);
-        $this->em->persist($motherWithBaby);
-        $this->em->persist($fatherWithBaby);
     }
 
     /**
