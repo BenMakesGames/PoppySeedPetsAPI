@@ -136,6 +136,9 @@ class SmithingService
         if(array_key_exists('Iron Sword', $quantities) && array_key_exists('Everice', $quantities) && array_key_exists('Firestone', $quantities))
             $possibilities[] = [ $this, 'createAntipode' ];
 
+        if(array_key_exists('Antipode', $quantities) && array_key_exists('Lightning Sword', $quantities))
+            $possibilities[] = [ $this, 'createTrinityBlade' ];
+
         return $possibilities;
     }
 
@@ -467,6 +470,36 @@ class SmithingService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Antipode, but the ' . ArrayFunctions::pick_one([ 'Everice', 'Firestone' ]) . ' was being uncooperative :|', 'icons/activity-logs/confused');
+        }
+    }
+
+    /**
+     * @throws EnumInvalidValueException
+     */
+    public function createTrinityBlade(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + max($pet->getDexterity(), $pet->getIntelligence()) + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll >= 25)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Anitpode', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Lightning Sword', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(6);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' smithed a Trinity Blade!', 'items/tool/sword/elemental')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 25)
+            ;
+            $this->inventoryService->petCollectsItem('Trinity Blade', $pet, $pet->getName() . ' created this by hammering a Lightning Sword and Antipode together!', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to make a Trinity Blade, but wasn\'t sure where to begin...', 'icons/activity-logs/confused');
         }
     }
 
