@@ -226,6 +226,17 @@ class User implements UserInterface
      */
     private $greenhouse;
 
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"myAccount"})
+     */
+    private $unlockedTotemPoleGarden;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\TotemPole", mappedBy="owner", cascade={"persist", "remove"})
+     */
+    private $totemPole;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -822,6 +833,35 @@ class User implements UserInterface
         // set the owning side of the relation if necessary
         if ($this !== $greenhouse->getOwner()) {
             $greenhouse->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function getUnlockedTotemPoleGarden(): ?\DateTimeImmutable
+    {
+        return $this->unlockedTotemPoleGarden;
+    }
+
+    public function setUnlockedTotemPoleGarden(): self
+    {
+        $this->unlockedTotemPoleGarden = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getTotemPole(): ?TotemPole
+    {
+        return $this->totemPole;
+    }
+
+    public function setTotemPole(TotemPole $totemPole): self
+    {
+        $this->totemPole = $totemPole;
+
+        // set the owning side of the relation if necessary
+        if ($totemPole->getOwner() !== $this) {
+            $totemPole->setOwner($this);
         }
 
         return $this;
