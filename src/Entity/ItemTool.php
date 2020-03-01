@@ -351,9 +351,9 @@ class ItemTool
         if($this->getWhenGather() && $this->getWhenGatherAlsoGather())
         {
             if($this->getWhenGather()->getId() === $this->getWhenGatherAlsoGather()->getId())
-                $modifiers[] = 'when the pet collects ' . $this->getWhenGather()->getName() . ', it gets another ' . $this->getWhenGatherAlsoGather()->getName();
+                $modifiers[] = 'when the pet obtains ' . $this->getWhenGather()->getName() . ', it gets another ' . $this->getWhenGatherAlsoGather()->getName();
             else
-                $modifiers[] = 'when the pet collects ' . $this->getWhenGather()->getName() . ', it also gets ' . $this->getWhenGatherAlsoGather()->getName();
+                $modifiers[] = 'when the pet obtains ' . $this->getWhenGather()->getName() . ', it also gets ' . $this->getWhenGatherAlsoGather()->getName();
         }
 
         if($this->getIsRanged())

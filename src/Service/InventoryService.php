@@ -221,7 +221,7 @@ class InventoryService
                 ->setOwner($pet->getOwner())
                 ->setCreatedBy($pet->getOwner())
                 ->setItem($pet->getTool()->getItem()->getTool()->getWhenGatherAlsoGather())
-                ->addComment($pet->getName() . ' got this by collecting ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
+                ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
                 ->setLocation(LocationEnum::HOME)
             ;
 
