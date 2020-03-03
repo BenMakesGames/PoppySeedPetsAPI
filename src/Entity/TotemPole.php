@@ -33,14 +33,9 @@ class TotemPole
     private $heightInCentimeters = 0;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="integer")
      */
-    private $reward10m = false;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $reward50m = false;
+    private $heightInKilometers = 0;
 
     /**
      * @ORM\Column(type="integer")
@@ -48,9 +43,9 @@ class TotemPole
     private $reward100m = 0;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="simple_array")
      */
-    private $reward9000m = false;
+    private $rewardExtra = [];
 
     public function getId(): ?int
     {
@@ -86,33 +81,20 @@ class TotemPole
         return $this->heightInCentimeters;
     }
 
+    public function getHeightInKilometers(): int
+    {
+        return $this->heightInKilometers;
+    }
+
     public function increaseHeightInCentimeters(int $centimeters): self
     {
         $this->heightInCentimeters += $centimeters;
 
-        return $this;
-    }
-
-    public function getReward10m(): bool
-    {
-        return $this->reward10m;
-    }
-
-    public function setReward10m(bool $reward10m): self
-    {
-        $this->reward10m = $reward10m;
-
-        return $this;
-    }
-
-    public function getReward50m(): bool
-    {
-        return $this->reward50m;
-    }
-
-    public function setReward50m(bool $reward50m): self
-    {
-        $this->reward50m = $reward50m;
+        while($this->heightInCentimeters > 100000)
+        {
+            $this->heightInCentimeters -= 100000;
+            $this->heightInKilometers++;
+        }
 
         return $this;
     }
@@ -122,21 +104,35 @@ class TotemPole
         return $this->reward100m;
     }
 
-    public function setReward100m(int $reward100m): self
+    public function incrementReward100m(): self
     {
-        $this->reward100m = $reward100m;
+        $this->reward100m++;
 
         return $this;
     }
 
-    public function getReward9000m(): ?bool
+    public function getRewardExtra(): ?array
     {
-        return $this->reward9000m;
+        return $this->rewardExtra;
     }
 
-    public function setReward9000m(bool $reward9000m): self
+    public function setRewardExtra(array $rewardExtra): self
     {
-        $this->reward9000m = $reward9000m;
+        $this->rewardExtra = $rewardExtra;
+
+        return $this;
+    }
+
+    public function addRewardExtra(string $rewardExtra): self
+    {
+        $this->rewardExtra[] = $rewardExtra;
+
+        return $this;
+    }
+
+    public function clearRewardExtra(): self
+    {
+        $this->rewardExtra = [];
 
         return $this;
     }

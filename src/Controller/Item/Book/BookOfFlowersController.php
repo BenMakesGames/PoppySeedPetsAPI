@@ -91,7 +91,7 @@ Well that killed the mood.
 
 I like how every now and again, some creature of the natural world ends up with some super-messed-up name, and you\'re like "so the biologist who discovered this bug called it a \'pleasing fungus beetle\'? Okay, then. And this wouldn\'t happen to be the same biologist who named the \'satanic leaf-tailed gecko\', would it?"
 
-To be fair, that gecko does look _cartooshily_ evil.
+To be fair, that gecko does look _cartoonishly_ evil.
 
 Hm? What? Flowers? Oh yes: "love lies bleeding".
 
