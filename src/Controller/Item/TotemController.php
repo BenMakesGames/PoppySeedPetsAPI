@@ -79,7 +79,7 @@ class TotemController extends PoppySeedPetsItemController
         else if($oldCentimeters <= 1800 && $newCentimeters > 1800)
         {
             // Sauroposeidon = 18m
-            $message = 'Your totem pole... it\'s taller than a Sauroposeidon! (Yeah, it\'s a real thing! Look it up!)';
+            $message = 'Your totem pole... it\'s taller than a Sauroposeidon! (btw, a "sauroposeidon" is a v tall dino.)';
             $totemPole->addRewardExtra('Sauroposeidon');
         }
         else if($oldCentimeters <= 2400 && $newCentimeters > 2400)
@@ -144,7 +144,7 @@ class TotemController extends PoppySeedPetsItemController
         }
         else if($oldCentimeters <= 128100 && $newCentimeters > 128100)
         {
-            // Mount Vesuvius = 979m
+            // Mount Vesuvius = 1,281m
             $message = 'Your totem pole... it\'s taller than Mount Vesuvius!';
             $totemPole->addRewardExtra('Mount Vesuvius');
         }
