@@ -39,7 +39,7 @@ class UmbraService
     {
         $skill = 10 + $pet->getStamina() + $pet->getIntelligence() + $pet->getUmbra(); // psychedelics bonus is built into getUmbra()
 
-        $skill = NumberFunctions::constrain($skill, 1, 18);
+        $skill = NumberFunctions::constrain($skill, 1, 20);
 
         $roll = mt_rand(1, $skill);
 
@@ -91,7 +91,11 @@ class UmbraService
                 $activityLog = $this->foundVampireCastle($pet);
                 break;
             case 18:
+            case 19:
                 $activityLog = $this->frozenQuag($pet);
+                break;
+            case 20:
+                $activityLog = $this->fightAbandondero($pet);
                 break;
         }
 
@@ -593,5 +597,42 @@ class UmbraService
         }
 
         return $activityLog;
+    }
+
+    private function fightAbandondero(Pet $pet): PetActivityLog
+    {
+        $skill = 20 + $pet->getBrawl() + $pet->getUmbra() + $pet->getStrength() + $pet->getDexterity();
+
+        $roll = mt_rand(1, $skill);
+
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, $roll >= 20);
+
+        $isRanged = $pet->getTool() && $pet->getTool()->getItem()->getTool()->getIsRanged() && $pet->getTool()->getItem()->getTool()->getBrawl() > 0;
+
+        $defeated = $isRanged ? 'drew their ' . $pet->getTool()->getItem()->getName() . ' faster' : 'pounced on it before it could fire';
+
+        if($roll >= 20)
+        {
+            $prize = ArrayFunctions::pick_one([
+                'Alien Tissue', 'Plastic', 'Silver Bar'
+            ]);
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+            $pet
+                ->increaseEsteem(3)
+                ->increaseSafety(3)
+            ;
+            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered an Abandondero! It whipped out a laser gun, but ' . $pet->getName() . ' ' . $defeated . ' , defeated it, and claimed its ' . $prize . '!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+            ;
+            $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' defeated an Abandondero, and took this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+            $pet->increaseSafety(-4);
+            return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered an Abandondero! It whipped out a laser gun, and took a few shots at ' . $pet->getName() . ', who made a hasty retreat.', '');
+        }
     }
 }
