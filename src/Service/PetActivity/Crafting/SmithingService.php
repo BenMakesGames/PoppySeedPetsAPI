@@ -128,6 +128,9 @@ class SmithingService
 
             if(array_key_exists('Plastic Shovel', $quantities) && array_key_exists('Green Dye', $quantities))
                 $possibilities[] = [ $this->goldSmithingService, 'createCoreopsis' ];
+
+            if(array_key_exists('Plastic', $quantities) && array_key_exists('3D Printer', $quantities))
+                $possibilities[] = [ $this->goldSmithingService, 'createGoldRod' ];
         }
 
         if(array_key_exists('Silver Bar', $quantities) && array_key_exists('Gold Bar', $quantities) && array_key_exists('White Cloth', $quantities))

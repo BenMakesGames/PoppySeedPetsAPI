@@ -55,7 +55,7 @@ class PlasticPrinterService
     {
         $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ]);
-        return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Plastic Fishing Rod, but the 3D Printer kept acting up.', 'icons/activity-logs/confused');
+        return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to print something out of Plastic, but the 3D Printer kept acting up.', 'icons/activity-logs/confused');
     }
 
     public function createPlasticFishingRod(Pet $pet): PetActivityLog

@@ -352,7 +352,7 @@ class GoldSmithingService
 
         if($roll <= 3)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
 
             if(mt_rand(1, 20 + $pet->getDexterity() + $pet->getStamina()) >= 18)
             {
@@ -379,7 +379,7 @@ class GoldSmithingService
         }
         else if($roll >= 15)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, true);
             $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
@@ -392,10 +392,43 @@ class GoldSmithingService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a telescope, but almost broke the glass, and gave up.', 'icons/activity-logs/confused');
         }
     }
 
+    public function createGoldRod(Pet $pet): PetActivityLog
+    {
+        $smithingRoll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+        $printerRoll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts());
+
+        if($printerRoll <= 3)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
+
+             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Gold Rod, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
+        }
+        else if($smithingRoll >= 16)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Gold Rod from Plastic and a Gold Bar.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+            ;
+            $this->inventoryService->petCollectsItem('Gold Rod', $pet, $pet->getName() . ' created this from Plastic and a Gold Bar.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Gold Rod, but almost burnt themselves, and gave up.', 'icons/activity-logs/confused');
+        }
+    }
 }
