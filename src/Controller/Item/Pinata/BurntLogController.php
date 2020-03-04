@@ -3,8 +3,10 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
+use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,7 +24,7 @@ class BurntLogController extends PoppySeedPetsItemController
      */
     public function openBurntLog(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
     )
     {
         $this->validateInventory($inventory, 'burntLog/#/break');
@@ -30,6 +32,8 @@ class BurntLogController extends PoppySeedPetsItemController
         $user = $this->getUser();
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
+
+        $stat = $userStatsRepository->incrementStat($user, UserStatEnum::BURNT_LOGS_BROKEN);
 
         $extraItem = ArrayFunctions::pick_one([
             'Crooked Stick',
@@ -43,11 +47,6 @@ class BurntLogController extends PoppySeedPetsItemController
         {
             $charcoalReceived = 'Charcoal, Liquid-hot Magma';
             $inventoryService->receiveItem('Liquid-hot Magma', $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);
-        }
-        else if(mt_rand(1, 8) === 1)
-        {
-            $charcoalReceived = 'two Charcoal, a Letter from the Library of Fire';
-            $inventoryService->receiveItem('Letter from the Library of Fire', $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);
             $inventoryService->receiveItem('Charcoal', $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);
         }
         else
@@ -55,9 +54,14 @@ class BurntLogController extends PoppySeedPetsItemController
             $charcoalReceived = 'three Charcoal';
             $inventoryService->receiveItem('Charcoal', $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);
             $inventoryService->receiveItem('Charcoal', $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);
+            $inventoryService->receiveItem('Charcoal', $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);
         }
 
-        $inventoryService->receiveItem('Charcoal', $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);
+        if(($stat->getValue() + 6) % 10 === 0)
+        {
+            $charcoalReceived .= ', a Letter from the Library of Fire';
+            $inventoryService->receiveItem('Letter from the Library of Fire', $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);
+        }
 
         $inventoryService->receiveItem($extraItem, $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);
 
