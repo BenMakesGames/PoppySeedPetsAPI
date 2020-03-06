@@ -40,7 +40,6 @@ final class SerializationGroupEnum
     public const FIREPLACE_MANTLE = 'fireplaceMantle';
     public const MY_FIREPLACE = 'myFireplace';
     public const FIREPLACE_FUEL = 'fireplaceFuel';
-    public const DEV_TASK = 'devTask';
     public const STORY = 'story';
     public const MY_BEEHIVE = 'myBeehive';
     public const MY_TRANSACTION = 'myTransaction';
