@@ -319,6 +319,12 @@ class Pet
      */
     private $claimedGrandparentMerit = false;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\GuildMembership", mappedBy="pet", cascade={"persist", "remove"})
+     * @Groups({"petPublicProfile"})
+     */
+    private $guildMembership;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -1554,6 +1560,23 @@ class Pet
     public function setClaimedGrandparentMerit(): self
     {
         $this->claimedGrandparentMerit = true;
+
+        return $this;
+    }
+
+    public function getGuildMembership(): ?GuildMembership
+    {
+        return $this->guildMembership;
+    }
+
+    public function setGuildMembership(GuildMembership $guildMembership): self
+    {
+        $this->guildMembership = $guildMembership;
+
+        // set the owning side of the relation if necessary
+        if ($guildMembership->getPet() !== $this) {
+            $guildMembership->setPet($this);
+        }
 
         return $this;
     }

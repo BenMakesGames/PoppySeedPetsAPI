@@ -30,6 +30,7 @@ final class SerializationGroupEnum
     public const PET_GROUP = 'petGroup';
     public const PET_GROUP_DETAILS = 'petGroupDetails';
     public const PET_GROUP_INDEX = 'petGroupIndex';
+    public const PET_GUILD = 'petGuild';
     public const GREENHOUSE_PLANT = 'greenhousePlant';
     public const MY_GREENHOUSE = 'myGreenhouse';
     public const MY_SEEDS = 'mySeeds';
