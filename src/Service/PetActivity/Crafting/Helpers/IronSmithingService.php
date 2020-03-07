@@ -1,5 +1,5 @@
 <?php
-namespace App\Service\PetActivity\Crafting\Smithing;
+namespace App\Service\PetActivity\Crafting\Helpers;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;

@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
@@ -32,11 +33,14 @@ class GatheringService
         $this->transactionService = $transactionService;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function adventure(Pet $pet)
     {
         $maxSkill = 10 + $pet->getPerception() + $pet->getNature() + $pet->getGathering() - $pet->getAlcohol() - $pet->getPsychedelic();
 
-        if($maxSkill > 20) $maxSkill = 20;
+        if($maxSkill > 20) $maxSkill = 21;
         else if($maxSkill < 1) $maxSkill = 1;
 
         $roll = mt_rand(1, $maxSkill);
@@ -96,6 +100,9 @@ class GatheringService
             case 20:
                 $activityLog = $this->foundVolcano($pet);
                 break;
+            case 21:
+                $activityLog = $this->foundGypsumCave($pet);
+                break;
         }
 
         if($activityLog)
@@ -105,6 +112,9 @@ class GatheringService
             $this->inventoryService->petAttractsRandomBug($pet);
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function foundAbandonedQuarry(Pet $pet): PetActivityLog
     {
         if(mt_rand(1, 2000) < $pet->getPerception())
@@ -113,6 +123,7 @@ class GatheringService
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $this->inventoryService->petCollectsItem('Striped Microcline', $pet, $pet->getName() . ' found this at an Abandoned Quarry.', $activityLog);
+            $pet->increaseEsteem(4);
             $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::GATHER, true);
         }
         else if($pet->getStrength() < 4)
@@ -134,6 +145,9 @@ class GatheringService
         return $activityLog;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function foundNothing(Pet $pet, int $roll): PetActivityLog
     {
         $exp = ceil($roll / 10);
@@ -145,6 +159,9 @@ class GatheringService
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' went out gathering, but couldn\'t find anything.', 'icons/activity-logs/confused');
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function foundPaperBag(Pet $pet): PetActivityLog
     {
         $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Paper Bag just, like, lyin\' around.', 'items/bag/paper');
@@ -157,6 +174,9 @@ class GatheringService
         return $activityLog;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function foundTeaBush(Pet $pet): PetActivityLog
     {
         $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Tea Bush, and grabbed a few Tea Leaves.', 'items/veggie/tea-leaves');
@@ -173,6 +193,9 @@ class GatheringService
         return $activityLog;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function foundBerryBush(Pet $pet): PetActivityLog
     {
         if(mt_rand(1, 8) >= 6)
@@ -209,6 +232,9 @@ class GatheringService
         return $activityLog;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function foundHollowLog(Pet $pet): PetActivityLog
     {
         if(mt_rand(1, 4) === 1)
@@ -265,6 +291,9 @@ class GatheringService
         return $activityLog;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function foundBirdNest(Pet $pet): PetActivityLog
     {
         if(mt_rand(1, 20 + $pet->getStealth() + $pet->getDexterity()) >= 10)
@@ -302,6 +331,9 @@ class GatheringService
         return $activityLog;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function foundBeach(Pet $pet): PetActivityLog
     {
         $loot = [];
@@ -375,6 +407,9 @@ class GatheringService
         return $activityLog;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function foundOvergrownGarden(Pet $pet): PetActivityLog
     {
         $possibleLoot = [
@@ -456,6 +491,9 @@ class GatheringService
         return $activityLog;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function foundIronMine(Pet $pet): PetActivityLog
     {
         if(mt_rand(1, 4) === 1 && !$pet->canSeeInTheDark())
@@ -515,6 +553,9 @@ class GatheringService
         return $activityLog;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function foundMicroJungle(Pet $pet): PetActivityLog
     {
         $possibleLoot = [
@@ -586,6 +627,9 @@ class GatheringService
         return $activityLog;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function foundWildHedgemaze(Pet $pet): PetActivityLog
     {
         $possibleLoot = [
@@ -706,6 +750,9 @@ class GatheringService
         return $activityLog;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function foundVolcano(Pet $pet): PetActivityLog
     {
         $check = mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering());
@@ -759,6 +806,52 @@ class GatheringService
                 else
                     $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and ' . $pet->getName() . ' got a bit light-headed.');
             }
+        }
+
+        return $activityLog;
+    }
+
+    /**
+     * @throws EnumInvalidValueException
+     */
+    private function foundGypsumCave(Pet $pet): PetActivityLog
+    {
+        $check = mt_rand(1, 20 + $pet->getPerception() + $pet->getStrength() + $pet->getNature() + $pet->getGathering());
+
+        if($check < 15)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::GATHER, false);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored a huge cave, and got lost for a while!', 'icons/activity-logs/confused');
+            $pet->increaseSafety(-4);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, true);
+
+            $loot = [
+                'Gypsum'
+            ];
+
+            if($check >= 20)
+                $loot[] = ArrayFunctions::pick_one([ 'Iron Ore', 'Toadstool', 'Gypsum', 'Gypsum', 'Gypsum', 'Limestone' ]);
+
+            if($check >= 30)
+                $loot[] = ArrayFunctions::pick_one([ 'Silver Ore', 'Silver Ore', 'Gypsum', 'Gold Ore' ]);
+
+            if(mt_rand(1, 2000) < $pet->getPerception())
+            {
+                $loot[] = 'Striped Microcline';
+                $pet->increaseEsteem(4);
+            }
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored a huge cave, and found ' . ArrayFunctions::list_nice($loot) . '.', '');
+
+            foreach($loot as $item)
+                $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this in a huge cave.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, max(2, count($loot)), [ PetSkillEnum::NATURE ]);
         }
 
         return $activityLog;

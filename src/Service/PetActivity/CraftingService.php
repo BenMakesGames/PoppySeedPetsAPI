@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -15,6 +16,7 @@ use App\Service\InventoryService;
 use App\Service\PetActivity\Crafting\PlasticPrinterService;
 use App\Service\PetActivity\Crafting\SmithingService;
 use App\Service\PetActivity\Crafting\MagicBindingService;
+use App\Service\PetActivity\Crafting\Helpers\StickCraftingService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 
@@ -27,11 +29,13 @@ class CraftingService
     private $smithingService;
     private $magicBindingService;
     private $plasticPrinterService;
+    private $stickCraftingService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService,
         ItemRepository $itemRepository, SmithingService $smithingService, MagicBindingService $magicBindingService,
-        PlasticPrinterService $plasticPrinterService, PetExperienceService $petExperienceService
+        PlasticPrinterService $plasticPrinterService, PetExperienceService $petExperienceService,
+        StickCraftingService $stickCraftingService
     )
     {
         $this->responseService = $responseService;
@@ -41,6 +45,7 @@ class CraftingService
         $this->magicBindingService = $magicBindingService;
         $this->plasticPrinterService = $plasticPrinterService;
         $this->petExperienceService = $petExperienceService;
+        $this->stickCraftingService = $stickCraftingService;
     }
 
     public function getCraftingPossibilities(Pet $pet): array
@@ -73,38 +78,38 @@ class CraftingService
         {
             if(array_key_exists('String', $quantities))
             {
-                $possibilities[] = [ $this, 'createCrookedFishingRod' ];
+                $possibilities[] = [ $this->stickCraftingService, 'createCrookedFishingRod' ];
 
                 if(array_key_exists('Talon', $quantities))
-                    $possibilities[] = [ $this, 'createHuntingSpear' ];
+                    $possibilities[] = [ $this->stickCraftingService, 'createHuntingSpear' ];
 
                 if(array_key_exists('Hunting Spear', $quantities))
-                    $possibilities[] = [ $this, 'createVeryLongSpear' ];
+                    $possibilities[] = [ $this->stickCraftingService, 'createVeryLongSpear' ];
 
                 if(array_key_exists('Overly-long Spear', $quantities))
-                    $possibilities[] = [ $this, 'createRidiculouslyLongSpear' ];
+                    $possibilities[] = [ $this->stickCraftingService, 'createRidiculouslyLongSpear' ];
 
                 if(array_key_exists('Corn', $quantities) && array_key_exists('Rice', $quantities))
-                    $possibilities[] = [ $this, 'createHarvestStaff' ];
+                    $possibilities[] = [ $this->stickCraftingService, 'createHarvestStaff' ];
             }
 
             if(array_key_exists('Glue', $quantities) && (array_key_exists('Wheat', $quantities) || array_key_exists('Rice', $quantities)))
-                $possibilities[] = [ $this, 'createStrawBroom' ];
+                $possibilities[] = [ $this->stickCraftingService, 'createStrawBroom' ];
 
             if(array_key_exists('White Cloth', $quantities))
-                $possibilities[] = [ $this, 'createTorchOrFlag' ];
+                $possibilities[] = [ $this->stickCraftingService, 'createTorchOrFlag' ];
 
             if(array_key_exists('Toadstool', $quantities) && array_key_exists('Quintessence', $quantities))
-                $possibilities[] = [ $this, 'createChampignon' ];
+                $possibilities[] = [ $this->stickCraftingService, 'createChampignon' ];
 
             if(array_key_exists('String', $quantities))
-                $possibilities[] = [ $this, 'createWoodenSword' ];
+                $possibilities[] = [ $this->stickCraftingService, 'createWoodenSword' ];
 
             if(array_key_exists('Glass', $quantities))
-                $possibilities[] = [ $this, 'createRusticMagnifyingGlass' ];
+                $possibilities[] = [ $this->stickCraftingService, 'createRusticMagnifyingGlass' ];
 
             if(array_key_exists('Sweet Beet', $quantities) && array_key_exists('Glue', $quantities))
-                $possibilities[] = [ $this, 'createSweetBeat' ];
+                $possibilities[] = [ $this->stickCraftingService, 'createSweetBeat' ];
         }
 
         if(array_key_exists('Glue', $quantities))
@@ -192,6 +197,9 @@ class CraftingService
 
             if(array_key_exists('Green Dye', $quantities))
                 $possibilities[] = [ $this, 'createDragonFlag' ];
+
+            if(array_key_exists('String', $quantities))
+                $possibilities[] = [ $this, 'createBindle' ];
         }
 
         // pets won't try any smithing tasks if they don't feel sufficiently safe
@@ -232,6 +240,9 @@ class CraftingService
         return $activityLog;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function createSimpleFiberglassItem(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
@@ -268,49 +279,9 @@ class CraftingService
         }
     }
 
-    private function createSweetBeat(Pet $pet): PetActivityLog
-    {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
-        if($roll <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-
-            if(mt_rand(1, 2) === 1)
-            {
-                $this->inventoryService->loseItem('Glue', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->inventoryService->loseItem('Sweet Beet', $pet->getOwner(), LocationEnum::HOME, 1);
-                $pet->increaseEsteem(-1);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Sweet Beat, but the Glue got all over the beet, wasting both :(', '');
-            }
-            else
-            {
-                $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Sweet Beat, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-            }
-        }
-        else if($roll >= 15)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::CRAFT, true);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
-            $this->inventoryService->loseItem('Glue', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Sweet Beet', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-            $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Sweet Beat.', 'items/resource/string')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
-            ;
-            $this->inventoryService->petCollectsItem('Sweet Beat', $pet, $pet->getName() . ' created this by gluing a Sweet Beet to a Stick. Because that makes sense.', $activityLog);
-            return $activityLog;
-        }
-        else
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to create a Sweet Beat, but wasn\'t able to make any meaningful progress.', 'icons/activity-logs/confused');
-        }
-    }
-
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function createDecoratedFlute(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
@@ -344,6 +315,9 @@ class CraftingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function createDoubleScythe(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
@@ -396,6 +370,9 @@ class CraftingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function createFarmersMultiTool(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
@@ -440,6 +417,9 @@ class CraftingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function spinFluff(Pet $pet): PetActivityLog
     {
         $making = ArrayFunctions::pick_one([ 'String', 'White Cloth' ]);
@@ -477,6 +457,9 @@ class CraftingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function createYellowDyeFromTeaLeaves(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getNature() + $pet->getCrafts());
@@ -505,6 +488,9 @@ class CraftingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function extractFromScales(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getNature() + $pet->getCrafts());
@@ -550,135 +536,9 @@ class CraftingService
         }
     }
 
-    private function createCrookedFishingRod(Pet $pet): PetActivityLog
-    {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getNature()));
-
-        if($roll <= 3)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            if(mt_rand(1, 2) === 1)
-            {
-                $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Crooked Fishing Rod, but broke the String :(', 'icons/activity-logs/broke-string');
-            }
-            else
-            {
-                $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Crooked Fishing Rod, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-
-            }
-        }
-        else if($roll >= 12)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
-            $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Crooked Fishing Rod.', '');
-            $this->inventoryService->petCollectsItem('Crooked Fishing Rod', $pet, $pet->getName() . ' created this from String and a Crooked Stick.', $activityLog);
-            return $activityLog;
-        }
-        else
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Crooked Fishing Rod, but couldn\'t figure it out.', 'icons/activity-logs/confused');
-        }
-    }
-
-    private function createSunFlag(Pet $pet): PetActivityLog
-    {
-        return $this->createFlag($pet, 'Yellow Dye', 'Sun Flag');
-    }
-
-    private function createDragonFlag(Pet $pet): PetActivityLog
-    {
-        return $this->createFlag($pet, 'Green Dye', 'Dragon Flag');
-    }
-
-    private function createFlag(Pet $pet, string $dye, string $making)
-    {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
-
-        if($roll <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::CRAFT, false);
-
-            $this->inventoryService->loseItem($dye, $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $making . ', but accidentally spilt the ' . $dye . ' :(', '');
-        }
-        else if($roll >= 10)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('White Flag', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem($dye, $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(3);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' painted a ' . $making . '.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
-            ;
-            $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' painted this flag.', $activityLog);
-            return $activityLog;
-        }
-        else
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(15, 45), PetActivityStatEnum::CRAFT, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to paint a flag, but couldn\'t come up with a good design.', 'icons/activity-logs/confused');
-        }
-    }
-
-    private function createTorchOrFlag(Pet $pet): PetActivityLog
-    {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
-
-        $making = ArrayFunctions::pick_one([
-            'Stereotypical Torch',
-            'White Flag'
-        ]);
-
-        if($roll <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::CRAFT, false);
-            if(mt_rand(1, 2) === 1)
-            {
-                $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                $pet->increaseEsteem(-1);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $making . ', but accidentally tore the White Cloth into useless shapes :(', 'icons/activity-logs/torn-to-bits');
-            }
-            else
-            {
-                $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $making . ', but accidentally split the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-            }
-        }
-        else if($roll >= 8)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a ' . $making . '.', '');
-            $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' created this from White Cloth and a Crooked Stick.', $activityLog);
-            return $activityLog;
-        }
-        else
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(15, 45), PetActivityStatEnum::CRAFT, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $making . ', but couldn\'t figure it out.', 'icons/activity-logs/confused');
-        }
-    }
-
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function createFabricMache(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
@@ -714,6 +574,9 @@ class CraftingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function createGoldTrifecta(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
@@ -749,6 +612,9 @@ class CraftingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function createAlienCookingBuddy(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
@@ -785,6 +651,9 @@ class CraftingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function createFiberglassPanFlute(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getMusic(), $pet->getCrafts()));
@@ -835,92 +704,9 @@ class CraftingService
         }
     }
 
-    private function createChampignon(Pet $pet): PetActivityLog
-    {
-        $quintessenceHandling = mt_rand(1, 10 + $pet->getUmbra());
-
-        if($quintessenceHandling <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Champignon, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
-
-        if($roll <= 3)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-
-            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Champignon, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-        }
-        else if($roll >= 15)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Toadstool', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS,  PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Champignon.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
-            ;
-            $this->inventoryService->petCollectsItem('Champignon', $pet, $pet->getName() . ' created this from a Crooked Stick, Toadstool, and bit of Quintessence.', $activityLog);
-            return $activityLog;
-        }
-        else
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS,  PetSkillEnum::UMBRA ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Champignon, but couldn\'t quite figure it out.', 'icons/activity-logs/confused');
-        }
-    }
-
-    private function createWoodenSword(Pet $pet): PetActivityLog
-    {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getSkills()->getBrawl()));
-
-        if($roll <= 3)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            if(mt_rand(1, 2) === 1)
-            {
-                $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Wooden Sword, but broke the String :(', 'icons/activity-logs/broke-string');
-            }
-            else
-            {
-                $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Wooden Sword, but broke the Crooked Stick :( Like, more than the one time needed.', 'icons/activity-logs/broke-stick');
-
-            }
-        }
-        else if($roll >= 12)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-            $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Wooden Sword.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
-            ;
-            $this->inventoryService->petCollectsItem('Wooden Sword', $pet, $pet->getName() . ' created this from some String and a Crooked Stick.', $activityLog);
-            return $activityLog;
-        }
-        else
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Wooden Sword, but couldn\'t quite figure it out.', 'icons/activity-logs/confused');
-        }
-    }
-
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function createGlassPendulum(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
@@ -974,58 +760,9 @@ class CraftingService
         }
     }
 
-    private function createRusticMagnifyingGlass(Pet $pet): PetActivityLog
-    {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
-
-        if($roll <= 3)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-
-            if(mt_rand(1, 20 + $pet->getDexterity() + $pet->getStamina()) >= 18)
-            {
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                $pet->increaseEsteem(2);
-                $pet->increaseSafety(-4);
-
-                if(mt_rand(1, 4) === 1)
-                {
-                    $pet->increaseEsteem(2);
-                    return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make a lens from a piece of glass, and cut themselves! :( They managed to save the glass, though! ' . $pet->getName() . ' is kind of proud of that.', 'icons/activity-logs/wounded');
-                }
-                else
-                    return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make a lens from a piece of glass, and cut themselves! :( They managed to save the glass, though!', 'icons/activity-logs/wounded');
-            }
-            else
-            {
-                $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                $pet->increaseEsteem(-2);
-                $pet->increaseSafety(-4);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make a lens from a piece of glass, but cut themselves, and dropped the glass :(', 'icons/activity-logs/wounded');
-            }
-        }
-        else if($roll >= 13)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a "Rustic" Magnifying Glass.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
-            ;
-            $this->inventoryService->petCollectsItem('"Rustic" Magnifying Glass', $pet, $pet->getName() . ' created this.', $activityLog);
-            return $activityLog;
-        }
-        else
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a magnifying glass, but almost broke the glass, and gave up.', 'icons/activity-logs/confused');
-        }
-    }
-
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function createBenjaminFranklin(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
@@ -1069,245 +806,9 @@ class CraftingService
         }
     }
 
-    private function createHuntingSpear(Pet $pet): PetActivityLog
-    {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getSkills()->getBrawl()));
-
-        if($roll <= 3)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            if(mt_rand(1, 2) === 1)
-            {
-                $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Hunting Spear, but broke the String :(', 'icons/activity-logs/broke-string');
-            }
-            else
-            {
-                $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Hunting Spear, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-            }
-        }
-        else if($roll >= 13)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Talon', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-            $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Hunting Spear.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
-            ;
-            $this->inventoryService->petCollectsItem('Hunting Spear', $pet, $pet->getName() . ' created this.', $activityLog);
-            return $activityLog;
-        }
-        else
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Hunting Spear, but couldn\'t quite figure it out.', 'icons/activity-logs/confused');
-        }
-    }
-
-    private function createStrawBroom(Pet $pet): PetActivityLog
-    {
-        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
-
-        if($craftsCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            if(mt_rand(1, 2) === 1)
-            {
-                $this->inventoryService->loseItem('Glue', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a broom, but spilled the Glue :(', '');
-            }
-            else
-            {
-                $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a broom, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-            }
-        }
-        else if($craftsCheck >= 13)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('Glue', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-
-            $this->inventoryService->loseOneOf([ 'Rice', 'Wheat' ], $pet->getOwner(), LocationEnum::HOME);
-
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Straw Broom.', '');
-            $this->inventoryService->petCollectsItem('Straw Broom', $pet, $pet->getName() . ' created this.', $activityLog);
-            return $activityLog;
-        }
-        else
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a broom, but couldn\'t quite figure it out.', 'icons/activity-logs/confused');
-        }
-    }
-
-    private function createHarvestStaff(Pet $pet): PetActivityLog
-    {
-        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
-
-        if($craftsCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            if($pet->getFood() <= 4)
-            {
-                $food = ArrayFunctions::pick_one([ 'Rice', 'Corn' ]);
-                $this->inventoryService->loseOneOf($food, $pet->getOwner(), LocationEnum::HOME);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                $pet->increaseFood(4);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make a Harvest Staff, but got hungry, and ate the ' . $food . ' :(', '');
-            }
-            else if(mt_rand(1, 2) === 1)
-            {
-                $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Harvest Staff, but broke the String :(', 'icons/activity-logs/broke-string');
-            }
-            else
-            {
-                $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a staff, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-            }
-        }
-        else if($craftsCheck >= 15)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Rice', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Corn', $pet->getOwner(), LocationEnum::HOME, 1);
-
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Harvest Staff.', '');
-            $this->inventoryService->petCollectsItem('Harvest Staff', $pet, $pet->getName() . ' created this.', $activityLog);
-            return $activityLog;
-        }
-        else
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a staff, but couldn\'t decide what kind...', 'icons/activity-logs/confused');
-        }
-    }
-
-    private function createVeryLongSpear(Pet $pet): PetActivityLog
-    {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getSkills()->getBrawl()));
-
-        if($roll <= 3)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            if(mt_rand(1, 2) === 1)
-            {
-                $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extend a Hunting Spear, but broke the String :(', 'icons/activity-logs/broke-string');
-            }
-            else
-            {
-                $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extend a Hunting Spear, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-            }
-        }
-        else if($roll >= 14)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Hunting Spear', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-            $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created an Overly-long Spear.', '');
-            $this->inventoryService->petCollectsItem('Overly-long Spear', $pet, $pet->getName() . ' created this.', $activityLog);
-            return $activityLog;
-        }
-        else
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extend a Hunting Spear, but couldn\'t quite figure it out.', 'icons/activity-logs/confused');
-        }
-    }
-
-    private function createRidiculouslyLongSpear(Pet $pet): PetActivityLog
-    {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getSkills()->getBrawl()));
-
-        if($roll <= 3)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            if(mt_rand(1, 2) === 1)
-            {
-                $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extend an Overly-long Spear, but broke the String :(', 'icons/activity-logs/broke-string');
-            }
-            else
-            {
-                $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extend an Overly-long Spear, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-            }
-        }
-        else if($roll >= 16)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Overly-long Spear', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-            $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a - like - CRAZY-long Spear. It\'s really rather silly.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
-            ;
-            $this->inventoryService->petCollectsItem('This is Getting Ridiculous', $pet, $pet->getName() . ' created this.', $activityLog);
-            return $activityLog;
-        }
-        else
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' considered extending an Overly-long Spear, but then thought that maybe that was going a bit overboard.', 'icons/activity-logs/confused');
-        }
-    }
-
-    private function createDecoratedSpear(Pet $pet)
-    {
-        $roll = mt_rand(1, 20 + $pet->getDexterity() + $pet->getCrafts());
-
-        if($roll >= 12)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('Feathers', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Hunting Spear', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(1);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Decorated Spear.', '');
-            $this->inventoryService->petCollectsItem('Decorated Spear', $pet, $pet->getName() . ' decorated a Hunting Spear with Feathers to make this.', $activityLog);
-            return $activityLog;
-        }
-        else
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::CRAFT, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to decorate a Hunting Spear with Feathers, but couldn\'t get the look just right.', 'icons/activity-logs/confused');
-        }
-    }
-
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function createOrnatePanFlute(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getMusic()));
@@ -1350,6 +851,9 @@ class CraftingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function createSnakebite(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getDexterity() + $pet->getCrafts());
@@ -1382,6 +886,9 @@ class CraftingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function createVeilPiercer(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence());
@@ -1416,6 +923,9 @@ class CraftingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function createPaintedFishingRod(Pet $pet): PetActivityLog
     {
         $this->petExperienceService->spendTime($pet, mt_rand(45, 90), PetActivityStatEnum::CRAFT, true);
@@ -1429,6 +939,9 @@ class CraftingService
         return $activityLog;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function createGoldIdol(Pet $pet): PetActivityLog
     {
         $this->petExperienceService->spendTime($pet, mt_rand(45, 90), PetActivityStatEnum::CRAFT, true);
@@ -1441,6 +954,9 @@ class CraftingService
         return $activityLog;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function createYellowBucket(Pet $pet): PetActivityLog
     {
         $this->petExperienceService->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::CRAFT, true);
@@ -1453,6 +969,9 @@ class CraftingService
         return $activityLog;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function createPaintedDumbbell(Pet $pet): PetActivityLog
     {
         $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::CRAFT, true);
@@ -1471,6 +990,9 @@ class CraftingService
         return $activityLog;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function repairRustyBlunderbuss(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getSmithing()));
@@ -1503,6 +1025,9 @@ class CraftingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function repairRustyRapier(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getSmithing()));
@@ -1535,6 +1060,9 @@ class CraftingService
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function createLaserGuidedSword(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getScience(), $pet->getCrafts()));
@@ -1570,5 +1098,97 @@ class CraftingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to improve an Iron Sword, but wasn\'t sure how to begin...', 'icons/activity-logs/confused');
         }
+    }
+
+    /**
+     * @throws EnumInvalidValueException
+     */
+    private function createSunFlag(Pet $pet): PetActivityLog
+    {
+        return $this->createFlag($pet, 'Yellow Dye', 'Sun Flag');
+    }
+
+    /**
+     * @throws EnumInvalidValueException
+     */
+    private function createDragonFlag(Pet $pet): PetActivityLog
+    {
+        return $this->createFlag($pet, 'Green Dye', 'Dragon Flag');
+    }
+
+    /**
+     * @throws EnumInvalidValueException
+     */
+    private function createFlag(Pet $pet, string $dye, string $making)
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::CRAFT, false);
+
+            $this->inventoryService->loseItem($dye, $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $making . ', but accidentally spilt the ' . $dye . ' :(', '');
+        }
+        else if($roll >= 10)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('White Flag', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem($dye, $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(3);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' painted a ' . $making . '.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+            ;
+            $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' painted this flag.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(15, 45), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to paint a flag, but couldn\'t come up with a good design.', 'icons/activity-logs/confused');
+        }
+    }
+
+    /**
+     * @throws EnumInvalidValueException
+     */
+    private function createBindle(Pet $pet)
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::CRAFT, false);
+
+            $this->inventoryService->loseItem('White Flag', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Bindle, but accidentally tore the White Flag :(', '');
+            $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' accidentally tore a White Flag; this remains.', $activityLog);
+        }
+        else if($roll >= 10 || $pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('White Flag', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(3);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Bindle from a White Flag.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+            ;
+            $this->inventoryService->petCollectsItem('Bindle', $pet, $pet->getName() . ' made this.', $activityLog);
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(15, 45), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to tie a Bindle, but couldn\'t remember their knots...', 'icons/activity-logs/confused');
+        }
+
+        return $activityLog;
     }
 }
