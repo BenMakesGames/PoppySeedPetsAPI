@@ -465,7 +465,7 @@ class SmithingService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' smithed Antipode!', 'items/tool/sword/antipode')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
             ;
-            $this->inventoryService->petCollectsItem('Anitpode', $pet, $pet->getName() . ' created this by hammering Everice and Firestone into an Iron Sword!', $activityLog);
+            $this->inventoryService->petCollectsItem('Antipode', $pet, $pet->getName() . ' created this by hammering Everice and Firestone into an Iron Sword!', $activityLog);
             return $activityLog;
         }
         else
@@ -486,7 +486,7 @@ class SmithingService
         if($roll >= 25)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
-            $this->inventoryService->loseItem('Anitpode', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Antipode', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Lightning Sword', $pet->getOwner(), LocationEnum::HOME, 1);
 
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::CRAFTS ]);
