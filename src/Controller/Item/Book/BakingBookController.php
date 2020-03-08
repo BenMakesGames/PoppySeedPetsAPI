@@ -45,6 +45,7 @@ class BakingBookController extends PoppySeedPetsItemController
 * Plain Bread
 * Shortbread Cookies
 * Sugar Cookies (World\'s Best!)
+* Thicc Mints
 
 ## Basic Ingredients
 
@@ -180,6 +181,15 @@ The milk provides enough acidity for this recipe, so Cream of Tartar (or Baking 
 * Wheat Flour
 
 If you have Baking Soda and Cream of Tartar lying around, but no Baking Powder, feel free to substitute the Baking Powder here with Baking Soda and Cream of Tartar directly.
+
+#### Thicc Mints
+
+* Wheat Flour
+* Baking Soda
+* Sugar
+* Cocoa Powder
+* Butter, or Oil
+* Mint
 ');
     }
 }
