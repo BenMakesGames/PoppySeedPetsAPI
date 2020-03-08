@@ -128,7 +128,6 @@ class PetExperienceService
      * @param Item $item
      * @param PetActivityLog|null $activityLog
      * @return bool
-     * @throws EnumInvalidValueException
      */
     public function doEat(Pet $pet, Item $item, ?PetActivityLog $activityLog): bool
     {
@@ -189,9 +188,6 @@ class PetExperienceService
 
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function applyFoodEffects(Pet $pet, Item $item)
     {
         $food = $item->getFood();

@@ -209,7 +209,6 @@ class InventoryService
 
     /**
      * @param Item|string $item
-     * @throws EnumInvalidValueException
      */
     public function petCollectsItem($item, Pet $pet, string $comment, ?PetActivityLog $activityLog): ?Inventory
     {

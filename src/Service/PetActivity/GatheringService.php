@@ -9,6 +9,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\NumberFunctions;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -40,8 +41,7 @@ class GatheringService
     {
         $maxSkill = 10 + $pet->getPerception() + $pet->getNature() + $pet->getGathering() - $pet->getAlcohol() - $pet->getPsychedelic();
 
-        if($maxSkill > 20) $maxSkill = 21;
-        else if($maxSkill < 1) $maxSkill = 1;
+        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 21);
 
         $roll = mt_rand(1, $maxSkill);
 

@@ -120,12 +120,17 @@ class GuildMembership
         return $this->level;
     }
 
+    public function getTitle(): int
+    {
+        return (int)($this->getLevel() / 10);
+    }
+
     /**
      * @Groups({"petGuild", "petPublicProfile"})
      */
     public function getRank(): string
     {
-        $title = (int)($this->getLevel() / 10);
+        $title = $this->getTitle();
         $rank = ($this->getLevel() % 10) + 1;
 
         $titles = $this->getGuild()->getTitles();

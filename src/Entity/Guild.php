@@ -33,6 +33,12 @@ class Guild
      */
     private $emblem;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Item")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $starterTool;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -70,6 +76,18 @@ class Guild
     public function setEmblem(string $emblem): self
     {
         $this->emblem = $emblem;
+
+        return $this;
+    }
+
+    public function getStarterTool(): ?Item
+    {
+        return $this->starterTool;
+    }
+
+    public function setStarterTool(?Item $starterTool): self
+    {
+        $this->starterTool = $starterTool;
 
         return $this;
     }
