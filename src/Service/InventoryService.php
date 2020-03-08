@@ -246,25 +246,37 @@ class InventoryService
         return $i;
     }
 
-    public function petAttractsRandomBug(Pet $pet): Inventory
+    public function petAttractsRandomBug(Pet $pet): ?Inventory
     {
+        if($pet->getTool() && $pet->getTool()->getItem()->getName() === 'Debugger')
+            return null;
+
         $bugName  = ArrayFunctions::pick_one([ 'Spider', 'Centipede', 'Cockroach', 'Line of Ants', 'Fruit Fly', 'Stink Bug', 'Moth' ]);
 
         $bug = $this->itemRepository->findOneByName($bugName);
 
-        $i = (new Inventory())
-            ->setOwner($pet->getOwner())
-            ->setCreatedBy(null)
-            ->setItem($bug)
-            ->addComment('Ah! How\'d this get inside?!')
-        ;
+        $hasNet = $pet->getTool() && $pet->getTool()->getItem()->getName() === 'Bug-catching Net';
 
-        if($pet->getOwner()->getUnlockedBasement() && mt_rand(1, 4) === 1)
-            $i->setLocation(LocationEnum::BASEMENT);
+        $bugs = $hasNet ? 2 : 1;
+        $comment = $hasNet ? $pet->getName() . ' caught this in their ' .$pet->getTool()->getItem()->getName() . '!' : 'Ah! How\'d this get inside?!';
+        $inventory = null;
 
-        $this->em->persist($i);
+        for($i = 0; $i < $bugs; $i++)
+        {
+            $inventory = (new Inventory())
+                ->setOwner($pet->getOwner())
+                ->setCreatedBy(null)
+                ->setItem($bug)
+                ->addComment($comment)
+            ;
 
-        return $i;
+            if(!$hasNet && $pet->getOwner()->getUnlockedBasement() && mt_rand(1, 4) === 1)
+                $inventory->setLocation(LocationEnum::BASEMENT);
+
+            $this->em->persist($inventory);
+        }
+
+        return $inventory;
     }
 
     /**

@@ -506,16 +506,25 @@ class PetService
             }
         }
 
-        if($pet->getTool() && $pet->getTool()->getItem()->getName() === 'Cetgueli\'s Treasure Map')
+        if($pet->getTool())
         {
-            $this->treasureMapService->doCetguelisTreasureMap($pet);
-            return;
-        }
+            if($pet->getTool()->getItem()->getName() === 'Cetgueli\'s Treasure Map')
+            {
+                $this->treasureMapService->doCetguelisTreasureMap($pet);
+                return;
+            }
 
-        if($pet->getTool() && $pet->getTool()->getItem()->getName() === '"Gold" Idol')
-        {
-            $this->treasureMapService->doGoldIdol($pet);
-            return;
+            if(mt_rand(1, 10) === 1 && $pet->getFood() > 0 && ($pet->getTool()->getItem()->getName() === 'Silver Keyblade' || $pet->getTool()->getItem()->getName() === 'Gold Keyblade'))
+            {
+                $this->treasureMapService->doKeybladeTower($pet);
+                return;
+            }
+
+            if($pet->getTool()->getItem()->getName() === '"Gold" Idol')
+            {
+                $this->treasureMapService->doGoldIdol($pet);
+                return;
+            }
         }
 
         if(mt_rand(1, 50) === 1)

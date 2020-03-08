@@ -7,6 +7,8 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\GrammarFunctions;
+use App\Functions\NumberFunctions;
 use App\Model\PetChanges;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
@@ -99,6 +101,84 @@ class TreasureMapService
 
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));
+
+        if(mt_rand(1, 20) === 1)
+            $this->inventoryService->petAttractsRandomBug($pet);
+    }
+
+    public function doKeybladeTower(Pet $pet)
+    {
+        $changes = new PetChanges($pet);
+
+        $skill = 3 * ($pet->getBrawl() * 2 + $pet->getStamina() * 2 + $pet->getDexterity() + $pet->getStrength() + $pet->getLevel());
+
+        $floor = mt_rand(max(1, ceil($skill / 2)), 20 + $skill);
+        $floor = NumberFunctions::constrain($floor, 1, 100);
+
+        $keybladeName = $pet->getTool()->getItem()->getName();
+
+        if($floor === 1)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' took their ' . $keybladeName . ' to the Tower of Trials, but couldn\'t even get past the first floor...', '');
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+            $pet
+                ->increaseEsteem(-2)
+                ->increaseFood(-1)
+            ;
+        }
+        else if($floor < 25)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' took their ' . $keybladeName . ' to the Tower of Trials, but had to retreat after only the ' . GrammarFunctions::ordinal($floor) . ' floor.', '');
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+            $pet
+                ->increaseFood(-2)
+            ;
+        }
+        else if($floor < 50)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' took their ' . $keybladeName . ' to the Tower of Trials, but got tired and had to quit after the ' . GrammarFunctions::ordinal($floor) . ' floor.', '');
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
+            $pet
+                ->increaseFood(-3)
+            ;
+        }
+        else if($floor < 75)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' took their ' . $keybladeName . ' to the Tower of Trials, and got as far as the ' . GrammarFunctions::ordinal($floor) . ' floor before they had to quit. (Not bad!)', '');
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
+            $pet
+                ->increaseFood(-4)
+                ->increaseEsteem(2)
+            ;
+        }
+        else if($floor < 100)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' took their ' . $keybladeName . ' to the Tower of Trials, and got all the way to the ' . GrammarFunctions::ordinal($floor) . ' floor, but couldn\'t get any further. (Pretty good, though!)', '');
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ]);
+            $pet
+                ->increaseFood(-5)
+                ->increaseEsteem(3)
+            ;
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' took their ' . $keybladeName . ' to the Tower of Trials, and beat the 100th floor! They plunged the keyblade into the pedestal, unlocking the door to the treasure room, and claimed a Tower Chest!', '');
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::BRAWL ]);
+            $pet
+                ->increaseFood(-6)
+                ->increaseEsteem(5)
+                ->increaseSafety(2)
+            ;
+
+            $this->inventoryService->petCollectsItem('Tower Chest', $pet, $pet->getName() . ' got this by defeating the 100th floor of the Tower of Trials!', $activityLog);
+            $this->em->remove($pet->getTool());
+            $pet->setTool(null);
+        }
+
+        $activityLog
+            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY + $floor)
+            ->setChanges($changes->compare($pet))
+        ;
 
         if(mt_rand(1, 20) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);

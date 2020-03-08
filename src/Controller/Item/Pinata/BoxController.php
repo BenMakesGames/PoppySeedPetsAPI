@@ -781,4 +781,34 @@ class BoxController extends PoppySeedPetsItemController
 
         return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
+
+    /**
+     * @Route("/tower/{inventory}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openTowerBox(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/tower/#/open');
+
+        $newInventory = [];
+
+        $location = $inventory->getLocation();
+
+        $message = $user->getName() . ' got this from a Tower Chest.';
+
+        $newInventory[] = $inventoryService->receiveItem('Ceremonial Trident', $user, $user, $message, $location, $inventory->getLockedToOwner());
+
+        for($i = 0; $i < 4; $i++)
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Linens and Things', 'Gold Bar', 'Iron Key', 'White Cloth' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
+
+        if(mt_rand(1, 10) === 1)
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Renaming Scroll', 'Behatting Scroll', 'Major Scroll of Riches', 'Species Transmigration Serum' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
+
+        return $this->countRemoveFlushAndRespond('Opening the chest revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+    }
 }
