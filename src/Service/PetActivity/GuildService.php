@@ -7,6 +7,8 @@ use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\GuildEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetSkillEnum;
+use App\Functions\ArrayFunctions;
 use App\Repository\GuildRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -38,7 +40,7 @@ class GuildService
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
         $preferredGuild = [
-            GuildEnum::TIMES_ARROW => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getScience() + ($pet->getExtroverted() + 1) * 2 + 1 + mt_rand(-20, 20) / 10,
+            GuildEnum::TIMES_ARROW => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getPerception() + $pet->getSkills()->getScience() + mt_rand(-20, 20) / 10,
             GuildEnum::LIGHT_AND_SHADOW => $pet->getSkills()->getPerception() + $pet->getSkills()->getUmbra() + $pet->getSkills()->getIntelligence() + mt_rand(-20, 20) / 10,
             GuildEnum::TAPESTRIES => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + ($pet->getSkills()->getUmbra() + $pet->getSkills()->getCrafts()) / 2 + mt_rand(-20, 20) / 10,
             GuildEnum::INNER_SANCTUM => $pet->getSkills()->getIntelligence() * 2 + $pet->getSkills()->getPerception() + mt_rand(-20, 20) / 10,
@@ -66,7 +68,7 @@ class GuildService
     /**
      * @throws EnumInvalidValueException
      */
-    public function visitedGuildHouse(Pet $pet): PetActivityLog
+    public function doGuildTraining(Pet $pet): PetActivityLog
     {
         if($pet->getGuildMembership()->getLevel() === 0)
         {
@@ -133,11 +135,13 @@ class GuildService
             case 2:
                 $message = $pet->getName() . ' explored the ' . $member->getGuildName() . ' guild house for a while.';
                 break;
+            default:
+                throw new \Exception('Ben forgot to code stuff for a ' . $member->getRank() . ' in ' . $member->getGuildName() . ' to do! (Way to go, _Ben_!)');
         }
 
         $member->increaseReputation();
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
 
         return $this->responseService->createActivityLog($pet, $message, '');
     }
@@ -145,47 +149,174 @@ class GuildService
     private function doTimesArrowMission(Pet $pet): PetActivityLog
     {
         $member = $pet->getGuildMembership();
-        $level = $member->getLevel();
 
+        $message = ArrayFunctions::pick_one([
+            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuildName() . ' seniors.',
+            $pet->getName() . ' practiced using one of ' . $member->getGuildName() . '\'s Timescrawlers. (Supervised, of course!)',
+            $pet->getName() . ' shadowed a ' . $member->getGuildName() . ' senior for a little bit, to watch them work.'
+        ]);
+
+        $member->increaseReputation();
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+
+        return $this->responseService->createActivityLog($pet, $message, '');
     }
 
     private function doLightAndShadowMission(Pet $pet): PetActivityLog
     {
+        $member = $pet->getGuildMembership();
 
+        $message = ArrayFunctions::pick_one([
+            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuildName() . ' seniors.',
+            $pet->getName() . ' practiced peering into the Umbra without having to actually go there.',
+            $pet->getName() . ' shadowed a ' . $member->getGuildName() . ' senior for a little bit, to watch them work.'
+        ]);
+
+        $member->increaseReputation();
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+
+        return $this->responseService->createActivityLog($pet, $message, '');
     }
 
     private function doTapestriesMission(Pet $pet): PetActivityLog
     {
+        $member = $pet->getGuildMembership();
 
+        $message = ArrayFunctions::pick_one([
+            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuildName() . ' seniors.',
+            $pet->getName() . ' practiced peering into the Umbra without having to actually go there.',
+            $pet->getName() . ' watched a ' . $member->getGuildName() . ' senior sew a tear in the fabric of reality...'
+        ]);
+
+        $member->increaseReputation();
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+
+        return $this->responseService->createActivityLog($pet, $message, '');
     }
 
     private function doInnerSanctumMission(Pet $pet): PetActivityLog
     {
+        $member = $pet->getGuildMembership();
 
+        $message = ArrayFunctions::pick_one([
+            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuildName() . ' seniors.',
+            $pet->getName() . ' joined a ' . $member->getGuildName() . ' session of group meditation.',
+            $pet->getName() . ' had a minor philosophical debate with a senior ' . $member->getGuildName() . ' member.'
+        ]);
+
+        $member->increaseReputation();
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::getRandomValue() ]);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+
+        return $this->responseService->createActivityLog($pet, $message, '');
     }
 
     private function doDwarfcraftMission(Pet $pet): PetActivityLog
     {
+        $member = $pet->getGuildMembership();
 
+        $message = ArrayFunctions::pick_one([
+            $pet->getName() . ' picked up some Liquid-hot Magma for one of their ' . $member->getGuildName() . ' seniors.',
+            $pet->getName() . ' delivered Lightning in a Bottle to one of their ' . $member->getGuildName() . ' seniors.',
+            $pet->getName() . ' shadowed a ' . $member->getGuildName() . ' senior for a little bit, to watch them work.'
+        ]);
+
+        $member->increaseReputation();
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+
+        return $this->responseService->createActivityLog($pet, $message, '');
     }
 
     private function doGizubisGardenMission(Pet $pet): PetActivityLog
     {
+        $member = $pet->getGuildMembership();
 
+        switch(mt_rand(1, 3))
+        {
+            case 1:
+                $message = $pet->getName() . ' helped one of their seniors tend to ' . $member->getGuildName() . ' gardens.';
+                $skill = PetSkillEnum::NATURE;
+                break;
+            case 2:
+                $message = $pet->getName() . ' helped cook for a ' . $member->getGuildName() . ' feast.';
+                $skill = PetSkillEnum::CRAFTS;
+                break;
+            case 3:
+                $message = $pet->getName() . ' participated in an impromptu ' . $member->getGuildName() . ' jam session.';
+                $skill = PetSkillEnum::MUSIC;
+                break;
+            default:
+                throw new \Exception('Ben poorly-coded a switch statement in a Gizbui\'s Garden guild activity!');
+        }
+
+        $member->increaseReputation();
+
+        $this->petExperienceService->gainExp($pet, 1, [ $skill ]);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+
+        return $this->responseService->createActivityLog($pet, $message, '');
     }
 
     private function doHighImpactMission(Pet $pet): PetActivityLog
     {
+        $member = $pet->getGuildMembership();
 
+        $message = ArrayFunctions::pick_one([
+            $pet->getName() . ' delivered Lightning in a Bottle to one of their ' . $member->getGuildName() . ' seniors.',
+            $pet->getName() . ' shadowed a ' . $member->getGuildName() . ' senior for a little bit, to watch them work.',
+            $pet->getName() . ' participated in a ' . $member->getGuildName() . ' obstacle course competition.',
+        ]);
+
+        $member->increaseReputation();
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ]);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+
+        return $this->responseService->createActivityLog($pet, $message, '');
     }
 
     private function doTheUniverseForgetsMission(Pet $pet): PetActivityLog
     {
+        $member = $pet->getGuildMembership();
 
+        $message = ArrayFunctions::pick_one([
+            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuildName() . ' seniors.',
+            $pet->getName() . ' practiced peering into the Umbra without having to actually go there.',
+            $pet->getName() . ' followed a ' . $member->getGuildName() . ' through unfamiliar regions of the Umbra, looking for any unusual changes.'
+        ]);
+
+        $member->increaseReputation();
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+
+        return $this->responseService->createActivityLog($pet, $message, '');
     }
 
     private function doCorrespondenceMission(Pet $pet): PetActivityLog
     {
+        $member = $pet->getGuildMembership();
 
+        $message = ArrayFunctions::pick_one([
+            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuildName() . ' seniors.',
+            $pet->getName() . ' participated in a ' . $member->getGuildName() . ' race.',
+            $pet->getName() . ' followed a ' . $member->getGuildName() . ' through unfamiliar regions of Project-E, to deliver a message.'
+        ]);
+
+        $member->increaseReputation();
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+
+        return $this->responseService->createActivityLog($pet, $message, '');
     }
 }

@@ -59,14 +59,10 @@ class Protocol7Service
             case 2:
             case 3:
             case 4:
-                if($pet->getGuildMembership())
-                {
-                    // @TODO:
-                    //$activityLog = $this->guildService->visitedGuildHouse($pet);
-                    $activityLog = $this->foundNothing($pet, $roll);
-                }
-                else if($pet->getLevel() >= 10 && mt_rand(1, 5) === 1)
+                if(!$pet->getGuildMembership() && mt_rand(1, 5) === 1)
                     $activityLog = $this->guildService->joinGuild($pet);
+                else if($pet->getGuildMembership() && $pet->getGuildMembership()->getRank() < 4)
+                    $activityLog = $this->guildService->doGuildTraining($pet);
                 else
                     $activityLog = $this->foundNothing($pet, $roll);
                 break;
