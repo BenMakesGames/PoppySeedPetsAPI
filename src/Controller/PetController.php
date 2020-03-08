@@ -222,6 +222,7 @@ class PetController extends PoppySeedPetsController
             'spiritCompanion' => $normalizer->normalize($pet->getSpiritCompanion(), null, [ 'groups' => SerializationGroupEnum::MY_PET ]),
             'groups' => $normalizer->normalize($pet->getGroups(), null, [ 'groups' => SerializationGroupEnum::PET_GROUP ]),
             'friends' => $normalizer->normalize($relationships, null, [ 'groups' => SerializationGroupEnum::PET_FRIEND ]),
+            'guild' => $normalizer->normalize($pet->getGuildMembership(), null, [ 'groups' => SerializationGroupEnum::PET_GUILD ])
         ]);
     }
 

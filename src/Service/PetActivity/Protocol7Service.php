@@ -1,21 +1,21 @@
 <?php
 namespace App\Service\PetActivity;
 
+use App\Entity\GuildMembership;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Enum\Enum;
-use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\PetChanges;
+use App\Repository\GuildRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
-use App\Service\PetService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class Protocol7Service
 {
@@ -23,23 +23,27 @@ class Protocol7Service
     private $petExperienceService;
     private $inventoryService;
     private $transactionService;
+    private $guildRepository;
+    private $em;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService
+        TransactionService $transactionService, GuildRepository $guildRepository, EntityManagerInterface $em
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
+        $this->guildRepository = $guildRepository;
+        $this->em = $em;
     }
 
     public function adventure(Pet $pet)
     {
         $maxSkill = 10 + $pet->getIntelligence() + $pet->getScience() - $pet->getAlcohol();
 
-        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 17);
+        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 18);
 
         $roll = mt_rand(1, $maxSkill);
 
@@ -52,7 +56,12 @@ class Protocol7Service
             case 2:
             case 3:
             case 4:
-                $activityLog = $this->foundNothing($pet, $roll);
+                if($pet->getGuildMembership())
+                    $activityLog = $this->visitedGuildHouse($pet);
+                else if($pet->getLevel() >= 10 && mt_rand(1, 5) === 1)
+                    $activityLog = $this->joinGuild($pet);
+                else
+                    $activityLog = $this->foundNothing($pet, $roll);
                 break;
             case 5:
             case 6:
@@ -75,6 +84,9 @@ class Protocol7Service
                 $activityLog = $this->exploreInsecurePort($pet);
                 break;
             case 17:
+                $activityLog = $this->foundNothing($pet, $roll);
+                break;
+            case 18:
                 $activityLog = $this->repairShortedCircuit($pet);
                 break;
         }
@@ -94,6 +106,36 @@ class Protocol7Service
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, but got lost.', 'icons/activity-logs/confused');
+    }
+
+    private function joinGuild(Pet $pet): PetActivityLog
+    {
+        $preferredGuild = [
+            'Time\'s Arrow' => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getScience() + ($pet->getExtroverted() + 1) * 2 + 1 + mt_rand(-20, 20) / 10,
+            'Light and Shadow' => $pet->getSkills()->getPerception() + $pet->getSkills()->getUmbra() + $pet->getSkills()->getIntelligence() + mt_rand(-20, 20) / 10,
+            'Tapestries' => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + ($pet->getSkills()->getUmbra() + $pet->getSkills()->getCrafts()) / 2 + mt_rand(-20, 20) / 10,
+            'Inner Sanctum' => $pet->getSkills()->getIntelligence() * 2 + $pet->getSkills()->getPerception() + mt_rand(-20, 20) / 10,
+            'Dwarfcraft' => $pet->getStrength() + $pet->getStamina() + $pet->getSkills()->getCrafts() + mt_rand(-20, 20) / 10,
+            'Gizubi\'s Garden' => ($pet->getExtroverted() + $pet->getSexDrive() + $pet->getPoly() + 3) * 2 + $pet->getSkills()->getNature() + 1 + mt_rand(-20, 20) / 10,
+            'High Impact' => ($pet->getStrength() + $pet->getDexterity() + $pet->getIntelligence() + $pet->getStamina() + $pet->getSkills()->getBrawl() + $pet->getSkills()->getScience()) / 2 + mt_rand(-20, 20) / 10,
+            'The Universe Forgets' => $pet->getPerception() + $pet->getIntelligence() + ((1 - $pet->getExtroverted()) * 2 + 1 + $pet->getUmbra()) / 2 + mt_rand(-20, 20) / 10,
+            'Correspondence' => $pet->getStamina() + $pet->getStrength() + ($pet->getSkills()->getUmbra() + $pet->getSkills()->getStealth() + $pet->getSkills()->getScience()) / 3 + mt_rand(-20, 20) / 10,
+        ];
+
+        arsort($preferredGuild);
+
+        $guildName = array_key_first($preferredGuild);
+
+        $guild = $this->guildRepository->findOneBy([ 'name' => $guildName ]);
+
+        $membership = (new GuildMembership())
+            ->setPet($pet)
+            ->setGuild($guild)
+        ;
+
+        $this->em->persist($membership);
+
+        return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, and stumbled upon The Hall of Nine - a meeting place for members of nine major guilds of Project-E. After some thought, ' . $pet->getName() . ' decided to join ' . $guildName . '!', '');
     }
 
     private function encounterGarbageCollector(Pet $pet): PetActivityLog
