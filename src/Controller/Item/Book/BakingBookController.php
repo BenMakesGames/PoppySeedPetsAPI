@@ -145,6 +145,8 @@ In some cases, using Creamy Milk or a flavored Yogurt, instead of Plain Yogurt, 
 * Sugar
 * Wheat Flour
 
+Bored of Naner Bread? Replacing the Naner with a Smallish Pumpkin and make some Pumpkin Bread!
+
 #### Pancakes
 
 * Baking Soda
