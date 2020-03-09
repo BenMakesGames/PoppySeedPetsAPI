@@ -229,7 +229,7 @@ class SmithingService
     /**
      * @throws EnumInvalidValueException
      */
-    public function ceateSilverKeyblade(Pet $pet): PetActivityLog
+    public function createSilverKeyblade(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
 
