@@ -134,6 +134,9 @@ class SmithingService
 
             if(array_key_exists('Plastic', $quantities) && array_key_exists('3D Printer', $quantities))
                 $possibilities[] = [ $this->goldSmithingService, 'createGoldRod' ];
+
+            if(array_key_exists('Silver Key', $quantities) && array_key_exists('White Cloth', $quantities))
+                $possibilities[] = [ $this, 'createSilverKeyblade' ];
         }
 
         if(array_key_exists('Silver Bar', $quantities) && array_key_exists('Gold Bar', $quantities) && array_key_exists('White Cloth', $quantities))
@@ -190,7 +193,7 @@ class SmithingService
     /**
      * @throws EnumInvalidValueException
      */
-    public function ceateGoldKeyblade(Pet $pet): PetActivityLog
+    public function createGoldKeyblade(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
 
