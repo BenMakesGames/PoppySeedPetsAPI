@@ -205,7 +205,17 @@ class UmbraService
 
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getUmbra());
 
-        $rewards = [ 'Quintessence' => 'some', 'Music Note' => 'a', 'Ginger' => 'some', 'Oil' => 'some', 'Silica Grounds' => 'some' ];
+        $rewards = [
+            'Quintessence' => 'some',
+            'Music Note' => 'a',
+            'Ginger' => 'some',
+            'Oil' => 'some',
+            'Silica Grounds' => 'some'
+        ];
+
+        if(mt_rand(1, 10) === 1)
+            $rewards['Broccolinomicon'] = 'a copy of the';
+
         $reward = array_rand($rewards);
 
         if($roll >= 14)
