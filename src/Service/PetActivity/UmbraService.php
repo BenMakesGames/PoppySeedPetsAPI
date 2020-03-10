@@ -151,7 +151,7 @@ class UmbraService
             else if($floor === 30)
                 $floor = 31;
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the ' . $floor . GrammarFunctions::ordinal($floor) . ' floor of the Library of Fire, and read a random book...', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the ' . GrammarFunctions::ordinalize($floor) . ' floor of the Library of Fire, and read a random book...', '');
 
             $this->petExperienceService->gainExp($pet, mt_rand(1, 2), PetSkillEnum::getValues());
             $pet->increaseSafety(mt_rand(2, 4));

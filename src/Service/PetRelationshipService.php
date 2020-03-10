@@ -135,61 +135,80 @@ class PetRelationshipService
      */
     public function introducePets(Pet $pet, Pet $otherPet, string $howMetSummary, string $howMetDescription): array
     {
-        $r = mt_rand(1, 100);
-
-        if($r <= $pet->getSexDrive() + $otherPet->getSexDrive())
-        {
-            $initialRelationship = RelationshipEnum::FWB;
-            $possibleRelationships = [
-                RelationshipEnum::FRIEND,
-                RelationshipEnum::BFF,
-                RelationshipEnum::FWB,
-                RelationshipEnum::FWB,
-                RelationshipEnum::FWB,
-                RelationshipEnum::FWB,
-                RelationshipEnum::MATE,
-                RelationshipEnum::MATE,
-                RelationshipEnum::MATE,
-            ];
-        }
-        else if($r <= 5)
-        {
-            $initialRelationship = RelationshipEnum::BFF;
-            $possibleRelationships = [
-                RelationshipEnum::BFF,
-                RelationshipEnum::BFF,
-                RelationshipEnum::BFF,
-                RelationshipEnum::BFF,
-                RelationshipEnum::BFF,
-                RelationshipEnum::MATE,
-                RelationshipEnum::MATE
-            ];
-
-            if($pet->getSexDrive() + $otherPet->getSexDrive() >= 1)
-                $possibleRelationships[] = RelationshipEnum::FWB;
-
-        }
-        else if($r <= 15)
-        {
-            $initialRelationship = RelationshipEnum::DISLIKE;
-            $possibleRelationships = [ RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE, RelationshipEnum::FRIENDLY_RIVAL ];
-        }
-        else
+        if($this->loveService->isTooCloselyRelatedForSex($pet, $otherPet))
         {
             $initialRelationship = RelationshipEnum::FRIEND;
+
             $possibleRelationships = [
                 RelationshipEnum::FRIEND,
                 RelationshipEnum::FRIEND,
+                RelationshipEnum::BFF,
+                RelationshipEnum::BFF,
                 RelationshipEnum::BFF,
                 RelationshipEnum::BFF,
                 RelationshipEnum::FRIENDLY_RIVAL,
-                RelationshipEnum::MATE,
-                RelationshipEnum::MATE,
-                RelationshipEnum::MATE,
+                RelationshipEnum::DISLIKE,
             ];
+        }
+        else
+        {
 
-            if($pet->getSexDrive() + $otherPet->getSexDrive() >= 1)
-                $possibleRelationships[] = RelationshipEnum::FWB;
+            $r = mt_rand(1, 100);
+
+            if($r <= $pet->getSexDrive() + $otherPet->getSexDrive())
+            {
+                $initialRelationship = RelationshipEnum::FWB;
+                $possibleRelationships = [
+                    RelationshipEnum::FRIEND,
+                    RelationshipEnum::BFF,
+                    RelationshipEnum::FWB,
+                    RelationshipEnum::FWB,
+                    RelationshipEnum::FWB,
+                    RelationshipEnum::FWB,
+                    RelationshipEnum::MATE,
+                    RelationshipEnum::MATE,
+                    RelationshipEnum::MATE,
+                ];
+            }
+            else if($r <= 5)
+            {
+                $initialRelationship = RelationshipEnum::BFF;
+                $possibleRelationships = [
+                    RelationshipEnum::BFF,
+                    RelationshipEnum::BFF,
+                    RelationshipEnum::BFF,
+                    RelationshipEnum::BFF,
+                    RelationshipEnum::BFF,
+                    RelationshipEnum::MATE,
+                    RelationshipEnum::MATE
+                ];
+
+                if($pet->getSexDrive() + $otherPet->getSexDrive() >= 1)
+                    $possibleRelationships[] = RelationshipEnum::FWB;
+
+            }
+            else if($r <= 15)
+            {
+                $initialRelationship = RelationshipEnum::DISLIKE;
+                $possibleRelationships = [ RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE, RelationshipEnum::FRIENDLY_RIVAL ];
+            }
+            else
+            {
+                $initialRelationship = RelationshipEnum::FRIEND;
+                $possibleRelationships = [
+                    RelationshipEnum::FRIEND,
+                    RelationshipEnum::FRIEND,
+                    RelationshipEnum::BFF,
+                    RelationshipEnum::BFF,
+                    RelationshipEnum::FRIENDLY_RIVAL,
+                    RelationshipEnum::MATE,
+                    RelationshipEnum::MATE,
+                    RelationshipEnum::MATE,
+                ];
+
+                if($pet->getSexDrive() + $otherPet->getSexDrive() >= 1)
+                    $possibleRelationships[] = RelationshipEnum::FWB;
+            }
         }
 
         // pet

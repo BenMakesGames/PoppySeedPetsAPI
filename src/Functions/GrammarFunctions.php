@@ -68,7 +68,7 @@ final class GrammarFunctions
     }
 
     // from https://stackoverflow.com/questions/3109978/display-numbers-with-ordinal-suffix-in-php
-    public static function ordinal(int $number)
+    public static function ordinal(int $number): string
     {
         $ends = [ 'th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th' ];
 
@@ -76,5 +76,10 @@ final class GrammarFunctions
             return 'th';
         else
             return $ends[$number % 10];
+    }
+
+    public static function ordinalize(int $number): string
+    {
+        return $number . self::ordinal($number);
     }
 }

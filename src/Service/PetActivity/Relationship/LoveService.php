@@ -131,15 +131,46 @@ class LoveService
         return $message;
     }
 
+    public function isTooCloselyRelatedForSex(Pet $p1, Pet $p2): bool
+    {
+        $p1Ancestors = $this->getAncestorIds($p1);
+        $p2Ancestors = $this->getAncestorIds($p2);
+
+        return count(array_intersect($p1Ancestors, $p2Ancestors)) > 0;
+    }
+
+    private function getAncestorIds(Pet $pet)
+    {
+        // we'll go back two generations; and include yourself:
+        $ancestorIds = [
+            $pet->getId(),
+        ];
+
+        if($pet->getMom())
+        {
+            $ancestorIds[] = $pet->getMom()->getId();
+            $ancestorIds[] = $pet->getDad()->getId();
+        }
+
+        if($pet->getMom()->getMom())
+        {
+            $ancestorIds[] = $pet->getMom()->getMom()->getId();
+            $ancestorIds[] = $pet->getMom()->getDad()->getId();
+        }
+
+        if($pet->getDad()->getMom())
+        {
+            $ancestorIds[] = $pet->getDad()->getMom()->getId();
+            $ancestorIds[] = $pet->getDad()->getDad()->getId();
+        }
+
+        return $ancestorIds;
+    }
+
     public function sexyTimeChances(Pet $p1, Pet $p2, string $relationshipType): int
     {
         // parent-child are implemented as BFFs, which have a tiny chance of sexy times that I don't think we need in this game :P
-        if(
-            ($p1->getMom() && $p1->getMom()->getId() === $p2->getId()) ||
-            ($p1->getDad() && $p1->getDad()->getId() === $p2->getId()) ||
-            ($p2->getMom() && $p2->getMom()->getId() === $p1->getId()) ||
-            ($p2->getDad() && $p2->getDad()->getId() === $p1->getId())
-        )
+        if($this->isTooCloselyRelatedForSex($p1, $p2))
             return 0;
 
         $totalDrive = $p1->getSexDrive() + $p2->getSexDrive();

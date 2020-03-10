@@ -128,7 +128,7 @@ class TreasureMapService
         }
         else if($floor < 25)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' took their ' . $keybladeName . ' to the Tower of Trials, but had to retreat after only the ' . GrammarFunctions::ordinal($floor) . ' floor.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' took their ' . $keybladeName . ' to the Tower of Trials, but had to retreat after only the ' . GrammarFunctions::ordinalize($floor) . ' floor.', '');
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
             $pet
                 ->increaseFood(-2)
@@ -136,7 +136,7 @@ class TreasureMapService
         }
         else if($floor < 50)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' took their ' . $keybladeName . ' to the Tower of Trials, but got tired and had to quit after the ' . GrammarFunctions::ordinal($floor) . ' floor.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' took their ' . $keybladeName . ' to the Tower of Trials, but got tired and had to quit after the ' . GrammarFunctions::ordinalize($floor) . ' floor.', '');
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
             $pet
                 ->increaseFood(-3)
@@ -144,7 +144,7 @@ class TreasureMapService
         }
         else if($floor < 75)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' took their ' . $keybladeName . ' to the Tower of Trials, and got as far as the ' . GrammarFunctions::ordinal($floor) . ' floor before they had to quit. (Not bad!)', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' took their ' . $keybladeName . ' to the Tower of Trials, and got as far as the ' . GrammarFunctions::ordinalize($floor) . ' floor before they had to quit. (Not bad!)', '');
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
             $pet
                 ->increaseFood(-4)
@@ -153,7 +153,7 @@ class TreasureMapService
         }
         else if($floor < 100)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' took their ' . $keybladeName . ' to the Tower of Trials, and got all the way to the ' . GrammarFunctions::ordinal($floor) . ' floor, but couldn\'t get any further. (Pretty good, though!)', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' took their ' . $keybladeName . ' to the Tower of Trials, and got all the way to the ' . GrammarFunctions::ordinalize($floor) . ' floor, but couldn\'t get any further. (Pretty good, though!)', '');
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ]);
             $pet
                 ->increaseFood(-5)
