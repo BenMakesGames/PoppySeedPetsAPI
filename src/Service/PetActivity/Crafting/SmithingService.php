@@ -217,7 +217,7 @@ class SmithingService
             $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created an Gold Keyblade.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Gold Keyblade.', '');
             $this->inventoryService->petCollectsItem('Gold Keyblade', $pet, $pet->getName() . ' created this.', $activityLog);
             return $activityLog;
         }
