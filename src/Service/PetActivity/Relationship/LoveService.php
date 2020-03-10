@@ -152,13 +152,13 @@ class LoveService
             $ancestorIds[] = $pet->getDad()->getId();
         }
 
-        if($pet->getMom()->getMom())
+        if($pet->getMom() && $pet->getMom()->getMom())
         {
             $ancestorIds[] = $pet->getMom()->getMom()->getId();
             $ancestorIds[] = $pet->getMom()->getDad()->getId();
         }
 
-        if($pet->getDad()->getMom())
+        if($pet->getDad() && $pet->getDad()->getMom())
         {
             $ancestorIds[] = $pet->getDad()->getMom()->getId();
             $ancestorIds[] = $pet->getDad()->getDad()->getId();
