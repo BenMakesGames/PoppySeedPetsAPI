@@ -66,6 +66,9 @@ class ProgrammingService
 
             if(array_key_exists('Elvish Magnifying Glass', $quantities))
                 $possibilities[] = [ $this, 'createRijndael' ];
+
+            if(array_key_exists('Ruler', $quantities))
+                $possibilities[] = [ $this, 'createViswanathsConstant' ];
         }
 
         if(array_key_exists('Lightning in a Bottle', $quantities) && array_key_exists('Iron Sword', $quantities))
@@ -290,6 +293,34 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to implement Rijndael, but had trouble finding good documentation. ' . $pet->getName() . ' saved and quit for now.', 'icons/activity-logs/confused');
+        }
+    }
+
+    /**
+     * @throws EnumInvalidValueException
+     */
+    private function createViswanathsConstant(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+
+        if($roll >= 16)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->inventoryService->loseItem('Hash Table', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Ruler', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+            $pet->increaseEsteem(1);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' calculated Viswanath\'s Constant.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+            ;
+            $this->inventoryService->petCollectsItem('Viswanath\'s Constant', $pet, $pet->getName() . ' calculated this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to calculate Viswanath\'s Constant, but couldn\'t figure out any of the maths; not even a single one!', 'icons/activity-logs/confused');
         }
     }
 
