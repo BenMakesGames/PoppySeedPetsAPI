@@ -57,7 +57,7 @@ class GoldSmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::MUSIC ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Gold Triangle from Gold Bar, and String.', 'items/tool/instrument/gold-triangle')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Gold Triangle from Gold Bar, and String.', 'items/tool/instrument/triangle-gold')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
             ;
             $this->inventoryService->petCollectsItem('Gold Triangle', $pet, $pet->getName() . ' created this from Gold Bar, and String.', $activityLog);

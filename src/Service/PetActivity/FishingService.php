@@ -289,7 +289,7 @@ class FishingService
         {
             $message = ArrayFunctions::pick_one([
                 'They saw a snail once, but that was about it. (And it was one of those crazy-poisonous types of snails! Ugh!)',
-                'The most exciting thing that happened was that their foot got stuck in the mud :|',
+                'The most exciting thing that happened was that they got briefly stuck in the mud :|',
                 'They almost caught something, but a bird swooped in and got it, first! >:(',
                 'After over half an hour of nothing, they gave up out of sheer boredom >_>',
                 'Nothing was biting, but at least it was relaxing??',
