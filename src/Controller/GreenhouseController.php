@@ -179,7 +179,8 @@ class GreenhouseController extends PoppySeedPetsController
     public function harvestPlant(
         GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository, PetRepository $petRepository,
-        PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository
+        PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository,
+        UserQuestRepository $userQuestRepository
     )
     {
         $user = $this->getUser();
@@ -192,6 +193,28 @@ class GreenhouseController extends PoppySeedPetsController
 
         if(!$plant->getIsAdult() || $plant->getProgress() < 1)
             throw new UnprocessableEntityHttpException('This plant is not yet ready to harvest.');
+
+        if($plant->getPlant()->getMinYield() <= 0 || $plant->getPlant()->getMaxYield() <= 0)
+        {
+            if($plant->getPlant()->getItem()->getName() === 'Magic Beans')
+            {
+                $expandedGreenhouseWithMagicBeanstalk = $userQuestRepository->findOrCreate($user, 'Expanded Greenhouse with Magic Bean-stalk', false);
+
+                if(!$expandedGreenhouseWithMagicBeanstalk->getValue())
+                {
+                    $expandedGreenhouseWithMagicBeanstalk->setValue(true);
+
+                    $user->getGreenhouse()->increaseMaxPlants(1);
+
+                    $em->flush();
+
+                    $responseService->addActivityLog((new PetActivityLog())->setEntry('You can\'t harvest a Magic Beans-stalk, unfortunately, BUT: your pets might decide to climb up it and explore! Also: you happen to notice that you have another greenhouse plot! (Must be some of that Magic Beans magic!)'));
+
+                    return $responseService->success();
+                }
+            }
+            throw new UnprocessableEntityHttpException($plant->getPlant()->getItem()->getName() . ' plants cannot be harvested!');
+        }
 
         $plant->clearGrowth();
 
