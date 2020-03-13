@@ -110,7 +110,7 @@ class TreasureMapService
     {
         $changes = new PetChanges($pet);
 
-        $skill = 3 * ($pet->getBrawl() * 2 + $pet->getStamina() * 2 + $pet->getDexterity() + $pet->getStrength() + $pet->getLevel());
+        $skill = 2 * ($pet->getBrawl() * 2 + $pet->getStamina() * 2 + $pet->getDexterity() + $pet->getStrength() + $pet->getLevel());
 
         $floor = mt_rand(max(1, ceil($skill / 2)), 20 + $skill);
         $floor = NumberFunctions::constrain($floor, 1, 100);
