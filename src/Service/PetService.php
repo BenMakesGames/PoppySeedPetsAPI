@@ -548,8 +548,16 @@ class PetService
         if($pet->hasMerit(MeritEnum::PROTOCOL_7))
             $petDesires['hack'] = $this->generateHackingDesire($pet);
 
-        if($pet->getOwner()->getGreenhousePlants()->exists(function(int $key, GreenhousePlant $p) { return $p->getPlant()->getItem()->getName() === 'Magic Beans'; }))
+        if($pet->getOwner()->getGreenhousePlants()->exists(function(int $key, GreenhousePlant $p) {
+            return
+                $p->getPlant()->getItem()->getName() === 'Magic Beans' &&
+                $p->getIsAdult() &&
+                $p->getProgress() >= 1
+            ;
+        }))
+        {
             $petDesires['beanStalk'] = $this->generateClimbingBeanStalkDesire($pet);
+        }
 
         if(count($craftingPossibilities) > 0) $petDesires['craft'] = $this->generateCraftingDesire($pet);
         if(count($programmingPossibilities) > 0) $petDesires['program'] = $this->generateProgrammingDesire($pet);
