@@ -188,16 +188,16 @@ class MagicBeanstalkService
 
         if(mt_rand(1, 20 + $pet->getStealth() + $pet->getDexterity()) >= 18)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found a pegasus\' nest, which they raided.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found a white pegasus\' nest, which they raided.', '');
 
-            $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a Pegasus Nest.', $activityLog);
+            $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
 
             $perceptionRoll = mt_rand(1, 20 + $pet->getPerception());
 
             if($perceptionRoll >= 18)
-                $this->inventoryService->petCollectsItem('White Feathers', $pet, $pet->getName() . ' stole this from a Pegasus Nest.', $activityLog);
+                $this->inventoryService->petCollectsItem('White Feathers', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
             else if($perceptionRoll >= 10)
-                $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' stole this from a Pegasus Nest.', $activityLog);
+                $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
 
             $pet->increaseEsteem(mt_rand(1, 2));
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ]);
