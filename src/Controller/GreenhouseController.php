@@ -364,13 +364,23 @@ class GreenhouseController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function pullUpPlant(
-        GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em
+        GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em,
+        InventoryService $inventoryService
     )
     {
         $user = $this->getUser();
 
         if($plant->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException('That plant does not exist.');
+
+        if($plant->getPlant()->getItem()->getName() === 'Creamy Milk' && $plant->getIsAdult())
+        {
+            $responseService->addActivityLog((new PetActivityLog())->setEntry('The goat, startled, runs into the jungle, shedding a bit of Fluff in the process.'));
+
+            $inventoryService->receiveItem('Fluff', $user, $user, 'Dropped by a startled goat.', LocationEnum::HOME);
+            if(mt_rand(1, 2) === 1)
+                $inventoryService->receiveItem('Fluff', $user, $user, 'Dropped by a startled goat.', LocationEnum::HOME);
+        }
 
         $em->remove($plant);
         $em->flush();
