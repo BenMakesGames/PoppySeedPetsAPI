@@ -251,7 +251,7 @@ class MagicBeanstalkService
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters! A dark cloud swirled overhead, and ' . $pet->getName() . ' was nearly struck by lightning, but managed to capture it in a bottle, instead!', '');
 
-            $this->inventoryService->petCollectsItem('Everice', $pet, $pet->getName() . ' stole this from a Pegasus Nest.', $activityLog);
+            $this->inventoryService->petCollectsItem('Lightning in a Bottle', $pet, $pet->getName() . ' captured this while climbing your magic bean-stalk.', $activityLog);
 
             $pet->increaseEsteem(3);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
