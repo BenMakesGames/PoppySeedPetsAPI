@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 
+use App\Entity\GreenhousePlant;
 use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
@@ -27,6 +28,7 @@ use App\Service\PetActivity\GatheringService;
 use App\Service\PetActivity\GenericAdventureService;
 use App\Service\PetActivity\GivingTreeGatheringService;
 use App\Service\PetActivity\HuntingService;
+use App\Service\PetActivity\MagicBeanstalkService;
 use App\Service\PetActivity\PoopingService;
 use App\Service\PetActivity\PregnancyService;
 use App\Service\PetActivity\Crafting\ProgrammingService;
@@ -59,6 +61,7 @@ class PetService
     private $petGroupService;
     private $petExperienceService;
     private $dreamingService;
+    private $beanStalkService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService,
@@ -69,7 +72,7 @@ class PetService
         Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
         PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService,
         PregnancyService $pregnancyService, PetActivityStatsService $petActivityStatsService, PetGroupService $petGroupService,
-        PetExperienceService $petExperienceService, DreamingService $dreamingService
+        PetExperienceService $petExperienceService, DreamingService $dreamingService, MagicBeanstalkService $beanStalkService
     )
     {
         $this->em = $em;
@@ -94,6 +97,7 @@ class PetService
         $this->petGroupService = $petGroupService;
         $this->petExperienceService = $petExperienceService;
         $this->dreamingService = $dreamingService;
+        $this->beanStalkService = $beanStalkService;
     }
 
     /**
@@ -544,6 +548,9 @@ class PetService
         if($pet->hasMerit(MeritEnum::PROTOCOL_7))
             $petDesires['hack'] = $this->generateHackingDesire($pet);
 
+        if($pet->getOwner()->getGreenhousePlants()->exists(function(int $key, GreenhousePlant $p) { return $p->getPlant()->getItem()->getName() === 'Magic Beans'; }))
+            $petDesires['beanStalk'] = $this->generateClimbingBeanStalkDesire($pet);
+
         if(count($craftingPossibilities) > 0) $petDesires['craft'] = $this->generateCraftingDesire($pet);
         if(count($programmingPossibilities) > 0) $petDesires['program'] = $this->generateProgrammingDesire($pet);
 
@@ -558,6 +565,7 @@ class PetService
             case 'program': $this->programmingService->adventure($pet, $programmingPossibilities); break;
             case 'hack': $this->protocol7Service->adventure($pet); break;
             case 'umbra': $this->umbraService->adventure($pet); break;
+            case 'beanStalk': $this->beanStalkService->adventure($pet); break;
             default: $this->doNothing($pet); break;
         }
     }
@@ -832,10 +840,6 @@ class PetService
         return $metNewPet;
     }
 
-    /**
-     * @param Pet $pet
-     * @throws EnumInvalidValueException
-     */
     private function doNothing(Pet $pet)
     {
         $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::OTHER, null);
@@ -926,6 +930,17 @@ class PetService
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getGathering();
+
+        return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
+    }
+
+    public function generateClimbingBeanstalkDesire(Pet $pet): int
+    {
+        $desire = floor(($pet->getStrength() + $pet->getStamina()) * 1.5) + ceil($pet->getNature() / 2) + mt_rand(1, 4);
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getNature();
 
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
     }

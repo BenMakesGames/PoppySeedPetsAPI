@@ -28,9 +28,6 @@ class MagicBeanstalkService
         $this->petExperienceService = $petExperienceService;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function adventure(Pet $pet)
     {
         $maxSkill = 10 + floor(($pet->getStrength() + $pet->getStamina()) * 1.5) + ceil($pet->getNature() / 2) - $pet->getAlcohol() * 2;

@@ -54,9 +54,6 @@ class HuntingService
         $this->transactionService = $transactionService;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function adventure(Pet $pet)
     {
         $maxSkill = 10 + $pet->getStrength() + $pet->getBrawl() - $pet->getAlcohol() - $pet->getPsychedelic();

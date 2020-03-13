@@ -82,10 +82,6 @@ class PetExperienceService
     }
 
     /**
-     * @param Pet $pet
-     * @param int $time
-     * @param string $activityStat
-     * @param bool|null $success
      * @throws EnumInvalidValueException
      */
     public function spendTime(Pet $pet, int $time, string $activityStat, ?bool $success)

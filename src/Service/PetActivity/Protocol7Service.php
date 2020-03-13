@@ -39,9 +39,6 @@ class Protocol7Service
         $this->guildService = $guildService;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function adventure(Pet $pet)
     {
         $maxSkill = 10 + $pet->getIntelligence() + $pet->getScience() - $pet->getAlcohol();

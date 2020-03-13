@@ -44,12 +44,6 @@ class PetRelationshipService
 
     /**
      * @param ArrayCollection|Pet[] $pets
-     * @param string $hangOutDescription
-     * @param string $enemyDescription
-     * @param string $meetSummary
-     * @param string $meetDescription
-     * @param int $meetChance
-     * @throws EnumInvalidValueException
      */
     public function groupGathering($pets, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetDescription, int $meetChance = 2)
     {
@@ -68,16 +62,6 @@ class PetRelationshipService
         }
     }
 
-    /**
-     * @param Pet $p1
-     * @param Pet $p2
-     * @param string $hangOutDescription
-     * @param string $enemyDescription
-     * @param string $meetSummary
-     * @param string $meetDescription
-     * @param int $meetChance
-     * @throws EnumInvalidValueException
-     */
     public function seeAtGroupGathering(Pet $p1, Pet $p2, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetDescription, int $meetChance = 5)
     {
         if($p1->getId() === $p2->getId()) return;
@@ -90,12 +74,6 @@ class PetRelationshipService
             $this->introducePets($p1, $p2, $meetSummary, $meetDescription);
     }
 
-    /**
-     * @param Pet $pet
-     * @param Pet $otherPet
-     * @return PetRelationship|null
-     * @throws EnumInvalidValueException
-     */
     public function meetRoommate(Pet $pet, Pet $otherPet): ?PetRelationship
     {
         $relationship = $pet->getRelationshipWith($otherPet);
@@ -126,12 +104,7 @@ class PetRelationshipService
     }
 
     /**
-     * @param Pet $pet
-     * @param Pet $otherPet
-     * @param string $howMetSummary
-     * @param string $howMetDescription
      * @return PetRelationship[]
-     * @throws EnumInvalidValueException
      */
     public function introducePets(Pet $pet, Pet $otherPet, string $howMetSummary, string $howMetDescription): array
     {
