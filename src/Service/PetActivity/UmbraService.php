@@ -39,7 +39,7 @@ class UmbraService
     {
         $skill = 10 + $pet->getStamina() + $pet->getIntelligence() + $pet->getUmbra(); // psychedelics bonus is built into getUmbra()
 
-        $skill = NumberFunctions::constrain($skill, 1, 20);
+        $skill = NumberFunctions::constrain($skill, 1, 21);
 
         $roll = mt_rand(1, $skill);
 
@@ -85,16 +85,19 @@ class UmbraService
                 $activityLog = $this->fishingAtRiver($pet);
                 break;
             case 16:
-                $activityLog = $this->gatheringAtTheNoetala($pet);
+                $activityLog = $this->strangeEncounter($pet);
                 break;
             case 17:
-                $activityLog = $this->foundVampireCastle($pet);
+                $activityLog = $this->gatheringAtTheNoetala($pet);
                 break;
             case 18:
+                $activityLog = $this->foundVampireCastle($pet);
+                break;
             case 19:
+            case 20:
                 $activityLog = $this->frozenQuag($pet);
                 break;
-            case 20:
+            case 21:
                 $activityLog = $this->fightAbandondero($pet);
                 break;
         }
@@ -374,6 +377,18 @@ class UmbraService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; ' . $pet->getName() . ' made a hasty retreat.', '');
         }
+    }
+
+    private function strangeEncounter(Pet $pet): PetActivityLog
+    {
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
+
+        // @TODO: add more possible encounters
+
+        // Agares (a spirit-duke)
+        return $this->responseService->createActivityLog($pet, 'While exploring some ruins in the Umbra, ' . $pet->getName() . ' was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language ' . $pet->getName() . ' didn\'t know. Frustrated, the old man left.', 'icons/activity-logs/confused');
     }
 
     private function fishingAtRiver(Pet $pet): PetActivityLog
