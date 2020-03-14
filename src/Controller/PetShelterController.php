@@ -128,15 +128,16 @@ class PetShelterController extends PoppySeedPetsController
         if(\strlen($petName) < 1 || \strlen($petName) > 30)
             throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
 
-        if(!StringFunctions::isISO88591($petName))
-            throw new UnprocessableEntityHttpException('Your pet\'s name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
-
         $pets = $adoptionService->getDailyPets($user);
 
+        /** @var PetShelterPet $petToAdopt */
         $petToAdopt = ArrayFunctions::find_one($pets, function(PetShelterPet $p) use($id) { return $p->id === $id; });
 
         if($petToAdopt === null)
             throw new UnprocessableEntityHttpException('There is no such pet available for adoption... maybe reload and try again??');
+
+        if(!StringFunctions::isISO88591(str_replace($petToAdopt->name, '', $petName)))
+            throw new UnprocessableEntityHttpException('Your pet\'s name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
 
         $petSkills = new PetSkills();
 
