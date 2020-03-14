@@ -226,7 +226,7 @@ class TriDChessService implements ParkEventInterface
         foreach($this->participants as $participant)
             $skillTotal += $participant->skill;
 
-        $firstPlaceMoneys = floor(mt_rand(23, 27) / 10 * sqrt($skillTotal * $this->round / 10));
+        $firstPlaceMoneys = ceil(mt_rand(23, 27) / 8 * sqrt($skillTotal * $this->round / 8));
         $secondPlaceMoneys = ceil($firstPlaceMoneys * 3 / 4);
 
         $this->results .= '**' . $this->winners[0]->pet->getName() . ' wins the tournament, and ' . $firstPlaceMoneys . '~~m~~!**' . "<br>\n";
