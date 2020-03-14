@@ -127,7 +127,10 @@ class AdoptionService
                 $colorA = ColorFunctions::tweakColor($basePet->getColorA());
                 $colorB = ColorFunctions::tweakColor($basePet->getColorB());
 
-                $name = ArrayFunctions::pick_one(PetShelterPet::PET_NAMES);
+                if($this->calendarService->isPiDayOrWhiteDay())
+                    $name = ArrayFunctions::pick_one([ 'Pi', 'Pie', 'Pie', 'Pie' ]);
+                else
+                    $name = ArrayFunctions::pick_one(PetShelterPet::PET_NAMES);
             }
 
             $pet = new PetShelterPet();
