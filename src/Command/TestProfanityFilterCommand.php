@@ -19,7 +19,7 @@ class TestProfanityFilterCommand extends PoppySeedPetsCommand
     {
         $this
             ->setName('app:test-profanity-filter')
-            ->setDescription('Tests the JSON logic parser against a given user & JSON expression.')
+            ->setDescription('Runs text through the profanity filter, and displays the result.')
             ->addArgument('phrase', InputArgument::REQUIRED, 'The phrase to test with.')
         ;
     }
