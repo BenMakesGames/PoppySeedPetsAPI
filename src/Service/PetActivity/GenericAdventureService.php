@@ -109,56 +109,61 @@ class GenericAdventureService
             return $activityLog;
         }
 
-        $possibleRewards = [
-            [ 'a ', 'Crooked Stick' ],
-            [ 'some ', 'Spicy Peps' ],
-            [ mt_rand(2, 5), 'moneys' ],
-        ];
-
-        if($level >= 5)
+        if($level >= 10 && mt_rand(1, 130) === 1)
+            $reward = [ 'a ', 'Secret Seashell' ];
+        else
         {
-            $possibleRewards[] = [ 'a ', 'Sand Dollar' ];
-            $possibleRewards[] = [ '', 'Ants on a Log' ];
+            $possibleRewards = [
+                [ 'a ', 'Crooked Stick' ],
+                [ 'some ', 'Spicy Peps' ],
+                [ mt_rand(2, 5), 'moneys' ],
+            ];
+
+            if($level >= 5)
+            {
+                $possibleRewards[] = [ 'a ', 'Sand Dollar' ];
+                $possibleRewards[] = [ '', 'Ants on a Log' ];
+            }
+
+            if($level >= 10)
+            {
+                $possibleRewards[] = [ '', 'Iron Ore' ];
+                $possibleRewards[] = [ mt_rand(4, 8), 'moneys' ];
+            }
+
+            if($level >= 15)
+            {
+                $possibleRewards[] = [ 'a ', 'Baker\'s Box' ];
+                $possibleRewards[] = [ 'a ', 'Fishkebab' ];
+            }
+
+            if($level >= 20)
+            {
+                $possibleRewards[] = [ '', 'Silver Ore' ];
+
+                if($pet->hasMerit(MeritEnum::BEHATTED))
+                    $possibleRewards[] = [ 'a ', 'Tinfoil Hat' ];
+
+                $possibleRewards[] = [ mt_rand(6, 12), 'moneys' ];
+            }
+
+            if($level >= 25)
+            {
+                $possibleRewards[] = [ '', 'Gold Ore' ];
+                $possibleRewards[] = [ 'a ', 'Fruit Basket' ];
+                $possibleRewards[] = [ 'a ', 'Secret Seashell' ];
+            }
+
+            if($level >= 30)
+            {
+                $possibleRewards[] = [ mt_rand(10, 20), 'moneys' ];
+
+                if(mt_rand(1, 20) === 1)
+                    $possibleRewards[] = [ 'a ', 'Species Transmigration Serum' ];
+            }
+
+            $reward = ArrayFunctions::pick_one($possibleRewards);
         }
-
-        if($level >= 10)
-        {
-            $possibleRewards[] = [ '', 'Iron Ore' ];
-            $possibleRewards[] = [ mt_rand(4, 8), 'moneys' ];
-        }
-
-        if($level >= 15)
-        {
-            $possibleRewards[] = [ 'a ', 'Baker\'s Box' ];
-            $possibleRewards[] = [ 'a ', 'Fishkebab' ];
-        }
-
-        if($level >= 20)
-        {
-            $possibleRewards[] = [ '', 'Silver Ore' ];
-
-            if($pet->hasMerit(MeritEnum::BEHATTED))
-                $possibleRewards[] = [ 'a', 'Tinfoil Hat' ];
-
-            $possibleRewards[] = [ mt_rand(6, 12), 'moneys' ];
-        }
-
-        if($level >= 25)
-        {
-            $possibleRewards[] = [ '', 'Gold Ore' ];
-            $possibleRewards[] = [ 'a ', 'Fruit Basket' ];
-            $possibleRewards[] = [ 'a ', 'Secret Seashell' ];
-        }
-
-        if($level >= 30)
-        {
-            $possibleRewards[] = [ mt_rand(10, 20), 'moneys' ];
-
-            if(mt_rand(1, 20) === 1)
-                $possibleRewards[] = [ 'a ', 'Species Transmigration Serum' ];
-        }
-
-        $reward = ArrayFunctions::pick_one($possibleRewards);
 
         if($reward[1] === 'moneys')
             $describeReward = $reward[0] . '~~m~~';
