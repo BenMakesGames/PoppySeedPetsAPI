@@ -8,12 +8,14 @@ use App\Enum\SerializationGroupEnum;
 use App\Enum\StoryEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\StringFunctions;
 use App\Model\PetShelterPet;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\AdoptionService;
+use App\Service\ProfanityFilterService;
 use App\Service\ResponseService;
 use App\Service\StoryService;
 use App\Service\TransactionService;
@@ -105,7 +107,7 @@ class PetShelterController extends PoppySeedPetsController
         int $id, PetRepository $petRepository, AdoptionService $adoptionService, Request $request,
         ResponseService $responseService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
         UserQuestRepository $userQuestRepository, TransactionService $transactionService,
-        MeritRepository $meritRepository
+        MeritRepository $meritRepository, ProfanityFilterService $profanityFilterService
     )
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
@@ -121,10 +123,13 @@ class PetShelterController extends PoppySeedPetsController
         if($user->getMoneys() < $costToAdopt)
             throw new UnprocessableEntityHttpException('It costs ' . $costToAdopt . ' moneys to adopt a pet, but you only have ' . $user->getMoneys() . '.');
 
-        $petName = trim($request->request->get('name', ''));
+        $petName = $profanityFilterService->filter(trim($request->request->get('name', '')));
 
         if(\strlen($petName) < 1 || \strlen($petName) > 30)
             throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
+
+        if(!StringFunctions::isISO88591($petName))
+            throw new UnprocessableEntityHttpException('Your pet\'s name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
 
         $pets = $adoptionService->getDailyPets($user);
 

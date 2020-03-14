@@ -33,9 +33,9 @@ class ProfanityFilterService
         '(s+c+r+e+w+|b+l+o+w+|k+i+l+l+)[^a-z]*y+o+u+' => 'love you',
         '(h+a+n+d+|b+l+o+w+)[^a-z]*j+o+b+' => 'favor',
         '((j+a+c+k+|j+i+l+l+)[^a-z]*o+ff+|m+a+s+t+u+r+b+a+t+e+)' => 'have fun',
-        'f+u+c+k+' => 'please',
         'f+u+c+k+i+n+[g\']*' => 'pleasing',
         'f+u+c+k+e+r+' => 'pleaser',
+        'f+u+c+k+' => 'please',
     ];
 
     public function __construct()
