@@ -204,9 +204,9 @@ class PetExperienceService
         $pet->increaseFood($food->getFood());
         $pet->increaseJunk($food->getJunk());
 
-        if($food->getChanceForBonusItem() !== null && mt_rand(1, $food->getChanceForBonusItem()) === 1)
+        if($food->getChanceForBonusItem() !== null && mt_rand(1, 1000) <= $food->getChanceForBonusItem())
         {
-            $bonusItem = $food->getBonusItem();
+            $bonusItem = $this->getBonusItemForLuckyFood();
             $inventory = (new Inventory())
                 ->setItem($bonusItem)
                 ->setLocation(LocationEnum::HOME)
@@ -247,4 +247,22 @@ class PetExperienceService
             $pet->getSkills()->increaseStat($food->getGrantedSkill());
     }
 
+    private function getBonusItemForLuckyFood(): Item
+    {
+        return $this->itemRepository->findOneByName(ArrayFunctions::pick_one([
+            'Fluff',
+            'Mermaid Egg',
+            'Paper',
+            'Iron Bar',
+            'Silver Ore',
+            'Gold Ore',
+            'Quintessence',
+            'Feathers',
+            'Beans',
+            'Paper Bag',
+            'Renaming Scroll',
+            'Behatting Scroll',
+            'White Cloth'
+        ]));
+    }
 }

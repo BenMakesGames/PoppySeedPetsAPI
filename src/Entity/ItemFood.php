@@ -124,11 +124,6 @@ class ItemFood
      */
     private $chanceForBonusItem;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Item")
-     */
-    private $bonusItem;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -464,18 +459,6 @@ class ItemFood
     public function setChanceForBonusItem(?int $chanceForBonusItem): self
     {
         $this->chanceForBonusItem = $chanceForBonusItem;
-
-        return $this;
-    }
-
-    public function getBonusItem(): ?Item
-    {
-        return $this->bonusItem;
-    }
-
-    public function setBonusItem(?Item $bonusItem): self
-    {
-        $this->bonusItem = $bonusItem;
 
         return $this;
     }
