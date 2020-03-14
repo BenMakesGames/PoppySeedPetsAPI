@@ -306,21 +306,23 @@ class BandService
 
         if($group->getProgress() >= 100)
         {
+            $totalRoll = mt_rand(1, $group->getSkillRollTotal());
+
             $group
                 ->clearProgress()
                 ->increaseNumberOfProducts()
             ;
 
-            if($group->getSkillRollTotal() < 60)
+            if($totalRoll < 100)
                 $item = 'Single';
-            else if($group->getSkillRollTotal() < 100)
+            else if($totalRoll < 200)
                 $item = 'EP';
-            else //if($group->getSkillRollTotal() < 150)
+            else //if($totalRoll < 300)
                 $item = 'LP';
 
-            // TODO:
+            // @TODO:
             /*
-            else //if($group->getSkillRollTotal() < 200)
+            else //if($totalRoll < 400)
                 $item = '???';
             */
 
