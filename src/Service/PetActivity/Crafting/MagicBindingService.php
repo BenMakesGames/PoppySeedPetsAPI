@@ -36,9 +36,6 @@ class MagicBindingService
         if(array_key_exists('Mermaid Egg', $quantities))
             $possibilities[] = [ $this, 'mermaidEggToQuint' ];
 
-        if(array_key_exists('Magic Smoke', $quantities))
-            $possibilities[] = [ $this, 'magicSmokeToQuint' ];
-
         if(array_key_exists('Wings', $quantities))
         {
             if(array_key_exists('Talon', $quantities) && array_key_exists('Paper', $quantities))
@@ -47,6 +44,9 @@ class MagicBindingService
             if(array_key_exists('Painted Dumbbell', $quantities) && array_key_exists('Glass', $quantities) && array_key_exists('Quinacridone Magenta Dye', $quantities))
                 $possibilities[] = [ $this, 'createSmilingWand' ];
         }
+
+        if(array_key_exists('Armor', $quantities) && array_key_exists('Ruby Feather', $quantities))
+            $possibilities[] = [ $this, 'createRubyeye' ];
 
         if(array_key_exists('Quintessence', $quantities))
         {
@@ -73,6 +73,9 @@ class MagicBindingService
 
             if(array_key_exists('Feathers', $quantities))
                 $possibilities[] = [ $this, 'createWings' ];
+
+            if(array_key_exists('Level 2 Sword', $quantities) && array_key_exists('White Feathers', $quantities))
+                $possibilities[] = [ $this, 'createArmor' ];
 
             // magic scrolls
             if(array_key_exists('Paper', $quantities))
@@ -145,6 +148,13 @@ class MagicBindingService
 
             if(array_key_exists('Decorated Flute', $quantities) && array_key_exists('Quinacridone Magenta Dye', $quantities))
                 $possibilities[] = [ $this, 'createPraxilla' ];
+        }
+        else
+        {
+            // no quint?
+
+            if(array_key_exists('Magic Smoke', $quantities))
+                $possibilities[] = [ $this, 'magicSmokeToQuint' ];
         }
 
         return $possibilities;
@@ -841,9 +851,6 @@ class MagicBindingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createMagicMirror(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
@@ -884,6 +891,66 @@ class MagicBindingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
             ;
             $this->inventoryService->petCollectsItem('Magic Mirror', $pet, $pet->getName() . ' bound this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createArmor(Pet $pet): PetActivityLog
+    {
+        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            $pet->increaseEsteem(-1);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Level 2 Sword, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+        }
+        else if($umbraCheck < 18)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Level 2 Sword, but it resisted the spell...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Level 2 Sword', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('White Feathers', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' bound Armor!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+            ;
+            $this->inventoryService->petCollectsItem('Armor', $pet, $pet->getName() . ' bound this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createRubyeye(Pet $pet): PetActivityLog
+    {
+        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+
+        if($umbraCheck < 22)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant Armor, but it resisted the spell...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Armor', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Ruby Feather', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(5);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' bound Rubyeye!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+            ;
+            $this->inventoryService->petCollectsItem('Rubyeye', $pet, $pet->getName() . ' bound this.', $activityLog);
             return $activityLog;
         }
     }
