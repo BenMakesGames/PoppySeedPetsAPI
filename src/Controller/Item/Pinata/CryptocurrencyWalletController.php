@@ -39,19 +39,19 @@ class CryptocurrencyWalletController extends PoppySeedPetsItemController
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
-        if(mt_rand(1, 20) === 1)
+        if(mt_rand(1, 4) === 1)
+        {
+            $inventoryService->receiveItem('Magic Smoke', $user, $user, 'Escaped from a Cryptocurrency Wallet, ruining it.', $inventory->getLocation());
+
+            $message = 'While waiting for the wallet to decrypt, some Magic Smoke escapes from it! Noooooo!';
+        }
+        else
         {
             $moneys = mt_rand(mt_rand(5, 15), mt_rand(20, mt_rand(25, 95)));
 
             $transactionService->getMoney($user, $moneys, 'Found inside a ' . $inventory->getItem()->getName() . '.');
 
             $message = 'You decrypt the wallet, receiving ' . $moneys . '~~m~~.';
-        }
-        else
-        {
-            $inventoryService->receiveItem('Magic Smoke', $user, $user, 'Escaped from a Cryptocurrency Wallet, ruining it.', $inventory->getLocation());
-
-            $message = 'While waiting for the wallet to decrypt, some Magic Smoke escapes from it! Noooooo!';
         }
 
         $em->remove($inventory);
