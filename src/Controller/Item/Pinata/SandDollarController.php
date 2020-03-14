@@ -59,7 +59,12 @@ class SandDollarController extends PoppySeedPetsItemController
             $inventoryService->receiveItem('Plastic', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location);
             $message = 'You rummage around inside the Sand Dollar. There was 1 dollar - er, I mean, moneys - and also a bit of sand - er, I mean, Silica Grounds - and what? There\'s some... Plastic in here?? That\'s kind of sad :| Well... one less piece in the ocean, I guess...';
         }
-        else if(mt_rand(1, 50) === 1)
+        else if(mt_rand(1, 30) === 1)
+        {
+            $inventoryService->receiveItem('Secret Seashell', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location);
+            $message = 'You rummage around inside the Sand Dollar. There was 1 dollar - er, I mean, moneys - and also a bit of sand - er, I mean, Silica Grounds - and oh! What\'s this? A Secret Seasheeeeeelllllll!';
+        }
+        else if(mt_rand(1, 40) === 1)
         {
             $inventoryService->receiveItem('Iron Key', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location);
             $message = 'You rummage around inside the Sand Dollar. There was 1 dollar - er, I mean, moneys - and also a bit of sand - er, I mean, Silica Grounds - and oh! What\'s this? Some kind of key! An Iron Key!';

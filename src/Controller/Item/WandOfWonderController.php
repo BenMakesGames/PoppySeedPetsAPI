@@ -60,6 +60,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
             'recolorAPet',
             'toggleSpectral',
             'wine',
+            'secretSeashell'
         ];
 
         if($user->getGreenhouse() && !$expandedGreenhouseWithWand->getValue())
@@ -153,6 +154,12 @@ class WandOfWonderController extends PoppySeedPetsItemController
 
                 $itemActionEffects['reloadInventory'] = true;
 
+                break;
+
+            case 'secretSeashell':
+                $itemActionDescription = 'For a moment, you hear the sound of the ocean. ' . $pet->getName() . ' leans in to listen, and a Secret Seashell drops off of their head!';
+                $inventoryService->receiveItem('Secret Seashell', $user, $user, 'This fell off of ' . $pet->getName() . '\'s head after listening to a Wand of Wonder make ocean sounds.', $location);
+                $itemActionEffects['reloadInventory'] = true;
                 break;
         }
 

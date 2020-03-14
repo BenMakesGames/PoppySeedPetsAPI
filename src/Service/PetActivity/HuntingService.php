@@ -58,7 +58,7 @@ class HuntingService
     {
         $maxSkill = 10 + $pet->getStrength() + $pet->getBrawl() - $pet->getAlcohol() - $pet->getPsychedelic();
 
-        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 20);
+        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 21);
 
         $useThanksgivingPrey = $this->calendarService->isThanksgiving() && mt_rand(1, 2) === 1;
 
@@ -70,19 +70,20 @@ class HuntingService
         switch($roll)
         {
             case 1:
+            case 2:
                 $activityLog = $this->failedToHunt($pet);
                 break;
-            case 2:
             case 3:
             case 4:
+            case 5:
                 $activityLog = $this->huntedDustBunny($pet);
                 break;
-            case 5:
+            case 6:
                 $activityLog = $this->huntedPlasticBag($pet);
                 break;
-            case 6:
             case 7:
             case 8:
+            case 9:
                 if($this->canRescueAnotherHouseFairy($pet->getOwner()))
                     $activityLog = $this->rescueHouseFairy($pet);
                 else if($useThanksgivingPrey)
@@ -90,41 +91,41 @@ class HuntingService
                 else
                     $activityLog = $this->huntedGoat($pet);
                 break;
-            case 9:
             case 10:
+            case 11:
                 if($useThanksgivingPrey)
                     $activityLog = $this->huntedTurkey($pet);
                 else
                     $activityLog = $this->huntedLargeToad($pet);
                 break;
-            case 11:
+            case 12:
                 $activityLog = $this->huntedScarecrow($pet);
                 break;
-            case 12:
+            case 13:
                 $activityLog = $this->huntedOnionBoy($pet);
                 break;
-            case 13:
             case 14:
+            case 15:
                 $activityLog = $this->huntedThievingMagpie($pet);
                 break;
-            case 15:
+            case 16:
                 if($useThanksgivingPrey)
                     $activityLog = $this->huntedPossessedTurkey($pet);
                 else
                     $activityLog = $this->huntedGhosts($pet);
                 break;
-            case 16:
             case 17:
+            case 18:
                 if($useThanksgivingPrey)
                     $activityLog = $this->huntedPossessedTurkey($pet);
                 else
                     $activityLog = $this->huntedSatyr($pet);
                 break;
-            case 18:
-                $activityLog = $this->huntedPaperGolem($pet);
-                break;
             case 19:
             case 20:
+                $activityLog = $this->huntedPaperGolem($pet);
+                break;
+            case 21:
                 if($useThanksgivingPrey)
                     $activityLog = $this->huntedTurkeyDragon($pet);
                 else

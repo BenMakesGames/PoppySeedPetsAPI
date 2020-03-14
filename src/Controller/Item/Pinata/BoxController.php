@@ -494,6 +494,10 @@ class BoxController extends PoppySeedPetsItemController
             $extraItem = [ 'name' => 'Species Transmigration Serum', 'description' => 'a syringe!? Goodness! That\'s exceptionally unsafe' ];
             $sand--;
         }
+        else if($a === 13 || $a === 14)
+        {
+            $extraItem = [ 'name' => 'Secret Seashell', 'description' => 'a Secret Seashell! Ooh' ];
+        }
 
         if($extraItem)
         {
@@ -808,6 +812,9 @@ class BoxController extends PoppySeedPetsItemController
 
         if(mt_rand(1, 10) === 1)
             $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Renaming Scroll', 'Behatting Scroll', 'Major Scroll of Riches', 'Species Transmigration Serum' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
+
+        if(mt_rand(1, 10) === 1)
+            $newInventory[] = $inventoryService->receiveItem('Secret Seashell', $user, $user, $message, $location, $inventory->getLockedToOwner());
 
         return $this->countRemoveFlushAndRespond('Opening the chest revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
