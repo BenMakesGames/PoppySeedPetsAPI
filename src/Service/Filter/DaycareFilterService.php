@@ -31,6 +31,7 @@ class DaycareFilterService
             ],
             [
                 'user' => [ $this, 'filterUser' ],
+                'name' => [ $this, 'filterName' ],
             ]
         );
     }
@@ -47,6 +48,14 @@ class DaycareFilterService
         $qb
             ->andWhere('p.owner=:owner')
             ->setParameter('owner', $value)
+        ;
+    }
+
+    public function filterName(QueryBuilder $qb, $value)
+    {
+        $qb
+            ->andWhere('p.name LIKE :nameLike')
+            ->setParameter('nameLike', '%' . $value . '%')
         ;
     }
 }
