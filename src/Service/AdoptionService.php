@@ -277,6 +277,6 @@ class AdoptionService
 
     public function getWhiteDayColors(): array
     {
-        return [ 'FFFFFF' ];
+        return [ 'FFFFFF', 'EEEEEE' ];
     }
 }
