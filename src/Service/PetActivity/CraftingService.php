@@ -671,7 +671,7 @@ class CraftingService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Gold Trifecta.', '');
-            $this->inventoryService->petCollectsItem('L-Square', $pet, $pet->getName() . ' created by gluing together three Gold Triangles.', $activityLog);
+            $this->inventoryService->petCollectsItem('L-Square', $pet, $pet->getName() . ' created by gluing together a couple Rulers.', $activityLog);
 
             return $activityLog;
         }
