@@ -50,7 +50,7 @@ class ProgrammingService
 
         if(array_key_exists('Metal Detector (Iron)', $quantities) || array_key_exists('Metal Detector (Silver)', $quantities) || array_key_exists('Metal Detector (Gold)', $quantities))
         {
-            if(array_key_exists('Gold Bar', $quantities) && array_key_exists('Fiberglass', $quantities))
+            if(array_key_exists('Gold Bar', $quantities) && (array_key_exists('Fiberglass', $quantities) || array_key_exists('Fiberglass Flute', $quantities)))
                 $possibilities[] = [ $this, 'createSeashellDetector' ];
         }
 
@@ -194,9 +194,18 @@ class ProgrammingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
 
-            $this->inventoryService->loseItem('Fiberglass', $pet->getOwner(), LocationEnum::HOME, 1);
+            if($this->inventoryService->loseItem('Fiberglass', $pet->getOwner(), LocationEnum::HOME, 1) > 0)
+                $fiberglassItemBroken = 'Fiberglass';
+            else
+            {
+                $this->inventoryService->loseItem('Fiberglass Flute', $pet->getOwner(), LocationEnum::HOME, 1);
+                $fiberglassItemBroken = 'Fiberglass Flute';
+            }
+
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to alter a Metal Detector to detect Secret Seashells, but accidentally shattered the Fiberglass :(', '');
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to alter a Metal Detector to detect Secret Seashells, but accidentally shattered the ' . $fiberglassItemBroken . ' :(', '');
+
             return $activityLog;
         }
         else if($roll >= 18)
@@ -204,7 +213,9 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, false);
 
             $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Fiberglass', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            if($this->inventoryService->loseItem('Fiberglass', $pet->getOwner(), LocationEnum::HOME, 1) === 0)
+                $this->inventoryService->loseItem('Fiberglass Flute', $pet->getOwner(), LocationEnum::HOME, 1);
 
             $this->inventoryService->loseOneOf([ 'Metal Detector (Iron)', 'Metal Detector (Silver)', 'Metal Detector (Gold)' ], $pet->getOwner(), LocationEnum::HOME);
 
@@ -223,9 +234,6 @@ class ProgrammingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createStringFromPointer(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
@@ -258,9 +266,6 @@ class ProgrammingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createRegex(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
@@ -301,9 +306,6 @@ class ProgrammingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createCompiler(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
@@ -347,9 +349,6 @@ class ProgrammingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createRijndael(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
@@ -375,9 +374,6 @@ class ProgrammingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createViswanathsConstant(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
@@ -403,9 +399,6 @@ class ProgrammingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createL33tH4xx0r(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
@@ -449,9 +442,6 @@ class ProgrammingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createPhishingRod(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
@@ -486,9 +476,6 @@ class ProgrammingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createLightningSword(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts() + $pet->getSmithing());
@@ -524,9 +511,6 @@ class ProgrammingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createAlienGun(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + ceil(($pet->getScience() + $pet->getCrafts() + $pet->getUmbra()) / 2));
@@ -562,9 +546,6 @@ class ProgrammingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createDNA(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getScience());

@@ -344,18 +344,19 @@ class InventoryService
     /**
      * @param Item[]|string[] $itemList
      * @param int|int[] $location
+     * @return Item|string|null
      */
-    public function loseOneOf($itemList, User $owner, $location): bool
+    public function loseOneOf($itemList, User $owner, $location)
     {
         shuffle($itemList);
 
         foreach($itemList as $item)
         {
             if($this->loseItem($item, $owner, $location, 1) > 0)
-                return true;
+                return $item;
         }
 
-        return false;
+        return null;
     }
 
     /**

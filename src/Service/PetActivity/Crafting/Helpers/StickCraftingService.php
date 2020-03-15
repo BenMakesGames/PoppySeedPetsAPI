@@ -225,11 +225,10 @@ class StickCraftingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             if($pet->getFood() <= 4)
             {
-                $food = ArrayFunctions::pick_one([ 'Rice', 'Corn' ]);
-                $this->inventoryService->loseOneOf($food, $pet->getOwner(), LocationEnum::HOME);
+                $foodEaten = $this->inventoryService->loseOneOf([ 'Rice', 'Corn' ], $pet->getOwner(), LocationEnum::HOME);
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
                 $pet->increaseFood(4);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make a Harvest Staff, but got hungry, and ate the ' . $food . ' :(', '');
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make a Harvest Staff, but got hungry, and ate the ' . $foodEaten . ' :(', '');
             }
             else if(mt_rand(1, 2) === 1)
             {
