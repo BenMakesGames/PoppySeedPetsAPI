@@ -152,7 +152,7 @@ class ProgrammingService
 
     private function createMetalDetector(Pet $pet): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getScience() + $pet->getCrafts()));
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getScience(), $pet->getCrafts()));
 
         if($roll <= 2)
         {
