@@ -2,14 +2,9 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
-use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
-use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
-use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;

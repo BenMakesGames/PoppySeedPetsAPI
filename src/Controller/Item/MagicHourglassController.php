@@ -4,7 +4,6 @@ namespace App\Controller\Item;
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
-use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\HouseService;
 use App\Service\InventoryService;

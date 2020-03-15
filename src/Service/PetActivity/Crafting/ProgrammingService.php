@@ -41,8 +41,17 @@ class ProgrammingService
 
         if(array_key_exists('3D Printer', $quantities) && array_key_exists('Plastic', $quantities))
         {
-            if(array_key_exists('Glass', $quantities) && (array_key_exists('Silver', $quantities) || array_key_exists('Gold', $quantities)))
+            if(array_key_exists('Glass', $quantities) && (array_key_exists('Silver Bar', $quantities) || array_key_exists('Gold Bar', $quantities)))
                 $possibilities[] = [ $this, 'createLaserPointer' ];
+
+            if((array_key_exists('Silver Bar', $quantities) || array_key_exists('Iron Bar', $quantities)) && array_key_exists('Magic Smoke', $quantities))
+                $possibilities[] = [ $this, 'createMetalDetector' ];
+        }
+
+        if(array_key_exists('Metal Detector (Iron)', $quantities) || array_key_exists('Metal Detector (Silver)', $quantities) || array_key_exists('Metal Detector (Gold)', $quantities))
+        {
+            if(array_key_exists('Gold Bar', $quantities) && array_key_exists('Fiberglass', $quantities))
+                $possibilities[] = [ $this, 'createSeashellDetector' ];
         }
 
         if(array_key_exists('Pointer', $quantities))
@@ -105,9 +114,6 @@ class ProgrammingService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createLaserPointer(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getScience() + $pet->getCrafts()));
@@ -122,12 +128,12 @@ class ProgrammingService
         }
         else if($roll > 15)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
 
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            $this->inventoryService->loseOneOf([ 'Silver', 'Gold' ], $pet->getOwner(), LocationEnum::HOME);
+            $this->inventoryService->loseOneOf([ 'Silver Bar', 'Gold Bar' ], $pet->getOwner(), LocationEnum::HOME);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' 3D printed & wired a Laser Pointer.', 'items/resource/string')
@@ -141,6 +147,79 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Laser Pointer, but couldn\'t get the wiring straight.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createMetalDetector(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getScience() + $pet->getCrafts()));
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
+
+            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Metal Detector, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
+        }
+        else if($roll > 15)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
+
+            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Magic Smoke', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->inventoryService->loseOneOf([ 'Silver Bar', 'Iron Bar' ], $pet->getOwner(), LocationEnum::HOME);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' 3D printed & wired up a Metal Detector.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+            ;
+            $this->inventoryService->petCollectsItem('Laser Pointer', $pet, $pet->getName() . ' 3D printed & wired this up.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Metal Detector, but couldn\'t get the wiring straight.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createSeashellDetector(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getScience());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+
+            $this->inventoryService->loseItem('Fiberglass', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to alter a Metal Detector to detect Secret Seashells, but accidentally shattered the Fiberglass :(', '');
+            return $activityLog;
+        }
+        else if($roll >= 18)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, false);
+
+            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Fiberglass', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->inventoryService->loseOneOf([ 'Metal Detector (Iron)', 'Metal Detector (Silver)', 'Metal Detector (Gold)' ], $pet->getOwner(), LocationEnum::HOME);
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ]);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' modified an ordinary Metal Detector, turning it into a Secret Seashell Detector!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+            ;
+            $this->inventoryService->petCollectsItem('Secret Seashell Detector', $pet, $pet->getName() . ' made this out of an ordinary Metal Detector.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to alter a Metal Detector to detect Secret Seashells, but kept messing up the programming.', 'icons/activity-logs/confused');
         }
     }
 
