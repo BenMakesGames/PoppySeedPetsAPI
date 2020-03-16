@@ -212,7 +212,7 @@ class InventoryService
      */
     public function petCollectsItem($item, Pet $pet, string $comment, ?PetActivityLog $activityLog): ?Inventory
     {
-        if(is_string($item)) $item = $this->itemRepository->findOneByName($item);
+        $item = $this->getItemWithChanceForLuckyTransformation($item);
 
         if($pet->getTool() && $pet->getTool()->getItem()->getTool()->getWhenGather() && $item->getName() === $pet->getTool()->getItem()->getTool()->getWhenGather()->getName())
         {
@@ -280,23 +280,37 @@ class InventoryService
     }
 
     /**
+     * @param string|Item $item
+     * @return Item
+     */
+    private function getItemWithChanceForLuckyTransformation($item): Item
+    {
+        $itemIsString = is_string($item);
+
+        if(mt_rand(1, 200) === 1)
+        {
+            $itemName = $itemIsString ? $item : $item->getName();
+
+            if($itemName === 'Beans')
+                return $this->itemRepository->findOneByName('Magic Beans');
+            else if($itemName === 'Feathers')
+                return $this->itemRepository->findOneByName('Ruby Feather');
+            else if($itemName === 'Frog Legs')
+                return $this->itemRepository->findOneByName('Rainbow Frog Legs');
+            else
+                return $itemIsString ? $this->itemRepository->findOneByName($item) : $item;
+        }
+        else
+            return $itemIsString ? $this->itemRepository->findOneByName($item) : $item;
+    }
+
+    /**
      * @param Item|string $item
      * @throws EnumInvalidValueException
      */
     public function receiveItem($item, User $owner, ?User $creator, string $comment, int $location, bool $lockedToOwner = false): Inventory
     {
-        if(is_string($item))
-        {
-            if(mt_rand(1, 100) === 1)
-            {
-                if($item === 'Beans')
-                    $item = 'Magic Beans';
-                else if($item === 'Feathers')
-                    $item = 'Ruby Feather';
-            }
-
-            $item = $this->itemRepository->findOneByName($item);
-        }
+        $item = $this->getItemWithChanceForLuckyTransformation($item);
 
         $i = (new Inventory())
             ->setOwner($owner)
