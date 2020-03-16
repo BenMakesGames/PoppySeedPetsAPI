@@ -721,6 +721,51 @@ class Pet
             return 'depressed';
     }
 
+    /**
+     * @Groups({"myPet"})
+     */
+    public function getAlcoholLevel(): string
+    {
+        if($this->getAlcohol() > 16)
+            return 'crazy-high';
+        else if($this->getAlcohol() > 8)
+            return 'high';
+        else if($this->getAlcohol() > 0)
+            return 'low';
+        else
+            return 'none';
+    }
+
+    /**
+     * @Groups({"myPet"})
+     */
+    public function getHallucinogenLevel(): string
+    {
+        if($this->getPsychedelic() > 16)
+            return 'crazy-high';
+        else if($this->getPsychedelic() > 8)
+            return 'high';
+        else if($this->getPsychedelic() > 0)
+            return 'low';
+        else
+            return 'none';
+    }
+
+    /**
+     * @Groups({"myPet"})
+     */
+    public function getPoisonLevel(): string
+    {
+        if($this->getPoison() > 16)
+            return 'crazy-high';
+        else if($this->getPoison() > 8)
+            return 'high';
+        else if($this->getPoison() > 0)
+            return 'low';
+        else
+            return 'none';
+    }
+
     public function getStomachSize(): int
     {
         return
