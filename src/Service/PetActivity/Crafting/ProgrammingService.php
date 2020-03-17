@@ -173,7 +173,7 @@ class ProgrammingService
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' 3D printed & wired up a Metal Detector.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
             ;
 
             $metalDetector = ArrayFunctions::pick_one([

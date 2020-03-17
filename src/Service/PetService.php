@@ -435,7 +435,10 @@ class PetService
             $pet->getFood() > 0 &&
 
             // a random factor
-            mt_rand(1, max(10, 5 + $pet->getLove() + $pet->getSafety() + $pet->getEsteem())) <= 3
+            (
+                mt_rand(1, max(10, 5 + $pet->getLove() + $pet->getSafety() + $pet->getEsteem())) <= 3 ||
+                mt_rand(1, 15 - $pet->getExtroverted() * 2) === 1
+            )
         )
         {
             if($this->hangOutWithFriend($pet))
