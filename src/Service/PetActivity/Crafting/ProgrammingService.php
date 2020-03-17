@@ -175,7 +175,14 @@ class ProgrammingService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' 3D printed & wired up a Metal Detector.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
             ;
-            $this->inventoryService->petCollectsItem('Laser Pointer', $pet, $pet->getName() . ' 3D printed & wired this up.', $activityLog);
+
+            $metalDetector = ArrayFunctions::pick_one([
+                'Metal Detector (Iron)',
+                'Metal Detector (Silver)',
+                'Metal Detector (Gold)'
+            ]);
+
+            $this->inventoryService->petCollectsItem($metalDetector, $pet, $pet->getName() . ' 3D printed & wired this up.', $activityLog);
             return $activityLog;
         }
         else
