@@ -317,7 +317,7 @@ class GreenhouseController extends PoppySeedPetsController
             $user->getGreenhouse()->increaseMaxPlants(3);
             $message .= ' And you\'ve been given three additional plots in the Greenhouse!';
         }
-        else// if(mt_rand(1, 3) === 1)
+        else if(mt_rand(1, 3) === 1)
         {
             $petsAtHome = $petRepository->findBy([
                 'owner' => $user->getId(),
