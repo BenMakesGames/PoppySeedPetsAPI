@@ -25,6 +25,7 @@ use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\PetActivity\GreenhouseAdventureService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -180,7 +181,7 @@ class GreenhouseController extends PoppySeedPetsController
         GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository, PetRepository $petRepository,
         PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository,
-        UserQuestRepository $userQuestRepository
+        UserQuestRepository $userQuestRepository, GreenhouseAdventureService $greenhouseAdventureService
     )
     {
         $user = $this->getUser();
@@ -312,7 +313,22 @@ class GreenhouseController extends PoppySeedPetsController
         $plantsHarvested = $userStatsRepository->incrementStat($user, UserStatEnum::HARVESTED_PLANT);
 
         if($plantsHarvested->getValue() === 3)
+        {
             $user->getGreenhouse()->increaseMaxPlants(3);
+            $message .= ' And you\'ve been given three additional plots in the Greenhouse!';
+        }
+        else// if(mt_rand(1, 3) === 1)
+        {
+            $petsAtHome = $petRepository->findBy([
+                'owner' => $user->getId(),
+                'inDaycare' => false
+            ]);
+
+            if(count($petsAtHome) > 0)
+            {
+                $greenhouseAdventureService->adventure(ArrayFunctions::pick_one($petsAtHome), $plant);
+            }
+        }
 
         $em->flush();
 
