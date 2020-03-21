@@ -58,7 +58,10 @@ class MagicBeanstalkService
                 $activityLog = $this->foundBirdNest($pet, $roll);
                 break;
             case 11:
-                $activityLog = $this->foundBugSwarm($pet);
+                if(mt_rand(1, 4) === 1)
+                    $activityLog = $this->foundBugSwarm($pet);
+                else
+                    $activityLog = $this->foundBirdNest($pet, $roll);
                 break;
             case 12:
             case 13:
@@ -139,7 +142,7 @@ class MagicBeanstalkService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters. The mother bird was around, and it didn\'t seem safe to pick a fight up there, so ' . $pet->getName() . ' left it alone.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters. They found a bird nest, but the mother bird was around, and it didn\'t seem safe to pick a fight up there, so ' . $pet->getName() . ' left it alone.', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ]);
 
@@ -206,7 +209,7 @@ class MagicBeanstalkService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters! The mother was around, and it didn\'t seem safe to pick a fight up there, so ' . $pet->getName() . ' left it alone.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white pegasus\s nest, but the mother was around, and it didn\'t seem safe to pick a fight up there, so ' . $pet->getName() . ' left it alone.', '');
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ]);
 
