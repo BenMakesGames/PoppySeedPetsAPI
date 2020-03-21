@@ -69,7 +69,7 @@ class FriendlyRivalsService
         if ($p2->getRelationshipGoal() !== RelationshipEnum::FRIENDLY_RIVAL && mt_rand(1, 3) === 1)
         {
             if ($p1->getRelationshipGoal() !== RelationshipEnum::FRIENDLY_RIVAL)
-                $message = $p1->getPet()->getName() . ' and ' . $p2->getPet()->getName() . ' met to brag about their ' . array_key_first($combinedSkills) . ', but realized that neither were really feeling up to it, so called the conetest off.';
+                $message = $p1->getPet()->getName() . ' and ' . $p2->getPet()->getName() . ' met to brag about their ' . array_key_first($combinedSkills) . ', but realized that neither were really feeling up to it, so called the contest off.';
             else
                 $message = $p1->getPet()->getName() . ' and ' . $p2->getPet()->getName() . ' met to brag about their ' . array_key_first($combinedSkills) . ', but ' . $p2->getPet()->getName() . ' wasn\'t really feeling it. ' . $p1->getPet()->getName() . ' accepted the win.';
 
