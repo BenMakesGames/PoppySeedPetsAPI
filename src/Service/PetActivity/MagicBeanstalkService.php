@@ -209,7 +209,7 @@ class MagicBeanstalkService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white pegasus\s nest, but the mother was around, and it didn\'t seem safe to pick a fight up there, so ' . $pet->getName() . ' left it alone.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white pegasus\' nest, but the mother was around, and it didn\'t seem safe to pick a fight up there, so ' . $pet->getName() . ' left it alone.', '');
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ]);
 
