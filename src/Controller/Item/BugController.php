@@ -2,16 +2,26 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\PetSkills;
+use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\StoryEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\ArrayFunctions;
+use App\Functions\ColorFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
+use App\Repository\MeritRepository;
+use App\Repository\PetRepository;
+use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\PetService;
 use App\Service\ResponseService;
 use App\Service\StoryService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -150,6 +160,96 @@ class BugController extends PoppySeedPetsItemController
         $responseService->addActivityLog((new PetActivityLog())->setEntry($message));
 
         return $responseService->itemActionSuccess(null, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+    }
+
+    /**
+     * @Route("/{inventory}/adopt", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function adopt(
+        Inventory $inventory, EntityManagerInterface $em, PetSpeciesRepository $petSpeciesRepository,
+        MeritRepository $meritRepository, PetRepository $petRepository, ResponseService $responseService
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'bug/#/adopt');
+
+        $petName = ArrayFunctions::pick_one([
+            'Afrolixa', 'Alcimus', 'Antocha', 'Argyra', 'Asiola', 'Atarba', 'Atissa',
+            'Beskia', 'Bothria', 'Bremia',
+            'Cadrema', 'Chlorops', 'Cirrula', 'Cladura', 'Conosia', 'Cremmus',
+            'Dagus', 'Dicarca', 'Diostracus', 'Dytomyia',
+            'Elliptera', 'Enlinia', 'Eothalassius',
+            'Filatopus',
+            'Garifuna', 'Gaurax',
+            'Harmandia', 'Hurleyella', 'Hyadina',
+            'Iteomyia',
+            'Janetiella',
+            'Lecania', 'Libnotes', 'Lipara',
+            'Maietta', 'Mberu', 'Melanderia', 'Meromyza',
+            'Nanomyina', 'Narrabeenia', 'Naufraga', 'Neossos',
+            'Odus', 'Ormosia', 'Orzihincus',
+            'Paraclius', 'Peodes', 'Pilbara', 'Pinyonia', 'Porasilus',
+            'Rhaphium', 'Risa',
+            'Saphaea', 'Semudobia', 'Shamshevia', 'Silvestrina', 'Stilpnogaster', 'Strobliola', 'Syntormon',
+            'Teneriffa', 'Tolmerus', 'Tricimba', 'Trotteria',
+            'Vitisiella',
+            'Wyliea',
+            'Xena',
+            'Yumbera',
+            'Zeros', 'Zoticus',
+        ]);
+
+        // RANDOM!
+        $h1 = mt_rand(0, 1000) / 1000.0;
+        $s1 = mt_rand(mt_rand(0, 500), 1000) / 1000.0;
+        $l1 = mt_rand(mt_rand(0, 500), mt_rand(750, 1000)) / 1000.0;
+
+        $h2 = mt_rand(0, 1000) / 1000.0;
+        $s2 = mt_rand(mt_rand(0, 500), 1000) / 1000.0;
+        $l2 = mt_rand(mt_rand(0, 500), mt_rand(750, 1000)) / 1000.0;
+
+        $colorA = ColorFunctions::HSL2Hex($h1, $s1, $l1);
+        $colorB = ColorFunctions::HSL2Hex($h2, $s2, $l2);
+
+        $petSkills = new PetSkills();
+
+        $em->persist($petSkills);
+
+        $newPet = (new Pet())
+            ->setOwner($user)
+            ->setName($petName)
+            ->setSpecies($petSpeciesRepository->find(40))
+            ->setColorA($colorA)
+            ->setColorB($colorB)
+            ->setFavoriteFlavor(FlavorEnum::getRandomValue())
+            ->setNeeds(mt_rand(10, 12), -9)
+            ->setSkills($petSkills)
+            ->addMerit($meritRepository->getRandomAdoptedPetStartingMerit())
+        ;
+
+        $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
+
+        if($numberOfPetsAtHome >= $user->getMaxPets())
+        {
+            $newPet->setInDaycare(true);
+            $message = 'The beetle trundles happily into the daycare...';
+            $reloadPets = false;
+        }
+        else
+        {
+            $message = 'The beetle finds a nice corner in your house, and settles in...';
+            $reloadPets = true;
+        }
+
+        $responseService->addActivityLog((new PetActivityLog())->setEntry($message));
+
+        $em->persist($newPet);
+        $em->remove($inventory);
+        $em->flush();
+
+        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true, 'reloadPets' => $reloadPets ]);
     }
 
     /**

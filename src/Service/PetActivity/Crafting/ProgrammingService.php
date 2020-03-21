@@ -80,8 +80,14 @@ class ProgrammingService
                 $possibilities[] = [ $this, 'createViswanathsConstant' ];
         }
 
-        if(array_key_exists('Lightning in a Bottle', $quantities) && array_key_exists('Iron Sword', $quantities))
-            $possibilities[] = [ $this, 'createLightningSword' ];
+        if(array_key_exists('Lightning in a Bottle', $quantities))
+        {
+            if(array_key_exists('Iron Sword', $quantities))
+                $possibilities[] = [ $this, 'createLightningSword' ];
+
+            if(array_key_exists('Compiler', $quantities) && array_key_exists('Weird Beetle', $quantities))
+                $possibilities[] = [ $this, 'createSentientBeetle' ];
+        }
 
         if(array_key_exists('Magic Smoke', $quantities))
         {
@@ -515,6 +521,42 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to electrify an Iron Sword, but the lightning was arcing and sparking violently, so ' . $pet->getName() . ' decided to wait a bit...', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createSentientBeetle(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+
+            $this->inventoryService->loseItem('Weird Beetle', $pet->getOwner(), LocationEnum::HOME, 1);
+            $pet->increaseEsteem(-mt_rand(4, 8));
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to upload an AI into a Weird Beetle\'s brain, but, uh... the beetle... did not survive...', '');
+            return $activityLog;
+        }
+        else if($roll >= 24)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->inventoryService->loseItem('Lightning in a Bottle', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Compiler', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Weird Beetle', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::SCIENCE ]);
+            $pet->increaseEsteem(3);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' uploaded an AI into a Weird Beetle\'s brain, granting it sentience!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 24)
+            ;
+            $this->inventoryService->petCollectsItem('Sentient Beetle', $pet, $pet->getName() . ' gave this beetle sentience by uploading an AI into its brain.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to program an AI, but couldn\'t get anywhere...', 'icons/activity-logs/confused');
         }
     }
 
