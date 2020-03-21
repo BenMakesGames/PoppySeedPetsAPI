@@ -17,31 +17,31 @@ class Item
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"itemEncyclopedia", "myPet", "itemAdmin", "marketItem"})
+     * @Groups({"itemEncyclopedia", "myPet", "marketItem"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=45, unique=true)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe", "mySeeds", "greenhousePlant", "fireplaceMantle", "fireplaceFuel", "myBeehive"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "greenhousePlant", "fireplaceMantle", "fireplaceFuel", "myBeehive"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"myInventory", "itemEncyclopedia", "itemAdmin"})
+     * @Groups({"myInventory", "itemEncyclopedia"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "itemAdmin", "museum", "marketItem", "knownRecipe", "mySeeds", "greenhousePlant", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "myBeehive", "petGroupDetails"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "greenhousePlant", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "myBeehive", "petGroupDetails"})
      */
     private $image;
 
     /**
      * @ORM\Column(type="json", nullable=true)
-     * @Groups({"myInventory", "itemEncyclopedia", "itemAdmin"})
+     * @Groups({"myInventory", "itemEncyclopedia"})
      */
     private $useActions = [];
 
@@ -237,5 +237,29 @@ class Item
     public function containsTentacles(): bool
     {
         return strpos($this->name, 'Tentacle') !== false;
+    }
+
+    /**
+     * @Groups({"myInventory", "itemEncyclopedia"})
+     */
+    public function getIsGrowable(): bool
+    {
+        return $this->getPlant() !== null;
+    }
+
+    /**
+     * @Groups({"myInventory", "itemEncyclopedia"})
+     */
+    public function getIsFlammable(): bool
+    {
+        return $this->getFuel() > 0;
+    }
+
+    /**
+     * @Groups({"myInventory", "itemEncyclopedia"})
+     */
+    public function getIsFertilizer(): bool
+    {
+        return $this->getFertilizer() > 0;
     }
 }

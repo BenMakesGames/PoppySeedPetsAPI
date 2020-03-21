@@ -209,8 +209,14 @@ class CraftingService
         if($pet->getSafety() > 0)
             $possibilities = array_merge($possibilities, $this->smithingService->getCraftingPossibilities($pet, $quantities));
 
-        if(array_key_exists('3D Printer', $quantities) && array_key_exists('Plastic', $quantities))
-            $possibilities = array_merge($possibilities, $this->plasticPrinterService->getCraftingPossibilities($pet, $quantities));
+        if(array_key_exists('Plastic', $quantities))
+        {
+            if(array_key_exists('3D Printer', $quantities))
+                $possibilities = array_merge($possibilities, $this->plasticPrinterService->getCraftingPossibilities($pet, $quantities));
+
+            if(array_key_exists('Smallish Pumpkin', $quantities) && array_key_exists('Crooked Stick', $quantities))
+                $possibilities[] = [ $this, 'createDrumpkin' ];
+        }
 
         if(array_key_exists('Rusty Blunderbuss', $quantities) && ($pet->getSmithing() >= 5 || $pet->getCrafts() >= 5))
             $possibilities[] = [ $this, 'repairRustyBlunderbuss' ];
@@ -282,9 +288,6 @@ class CraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createDecoratedFlute(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
@@ -318,9 +321,49 @@ class CraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
+    private function createDrumpkin(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            if(mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Drumpkin, but burnt the Plastic while trying to soften it :(', '');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Smallish Pumpkin', $pet->getOwner(), LocationEnum::HOME, 1);
+                $pet->increaseFood(5);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Drumpkin, but broke the Smallish Pumpkin :( Not wanting to waste it, ' . $pet->getName() . ' ate the remains...)', '');
+            }
+        }
+        else if($roll >= 15)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Smallish Pumpkin', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
+            $pet->increaseEsteem(3);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Drumpkin!', 'items/tool/instrument/drumpkin')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+            ;
+            $this->inventoryService->petCollectsItem('Drumpkin', $pet, $pet->getName() . ' created this!', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Drumpkin, but couldn\'t get the Plastic thin enough...', 'icons/activity-logs/confused');
+        }
+    }
+
     public function createDecoratedSpear(Pet $pet)
     {
         $roll = mt_rand(1, 20 + $pet->getDexterity() + $pet->getCrafts());

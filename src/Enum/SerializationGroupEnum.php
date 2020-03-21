@@ -6,7 +6,6 @@ final class SerializationGroupEnum
 {
     use Enum;
 
-    public const ITEM_ADMIN = 'itemAdmin';
     public const MY_ACCOUNT = 'myAccount';
     public const MY_PET = 'myPet';
     public const MY_INVENTORY = 'myInventory';
