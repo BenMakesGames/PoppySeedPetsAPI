@@ -3,18 +3,9 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
-use App\Entity\Pet;
-use App\Entity\User;
-use App\Enum\LocationEnum;
-use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
-use App\Model\PetChanges;
-use App\Repository\InventoryRepository;
-use App\Repository\PetRepository;
-use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
-use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,9 +22,9 @@ class RockController extends PoppySeedPetsItemController
      * @Route("/{rock}/smash", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function openOreBox(
-        Inventory $rock, ResponseService $responseService, InventoryService $inventoryService, PetRepository $petRepository,
-        PetExperienceService $petExperienceService, UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+    public function smash(
+        Inventory $rock, ResponseService $responseService, InventoryService $inventoryService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
