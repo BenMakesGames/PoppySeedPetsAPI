@@ -76,17 +76,15 @@ class MeritService
                     break;
 
                 case MeritEnum::BLACK_HOLE_TUM:
-                    $available = $pet->hasMerit(MeritEnum::MATTER_OVER_MIND) || $pet->hasMerit(MeritEnum::FORCE_OF_NATURE);
-                    break;
-
                 case MeritEnum::EIDETIC_MEMORY:
-                    $available = $pet->hasMerit(MeritEnum::MIND_OVER_MATTER) || $pet->hasMerit(MeritEnum::FORCE_OF_WILL);
+                case MeritEnum::NO_SHADOW_OR_REFLECTION:
+                    $available = $pet->getSkills()->getTalent() !== null;
                     break;
 
                 // these merits are ALWAYS available
                 case MeritEnum::MOON_BOUND:
                 case MeritEnum::SPIRIT_COMPANION:
-                case MeritEnum::NO_SHADOW_OR_REFLECTION:
+                case MeritEnum::LUCKY:
                     $available = true;
                     break;
 
