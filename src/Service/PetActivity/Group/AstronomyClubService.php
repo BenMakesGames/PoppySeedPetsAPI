@@ -141,13 +141,13 @@ class AstronomyClubService
 
         if($group->getProgress() >= 100)
         {
+            // we're expecting a very-maximum of 30 * 5 = 150. this will be exceptionally unlikely, however
+            $reward = mt_rand(0, $group->getSkillRollTotal());
+
             $group
                 ->clearProgress()
                 ->increaseNumberOfProducts()
             ;
-
-            // we're expecting a very-maximum of 30 * 5 = 150. this will be exceptionally unlikely, however
-            $reward = mt_rand(0, $group->getSkillRollTotal());
 
             $messageTemplate = '%pet% discovered %this% while exploring the cosmos with %group%!';
 
