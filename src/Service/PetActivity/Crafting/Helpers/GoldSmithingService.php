@@ -278,6 +278,7 @@ class GoldSmithingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(75, 90), PetActivityStatEnum::SMITH, true);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
 
             $moneys = mt_rand(20, 30);
             $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' tried to forge a Gold Key, but couldn\'t get the shape right, so just made gold coins, instead.');
