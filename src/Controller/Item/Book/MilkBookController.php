@@ -27,7 +27,7 @@ Whatever the circumstances that lead to your overabundance of milk, fret not! Th
 ## Table o\' Contents
 
 * Chocolate Cream Pie
-* Chocomlik
+* Chocomilk
 * Creamed Corn
 * Hakuna Frittata
 * Lassi
