@@ -3,7 +3,6 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Enum\EnumInvalidValueException;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
@@ -52,6 +51,8 @@ class MagicBeanstalkService
                 $activityLog = $this->getBeans($pet);
                 break;
             case 7:
+                $activityLog = $this->getReallyBigLeaf($pet);
+                break;
             case 8:
             case 9:
             case 10:
@@ -109,6 +110,20 @@ class MagicBeanstalkService
 
         $this->inventoryService->petCollectsItem('Beans', $pet, $pet->getName() . ' harvested this from your magic bean-stalk.', $activityLog);
         $this->inventoryService->petCollectsItem('Beans', $pet, $pet->getName() . ' harvested this from your magic bean-stalk.', $activityLog);
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, true);
+
+        return $activityLog;
+    }
+
+    private function getReallyBigLeaf(Pet $pet): PetActivityLog
+    {
+        $meters = mt_rand(12, 20) / 2;
+
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters. They didn\'t dare go any higher, but decided to pluck a Really Big Leaf on their way back down.', '');
+
+        $this->inventoryService->petCollectsItem('Really Big Leaf', $pet, $pet->getName() . ' harvested this from your magic bean-stalk.', $activityLog);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, true);
@@ -279,7 +294,7 @@ class MagicBeanstalkService
         if(mt_rand(1, 20 + $pet->getStealth() + $pet->getDexterity()) >= 20)
         {
             $possibleLoot = [
-                'Wheat Flour', 'Gold Bar', 'Linens and Things', 'Pamplemousse', 'Cheese', 'Fig',
+                'Wheat Flour', 'Gold Bar', 'Linens and Things', 'Pamplemousse', 'Cheese', 'Fig', 'Puddin\' Rec\'pes',
             ];
 
             $loot = [

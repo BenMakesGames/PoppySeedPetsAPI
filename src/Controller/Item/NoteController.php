@@ -102,4 +102,29 @@ Here\'s some basic notes on how to take care of your new pet:
 * Striped Microcline
 ');
     }
+
+    /**
+     * @Route("/puddin/{inventory}/read", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function readPuddingRecipes(Inventory $inventory, ResponseService $responseService)
+    {
+        $this->validateInventory($inventory, 'note/puddin/#/read');
+
+        return $responseService->itemActionSuccess('**Naner Puddin\'**
+
+* Naner
+* Creamy Milk
+* Sugar
+* Egg
+* Wheat Flour
+
+**Rice Puddin\'**
+
+* Rice
+* Creamy Milk
+* Coconut Milk
+* Sugar
+');
+    }
 }
