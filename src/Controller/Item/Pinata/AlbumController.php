@@ -79,8 +79,8 @@ class AlbumController extends PoppySeedPetsItemController
         $extraItem = ArrayFunctions::pick_one([ 'NUL', 'Quintessence' ]);
 
         $inventoryService->giveInventory($musicNotes, $user, $user, $user->getName() . ' got this by listening to an EP.', $location);
-        $inventoryService->receiveItem($genre, $user, $user, $user->getName() . ' got this by listening to a Single.', $location);
-        $inventoryService->receiveItem($extraItem, $user, $user, $user->getName() . ' got this by listening to a Single.', $location);
+        $inventoryService->receiveItem($genre, $user, $user, $user->getName() . ' got this by listening to a EP.', $location);
+        $inventoryService->receiveItem($extraItem, $user, $user, $user->getName() . ' got this by listening to a EP.', $location);
 
         $em->remove($inventory);
 
@@ -119,10 +119,10 @@ class AlbumController extends PoppySeedPetsItemController
         sort($extraItems);
 
         $inventoryService->giveInventory($musicNotes, $user, $user, $user->getName() . ' got this by listening to an LP.', $location);
-        $inventoryService->receiveItem($genre, $user, $user, $user->getName() . ' got this by listening to a Single.', $location);
+        $inventoryService->receiveItem($genre, $user, $user, $user->getName() . ' got this by listening to a LP.', $location);
 
         foreach($extraItems as $extraItem)
-            $inventoryService->receiveItem($extraItem, $user, $user, $user->getName() . ' got this by listening to a Single.', $location);
+            $inventoryService->receiveItem($extraItem, $user, $user, $user->getName() . ' got this by listening to a LP.', $location);
 
         $em->remove($inventory);
 
