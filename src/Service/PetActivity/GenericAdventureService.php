@@ -128,7 +128,7 @@ class GenericAdventureService
             if($level >= 10)
             {
                 $possibleRewards[] = [ '', 'Iron Ore' ];
-                $possibleRewards[] = [ mt_rand(2, mt_rand(3, 9)), 'moneys' ];
+                $possibleRewards[] = [ 'a packet of ', 'Instant Ramen (Dry)' ];
             }
 
             if($level >= 15)
