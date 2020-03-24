@@ -355,6 +355,8 @@ class ItemFood
         $added->love += $f->love;
         $added->junk += $f->junk;
         $added->alcohol += $f->alcohol;
+        $added->caffeine += $f->caffeine;
+        $added->psychedelic += $f->psychedelic;
 
         return $added;
     }
@@ -367,6 +369,8 @@ class ItemFood
         $multiplied->love *= $f;
         $multiplied->junk *= $f;
         $multiplied->alcohol *= $f;
+        $multiplied->caffeine *= $f;
+        $multiplied->psychedelic *= $f;
 
         return $multiplied;
     }

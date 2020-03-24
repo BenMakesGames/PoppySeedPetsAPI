@@ -72,13 +72,17 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         $this->output->writeln('  Food: ' . $ingredientFood->getFood());
         $this->output->writeln('  Love: ' . $ingredientFood->getLove());
         $this->output->writeln('  Junk: ' . $ingredientFood->getJunk());
-        $this->output->writeln('  Alcohol: ' . $ingredientFood->getAlcohol());
+        $this->output->writeln('  Alcohol : ' . $ingredientFood->getAlcohol());
+        $this->output->writeln('  Caffeine: ' . $ingredientFood->getCaffeine());
+        $this->output->writeln('  Trippy  : ' . $ingredientFood->getPsychedelic());
 
         $this->output->writeln('Product food value totals:');
         $this->output->writeln('  Food: ' . $makesFood->getFood());
         $this->output->writeln('  Love: ' . $makesFood->getLove());
         $this->output->writeln('  Junk: ' . $makesFood->getJunk());
-        $this->output->writeln('  Alcohol: ' . $makesFood->getAlcohol());
+        $this->output->writeln('  Alcohol : ' . $makesFood->getAlcohol());
+        $this->output->writeln('  Caffeine: ' . $makesFood->getCaffeine());
+        $this->output->writeln('  Trippy  : ' . $makesFood->getPsychedelic());
     }
 
     private function askName(string $prompt, Recipe $recipe, string $name)
