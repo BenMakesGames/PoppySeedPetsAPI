@@ -57,6 +57,8 @@ class BasketController extends PoppySeedPetsItemController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
+        $weirdItem = ArrayFunctions::pick_one([ 'Wheat Flour', 'Flour Tortilla' ]);
+
         $possibleFlowers = [
             'Rice Flower',
             'Rice Flower',
@@ -65,14 +67,21 @@ class BasketController extends PoppySeedPetsItemController
             'Sunflower',
             'Red Clover',
             'Purple Violet',
-            ArrayFunctions::pick_one([ 'Wheat Flour', 'Flour Tortilla' ]),
         ];
 
         $items = [];
+        $weird = 0;
 
         for($i = 0; $i < 4; $i++)
         {
-            $itemName = ArrayFunctions::pick_one($possibleFlowers);
+            if(mt_rand(1, 8) === 1)
+            {
+                $itemName = $weirdItem;
+                $weird++;
+            }
+            else
+                $itemName = ArrayFunctions::pick_one($possibleFlowers);
+
             $items[] = $itemName;
 
             $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in a Flower Basket.', $location, $lockedToOwner);
@@ -84,6 +93,13 @@ class BasketController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You emptied the Flower Basket, receiving ' . ArrayFunctions::list_nice($items) . '. (You keep the Fabric Mâché Basket as well, of course.)', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        $message = 'You emptied the Flower Basket, receiving ' . ArrayFunctions::list_nice($items) . '.';
+
+        if($weird > 0)
+            $message .= ' (I\'m not sure all of those are "flowers", exactly... uh, but anyway, you keep the Fabric Mâché Basket, too.)';
+        else
+            $message .= ' (You keep the Fabric Mâché Basket as well, of course.)';
+
+        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
 }
