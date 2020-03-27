@@ -65,7 +65,7 @@ class BasketController extends PoppySeedPetsItemController
             'Sunflower',
             'Red Clover',
             'Purple Violet',
-            'Wheat Flour'
+            ArrayFunctions::pick_one([ 'Wheat Flour', 'Flour Tortilla' ]),
         ];
 
         $items = [];
