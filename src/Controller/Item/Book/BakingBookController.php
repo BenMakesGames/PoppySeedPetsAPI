@@ -34,6 +34,7 @@ class BakingBookController extends PoppySeedPetsItemController
 
 #### Recipes
 
+* Chocolate Chip Cookies
 * Donut (Cake)
 * Donut (Yeast)
 * Flour Tortilla
@@ -70,6 +71,17 @@ Can be found as a byproduct of wine-making. (As an example, you can age some Blu
 Simply grind some Wheat into a fine powder.
 
 ## Recipes
+
+#### Chocolate Chip Cookies
+
+* Baking Soda
+* Butter
+* Egg
+* Sugar
+* Wheat Flour
+* Chocolate Bar
+
+Makes 12!
 
 #### Donut (Cake)
 
