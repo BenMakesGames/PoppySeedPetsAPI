@@ -39,7 +39,7 @@ class UmbraService
     {
         $skill = 10 + $pet->getStamina() + $pet->getIntelligence() + $pet->getUmbra(); // psychedelics bonus is built into getUmbra()
 
-        $skill = NumberFunctions::constrain($skill, 1, 21);
+        $skill = NumberFunctions::constrain($skill, 1, 22);
 
         $roll = mt_rand(1, $skill);
 
@@ -99,6 +99,9 @@ class UmbraService
                 break;
             case 21:
                 $activityLog = $this->fightAbandondero($pet);
+                break;
+            case 22:
+                $activityLog = $this->foundCursedGarden($pet);
                 break;
         }
 
@@ -659,5 +662,59 @@ class UmbraService
             $pet->increaseSafety(-4);
             return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered an Abandondero! It whipped out a laser gun, and took a few shots at ' . $pet->getName() . ', who made a hasty retreat.', '');
         }
+    }
+
+    private function foundCursedGarden(Pet $pet): PetActivityLog
+    {
+        $loot = [
+            'Eggplant', 'Grandparoot'
+        ];
+
+        $didWhat = 'harvested this from a Cursed Garden in the Umbra';
+
+        if(mt_rand(1, 20 + $pet->getStealth() + $pet->getDexterity()) < 15)
+        {
+            $pet->increaseFood(-1);
+
+            if(mt_rand(1, 20) + $pet->getIntelligence() + $pet->getBrawl() + $pet->getUmbra() >= 20)
+            {
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::UMBRA, true);
+
+                if(mt_rand(1, 20 + $pet->getPerception() + $pet->getUmbra()) >= 15)
+                    $loot[] = 'Quintessence';
+
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+                $pet->increaseEsteem(mt_rand(1, 2));
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Cursed Garden, but while looking for food, was attacked by an Angry Spirit. ' . $pet->getName() . ' defeated the Angry Spirit, and took its ' . ArrayFunctions::list_nice($loot) . '.', '');
+                $didWhat = 'defeated an Angry Spirit in the Umbra, and got this';
+            }
+            else
+            {
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::UMBRA, false);
+
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+                $pet
+                    ->increaseEsteem(-2)
+                    ->increaseSafety(-4)
+                ;
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Cursed Garden, but, while looking for food, was attacked and routed by an Angry Spirit.', '');
+            }
+        }
+        else
+        {
+            if(mt_rand(1, 20 + $pet->getPerception() + $pet->getUmbra() + $pet->getGathering()) >= 25)
+                $loot[] = ArrayFunctions::pick_one([ 'Eggplant', 'Grandparoot', 'Silica Grounds' ]);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found an Overgrown Garden, and harvested ' . ArrayFunctions::list_nice($loot) . '.', '');
+
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
+        }
+
+        foreach($loot as $itemName)
+            $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' ' . $didWhat . '.', $activityLog);
+
+        return $activityLog;
     }
 }

@@ -404,9 +404,6 @@ class GatheringService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function foundOvergrownGarden(Pet $pet): PetActivityLog
     {
         $possibleLoot = [
@@ -488,9 +485,6 @@ class GatheringService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function foundIronMine(Pet $pet): PetActivityLog
     {
         if(mt_rand(1, 4) === 1 && !$pet->canSeeInTheDark())
