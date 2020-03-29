@@ -83,13 +83,15 @@ class HuntingService
                 break;
             case 7:
             case 8:
-            case 9:
                 if($this->canRescueAnotherHouseFairy($pet->getOwner()))
                     $activityLog = $this->rescueHouseFairy($pet);
                 else if($useThanksgivingPrey)
                     $activityLog = $this->huntedTurkey($pet);
                 else
                     $activityLog = $this->huntedGoat($pet);
+                break;
+            case 9:
+                $activityLog = $this->huntedDoughGolem($pet);
                 break;
             case 10:
             case 11:
@@ -162,9 +164,6 @@ class HuntingService
         return true;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function rescueHouseFairy(Pet $pet): PetActivityLog
     {
         $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::HUNT, true);
@@ -188,9 +187,6 @@ class HuntingService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function failedToHunt(Pet $pet): PetActivityLog
     {
         if($pet->getOwner()->getGreenhouse() && $pet->getOwner()->getGreenhouse()->getHasBirdBath() && !$pet->getOwner()->getGreenhouse()->getVisitingBird())
@@ -217,9 +213,6 @@ class HuntingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function huntedDustBunny(Pet $pet): PetActivityLog
     {
         $skill = 10 + $pet->getDexterity() + $pet->getBrawl();
@@ -251,9 +244,6 @@ class HuntingService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function huntedPlasticBag(Pet $pet): PetActivityLog
     {
         $skill = 10 + $pet->getDexterity() + $pet->getBrawl();
@@ -285,9 +275,6 @@ class HuntingService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function huntedGoat(Pet $pet): PetActivityLog
     {
         $skill = 10 + $pet->getStrength() + $pet->getBrawl(false);
@@ -328,9 +315,42 @@ class HuntingService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
+    private function huntedDoughGolem(Pet $pet): PetActivityLog
+    {
+        $skill = 10 + $pet->getStrength() + $pet->getBrawl(false);
+
+        $pet->increaseFood(-1);
+
+        if(mt_rand(1, $skill) >= 7)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
+            $pet->increaseEsteem(1);
+
+            $loot = ArrayFunctions::pick_one([
+                'Wheat Flour', 'Oil', 'Butter', 'Baker\'s Yeast', 'Sugar'
+            ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' attacked a rampaging Dough Golem, defeated it, and harvested its ' . $loot . '.', '');
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' took this from the body of a defeated Dough Golem.', $activityLog);
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, false);
+
+            if(mt_rand(1, 4) === 1)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' attacked a rampaging Dough Golem, but it released a cloud of defensive flour, and escaped. ' . $pet->getName() . ' picked up some of the flour, and brought it home.', '');
+                $this->inventoryService->petCollectsItem('Wheat Flour', $pet, $pet->getName() . ' got this from a fleeing Dough Golem.', $activityLog);
+            }
+            else
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' attacked a Dough Golem, but it was really sticky. ' . $pet->getName() . '\'s attacks were useless, and they were forced to retreat.', '');
+        }
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+
+        return $activityLog;
+    }
+
     private function huntedTurkey(Pet $pet): PetActivityLog
     {
         $skill = 10 + $pet->getStrength() + $pet->getBrawl(false);
@@ -362,9 +382,6 @@ class HuntingService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function huntedLargeToad(Pet $pet): PetActivityLog
     {
         $skill = 10 + $pet->getStrength() + $pet->getBrawl(false);
@@ -400,9 +417,6 @@ class HuntingService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function huntedScarecrow(Pet $pet): PetActivityLog
     {
         $brawlRoll = mt_rand(1, 10 + $pet->getStrength() + $pet->getBrawl());
@@ -649,9 +663,6 @@ class HuntingService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function huntedSatyr(Pet $pet): PetActivityLog
     {
         $brawlRoll = mt_rand(1, 10 + $pet->getStrength() + $pet->getBrawl());
@@ -746,9 +757,6 @@ class HuntingService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function huntedPaperGolem(Pet $pet): PetActivityLog
     {
         $brawlRoll = mt_rand(1, 10 + $pet->getDexterity() + $pet->getStamina() + max($pet->getCrafts(), $pet->getBrawl()));
