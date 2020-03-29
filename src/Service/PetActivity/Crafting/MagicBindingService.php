@@ -53,6 +53,9 @@ class MagicBindingService
 
         if(array_key_exists('Quintessence', $quantities))
         {
+            if(array_key_exists('Sidereal Leaf Spear', $quantities))
+                $possibilities[] = [ $this, 'enchantSiderealLeafSpear' ];
+
             if(array_key_exists('Gold Trifecta', $quantities))
                 $possibilities[] = [ $this, 'createGoldTriskaidecta' ];
 
@@ -1032,9 +1035,6 @@ class MagicBindingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createGoldTriskaidecta(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
@@ -1069,9 +1069,45 @@ class MagicBindingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
+    public function enchantSiderealLeafSpear(Pet $pet): PetActivityLog
+    {
+        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+
+            $pet->increaseEsteem(-1);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Sidereal Leaf Spear, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+        }
+        else if($umbraCheck < 18)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Sidereal Leaf Spear, but messed up the calendar calculations.', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Sidereal Leaf Spear', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(3);
+
+            $hour = (int)((new \DateTimeImmutable())->format('G'));
+
+            $makes = ($hour <= 6 || $hour > 18) ? 'Midnight' : 'Sunrise';
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' enchanted a Sidereal Spear, creating ' . $makes . '!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+            ;
+            $this->inventoryService->petCollectsItem($makes, $pet, $pet->getName() . ' enchanted this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
     public function createGenericScroll(Pet $pet, string $uniqueIngredient, string $scroll): PetActivityLog
     {
         $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
