@@ -79,6 +79,7 @@ class CraftingService
             if(array_key_exists('String', $quantities))
             {
                 $possibilities[] = [ $this->stickCraftingService, 'createCrookedFishingRod' ];
+                $possibilities[] = [ $this->stickCraftingService, 'createWoodenSword' ];
 
                 if(array_key_exists('Talon', $quantities))
                     $possibilities[] = [ $this->stickCraftingService, 'createHuntingSpear' ];
@@ -101,9 +102,6 @@ class CraftingService
 
             if(array_key_exists('Toadstool', $quantities) && array_key_exists('Quintessence', $quantities))
                 $possibilities[] = [ $this->stickCraftingService, 'createChampignon' ];
-
-            if(array_key_exists('String', $quantities))
-                $possibilities[] = [ $this->stickCraftingService, 'createWoodenSword' ];
 
             if(array_key_exists('Glass', $quantities))
                 $possibilities[] = [ $this->stickCraftingService, 'createRusticMagnifyingGlass' ];
@@ -146,11 +144,17 @@ class CraftingService
         if(array_key_exists('White Cloth', $quantities) && array_key_exists('String', $quantities) && array_key_exists('Ruby Feather', $quantities))
             $possibilities[] = [ $this, 'createFeatheredHat' ];
 
-        if(array_key_exists('String', $quantities) && array_key_exists('Glass', $quantities))
-            $possibilities[] = [ $this, 'createGlassPendulum' ];
+        if(array_key_exists('String', $quantities))
+        {
+            if(array_key_exists('Glass', $quantities))
+                $possibilities[] = [$this, 'createGlassPendulum'];
 
-        if(array_key_exists('String', $quantities) && array_key_exists('Paper', $quantities) && array_key_exists('Silver Key', $quantities))
-            $possibilities[] = [ $this, 'createBenjaminFranklin' ];
+            if(array_key_exists('Paper', $quantities) && array_key_exists('Silver Key', $quantities))
+                $possibilities[] = [ $this, 'createBenjaminFranklin' ];
+
+            if(array_key_exists('Really Big Leaf', $quantities))
+                $possibilities[] = [ $this, 'createLeafSpear' ];
+        }
 
         if(array_key_exists('Feathers', $quantities))
         {
@@ -821,9 +825,6 @@ class CraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createGlassPendulum(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
@@ -877,9 +878,45 @@ class CraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
+    private function createLeafSpear(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getStrength() * 2 + $pet->getDexterity());
+
+        if($roll <= 3)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+
+            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Leaf Spear, but the String couldn\'t hold the Really Big Leaf, and broke under the stress!', 'icons/activity-logs/broke-string');
+        }
+        else if($roll >= 15)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Really Big Leaf', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+
+            $message = $pet->getName() . ' rolled up a Really Big Leaf, and tied it, creating a Leaf Spear!';
+
+            if(mt_rand(1, 5) > $pet->getStrength())
+                $message .= ' (It\'s harder than it looks!)';
+
+            $activityLog = $this->responseService->createActivityLog($pet, $message, '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+            ;
+            $this->inventoryService->petCollectsItem('Leaf Spear', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $pet->increaseSafety(-1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Leaf Spear, but the Really Big Leaf is surprisingly strong! ' . $pet->getName() . ' couldn\'t get it to roll up...', 'icons/activity-logs/confused');
+        }
+    }
+
     private function createBenjaminFranklin(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getScience()));
