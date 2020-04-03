@@ -46,6 +46,9 @@ class MagicBindingService
 
             if(array_key_exists('Potato', $quantities) && array_key_exists('Crooked Stick', $quantities))
                 $possibilities[] = [ $this, 'createRussetStaff' ];
+
+            if(array_key_exists('Bindle', $quantities))
+                $possibilities[] = [ $this, 'createFlyingBindle' ];
         }
 
         if(array_key_exists('Armor', $quantities) && array_key_exists('Ruby Feather', $quantities))
@@ -1297,9 +1300,41 @@ class MagicBindingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
+    public function createFlyingBindle(Pet $pet): PetActivityLog
+    {
+        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->inventoryService->loseItem('Wings', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(-1);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bind a Flying Bindle, but accidentally tore the Wings back into Feathers :(', '');
+            $this->inventoryService->petCollectsItem('Feathers', $pet, $pet->getName() . ' accidentally tore some Wings, leaving only these Feathers.', $activityLog);
+            return $activityLog;
+        }
+        else if($umbraCheck < 16)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bind a Flying Bindle, but the wings were being super-uncooperative, and kept trying to fly away!', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Wings', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Bindle', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(5);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' gifted a Bindle with the power of flight!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+            ;
+            $this->inventoryService->petCollectsItem('Flying Bindle', $pet, $pet->getName() . ' bound this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
     public function createPraxilla(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence());
