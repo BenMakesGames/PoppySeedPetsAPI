@@ -17,6 +17,7 @@ use App\Enum\SpiritCompanionStarEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
+use App\Model\FortuneCookie;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
@@ -220,12 +221,15 @@ class PetService
         $favorites = [];
         $tooFull = [];
         $tooPoisonous = [];
+        $ateAFortuneCookie = false;
 
         foreach($inventory as $i)
         {
+            $itemName = $i->getItem()->getName();
+
             if($pet->getJunk() + $pet->getFood() >= $pet->getStomachSize())
             {
-                $tooFull[] = $i->getItem()->getName();
+                $tooFull[] = $itemName;
                 continue;
             }
 
@@ -233,7 +237,7 @@ class PetService
 
             if($pet->wantsSobriety() && ($food->getAlcohol() > 0 || $food->getCaffeine() > 0 || $food->getPsychedelic() > 0))
             {
-                $tooPoisonous[] = $i->getItem()->getName();
+                $tooPoisonous[] = $itemName;
                 continue;
             }
 
@@ -264,7 +268,10 @@ class PetService
 
             $this->em->remove($i);
 
-            $foodsEaten[] = $i->getItem()->getName();
+            $foodsEaten[] = $itemName;
+
+            if($itemName === 'Fortune Cookie')
+                $ateAFortuneCookie = true;
         }
 
         // gain love & safety equal to 1/8 food gained, when hand-fed
@@ -289,10 +296,19 @@ class PetService
 
         if(count($foodsEaten) > 0)
         {
+            $message = 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.';
+            $icon = '';
+
             if(count($favorites) > 0)
-                return $this->responseService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '. ' . $pet->getName() . ' really liked the ' . ArrayFunctions::pick_one($favorites)->getName() . '!', 'ui/affection', $petChanges->compare($pet));
-            else
-                return $this->responseService->createActivityLog($pet, 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.', '', $petChanges->compare($pet));
+            {
+                $icon = 'ui/affection';
+                $message .= ' ' . $pet->getName() . ' really liked the ' . ArrayFunctions::pick_one($favorites)->getName() . '!';
+            }
+
+            if($ateAFortuneCookie)
+                $message .= ' ' . ArrayFunctions::pick_one(FortuneCookie::MESSAGES);
+
+            return $this->responseService->createActivityLog($pet, $message, $icon, $petChanges->compare($pet));
         }
         else
         {

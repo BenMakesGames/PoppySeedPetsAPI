@@ -3,7 +3,6 @@ namespace App\Service;
 
 use App\Entity\Inventory;
 use App\Entity\Item;
-use App\Entity\ItemFood;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\StatusEffect;
@@ -36,8 +35,6 @@ class PetExperienceService
     }
 
     /**
-     * @param Pet $pet
-     * @param int $exp
      * @param string[] $stats
      */
     public function gainExp(Pet $pet, int $exp, array $stats)
@@ -120,9 +117,7 @@ class PetExperienceService
     }
 
     /**
-     * @param Pet $pet
-     * @param Item $item
-     * @param PetActivityLog|null $activityLog
+     * @throws EnumInvalidValueException
      * @return bool
      */
     public function doEat(Pet $pet, Item $item, ?PetActivityLog $activityLog): bool
@@ -156,10 +151,6 @@ class PetExperienceService
     }
 
     /**
-     * @param Pet $pet
-     * @param string $status
-     * @param int $duration
-     * @param int $maxDuration
      * @throws EnumInvalidValueException
      */
     public function applyStatusEffect(Pet $pet, string $status, int $duration, int $maxDuration)
