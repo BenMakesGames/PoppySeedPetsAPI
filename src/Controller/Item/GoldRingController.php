@@ -122,7 +122,9 @@ class GoldRingController extends PoppySeedPetsItemController
                 ->setSpecies($hedgehog)
                 ->setFavoriteFlavor(FlavorEnum::getRandomValue())
                 ->setOwner($user)
-                ->setName('Metal ' . $user->getName())
+                ->setName(ArrayFunctions::pick_one([
+                    'Speedy', 'Dash', 'Blur', 'Quicker',
+                ]))
                 ->increaseLove(10)
                 ->increaseSafety(10)
                 ->increaseEsteem(10)
