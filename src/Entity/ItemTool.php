@@ -12,7 +12,7 @@ class ItemTool
 {
     public const MODIFIER_FIELDS = [
         'stealth', 'nature', 'brawl', 'umbra', 'crafts', 'fishing', 'gathering',
-        'music', 'smithing', 'science'
+        'music', 'smithing', 'science', 'climbing'
     ];
 
     /**
@@ -138,6 +138,11 @@ class ItemTool
      * @ORM\ManyToOne(targetEntity="App\Entity\Item")
      */
     private $whenGatherAlsoGather;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $climbing = 0;
 
     public function getId(): ?int
     {
@@ -465,6 +470,18 @@ class ItemTool
     public function setWhenGatherAlsoGather(?Item $whenGatherAlsoGather): self
     {
         $this->whenGatherAlsoGather = $whenGatherAlsoGather;
+
+        return $this;
+    }
+
+    public function getClimbing(): int
+    {
+        return $this->climbing;
+    }
+
+    public function setClimbing(int $climbing): self
+    {
+        $this->climbing = $climbing;
 
         return $this;
     }

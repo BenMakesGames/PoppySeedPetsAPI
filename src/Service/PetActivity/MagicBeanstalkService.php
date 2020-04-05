@@ -29,7 +29,7 @@ class MagicBeanstalkService
 
     public function adventure(Pet $pet)
     {
-        $maxSkill = 10 + floor(($pet->getStrength() + $pet->getStamina()) * 1.5) + ceil($pet->getNature() / 2) - $pet->getAlcohol() * 2;
+        $maxSkill = 10 + floor(($pet->getStrength() + $pet->getStamina()) * 1.5) + ceil($pet->getNature() / 2) + $pet->getClimbing() - $pet->getAlcohol() * 2;
 
         $maxSkill = NumberFunctions::constrain($maxSkill, 1, 21);
 

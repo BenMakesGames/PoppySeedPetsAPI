@@ -624,7 +624,7 @@ class GatheringService
     private function foundWildHedgemaze(Pet $pet): PetActivityLog
     {
         $possibleLoot = [
-            'Smallish Pumpkin', 'Crooked Stick', 'Sweet Beet', 'String', 'Grandparoot', 'Pamplemousse',
+            'Smallish Pumpkin', 'Crooked Stick', 'Sweet Beet', 'Toadstool', 'Grandparoot', 'Pamplemousse',
         ];
 
         if(mt_rand(1, 20) === 1)
@@ -638,7 +638,7 @@ class GatheringService
 
         $loot = [];
 
-        if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
+        if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY) || $pet->getClimbing() > 0)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::GATHER, true);
 
@@ -658,7 +658,10 @@ class GatheringService
             else if(mt_rand(1, 75) == 1)
                 $loot[] = 'Melowatern';
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to the Wild Hedgemaze. It turns out mazes are way easier with a perfect memory! ' . $pet->getName() . ' found ' . ArrayFunctions::list_nice($loot) . '.', '');
+            if($pet->getClimbing() > 0)
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to the Wild Hedgemaze. It turns out mazes are way easier when you can just climb over the walls! ' . $pet->getName() . ' found ' . ArrayFunctions::list_nice($loot) . '.', '');
+            else
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to the Wild Hedgemaze. It turns out mazes are way easier with a perfect memory! ' . $pet->getName() . ' found ' . ArrayFunctions::list_nice($loot) . '.', '');
 
             if($lucky)
             {

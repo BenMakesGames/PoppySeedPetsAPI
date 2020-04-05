@@ -961,6 +961,11 @@ class Pet
         return $this->getSkills()->getScience() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getScience() : 0);
     }
 
+    public function getClimbing(): int
+    {
+        return $this->getTool() ? $this->getTool()->getItem()->getTool()->getClimbing() : 0;
+    }
+
     public function getFavoriteFlavor(): string
     {
         return $this->favoriteFlavor;
