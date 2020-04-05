@@ -11,6 +11,15 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\GuildRepository;
 use App\Service\InventoryService;
+use App\Service\PetActivity\Guild\CorrespondenceService;
+use App\Service\PetActivity\Guild\DwarfCraftService;
+use App\Service\PetActivity\Guild\GizubisGardenService;
+use App\Service\PetActivity\Guild\HighImpactService;
+use App\Service\PetActivity\Guild\InnerSanctumService;
+use App\Service\PetActivity\Guild\LightAndShadowService;
+use App\Service\PetActivity\Guild\TapestriesService;
+use App\Service\PetActivity\Guild\TheUniverseForgetsService;
+use App\Service\PetActivity\Guild\TimesArrowService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,10 +31,25 @@ class GuildService
     private $responseService;
     private $inventoryService;
     private $petExperienceService;
+    private $correspondenceService;
+    private $dwarfCraftService;
+    private $gizubisGardenService;
+    private $highImpactService;
+    private $innerSanctumService;
+    private $lightAndShadowService;
+    private $tapestriesService;
+    private $theUniverseForgetsService;
+    private $timesArrowService;
 
     public function __construct(
         GuildRepository $guildRepository, EntityManagerInterface $em, ResponseService $responseService,
-        InventoryService $inventoryService, PetExperienceService $petExperienceService
+        InventoryService $inventoryService, PetExperienceService $petExperienceService,
+
+        CorrespondenceService $correspondenceService, DwarfCraftService $dwarfCraftService,
+        GizubisGardenService $gizubisGardenService, HighImpactService $highImpactService,
+        InnerSanctumService $innerSanctumService, LightAndShadowService $lightAndShadowService,
+        TapestriesService $tapestriesService, TheUniverseForgetsService $theUniverseForgetsService,
+        TimesArrowService $timesArrowService
     )
     {
         $this->guildRepository = $guildRepository;
@@ -33,6 +57,16 @@ class GuildService
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
+
+        $this->correspondenceService = $correspondenceService;
+        $this->dwarfCraftService = $dwarfCraftService;
+        $this->gizubisGardenService = $gizubisGardenService;
+        $this->highImpactService = $highImpactService;
+        $this->innerSanctumService = $innerSanctumService;
+        $this->lightAndShadowService = $lightAndShadowService;
+        $this->tapestriesService = $tapestriesService;
+        $this->theUniverseForgetsService = $theUniverseForgetsService;
+        $this->timesArrowService = $timesArrowService;
     }
 
     public function joinGuild(Pet $pet): PetActivityLog
@@ -77,41 +111,38 @@ class GuildService
 
         switch($pet->getGuildMembership()->getGuild()->getName())
         {
-            case GuildEnum::TIMES_ARROW:
-                return $this->doTimesArrowMission($pet);
-                break;
+            case GuildEnum::TIMES_ARROW: return $this->doTimesArrowMission($pet);
+            case GuildEnum::LIGHT_AND_SHADOW: return $this->doLightAndShadowMission($pet);
+            case GuildEnum::TAPESTRIES: return $this->doTapestriesMission($pet);
+            case GuildEnum::INNER_SANCTUM: return $this->doInnerSanctumMission($pet);
+            case GuildEnum::DWARFCRAFT: return $this->doDwarfcraftMission($pet);
+            case GuildEnum::GIZUBIS_GARDEN: return $this->doGizubisGardenMission($pet);
+            case GuildEnum::HIGH_IMPACT: return $this->doHighImpactMission($pet);
+            case GuildEnum::THE_UNIVERSE_FORGETS: return $this->doTheUniverseForgetsMission($pet);
+            case GuildEnum::CORRESPONDENCE: return $this->doCorrespondenceMission($pet);
 
-            case GuildEnum::LIGHT_AND_SHADOW:
-                return $this->doLightAndShadowMission($pet);
+            default:
+                throw new EnumInvalidValueException('GuildEnum', $pet->getGuildMembership()->getGuild()->getName());
                 break;
+        }
+    }
 
-            case GuildEnum::TAPESTRIES:
-                return $this->doTapestriesMission($pet);
-                break;
-
-            case GuildEnum::INNER_SANCTUM:
-                return $this->doInnerSanctumMission($pet);
-                break;
-
-            case GuildEnum::DWARFCRAFT:
-                return $this->doDwarfcraftMission($pet);
-                break;
-
-            case GuildEnum::GIZUBIS_GARDEN:
-                return $this->doGizubisGardenMission($pet);
-                break;
-
-            case GuildEnum::HIGH_IMPACT:
-                return $this->doHighImpactMission($pet);
-                break;
-
-            case GuildEnum::THE_UNIVERSE_FORGETS:
-                return $this->doTheUniverseForgetsMission($pet);
-                break;
-
-            case GuildEnum::CORRESPONDENCE:
-                return $this->doCorrespondenceMission($pet);
-                break;
+    /**
+     * @throws EnumInvalidValueException
+     */
+    public function doGuildActivity(Pet $pet): PetActivityLog
+    {
+        switch($pet->getGuildMembership()->getGuild()->getName())
+        {
+            case GuildEnum::TIMES_ARROW: return $this->timesArrowService->doAdventure($pet);
+            case GuildEnum::LIGHT_AND_SHADOW: return $this->lightAndShadowService->doAdventure($pet);
+            case GuildEnum::TAPESTRIES: return $this->tapestriesService->doAdventure($pet);
+            case GuildEnum::INNER_SANCTUM: return $this->innerSanctumService->doAdventure($pet);
+            case GuildEnum::DWARFCRAFT: return $this->dwarfCraftService->doAdventure($pet);
+            case GuildEnum::GIZUBIS_GARDEN: return $this->gizubisGardenService->doAdventure($pet);
+            case GuildEnum::HIGH_IMPACT: return $this->highImpactService->doAdventure($pet);
+            case GuildEnum::THE_UNIVERSE_FORGETS: return $this->theUniverseForgetsService->doAdventure($pet);
+            case GuildEnum::CORRESPONDENCE: return $this->correspondenceService->doAdventure($pet);
 
             default:
                 throw new EnumInvalidValueException('GuildEnum', $pet->getGuildMembership()->getGuild()->getName());

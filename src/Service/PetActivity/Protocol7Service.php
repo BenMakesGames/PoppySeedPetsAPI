@@ -58,6 +58,16 @@ class Protocol7Service
             case 4:
                 if(!$pet->getGuildMembership() && mt_rand(1, 5) === 1)
                     $activityLog = $this->guildService->joinGuild($pet);
+
+                // TODO: finish up Service/PetActivity/Guild activities
+                /*else if($pet->getGuildMembership())
+                {
+                    if($pet->getGuildMembership()->getRank() < 4)
+                        $activityLog = $this->guildService->doGuildTraining($pet);
+                    else
+                        $activityLog = $this->guildService->doGuildActivity($pet);
+                }*/
+
                 else if($pet->getGuildMembership() && $pet->getGuildMembership()->getRank() < 4)
                     $activityLog = $this->guildService->doGuildTraining($pet);
                 else
