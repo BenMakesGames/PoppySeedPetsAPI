@@ -84,7 +84,7 @@ Or, if you have Blackberry or Blueberry Yogurt, just add... Creamy Milk!
 * Wheat Flour
 * Butter
 * Baking Powder
-* Baker\'s Yeast
+* Yeast
 
 #### Naner Puddin\'
 
@@ -111,7 +111,7 @@ Optionally, add fruit, such as berries, Reds, or Naners.
 * Sugar
 * Wheat Flour
 * Butter
-* Baker\'s Yeast
+* Yeast
 
 #### Teas
 

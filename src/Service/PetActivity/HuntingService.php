@@ -327,7 +327,7 @@ class HuntingService
             $pet->increaseEsteem(1);
 
             $loot = ArrayFunctions::pick_one([
-                'Wheat Flour', 'Oil', 'Butter', 'Baker\'s Yeast', 'Sugar'
+                'Wheat Flour', 'Oil', 'Butter', 'Yeast', 'Sugar'
             ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' attacked a rampaging Dough Golem, defeated it, and harvested its ' . $loot . '.', '');

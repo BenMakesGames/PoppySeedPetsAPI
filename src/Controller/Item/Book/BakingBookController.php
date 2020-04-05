@@ -96,7 +96,7 @@ This donut isn\'t fried, so it\'s easier to pretend that it\'s healthy.
 
 #### Donut (Yeast)
 
-* Baker\'s Yeast
+* Yeast
 * Butter
 * Creamy Milk
 * Egg
@@ -172,7 +172,7 @@ The milk provides enough acidity for this recipe, so Cream of Tartar (or Baking 
 
 #### Plain Bread
 
-* Baker\'s Yeast
+* Yeast
 * Butter
 * Creamy Milk
 * Sugar

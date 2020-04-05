@@ -55,7 +55,7 @@ In addition to Oil, you _may_ need bread (for crumbs!)
 
 If you don\'t have any bread on-hand, you can make some:
 
-* Baker\'s Yeast
+* Yeast
 * Butter
 * Creamy Milk
 * Sugar
@@ -90,7 +90,7 @@ No baked donuts for us! We\'re goin\' FRIED!
 You won\'t need breadcrumbs for this one, either; but you _will_ need:
 
 * Oil!
-* Baker\'s Yeast
+* Yeast
 * Butter
 * Creamy Milk
 * Egg
