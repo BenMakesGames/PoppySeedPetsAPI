@@ -43,7 +43,7 @@ class Protocol7Service
     {
         $maxSkill = 10 + $pet->getIntelligence() + $pet->getScience() - $pet->getAlcohol();
 
-        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 18);
+        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 21);
 
         $roll = mt_rand(1, $maxSkill);
 
@@ -84,23 +84,29 @@ class Protocol7Service
                 $activityLog = $this->foundLayer02($pet);
                 break;
             case 11:
+                $activityLog = $this->foundNothing($pet, $roll);
+                break;
             case 12:
             case 13:
+            case 14:
                 $activityLog = $this->foundProtectedSector($pet);
                 break;
-            case 14:
             case 15:
             case 16:
-                $activityLog = $this->exploreInsecurePort($pet);
-                break;
             case 17:
-                $activityLog = $this->foundNothing($pet, $roll);
+                $activityLog = $this->exploreInsecurePort($pet);
                 break;
             case 18:
                 $activityLog = $this->repairShortedCircuit($pet);
                 break;
             case 19:
                 $activityLog = $this->exploreWalledGarden($pet);
+                break;
+            case 20:
+                $activityLog = $this->foundCorruptSector($pet, $roll);
+                break;
+            case 21:
+                $activityLog = $this->foundNothing($pet, $roll);
                 break;
         }
 
@@ -358,6 +364,44 @@ class Protocol7Service
             $this->inventoryService->petCollectsItem('Macintosh', $pet, $pet->getName() . ' found this growing in a Walled Garden within Project-E!', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::STEALTH ]);
+        }
+
+        return $activityLog;
+    }
+
+    private function foundCorruptSector(Pet $pet): PetActivityLog
+    {
+        $check = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getPerception() + $pet->getScience());
+
+        if($check < 20)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a corrupt sector, but wasn\'t able to recover any data.', 'icons/activity-logs/confused');
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+
+            $loot = ArrayFunctions::pick_one([
+                'Password',
+                'Cryptocurrency Wallet',
+                'Egg Book Audiobook',
+            ]);
+
+            $otherLoot = ArrayFunctions::pick_one([
+                'Hash Table',
+                'Finite State Machine',
+                'Browser Cookie'
+            ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a corrupt sector, and managed to recover a ' . $otherLoot . ', and ' . $loot . ' from it!', '');
+
+            $this->inventoryService->petCollectsItem($otherLoot, $pet, $pet->getName() . ' recovered this from a corrupt sector of Project-E!', $activityLog);
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' recovered this from a corrupt sector of Project-E!', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ]);
         }
 
         return $activityLog;
