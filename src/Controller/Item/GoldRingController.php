@@ -123,7 +123,7 @@ class GoldRingController extends PoppySeedPetsItemController
                 ->setFavoriteFlavor(FlavorEnum::getRandomValue())
                 ->setOwner($user)
                 ->setName(ArrayFunctions::pick_one([
-                    'Speedy', 'Dash', 'Blur', 'Quicker',
+                    'Speedy', 'Dash', 'Blur', 'Quicker', 'Knuckles', 'Boots',
                 ]))
                 ->increaseLove(10)
                 ->increaseSafety(10)
