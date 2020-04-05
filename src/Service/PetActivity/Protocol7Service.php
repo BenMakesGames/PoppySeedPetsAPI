@@ -346,20 +346,31 @@ class Protocol7Service
 
     private function exploreWalledGarden(Pet $pet): PetActivityLog
     {
-        $check = mt_rand(1, 20 + $pet->getIntelligence() + min($pet->getScience(), $pet->getStealth()));
+        $check = mt_rand(1, 20 + $pet->getIntelligence() + min($pet->getScience(), $pet->getStealth()) + $pet->getClimbing());
+
+        if($pet->getClimbing() > 0)
+        {
+            $toSneak = 'to climb';
+            $snuck = 'climbed';
+        }
+        else
+        {
+            $toSneak = 'to sneak';
+            $snuck = 'snuck';
+        }
 
         if($check < 15)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to sneak into a Walled Garden within Project-E, but was kicked out.', 'icons/activity-logs/confused');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried ' . $toSneak . ' into a Walled Garden within Project-E, but was kicked out.', 'icons/activity-logs/confused');
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::STEALTH ]);
         }
         else
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' snuck into a Walled Garden within Project-E, and plucked a Macintosh that was growing there.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' ' . $snuck . ' into a Walled Garden within Project-E, and plucked a Macintosh that was growing there.', '');
 
             $this->inventoryService->petCollectsItem('Macintosh', $pet, $pet->getName() . ' found this growing in a Walled Garden within Project-E!', $activityLog);
 
