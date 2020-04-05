@@ -1,6 +1,8 @@
 <?php
 namespace App\Functions;
 
+use App\Entity\Pet;
+
 final class ColorFunctions
 {
     public static function RGB2HSL(int $red, int $green, int $blue)
@@ -139,5 +141,65 @@ final class ColorFunctions
         }
 
         return $newColor;
+    }
+
+    public static function generateRandomPetColors($maxSaturation = 1)
+    {
+        $h = mt_rand(0, 1000) / 1000.0;
+        $s = mt_rand(mt_rand(0, 500), 1000) / 1000.0 * $maxSaturation;
+        $l = mt_rand(mt_rand(0, 500), mt_rand(750, 1000)) / 1000.0;
+
+        $strategy = mt_rand(1, 100);
+
+        $h2 = $h;
+        $s2 = $s;
+        $l2 = $l;
+
+        if($strategy <= 35)
+        {
+            // complementary color
+            $h2 = $h2 + 0.5;
+            if($h2 > 1) $h2 -= 1;
+
+            if(mt_rand(1, 2) === 1)
+            {
+                if($s < $maxSaturation / 2)
+                    $s2 = $s * 2;
+                else
+                    $s2 = $s / 2;
+            }
+        }
+        else if($strategy <= 70)
+        {
+            // different luminosity
+            if($l2 <= 0.5)
+                $l2 += 0.5;
+            else
+                $l2 -= 0.5;
+        }
+        else if($strategy <= 90)
+        {
+            // black & white
+            if($l < 0.3333)
+                $l2 = mt_rand(850, 1000) / 1000.0;
+            else if($l > 0.6666)
+                $l2 = mt_rand(0, 150) / 1000.0;
+            else if(mt_rand(1, 2) === 1)
+                $l2 = mt_rand(850, 1000) / 1000.0;
+            else
+                $l2 = mt_rand(0, 150) / 1000.0;
+        }
+        else
+        {
+            // RANDOM!
+            $h2 = mt_rand(0, 1000) / 1000.0;
+            $s2 = mt_rand(mt_rand(0, 500), 1000) / 1000.0 * $maxSaturation;
+            $l2 = mt_rand(mt_rand(0, 500), mt_rand(750, 1000)) / 1000.0;
+        }
+
+        return [
+            ColorFunctions::HSL2Hex($h, $s, $l),
+            ColorFunctions::HSL2Hex($h2, $s2, $l2)
+        ];
     }
 }
