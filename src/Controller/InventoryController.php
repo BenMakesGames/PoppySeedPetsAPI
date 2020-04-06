@@ -18,6 +18,7 @@ use App\Service\Filter\InventoryFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\Expr;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -258,6 +259,9 @@ class InventoryController extends PoppySeedPetsController
 
         $user = $this->getUser();
 
+        if($location === LocationEnum::WARDROBE)
+            throw new UnprocessableEntityHttpException('Invalid location given.');
+
         if($location === LocationEnum::BASEMENT && !$user->getUnlockedBasement())
             throw new UnprocessableEntityHttpException('Invalid location given.');
 
@@ -267,10 +271,19 @@ class InventoryController extends PoppySeedPetsController
         $inventoryIds = $request->request->get('inventory');
         if(!\is_array($inventoryIds)) $inventoryIds = [ $inventoryIds ];
 
-        $inventory = $inventoryRepository->findBy([
-            'owner' => $user,
-            'id' => $inventoryIds
-        ]);
+        if(count($inventoryIds) >= 200)
+            throw new UnprocessableEntityHttpException('Oh, goodness, please don\'t try to move more than 200 items at a time. Sorry.');
+
+        $inventory = $inventoryRepository->createQueryBuilder('i')
+            ->andWhere('i.owner=:user')
+            ->andWhere('i.id IN (:inventoryIds)')
+            ->leftJoin('\\App\\Entity\\Pet', 'p', Expr\Join::WITH, 'p.tool=i OR p.hat=i')
+            ->andWhere('p.id IS NULL')
+            ->setParameter('user', $user->getId())
+            ->setParameter('inventoryIds', $inventoryIds)
+            ->getQuery()
+            ->execute()
+        ;
 
         if(count($inventory) !== count($inventoryIds))
             throw new UnprocessableEntityHttpException('Some of the items could not be found??');
@@ -295,38 +308,16 @@ class InventoryController extends PoppySeedPetsController
                 throw new UnprocessableEntityHttpException('The mantle only has space for 12 items.');
         }
 
-        $unequippedAPet = false;
-
         foreach($inventory as $i)
         {
             $i
                 ->setLocation($location)
                 ->setModifiedOn()
             ;
-
-            if($location !== LocationEnum::HOME)
-            {
-                if($i->getHolder())
-                {
-                    $i->getHolder()->setTool(null);
-                    $unequippedAPet = true;
-                }
-
-                if($i->getWearer())
-                {
-                    $i->getWearer()->setHat(null);
-                    $unequippedAPet = true;
-                }
-            }
         }
 
         $em->flush();
 
-        $data = [];
-
-        if($unequippedAPet)
-            $data['reloadPets'] = true;
-
-        return $responseService->success($data);
+        return $responseService->success();
     }
 }

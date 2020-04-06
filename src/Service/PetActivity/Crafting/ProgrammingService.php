@@ -89,8 +89,17 @@ class ProgrammingService
             if(array_key_exists('Iron Sword', $quantities))
                 $possibilities[] = [ $this, 'createLightningSword' ];
 
-            if(array_key_exists('Compiler', $quantities) && array_key_exists('Weird Beetle', $quantities))
+            if(
+                array_key_exists('Weird Beetle', $quantities) &&
+                // there's a compiler in the room, or you're holding one:
+                (
+                    array_key_exists('Compiler', $quantities) ||
+                    ($pet->getTool() && $pet->getTool()->getItem()->getName() === 'Compiler')
+                )
+            )
+            {
                 $possibilities[] = [ $this, 'createSentientBeetle' ];
+            }
         }
 
         if(array_key_exists('Magic Smoke', $quantities))
@@ -549,7 +558,6 @@ class ProgrammingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
             $this->inventoryService->loseItem('Lightning in a Bottle', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Compiler', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Weird Beetle', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::SCIENCE ]);
             $pet->increaseEsteem(3);

@@ -304,7 +304,12 @@ class PetController extends PoppySeedPetsController
             $em->flush();
         }
 
+        // equip the tool
         $pet->setTool($inventory);
+
+        // move it to the wardrobe
+        $inventory->setLocation(LocationEnum::WARDROBE);
+
         $em->flush();
 
         return $responseService->success($pet, SerializationGroupEnum::MY_PET);
@@ -344,7 +349,12 @@ class PetController extends PoppySeedPetsController
             $em->flush();
         }
 
+        // equip the hat
         $pet->setHat($inventory);
+
+        // move it to the wardrobe
+        $inventory->setLocation(LocationEnum::WARDROBE);
+
         $em->flush();
 
         return $responseService->success($pet, SerializationGroupEnum::MY_PET);
@@ -381,6 +391,11 @@ class PetController extends PoppySeedPetsController
         if(!$pet->getTool())
             throw new UnprocessableEntityHttpException($pet->getName() . ' is not currently equipped.');
 
+        $pet->getTool()
+            ->setLocation(LocationEnum::HOME)
+            ->setModifiedOn()
+        ;
+
         $pet->setTool(null);
 
         $em->flush();
@@ -404,6 +419,11 @@ class PetController extends PoppySeedPetsController
 
         if(!$pet->getHat())
             throw new UnprocessableEntityHttpException($pet->getName() . ' is not currently wearing a hat.');
+
+        $pet->getHat()
+            ->setLocation(LocationEnum::HOME)
+            ->setModifiedOn()
+        ;
 
         $pet->setHat(null);
 

@@ -389,7 +389,13 @@ class GreenhouseController extends PoppySeedPetsController
         if($plant->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException('That plant does not exist.');
 
-        if($plant->getPlant()->getItem()->getName() === 'Creamy Milk' && $plant->getIsAdult())
+        if($plant->getPlant()->getItem()->getName() === 'Magic Beans')
+        {
+            $responseService->addActivityLog((new PetActivityLog())->setEntry('Pulling up the stalk is surprisingly easy, but perhaps more surprising, you find yourself holding Magic Beans, instead of a stalk!'));
+
+            $inventoryService->receiveItem('Magic Beans', $user, $user, 'Received by pulling up a Magic Beanstalk, apparently. Magically.', LocationEnum::HOME);
+        }
+        else if($plant->getPlant()->getItem()->getName() === 'Creamy Milk' && $plant->getIsAdult())
         {
             $responseService->addActivityLog((new PetActivityLog())->setEntry('The goat, startled, runs into the jungle, shedding a bit of Fluff in the process.'));
 
