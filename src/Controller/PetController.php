@@ -292,6 +292,19 @@ class PetController extends PoppySeedPetsController
         if($pet->getInDaycare())
             throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');
 
+        if($pet->getTool())
+        {
+            if($inventory->getId() === $pet->getTool()->getId())
+                throw new UnprocessableEntityHttpException($pet->getName() . ' is already equipped with that ' . $pet->getTool()->getItem()->getName() . '!');
+
+            $pet->getTool()
+                ->setLocation(LocationEnum::HOME)
+                ->setModifiedOn()
+            ;
+
+            $pet->setTool(null);
+        }
+
         if($inventory->getHolder())
         {
             $inventory->getHolder()->setTool(null);
@@ -336,6 +349,19 @@ class PetController extends PoppySeedPetsController
 
         if(!$pet->hasMerit(MeritEnum::BEHATTED))
             throw new UnprocessableEntityHttpException($pet->getName() . ' does not have the Merit required to wear hats.');
+
+        if($pet->getHat())
+        {
+            if($inventory->getId() === $pet->getHat()->getId())
+                throw new UnprocessableEntityHttpException($pet->getName() . ' is already wearing that ' . $pet->getHat()->getItem()->getName() . '!');
+
+            $pet->getHat()
+                ->setLocation(LocationEnum::HOME)
+                ->setModifiedOn()
+            ;
+
+            $pet->setTool(null);
+        }
 
         if($inventory->getHolder())
         {
