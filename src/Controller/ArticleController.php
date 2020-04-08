@@ -54,7 +54,7 @@ class ArticleController extends PoppySeedPetsController
         if($title === '' || $body === '')
             throw new UnprocessableEntityHttpException('title and body are both required.');
 
-        if(strlen($title) > 255)
+        if(\mb_strlen($title) > 255)
             throw new UnprocessableEntityHttpException('title may not be longer than 255 characters.');
 
         $article = (new Article())

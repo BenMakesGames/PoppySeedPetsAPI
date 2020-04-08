@@ -49,7 +49,7 @@ class RenamingScrollController extends PoppySeedPetsItemController
         if($petName === $pet->getName())
             throw new UnprocessableEntityHttpException('That\'s the pet\'s current name! What a waste of the scroll that would be...');
 
-        if(strlen($petName) < 1 || strlen($petName) > 30)
+        if(\mb_strlen($petName) < 1 || \mb_strlen($petName) > 30)
             throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
 
         if(!StringFunctions::isISO88591($petName))

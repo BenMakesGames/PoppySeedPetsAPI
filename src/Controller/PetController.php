@@ -263,7 +263,7 @@ class PetController extends PoppySeedPetsController
 
         $note = trim($request->request->get('note', ''));
 
-        if(strlen($note) > 1000)
+        if(\mb_strlen($note) > 1000)
             throw new UnprocessableEntityHttpException('Note cannot be longer than 1000 characters.');
 
         $pet->setNote($note);
@@ -498,7 +498,7 @@ class PetController extends PoppySeedPetsController
 
         $costume = trim($request->request->get('costume'));
 
-        if(strlen($costume) > 30)
+        if(\mb_strlen($costume) > 30)
             throw new UnprocessableEntityHttpException('Costume description cannot be longer than 30 characters.');
 
         $pet->setCostume($costume);

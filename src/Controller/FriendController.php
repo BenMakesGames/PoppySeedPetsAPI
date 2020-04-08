@@ -106,7 +106,7 @@ class FriendController extends PoppySeedPetsController
 
         $note = $request->request->get('note', null);
 
-        if($note && strlen($note) > 255)
+        if($note && \mb_strlen($note) > 255)
             throw new UnprocessableEntityHttpException('Note may not be longer than 255 characters. Sorry :(');
 
         $userFriend->setNote($note);

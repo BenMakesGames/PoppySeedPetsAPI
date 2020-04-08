@@ -125,7 +125,7 @@ class PetShelterController extends PoppySeedPetsController
 
         $petName = $profanityFilterService->filter(trim($request->request->get('name', '')));
 
-        if(\strlen($petName) < 1 || \strlen($petName) > 30)
+        if(\mb_strlen($petName) < 1 || \mb_strlen($petName) > 30)
             throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
 
         $pets = $adoptionService->getDailyPets($user);

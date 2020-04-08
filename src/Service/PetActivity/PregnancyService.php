@@ -249,39 +249,39 @@ class PregnancyService
 
     public function combineNames(string $n1, string $n2): string
     {
-        if(strlen($n1) < 3)
+        if(\mb_strlen($n1) < 3)
             $n1Part = $n1;
         else
         {
             $n1Offset = mt_rand(
-                max(0, ceil(strlen($n1) / 2) - 2),
-                min(strlen($n1) - 1, floor(strlen($n1) / 2) + 2)
+                max(0, ceil(\mb_strlen($n1) / 2) - 2),
+                min(\mb_strlen($n1) - 1, floor(\mb_strlen($n1) / 2) + 2)
             );
 
-            if($n1Offset === 0 || $n1Offset === strlen($n1) - 1)
+            if($n1Offset === 0 || $n1Offset === \mb_strlen($n1) - 1)
                 $n1Part = $n1;
             else if(mt_rand(1, 2) === 1)
-                $n1Part = substr($n1, 0, $n1Offset);
+                $n1Part = \mb_substr($n1, 0, $n1Offset);
             else
-                $n1Part = substr($n1, $n1Offset);
+                $n1Part = \mb_substr($n1, $n1Offset);
         }
 
-        if(strlen($n2) < 3)
+        if(\mb_strlen($n2) < 3)
             $n2Part = $n2;
         else
         {
 
             $n2Offset = mt_rand(
-                max(0, ceil(strlen($n2) / 2) - 2),
-                min(strlen($n2) - 1, floor(strlen($n2) / 2) + 2)
+                max(0, ceil(\mb_strlen($n2) / 2) - 2),
+                min(\mb_strlen($n2) - 1, floor(\mb_strlen($n2) / 2) + 2)
             );
 
-            if($n2Offset === 0 || $n2Offset === strlen($n1) - 1)
+            if($n2Offset === 0 || $n2Offset === \mb_strlen($n1) - 1)
                 $n2Part = $n2;
             else if(mt_rand(1, 2) === 1)
-                $n2Part = substr($n2, 0, $n2Offset);
+                $n2Part = \mb_substr($n2, 0, $n2Offset);
             else
-                $n2Part = substr($n2, $n2Offset);
+                $n2Part = \mb_substr($n2, $n2Offset);
         }
 
         if(mt_rand(1, 2) === 1)
@@ -299,7 +299,7 @@ class PregnancyService
 
     private function isForbiddenCombinedName(string $name)
     {
-        $canonicalized = strtolower($name);
+        $canonicalized = mb_strtolower($name);
         $canonicalized = preg_replace('/[^a-z0-9]/', '', $canonicalized); // remove all non-alphanums
         $canonicalized = str_replace([ '0', '1', '2', '3', '4', '5', '7' ], [ 'o', 'i', 'z', 'e', 'a', 's', 't' ], $canonicalized); // l33t
         $canonicalized = preg_replace('/([\s.\'-,])\1+/', '$1', $canonicalized); // remove duplicate characters (ex: "faaaaaaaaaaaag" is as bad as "fag")

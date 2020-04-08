@@ -63,7 +63,7 @@ class AccountController extends PoppySeedPetsController
 
         $name = $profanityFilterService->filter(trim($request->request->get('playerName')));
         $email = $request->request->get('playerEmail');
-        $password = $request->request->get('playerPassphrase');
+        $passPhrase = $request->request->get('playerPassphrase');
 
         if($email === '')
             throw new UnprocessableEntityHttpException('Email address is required.');
@@ -71,10 +71,10 @@ class AccountController extends PoppySeedPetsController
         if(!\filter_var($email, FILTER_VALIDATE_EMAIL))
             throw new UnprocessableEntityHttpException('Email address is not valid.');
 
-        if(strlen($petName) < 1)
+        if(\mb_strlen($petName) < 1)
             throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
-        else if(strlen($petName) > 30)
-            $petName = substr($petName, 0, 30);
+        else if(\mb_strlen($petName) > 30)
+            $petName = \mb_substr($petName, 0, 30);
 
         if(!StringFunctions::isISO88591($petName))
             throw new UnprocessableEntityHttpException('Your pet\'s name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
@@ -90,15 +90,15 @@ class AccountController extends PoppySeedPetsController
         if(!preg_match('/[A-Fa-f0-9]{6}/', $petColorB))
             throw new UnprocessableEntityHttpException('Pet color B is not valid.');
 
-        if(strlen($name) < 2)
+        if(\mb_strlen($name) < 2)
             throw new UnprocessableEntityHttpException('Name must be between 2 and 30 characters long.');
-        else if(strlen($name) > 30)
-            $name = substr($name, 0, 30);
+        else if(\mb_strlen($name) > 30)
+            $name = \mb_substr($name, 0, 30);
 
         if(!StringFunctions::isISO88591($name))
             throw new UnprocessableEntityHttpException('Your name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
 
-        if(strlen($password) < 10)
+        if(\mb_strlen($passPhrase) < 10)
             throw new UnprocessableEntityHttpException('Pass phrase must be at least 10 characters long.');
 
         $existingUser = $userRepository->findOneBy([ 'email' => $email ]);
@@ -111,7 +111,7 @@ class AccountController extends PoppySeedPetsController
             ->setName($name)
         ;
 
-        $user->setPassword($userPasswordEncoder->encodePassword($user, $password));
+        $user->setPassword($userPasswordEncoder->encodePassword($user, $passPhrase));
 
         $session = $sessionService->logIn($user);
 
@@ -248,7 +248,7 @@ class AccountController extends PoppySeedPetsController
 
         $newPassphrase = trim($request->request->get('newPassphrase'));
 
-        if(strlen($newPassphrase) < 10)
+        if(\mb_strlen($newPassphrase) < 10)
             throw new UnprocessableEntityHttpException('Passphrase must be at least 10 characters long.');
 
         $user->setPassword($passwordEncoder->encodePassword($user, $newPassphrase));
@@ -430,7 +430,7 @@ class AccountController extends PoppySeedPetsController
     {
         $passphrase = trim($request->request->get('passphrase', ''));
 
-        if(strlen($passphrase) < 10)
+        if(\mb_strlen($passphrase) < 10)
             throw new UnprocessableEntityHttpException('Passphrase must be at least 10 characters long. (Pro tip: try using an actual phrase, or short sentence!)');
 
         $resetRequest = $passwordResetRequestRepository->findOneBy([ 'code' => $code ]);
