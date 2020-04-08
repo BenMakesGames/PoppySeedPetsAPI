@@ -360,7 +360,7 @@ class PetController extends PoppySeedPetsController
                 ->setModifiedOn()
             ;
 
-            $pet->setTool(null);
+            $pet->setHat(null);
         }
 
         if($inventory->getHolder())
