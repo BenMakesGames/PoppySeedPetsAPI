@@ -152,7 +152,9 @@ class EasterEggHuntingService
             else
                 $egg = 'Blue Plastic Egg';
 
-            $this->inventoryService->petCollectsItem($egg, $pet, $pet->getName() . ' found this ' . $where . '!', $activityLog);
+            $this->inventoryService->petCollectsItem($egg, $pet, $pet->getName() . ' found this ' . $where . '!', $activityLog)
+                ->setLockedToOwner(true)
+            ;
         }
 
         return $activityLog;
