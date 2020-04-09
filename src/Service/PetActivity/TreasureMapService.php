@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
@@ -54,6 +55,10 @@ class TreasureMapService
             if(mt_rand(1, 3) === 1)
             {
                 $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' put the treasure map down.');
+                $pet->getTool()
+                    ->setLocation(LocationEnum::HOME)
+                    ->setModifiedOn()
+                ;
                 $pet->setTool(null);
             }
         }

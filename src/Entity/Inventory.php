@@ -134,10 +134,22 @@ class Inventory
 
         // if the item changes, we need to make sure it can still be worn/held, and unequip it if not
         if($this->getWearer() && !$item->getHat())
-            $this->getWearer()->setHat(null);
+        {
+            $this
+                ->setLocation(LocationEnum::HOME)
+                ->setModifiedOn()
+                ->getWearer()->setHat(null)
+            ;
+        }
 
         if($this->getHolder() && !$item->getTool())
-            $this->getHolder()->setTool(null);
+        {
+            $this
+                ->setLocation(LocationEnum::HOME)
+                ->setModifiedOn()
+                ->getHolder()->setTool(null)
+            ;
+        }
 
         return $this;
     }
