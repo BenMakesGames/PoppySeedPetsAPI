@@ -29,7 +29,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class HyperchromaticPrismController extends PoppySeedPetsItemController
 {
     /**
-     * @Route("/{inventory}", methods={"PATCH"})
+     * @Route("/{inventory}", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function shinePrism(

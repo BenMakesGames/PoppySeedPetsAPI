@@ -24,6 +24,7 @@ use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\CraftingService;
 use App\Service\PetActivity\DreamingService;
+use App\Service\PetActivity\EasterEggHuntingService;
 use App\Service\PetActivity\FishingService;
 use App\Service\PetActivity\GatheringService;
 use App\Service\PetActivity\GenericAdventureService;
@@ -63,9 +64,11 @@ class PetService
     private $petExperienceService;
     private $dreamingService;
     private $beanStalkService;
+    private $easterEggHuntingService;
+    private $calendarService;
 
     public function __construct(
-        EntityManagerInterface $em, ResponseService $responseService,
+        EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
         PetRelationshipService $petRelationshipService, PetRepository $petRepository,
         FishingService $fishingService, HuntingService $huntingService, GatheringService $gatheringService,
         CraftingService $craftingService, UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
@@ -73,12 +76,14 @@ class PetService
         Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
         PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService,
         PregnancyService $pregnancyService, PetActivityStatsService $petActivityStatsService, PetGroupService $petGroupService,
-        PetExperienceService $petExperienceService, DreamingService $dreamingService, MagicBeanstalkService $beanStalkService
+        PetExperienceService $petExperienceService, DreamingService $dreamingService, MagicBeanstalkService $beanStalkService,
+        EasterEggHuntingService $easterEggHuntingService
     )
     {
         $this->em = $em;
         $this->petRepository = $petRepository;
         $this->responseService = $responseService;
+        $this->calendarService = $calendarService;
         $this->petRelationshipService = $petRelationshipService;
         $this->fishingService = $fishingService;
         $this->huntingService = $huntingService;
@@ -99,6 +104,7 @@ class PetService
         $this->petExperienceService = $petExperienceService;
         $this->dreamingService = $dreamingService;
         $this->beanStalkService = $beanStalkService;
+        $this->easterEggHuntingService = $easterEggHuntingService;
     }
 
     /**
@@ -555,6 +561,12 @@ class PetService
             $activityLog = $this->givingTreeGatheringService->gatherFromGivingTree($pet);
             if($activityLog)
                 return;
+        }
+
+        if(mt_rand(1, 4) === 1/* && $this->calendarService->isEaster()*/)
+        {
+            $this->easterEggHuntingService->adventure($pet);
+            return;
         }
 
         $petDesires = [
