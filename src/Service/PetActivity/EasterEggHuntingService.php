@@ -114,7 +114,7 @@ class EasterEggHuntingService
             {
                 $numEggs = mt_rand($minEggs + 1, $maxEggs + mt_rand(1, 2));
 
-                $message = '. It was really dark, but that didn\'t pose a problem for ' . $pet->getName() . ', who found ' . $numEggs . ' egg' . ($numEggs === 1 ? '' : 's') . '!';
+                $message .= '. It was really dark, but that didn\'t pose a problem for ' . $pet->getName() . ', who found ' . $numEggs . ' egg' . ($numEggs === 1 ? '' : 's') . '!';
             }
             else
             {
