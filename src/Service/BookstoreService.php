@@ -65,6 +65,9 @@ class BookstoreService
                 $bookPrices['The Umbra'] = 25;
             }
 
+            if($itemsDonatedToMuseum->getValue() >= 150)
+                $bookPrices['Electrical Engineering Textbook'] = 50;
+
             if($itemsDonatedToMuseum->getValue() >= 200)
                 $bookPrices['SOUP'] = 25;
         }
