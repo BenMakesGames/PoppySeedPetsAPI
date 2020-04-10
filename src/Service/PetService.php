@@ -563,7 +563,7 @@ class PetService
                 return;
         }
 
-        if(mt_rand(1, 4) === 1/* && $this->calendarService->isEaster()*/)
+        if(mt_rand(1, 4) === 1 && $this->calendarService->isEaster())
         {
             $this->easterEggHuntingService->adventure($pet);
             return;
