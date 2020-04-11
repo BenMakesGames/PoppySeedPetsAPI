@@ -126,7 +126,7 @@ class PlasticEggController extends PoppySeedPetsItemController
                     [
                         'items' => [
                             ArrayFunctions::pick_one([
-                                'Gold Idol',
+                                '"Gold" Idol',
                                 'Glowing Six-sided Die',
                                 'Gold Triangle',
                                 'Maraca',
