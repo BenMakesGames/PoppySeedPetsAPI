@@ -7,8 +7,10 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\HollowEarthActionTypeEnum;
 use App\Enum\HollowEarthRequiredActionEnum;
+use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\InventoryRepository;
+use App\Service\CalendarService;
 use App\Service\HollowEarthService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -271,7 +273,8 @@ class HollowEarthController extends PoppySeedPetsController
      */
     public function rollDie(
         ResponseService $responseService, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        HollowEarthService $hollowEarthService, Request $request
+        HollowEarthService $hollowEarthService, Request $request, CalendarService $calendarService,
+        InventoryService $inventoryService
     )
     {
         $user = $this->getUser();
@@ -306,6 +309,28 @@ class HollowEarthController extends PoppySeedPetsController
         $player->setMovesRemaining($moves);
 
         $hollowEarthService->advancePlayer($player);
+
+        if($calendarService->isEaster() && mt_rand(1, 4) === 1)
+        {
+            if(mt_rand(1, 6) === 6)
+            {
+                if(mt_rand(1, 12) === 12)
+                    $loot = 'Pink Plastic Egg';
+                else
+                    $loot = 'Yellow Plastic Egg';
+            }
+            else
+                $loot = 'Blue Plastic Egg';
+
+            $inventoryService->receiveItem($loot, $user, $user, $user->getName() . ' spotted this while traveling with ' . $player->getChosenPet()->getName() . ' through the Hollow Earth!', LocationEnum::HOME)
+                ->setLockedToOwner($loot !== 'Blue Plastic Egg')
+            ;
+
+            if(mt_rand(1, 10) === 1)
+                $responseService->addActivityLog((new PetActivityLog())->setEntry('(While moving through the Hollow Earth, you spot a ' . $loot . '! But you decide to leave it there... ... nah, I\'m just kidding, of course you scoop the thing up immediately!)'));
+            else
+                $responseService->addActivityLog((new PetActivityLog())->setEntry('(While moving through the Hollow Earth, you spot a ' . $loot . '!)'));
+        }
 
         $em->flush();
 
