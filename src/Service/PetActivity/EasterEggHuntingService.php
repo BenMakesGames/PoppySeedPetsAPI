@@ -3,10 +3,13 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\PetChanges;
+use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -16,14 +19,17 @@ class EasterEggHuntingService
     private $inventoryService;
     private $responseService;
     private $petExperienceService;
+    private $userQuestRepository;
 
     public function __construct(
-        InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService
+        InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
+        UserQuestRepository $userQuestRepository
     )
     {
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
+        $this->userQuestRepository = $userQuestRepository;
     }
 
     public function adventure(Pet $pet): PetActivityLog
@@ -95,6 +101,9 @@ class EasterEggHuntingService
 
     private function goSearching(Pet $pet, string $where, int $minEggs, int $maxEggs, int $encounterChance, int $experience, bool $dark = false, bool $hot = false): PetActivityLog
     {
+        if(mt_rand(1, 100) <= $encounterChance)
+            return $this->getAttacked($pet, $maxEggs);
+
         if($hot)
         {
             if(!$pet->hasProtectionFromHeat() && mt_rand(1, 10) > $pet->getStamina())
@@ -158,5 +167,62 @@ class EasterEggHuntingService
         }
 
         return $activityLog;
+    }
+
+    private function getAttacked(Pet $pet, int $level)
+    {
+        $difficulty = 10 + $level * 3;
+
+        $gotBehattingScrollThisEaster = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Easter ' . date('Y') . ' Behatting Scroll', false);
+
+        if($gotBehattingScrollThisEaster->getValue() === false && $level >= 2)
+        {
+            $loot = 'Behatting Scroll';
+        }
+        else
+        {
+            $loot = ArrayFunctions::pick_one([
+                'Blue Plastic Egg',
+                'Yellow Plastic Egg',
+                ArrayFunctions::pick_one([ 'Quintessence', 'Dark Scales' ]),
+                ArrayFunctions::pick_one([ 'Fluff', 'Talon' ]),
+                ArrayFunctions::pick_one([ 'Matzah Bread', 'Fish' ]),
+            ]);
+        }
+
+        $skillCheck = mt_rand(1, 20 + $pet->getStrength() + $pet->getDexterity() + $pet->getBrawl());
+
+        $adjective = ArrayFunctions::pick_one([
+            'horrible', 'crazy', 'mutant', 'disturbing', 'frickin\' weird', 'bananas'
+        ]);
+
+        if($skillCheck >= $difficulty)
+        {
+            $pet->increaseEsteem($level);
+            $this->petExperienceService->gainExp($pet, $level, [ PetSkillEnum::BRAWL ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by some kind of ' . $adjective . ', fish-rabbit hybrid thing, but was able to defeat it!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $level * 3)
+            ;
+
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated some kind of ' . $adjective . ', fish-rabbit hybrid thing, and got this!', $activityLog);
+
+            if($loot === 'Behatting Scroll')
+            {
+                $gotBehattingScrollThisEaster->setValue(true);
+                $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY);
+            }
+
+            return $activityLog;
+        }
+        else
+        {
+            $pet->increaseSafety(-$level);
+            $this->petExperienceService->gainExp($pet, ceil($level / 2), [ PetSkillEnum::BRAWL ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by some kind of ' . $adjective . ', fish-rabbit hybrid thing! ' . $pet->getName() . ' couldn\'t land a single attack, and ran away!', '');
+
+            return $activityLog;
+        }
     }
 }
