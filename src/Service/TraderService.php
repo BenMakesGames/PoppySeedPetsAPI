@@ -56,6 +56,9 @@ class TraderService
     private const ID_TINFOIL_HAT_1 = 'toadstoolForTinfoilHat';
     private const ID_TINFOIL_HAT_2 = 'teaLeavesForTinfoilHat';
     private const ID_KEY_RING = 'keyRing';
+    private const ID_UPGRADE_BLUE_PLASTIC_EGGS = 'upgradeBluePlasticEgg';
+    private const ID_UPGRADE_YELLOW_PLASTIC_EGGS = 'upgradeYellowPlasticEgg';
+    private const ID_UPGRADE_PINK_PLASTIC_EGGS = 'upgradePinkPlasticEgg';
 
     private $itemRepository;
     private $inventoryService;
@@ -109,6 +112,57 @@ class TraderService
             $dialog = 'Did you have a fun halloween?';
         else if($this->calendarService->isThanksgiving())
             $dialog = 'Happy Thanksgiving! And watch out for those Possessed Turkeys...';
+
+        if($this->calendarService->isEaster())
+        {
+            $blueEggItem = [
+                'Chili Calamari', 'Deep-fried Toad Legs', 'Fisherman\'s Pie', 'Tomato Soup', 'Coffee Jelly'
+            ][($user->getId() + (int)date('Y')) % 5];
+
+            $yellowEggItem = [
+                'Tinfoil Hat',
+                'Unicorn Horn',
+                'Candle',
+            ][($user->getId() + (int)date('Y')) % 3];
+
+            $offers[] = new TraderOffer(
+                self::ID_UPGRADE_BLUE_PLASTIC_EGGS,
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Blue Plastic Egg'), 10)
+                ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Tofu'), 2),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Rock'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName($blueEggItem), 1),
+                ],
+                'I\'m collecting the things, too, you know!'
+            );
+
+            $offers[] = new TraderOffer(
+                self::ID_UPGRADE_YELLOW_PLASTIC_EGGS,
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Yellow Plastic Egg'), 5),
+                ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Cryptocurrency Wallet'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Blunderbuss'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName($yellowEggItem), 1),
+                ],
+                'I\'m collecting the things, too, you know!'
+            );
+
+            $offers[] = new TraderOffer(
+                self::ID_UPGRADE_PINK_PLASTIC_EGGS,
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Pink Plastic Egg'), 2),
+                ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Spirit Polymorph Potion'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Firestone'), 1),
+                ],
+                'I\'m collecting the things, too, you know!'
+            );
+        }
 
         if($now->format('M') === 'Oct')
         {
