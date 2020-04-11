@@ -205,7 +205,9 @@ class EasterEggHuntingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $level * 3)
             ;
 
-            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated some kind of ' . $adjective . ', fish-rabbit hybrid thing, and got this!', $activityLog);
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated some kind of ' . $adjective . ', fish-rabbit hybrid thing, and got this!', $activityLog)
+                ->setLockedToOwner($loot === 'Behatting Scroll' || $loot === 'Yellow Plastic Egg')
+            ;
 
             if($loot === 'Behatting Scroll')
             {
