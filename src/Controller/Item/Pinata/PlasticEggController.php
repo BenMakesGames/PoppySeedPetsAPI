@@ -124,7 +124,7 @@ class PlasticEggController extends PoppySeedPetsItemController
                         'description' => 'and there\'s animal ears inside! (Oh, but don\'t worry: they\'re not real! See? Just Plastic and polyester!)'
                     ],
                     [
-                        'item' => [
+                        'items' => [
                             ArrayFunctions::pick_one([
                                 'Gold Idol',
                                 'Glowing Six-sided Die',
