@@ -325,6 +325,11 @@ class Pet
      */
     private $guildMembership;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $revealedFavoriteFlavor;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -1629,5 +1634,28 @@ class Pet
         }
 
         return $this;
+    }
+
+    public function getRevealedFavoriteFlavor(): int
+    {
+        return $this->revealedFavoriteFlavor;
+    }
+
+    public function setRevealedFavoriteFlavor(int $guesses): self
+    {
+        $this->revealedFavoriteFlavor = $guesses;
+
+        return $this;
+    }
+
+    /**
+     * @Groups({"myPet"})
+     */
+    public function getFlavor(): string
+    {
+        if($this->revealedFavoriteFlavor > 0)
+            return $this->favoriteFlavor;
+        else
+            return 'Unknown';
     }
 }

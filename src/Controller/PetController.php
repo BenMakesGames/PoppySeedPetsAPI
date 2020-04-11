@@ -7,6 +7,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
 use App\Entity\SpiritCompanion;
+use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -19,10 +20,12 @@ use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogRepository;
 use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
+use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
 use App\Service\Filter\DaycareFilterService;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\Filter\PetFilterService;
+use App\Service\InventoryService;
 use App\Service\MeritService;
 use App\Service\PetActivityStatsService;
 use App\Service\PetService;
@@ -947,5 +950,53 @@ class PetController extends PoppySeedPetsController
         {
             throw new UnprocessableEntityHttpException($e->getMessage(), $e);
         }
+    }
+
+    /**
+     * @Route("/{pet}/guessFavoriteFlavor", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function guessFavoriteFlavor(
+        Pet $pet, Request $request, ResponseService $responseService, UserQuestRepository $userQuestRepository,
+        InventoryService $inventoryService, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        if($pet->getOwner()->getId() !== $user->getId())
+            throw new AccessDeniedHttpException('That\'s not your pet.');
+
+        if($pet->getRevealedFavoriteFlavor())
+            throw new UnprocessableEntityHttpException($pet->getName() . '\'s favorite flavor has already been revealed!');
+
+        $guess = strtolower(trim($request->request->getAlpha('flavor')));
+
+        if(!FlavorEnum::isAValue($guess))
+            throw new UnprocessableEntityHttpException('Please pick a flavor.');
+
+        $flavorGuesses = $userQuestRepository->findOrCreate($user, 'Flavor Guesses for Pet #' . $pet->getId(), 0);
+
+        if($flavorGuesses->getValue() > 0 && $flavorGuesses->getLastUpdated()->format('Y-m-d') === date('Y-m-d'))
+            throw new AccessDeniedHttpException('You already guessed today. Try again tomorrow.');
+
+        $flavorGuesses->setValue($flavorGuesses->getValue() + 1);
+
+        $data = null;
+
+        if($pet->getFavoriteFlavor() === $guess)
+        {
+            $pet->setRevealedFavoriteFlavor($flavorGuesses->getValue());
+            $inventoryService->receiveItem('Heartstone', $user, $user, $user->getName() . ' received this from ' . $pet->getName() . ' for knowing their favorite flavor: ' . $pet->getFavoriteFlavor() . '!', LocationEnum::HOME);
+            $responseService->addActivityLog((new PetActivityLog())->setEntry('A Heartstone materializes in front of ' . $pet->getName() . '\'s body, and floats into your hands!'));
+            $data = $pet;
+        }
+        else
+        {
+            $responseService->addActivityLog((new PetActivityLog())->setEntry('Hm... it seems that wasn\'t correct. ' . $pet->getName() . ' looks a little disappointed. (You can try again, tomorrow.)'));
+        }
+
+        $em->flush();
+
+        return $responseService->success($data, [ SerializationGroupEnum::MY_PET ]);
     }
 }
