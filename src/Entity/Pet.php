@@ -328,7 +328,7 @@ class Pet
     /**
      * @ORM\Column(type="integer")
      */
-    private $revealedFavoriteFlavor;
+    private $revealedFavoriteFlavor = 0;
 
     public function __construct()
     {
