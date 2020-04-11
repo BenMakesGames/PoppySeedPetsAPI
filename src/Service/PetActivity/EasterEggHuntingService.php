@@ -101,7 +101,7 @@ class EasterEggHuntingService
 
     private function goSearching(Pet $pet, string $where, int $minEggs, int $maxEggs, int $encounterChance, int $experience, bool $dark = false, bool $hot = false): PetActivityLog
     {
-        if(mt_rand(1, 100) <= $encounterChance)
+        if(mt_rand(1, 100) <= $encounterChance && date('l') !== 'Friday')
             return $this->getAttacked($pet, $maxEggs);
 
         if($hot)
