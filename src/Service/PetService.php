@@ -558,7 +558,7 @@ class PetService
                 return;
             }
 
-            if($pet->getTool()->getItem()->getName() === 'Heartstone' && $this->heartDimensionService->canAdventure($pet))
+            if(mt_rand(1, 3) === 1 && $pet->getTool()->getItem()->getName() === 'Heartstone' && $this->heartDimensionService->canAdventure($pet))
             {
                 $this->heartDimensionService->adventure($pet);
                 return;
