@@ -134,7 +134,12 @@ class AdoptionService
             }
 
             $pet = new PetShelterPet();
-            $pet->species = ArrayFunctions::pick_one($allSpecies);
+
+            if(mt_rand(1, 200) === 1)
+                $pet->species = ArrayFunctions::pick_one($this->petSpeciesRepository->findBy([ 'availableFromPetShelter' => false, 'availableFromBreeding' => true ]));
+            else
+                $pet->species = ArrayFunctions::pick_one($allSpecies);
+
             $pet->name = $name;
             $pet->colorA = $colorA;
             $pet->colorB = $colorB;

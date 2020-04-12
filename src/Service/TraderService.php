@@ -59,6 +59,7 @@ class TraderService
     private const ID_UPGRADE_BLUE_PLASTIC_EGGS = 'upgradeBluePlasticEgg';
     private const ID_UPGRADE_YELLOW_PLASTIC_EGGS = 'upgradeYellowPlasticEgg';
     private const ID_UPGRADE_PINK_PLASTIC_EGGS = 'upgradePinkPlasticEgg';
+    private const ID_FAIRY_SWARM = 'fairySwarm';
 
     private $itemRepository;
     private $inventoryService;
@@ -532,6 +533,19 @@ class TraderService
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Painted Fishing Rod'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Paper Bag'), 1) ],
                 'What could be insiiiiiiiiiiiiide!!!?!?'
+            );
+        }
+
+        if(($dayOfTheYear + 8) % 11 === 0 || ($dayOfTheYear + 9) % 11 === 0 || $leapDay)
+        {
+            $offers[] = new TraderOffer(
+                self::ID_FAIRY_SWARM,
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fairy Ring'), 3),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Quinacridone Magenta Dye'), 1),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fairy Swarm'), 1) ],
+                'My great-grandmother taught me how to make this. I guess you could say the technique is a sort of family secret.'
             );
         }
 
