@@ -246,12 +246,13 @@ class InventoryService
         return $i;
     }
 
-    public function petAttractsRandomBug(Pet $pet): ?Inventory
+    public function petAttractsRandomBug(Pet $pet, $bugName = null): ?Inventory
     {
         if($pet->getTool() && $pet->getTool()->getItem()->getName() === 'Debugger')
             return null;
 
-        $bugName  = ArrayFunctions::pick_one([ 'Spider', 'Centipede', 'Cockroach', 'Line of Ants', 'Fruit Fly', 'Stink Bug', 'Moth' ]);
+        if($bugName === null)
+            $bugName = ArrayFunctions::pick_one([ 'Spider', 'Centipede', 'Cockroach', 'Line of Ants', 'Fruit Fly', 'Stink Bug', 'Moth' ]);
 
         $bug = $this->itemRepository->findOneByName($bugName);
 

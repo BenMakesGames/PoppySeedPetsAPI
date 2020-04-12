@@ -330,6 +330,11 @@ class Pet
      */
     private $revealedFavoriteFlavor = 0;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $affectionAdventures = 0;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -1657,5 +1662,17 @@ class Pet
             return $this->favoriteFlavor;
         else
             return 'Unknown';
+    }
+
+    public function getAffectionAdventures(): ?int
+    {
+        return $this->affectionAdventures;
+    }
+
+    public function incrementAffectionAdventures(): self
+    {
+        $this->affectionAdventures++;
+
+        return $this;
     }
 }

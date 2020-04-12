@@ -29,6 +29,7 @@ use App\Service\PetActivity\FishingService;
 use App\Service\PetActivity\GatheringService;
 use App\Service\PetActivity\GenericAdventureService;
 use App\Service\PetActivity\GivingTreeGatheringService;
+use App\Service\PetActivity\HeartDimensionService;
 use App\Service\PetActivity\HuntingService;
 use App\Service\PetActivity\MagicBeanstalkService;
 use App\Service\PetActivity\PoopingService;
@@ -66,6 +67,7 @@ class PetService
     private $beanStalkService;
     private $easterEggHuntingService;
     private $calendarService;
+    private $heartDimensionService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -77,7 +79,7 @@ class PetService
         PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService,
         PregnancyService $pregnancyService, PetActivityStatsService $petActivityStatsService, PetGroupService $petGroupService,
         PetExperienceService $petExperienceService, DreamingService $dreamingService, MagicBeanstalkService $beanStalkService,
-        EasterEggHuntingService $easterEggHuntingService
+        EasterEggHuntingService $easterEggHuntingService, HeartDimensionService $heartDimensionService
     )
     {
         $this->em = $em;
@@ -105,6 +107,7 @@ class PetService
         $this->dreamingService = $dreamingService;
         $this->beanStalkService = $beanStalkService;
         $this->easterEggHuntingService = $easterEggHuntingService;
+        $this->heartDimensionService = $heartDimensionService;
     }
 
     /**
@@ -552,6 +555,12 @@ class PetService
             if($pet->getTool()->getItem()->getName() === '"Gold" Idol')
             {
                 $this->treasureMapService->doGoldIdol($pet);
+                return;
+            }
+
+            if($pet->getTool()->getItem()->getName() === 'Heartstone' && $this->heartDimensionService->canAdventure($pet))
+            {
+                $this->heartDimensionService->adventure($pet);
                 return;
             }
         }

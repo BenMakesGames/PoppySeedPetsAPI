@@ -124,7 +124,7 @@ class BugController extends PoppySeedPetsItemController
                 break;
 
             case 'Line of Ants':
-                if(mt_rand(1, 10) === 1)
+                if(mt_rand(1, 6) === 6)
                 {
                     $inventoryService->receiveItem('Ant Queen', $user, $user, $user->getName() . ' fed a Line of Ants; as a result, this Queen Ant showed up! (Is this a good thing?)', $inventory->getLocation());
                     $message = 'Oh? You\'ve attracted an Ant Queen!';
@@ -132,7 +132,7 @@ class BugController extends PoppySeedPetsItemController
                 else
                 {
                     $inventoryService->receiveItem('Line of Ants', $user, $user, $user->getName() . ' fed a Line of Ants; as a result, _these_ ants showed up. (Is this a good thing?)', $inventory->getLocation());
-                    $message = 'Oh. You\'ve attracted more ants!';
+                    $message = 'Oh. You\'ve attracted more ants! (You were hoping for an Ant Queen, but oh well... maybe next time...)';
                 }
 
                 break;
@@ -145,6 +145,11 @@ class BugController extends PoppySeedPetsItemController
             case 'Fruit Fly':
                 $inventoryService->receiveItem('Fruit Fly', $user, $user, $user->getName() . ' fed a Fruit Fly; as a result, _this_ Fruit Fly showed up. (Is this a good thing?)', $inventory->getLocation());
                 $message = 'Oh. You\'ve attracted another Fruit Fly!';
+                break;
+
+            case 'Heart Beetle':
+                $inventoryService->receiveItem('Heart Beetle', $user, $user, $user->getName() . ' fed a Heart Beetle; as a result, _this_ Heart Beetle showed up. (Is this a good thing?)', $inventory->getLocation());
+                $message = 'Oh. You\'ve attracted another Heart Beetle!';
                 break;
 
             default:
