@@ -208,7 +208,7 @@ class HeartDimensionService
 
         $goodOrBad = mt_rand(0, 1);
 
-        $description = ArrayFunctions::pick_one($figure[1][$goodOrBad]);
+        $description = $figure[1][$goodOrBad];
 
         if($goodOrBad === 0)
             $pet->increaseSafety(-8);
