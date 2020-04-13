@@ -7,6 +7,7 @@
         "ext-iconv": "*",
         "ext-json": "*",
         "ext-pdo": "*",
+        "ext-calendar": "*",
         "abraham/twitteroauth": "^1.0",
         "lavary/crunz": "^2.0",
         "minishlink/web-push": "^5.2",

@@ -7,16 +7,21 @@ use App\Service\Holidays\HalloweenService;
 
 class CalendarService
 {
-    private $today;
+    /** @var \DateTimeImmutable */ private $today;
     private $monthAndDay;
     private $halloweenService;
-    private $jewishCalendarService;
 
     public function __construct(HalloweenService $halloweenService)
     {
-        $this->today = new \DateTimeImmutable();
-        $this->monthAndDay = (int)$this->today->format('md');
         $this->halloweenService = $halloweenService;
+
+        $this->setToday(new \DateTimeImmutable());
+    }
+
+    public function setToday(\DateTimeImmutable $date)
+    {
+        $this->today = $date;
+        $this->monthAndDay = (int)$this->today->format('md');
     }
 
     public function getMonthAndDay(): int
@@ -75,9 +80,14 @@ class CalendarService
     public function isEaster(): bool
     {
         $easter = \DateTimeImmutable::createFromFormat('U', easter_date((int)$this->today->format('Y')));
-        $diff = $easter->diff($this->today)->days;
+        $easter = \DateTimeImmutable::createFromFormat('Y-m-d', $easter->format('Y-m-d'));
 
-        return $diff >= 0 && $diff < 3;
+        if($this->today > $easter)
+            return false;
+
+        $diff = $this->today->diff($easter)->days;
+
+        return $diff < 3;
     }
 
     public function getEventData(?User $user): ?array
