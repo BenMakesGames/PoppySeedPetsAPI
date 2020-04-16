@@ -324,7 +324,10 @@ class PetController extends PoppySeedPetsController
         $pet->setTool($inventory);
 
         // move it to the wardrobe
-        $inventory->setLocation(LocationEnum::WARDROBE);
+        $inventory
+            ->setLocation(LocationEnum::WARDROBE)
+            ->setSellPrice(null)
+        ;
 
         $em->flush();
 
@@ -382,7 +385,10 @@ class PetController extends PoppySeedPetsController
         $pet->setHat($inventory);
 
         // move it to the wardrobe
-        $inventory->setLocation(LocationEnum::WARDROBE);
+        $inventory
+            ->setLocation(LocationEnum::WARDROBE)
+            ->setSellPrice(null)
+        ;
 
         $em->flush();
 

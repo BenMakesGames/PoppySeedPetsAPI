@@ -33,8 +33,10 @@ class CandyMakersCookbookController extends PoppySeedPetsItemController
 
 #### Recipes
 
-* Hard Candies
-* Soft Gummies
+* Hard Fruit Candies
+* Konpeitō
+* Rock Candy
+* Soft Fruit Gummies
 * Chocolates
 
 ## Basic Ingredients
@@ -82,13 +84,25 @@ Quick method:
 
 ## Recipes
 
-#### Hard Candies
+#### Hard Fruit Candies
 
 Combine the following:
 * Fruit (berries, melon, orange, etc)
 * Sugar
 
-#### Soft Gummies
+#### Konpeitō
+
+These colorful candies are painstaking to make by hand! But the ingredients are simple:
+* Sugar
+* A variety of dyes (at least three!)
+
+#### Rock Candy
+
+Dangle a String in a solution of Sugar-water.
+
+It\'s the easiest thing!
+
+#### Soft Fruit Gummies
 
 Combine the following:
 * Fruit (berries, melon, orange, etc)

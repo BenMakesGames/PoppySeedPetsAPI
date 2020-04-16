@@ -49,7 +49,7 @@ I was once told "there as many types of pie filling as there are people who have
 
 #### Chocolate Cream
 
-* Baking Chocolate
+* Cocoa Powder
 * Sugar
 * Egg
 * Creamy Milk
