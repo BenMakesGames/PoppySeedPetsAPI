@@ -83,4 +83,10 @@ class PetShelterPet
      * @Groups({"petShelterPet"})
      */
     public $colorB;
+
+    /**
+     * @var string
+     * @Groups({"petShelterPet"})
+     */
+    public $label;
 }
