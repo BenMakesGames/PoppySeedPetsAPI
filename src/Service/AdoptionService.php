@@ -139,10 +139,10 @@ class AdoptionService
             {
                 $pet->species = ArrayFunctions::pick_one($this->petSpeciesRepository->findBy(['availableFromPetShelter' => false, 'availableFromBreeding' => true]));
                 $pet->label = ArrayFunctions::pick_one([
+                    'gasp!',
                     'oh my!',
                     'whoa!',
                     'ooooh!',
-                    'eh!?!?',
                 ]);
             }
             else
