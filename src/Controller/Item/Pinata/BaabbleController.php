@@ -29,26 +29,31 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class BaabbleController extends PoppySeedPetsItemController
 {
     private const LAME_SHIT = [
-        'Crooked Stick', 'Crooked Stick',
-        'Scales', 'Tea Leaves', 'Aging Powder', 'Fluff', 'Pointer', 'Creamy Milk',
-        'Silica Grounds',
+        'Crooked Stick',
+        'Scales', 'Tea Leaves', 'Aging Powder', 'Fluff', 'Pointer', 'Creamy Milk', 'Silica Grounds',
     ];
 
     private const OKAY_STUFF = [
-        'Iron Ore', 'Iron Ore',
+        'Crooked Stick',
+        'Iron Ore',
         'Plastic', 'Plastic',
         'Carrot', 'Paper', 'Talon', 'Feathers', 'Glue',
     ];
 
     private const GOOD_STUFF = [
-        'Dark Scales', 'Gold Ore', 'Iron Ore', 'Silver Ore', 'Quintessence',
-        'Hash Table', 'Paper Bag', 'Rock'
+        'Quintessence', 'Quintessence',
+        'Iron Ore', 'Iron Ore',
+        'Silver Ore', 'Silver Ore',
+        'Gold Ore',
+        'Dark Scales', 'Hash Table', 'Paper Bag', 'Finite State Machine',
     ];
 
     private const WEIRD_STUFF = [
-        'Dark Matter', 'Music Note', 'Coriander Flower', 'Charcoal', 'Moon Pearl',
-        'XOR', 'Liquid-hot Magma', 'Quinacridone Magenta Dye', 'Gypsum', 'Tiny Black Hole',
         'Really Big Leaf',
+        'Music Note', 'Music Note',
+        'White Cloth',
+        'Dark Matter', 'Coriander Flower', 'Charcoal', 'Moon Pearl',
+        'XOR', 'Liquid-hot Magma', 'Quinacridone Magenta Dye', 'Gypsum', 'Tiny Black Hole',
     ];
 
     private const RARE_STUFF = [
