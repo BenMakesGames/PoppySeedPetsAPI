@@ -52,6 +52,7 @@ class TraderService
     private const ID_GLOWING_D6 = 'glowingD6';
     private const ID_GLOWING_D8 = 'glowingD8';
     private const ID_MONEY_SINK = 'moneySink';
+    private const ID_GARBAGE_DISPOSAL = 'garbageDisposal';
     private const ID_UNICORN_HORN = 'unicornHorn';
     private const ID_TINFOIL_HAT_1 = 'toadstoolForTinfoilHat';
     private const ID_TINFOIL_HAT_2 = 'teaLeavesForTinfoilHat';
@@ -229,6 +230,23 @@ class TraderService
         $offers = $this->addMod11Trades($offers, $dayOfTheYear, $leapDay);
         $offers = $this->addMod5Trades($offers, $dayOfTheYear, $leapDay, $itemsDonatedToMuseum);
         $offers = $this->addMod4Trades($offers, $dayOfTheYear, $leapDay);
+
+        if($itemsDonatedToMuseum && $itemsDonatedToMuseum->getValue() >= 250)
+        {
+            $offers[] = new TraderOffer(
+                self::ID_MONEY_SINK,
+                [ TraderOfferCostOrYield::createMoney(1000) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Money Sink'), 1) ],
+                'The Museum\'s curator insisted I make this offer...'
+            );
+
+            $offers[] = new TraderOffer(
+                self::ID_GARBAGE_DISPOSAL,
+                [ TraderOfferCostOrYield::createRecyclingPoints(1000) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Garbage Disposal'), 1) ],
+                'The Museum\'s curator insisted I make this offer...'
+            );
+        }
 
         if($dayOfTheYear % 3 === 0 || $leapDay)
         {
@@ -447,17 +465,6 @@ class TraderService
                 "I just really need Limestone.\n\nDon't ask."
             );
         }
-
-        if($itemsDonatedToMuseum && $itemsDonatedToMuseum->getValue() >= 250)
-        {
-            $offers[] = new TraderOffer(
-                self::ID_MONEY_SINK,
-                [ TraderOfferCostOrYield::createMoney(1000) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Money Sink'), 1) ],
-                'The Museum\'s curator insisted I make this offer...'
-            );
-        }
-
 
         if(($dayOfTheYear + 4) % 5 === 0 || $leapDay)
         {
