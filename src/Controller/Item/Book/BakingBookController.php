@@ -38,6 +38,7 @@ class BakingBookController extends PoppySeedPetsItemController
 * Donut (Cake)
 * Donut (Yeast)
 * Flour Tortilla
+* Graham Crackers
 * Melon Pan
 * Meringues
 * Muffins
@@ -113,6 +114,13 @@ A versatile bread! (If you make quesadillas, don\'t forget to Butter, or Oil, th
 * Baking Powder (or Baking Soda + Cream of Tartar)
 * Butter
 * Wheat Flour
+
+#### Graham Crackers
+
+* Wheat Flour
+* Baking Soda
+* Butter (or Oil)
+* Sugar
 
 #### Melon Pan
 
