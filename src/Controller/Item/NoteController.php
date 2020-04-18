@@ -127,4 +127,19 @@ Here\'s some basic notes on how to take care of your new pet:
 * Sugar
 ');
     }
+
+    /**
+     * @Route("/bananananersFoster/{inventory}/read", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function readBananananersFosterRecipe(Inventory $inventory, ResponseService $responseService)
+    {
+        $this->validateInventory($inventory, 'note/bananananersFoster/#/read');
+
+        return $responseService->itemActionSuccess('Start with Naner Ice Cream.
+
+Make "sauce" made from Sugar, Butter, and rum, and pour over the ice cream.
+
+Serve warm (and quickly!)');
+    }
 }

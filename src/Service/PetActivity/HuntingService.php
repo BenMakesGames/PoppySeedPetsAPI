@@ -783,10 +783,15 @@ class HuntingService
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' unfolded a Paper Golem!', '');
             }
 
+            $recipe = ArrayFunctions::pick_one([
+                'Stroganoff Recipe',
+                'Bananananers Foster Recipe'
+            ]);
+
             if(mt_rand(1, 10) === 1 && $pet->hasMerit(MeritEnum::LUCKY))
-                $this->inventoryService->petCollectsItem('Stroganoff Recipe', $pet, $pet->getName() . ' got this by unfolding a Paper Golem. Lucky~!', $activityLog);
+                $this->inventoryService->petCollectsItem($recipe, $pet, $pet->getName() . ' got this by unfolding a Paper Golem. Lucky~!', $activityLog);
             else if(mt_rand(1, 20) === 1)
-                $this->inventoryService->petCollectsItem('Stroganoff Recipe', $pet, $pet->getName() . ' got this by unfolding a Paper Golem.', $activityLog);
+                $this->inventoryService->petCollectsItem($recipe, $pet, $pet->getName() . ' got this by unfolding a Paper Golem.', $activityLog);
             else
             {
                 $this->inventoryService->petCollectsItem('Paper', $pet, $pet->getName() . ' got this by unfolding a Paper Golem.', $activityLog);
