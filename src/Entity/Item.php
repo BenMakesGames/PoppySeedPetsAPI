@@ -90,6 +90,7 @@ class Item
 
     /**
      * @ORM\Column(type="smallint")
+     * @Groups({"myInventory", "itemEncyclopedia"})
      */
     private $recycleValue = 1;
 
