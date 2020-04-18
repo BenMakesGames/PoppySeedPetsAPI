@@ -88,6 +88,11 @@ class Item
      */
     private $fuel = 0;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $recycleValue = 1;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -280,6 +285,18 @@ class Item
             return 2;
         else
             return 1;
+    }
+
+    public function getRecycleValue(): int
+    {
+        return $this->recycleValue;
+    }
+
+    public function setRecycleValue(int $recycleValue): self
+    {
+        $this->recycleValue = $recycleValue;
+
+        return $this;
     }
 
 }

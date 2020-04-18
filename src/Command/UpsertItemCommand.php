@@ -59,6 +59,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
         $this->food($item);
         $this->fertilizer($item);
         $this->fuel($item);
+        $this->recycleValue($item);
 
         $this->em->flush();
     }
@@ -207,5 +208,10 @@ class UpsertItemCommand extends PoppySeedPetsCommand
     private function fuel(Item $item)
     {
         $item->setFuel($this->askInt('Fuel', $item->getFuel()));
+    }
+
+    private function recycleValue(Item $item)
+    {
+        $item->setRecycleValue($this->askInt('Recycle Value', $item->getRecycleValue()));
     }
 }

@@ -215,6 +215,8 @@ class InventoryController extends PoppySeedPetsController
 
         $givingTreeHoliday = $calendarService->isValentines() || $calendarService->isPiDayOrWhiteDay();
 
+        $totalRecycleValue = 0;
+
         foreach($inventory as $i)
         {
             if($i->getItem()->hasUseAction('bug/#/putOutside'))
@@ -228,7 +230,7 @@ class InventoryController extends PoppySeedPetsController
                     ->setOwner($givingTree)
                     ->setLocation(LocationEnum::HOME)
                     ->setSellPrice(null)
-                    ->addComment($user->getName() . ' threw this item away, but it found its way to The Giving Tree.')
+                    ->addComment($user->getName() . ' recycled this item, and it found its way to The Giving Tree!')
                 ;
 
                 if($i->getHolder()) $i->getHolder()->setTool(null);
@@ -236,9 +238,19 @@ class InventoryController extends PoppySeedPetsController
             }
             else
                 $em->remove($i);
+
+            $totalRecycleValue += $i->getItem()->getRecycleValue();
         }
 
         $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_THROWN_AWAY, count($inventory));
+
+        if($totalRecycleValue > 0)
+        {
+            $user->increaseRecyclePoints($totalRecycleValue);
+
+            if($user->getUnlockedRecycling() === null)
+                $user->setUnlockedRecycling();
+        }
 
         $em->flush();
 

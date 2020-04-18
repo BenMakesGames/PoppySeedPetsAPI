@@ -227,15 +227,16 @@ class User implements UserInterface
     private $greenhouse;
 
     /**
+     * @ORM\Column(type="integer")
+     * @Groups({"myAccount"})
+     */
+    private $recyclePoints = 0;
+
+    /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      * @Groups({"myAccount"})
      */
-    private $unlockedTotemPoleGarden;
-
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\TotemPole", mappedBy="owner", cascade={"persist", "remove"})
-     */
-    private $totemPole;
+    private $unlockedRecycling;
 
     public function __construct()
     {
@@ -838,31 +839,26 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getUnlockedTotemPoleGarden(): ?\DateTimeImmutable
+    public function getRecyclePoints(): int
     {
-        return $this->unlockedTotemPoleGarden;
+        return $this->recyclePoints;
     }
 
-    public function setUnlockedTotemPoleGarden(): self
+    public function increaseRecyclePoints(int $recyclePoints): self
     {
-        $this->unlockedTotemPoleGarden = new \DateTimeImmutable();
+        $this->recyclePoints += $recyclePoints;
 
         return $this;
     }
 
-    public function getTotemPole(): ?TotemPole
+    public function getUnlockedRecycling(): ?\DateTimeImmutable
     {
-        return $this->totemPole;
+        return $this->unlockedRecycling;
     }
 
-    public function setTotemPole(TotemPole $totemPole): self
+    public function setUnlockedRecycling(): self
     {
-        $this->totemPole = $totemPole;
-
-        // set the owning side of the relation if necessary
-        if ($totemPole->getOwner() !== $this) {
-            $totemPole->setOwner($this);
-        }
+        $this->unlockedRecycling = new \DateTimeImmutable();
 
         return $this;
     }
