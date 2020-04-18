@@ -92,7 +92,7 @@ class Item
      * @ORM\Column(type="smallint")
      * @Groups({"myInventory", "itemEncyclopedia"})
      */
-    private $recycleValue = 1;
+    private $recycleValue = 0;
 
     public function getId(): ?int
     {

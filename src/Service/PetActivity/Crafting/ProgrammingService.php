@@ -69,7 +69,10 @@ class ProgrammingService
                 $possibilities[] = [ $this, 'createPhishingRod' ];
         }
 
-        if(array_key_exists('Regex', $quantities) && array_key_exists('XOR', $quantities) && array_key_exists('String', $quantities))
+        if(array_key_exists('Regex', $quantities) && array_key_exists('Password', $quantities))
+            $possibilities[] = [$this, 'createBruteForce'];
+
+        if(array_key_exists('Brute Force', $quantities) && array_key_exists('XOR', $quantities) && array_key_exists('Gold Bar', $quantities))
             $possibilities[] = [ $this, 'createL33tH4xx0r' ];
 
         if(array_key_exists('Hash Table', $quantities))
@@ -428,6 +431,38 @@ class ProgrammingService
         }
     }
 
+    private function createBruteForce(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+
+            $this->inventoryService->loseItem('Password', $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create Brute Force, but got the Password wrong too many times :(', '');
+        }
+        else if($roll >= 14)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->inventoryService->loseItem('Regex', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Password', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+            $pet->increaseEsteem(1);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created Brute Force.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+            ;
+            $this->inventoryService->petCollectsItem('Brute Force', $pet, $pet->getName() . ' upgraded a Regex into this, with the help of a Password.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to become a l33t h4xx0r, but didn\'t have the right stuff. (Figuratively speaking.)', 'icons/activity-logs/confused');
+        }
+    }
+
     private function createL33tH4xx0r(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
@@ -436,29 +471,19 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
 
-            if(mt_rand(1, 2) === 1)
-            {
-                $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to become a l33t h4xx0r, but accidentally de-allocated a String, leaving a useless Pointer behind :(', 'icons/activity-logs/null');
-                $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' accidentally de-allocated a String; all that remains is this Pointer.', $activityLog);
-                return $activityLog;
-            }
-            else
-            {
-                $this->inventoryService->loseItem('XOR', $pet->getOwner(), LocationEnum::HOME, 1);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to become a l33t h4xx0r, but confused an XOR for an OR; the XOR was lost forever :(', 'icons/activity-logs/null');
-            }
+            $this->inventoryService->loseItem('XOR', $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to become a l33t h4xx0r, but confused an XOR for an OR; the XOR was lost forever :(', 'icons/activity-logs/null');
         }
-        else if($roll >= 16)
+        else if($roll >= 17)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
-            $this->inventoryService->loseItem('Regex', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Brute Force', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('XOR', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' became a l33t h4xx0r.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
             ;
             $this->inventoryService->petCollectsItem('l33t h4xx0r', $pet, $pet->getName() . ' made this.', $activityLog);
             return $activityLog;
@@ -467,7 +492,7 @@ class ProgrammingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to become a l33t h4xx0r, but didn\'t have the right stuff.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to become a l33t h4xx0r, but didn\'t have the right stuff. (Figuratively speaking.)', 'icons/activity-logs/confused');
         }
     }
 
