@@ -149,8 +149,14 @@ class SmithingService
         if(array_key_exists('Silver Bar', $quantities) && array_key_exists('Gold Bar', $quantities) && array_key_exists('White Cloth', $quantities))
             $possibilities[] = [ $this, 'createCeremonialTrident' ];
 
-        if(array_key_exists('Iron Sword', $quantities) && array_key_exists('Everice', $quantities) && array_key_exists('Firestone', $quantities))
-            $possibilities[] = [ $this, 'createAntipode' ];
+        if(array_key_exists('Iron Sword', $quantities))
+        {
+            if(array_key_exists('Scales', $quantities) && array_key_exists('Fluff', $quantities))
+                $possibilities[] = [ $this, 'createDragonscale' ];
+
+            if(array_key_exists('Everice', $quantities) && array_key_exists('Firestone', $quantities))
+                $possibilities[] = [ $this, 'createAntipode' ];
+        }
 
         if(array_key_exists('Antipode', $quantities) && array_key_exists('Lightning Sword', $quantities))
             $possibilities[] = [ $this, 'createTrinityBlade' ];
@@ -619,9 +625,6 @@ class SmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createAntipode(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + max($pet->getDexterity(), $pet->getIntelligence()) + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
@@ -647,6 +650,42 @@ class SmithingService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Antipode, but the ' . ArrayFunctions::pick_one([ 'Everice', 'Firestone' ]) . ' was being uncooperative :|', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createDragonscale(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + max($pet->getDexterity(), $pet->getIntelligence()) + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->inventoryService->loseItem('Scales', $pet->getOwner(), LocationEnum::HOME, 1);
+            $pet->increaseEsteem(-1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make Dragonscale, but overheated the Scales, causing them to tear and crumble! :(', '');
+        }
+        else if($roll >= 16)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Iron Sword', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Fluff', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Scales', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(4);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' upgraded an Iron Sword into Dragonscale!', 'items/tool/sword/antipode')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+            ;
+            $this->inventoryService->petCollectsItem('Dragonscale', $pet, $pet->getName() . ' made this by inlaying Scales into an Iron Sword!', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Dragonscale, but got intimidated by all the detailing work that would be required!', 'icons/activity-logs/confused');
         }
     }
 
