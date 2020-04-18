@@ -46,4 +46,15 @@ class TraderOfferCostOrYield
 
         return $costOrYield;
     }
+
+    public static function createRecyclingPoints(int $quantity)
+    {
+        $costOrYield = new TraderOfferCostOrYield();
+
+        $costOrYield->type = CostOrYieldTypeEnum::RECYCLING_POINTS;
+        $costOrYield->item = null;
+        $costOrYield->quantity = $quantity;
+
+        return $costOrYield;
+    }
 }

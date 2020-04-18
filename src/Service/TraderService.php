@@ -593,14 +593,20 @@ class TraderService
         {
             $offers[] = new TraderOffer(
                 self::ID_GOLD_TO_SILVER_1,
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Bar'), 1) ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Bar'), 1),
+                    TraderOfferCostOrYield::createRecyclingPoints(3),
+                ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Bar'), 1) ],
                 'Thank you kindly.'
             );
 
             $offers[] = new TraderOffer(
                 self::ID_GOLD_TO_SILVER_2,
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Ore'), 1) ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Ore'), 1),
+                    TraderOfferCostOrYield::createRecyclingPoints(2),
+                ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Ore'), 1) ],
                 'Thank you kindly.'
             );
@@ -613,7 +619,7 @@ class TraderService
                 self::ID_IRON_TO_SILVER_1,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Iron Bar'), 1),
-                    TraderOfferCostOrYield::createMoney(10),
+                    TraderOfferCostOrYield::createRecyclingPoints(3),
                 ],
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Bar'), 1),
@@ -625,7 +631,7 @@ class TraderService
                 self::ID_IRON_TO_SILVER_2,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Iron Ore'), 1),
-                    TraderOfferCostOrYield::createMoney(8),
+                    TraderOfferCostOrYield::createRecyclingPoints(2),
                 ],
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Ore'), 1),
@@ -638,20 +644,24 @@ class TraderService
         {
             $offers[] = new TraderOffer(
                 self::ID_SILVER_TO_IRON_1,
-                [TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Bar'), 1)],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Bar'), 1),
+                    TraderOfferCostOrYield::createRecyclingPoints(3),
+                ],
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Iron Bar'), 1),
-                    TraderOfferCostOrYield::createMoney(3),
                 ],
                 'Thank you kindly.'
             );
 
             $offers[] = new TraderOffer(
                 self::ID_SILVER_TO_IRON_2,
-                [TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Ore'), 1)],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Ore'), 1),
+                    TraderOfferCostOrYield::createRecyclingPoints(2),
+                ],
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Iron Ore'), 1),
-                    TraderOfferCostOrYield::createMoney(2),
                 ],
                 'Thank you kindly.'
             );
@@ -663,7 +673,7 @@ class TraderService
                 self::ID_SILVER_TO_GOLD_1,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Bar'), 1),
-                    TraderOfferCostOrYield::createMoney(5),
+                    TraderOfferCostOrYield::createRecyclingPoints(3),
                 ],
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Bar'), 1),
@@ -675,7 +685,7 @@ class TraderService
                 self::ID_SILVER_TO_GOLD_2,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Ore'), 1),
-                    TraderOfferCostOrYield::createMoney(4),
+                    TraderOfferCostOrYield::createRecyclingPoints(2),
                 ],
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Ore'), 1),
@@ -703,6 +713,12 @@ class TraderService
 
                 case CostOrYieldTypeEnum::MONEY:
                     if($user->getMoneys() < $cost->quantity)
+                        return false;
+
+                    break;
+
+                case CostOrYieldTypeEnum::RECYCLING_POINTS:
+                    if($user->getRecyclePoints() < $cost->quantity)
                         return false;
 
                     break;
@@ -743,6 +759,14 @@ class TraderService
 
                     break;
 
+                case CostOrYieldTypeEnum::RECYCLING_POINTS:
+                    if($user->getRecyclePoints() < $cost->quantity)
+                        throw new \InvalidArgumentException('You do not have the ♺ needed to make this exchange.');
+
+                    $user->increaseRecyclePoints(-$cost->quantity);
+
+                    break;
+
                 default:
                     throw new \InvalidArgumentException('Unexpected cost type "' . $cost->type . '".');
             }
@@ -755,6 +779,7 @@ class TraderService
                 case CostOrYieldTypeEnum::ITEM:
                     for($i = 0; $i < $yield->quantity; $i++)
                         $this->inventoryService->receiveItem($yield->item, $user, null, $itemDescription, LocationEnum::HOME);
+
                     break;
 
                 case CostOrYieldTypeEnum::MONEY:
@@ -763,6 +788,10 @@ class TraderService
                     else
                         $this->transactionService->getMoney($user, $yield->quantity, 'Traded for at the Trader.');
 
+                    break;
+
+                case CostOrYieldTypeEnum::RECYCLING_POINTS:
+                    $user->increaseRecyclePoints($yield->quantity);
                     break;
             }
         }

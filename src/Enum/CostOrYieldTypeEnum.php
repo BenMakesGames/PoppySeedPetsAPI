@@ -7,4 +7,5 @@ final class CostOrYieldTypeEnum
 
     public const ITEM = 'item';
     public const MONEY = 'money';
+    public const RECYCLING_POINTS = 'recyclingPoints';
 }
