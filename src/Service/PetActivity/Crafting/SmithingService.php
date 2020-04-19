@@ -154,6 +154,9 @@ class SmithingService
             if(array_key_exists('Scales', $quantities) && array_key_exists('Fluff', $quantities))
                 $possibilities[] = [ $this, 'createDragonscale' ];
 
+            if(array_key_exists('Dark Scales', $quantities) && array_key_exists('Fluff', $quantities))
+                $possibilities[] = [ $this, 'createDrakkonscale' ];
+
             if(array_key_exists('Everice', $quantities) && array_key_exists('Firestone', $quantities))
                 $possibilities[] = [ $this, 'createAntipode' ];
         }
@@ -686,6 +689,42 @@ class SmithingService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Dragonscale, but got intimidated by all the detailing work that would be required!', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createDrakkonscale(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + max($pet->getDexterity(), $pet->getIntelligence()) + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->inventoryService->loseItem('Dark Scales', $pet->getOwner(), LocationEnum::HOME, 1);
+            $pet->increaseEsteem(-1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make Drakkonscale, but overheated the Dark Scales, causing them to tear and crumble! :(', '');
+        }
+        else if($roll >= 17)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Iron Sword', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Fluff', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Dark Scales', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(4);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' upgraded an Iron Sword into Drakkonscale!', 'items/tool/sword/antipode')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+            ;
+            $this->inventoryService->petCollectsItem('Drakkonscale', $pet, $pet->getName() . ' made this by inlaying Dark Scales into an Iron Sword!', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Drakkonscale, but got intimidated by all the detailing work that would be required!', 'icons/activity-logs/confused');
         }
     }
 
