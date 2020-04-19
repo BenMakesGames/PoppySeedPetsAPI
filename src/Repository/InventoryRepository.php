@@ -38,7 +38,7 @@ class InventoryRepository extends ServiceEntityRepository
         ;
     }
 
-    public function userHasAnyOneOf(User $owner, array $itemNames): bool
+    public function userHasAnyOneOf(User $owner, array $itemNames, array $locationsToCheck = Inventory::CONSUMABLE_LOCATIONS): bool
     {
         return $this->createQueryBuilder('i')
             ->select('COUNT(i.id)')
@@ -47,7 +47,7 @@ class InventoryRepository extends ServiceEntityRepository
             ->leftJoin('i.item', 'item')
             ->andWhere('item.name IN (:itemNames)')
             ->setParameter('user', $owner)
-            ->setParameter('consumableLocations', Inventory::CONSUMABLE_LOCATIONS)
+            ->setParameter('consumableLocations', $locationsToCheck)
             ->setParameter('itemNames', $itemNames)
             ->setMaxResults(1)
             ->getQuery()

@@ -7,6 +7,7 @@ use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
+use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\PetChanges;
@@ -94,7 +95,12 @@ class BlueprintController extends PoppySeedPetsItemController
         {
             throw new UnprocessableEntityHttpException('You\'ve already got a Beehive!');
         }
-        else if(!$inventoryRepository->userHasAnyOneOf($user, $magnifyingGlasses))
+        else if(!$inventoryRepository->userHasAnyOneOf($user, $magnifyingGlasses, [
+            LocationEnum::HOME,
+            LocationEnum::BASEMENT,
+            LocationEnum::MANTLE,
+            LocationEnum::WARDROBE,
+        ]))
         {
             throw new UnprocessableEntityHttpException('Goodness! It\'s so small! You\'ll need a magnifying glass of some kind...');
         }
