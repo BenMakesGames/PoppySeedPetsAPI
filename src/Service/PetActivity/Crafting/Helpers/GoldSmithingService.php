@@ -344,9 +344,6 @@ class GoldSmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createGoldTelescope(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
@@ -396,6 +393,39 @@ class GoldSmithingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a telescope, but almost broke the glass, and gave up.', 'icons/activity-logs/confused');
+        }
+    }
+    public function createGoldCompass(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 3)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $pet->increaseEsteem(-1);
+            $pet->increaseSafety(-mt_rand(2, 8));
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to work gold into an Enchanted Compass, but got burned while trying! :(', 'icons/activity-logs/burn');
+        }
+        else if($roll >= 20)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Enchanted Compass', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(3);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Gold Compass.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+            ;
+            $this->inventoryService->petCollectsItem('Gold Compass', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to gold into an Enchanted Compass, but the enchantment kept resisting the change.', 'icons/activity-logs/confused');
         }
     }
 

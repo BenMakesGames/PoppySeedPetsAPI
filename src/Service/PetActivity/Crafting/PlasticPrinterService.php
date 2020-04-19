@@ -38,6 +38,9 @@ class PlasticPrinterService
             if(mt_rand(1, 3) === 1)
                 $possibilities[] = [ $this, 'createPlasticIdol' ];
 
+            if(array_key_exists('Iron Bar', $quantities))
+                $possibilities[] = [ $this, 'createCompass' ];
+
             if(array_key_exists('String', $quantities))
                 $possibilities[] = [ $this, 'createPlasticFishingRod' ];
 
@@ -121,6 +124,36 @@ class PlasticPrinterService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
             ;
             $this->inventoryService->petCollectsItem('Evil Feather Duster', $pet, $pet->getName() . ' created this from Black Feathers and Plastic.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            return $this->printerActingUp($pet);
+        }
+    }
+
+    public function createCompass(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts());
+
+        if($roll <= 3)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
+
+            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Compass, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
+        }
+        else if($roll >= 12)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
+            $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Compass.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
+            ;
+            $this->inventoryService->petCollectsItem('Compass', $pet, $pet->getName() . ' created this from Plastic and an Iron Bar.', $activityLog);
             return $activityLog;
         }
         else

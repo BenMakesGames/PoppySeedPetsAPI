@@ -139,6 +139,9 @@ class SmithingService
             if(array_key_exists('Plastic', $quantities) && array_key_exists('3D Printer', $quantities))
                 $possibilities[] = [ $this->goldSmithingService, 'createGoldRod' ];
 
+            if(array_key_exists('Enchanted Compass', $quantities))
+                $possibilities[] = [ $this->goldSmithingService, 'createGoldCompass' ];
+
             if(array_key_exists('Silver Key', $quantities) && array_key_exists('White Cloth', $quantities))
                 $possibilities[] = [ $this, 'createSilverKeyblade' ];
 
