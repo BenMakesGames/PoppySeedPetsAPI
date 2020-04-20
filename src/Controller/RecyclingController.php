@@ -60,7 +60,7 @@ class RecyclingController extends PoppySeedPetsController
         else if($total === 8)
         {
             $items = [ 'Black Baabble' ];
-            $points = 50;
+            $points = 75;
         }
         else if($total >= 5 && $total <= 7)
         {
