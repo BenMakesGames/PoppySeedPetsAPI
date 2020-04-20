@@ -41,7 +41,7 @@ class MarketController extends PoppySeedPetsController
     }
 
     /**
-     * @Route("/userLimits", methods={"GET"})
+     * @Route("/limits", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getMarketLimits(ResponseService $responseService, MarketService $marketService)
@@ -55,7 +55,7 @@ class MarketController extends PoppySeedPetsController
     }
 
     /**
-     * @Route("/userLimits/increase", methods={"POST"})
+     * @Route("/limits/increase", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function increaseMarketLimits(
