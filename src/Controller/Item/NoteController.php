@@ -138,7 +138,7 @@ Here\'s some basic notes on how to take care of your new pet:
 
         return $responseService->itemActionSuccess('Start with Naner Ice Cream.
 
-Make "sauce" made from Sugar, Butter, and rum, and pour over the ice cream.
+Make "sauce" made from Sugar, Butter, Naner, and rum, and pour over the ice cream.
 
 Serve warm (and quickly!)');
     }
