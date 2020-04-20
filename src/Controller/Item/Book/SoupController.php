@@ -69,6 +69,13 @@ This strange recipe was invented by an AI. Despite being created by something wi
 * Tomato
 * Noodles
 
+#### Pumpkin Soup
+
+* Small Pumpkin
+* Creamy Milk
+
+Makes three smallish bowls!
+
 #### Tomato Soup
 
 * Butter
