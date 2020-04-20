@@ -124,7 +124,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="integer")
      */
-    private $maxSellPrice = 50;
+    private $maxSellPrice = 10;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)

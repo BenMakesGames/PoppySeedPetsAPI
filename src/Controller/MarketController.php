@@ -9,6 +9,8 @@ use App\Repository\InventoryRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\Filter\MarketFilterService;
 use App\Service\Filter\TransactionFilterService;
+use App\Service\InventoryService;
+use App\Service\MarketService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -36,6 +38,49 @@ class MarketController extends PoppySeedPetsController
             $marketFilterService->getResults($request->query),
             [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MARKET_ITEM ]
         );
+    }
+
+    /**
+     * @Route("/userLimits", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getMarketLimits(ResponseService $responseService, MarketService $marketService)
+    {
+        $user = $this->getUser();
+
+        return $responseService->success([
+            'moneysLimit' => $user->getMaxSellPrice(),
+            'itemRequired' => $marketService->getItemToRaiseLimit($user)
+        ]);
+    }
+
+    /**
+     * @Route("/userLimits/increase", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function increaseMarketLimits(
+        ResponseService $responseService, MarketService $marketService, InventoryService $inventoryService,
+        EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        $itemRequired = $marketService->getItemToRaiseLimit($user);
+
+        if(!$itemRequired)
+            throw new UnprocessableEntityHttpException('The market limits don\'t go any higher!');
+
+        if($inventoryService->loseItem($itemRequired['itemName'], $user, [ LocationEnum::HOME, LocationEnum::BASEMENT ], 1) === 0)
+            throw new UnprocessableEntityHttpException('Come back when you ACTUALLY have the item.');
+
+        $user->setMaxSellPrice($user->getMaxSellPrice() + 10);
+
+        $em->flush();
+
+        return $responseService->success([
+            'moneysLimit' => $user->getMaxSellPrice(),
+            'itemRequired' => $marketService->getItemToRaiseLimit($user)
+        ]);
     }
 
     /**
