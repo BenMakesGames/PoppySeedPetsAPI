@@ -10,6 +10,7 @@ use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\StoryActionTypeEnum;
 use App\Enum\StoryEnum;
+use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ItemQuantity;
 use App\Model\StoryStep;
@@ -267,6 +268,9 @@ class StoryService
                 ;
 
                 $this->em->persist($museumItem);
+
+                $this->userStatsRepository->incrementStat($this->user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, 1);
+
                 break;
 
             case StoryActionTypeEnum::LOSE_ITEM:
