@@ -483,8 +483,11 @@ class PetService
         }
 
         $itemsInHouse = (int)$this->inventoryRepository->countItemsInLocation($pet->getOwner(), LocationEnum::HOME);
-        $craftingPossibilities = $this->craftingService->getCraftingPossibilities($pet);
-        $programmingPossibilities = $this->programmingService->getCraftingPossibilities($pet);
+
+        $quantities = $this->inventoryRepository->getInventoryQuantities($pet->getOwner(), LocationEnum::HOME, 'name');
+
+        $craftingPossibilities = $this->craftingService->getCraftingPossibilities($pet, $quantities);
+        $programmingPossibilities = $this->programmingService->getCraftingPossibilities($pet, $quantities);
 
         $houseTooFull = mt_rand(1, 10) > $pet->getOwner()->getMaxInventory() - $itemsInHouse;
 

@@ -11,7 +11,6 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
-use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetActivity\Crafting\PlasticPrinterService;
 use App\Service\PetActivity\Crafting\SmithingService;
@@ -25,7 +24,6 @@ class CraftingService
     private $responseService;
     private $inventoryService;
     private $petExperienceService;
-    private $itemRepository;
     private $smithingService;
     private $magicBindingService;
     private $plasticPrinterService;
@@ -33,14 +31,13 @@ class CraftingService
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService,
-        ItemRepository $itemRepository, SmithingService $smithingService, MagicBindingService $magicBindingService,
+        SmithingService $smithingService, MagicBindingService $magicBindingService,
         PlasticPrinterService $plasticPrinterService, PetExperienceService $petExperienceService,
         StickCraftingService $stickCraftingService
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
-        $this->itemRepository = $itemRepository;
         $this->smithingService = $smithingService;
         $this->magicBindingService = $magicBindingService;
         $this->plasticPrinterService = $plasticPrinterService;
@@ -48,10 +45,8 @@ class CraftingService
         $this->stickCraftingService = $stickCraftingService;
     }
 
-    public function getCraftingPossibilities(Pet $pet): array
+    public function getCraftingPossibilities(Pet $pet, array $quantities): array
     {
-        $quantities = $this->itemRepository->getInventoryQuantities($pet->getOwner(), LocationEnum::HOME, 'name');
-
         $possibilities = [];
 
         if(array_key_exists('Fluff', $quantities))

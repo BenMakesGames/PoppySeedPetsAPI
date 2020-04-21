@@ -9,9 +9,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\GrammarFunctions;
 use App\Model\PetChanges;
-use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -20,24 +18,20 @@ class ProgrammingService
 {
     private $responseService;
     private $inventoryService;
-    private $itemRepository;
     private $petExperienceService;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, ItemRepository $itemRepository,
+        ResponseService $responseService, InventoryService $inventoryService,
         PetExperienceService $petExperienceService
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
-        $this->itemRepository = $itemRepository;
         $this->petExperienceService = $petExperienceService;
     }
 
-    public function getCraftingPossibilities(Pet $pet): array
+    public function getCraftingPossibilities(Pet $pet, array $quantities): array
     {
-        $quantities = $this->itemRepository->getInventoryQuantities($pet->getOwner(), LocationEnum::HOME, 'name');
-
         $possibilities = [];
 
         if(array_key_exists('Macintosh', $quantities))

@@ -30,42 +30,4 @@ class ItemRepository extends ServiceEntityRepository
 
         return $item;
     }
-
-    /**
-     * @return ItemQuantity[]
-     */
-    public function getInventoryQuantities(User $user, int $location, $indexBy = null)
-    {
-        $query = $this->getEntityManager()->createQueryBuilder()
-            ->from(Inventory::class, 'inventory')
-            ->select('item,COUNT(inventory.id) AS quantity')
-            ->leftJoin(Item::class, 'item', 'WITH', 'inventory.item = item.id')
-            ->andWhere('inventory.owner=:user')
-            ->andwhere('inventory.location=:location')
-            ->groupBy('item.id')
-            ->setParameter('user', $user->getId())
-            ->setParameter('location', $location)
-        ;
-
-        $results = $query->getQuery()->execute();
-
-        $quantities = [];
-
-        foreach($results as $result)
-        {
-            $quantity = new ItemQuantity();
-            $quantity->item = $result[0];
-            $quantity->quantity = (int)$result['quantity'];
-
-            if($indexBy)
-            {
-                $getter = 'get' . $indexBy;
-                $quantities[$quantity->item->$getter()] = $quantity;
-            }
-            else
-                $quantities[] = $quantity;
-        }
-
-        return $quantities;
-    }
 }

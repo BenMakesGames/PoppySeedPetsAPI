@@ -14,6 +14,7 @@ use App\Functions\ArrayFunctions;
 use App\Model\ItemQuantity;
 use App\Model\StoryStep;
 use App\Model\StoryStepChoice;
+use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\StoryRepository;
 use App\Repository\StorySectionRepository;
@@ -31,6 +32,7 @@ class StoryService
     private $storySectionRepository;
     private $userQuestRepository;
     private $inventoryService;
+    private $inventoryRepository;
     private $itemRepository;
     private $jsonLogicParserService;
     private $userStatsRepository;
@@ -44,7 +46,8 @@ class StoryService
     public function __construct(
         EntityManagerInterface $em, StoryRepository $storyRepository, StorySectionRepository $storySectionRepository,
         UserQuestRepository $userQuestRepository, InventoryService $inventoryService, ItemRepository $itemRepository,
-        JsonLogicParserService $jsonLogicParserService, UserStatsRepository $userStatsRepository
+        JsonLogicParserService $jsonLogicParserService, UserStatsRepository $userStatsRepository,
+        InventoryRepository $inventoryRepository
     )
     {
         $this->em = $em;
@@ -55,6 +58,7 @@ class StoryService
         $this->itemRepository = $itemRepository;
         $this->jsonLogicParserService = $jsonLogicParserService;
         $this->userStatsRepository = $userStatsRepository;
+        $this->inventoryRepository = $inventoryRepository;
     }
 
     /**
@@ -214,7 +218,7 @@ class StoryService
     private function getUserInventory(): array
     {
         if(!$this->userInventory)
-            $this->userInventory = $this->itemRepository->getInventoryQuantities($this->user, LocationEnum::HOME, 'name');
+            $this->userInventory = $this->inventoryRepository->getInventoryQuantities($this->user, LocationEnum::HOME, 'name');
 
         return $this->userInventory;
     }
