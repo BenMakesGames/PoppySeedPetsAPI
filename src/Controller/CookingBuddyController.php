@@ -30,7 +30,7 @@ class CookingBuddyController extends PoppySeedPetsController
      */
     public function getKnownRecipes(
         Inventory $cookingBuddy, KnownRecipesFilterService $knownRecipesFilterService, InventoryService $inventoryService,
-        Request $request, ResponseService $responseService, ItemRepository $itemRepository
+        Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository
     )
     {
         $user = $this->getUser();
@@ -42,7 +42,7 @@ class CookingBuddyController extends PoppySeedPetsController
 
         $results = $knownRecipesFilterService->getResults($request->query);
 
-        $quantities = $itemRepository->getInventoryQuantities($user, $cookingBuddy->getLocation(), 'name');
+        $quantities = $inventoryRepository->getInventoryQuantities($user, $cookingBuddy->getLocation(), 'name');
 
         // this feels kinda' gross, but I'm not sure how else to do it...
         $recipes = [];
