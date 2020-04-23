@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\PetActivityLog;
+use App\Enum\BeehiveSpecializationEnum;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
@@ -13,6 +14,7 @@ use App\Service\HollowEarthService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use http\Env\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -41,6 +43,37 @@ class BeehiveController extends PoppySeedPetsController
         $em->flush();
 
         return $responseService->success($user->getBeehive(), SerializationGroupEnum::MY_BEEHIVE);
+    }
+
+    /**
+     * @Route("/chooseSpecialization", methods={"PATCH"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function chooseSpecialization(
+        Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        BeehiveService $beehiveService
+    )
+    {
+        $user = $this->getUser();
+
+        if(!$user->getUnlockedBeehive() || !$user->getBeehive())
+            throw new AccessDeniedHttpException('You haven\'t got a Beehive, yet!');
+
+        $beehive = $user->getBeehive();
+
+        if($beehive->getWorkers() < 2000)
+            throw new AccessDeniedHttpException('Your colony is not large enough to choose a specialization.');
+
+        $specialization = $request->request->getAlpha('specialization');
+
+        if(!BeehiveSpecializationEnum::isAValue($specialization))
+            throw new UnprocessableEntityHttpException('Please select a specialization.');
+
+        $beehive->setSpecialization($specialization);
+
+        $em->flush();
+
+        return $responseService->success($beehive, SerializationGroupEnum::MY_BEEHIVE);
     }
 
     /**
@@ -181,9 +214,32 @@ class BeehiveController extends PoppySeedPetsController
         {
             $beehive->setMiscProgress(0);
 
-            $item = ArrayFunctions::pick_one([
+            $possibleItems = [
                 'Fluff', 'Talon', 'Yellow Dye', 'Crooked Stick', 'Glue', 'Sugar', 'Antenna'
-            ]);
+            ];
+
+            switch($beehive->getSpecialization())
+            {
+                case BeehiveSpecializationEnum::FARMING:
+                    $possibleItems = array_merge($possibleItems, [
+                        'Wheat', 'Blueberries', 'Blackberries', 'Mixed Nuts'
+                    ]);
+                    break;
+
+                case BeehiveSpecializationEnum::FISHING:
+                    $possibleItems = array_merge($possibleItems, [
+                        'Fish', 'Fish', 'Fish', 'Fish', 'Scales'
+                    ]);
+                    break;
+
+                case BeehiveSpecializationEnum::MINING:
+                    $possibleItems = array_merge($possibleItems, [
+                        'Iron Ore', 'Silver Ore', ArrayFunctions::pick_one([ 'Gold Ore', 'Iron Ore' ])
+                    ]);
+                    break;
+            }
+
+            $item = ArrayFunctions::pick_one($possibleItems);
 
             $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' took this from their Beehive.', LocationEnum::HOME);
 

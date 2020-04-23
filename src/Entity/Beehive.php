@@ -73,6 +73,12 @@ class Beehive
      */
     private $requestedItem;
 
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     * @Groups({"myBeehive"})
+     */
+    private $specialization;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -208,5 +214,17 @@ class Beehive
     public function getMiscPercent(): float
     {
         return min(1, round($this->miscProgress / 2000, 2));
+    }
+
+    public function getSpecialization(): ?string
+    {
+        return $this->specialization;
+    }
+
+    public function setSpecialization(?string $specialization): self
+    {
+        $this->specialization = $specialization;
+
+        return $this;
     }
 }
