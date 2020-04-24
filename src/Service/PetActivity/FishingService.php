@@ -37,7 +37,7 @@ class FishingService
     {
         $maxSkill = 5 + $pet->getDexterity() + $pet->getNature() + $pet->getFishing() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2);
 
-        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 19);
+        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 21);
 
         $roll = mt_rand(1, $maxSkill);
 
@@ -93,6 +93,14 @@ class FishingService
                 break;
             case 19:
                 $activityLog = $this->fishedAlgae($pet);
+                break;
+            case 20:
+            case 21:
+                // @TODO
+                /*if(mt_rand(1, 50) === 1)
+                    $activityLog = $this->fishedNarwhal($pet);
+                else*/
+                    $activityLog = $this->fishedJellyfish($pet);
                 break;
         }
 
@@ -666,6 +674,38 @@ class FishingService
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at the Coral Reef, but there were a bunch of Jellyfish around.', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+        }
+
+        return $activityLog;
+    }
+
+    private function fishedJellyfish(Pet $pet): PetActivityLog
+    {
+        $nothingBiting = $this->nothingBiting($pet, 20, 'way out on the pier');
+        if($nothingBiting !== null) return $nothingBiting;
+
+        if(mt_rand(1, 10 + $pet->getDexterity() + $pet->getNature() + $pet->getPerception() + $pet->getFishing()) >= 12)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing way out on the pier, and caught a Jellyfish.', 'items/tool/fishing-rod/crooked');
+            $this->inventoryService->petCollectsItem('Jellyfish', $pet, $pet->getName() . ' got this from a Jellyfish they caught way out on the pier.', $activityLog);
+
+            if(mt_rand(1, 2) === 1)
+                $this->inventoryService->petCollectsItem('Tentacle', $pet, $pet->getName() . ' got this from a Jellyfish they caught way out on the pier.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
+
+            $this->creditLackOfReflection($activityLog);
+
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, true);
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing way out on the pier, and pulled up a Jellyfish, but it stung ' . $pet->getName() . ', and got away!', '');
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+
+            $pet->increaseSafety(-mt_rand(4, 8));
+
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
         }
 
         return $activityLog;
