@@ -687,7 +687,7 @@ class FishingService
         if(mt_rand(1, 10 + $pet->getDexterity() + $pet->getNature() + $pet->getPerception() + $pet->getFishing()) >= 12)
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing way out on the pier, and caught a Jellyfish.', 'items/tool/fishing-rod/crooked');
-            $this->inventoryService->petCollectsItem('Jellyfish', $pet, $pet->getName() . ' got this from a Jellyfish they caught way out on the pier.', $activityLog);
+            $this->inventoryService->petCollectsItem('Jellyfish Jelly', $pet, $pet->getName() . ' got this from a Jellyfish they caught way out on the pier.', $activityLog);
 
             if(mt_rand(1, 2) === 1)
                 $this->inventoryService->petCollectsItem('Tentacle', $pet, $pet->getName() . ' got this from a Jellyfish they caught way out on the pier.', $activityLog);
