@@ -24,7 +24,7 @@ class LunchboxItem
     private $pet;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Inventory", inversedBy="lunchboxItem", cascade={"remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Inventory", inversedBy="lunchboxItem")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"myPet"})
      */
