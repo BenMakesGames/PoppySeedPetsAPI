@@ -24,7 +24,7 @@ class LunchboxItem
     private $pet;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Inventory")
+     * @ORM\OneToOne(targetEntity="App\Entity\Inventory", inversedBy="lunchboxItem", cascade={"remove"})
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"myPet"})
      */
@@ -52,7 +52,7 @@ class LunchboxItem
         return $this->inventoryItem;
     }
 
-    public function setInventoryItem(?Inventory $inventoryItem): self
+    public function setInventoryItem(Inventory $inventoryItem): self
     {
         $this->inventoryItem = $inventoryItem;
 

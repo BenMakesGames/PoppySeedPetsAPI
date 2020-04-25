@@ -103,6 +103,11 @@ class Inventory
      */
     private $lockedToOwner = false;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\LunchboxItem", mappedBy="inventoryItem", cascade={"remove"})
+     */
+    private $lunchboxItem;
+
     public function __construct()
     {
         $this->createdOn = new \DateTimeImmutable();
@@ -303,6 +308,23 @@ class Inventory
     public function setLockedToOwner(bool $lockedToOwner): self
     {
         $this->lockedToOwner = $lockedToOwner;
+
+        return $this;
+    }
+
+    public function getLunchboxItem(): ?LunchboxItem
+    {
+        return $this->lunchboxItem;
+    }
+
+    public function setLunchboxItem(LunchboxItem $lunchboxItem): self
+    {
+        $this->lunchboxItem = $lunchboxItem;
+
+        // set the owning side of the relation if necessary
+        if ($lunchboxItem->getInventoryItem() !== $this) {
+            $lunchboxItem->setInventoryItem($this);
+        }
 
         return $this;
     }

@@ -9,4 +9,5 @@ final class LocationEnum
     const BASEMENT = 1;
     const MANTLE = 2;
     const WARDROBE = 3;
+    const LUNCHBOX = 4;
 }

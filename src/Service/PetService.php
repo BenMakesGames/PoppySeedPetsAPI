@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\GreenhousePlant;
 use App\Entity\Inventory;
+use App\Entity\LunchboxItem;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetBaby;
@@ -256,16 +257,11 @@ class PetService
             if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
                 throw new EnumInvalidValueException(FlavorEnum::class, $pet->getFavoriteFlavor());
 
-            $favoriteFlavorStrength = $food->{'get' . $pet->getFavoriteFlavor()}();
-
-            if($pet->hasMerit(MeritEnum::LOLLIGOVORE) && $i->getItem()->containsTentacles())
-                $favoriteFlavorStrength += 2;
-
-            $bonusLoveAndEsteem = $food->getLove() + $favoriteFlavorStrength;
+            $favoriteFlavorStrength = $this->petExperienceService->getFavoriteFlavorStrength($pet, $i->getItem());
 
             $pet
-                ->increaseLove($bonusLoveAndEsteem)
-                ->increaseEsteem($bonusLoveAndEsteem)
+                ->increaseLove($favoriteFlavorStrength)
+                ->increaseEsteem($favoriteFlavorStrength)
             ;
 
             if($favoriteFlavorStrength > 0)
@@ -334,7 +330,7 @@ class PetService
             throw new \InvalidArgumentException('Pets in daycare cannot be interacted with.');
 
         if($pet->getTime() < 60)
-            throw new \InvalidArgumentException('Pet does not have enough Time.');
+            throw new \InvalidArgumentException('Pet does not have enough Time. (Ben did something horrible; please let him know.)');
 
         $pet->increaseFood(-1);
 
@@ -453,6 +449,53 @@ class PetService
                     ->setColorB(ColorFunctions::tweakColor($pet->getColorB(), 4))
                 ;
             }
+        }
+
+        $hunger = mt_rand(0, 4);
+
+        if($pet->getFood() < $hunger && count($pet->getLunchboxItems()) > 0)
+        {
+            $petChanges = new PetChanges($pet);
+
+            /** @var $sortedLunchboxItems LunchboxItem[] */
+            $sortedLunchboxItems = $pet->getLunchboxItems()->filter(function(LunchboxItem $i) {
+                return $i->getInventoryItem()->getItem()->getFood() !== null;
+            })->toArray();
+
+            // sorted from most-delicious to least-delicious
+            usort($sortedLunchboxItems, function(LunchboxItem $a, LunchboxItem $b) use($pet) {
+                $aValue = $this->petExperienceService->getFavoriteFlavorStrength($pet, $a->getInventoryItem()->getItem());
+                $bValue = $this->petExperienceService->getFavoriteFlavorStrength($pet, $b->getInventoryItem()->getItem());
+
+                if($aValue === $bValue)
+                    return $b->getInventoryItem()->getItem()->getFood()->getFood() <=> $a->getInventoryItem()->getItem()->getFood()->getFood();
+                else
+                    return $bValue <=> $aValue;
+            });
+
+            $namesOfItemsEaten = [];
+
+            while($pet->getFood() < $hunger && count($sortedLunchboxItems) > 0)
+            {
+                $itemToEat = array_shift($sortedLunchboxItems);
+                $namesOfItemsEaten[] = $itemToEat->getInventoryItem()->getItem()->getName();
+
+                $this->petExperienceService->doEat($pet, $itemToEat->getInventoryItem()->getItem(), null);
+
+                $this->em->remove($itemToEat);
+                $this->em->remove($itemToEat->getInventoryItem());
+            }
+
+            $message = $pet->getName() . ' ate ' . ArrayFunctions::list_nice($namesOfItemsEaten) . ' out of their lunchbox.';
+
+            $lunchboxIsEmpty = count($sortedLunchboxItems) === 0;
+
+            if($lunchboxIsEmpty)
+                $message .= ' Their lunchbox is now empty!';
+
+            $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/lunchbox', $petChanges->compare($pet))
+                ->addInterestingness($lunchboxIsEmpty ? PetActivityLogInterestingnessEnum::LUNCHBOX_EMPTY : 1)
+            ;
         }
 
         if(
