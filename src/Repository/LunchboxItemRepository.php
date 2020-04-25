@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Repository;
+
+use App\Entity\LunchboxItem;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
+
+/**
+ * @method LunchboxItem|null find($id, $lockMode = null, $lockVersion = null)
+ * @method LunchboxItem|null findOneBy(array $criteria, array $orderBy = null)
+ * @method LunchboxItem[]    findAll()
+ * @method LunchboxItem[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
+class LunchboxItemRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, LunchboxItem::class);
+    }
+
+    // /**
+    //  * @return LunchboxItem[] Returns an array of LunchboxItem objects
+    //  */
+    /*
+    public function findByExampleField($value)
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.exampleField = :val')
+            ->setParameter('val', $value)
+            ->orderBy('l.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    */
+
+    /*
+    public function findOneBySomeField($value): ?LunchboxItem
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.exampleField = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+    */
+}

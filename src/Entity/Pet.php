@@ -335,6 +335,12 @@ class Pet
      */
     private $affectionAdventures = 0;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\LunchboxItem", mappedBy="pet")
+     * @Groups({"myPet"})
+     */
+    private $lunchboxItems;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -363,6 +369,7 @@ class Pet
         $this->groups = new ArrayCollection();
 
         $this->loveLanguage = LoveLanguageEnum::getRandomValue();
+        $this->lunchboxItems = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -1672,6 +1679,37 @@ class Pet
     public function incrementAffectionAdventures(): self
     {
         $this->affectionAdventures++;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|LunchboxItem[]
+     */
+    public function getLunchboxItems(): Collection
+    {
+        return $this->lunchboxItems;
+    }
+
+    public function addLunchboxItem(LunchboxItem $lunchboxItem): self
+    {
+        if (!$this->lunchboxItems->contains($lunchboxItem)) {
+            $this->lunchboxItems[] = $lunchboxItem;
+            $lunchboxItem->setPet($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLunchboxItem(LunchboxItem $lunchboxItem): self
+    {
+        if ($this->lunchboxItems->contains($lunchboxItem)) {
+            $this->lunchboxItems->removeElement($lunchboxItem);
+            // set the owning side to null (unless already changed)
+            if ($lunchboxItem->getPet() === $this) {
+                $lunchboxItem->setPet(null);
+            }
+        }
 
         return $this;
     }
