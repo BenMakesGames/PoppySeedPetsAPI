@@ -104,7 +104,7 @@ class Inventory
     private $lockedToOwner = false;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\LunchboxItem", mappedBy="inventoryItem", cascade={"remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\LunchboxItem", mappedBy="inventoryItem")
      */
     private $lunchboxItem;
 
