@@ -227,7 +227,7 @@ class InventoryService
             $this->em->persist($extraItem);
         }
 
-        if($item->getFood() !== null && mt_rand(1, 20) < 10 - $pet->getFood())
+        if($item->getFood() !== null && count($pet->getLunchboxItems()) === 0 && mt_rand(1, 20) < 10 - $pet->getFood())
         {
             if($this->petExperienceService->doEat($pet, $item, $activityLog))
                 return null;
