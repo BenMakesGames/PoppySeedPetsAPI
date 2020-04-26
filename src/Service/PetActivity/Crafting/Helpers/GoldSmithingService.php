@@ -425,7 +425,7 @@ class GoldSmithingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to gold into an Enchanted Compass, but the enchantment kept resisting the change.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to work gold into an Enchanted Compass, but the enchantment resisted any change.', 'icons/activity-logs/confused');
         }
     }
 
