@@ -259,9 +259,11 @@ class PetService
 
             $favoriteFlavorStrength = $this->petExperienceService->getFavoriteFlavorStrength($pet, $i->getItem());
 
+            $loveAndEsteemGain = $favoriteFlavorStrength + $food->getLove();
+
             $pet
-                ->increaseLove($favoriteFlavorStrength)
-                ->increaseEsteem($favoriteFlavorStrength)
+                ->increaseLove($loveAndEsteemGain)
+                ->increaseEsteem($loveAndEsteemGain)
             ;
 
             if($favoriteFlavorStrength > 0)
@@ -464,8 +466,8 @@ class PetService
 
             // sorted from most-delicious to least-delicious
             usort($sortedLunchboxItems, function(LunchboxItem $a, LunchboxItem $b) use($pet) {
-                $aValue = $this->petExperienceService->getFavoriteFlavorStrength($pet, $a->getInventoryItem()->getItem());
-                $bValue = $this->petExperienceService->getFavoriteFlavorStrength($pet, $b->getInventoryItem()->getItem());
+                $aValue = $this->petExperienceService->getFavoriteFlavorStrength($pet, $a->getInventoryItem()->getItem()) + $a->getInventoryItem()->getItem()->getFood()->getLove();
+                $bValue = $this->petExperienceService->getFavoriteFlavorStrength($pet, $b->getInventoryItem()->getItem()) + $a->getInventoryItem()->getItem()->getFood()->getLove();
 
                 if($aValue === $bValue)
                     return $b->getInventoryItem()->getItem()->getFood()->getFood() <=> $a->getInventoryItem()->getItem()->getFood()->getFood();

@@ -137,9 +137,9 @@ class PetExperienceService
         if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
             throw new EnumInvalidValueException(FlavorEnum::class, $pet->getFavoriteFlavor());
 
-        $favoriteFlavorStrength = $this->getFavoriteFlavorStrength($pet, $item);
+        $esteemGain = $this->getFavoriteFlavorStrength($pet, $item) + $item->getFood()->getLove();
 
-        $pet->increaseEsteem($favoriteFlavorStrength);
+        $pet->increaseEsteem($esteemGain);
 
         if($activityLog)
             $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $item->getName() . '.');
@@ -157,7 +157,7 @@ class PetExperienceService
         if($pet->hasMerit(MeritEnum::LOLLIGOVORE) && $item->containsTentacles())
             $favoriteFlavorStrength += 2;
 
-        return $favoriteFlavorStrength + $item->getFood()->getLove();
+        return $favoriteFlavorStrength;
     }
 
     /**
