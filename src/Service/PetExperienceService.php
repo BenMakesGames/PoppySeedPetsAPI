@@ -122,8 +122,8 @@ class PetExperienceService
      */
     public function doEat(Pet $pet, Item $item, ?PetActivityLog $activityLog): bool
     {
-        // intelligent pets won't eat items that provides no food; no pet will eat if their stomach is already full
-        if(($pet->getFood() === 0 && mt_rand(1, 10 + $pet->getIntelligence()) >= 5) || $pet->getJunk() + $pet->getFood() >= $pet->getStomachSize())
+        // pets will not eat if their stomach is already full
+        if($pet->getJunk() + $pet->getFood() >= $pet->getStomachSize())
             return false;
 
         $food = $item->getFood();

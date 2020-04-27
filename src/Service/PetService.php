@@ -476,27 +476,46 @@ class PetService
             });
 
             $namesOfItemsEaten = [];
+            $namesOfItemsSkipped = [];
+            $itemsLeftInLunchbox = count($sortedLunchboxItems);
 
             while($pet->getFood() < $hunger && count($sortedLunchboxItems) > 0)
             {
                 $itemToEat = array_shift($sortedLunchboxItems);
-                $namesOfItemsEaten[] = $itemToEat->getInventoryItem()->getItem()->getName();
 
-                $this->petExperienceService->doEat($pet, $itemToEat->getInventoryItem()->getItem(), null);
+                $ateIt = $this->petExperienceService->doEat($pet, $itemToEat->getInventoryItem()->getItem(), null);
 
-                $this->em->remove($itemToEat);
-                $this->em->remove($itemToEat->getInventoryItem());
+                if($ateIt)
+                {
+                    $namesOfItemsEaten[] = $itemToEat->getInventoryItem()->getItem()->getName();
+
+                    $this->em->remove($itemToEat);
+                    $this->em->remove($itemToEat->getInventoryItem());
+
+                    $itemsLeftInLunchbox--;
+                }
+                else
+                    $namesOfItemsSkipped[] = $itemToEat->getInventoryItem()->getItem()->getName();
             }
 
-            $message = $pet->getName() . ' ate ' . ArrayFunctions::list_nice($namesOfItemsEaten) . ' out of their lunchbox.';
+            if(count($namesOfItemsEaten) > 0)
+            {
+                $message = $pet->getName() . ' ate ' . ArrayFunctions::list_nice($namesOfItemsEaten) . ' out of their lunchbox.';
 
-            $lunchboxIsEmpty = count($sortedLunchboxItems) === 0;
+                if(count($namesOfItemsSkipped) > 0)
+                    $message .= ' (' . ArrayFunctions::list_nice($namesOfItemsSkipped) . ' really isn\'t appealing right now, though.)';
+            }
+            else
+            {
+                if(count($namesOfItemsSkipped) > 0)
+                    $message = $pet->getName() . ' looked in their lunchbox for something to eat, but ' . ArrayFunctions::list_nice($namesOfItemsSkipped) . ' really isn\'t appealing right now.';
+            }
 
-            if($lunchboxIsEmpty)
+            if($itemsLeftInLunchbox === 0)
                 $message .= ' Their lunchbox is now empty!';
 
             $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/lunchbox', $petChanges->compare($pet))
-                ->addInterestingness($lunchboxIsEmpty ? PetActivityLogInterestingnessEnum::LUNCHBOX_EMPTY : 1)
+                ->addInterestingness($itemsLeftInLunchbox === 0 ? PetActivityLogInterestingnessEnum::LUNCHBOX_EMPTY : 1)
             ;
         }
 
