@@ -713,7 +713,7 @@ class CraftingService
             $this->inventoryService->loseItem('Glue', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Gold Trifecta.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created an L-Square.', '');
             $this->inventoryService->petCollectsItem('L-Square', $pet, $pet->getName() . ' created by gluing together a couple Rulers.', $activityLog);
 
             return $activityLog;
