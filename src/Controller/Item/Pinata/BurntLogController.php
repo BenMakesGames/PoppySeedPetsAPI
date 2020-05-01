@@ -28,6 +28,7 @@ class BurntLogController extends PoppySeedPetsItemController
     )
     {
         $this->validateInventory($inventory, 'burntLog/#/break');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
         $location = $inventory->getLocation();

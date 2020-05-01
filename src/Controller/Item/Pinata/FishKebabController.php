@@ -24,6 +24,7 @@ class FishKebabController extends PoppySeedPetsItemController
     )
     {
         $this->validateInventory($inventory, 'fishKebab/#/takeApart');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
 

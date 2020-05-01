@@ -3,10 +3,12 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
+use App\Enum\LocationEnum;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -25,6 +27,10 @@ class LinensController extends PoppySeedPetsItemController
     )
     {
         $this->validateInventory($inventory, 'linensAndThings/#/rummage');
+        $this->validateHouseSpace($inventory, $inventoryService);
+
+        if($inventory->getLocation() === LocationEnum::HOME && $inventoryService->countTotalInventory($this->getUser(), LocationEnum::HOME) >= 150)
+            throw new UnprocessableEntityHttpException('The house is WAY too full to do that. (Over 150 items? Dang!)');
 
         $user = $this->getUser();
         $location = $inventory->getLocation();

@@ -25,6 +25,7 @@ class EggplantController extends PoppySeedPetsItemController
     )
     {
         $this->validateInventory($inventory, 'eggplant/#/clean');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
 

@@ -73,6 +73,7 @@ class BaabbleController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'baabble/black/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
@@ -125,6 +126,7 @@ class BaabbleController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'baabble/white/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
@@ -181,6 +183,7 @@ class BaabbleController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'baabble/gold/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
@@ -240,6 +243,7 @@ class BaabbleController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'baabble/shiny/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();

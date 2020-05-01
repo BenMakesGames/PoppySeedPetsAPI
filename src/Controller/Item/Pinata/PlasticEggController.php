@@ -40,6 +40,7 @@ class PlasticEggController extends PoppySeedPetsItemController
     )
     {
         $this->validateInventory($inventory, 'plasticEgg/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
 

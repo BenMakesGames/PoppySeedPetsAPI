@@ -30,6 +30,7 @@ class MagpieDealController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'magpieDeal/#/quint');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
 
@@ -55,6 +56,7 @@ class MagpieDealController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'magpieDeal/#/feathersAndEggs');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
 
@@ -89,6 +91,7 @@ class MagpieDealController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'magpieDeal/#/sticks');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
 
@@ -114,6 +117,7 @@ class MagpieDealController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'magpieDeal/#/shinyMetals');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
 

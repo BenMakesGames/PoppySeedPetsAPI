@@ -25,6 +25,7 @@ class FairyRingController extends PoppySeedPetsItemController
     )
     {
         $this->validateInventory($inventory, 'fairyRing/#/takeApart');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
 

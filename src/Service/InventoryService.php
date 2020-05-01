@@ -36,7 +36,6 @@ class InventoryService
     }
 
     /**
-     * @param User $user
      * @param Item|string|integer $item
      * @throws EnumInvalidValueException
      */
@@ -69,7 +68,6 @@ class InventoryService
     }
 
     /**
-     * @param User $user
      * @throws EnumInvalidValueException
      */
     public function countTotalInventory(User $user, int $location): int
@@ -264,17 +262,15 @@ class InventoryService
 
         for($i = 0; $i < $bugs; $i++)
         {
-            $inventory = (new Inventory())
-                ->setOwner($pet->getOwner())
-                ->setCreatedBy(null)
-                ->setItem($bug)
-                ->addComment($comment)
+            $location = (!$hasNet && $pet->getOwner()->getUnlockedBasement() && mt_rand(1, 4) === 1)
+                ? LocationEnum::BASEMENT
+                : LocationEnum::HOME
             ;
 
-            if(!$hasNet && $pet->getOwner()->getUnlockedBasement() && mt_rand(1, 4) === 1)
-                $inventory->setLocation(LocationEnum::BASEMENT);
+            $inventory = $this->receiveItem($bug, $pet->getOwner(), null, $comment, $location);
 
-            $this->em->persist($inventory);
+            if(!$hasNet && $bugName === 'Spider')
+                $this->receiveItem('Cobweb', $pet->getOwner(), null, 'Cobwebs?! Some Spider must have made this...', $location);
         }
 
         return $inventory;

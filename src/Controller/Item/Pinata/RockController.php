@@ -30,6 +30,7 @@ class RockController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($rock, 'rock/#/smash');
+        $this->validateHouseSpace($rock, $inventoryService);
 
         $location = $rock->getLocation();
         $lockedToOwner = $rock->getLockedToOwner();

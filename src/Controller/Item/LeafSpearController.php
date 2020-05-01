@@ -43,7 +43,12 @@ class LeafSpearController extends PoppySeedPetsItemController
 
         $inventory->changeItem($itemRepository->findOneByName('Really Big Leaf'));
 
-        $inventoryService->receiveItem('String', $user, $inventory->getCreatedBy(), $user->getName() . ' pulled this off of Leaf Spear.', $inventory->getLocation(), $inventory->getLockedToOwner());
+        $stringLocation = $inventory->getLocation() === LocationEnum::WARDROBE
+            ? LocationEnum::HOME
+            : $inventory->getLocation()
+        ;
+
+        $inventoryService->receiveItem('String', $user, $inventory->getCreatedBy(), $user->getName() . ' pulled this off of Leaf Spear.', $stringLocation, $inventory->getLockedToOwner());
 
         $em->flush();
 

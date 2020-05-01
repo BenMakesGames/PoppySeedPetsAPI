@@ -31,6 +31,7 @@ class ScrollController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'scroll/fruit/#/invoke');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $em->remove($inventory);
 
@@ -106,6 +107,7 @@ class ScrollController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'scroll/music/#/invoke');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $em->remove($inventory);
 
@@ -147,6 +149,7 @@ class ScrollController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'scroll/farmers/#/invoke');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $em->remove($inventory);
 
@@ -198,6 +201,7 @@ class ScrollController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'scroll/sea/#/invoke');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $em->remove($inventory);
 

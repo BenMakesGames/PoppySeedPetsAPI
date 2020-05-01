@@ -40,6 +40,7 @@ class BoxController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($box, 'box/ores/#/loot');
+        $this->validateHouseSpace($box, $inventoryService);
 
         $location = $box->getLocation();
         $lockedToOwner = $box->getLockedToOwner();
@@ -103,6 +104,7 @@ class BoxController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'box/box/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
 
@@ -167,6 +169,7 @@ class BoxController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'box/cereal/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $newInventory = [];
 
@@ -196,6 +199,7 @@ class BoxController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'box/bakers/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $newInventory = [];
 
@@ -225,6 +229,7 @@ class BoxController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'box/fruits-n-veggies/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $newInventory = [];
 
@@ -251,6 +256,7 @@ class BoxController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'box/handicrafts/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
 
@@ -289,6 +295,7 @@ class BoxController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'box/gaming/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
 
@@ -316,14 +323,7 @@ class BoxController extends PoppySeedPetsItemController
     }
 
     /**
-     * @param string $messagePrefix
-     * @param UserStatsRepository $userStatsRepository
-     * @param User $user
-     * @param Inventory $inventory
      * @param Inventory[] $newInventory
-     * @param ResponseService $responseService
-     * @param EntityManagerInterface $em
-     * @return JsonResponse
      */
     private function countRemoveFlushAndRespond(
         string $messagePrefix,
@@ -355,6 +355,7 @@ class BoxController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'box/bagOfBeans/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $newInventory = [];
 
@@ -381,6 +382,7 @@ class BoxController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'box/pepperbox/#/disassemble');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $newInventory = [];
 
@@ -460,6 +462,7 @@ class BoxController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'box/sandbox/#/raid');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $sand = mt_rand(6, mt_rand(7, 12));
 
@@ -577,6 +580,7 @@ class BoxController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'box/july4/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $comment = $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.';
 
@@ -607,6 +611,7 @@ class BoxController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'box/newYear/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $comment = $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.';
 
@@ -645,6 +650,7 @@ class BoxController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'box/little-strongbox/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $key = $inventoryRepository->findOneToConsume($user, 'Iron Key');
 
@@ -696,6 +702,7 @@ class BoxController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'box/very-strongbox/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $key = $inventoryRepository->findOneToConsume($user, 'Silver Key');
 
@@ -755,6 +762,7 @@ class BoxController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'box/outrageously-strongbox/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $key = $inventoryRepository->findOneToConsume($user, 'Gold Key');
 
@@ -798,6 +806,7 @@ class BoxController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'box/tower/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $newInventory = [];
 

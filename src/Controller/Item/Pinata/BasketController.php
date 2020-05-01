@@ -25,6 +25,7 @@ class BasketController extends PoppySeedPetsItemController
     )
     {
         $this->validateInventory($inventory, 'basket/fruit/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
         $location = $inventory->getLocation();
@@ -52,6 +53,7 @@ class BasketController extends PoppySeedPetsItemController
     )
     {
         $this->validateInventory($inventory, 'basket/flower/#/loot');
+        $this->validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
         $location = $inventory->getLocation();
