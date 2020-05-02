@@ -10,6 +10,7 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\PetChanges;
+use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -21,16 +22,18 @@ class FishingService
     private $inventoryService;
     private $petExperienceService;
     private $transactionService;
+    private $userQuestRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService
+        TransactionService $transactionService, UserQuestRepository $userQuestRepository
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
+        $this->userQuestRepository = $userQuestRepository;
     }
 
     public function adventure(Pet $pet)
@@ -44,8 +47,13 @@ class FishingService
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        if(!$pet->getOwner()->getUnlockedTrader() || mt_rand(1, 100) === 1)
+        $fishedAMerchantFish = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Fished a Merchant Fish', false);
+
+        if(!$fishedAMerchantFish->getValue() || mt_rand(1, 100) === 1)
+        {
+            $fishedAMerchantFish->setValue(true);
             $activityLog = $this->fishedMerchantFish($pet);
+        }
         else
         {
             switch($roll)
