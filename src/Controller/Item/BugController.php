@@ -271,7 +271,7 @@ class BugController extends PoppySeedPetsItemController
 
         $this->validateInventory($inventory, 'bug/#/squish');
 
-        $response = $storyService->doStory($user, StoryEnum::STOLEN_PLANS, $request->request);
+        $response = $storyService->doStory($user, StoryEnum::STOLEN_PLANS, $request->request, $inventory);
 
         return $responseService->success($response, SerializationGroupEnum::STORY);
     }

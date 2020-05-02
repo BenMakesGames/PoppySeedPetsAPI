@@ -44,64 +44,69 @@ class FishingService
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        switch($roll)
+        if(!$pet->getOwner()->getUnlockedTrader() || mt_rand(1, 100) === 1)
+            $activityLog = $this->fishedMerchantFish($pet);
+        else
         {
-            case 1:
-                $activityLog = $this->failedToFish($pet);
-                break;
-            case 2:
-            case 3:
-            case 4:
-                $activityLog = $this->fishedSmallLake($pet);
-                break;
-            case 5:
-            case 6:
-                $activityLog = $this->fishedUnderBridge($pet);
-                break;
-            case 7:
-                $activityLog = $this->fishedRoadsideCreek($pet);
-                break;
-            case 8:
-            case 9:
-                $activityLog = $this->fishedWaterfallBasin($pet);
-                break;
-            case 10:
-            case 11:
-                $activityLog = $this->fishedPlazaFountain($pet, 0);
-                break;
-            case 12:
-                $activityLog = $this->fishedFloodedPaddyField($pet);
-                break;
-            case 13:
-                $activityLog = $this->fishedFoggyLake($pet);
-                break;
-            case 14:
-            case 15:
-                if(mt_rand(1, 50) === 1)
-                    $activityLog = $this->fishedTheIsleOfRetreatingTeeth($pet);
-                else
-                    $activityLog = $this->fishedGhoti($pet);
-                break;
-            case 16:
-                $activityLog = $this->fishedCoralReef($pet);
-                break;
-            case 17:
-                $activityLog = $this->fishedPlazaFountain($pet, 2);
-                break;
-            case 18:
-                $activityLog = $this->fishedGallopingOctopus($pet);
-                break;
-            case 19:
-                $activityLog = $this->fishedAlgae($pet);
-                break;
-            case 20:
-            case 21:
-                // @TODO
-                /*if(mt_rand(1, 50) === 1)
-                    $activityLog = $this->fishedNarwhal($pet);
-                else*/
-                    $activityLog = $this->fishedJellyfish($pet);
-                break;
+            switch($roll)
+            {
+                case 1:
+                    $activityLog = $this->failedToFish($pet);
+                    break;
+                case 2:
+                case 3:
+                case 4:
+                    $activityLog = $this->fishedSmallLake($pet);
+                    break;
+                case 5:
+                case 6:
+                    $activityLog = $this->fishedUnderBridge($pet);
+                    break;
+                case 7:
+                    $activityLog = $this->fishedRoadsideCreek($pet);
+                    break;
+                case 8:
+                case 9:
+                    $activityLog = $this->fishedWaterfallBasin($pet);
+                    break;
+                case 10:
+                case 11:
+                    $activityLog = $this->fishedPlazaFountain($pet, 0);
+                    break;
+                case 12:
+                    $activityLog = $this->fishedFloodedPaddyField($pet);
+                    break;
+                case 13:
+                    $activityLog = $this->fishedFoggyLake($pet);
+                    break;
+                case 14:
+                case 15:
+                    if(mt_rand(1, 50) === 1)
+                        $activityLog = $this->fishedTheIsleOfRetreatingTeeth($pet);
+                    else
+                        $activityLog = $this->fishedGhoti($pet);
+                    break;
+                case 16:
+                    $activityLog = $this->fishedCoralReef($pet);
+                    break;
+                case 17:
+                    $activityLog = $this->fishedPlazaFountain($pet, 2);
+                    break;
+                case 18:
+                    $activityLog = $this->fishedGallopingOctopus($pet);
+                    break;
+                case 19:
+                    $activityLog = $this->fishedAlgae($pet);
+                    break;
+                case 20:
+                case 21:
+                    // @TODO
+                    /*if(mt_rand(1, 50) === 1)
+                        $activityLog = $this->fishedNarwhal($pet);
+                    else*/
+                        $activityLog = $this->fishedJellyfish($pet);
+                    break;
+            }
         }
 
         if($activityLog)
@@ -156,6 +161,21 @@ class FishingService
         }
 
         return null;
+    }
+
+    private function fishedMerchantFish(Pet $pet): PetActivityLog
+    {
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Stream, and caught a Fish... but wait: that\'s no ordinary Fish...', '')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+        ;
+
+        $this->inventoryService->petCollectsItem('Merchant Fish', $pet, $pet->getName() . ' fished this out of a Stream.', $activityLog);
+
+        $pet->increaseEsteem(2);
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+
+        return $activityLog;
     }
 
     private function fishedSmallLake(Pet $pet): PetActivityLog

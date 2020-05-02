@@ -72,31 +72,10 @@ class PetShelterController extends PoppySeedPetsController
             'maxPets' => $user->getMaxPets(),
         ];
 
-        if($user->getMaxPets() > 2)
-            $data['story'] = $storyService->doStory($user, StoryEnum::AN_ABUSE_OF_POWER, new ParameterBag());
-
         return $responseService->success(
             $data,
-            [ SerializationGroupEnum::PET_SHELTER_PET, SerializationGroupEnum::STORY ]
+            [ SerializationGroupEnum::PET_SHELTER_PET ]
         );
-    }
-
-    /**
-     * @Route("/doStory", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function doStory(
-        Request $request, StoryService $storyService, ResponseService $responseService
-    )
-    {
-        $user = $this->getUser();
-
-        if($user->getMaxPets() <= 2)
-            throw new AccessDeniedHttpException('What? What\'s going on? I\'m confused. Reload and try again.');
-
-        $story = $storyService->doStory($user, StoryEnum::AN_ABUSE_OF_POWER, $request->request);
-
-        return $responseService->success($story, SerializationGroupEnum::STORY);
     }
 
     /**

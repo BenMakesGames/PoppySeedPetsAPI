@@ -340,7 +340,9 @@ class BoxController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess($messagePrefix . ' ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        $responseService->addReloadInventory();
+
+        return $responseService->itemActionSuccess($messagePrefix . ' ' . ArrayFunctions::list_nice($itemList) . '.', [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -565,7 +567,9 @@ class BoxController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        $responseService->addReloadInventory();
+
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 
     /**

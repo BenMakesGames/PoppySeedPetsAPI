@@ -238,6 +238,12 @@ class User implements UserInterface
      */
     private $unlockedRecycling;
 
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"myAccount"})
+     */
+    private $unlockedTrader;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -859,6 +865,18 @@ class User implements UserInterface
     public function setUnlockedRecycling(): self
     {
         $this->unlockedRecycling = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getUnlockedTrader(): ?\DateTimeImmutable
+    {
+        return $this->unlockedTrader;
+    }
+
+    public function setUnlockedTrader(): self
+    {
+        $this->unlockedTrader = new \DateTimeImmutable();
 
         return $this;
     }

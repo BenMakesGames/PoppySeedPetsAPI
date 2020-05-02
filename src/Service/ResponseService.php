@@ -17,6 +17,8 @@ class ResponseService
 {
     /** @var PetActivityLog[] */
     private $activityLogs = [];
+    private $reloadInventory = false;
+    private $reloadPets = false;
     private $em;
     private $serializer;
     private $security;
@@ -80,6 +82,9 @@ class ResponseService
 
         $this->injectUserData($responseData);
 
+        if($this->reloadInventory) $responseData['reloadInventory'] = true;
+        if($this->reloadPets) $responseData['reloadPets'] = true;
+
         $json = $this->serializer->serialize($responseData, 'json', [
             'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS,
         ]);
@@ -130,6 +135,16 @@ class ResponseService
         $this->em->persist($log);
 
         return $log;
+    }
+
+    public function addReloadPets()
+    {
+        $this->reloadPets = true;
+    }
+
+    public function addReloadInventory()
+    {
+        $this->reloadInventory = true;
     }
 
     public function addActivityLog(PetActivityLog $log)

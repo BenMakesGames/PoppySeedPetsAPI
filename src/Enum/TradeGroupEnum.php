@@ -1,0 +1,15 @@
+<?php
+namespace App\Enum;
+
+final class TradeGroupEnum
+{
+    use Enum;
+
+    public const METALS = 1;
+    public const DARK_THINGS = 2;
+    public const FOODS = 3;
+    public const GAMING = 4;
+    public const BOX_BOX = 5;
+    public const CURIOSITIES = 6;
+
+}

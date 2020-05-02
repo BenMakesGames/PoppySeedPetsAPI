@@ -23,7 +23,6 @@ class TuningForkController extends PoppySeedPetsItemController
     /**
      * @Route("/{inventory}/listen", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @throws \Exception
      */
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
@@ -34,7 +33,7 @@ class TuningForkController extends PoppySeedPetsItemController
 
         $user = $this->getUser();
 
-        $response = $storyService->doStory($user, StoryEnum::SHARUMINYINKAS_DESPAIR, $request->request);
+        $response = $storyService->doStory($user, StoryEnum::SHARUMINYINKAS_DESPAIR, $request->request, $inventory);
 
         return $responseService->success($response, SerializationGroupEnum::STORY);
     }

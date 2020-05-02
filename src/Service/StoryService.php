@@ -1,15 +1,14 @@
 <?php
 namespace App\Service;
 
+use App\Entity\Inventory;
 use App\Entity\MuseumItem;
 use App\Entity\Story;
 use App\Entity\StorySection;
 use App\Entity\User;
 use App\Entity\UserQuest;
 use App\Enum\LocationEnum;
-use App\Enum\SerializationGroupEnum;
 use App\Enum\StoryActionTypeEnum;
-use App\Enum\StoryEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ItemQuantity;
@@ -37,6 +36,7 @@ class StoryService
     private $itemRepository;
     private $jsonLogicParserService;
     private $userStatsRepository;
+    private $responseService;
 
     /** @var User */ private $user;
     /** @var UserQuest */ private $step;
@@ -44,11 +44,13 @@ class StoryService
     /** @var StorySection */ private $currentSection;
     /** @var ItemQuantity[] */ private $userInventory;
 
+    /** @var Inventory */ private $callingInventory;
+
     public function __construct(
         EntityManagerInterface $em, StoryRepository $storyRepository, StorySectionRepository $storySectionRepository,
         UserQuestRepository $userQuestRepository, InventoryService $inventoryService, ItemRepository $itemRepository,
         JsonLogicParserService $jsonLogicParserService, UserStatsRepository $userStatsRepository,
-        InventoryRepository $inventoryRepository
+        InventoryRepository $inventoryRepository, ResponseService $responseService
     )
     {
         $this->em = $em;
@@ -60,6 +62,7 @@ class StoryService
         $this->jsonLogicParserService = $jsonLogicParserService;
         $this->userStatsRepository = $userStatsRepository;
         $this->inventoryRepository = $inventoryRepository;
+        $this->responseService = $responseService;
     }
 
     /**
@@ -69,13 +72,14 @@ class StoryService
      * @return StoryStep
      * @throws \Exception
      */
-    public function doStory(User $user, int $storyId, ParameterBag $request): StoryStep
+    public function doStory(User $user, int $storyId, ParameterBag $request, Inventory $callingInventory = null): StoryStep
     {
         $this->story = $this->storyRepository->find($storyId);
 
         if (!$this->story)
             throw new NotFoundHttpException('That Story doesn\'t exist! (Uh oh! Is something broken? Maybe reload and try again?)');
 
+        $this->callingInventory = $callingInventory;
         $this->user = $user;
         $this->step = $this->userQuestRepository->findOrCreate($user, $this->story->getQuestValue(), $this->story->getFirstSection()->getId());
 
@@ -256,6 +260,7 @@ class StoryService
                 $description = str_replace([ '%user.name%' ], [ $this->user->getName() ], $action['description']);
 
                 $this->inventoryService->receiveItem($action['item'], $this->user, null, $description, LocationEnum::HOME, $lockedToOwner);
+                $this->responseService->addReloadInventory();
 
                 break;
 
@@ -275,6 +280,17 @@ class StoryService
 
             case StoryActionTypeEnum::LOSE_ITEM:
                 $this->inventoryService->loseItem($action['item'], $this->user, [ LocationEnum::HOME, LocationEnum::BASEMENT ]);
+                $this->responseService->addReloadInventory();
+                break;
+
+            case StoryActionTypeEnum::LOSE_CALLING_INVENTORY:
+                if($this->callingInventory)
+                    $this->em->remove($this->callingInventory);
+                else
+                    throw new \InvalidArgumentException('Ben made a boo-boo: no calling inventory was set.');
+
+                $this->responseService->addReloadInventory();
+
                 break;
 
             case StoryActionTypeEnum::INCREMENT_STAT:
@@ -285,6 +301,10 @@ class StoryService
                 $this->userQuestRepository->findOrCreate($this->user, $action['quest'], $action['value'])
                     ->setValue($action['value'])
                 ;
+                break;
+
+            case StoryActionTypeEnum::UNLOCK_TRADER:
+                $this->user->setUnlockedTrader();
                 break;
 
             case StoryActionTypeEnum::EXIT:
