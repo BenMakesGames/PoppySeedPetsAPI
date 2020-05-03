@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Repository\TraderRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -23,7 +24,10 @@ class TraderController extends PoppySeedPetsController
      * @Route("", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function getExchanges(TraderService $traderService, ResponseService $responseService)
+    public function getExchanges(
+        TraderService $traderService, ResponseService $responseService, TraderRepository $traderRepository,
+        EntityManagerInterface $em
+    )
     {
         $user = $this->getUser();
 
@@ -32,7 +36,24 @@ class TraderController extends PoppySeedPetsController
 
         $offers = $traderService->getOffers($user);
 
-        return $responseService->success($offers, [ SerializationGroupEnum::TRADER_OFFER, SerializationGroupEnum::MARKET_ITEM ]);
+        $trader = $traderRepository->findOneBy([ 'user' => $user->getId() ]);
+
+        if(!$trader)
+        {
+            $trader = $traderService->generateTrader()
+                ->setUser($user)
+            ;
+
+            $em->persist($trader);
+            $em->flush();
+        }
+
+        $data = [
+            'trades' => $offers,
+            'trader' => $trader,
+        ];
+
+        return $responseService->success($data, [ SerializationGroupEnum::TRADER_OFFER, SerializationGroupEnum::MARKET_ITEM ]);
     }
 
     /**

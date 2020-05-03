@@ -1,12 +1,14 @@
 <?php
 namespace App\Service;
 
+use App\Entity\Trader;
 use App\Entity\TradesUnlocked;
 use App\Entity\User;
 use App\Enum\CostOrYieldTypeEnum;
 use App\Enum\LocationEnum;
 use App\Enum\TradeGroupEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\ColorFunctions;
 use App\Model\TraderOffer;
 use App\Model\TraderOfferCostOrYield;
 use App\Repository\ItemRepository;
@@ -63,6 +65,68 @@ class TraderService
     private const ID_UPGRADE_YELLOW_PLASTIC_EGGS = 'upgradeYellowPlasticEgg';
     private const ID_UPGRADE_PINK_PLASTIC_EGGS = 'upgradePinkPlasticEgg';
     private const ID_FAIRY_SWARM = 'fairySwarm';
+
+    private const TRADER_NAMES = [
+        // Saffron
+        'Azafrán', 'Zaeafran',
+
+        // Platinum
+        'Platin', 'Albalatin',
+
+        // Taaffeite
+        'Taaffeite',
+
+        // Jade
+        'Jade', 'Yù',
+
+        // Vanilla
+        'Vanille', 'Fanilana',
+
+        // Mahlab
+        'Mahlab',
+
+        // Cardamom
+        'Ilaayachee',
+
+        // Kadupul Flower
+        'Kadupul',
+
+        // Orchid
+        'Lánhuā',
+
+        // Fugu
+        'Fugu',
+
+        // Wagyu
+        'Wagyu',
+
+        // Silk
+        'Sī',
+
+        // Truffle
+        'Truffe', 'Sōnglù',
+
+        // Caviar
+        'Kyabia',
+
+        // Salt
+        'Salz', 'Milh', 'Sel',
+
+        // Dyes
+        'Purpura', 'Tekhelet', 'Murex',
+
+        // Dekopon
+        'Dekopon',
+
+        // Kyoho
+        'Kyoho',
+
+        // Diamond
+        'Almaznyye',
+
+        // Ruby
+        'Ruby', 'Rubis',
+    ];
 
     private $itemRepository;
     private $inventoryService;
@@ -827,5 +891,23 @@ class TraderService
                     break;
             }
         }
+    }
+
+    function generateTrader(): Trader
+    {
+        $h1 = mt_rand(0, 255);
+        $h2 = mt_rand(0, 255);
+        $h3 = mt_rand(0, 255);
+
+        if($h1 >= 30 && $h1 < 130) $h1 += 120;
+        if($h2 >= 30 && $h2 < 130) $h2 += 120;
+        if($h3 >= 30 && $h3 < 130) $h3 += 120;
+
+        return (new Trader())
+            ->setName(ArrayFunctions::pick_one(self::TRADER_NAMES))
+            ->setColorA(ColorFunctions::HSL2Hex($h1 / 256, mt_rand(56, 100) / 100, 0.46))
+            ->setColorB(ColorFunctions::HSL2Hex($h2 / 256, mt_rand(56, 100) / 100, 0.46))
+            ->setColorC(ColorFunctions::HSL2Hex($h3 / 256, mt_rand(56, 100) / 100, 0.46))
+        ;
     }
 }
