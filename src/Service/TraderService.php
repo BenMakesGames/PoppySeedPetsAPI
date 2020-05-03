@@ -899,9 +899,14 @@ class TraderService
         $h2 = mt_rand(0, 255);
         $h3 = mt_rand(0, 255);
 
+        $l2 = mt_rand(mt_rand(40, 120), 150);
+
+        $s3 = mt_rand(mt_rand(0, 40), mt_rand(160, 255));
+        $l3 = mt_rand(mt_rand(0, 40), mt_rand(160, 255));
+
         if($h1 >= 30 && $h1 < 130) $h1 += 120;
         if($h2 >= 30 && $h2 < 130) $h2 += 120;
-        if($h3 >= 30 && $h3 < 130) $h3 += 120;
+        if($h3 >= 60 && $h3 < 130) $h3 += 120;
 
         $h1h2TooClose = abs($h1 - $h2) <= 20;
 
@@ -920,8 +925,8 @@ class TraderService
 
         $trader
             ->setColorA(ColorFunctions::HSL2Hex($h1 / 256, mt_rand(56, 100) / 100, 0.46))
-            ->setColorB(ColorFunctions::HSL2Hex($h2 / 256, mt_rand(56, 100) / 100, 0.46))
-            ->setColorC(ColorFunctions::HSL2Hex($h3 / 256, mt_rand(56, 100) / 100, 0.46))
+            ->setColorB(ColorFunctions::HSL2Hex($h2 / 256, mt_rand(56, 100) / 100, $l2 / 255))
+            ->setColorC(ColorFunctions::HSL2Hex($h3 / 256, $s3 / 255, $l3 / 255))
         ;
     }
 
