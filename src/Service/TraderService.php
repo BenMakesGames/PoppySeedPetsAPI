@@ -903,6 +903,21 @@ class TraderService
         if($h2 >= 30 && $h2 < 130) $h2 += 120;
         if($h3 >= 30 && $h3 < 130) $h3 += 120;
 
+        $h1h2TooClose = abs($h1 - $h2) <= 20;
+
+        if($h1h2TooClose)
+        {
+            if($h2 > $h1)
+            {
+                if($h2 < 30)
+                    $h2 = ($h2 - 40 + 256) % 256;
+                else
+                    $h2 = ($h2 + 20) % 256;
+            }
+            else if($h2 < $h1)
+                $h2 = ($h2 - 20 + 256) % 256;
+        }
+
         return (new Trader())
             ->setName(ArrayFunctions::pick_one(self::TRADER_NAMES))
             ->setColorA(ColorFunctions::HSL2Hex($h1 / 256, mt_rand(56, 100) / 100, 0.46))
