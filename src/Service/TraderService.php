@@ -893,7 +893,7 @@ class TraderService
         }
     }
 
-    function generateTrader(): Trader
+    function recolorTrader(Trader $trader)
     {
         $h1 = mt_rand(0, 255);
         $h2 = mt_rand(0, 255);
@@ -918,11 +918,21 @@ class TraderService
                 $h2 = ($h2 - 20 + 256) % 256;
         }
 
-        return (new Trader())
-            ->setName(ArrayFunctions::pick_one(self::TRADER_NAMES))
+        $trader
             ->setColorA(ColorFunctions::HSL2Hex($h1 / 256, mt_rand(56, 100) / 100, 0.46))
             ->setColorB(ColorFunctions::HSL2Hex($h2 / 256, mt_rand(56, 100) / 100, 0.46))
             ->setColorC(ColorFunctions::HSL2Hex($h3 / 256, mt_rand(56, 100) / 100, 0.46))
         ;
+    }
+
+    function generateTrader(): Trader
+    {
+        $trader = (new Trader())
+            ->setName(ArrayFunctions::pick_one(self::TRADER_NAMES))
+        ;
+
+        $this->recolorTrader($trader);
+
+        return $trader;
     }
 }
