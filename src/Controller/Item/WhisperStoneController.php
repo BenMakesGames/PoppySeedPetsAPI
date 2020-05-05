@@ -31,7 +31,8 @@ class WhisperStoneController extends PoppySeedPetsItemController
      */
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        ItemRepository $itemRepository, RecipeRepository $recipeRepository, InventoryService $inventoryService
+        ItemRepository $itemRepository, RecipeRepository $recipeRepository, InventoryService $inventoryService,
+        UserStatsRepository $userStatsRepository
     )
     {
         $this->validateInventory($inventory, 'whisperStone/#/listen');
@@ -39,8 +40,6 @@ class WhisperStoneController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $inventory->changeItem($itemRepository->findOneByName('Striped Microcline'));
-
-        $em->flush();
 
         $recipeCount = (int)$recipeRepository->createQueryBuilder('r')
             ->select('COUNT(r.id)')
@@ -96,16 +95,24 @@ class WhisperStoneController extends PoppySeedPetsItemController
             'To make ' . $recipes[1]->getName() . ', combine ' . $ingredients[1] . ".\"\n\n"
         ;
 
-        $message .= ArrayFunctions::pick_one([
-            'Thanks, rock!',
-            'This Whisper Stone seems to have knowledge within a very specific domain.',
-            'Aren\'t Whisper Stones supposed to reveal dark secrets from the spirit world?',
-            'Might be worth trying sometime?',
-            'Two recipes with one stone!',
-            'Whisper Stones are often said to sound creepy, but this one seemed nice enough.',
-            'Then its blue glow subsides, leaving you with an ordinary chunk of Striped Microcline.',
-            'Whose voice is that, anyway? Is it the rock\'s?',
-        ]);
+        $stat = $userStatsRepository->incrementStat($user, 'Listened to a Whisper Stone');
+
+        if($stat->getValue() === 1)
+            $message .= 'Wait, aren\'t Whisper Stones supposed to reveal dark secrets from the spirit world?';
+        else
+        {
+            $message .= ArrayFunctions::pick_one([
+                'Thanks, rock!',
+                'This Whisper Stone seems to have knowledge within a very specific domain.',
+                'Might be worth trying sometime?',
+                'Two recipes with one stone!',
+                'Whisper Stones are often said to sound creepy, but this one seemed nice enough.',
+                'Then its blue glow subsides, leaving you with an ordinary chunk of Striped Microcline.',
+                'Whose voice is that, anyway? Is it the rock\'s?',
+            ]);
+        }
+
+        $em->flush();
 
         $responseService->addReloadInventory();
 
