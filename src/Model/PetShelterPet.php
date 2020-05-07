@@ -7,18 +7,56 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class PetShelterPet
 {
     public const PET_NAMES = [
-        'Aalina', 'Aaron', 'Abrahil', 'Aedoc', 'Aelfric', 'Alain', 'Alda', 'Alienora', 'Aliette', 'Artaca',
-        'Aureliana', 'Batu', 'Belka', 'Bezzhen', 'Biedeluue', 'Blicze', 'Ceinguled', 'Ceri', 'Ceslinus', 'Christien',
-        'Clement', 'Cyra', 'Czestobor', 'Dagena', 'Denyw', 'Disideri', 'Eileve', 'Emilija', 'Enim', 'Enynny',
-        'Erasmus', 'Eve', 'Felix', 'Fiora', 'Fluri', 'Frotlildis', 'Galine', 'Gennoveus', 'Genoveva', 'Giliana',
-        'Godelive', 'Gubin', 'Idzi', 'Jadviga', 'Jehanne', 'Kaija', 'Kain', 'Kima', 'Kint', 'Kirik',
-        'Klara', 'Kryspin', 'Leodhild', 'Leon', 'Levi', 'Lowri', 'Lucass', 'Ludmila', 'Maccos', 'Maeldoi',
-        'Magdalena', 'Makrina', 'Malik', 'Margaret', 'Marsley', 'Masayasu', 'Mateline', 'Mathias', 'Maurifius', 'Meduil',
-        'Melita', 'Meoure', 'Merewen', 'Milesent', 'Milian', 'Mold', 'Montgomery', 'Morys', 'Newt', 'Nicholina',
-        'Nilus', 'Noe', 'Oswyn', 'Paperclip', 'Perkhta', 'Pesczek', 'Regina', 'Reina', 'Rimoete', 'Rocatos',
-        'Rozalia', 'Rum', 'Runne', 'Ryd', 'Saewine', 'Sandivoi', 'Skenfrith', 'Sulimir', 'Sybil', 'Talan',
-        'Tede', 'Tephaine', 'Tetris', 'Tiecia', 'Toregene', 'Trenewydd', 'Usk', 'Vasilii', 'Vitseslav', 'Vivka',
-        'Wrexham', 'Ysabeau', 'Ystradewel', 'Zofija', 'Zygmunt'
+        'Aalina', 'Aaron', 'Abrahil', 'Aedoc', 'Aelfric', 'Alain', 'Alda', 'Aldreda', 'Alienora', 'Aliette',
+        'Artaca', 'Aureliana',
+
+        'Batu', 'Belka', 'Bezzhen', 'Biedeluue', 'Blicze',
+
+        'Cateline', 'Ceinguled', 'Ceri', 'Ceslinus', 'Christien', 'Clement', 'Cyra', 'Czestobor',
+
+        'Dagena', 'Denyw', 'Dicun', 'Disideri',
+
+        'Eda', 'Eileve', 'Emilija', 'Enim', 'Enynny', 'Erasmus', 'Eve',
+
+        'Felix', 'Fiora', 'Fluri', 'Frotlildis',
+
+        'Galine', 'Gennoveus', 'Genoveva', 'Geoffroi', 'Giliana', 'Godelive', 'Gubin',
+
+        'Hamon',
+
+        'Ibb', 'Idzi',
+
+        'Jadviga', 'Jehanne',
+
+        'Kaija', 'Kain', 'Kima', 'Kint', 'Kirik', 'Klara', 'Kryspin',
+
+        'Leodhild', 'Leon', 'Levi', 'Lowri', 'Lucass', 'Ludmila',
+
+        'Maccos', 'Maeldoi', 'Magdalena', 'Makrina', 'Malik', 'Margaret', 'Marsley', 'Masayasu', 'Mateline',
+        'Mathias', 'Matty', 'Maurifius', 'Meduil', 'Melita', 'Meoure', 'Merewen', 'Milesent', 'Milian', 'Mold',
+        'Montgomery', 'Morys',
+
+        'Newt', 'Nicholina', 'Nilus', 'Noe',
+
+        'Onfroi', 'Oswyn',
+
+        'Paperclip', 'Perkhta', 'Pesczek',
+
+        'Regina', 'Reina', 'Rimoete', 'Rocatos', 'Rozalia', 'Rum', 'Runne', 'Ryd',
+
+        'Saewine', 'Sandivoi', 'Skenfrith', 'Sulimir', 'Sybil',
+
+        'Talan', 'Tede', 'Tephaine', 'Tetris', 'Tiecia', 'Timur', 'Toregene', 'Trenewydd',
+
+        'Usk',
+
+        'Vasilii', 'Vitseslav', 'Vivka',
+
+        'Wilkin', 'Wrexham',
+
+        'Ysabeau', 'Ystradewel',
+
+        'Zofija', 'Zygmunt'
     ];
 
     public const PET_HALLOWEEN_NAMES = [
