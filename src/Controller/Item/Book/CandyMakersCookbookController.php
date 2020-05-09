@@ -101,6 +101,8 @@ The candy, of course. You will need non-candy Honeycomb to make it, though!
 * Honeycomb
 * Baking Soda
 
+Optionally cover in chocolate for a delicious & crunchy candy bar!
+
 #### Konpeitō
 
 These colorful candies are painstaking to make by hand! But the ingredients are simple:
