@@ -36,6 +36,7 @@ class CandyMakersCookbookController extends PoppySeedPetsItemController
 * Hard Fruit Candies
 * Honeycomb
 * Konpeitō
+* Mixed Nut Brittle
 * Rock Candy
 * Soft Fruit Gummies
 * Chocolates
@@ -105,6 +106,14 @@ The candy, of course. You will need non-candy Honeycomb to make it, though!
 These colorful candies are painstaking to make by hand! But the ingredients are simple:
 * Sugar
 * A variety of dyes (at least three!)
+
+#### Mixed Nut Brittle
+
+* Sugar
+* Corn Syrup
+* Baking Soda
+* Butter
+* Mixed Nuts
 
 #### Rock Candy
 
