@@ -34,6 +34,7 @@ class CandyMakersCookbookController extends PoppySeedPetsItemController
 #### Recipes
 
 * Hard Fruit Candies
+* Honeycomb
 * Konpeitō
 * Rock Candy
 * Soft Fruit Gummies
@@ -89,6 +90,15 @@ Quick method:
 Combine the following:
 * Fruit (berries, melon, orange, etc)
 * Sugar
+
+#### Honeycomb
+
+The candy, of course. You will need non-candy Honeycomb to make it, though!
+
+* Sugar
+* Corn Syrup
+* Honeycomb
+* Baking Soda
 
 #### Konpeitō
 
