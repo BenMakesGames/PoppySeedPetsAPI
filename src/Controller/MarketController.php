@@ -104,9 +104,9 @@ class MarketController extends PoppySeedPetsController
         if(Inventory::calculateBuyPrice($price) > $user->getMoneys())
             throw new UnprocessableEntityHttpException('You do not have enough moneys.');
 
-        $itemsAtHome = $inventoryRepository->countItemsInLocation(LocationEnum::HOME);
+        $itemsAtHome = $inventoryRepository->countItemsInLocation($user, LocationEnum::HOME);
         $hasBasement = $user->getUnlockedBasement();
-        $itemsInBasement = $hasBasement ? 0 : $inventoryRepository->countItemsInLocation(LocationEnum::BASEMENT);
+        $itemsInBasement = $hasBasement ? 0 : $inventoryRepository->countItemsInLocation($user, LocationEnum::BASEMENT);
         $placeItemsIn = LocationEnum::HOME;
 
         if($itemsAtHome >= 100)
