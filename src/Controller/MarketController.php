@@ -104,6 +104,22 @@ class MarketController extends PoppySeedPetsController
         if(Inventory::calculateBuyPrice($price) > $user->getMoneys())
             throw new UnprocessableEntityHttpException('You do not have enough moneys.');
 
+        $itemsAtHome = $inventoryRepository->countItemsInLocation(LocationEnum::HOME);
+        $hasBasement = $user->getUnlockedBasement();
+        $itemsInBasement = $hasBasement ? 0 : $inventoryRepository->countItemsInLocation(LocationEnum::BASEMENT);
+        $placeItemsIn = LocationEnum::HOME;
+
+        if($itemsAtHome >= 100)
+        {
+            if(!$hasBasement)
+                throw new UnprocessableEntityHttpException('Your house has ' . $itemsAtHome . ' items; you\'ll need to make some space, first!');
+
+            if($itemsInBasement >= 10000)
+                throw new UnprocessableEntityHttpException('Your house has ' . $itemsAtHome . ', and your basement has ' . $itemsInBasement . ' items! (Dang!) You\'ll need to make some space, first...');
+
+            $placeItemsIn = LocationEnum::BASEMENT;
+        }
+
         /** @var Inventory[] $forSale */
         $forSale = $inventoryRepository->createQueryBuilder('i')
             ->andWhere('i.owner!=:user')
@@ -149,7 +165,7 @@ class MarketController extends PoppySeedPetsController
             $buy
                 ->setOwner($user)
                 ->setSellPrice(null)
-                ->setLocation(LocationEnum::HOME)
+                ->setLocation($placeItemsIn)
                 ->setModifiedOn()
             ;
 
@@ -166,7 +182,7 @@ class MarketController extends PoppySeedPetsController
             $cache->deleteItem('Trading Inventory #' . $buy->getId());
         }
 
-        return $responseService->success();
+        return $responseService->success($buy, SerializationGroupEnum::MY_INVENTORY);
     }
 
     /**

@@ -58,7 +58,7 @@ class HuntingService
     {
         $maxSkill = 10 + $pet->getStrength() + $pet->getBrawl() - $pet->getAlcohol() - $pet->getPsychedelic();
 
-        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 21);
+        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 22);
 
         $useThanksgivingPrey = $this->calendarService->isThanksgiving() && mt_rand(1, 2) === 1;
         $usePassoverPrey = $this->calendarService->isEaster();
@@ -137,6 +137,9 @@ class HuntingService
                     $activityLog = $this->huntedTurkeyDragon($pet);
                 else
                     $activityLog = $this->huntedLeshyDemon($pet);
+                break;
+            case 22:
+                $activityLog = $this->huntedEggSaladMonstrosity($pet);
                 break;
         }
 
@@ -942,6 +945,49 @@ class HuntingService
                 $pet->increaseEsteem(-1);
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Turkeydragon, and forced to flee!', '');
             }
+        }
+
+        return $activityLog;
+    }
+
+    private function huntedEggSaladMonstrosity(Pet $pet): PetActivityLog
+    {
+        $skill = 10 + $pet->getDexterity() + $pet->getStamina() + $pet->getBrawl();
+
+        $pet->increaseFood(-1);
+
+        $possibleLoot = ArrayFunctions::pick_one([
+            'Egg',
+            ArrayFunctions::pick_one([ 'Mayo(nnaise)', 'Egg', 'Vinegar', 'Oil' ]),
+            'Celery',
+            'Onion',
+        ]);
+
+        if(mt_rand(1, $skill) >= 19)
+        {
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ]);
+
+            $loot = [
+                ArrayFunctions::pick_one($possibleLoot),
+                ArrayFunctions::pick_one($possibleLoot),
+            ];
+
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went out hunting, and encountered an Egg Salad Monstrosity! After a grueling (and sticky) battle, ' . $pet->getName() . ' won, and claimed its ' . ArrayFunctions::list_nice($loot) . '!', '');
+
+            foreach($loot as $itemName)
+                $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' collected this from the remains of an Egg Salad Monstrosity.', $activityLog);
+
+            $pet->increaseSafety(4);
+            $pet->increaseEsteem(3);
+
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::HUNT, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went out hunting, and encountered an Egg Salad Monstrosity, which chased ' . $pet->getName() . ' away!', '');
+            $pet->increaseSafety(-3);
         }
 
         return $activityLog;
