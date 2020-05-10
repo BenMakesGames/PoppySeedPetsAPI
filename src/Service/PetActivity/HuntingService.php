@@ -956,12 +956,12 @@ class HuntingService
 
         $pet->increaseFood(-1);
 
-        $possibleLoot = ArrayFunctions::pick_one([
+        $possibleLoot = [
             'Egg',
             ArrayFunctions::pick_one([ 'Mayo(nnaise)', 'Egg', 'Vinegar', 'Oil' ]),
             'Celery',
             'Onion',
-        ]);
+        ];
 
         if(mt_rand(1, $skill) >= 19)
         {
