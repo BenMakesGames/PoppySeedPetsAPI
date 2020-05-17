@@ -9,6 +9,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -18,14 +19,17 @@ class IronSmithingService
     private $petExperienceService;
     private $inventoryService;
     private $responseService;
+    private $itemRepository;
 
     public function __construct(
-        PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService
+        PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
+        ItemRepository $itemRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
+        $this->itemRepository = $itemRepository;
     }
 
     /**
@@ -227,7 +231,7 @@ class IronSmithingService
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
 
-        $item = ArrayFunctions::pick_one([ 'Scythe', 'Garden Shovel' ]);
+        $item = $this->itemRepository->findOneByName(ArrayFunctions::pick_one([ 'Scythe', 'Garden Shovel' ]));
 
         if($roll <= 3)
         {
@@ -235,7 +239,7 @@ class IronSmithingService
 
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $item . ', but broke the Crooked Stick! :(', 'icons/activity-logs/broke-stick');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $item->getName() . ', but broke the Crooked Stick! :(', 'icons/activity-logs/broke-stick');
         }
         else if($roll >= 13)
         {
@@ -246,7 +250,7 @@ class IronSmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a ' . $item . ' from a Crooked Stick, and Iron Bar.', 'items/tool/scythe')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a ' . $item->getName() . ' from a Crooked Stick, and Iron Bar.', 'items/' . $item->getImage())
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
             ;
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from a Crooked Stick, and Iron Bar.', $activityLog);
@@ -256,13 +260,10 @@ class IronSmithingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $item . ', but couldn\'t figure it out.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $item->getName() . ', but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createGrapplingHook(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
