@@ -33,13 +33,14 @@ class CandyMakersCookbookController extends PoppySeedPetsItemController
 
 #### Recipes
 
+* Chocolates
+* Everybeans
 * Hard Fruit Candies
 * Honeycomb
 * Konpeitō
 * Mixed Nut Brittle
 * Rock Candy
 * Soft Fruit Gummies
-* Chocolates
 
 ## Basic Ingredients
 
@@ -86,6 +87,24 @@ Quick method:
 
 ## Recipes
 
+#### Chocolates
+
+Combine:
+* Cocoa Beans (*not* powder!)
+* Sugar
+* Optionally, add Orange, or Spicy Peps.
+
+#### Everybeans
+
+Somehow, all you have to do is dye and sweeten some Beans, and they\'ll gain unexpected flavors!
+
+Even mundane Beans are a little magic, it seems...
+
+Combine:
+* Beans
+* Sugar
+* Any dye (yellow, green, magenta...)
+
 #### Hard Fruit Candies
 
 Combine the following:
@@ -129,13 +148,6 @@ Combine the following:
 * Fruit (berries, melon, orange, etc)
 * Sugar
 * Corn Syrup, or Agar-agar
-
-#### Chocolates
-
-Combine:
-* Cocoa Beans (*not* powder!)
-* Sugar
-* Optionally, add Orange, or Spicy Peps.
 ');
     }
 }
