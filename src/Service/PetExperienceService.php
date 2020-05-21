@@ -137,22 +137,32 @@ class PetExperienceService
         if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
             throw new EnumInvalidValueException(FlavorEnum::class, $pet->getFavoriteFlavor());
 
-        $esteemGain = $this->getFavoriteFlavorStrength($pet, $item) + $item->getFood()->getLove();
+        $randomFlavor = $item->getFood()->getRandomFlavor() > 0 ? FlavorEnum::getRandomValue() : null;
+
+        $esteemGain = $this->getFavoriteFlavorStrength($pet, $item, $randomFlavor) + $item->getFood()->getLove();
 
         $pet->increaseEsteem($esteemGain);
 
         if($activityLog)
-            $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $item->getName() . '.');
+        {
+            if($randomFlavor)
+                $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $item->getName() . '. (Ooh! ' . ucwords($randomFlavor) . '!');
+            else
+                $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $item->getName() . '.');
+        }
 
         return true;
     }
 
-    public function getFavoriteFlavorStrength(Pet $pet, Item $item): int
+    public function getFavoriteFlavorStrength(Pet $pet, Item $item, string $randomFlavor = null): int
     {
         if(!$item->getFood())
             return 0;
 
         $favoriteFlavorStrength = $item->getFood()->{'get' . $pet->getFavoriteFlavor()}();
+
+        if($randomFlavor !== null && $randomFlavor === $pet->getFavoriteFlavor())
+            $favoriteFlavorStrength += $item->getFood()->getRandomFlavor();
 
         if($pet->hasMerit(MeritEnum::LOLLIGOVORE) && $item->containsTentacles())
             $favoriteFlavorStrength += 2;

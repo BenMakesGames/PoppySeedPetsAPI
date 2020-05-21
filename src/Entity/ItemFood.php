@@ -12,10 +12,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class ItemFood
 {
-    public const FLAVOR_FIELDS = [
-        ''
-    ];
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -123,6 +119,11 @@ class ItemFood
      * @ORM\Column(type="integer", nullable=true)
      */
     private $chanceForBonusItem;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $randomFlavor = 0;
 
     public function getId(): ?int
     {
@@ -423,10 +424,27 @@ class ItemFood
         else if($this->psychedelic > 0)
             $modifiers[] = 'slightly trippy';
 
+        $hasAnyFixedFlavor = false;
+
         foreach(FlavorEnum::getValues() as $flavor)
         {
-            if($this->$flavor > 2) $modifiers[] = 'very ' . $flavor;
-            else if($this->$flavor > 0) $modifiers[] = $flavor;
+            if($this->$flavor > 0)
+            {
+                if($this->$flavor > 2)
+                    $modifiers[] = 'very ' . $flavor;
+                else
+                    $modifiers[] = $flavor;
+
+                $hasAnyFixedFlavor = true;
+            }
+        }
+
+        if($this->randomFlavor > 0)
+        {
+            if($hasAnyFixedFlavor)
+                $modifiers[] = 'also has a' . ($this->randomFlavor > 2 ? ' strong' : '') . ' random flavor';
+            else
+                $modifiers[] = 'has a' . ($this->randomFlavor > 2 ? ' strong' : '') . ' random flavor';
         }
 
         return $modifiers;
@@ -473,5 +491,17 @@ class ItemFood
     public function getBringsLuck(): bool
     {
         return $this->chanceForBonusItem !== null;
+    }
+
+    public function getRandomFlavor(): int
+    {
+        return $this->randomFlavor;
+    }
+
+    public function setRandomFlavor(int $randomFlavor): self
+    {
+        $this->randomFlavor = $randomFlavor;
+
+        return $this;
     }
 }

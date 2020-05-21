@@ -84,10 +84,16 @@ class ItemFilterService
             ->andWhere('i.food IS NOT NULL')
         ;
 
-        foreach($value as $stat)
-        {
-            $qb->andWhere('food.' . $stat . ' > 0');
-        }
+        $statsMatch = array_map(function($s) {
+            return 'food.' . $s . ' > 0';
+        }, $value);
+
+        $qb->andWhere(
+            $qb->expr()->orX(
+                'food.randomFlavor > 0',
+                implode(' AND ', $statsMatch)
+            )
+        );
     }
 
     public function filterAHat(QueryBuilder $qb, $value)

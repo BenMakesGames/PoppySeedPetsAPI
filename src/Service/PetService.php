@@ -257,7 +257,9 @@ class PetService
             if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
                 throw new EnumInvalidValueException(FlavorEnum::class, $pet->getFavoriteFlavor());
 
-            $favoriteFlavorStrength = $this->petExperienceService->getFavoriteFlavorStrength($pet, $i->getItem());
+            $randomFlavor = $i->getItem()->getFood()->getRandomFlavor() > 0 ? FlavorEnum::getRandomValue() : null;
+
+            $favoriteFlavorStrength = $this->petExperienceService->getFavoriteFlavorStrength($pet, $i->getItem(), $randomFlavor);
 
             $loveAndEsteemGain = $favoriteFlavorStrength + $food->getLove();
 
@@ -275,7 +277,10 @@ class PetService
 
             $this->em->remove($i);
 
-            $foodsEaten[] = $itemName;
+            if($randomFlavor)
+                $foodsEaten[] = $itemName . ' (ooh! ' . $randomFlavor . '!)';
+            else
+                $foodsEaten[] = $itemName;
 
             if($itemName === 'Fortune Cookie')
                 $ateAFortuneCookie = true;
