@@ -13,8 +13,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class PetBaby
 {
-    public const EGG_INCUBATION_TIME = 5760;
     public const PREGNANCY_DURATION = 30240;
+    public const PREGNANCY_INTERVAL = self::PREGNANCY_DURATION / 6;
+    public const EGG_INCUBATION_TIME = self::PREGNANCY_INTERVAL * 2;
 
     /**
      * @ORM\Id()
@@ -158,6 +159,42 @@ class PetBaby
         $this->colorB = $colorB;
 
         return $this;
+    }
+
+    /**
+     * @Groups({"myPet"})
+     */
+    public function getPregnancyProgress(): string
+    {
+        if($this->getParent()->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::EGG)
+        {
+            $messages = [
+                $this->getParent()->getName() . ' just got eggnant!',
+                $this->getParent()->getName() . ' is going to lay their egg soon!',
+                $this->getParent()->getName() . '\'s egg is sitting quietly.',
+                $this->getParent()->getName() . '\'s egg is starting to move around...',
+                $this->getParent()->getName() . '\'s egg is moving around a bit!',
+                $this->getParent()->getName() . '\'s egg is close to hatching!',
+            ];
+        }
+        else
+        {
+            $messages = [
+                $this->getParent()->getName() . ' just got pregnant!',
+                $this->getParent()->getName() . ' looks a little bigger!',
+                $this->getParent()->getName() . '\'s baby is starting to move around!',
+                $this->getParent()->getName() . '\'s baby is quite active!',
+                $this->getParent()->getName() . ' is preparing for parenthood!',
+                $this->getParent()->getName() . ' is close to giving birth!',
+            ];
+        }
+
+        $interval = min(
+            count($messages) - 1,
+            floor($this->getGrowth() / self::PREGNANCY_INTERVAL)
+        );
+
+        return $messages[$interval];
     }
 
     /**
