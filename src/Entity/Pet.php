@@ -24,6 +24,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     @ORM\Index(name="park_event_type_idx", columns={"park_event_type"}),
  *     @ORM\Index(name="park_event_order_idx", columns={"park_event_order"}),
  *     @ORM\Index(name="time_idx", columns={"time"}),
+ *     @ORM\Index(name="social_energy_idx", columns={"social_energy"}),
  *     @ORM\Index(name="in_daycare_idx", columns={"in_daycare"}),
  * })
  */
@@ -341,6 +342,11 @@ class Pet
      */
     private $lunchboxItems;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $socialEnergy = 0;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -349,6 +355,8 @@ class Pet
         $this->petRelationships = new ArrayCollection();
         $this->statusEffects = new ArrayCollection();
         $this->extroverted = mt_rand(-1, 1);
+
+        $this->socialEnergy = ($this->extroverted + 1) * 90;
 
         // 10% poly; 10% flexible; 80% monogamous
         if(mt_rand(1, 10) === 1)
@@ -1710,6 +1718,18 @@ class Pet
                 $lunchboxItem->setPet(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSocialEnergy(): int
+    {
+        return $this->socialEnergy;
+    }
+
+    public function spendSocialEnergy(int $amount): self
+    {
+        $this->socialEnergy -= $amount;
 
         return $this;
     }

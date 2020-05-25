@@ -14,6 +14,7 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\SocialTimeWantEnum;
 use App\Enum\SpiritCompanionStarEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
@@ -21,6 +22,7 @@ use App\Functions\ColorFunctions;
 use App\Model\FortuneCookie;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
+use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\CraftingService;
@@ -69,6 +71,7 @@ class PetService
     private $easterEggHuntingService;
     private $calendarService;
     private $heartDimensionService;
+    private $petRelationshipRepository;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -80,7 +83,8 @@ class PetService
         PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService,
         PregnancyService $pregnancyService, PetActivityStatsService $petActivityStatsService, PetGroupService $petGroupService,
         PetExperienceService $petExperienceService, DreamingService $dreamingService, MagicBeanstalkService $beanStalkService,
-        EasterEggHuntingService $easterEggHuntingService, HeartDimensionService $heartDimensionService
+        EasterEggHuntingService $easterEggHuntingService, HeartDimensionService $heartDimensionService,
+        PetRelationshipRepository $petRelationshipRepository
     )
     {
         $this->em = $em;
@@ -109,6 +113,7 @@ class PetService
         $this->beanStalkService = $beanStalkService;
         $this->easterEggHuntingService = $easterEggHuntingService;
         $this->heartDimensionService = $heartDimensionService;
+        $this->petRelationshipRepository = $petRelationshipRepository;
     }
 
     /**
@@ -524,27 +529,6 @@ class PetService
             ;
         }
 
-        if(
-            // has food
-            $pet->getFood() > 0 &&
-
-            // a random factor
-            (
-                mt_rand(1, max(10, 5 + $pet->getLove() + $pet->getSafety() + $pet->getEsteem())) <= 3 ||
-                mt_rand(1, 15 - $pet->getExtroverted() * 2) === 1
-            )
-        )
-        {
-            if($this->hangOutWithFriend($pet))
-                return;
-        }
-
-        if($this->meetRoommates($pet))
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
-            return;
-        }
-
         if($pet->hasMerit(MeritEnum::DREAMWALKER) && mt_rand(1, 200) === 1)
         {
             $this->dreamingService->dream($pet);
@@ -594,20 +578,6 @@ class PetService
         {
             $this->genericAdventureService->adventure($pet);
             return;
-        }
-
-        if(mt_rand(1, 48) === 1)
-        {
-            if(count($pet->getGroups()) > 0)
-            {
-                $this->petGroupService->doGroupActivity($pet, ArrayFunctions::pick_one($pet->getGroups()->toArray()));
-                return;
-            }
-            else
-            {
-                if($this->petGroupService->createGroup($pet))
-                    return;
-            }
         }
 
         if($pet->getTool())
@@ -690,13 +660,64 @@ class PetService
         }
     }
 
+    public function runSocialTime(Pet $pet): bool
+    {
+        if($pet->getFood() + $pet->getAlcohol() + $pet->getJunk() < 0)
+            return false;
+
+        if($this->meetRoommates($pet))
+        {
+            $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
+            return true;
+        }
+
+        $wants = [];
+
+        $wants[] = [ 'activity' => SocialTimeWantEnum::HANG_OUT, 'weight' => 60 ];
+
+        if(count($pet->getGroups()) > 0)
+            $wants[] = [ 'activity' => SocialTimeWantEnum::GROUP, 'weight' => 30 ];
+
+        if(count($pet->getGroups()) < $pet->getMaximumGroups())
+            $wants[] = [ 'activity' => SocialTimeWantEnum::CREATE_GROUP, 'weight' => 5 ];
+
+        while(count($wants) > 0)
+        {
+            $want = ArrayFunctions::pick_one_weighted($wants, function($want) {
+                return $want['weight'];
+            });
+
+            $activity = $want['activity'];
+
+            $wants = array_filter($wants, function($want) use($activity) {
+                return $want['activity'] !== $activity;
+            });
+
+            switch($activity)
+            {
+                case SocialTimeWantEnum::HANG_OUT:
+                    if($this->hangOutWithFriend($pet))
+                        return true;
+                    break;
+                case SocialTimeWantEnum::GROUP:
+                    $this->petGroupService->doGroupActivity($pet, ArrayFunctions::pick_one($pet->getGroups()->toArray()));
+                    return true;
+
+                case SocialTimeWantEnum::CREATE_GROUP:
+                    if($this->petGroupService->createGroup($pet) !== null)
+                        return true;
+                    break;
+            }
+        }
+
+        $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
+
+        return false;
+    }
+
     private function hangOutWithFriend(Pet $pet): bool
     {
-        /** @var PetRelationship[] $friends */
-        $relationships = $pet->getPetRelationships()->filter(function(PetRelationship $p) {
-            // starving pets don't have time to hang out, and 0-commitment pets are not hung out with
-            return $p->getRelationship()->getFood() > 0 && $p->getCommitment() > 0;
-        })->toArray();
+        $relationships = $this->petRelationshipRepository->getRelationshipsToHangOutWith($pet);
 
         // no friends available? no spirit companion? GIT OUTTA' HE'E!
         if(count($relationships) === 0 && !$pet->hasMerit(MeritEnum::SPIRIT_COMPANION))
@@ -732,7 +753,7 @@ class PetService
     {
         $changes = new PetChanges($pet);
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
+        $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
 
         $companion = $pet->getSpiritCompanion();
 
@@ -898,8 +919,8 @@ class PetService
         $petChanges = new PetChanges($pet->getPet());
         $friendChanges = new PetChanges($friend->getPet());
 
-        $this->petExperienceService->spendTime($pet->getPet(), mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, null);
-        $this->petExperienceService->spendTime($friend->getPet(), mt_rand(5, 10), PetActivityStatEnum::HANG_OUT, null);
+        $this->petExperienceService->spendSocialEnergy($pet->getPet(), PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
+        $this->petExperienceService->spendSocialEnergy($friend->getPet(), PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
 
         $petPreviousRelationship = $pet->getCurrentRelationship();
         $friendPreviousRelationship = $friend->getCurrentRelationship();

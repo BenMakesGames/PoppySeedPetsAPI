@@ -37,7 +37,7 @@ class HighImpactService
         $member->increaseReputation();
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::SCIENCE ]);
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         $activityLog = $this->responseService->createActivityLog($pet, '', '');
 

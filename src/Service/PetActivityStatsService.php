@@ -12,8 +12,6 @@ class PetActivityStatsService
 {
     public const STATS_THAT_CANT_FAIL = [
         PetActivityStatEnum::PARK_EVENT,
-        PetActivityStatEnum::HANG_OUT,
-        PetActivityStatEnum::GROUP_ACTIVITY,
         PetActivityStatEnum::OTHER
     ];
 
@@ -28,8 +26,6 @@ class PetActivityStatsService
         PetActivityStatEnum::PROGRAM => '#000000', // black
         PetActivityStatEnum::HUNT => '#CC0000', // red
         PetActivityStatEnum::FISH => '#3399FF', // blue
-        PetActivityStatEnum::HANG_OUT => '#FF99FF', // pink
-        PetActivityStatEnum::GROUP_ACTIVITY => '#AAAAFF', // periwinkle?
         PetActivityStatEnum::PARK_EVENT => '#996600', // brown
         PetActivityStatEnum::OTHER => '#999999', // gray
     ];
@@ -45,8 +41,6 @@ class PetActivityStatsService
         PetActivityStatEnum::PROGRAM => 'Programming',
         PetActivityStatEnum::HUNT => 'Hunting',
         PetActivityStatEnum::FISH => 'Fishing',
-        PetActivityStatEnum::HANG_OUT => 'Hanging Out (One-on-One)',
-        PetActivityStatEnum::GROUP_ACTIVITY => 'Hanging Out (Group)',
         PetActivityStatEnum::PARK_EVENT => 'Park Event',
         PetActivityStatEnum::OTHER => 'Other',
     ];

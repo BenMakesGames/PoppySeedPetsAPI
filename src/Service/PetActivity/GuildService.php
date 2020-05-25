@@ -172,7 +172,7 @@ class GuildService
 
         $member->increaseReputation();
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $this->responseService->createActivityLog($pet, $message, '');
     }
@@ -190,7 +190,7 @@ class GuildService
         $member->increaseReputation();
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $this->responseService->createActivityLog($pet, $message, '');
     }
@@ -208,7 +208,7 @@ class GuildService
         $member->increaseReputation();
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $this->responseService->createActivityLog($pet, $message, '');
     }
@@ -226,7 +226,7 @@ class GuildService
         $member->increaseReputation();
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $this->responseService->createActivityLog($pet, $message, '');
     }
@@ -244,7 +244,7 @@ class GuildService
         $member->increaseReputation();
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::getRandomValue() ]);
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $this->responseService->createActivityLog($pet, $message, '');
     }
@@ -262,7 +262,7 @@ class GuildService
         $member->increaseReputation();
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $this->responseService->createActivityLog($pet, $message, '');
     }
@@ -292,7 +292,7 @@ class GuildService
         $member->increaseReputation();
 
         $this->petExperienceService->gainExp($pet, 1, [ $skill ]);
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $this->responseService->createActivityLog($pet, $message, '');
     }
@@ -310,7 +310,7 @@ class GuildService
         $member->increaseReputation();
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ]);
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $this->responseService->createActivityLog($pet, $message, '');
     }
@@ -328,7 +328,7 @@ class GuildService
         $member->increaseReputation();
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $this->responseService->createActivityLog($pet, $message, '');
     }
@@ -346,7 +346,7 @@ class GuildService
         $member->increaseReputation();
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GROUP_ACTIVITY, false);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $this->responseService->createActivityLog($pet, $message, '');
     }

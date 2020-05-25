@@ -47,7 +47,7 @@ class PetGroupService
         if($this->checkForRecruitment($instigatingPet, $group))
             return;
 
-        $this->takesTime($instigatingPet, $group);
+        $this->takesSocialEnergy($group);
 
         switch ($group->getType())
         {
@@ -110,7 +110,7 @@ class PetGroupService
         /** @var Pet $unhappiestPet */
         $unhappiestPet = $unhappyMembers[0]['pet'];
 
-        $this->takesTime($instigatingPet, $group);
+        $this->takesSocialEnergy($group);
 
         foreach($group->getMembers() as $member)
         {
@@ -302,17 +302,10 @@ class PetGroupService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    private function takesTime(Pet $instigatingPet, PetGroup $group)
+    private function takesSocialEnergy(PetGroup $group)
     {
         foreach($group->getMembers() as $member)
-        {
-            $time = ($member->getId() === $instigatingPet->getId()) ? mt_rand(45, 60) : 5;
-
-            $this->petExperienceService->spendTime($member, $time, PetActivityStatEnum::GROUP_ACTIVITY, true);
-        }
+            $this->petExperienceService->spendSocialEnergy($member, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
     }
 
     public function createGroup(Pet $pet): ?PetGroup
@@ -375,24 +368,19 @@ class PetGroupService
         $availableFriends[0]->addGroup($group);
         $availableFriends[1]->addGroup($group);
 
-        $this->petExperienceService->spendTime($availableFriends[0], 5, PetActivityStatEnum::HANG_OUT, true);
-        $this->petExperienceService->spendTime($availableFriends[1], 5, PetActivityStatEnum::HANG_OUT, true);
-
         if(count($availableFriends) >= 3 && mt_rand(1, 2) === 1)
         {
             $availableFriends[2]->addGroup($group);
-            $this->petExperienceService->spendTime($availableFriends[2], 5, PetActivityStatEnum::HANG_OUT, true);
             $friendNames[] = $availableFriends[2]->getName();
         }
 
         if(count($availableFriends) >= 4 && mt_rand(1, 2) === 1)
         {
             $availableFriends[3]->addGroup($group);
-            $this->petExperienceService->spendTime($availableFriends[3], 5, PetActivityStatEnum::HANG_OUT, true);
             $friendNames[] = $availableFriends[3]->getName();
         }
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HANG_OUT, true);
+        $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
 
         $this->responseService->createActivityLog($pet, $pet->getName() . ' started a new ' . $groupType['description'] . ' with ' . ArrayFunctions::list_nice($friendNames) . '.', $groupType['icon']);
 

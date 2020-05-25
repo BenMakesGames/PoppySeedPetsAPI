@@ -18,6 +18,8 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetExperienceService
 {
+    public const SOCIAL_ENERGY_PER_HANG_OUT = 576;
+
     private $petActivityStatsService;
     private $em;
     private $responseService;
@@ -76,6 +78,25 @@ class PetExperienceService
             $pet->decreaseExperience($pet->getExperienceToLevel());
             $pet->getSkills()->increaseStat(ArrayFunctions::pick_one($possibleStats));
         }
+    }
+
+    public function spendSocialEnergy(Pet $pet, int $energy)
+    {
+        $energy = mt_rand(ceil($energy * 8 / 10), ceil($energy * 12 / 10));
+
+        // introverted pets spend more social energy; extroverted pets spend less
+        if($pet->getExtroverted() < 0)
+        {
+            $energy = ceil($energy * 5 / 4);
+        }
+        else if($pet->getExtroverted() > 0)
+        {
+            $energy = ceil($energy * 3 / 4);
+        }
+
+        $pet->spendSocialEnergy($energy);
+
+        // @TODO
     }
 
     /**

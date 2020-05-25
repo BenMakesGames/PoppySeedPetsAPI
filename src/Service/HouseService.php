@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\PetRelationship;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Repository\InventoryRepository;
@@ -57,9 +58,10 @@ class HouseService
             /** @var Pet[] $petsWithTime */
             $petsWithTime = $this->petRepository->createQueryBuilder('p')
                 ->andWhere('p.owner=:user')
-                ->andWhere('p.time>=60')
+                ->andWhere('(p.time>=60 OR p.socialEnergy>=:minimumSocialEnergy)')
                 ->andWhere('p.inDaycare=0')
                 ->setParameter('user', $user->getId())
+                ->setParameter('minimumSocialEnergy', PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
                 ->getQuery()
                 ->execute()
             ;
@@ -71,13 +73,31 @@ class HouseService
                 for($i = count($petsWithTime) - 1; $i >= 0; $i--)
                 {
                     if($petsWithTime[$i]->getTime() >= 60)
-                    {
                         $this->petService->runHour($petsWithTime[$i]);
 
-                        $this->em->flush();
+                    $hungOut = false;
 
-                        if($petsWithTime[$i]->getTime() < 60 || $petsWithTime[$i]->getInDaycare())
-                            unset($petsWithTime[$i]);
+                    if($petsWithTime[$i]->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
+                    {
+                        $hungOut = $this->petService->runSocialTime($petsWithTime[$i]);
+                    }
+
+                    $this->em->flush();
+
+                    if($petsWithTime[$i]->getInDaycare())
+                    {
+                        unset($petsWithTime[$i]);
+                    }
+                    else if(
+                        $petsWithTime[$i]->getTime() < 60 &&
+                        $petsWithTime[$i]->getSocialEnergy() < PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT
+                    )
+                    {
+                        unset($petsWithTime[$i]);
+                    }
+                    else if($petsWithTime[$i]->getTime() < 60 && !$hungOut)
+                    {
+                        unset($petsWithTime[$i]);
                     }
                 }
             }

@@ -36,6 +36,7 @@ class IncreaseTimeCommand extends Command
         $this->em->getConnection()->executeQuery('
             LOCK TABLES pet WRITE;
             UPDATE pet SET `time` = `time` + 1 WHERE in_daycare = 0 AND `time` < 2880;
+            UPDATE pet SET `social_energy` = `social_energy` + 1 WHERE `social_energy` < 2880;
             UNLOCK TABLES;
         ');
 
