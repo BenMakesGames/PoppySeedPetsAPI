@@ -14,6 +14,7 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetSkillEnum;
 use App\Enum\SocialTimeWantEnum;
 use App\Enum\SpiritCompanionStarEnum;
 use App\Enum\UserStatEnum;
@@ -761,12 +762,105 @@ class PetService
 
         if(mt_rand(1, 3) !== 1 || ($pet->getSafety() > 0 && $pet->getLove() > 0 && $pet->getEsteem() > 0))
         {
-            $pet
-                ->increaseSafety(mt_rand(2, 4))
-                ->increaseLove(mt_rand(2, 4))
-                ->increaseEsteem(mt_rand(2, 4))
-            ;
-            $message = $pet->getName() . ' wasn\'t feeling great, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' listened patiently; in the end, ' . $pet->getName() . ' felt a little better.';
+            $teachingStat = null;
+
+            switch($companion->getStar())
+            {
+                case SpiritCompanionStarEnum::ALTAIR:
+                    // the flying/fighting eagle
+                    if(mt_rand(1, 3) === 1)
+                    {
+                        $teachingStat = PetSkillEnum::BRAWL;
+                        $message = $pet->getName() . ' practiced hunting with ' . $companion->getName() . '!';
+                    }
+                    else
+                    {
+                        // hanging-out
+                        $message = $pet->getName() . ' taught ' . $companion->getName() . ' more about the physical world.';
+                    }
+                    break;
+
+                case SpiritCompanionStarEnum::CASSIOPEIA:
+                    // sneaky snake
+                    if(mt_rand(1, 3) === 1)
+                    {
+                        $teachingStat = PetSkillEnum::STEALTH;
+                        $message = $companion->getName() . ' showed ' . $pet->getName() . ' how to take advantage of their surroundings to hide their presence.';
+                    }
+                    else
+                    {
+                        if(mt_rand(1, 4) === 1)
+                            $message = $pet->getName() . ' listened to ' . $companion->getName() . ' for a little while. They had many, strange secrets to tell, but none really seemed that useful.';
+                        else
+                            $message = $pet->getName() . ' listened to ' . $companion->getName() . ' for a little while.';
+                    }
+                    break;
+
+                case SpiritCompanionStarEnum::CEPHEUS:
+                    // a king
+                    if(mt_rand(1, 3) === 1)
+                    {
+                        $teachingStat = PetSkillEnum::UMBRA;
+                        $message = $pet->getName() . ' listened to ' . $companion->getName() . '\'s stories about the various lands of the near and far Umbra...';
+                    }
+                    else
+                    {
+                        $message = $companion->getName() . ' told a ' . ArrayFunctions::pick_one($adjectives) . ' story they made just for ' . $pet->getName() . '!';
+                    }
+                    break;
+
+                case SpiritCompanionStarEnum::GEMINI:
+                    $message = $companion->getName() . ' played ' . ArrayFunctions::pick_one([
+                        'hide-and-go-seek tag',
+                        'hacky sack',
+                        'soccer',
+                        'three-player checkers',
+                        'charades',
+                    ]) . ' with the ' . $companion->getName() . ' twins!';
+                    break;
+
+                case SpiritCompanionStarEnum::HYDRA:
+                    // scary monster; depicted as basically a friendly guard dog
+                    $message = $pet->getName() . ' played catch with ' . $companion->getName() . '!';
+                    break;
+
+                case SpiritCompanionStarEnum::SAGITTARIUS:
+                    // satyr-adjacent
+                    if(mt_rand(1, 3) === 1)
+                    {
+                        // teaches music
+                        $teachingStat = PetSkillEnum::MUSIC;
+                        $message = $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'played music', 'danced', 'sang' ]) . ' with ' . $companion->getName() . '!';
+                    }
+                    else
+                    {
+                        // hanging-out
+                        $message = $pet->getName() . ' went riding with ' . $companion->getName() . ' for a while!';
+                    }
+                    break;
+
+                default:
+                    throw new \Exception('Unknown Spirit Companion Star "' . $companion->getStar() . '"');
+            }
+
+            if($teachingStat)
+            {
+                $pet
+                    ->increaseSafety(mt_rand(1, 2))
+                    ->increaseLove(mt_rand(1, 2))
+                    ->increaseEsteem(mt_rand(1, 2))
+                ;
+
+                $this->petExperienceService->gainExp($pet, 1, [ $teachingStat ]);
+            }
+            else
+            {
+                $pet
+                    ->increaseSafety(mt_rand(2, 4))
+                    ->increaseLove(mt_rand(2, 4))
+                    ->increaseEsteem(mt_rand(2, 4))
+                ;
+            }
         }
         else if($pet->getSafety() <= 0)
         {
@@ -901,7 +995,6 @@ class PetService
                 default:
                     throw new \Exception('Unknown Spirit Companion Star "' . $companion->getStar() . '"');
             }
-
         }
 
         $this->responseService->createActivityLog($pet, $message, 'companions/' . $companion->getImage(), $changes->compare($pet))
