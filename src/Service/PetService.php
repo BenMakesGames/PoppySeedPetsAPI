@@ -711,8 +711,6 @@ class PetService
             }
         }
 
-        $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
-
         return false;
     }
 

@@ -31,7 +31,7 @@ class PetRelationshipRepository extends ServiceEntityRepository
             ->leftJoin('r.pet', 'pet')
             ->leftJoin('r.relationship', 'friend')
             ->andWhere('pet.id=:petId')
-            ->andWhere('friend.food > 0')
+            ->andWhere('friend.food + friend.alcohol + friend.junk > 0')
             ->andWhere('r.currentRelationship NOT IN (:excludedRelationshipTypes)')
             ->andWhere('friend.socialEnergy >= :minimumFriendSocialEnergy')
             ->setParameter('petId', $pet->getId())
