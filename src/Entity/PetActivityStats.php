@@ -175,16 +175,6 @@ class PetActivityStats
     /**
      * @ORM\Column(type="integer")
      */
-    private $hangOut = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $hangOutTime = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
     private $parkEvent = 0;
 
     /**
@@ -201,16 +191,6 @@ class PetActivityStats
      * @ORM\Column(type="integer")
      */
     private $otherTime = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $groupBandTime = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $groupBand = 0;
 
     public function getId(): ?int
     {
@@ -469,18 +449,6 @@ class PetActivityStats
         return $this;
     }
 
-    public function getHangOut(): int
-    {
-        return $this->hangOut;
-    }
-
-    public function increaseHangOut(int $amount = 1): self
-    {
-        $this->hangOut += $amount;
-
-        return $this;
-    }
-
     public function getParkEvent(): ?int
     {
         return $this->parkEvent;
@@ -637,18 +605,6 @@ class PetActivityStats
         return $this;
     }
 
-    public function getHangOutTime(): int
-    {
-        return $this->hangOutTime;
-    }
-
-    public function increaseHangOutTime(int $amount): self
-    {
-        $this->hangOutTime += $amount;
-
-        return $this;
-    }
-
     public function getOtherTime(): int
     {
         return $this->otherTime;
@@ -657,30 +613,6 @@ class PetActivityStats
     public function increaseOtherTime(int $amount): self
     {
         $this->otherTime += $amount;
-
-        return $this;
-    }
-
-    public function getGroupBandTime(): ?int
-    {
-        return $this->groupBandTime;
-    }
-
-    public function increaseGroupBandTime(int $amount): self
-    {
-        $this->groupBandTime += $amount;
-
-        return $this;
-    }
-
-    public function getGroupBand(): ?int
-    {
-        return $this->groupBand;
-    }
-
-    public function increaseGroupBand(int $amount = 1): self
-    {
-        $this->groupBand += $amount;
 
         return $this;
     }
