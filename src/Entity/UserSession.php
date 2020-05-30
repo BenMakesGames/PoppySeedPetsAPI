@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Functions\NumberFunctions;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -70,6 +71,8 @@ class UserSession
     {
         if(!$sessionHours)
             $sessionHours = $this->getUser()->getDefaultSessionLengthInHours();
+
+        $sessionHours = NumberFunctions::constrain($sessionHours, 1, 7 * 24); // 1 hour to 1 week
 
         $this->sessionExpiration = (new \DateTimeImmutable())->modify('+' . $sessionHours . ' hours');
 
