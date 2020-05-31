@@ -45,7 +45,14 @@ class PetRelationshipService
     /**
      * @param ArrayCollection|Pet[] $pets
      */
-    public function groupGathering($pets, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetDescription, int $meetChance = 2)
+    public function groupGathering(
+        $pets,
+        string $hangOutDescription,
+        string $enemyDescription,
+        string $meetProfileText,
+        string $meetActivityLogTemplate,
+        int $meetChance = 2
+    )
     {
         // array_values, because keys might not be sequential (members can leave), but we need to use array indicies.
         // ->toArray, because we might have received a stupid ArrayCollection from Doctrine
@@ -58,11 +65,11 @@ class PetRelationshipService
         {
             // $i + 1 prevents duplicate hang-outs
             for($j = $i + 1; $j < count($members); $j++)
-                $this->seeAtGroupGathering($members[$i], $members[$j], $hangOutDescription, $enemyDescription, $meetSummary, $meetDescription, $meetChance);
+                $this->seeAtGroupGathering($members[$i], $members[$j], $hangOutDescription, $enemyDescription, $meetProfileText, $meetActivityLogTemplate, $meetChance);
         }
     }
 
-    public function seeAtGroupGathering(Pet $p1, Pet $p2, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetDescription, int $meetChance = 5)
+    public function seeAtGroupGathering(Pet $p1, Pet $p2, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetActivityLogTemplate, int $meetChance = 5)
     {
         if($p1->getId() === $p2->getId()) return;
 
@@ -71,7 +78,7 @@ class PetRelationshipService
         if($p1Relationships)
             $this->hangOutPublicly($p1Relationships, $p2->getRelationshipWith($p1), $hangOutDescription, $enemyDescription);
         else if(mt_rand(1, 100 + ($p1->getRelationshipCount() + $p2->getRelationshipCount()) * 10) <= $meetChance)
-            $this->introducePets($p1, $p2, $meetSummary, $meetDescription);
+            $this->introducePets($p1, $p2, $meetSummary, $meetActivityLogTemplate);
     }
 
     public function meetRoommate(Pet $pet, Pet $otherPet): ?PetRelationship
@@ -106,7 +113,7 @@ class PetRelationshipService
     /**
      * @return PetRelationship[]
      */
-    public function introducePets(Pet $pet, Pet $otherPet, string $howMetSummary, string $howMetDescription): array
+    public function introducePets(Pet $pet, Pet $otherPet, string $howMetSummary, string $metActivityLogTemplate): array
     {
         if($this->loveService->isTooCloselyRelatedForSex($pet, $otherPet))
         {
@@ -197,7 +204,7 @@ class PetRelationshipService
 
         $this->em->persist($petRelationship);
 
-        $meetDescription = str_replace([ '%p1%', '%p2%'], [ $pet->getName(), $otherPet->getName() ], $howMetDescription);
+        $meetDescription = str_replace([ '%p1%', '%p2%'], [ $pet->getName(), $otherPet->getName() ], $metActivityLogTemplate);
 
         if($petRelationship->getCurrentRelationship() === RelationshipEnum::DISLIKE)
             $activityLog = $this->responseService->createActivityLog($pet, $meetDescription . ' They didn\'t really get along, though...', 'icons/activity-logs/enemy');
@@ -221,7 +228,7 @@ class PetRelationshipService
 
         $this->em->persist($otherPetRelationship);
 
-        $meetDescription = str_replace([ '%p1%', '%p2%'], [ $otherPet->getName(), $pet->getName() ], $howMetDescription);
+        $meetDescription = str_replace([ '%p1%', '%p2%'], [ $otherPet->getName(), $pet->getName() ], $metActivityLogTemplate);
 
         if($petRelationship->getCurrentRelationship() === RelationshipEnum::DISLIKE)
             $otherActivityPet = $this->responseService->createActivityLog($otherPet, $meetDescription . ' They didn\'t really get along, though...', 'icons/activity-logs/enemy');

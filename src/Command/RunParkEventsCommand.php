@@ -9,11 +9,13 @@ use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\TriDChessParticipant;
 use App\Repository\PetRepository;
+use App\Service\ParkEvent\JoustingService;
 use App\Service\ParkEvent\KinBallService;
 use App\Service\ParkEvent\TriDChessService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class RunParkEventsCommand extends Command
@@ -22,16 +24,18 @@ class RunParkEventsCommand extends Command
     private $petRepository;
     private $em;
     private $triDChessService;
+    private $joustingService;
 
     public function __construct(
         KinBallService $kinBallService, PetRepository $petRepository, EntityManagerInterface $em,
-        TriDChessService $triDChessService
+        TriDChessService $triDChessService, JoustingService $joustingService
     )
     {
         $this->kinBallService = $kinBallService;
         $this->petRepository = $petRepository;
         $this->em = $em;
         $this->triDChessService = $triDChessService;
+        $this->joustingService = $joustingService;
 
         parent::__construct();
     }
@@ -41,12 +45,9 @@ class RunParkEventsCommand extends Command
         $this
             ->setName('app:run-park-events')
             ->setDescription('Runs park events. Intended to be run every minute of the day (ex: via crontab)')
+            ->addOption('type', 't', InputOption::VALUE_OPTIONAL, 'The type of park event to run (string value from ParkEventTypeEnum).')
         ;
     }
-
-    const PARK_EVENT_SIZES = [
-        ParkEventTypeEnum::KIN_BALL => 12
-    ];
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -55,7 +56,12 @@ class RunParkEventsCommand extends Command
 
         $eventTypes = ParkEventTypeEnum::getValues();
 
-        $eventType = $eventTypes[$minuteOfTheDay % count($eventTypes)];
+        $eventType = $input->getOption('type');
+
+        if($eventType === null)
+            $eventType = $eventTypes[$minuteOfTheDay % count($eventTypes)];
+        else if(!ParkEventTypeEnum::isAValue($eventType))
+            throw new \InvalidArgumentException('"' . $eventType . '" is not a valid park event type.');
 
         $output->writeln('Looking for pets for a ' . $eventType . '.');
 
@@ -66,6 +72,9 @@ class RunParkEventsCommand extends Command
                 break;
             case ParkEventTypeEnum::TRI_D_CHESS:
                 $parkEvent = $this->playTriDChess();
+                break;
+            case ParkEventTypeEnum::JOUSTING:
+                $parkEvent = $this->playJousting();
                 break;
             default:
                 throw new \Exception('oops: support for events of type "' . $eventType . '" has not been coded!');
@@ -128,8 +137,10 @@ class RunParkEventsCommand extends Command
 
         echo 'Found ' . count($pets) . ' ' . (count($pets) === 1 ? 'pet' : 'pets') . '.' . "\n";
 
+        // we may have asked for 16 pets, but only found enough for an 8-player tournament
         if(count($pets) < 16 && count($pets) > 8)
             $pets = array_slice($pets, 0, 8);
+        // didn't find enough? gtfo
         else if(count($pets) < 8)
             return null;
 
@@ -137,6 +148,31 @@ class RunParkEventsCommand extends Command
             echo '* ' . $pet->getName() . ' (#' . $pet->getId() . ') - skill ' . TriDChessParticipant::getSkill($pet) . "\n";
 
         return $this->triDChessService->play($pets);
+    }
+
+    private function playJousting(): ?ParkEvent
+    {
+        $idealNumberOfPets = ArrayFunctions::pick_one([ 16, 16, 32 ]);
+
+        $pets = $this->petRepository->findPetsEligibleForParkEvent(ParkEventTypeEnum::JOUSTING, $idealNumberOfPets * 3);
+
+        $pets = $this->sliceSimilarLevel($pets, $idealNumberOfPets, function(Pet $a, Pet $b) {
+            return $this->joustingService->getPetSkill($a) <=> $this->joustingService->getPetSkill($b);
+        });
+
+        echo 'Found ' . count($pets) . ' ' . (count($pets) === 1 ? 'pet' : 'pets') . '.' . "\n";
+
+        // we may have wanted 32 pets, but only found enough for a 16-player tournament
+        if(count($pets) < 32 && count($pets) > 16)
+            $pets = array_slice($pets, 0, 16);
+        // didn't find enough? gtfo
+        else if(count($pets) < 16)
+            return null;
+
+        foreach($pets as $pet)
+            echo '* ' . $pet->getName() . ' (#' . $pet->getId() . ')' . "\n";
+
+        return $this->joustingService->play($pets);
     }
 
     /**

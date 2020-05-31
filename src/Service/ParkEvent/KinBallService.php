@@ -121,7 +121,9 @@ class KinBallService implements ParkEventInterface
 
         $winningTeamIndex = $this->getGameWinningTeam();
 
-        $this->results .= '**' . ucfirst($this->teams[$winningTeamIndex]->color) . ' Team wins the game!**' . "\n\n---\n";
+        $this->results .= "\n\n---\n\n";
+        $this->results .= 'Game Results' . "\n---\n\n";
+        $this->results .= '**' . ucfirst($this->teams[$winningTeamIndex]->color) . ' Team wins the game!**' . "\n\n";
 
         $this->awardExp();
 
@@ -330,7 +332,7 @@ class KinBallService implements ParkEventInterface
     {
         $this->activeTeams = array_filter($this->activeTeams, function(int $t) use($team) { return $t !== $team; });
 
-        $this->results .= "\n" . ucfirst($this->teams[$team]->color) . ' Team (' . $this->teamWins[$team] . ' points) has been eliminated this Period!' . "\n\n";
+        $this->results .= "\n" . '**' . ucfirst($this->teams[$team]->color) . ' Team (' . $this->teamWins[$team] . ' points) has been eliminated this Period!**' . "\n\n";
     }
 
     private function getPeriodWinningTeam(): ?int
@@ -431,7 +433,7 @@ class KinBallService implements ParkEventInterface
             if($activeTeam === $team) continue;
 
             $this->teamPoints[$activeTeam]++;
-            $this->results .= '* ' . ucfirst($this->teams[$activeTeam]->color) . ' Team gets a point (' . $this->teamPoints[$activeTeam] . ')' . "\n";
+            $this->results .= '* **' . ucfirst($this->teams[$activeTeam]->color) . ' Team gets a point (' . $this->teamPoints[$activeTeam] . ')**' . "\n";
         }
 
         $this->checkForCriticalScores();

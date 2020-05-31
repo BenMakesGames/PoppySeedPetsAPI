@@ -38,69 +38,78 @@ class HouseService
     {
         $item = $this->cache->getItem('User #' . $user->getId() . ' - Running House Hours');
 
-        if(!$item->isHit())
+        if($item->isHit())
+            return;
+
+        $item->set(true)->expiresAfter(\DateInterval::createFromDateString('1 minute'));
+        $this->cache->save($item);
+
+        if($user->getRegisteredOn() < (new \DateTimeImmutable())->modify('-8 hours'))
         {
-            $item->set(true)->expiresAfter(\DateInterval::createFromDateString('1 minute'));
-            $this->cache->save($item);
+            $fruitBasket = $this->userQuestRepository->findOrCreate($user, 'Received Fruit Basket', false);
 
-            if($user->getRegisteredOn() < (new \DateTimeImmutable())->modify('-8 hours'))
+            if($fruitBasket->getValue() === false)
             {
-                $fruitBasket = $this->userQuestRepository->findOrCreate($user, 'Received Fruit Basket', false);
-
-                if($fruitBasket->getValue() === false)
-                {
-                    $fruitBasket->setValue(true);
-                    $this->inventoryService->receiveItem('Fruit Basket', $user, $user, 'There\'s a note attached. It says "Are you settling in alright? Here\'s a little something to help get you started. And don\'t throw away the basket! Equip it to your pet!"', LocationEnum::HOME, true);
-                    $this->em->flush();
-                }
-            }
-
-            /** @var Pet[] $petsWithTime */
-            $petsWithTime = $this->petRepository->createQueryBuilder('p')
-                ->andWhere('p.owner=:user')
-                ->andWhere('(p.time>=60 OR p.socialEnergy>=:minimumSocialEnergy)')
-                ->andWhere('p.inDaycare=0')
-                ->setParameter('user', $user->getId())
-                ->setParameter('minimumSocialEnergy', PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
-                ->getQuery()
-                ->execute()
-            ;
-
-            while(count($petsWithTime) > 0)
-            {
-                shuffle($petsWithTime);
-
-                for($i = count($petsWithTime) - 1; $i >= 0; $i--)
-                {
-                    if($petsWithTime[$i]->getTime() >= 60)
-                        $this->petService->runHour($petsWithTime[$i]);
-
-                    $hungOut = false;
-
-                    if($petsWithTime[$i]->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
-                    {
-                        $hungOut = $this->petService->runSocialTime($petsWithTime[$i]);
-                    }
-
-                    $this->em->flush();
-
-                    if($petsWithTime[$i]->getInDaycare())
-                    {
-                        unset($petsWithTime[$i]);
-                    }
-                    else if(
-                        $petsWithTime[$i]->getTime() < 60 &&
-                        $petsWithTime[$i]->getSocialEnergy() < PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT
-                    )
-                    {
-                        unset($petsWithTime[$i]);
-                    }
-                    else if($petsWithTime[$i]->getTime() < 60 && !$hungOut)
-                    {
-                        unset($petsWithTime[$i]);
-                    }
-                }
+                $fruitBasket->setValue(true);
+                $this->inventoryService->receiveItem('Fruit Basket', $user, $user, 'There\'s a note attached. It says "Are you settling in alright? Here\'s a little something to help get you started. And don\'t throw away the basket! Equip it to your pet!"', LocationEnum::HOME, true);
+                $this->em->flush();
             }
         }
+
+        /** @var Pet[] $petsWithTime */
+        $petsWithTime = $this->petRepository->createQueryBuilder('p')
+            ->andWhere('p.owner=:user')
+            ->andWhere('(p.time>=60 OR p.socialEnergy>=:minimumSocialEnergy)')
+            ->andWhere('p.inDaycare=0')
+            ->setParameter('user', $user->getId())
+            ->setParameter('minimumSocialEnergy', PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
+            ->getQuery()
+            ->execute();
+
+        while(count($petsWithTime) > 0)
+        {
+            shuffle($petsWithTime);
+
+            $petsWithTime = $this->processPets($petsWithTime);
+        }
+    }
+
+    private function processPets($petsWithTime)
+    {
+        $petsRemaining = [];
+
+        foreach($petsWithTime as $pet)
+        {
+            if($pet->getTime() >= 60)
+                $this->petService->runHour($pet);
+
+            $hungOut = false;
+
+            if($pet->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
+            {
+                $hungOut = $this->petService->runSocialTime($pet);
+            }
+
+            $this->em->flush();
+
+            if($this->petCanStillProcess($pet, $hungOut))
+                $petsRemaining[] = $pet;
+        }
+
+        return $petsRemaining;
+    }
+
+    private function petCanStillProcess(Pet $pet, bool $hungOut): bool
+    {
+        if($pet->getInDaycare())
+            return false;
+
+        if($pet->getTime() < 60 && $pet->getSocialEnergy() < PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
+            return false;
+
+        if($pet->getTime() < 60 && !$hungOut)
+            return false;
+
+        return true;
     }
 }
