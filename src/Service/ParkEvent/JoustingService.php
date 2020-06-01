@@ -345,7 +345,7 @@ class JoustingService implements ParkEventInterface
         {
             $exp++;
 
-            $this->transactionService->getMoney($team->rider->getOwner(), $firstPlaceMoneys, $pet->getName() . ' earned this by getting 1st place in a Jousting tournament with ' . $teamMate->getName() . '!');
+            $this->transactionService->getMoney($pet->getOwner(), $firstPlaceMoneys, $pet->getName() . ' earned this by getting 1st place in a Jousting tournament with ' . $teamMate->getName() . '!');
 
             $log = $pet->getName() . ' played in a Jousting tournament with ' . $teamMate->getName() . ', and won! The whole thing!';
         }
