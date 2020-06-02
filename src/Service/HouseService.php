@@ -74,7 +74,11 @@ class HouseService
         }
     }
 
-    private function processPets($petsWithTime)
+    /**
+     * @param Pet[] $petsWithTime
+     * @return Pet[]
+     */
+    private function processPets($petsWithTime): array
     {
         $petsRemaining = [];
 

@@ -128,7 +128,8 @@ class CTFService implements ParkEventInterface
 
         for($i = 0; $i < count($participants) - 1; $i++)
         {
-            for($j = 1; $j < count($participants); $j++)
+            // don't do duplicate hangouts!
+            for($j = $i + 1; $j < count($participants); $j++)
             {
                 $p1 = $participants[$i];
                 $p2 = $participants[$j];

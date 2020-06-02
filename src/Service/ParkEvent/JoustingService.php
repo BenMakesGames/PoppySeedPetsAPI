@@ -4,15 +4,12 @@ namespace App\Service\ParkEvent;
 use App\Entity\ParkEvent;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
-use App\Enum\SpiritCompanionStarEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\JoustingClashResult;
 use App\Model\ParkEvent\JoustingTeam;
-use App\Model\ParkEvent\TriDChessParticipant;
 use App\Model\PetChanges;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
@@ -88,7 +85,7 @@ class JoustingService implements ParkEventInterface
                 '%p1% and %p2% are jousting partners in a Jousting tournament! They chatted a little while warming up.',
                 '%p1% and %p2%, unfortunately, must work together as a team during a Jousting tournament!',
                 'Met as jousting partners in a Jousting tournament.',
-                '%p1% met %p2% met at a Jousting tournament. They were jousting partners!',
+                '%p1% and %p2% met at a Jousting tournament. They were jousting partners!',
                 100
             );
         }
@@ -106,17 +103,6 @@ class JoustingService implements ParkEventInterface
         $this->results .= 'Tournament Results' . "\n---\n\n";
 
         $this->awardExp();
-
-        /*
-        $this->petRelationshipService->groupGathering(
-            $pets,
-            '%p1% and %p2% chatted a little after a Jousting tournament.',
-            '%p1% and %p2%, unfortunately, saw each other at a Jousting tournament...',
-            'Met at a Jousting tournament.',
-            '%p1% met %p2% at a Jousting tournament.',
-            2
-        );
-        */
 
         return (new ParkEvent())
             ->setType(ParkEventTypeEnum::JOUSTING)
@@ -242,18 +228,6 @@ class JoustingService implements ParkEventInterface
             $this->results .= $team2->getTeamName() . ' wins ' . $team2Points . ' to ' . $team1Points . '!' . "\n\n";
             return 2;
         }
-
-        /*
-        $this->petRelationshipService->seeAtGroupGathering(
-            $p1->pet,
-            $p2->pet,
-            '%p1% and %p2% chatted a little during their Tri-D Chess tournament match.',
-            '%p1% and %p2% ended up having to play a game of Tri-D Chess together...',
-            'Met during a match at a Tri-D Chess tournament.',
-            '%p1% and %p2% met during a match at a Tri-D Chess tournament.',
-            3
-        );
-        */
     }
 
     private function describeClash(JoustingClashResult $result): string
@@ -367,10 +341,10 @@ class JoustingService implements ParkEventInterface
 
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ]);
 
-        $team->rider->increaseEsteem(2 * $team->wins);
+        $pet->increaseEsteem(2 * $team->wins);
 
         $log = (new PetActivityLog())
-            ->setPet($team->rider)
+            ->setPet($pet)
             ->setEntry($log)
             ->setChanges($changes->compare($pet))
             ->setIcon('icons/menu/park')
