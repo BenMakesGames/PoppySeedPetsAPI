@@ -13,6 +13,7 @@ use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\NumberFunctions;
+use App\Service\PetExperienceService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -356,7 +357,7 @@ class Pet
         $this->statusEffects = new ArrayCollection();
         $this->extroverted = mt_rand(-1, 1);
 
-        $this->socialEnergy = ($this->extroverted + 1) * 90;
+        $this->socialEnergy = ceil(PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * (4 + $this->extroverted) / 4);
 
         // 10% poly; 10% flexible; 80% monogamous
         if(mt_rand(1, 10) === 1)

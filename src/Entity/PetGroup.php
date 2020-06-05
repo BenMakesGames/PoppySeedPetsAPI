@@ -16,6 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     @ORM\Index(name="last_met_on_idx", columns={"last_met_on"}),
  *     @ORM\Index(name="type_idx", columns={"type"}),
  *     @ORM\Index(name="name_idx", columns={"name"}),
+ *     @ORM\Index(name="social_energy_idx", columns={"social_energy"}),
  * })
  */
 class PetGroup
@@ -74,6 +75,11 @@ class PetGroup
      * @Groups({"petGroupDetails"})
      */
     private $numberOfProducts = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $socialEnergy = 0;
 
     public function __construct()
     {
@@ -228,6 +234,18 @@ class PetGroup
     public function increaseNumberOfProducts(): self
     {
         $this->numberOfProducts += 1;
+
+        return $this;
+    }
+
+    public function getSocialEnergy(): int
+    {
+        return $this->socialEnergy;
+    }
+
+    public function spendSocialEnergy(int $socialEnergy): self
+    {
+        $this->socialEnergy -= $socialEnergy;
 
         return $this;
     }

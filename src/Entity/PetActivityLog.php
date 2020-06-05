@@ -106,7 +106,7 @@ class PetActivityLog
     {
         $this->changes = $changes;
 
-        if($changes !== null && ($changes->level !== 0 || $changes->affectionLevel !== 0))
+        if($changes !== null && (!!$changes->level || !!$changes->affectionLevel))
             $this->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP);
 
         return $this;

@@ -19,6 +19,8 @@ use Doctrine\ORM\Query\Expr\Join;
 
 class PetGroupService
 {
+    public const SOCIAL_ENERGY_PER_MEET = 60 * 12;
+
     private $em;
     private $petRepository;
     private $responseService;
@@ -41,7 +43,7 @@ class PetGroupService
 
     public function doGroupActivity(Pet $instigatingPet, PetGroup $group)
     {
-        $this->petExperienceService->spendSocialEnergy($instigatingPet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
+        $group->spendSocialEnergy(PetGroupService::SOCIAL_ENERGY_PER_MEET);
 
         if($this->checkForSplitUp($instigatingPet, $group))
             return;
@@ -306,7 +308,7 @@ class PetGroupService
 
         // the more groups you're in, the more friends you need to start another group
         // (reduces the chances of having duplicate-member groups)
-        if(count($availableFriends) < 2 + $pet->getGroups() * 2)
+        if(count($availableFriends) < 2 + count($pet->getGroups()) * 2)
             return null;
 
         $groupTypePreferences = [

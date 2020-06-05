@@ -40,6 +40,13 @@ class IncreaseTimeCommand extends Command
             UNLOCK TABLES;
         ');
 
+        // pet group logic...
+        $this->em->getConnection()->executeQuery('
+            LOCK TABLES pet_group WRITE;
+            UPDATE pet_group SET `social_energy` = `social_energy` + 1 WHERE `social_energy` < 2880;
+            UNLOCK TABLES;
+        ');
+
         // fireplace logic...
         $this->em->getConnection()->executeQuery('
             LOCK TABLES fireplace WRITE;

@@ -65,6 +65,11 @@ class SpiritCompanion
      */
     private $star;
 
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     */
+    private $lastHangOut;
+
     public function __construct()
     {
         $this->star = SpiritCompanionStarEnum::getRandomValue();
@@ -115,5 +120,17 @@ class SpiritCompanion
     public function getStar(): string
     {
         return $this->star;
+    }
+
+    public function getLastHangOut(): ?\DateTimeImmutable
+    {
+        return $this->lastHangOut;
+    }
+
+    public function setLastHangOut(): self
+    {
+        $this->lastHangOut = new \DateTimeImmutable();
+
+        return $this;
     }
 }

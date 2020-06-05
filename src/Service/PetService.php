@@ -7,6 +7,7 @@ use App\Entity\LunchboxItem;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetBaby;
+use App\Entity\PetGroup;
 use App\Entity\PetRelationship;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
@@ -676,7 +677,11 @@ class PetService
 
         $wants[] = [ 'activity' => SocialTimeWantEnum::HANG_OUT, 'weight' => 60 ];
 
-        if(count($pet->getGroups()) > 0)
+        $availableGroups = $pet->getGroups()->filter(function(PetGroup $g) {
+            return $g->getSocialEnergy() >= PetGroupService::SOCIAL_ENERGY_PER_MEET;
+        });
+
+        if(count($availableGroups) > 0)
             $wants[] = [ 'activity' => SocialTimeWantEnum::GROUP, 'weight' => 30 ];
 
         if(count($pet->getGroups()) < $pet->getMaximumGroups())
@@ -700,8 +705,9 @@ class PetService
                     if($this->hangOutWithFriend($pet))
                         return true;
                     break;
+
                 case SocialTimeWantEnum::GROUP:
-                    $this->petGroupService->doGroupActivity($pet, ArrayFunctions::pick_one($pet->getGroups()->toArray()));
+                    $this->petGroupService->doGroupActivity($pet, ArrayFunctions::pick_one($availableGroups->toArray()));
                     return true;
 
                 case SocialTimeWantEnum::CREATE_GROUP:
@@ -718,12 +724,14 @@ class PetService
     {
         $relationships = $this->petRelationshipRepository->getRelationshipsToHangOutWith($pet);
 
+        $spiritCompanionAvailable = $pet->hasMerit(MeritEnum::SPIRIT_COMPANION) && ($pet->getSpiritCompanion()->getLastHangOut() === null || $pet->getSpiritCompanion()->getLastHangOut() < (new \DateTimeImmutable())->modify('-12 hours'));
+
         // no friends available? no spirit companion? GIT OUTTA' HE'E!
-        if(count($relationships) === 0 && !$pet->hasMerit(MeritEnum::SPIRIT_COMPANION))
+        if(count($relationships) === 0 && !$spiritCompanionAvailable)
             return false;
 
         // maybe hang out with a spirit companion, if you have one
-        if($pet->hasMerit(MeritEnum::SPIRIT_COMPANION) && (count($relationships) === 0 || mt_rand(1, count($relationships) + 1) === 1))
+        if($spiritCompanionAvailable && (count($relationships) === 0 || mt_rand(1, count($relationships) + 1) === 1))
             $this->hangOutWithSpiritCompanion($pet);
         else
         {
@@ -755,6 +763,8 @@ class PetService
         $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
 
         $companion = $pet->getSpiritCompanion();
+
+        $companion->setLastHangOut();
 
         $adjectives = [ 'bizarre', 'impressive', 'surprisingly-graphic', 'whirlwind' ];
 
