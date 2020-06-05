@@ -2,7 +2,6 @@
 namespace App\Service\Filter;
 
 use App\Entity\User;
-use App\Entity\UserFriend;
 use App\Repository\ItemRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserRepository;
@@ -36,7 +35,7 @@ class UserFilterService
             ],
             [
                 'name' => [ $this, 'filterName' ],
-                'friendedBy' => [ $this, 'filterFriendedBy' ],
+                'followedBy' => [ $this, 'filterFollowedBy' ],
             ]
         );
     }
@@ -59,16 +58,16 @@ class UserFilterService
         ;
     }
 
-    public function filterFriendedBy(QueryBuilder $qb, $value)
+    public function filterFollowedBy(QueryBuilder $qb, $value)
     {
         if($this->user && ($value === $this->user->getId() || $this->user->hasRole('ROLE_ADMIN')))
         {
             if(!in_array('f', $qb->getAllAliases()))
-                $qb->leftJoin('u.friendsOf', 'f');
+                $qb->leftJoin('u.followedBy', 'f');
 
             $qb
-                ->andWhere('f.user = :friendedBy')
-                ->setParameter('friendedBy', $value)
+                ->andWhere('f.user = :followedBy')
+                ->setParameter('followedBy', $value)
             ;
         }
     }

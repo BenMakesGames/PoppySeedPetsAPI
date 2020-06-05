@@ -5,9 +5,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\UserFriendRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\UserFollowingRepository")
  */
-class UserFriend
+class UserFollowing
 {
     /**
      * @ORM\Id()
@@ -17,16 +17,16 @@ class UserFriend
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="friends")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="following")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="friendsOf")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="followedBy")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $friend;
+    private $following;
 
     /**
      * @ORM\Column(type="datetime_immutable")
@@ -48,26 +48,26 @@ class UserFriend
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    public function getFriend(): ?User
+    public function getFollowing(): User
     {
-        return $this->friend;
+        return $this->following;
     }
 
-    public function setFriend(?User $friend): self
+    public function setFollowing(User $user): self
     {
-        $this->friend = $friend;
+        $this->following = $user;
 
         return $this;
     }

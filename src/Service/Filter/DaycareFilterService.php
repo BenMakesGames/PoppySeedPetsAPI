@@ -2,7 +2,6 @@
 namespace App\Service\Filter;
 
 use App\Entity\User;
-use App\Entity\UserFriend;
 use App\Repository\ItemRepository;
 use App\Repository\KnownRecipesRepository;
 use App\Repository\MuseumItemRepository;

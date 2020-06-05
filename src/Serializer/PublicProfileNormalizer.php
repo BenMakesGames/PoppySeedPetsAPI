@@ -3,7 +3,7 @@ namespace App\Serializer;
 
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
-use App\Repository\UserFriendRepository;
+use App\Repository\UserFollowingRepository;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -11,12 +11,12 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 class PublicProfileNormalizer implements NormalizerInterface
 {
     private $normalizer;
-    private $userFriendRepository;
+    private $userFollowingRepository;
     private $security;
 
-    public function __construct(UserFriendRepository $userFriendRepository, ObjectNormalizer $normalizer, Security $security)
+    public function __construct(UserFollowingRepository $userFollowingRepository, ObjectNormalizer $normalizer, Security $security)
     {
-        $this->userFriendRepository = $userFriendRepository;
+        $this->userFollowingRepository = $userFollowingRepository;
         $this->normalizer = $normalizer;
         $this->security = $security;
     }
@@ -30,13 +30,13 @@ class PublicProfileNormalizer implements NormalizerInterface
 
         if(in_array(SerializationGroupEnum::USER_PUBLIC_PROFILE, $context['groups']))
         {
-            $friend = $this->userFriendRepository->findOneBy([
+            $friend = $this->userFollowingRepository->findOneBy([
                 'user' => $this->security->getUser(),
-                'friend' => $user
+                'following' => $user
             ]);
 
             if($friend)
-                $data['friend'] = [ 'note' => $friend->getNote() ];
+                $data['following'] = [ 'note' => $friend->getNote() ];
         }
 
         return $data;

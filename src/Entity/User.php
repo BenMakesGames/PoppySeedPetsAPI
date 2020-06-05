@@ -96,14 +96,14 @@ class User implements UserInterface
     private $maxPets = 2;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserFriend", mappedBy="user", orphanRemoval=true, fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="UserFollowing", mappedBy="user", orphanRemoval=true, fetch="EXTRA_LAZY")
      */
-    private $friends;
+    private $following;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserFriend", mappedBy="friend", orphanRemoval=true, fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="UserFollowing", mappedBy="following", orphanRemoval=true, fetch="EXTRA_LAZY")
      */
-    private $friendsOf;
+    private $followedBy;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\UserStats", mappedBy="user", orphanRemoval=true, fetch="EXTRA_LAZY")
@@ -249,7 +249,7 @@ class User implements UserInterface
         $this->pets = new ArrayCollection();
         $this->registeredOn = new \DateTimeImmutable();
         $this->lastAllowanceCollected = (new \DateTimeImmutable())->modify('-7 days');
-        $this->friends = new ArrayCollection();
+        $this->following = new ArrayCollection();
         $this->stats = new ArrayCollection();
         $this->greenhousePlants = new ArrayCollection();
         $this->userSessions = new ArrayCollection();
@@ -451,30 +451,30 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection|UserFriend[]
+     * @return Collection|UserFollowing[]
      */
-    public function getFriends(): Collection
+    public function getFollowing(): Collection
     {
-        return $this->friends;
+        return $this->following;
     }
 
-    public function addFriend(UserFriend $friend): self
+    public function addFollowing(UserFollowing $following): self
     {
-        if (!$this->friends->contains($friend)) {
-            $this->friends[] = $friend;
-            $friend->setUser($this);
+        if (!$this->following->contains($following)) {
+            $this->following[] = $following;
+            $following->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeFriend(UserFriend $friend): self
+    public function removeFollowing(UserFollowing $following): self
     {
-        if ($this->friends->contains($friend)) {
-            $this->friends->removeElement($friend);
+        if ($this->following->contains($following)) {
+            $this->following->removeElement($following);
             // set the owning side to null (unless already changed)
-            if ($friend->getUser() === $this) {
-                $friend->setUser(null);
+            if ($following->getUser() === $this) {
+                $following->setUser(null);
             }
         }
 
