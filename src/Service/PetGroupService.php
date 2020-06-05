@@ -41,13 +41,13 @@ class PetGroupService
 
     public function doGroupActivity(Pet $instigatingPet, PetGroup $group)
     {
+        $this->petExperienceService->spendSocialEnergy($instigatingPet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
+
         if($this->checkForSplitUp($instigatingPet, $group))
             return;
 
         if($this->checkForRecruitment($instigatingPet, $group))
             return;
-
-        $this->takesSocialEnergy($group);
 
         switch ($group->getType())
         {
@@ -109,8 +109,6 @@ class PetGroupService
 
         /** @var Pet $unhappiestPet */
         $unhappiestPet = $unhappyMembers[0]['pet'];
-
-        $this->takesSocialEnergy($group);
 
         foreach($group->getMembers() as $member)
         {
@@ -300,12 +298,6 @@ class PetGroupService
             if($member->getId() === $instigatingPet->getId())
                 $this->responseService->addActivityLog($log);
         }
-    }
-
-    private function takesSocialEnergy(PetGroup $group)
-    {
-        foreach($group->getMembers() as $member)
-            $this->petExperienceService->spendSocialEnergy($member, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
     }
 
     public function createGroup(Pet $pet): ?PetGroup
