@@ -304,7 +304,9 @@ class PetGroupService
     {
         $availableFriends = $this->petRepository->findFriendsWithFewGroups($pet);
 
-        if(count($availableFriends) < 2)
+        // the more groups you're in, the more friends you need to start another group
+        // (reduces the chances of having duplicate-member groups)
+        if(count($availableFriends) < 2 + $pet->getGroups() * 2)
             return null;
 
         $groupTypePreferences = [

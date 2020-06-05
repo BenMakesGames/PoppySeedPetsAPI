@@ -61,7 +61,7 @@ class AstronomyClubService
     ];
 
     private const PLURAL_NOUN_LIST = [
-        'Suns', 'Stars', 'Galaxies', 'Novas', 'Circles', 'Shifts', 'Particles', 'Metals', 'Srings', 'Branes',
+        'Suns', 'Stars', 'Galaxies', 'Novas', 'Circles', 'Shifts', 'Particles', 'Metals', 'Strings', 'Branes',
         'Masses', 'Gravitons', 'Fields', 'Symmetries', 'Forces',
     ];
 
