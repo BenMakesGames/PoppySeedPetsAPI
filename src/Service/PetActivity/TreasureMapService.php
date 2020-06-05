@@ -122,6 +122,8 @@ class TreasureMapService
 
         $keybladeName = $pet->getTool()->getItem()->getName();
 
+        $this->petExperienceService->spendTime($pet, 20 + floor($floor / 1.8), PetActivityStatEnum::OTHER, null);
+
         if($floor === 1)
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' took their ' . $keybladeName . ' to the Tower of Trials, but couldn\'t even get past the first floor...', '');
