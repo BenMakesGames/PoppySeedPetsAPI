@@ -21,6 +21,7 @@ class BookstoreService
         $bookPrices = [
             'Welcome Note' => 10, // remember: this item can be turned into plain paper
             'Unlocking the Secrets of Grandparoot' => 15,
+            'Cooking 101' => 15,
         ];
 
         $flowersPurchased = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::FLOWERS_PURCHASED ]);

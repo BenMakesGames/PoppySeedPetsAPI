@@ -186,6 +186,11 @@ The milk provides enough acidity for this recipe, so Cream of Tartar (or Baking 
 * Sugar
 * Wheat Flour
 
+Or, for a simpler recipe (has a smaller yield):
+
+* Wheat Flour
+* Yeast
+
 #### Shortbread Cookies
 
 * Butter
