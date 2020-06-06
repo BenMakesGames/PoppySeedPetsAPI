@@ -79,19 +79,33 @@ class PetController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getMyDaycarePets(
-        ResponseService $responseService, DaycareFilterService $daycareFilterService, Request $request
+        ResponseService $responseService, PetFilterService $petFilterService, Request $request
     )
     {
         $user = $this->getUser();
 
-        $daycareFilterService->addRequiredFilter('user', $user->getId());
+        $petFilterService->addRequiredFilter('owner', $user->getId());
+        $petFilterService->addRequiredFilter('inDaycare', 1);
 
-        $petsInDaycare = $daycareFilterService->getResults($request->query);
+        $petsInDaycare = $petFilterService->getResults($request->query);
 
         return $responseService->success(
             $petsInDaycare,
             [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MY_PET ]
         );
+    }
+
+    /**
+     * @Route("/search", methods={"GET"})
+     */
+    public function search(PetFilterService $petFilterService, Request $request, ResponseService $responseService)
+    {
+        $results = $petFilterService->getResults($request->query);
+
+        return $responseService->success($results, [
+            SerializationGroupEnum::FILTER_RESULTS,
+            SerializationGroupEnum::PET_PUBLIC_PROFILE
+        ]);
     }
 
     /**

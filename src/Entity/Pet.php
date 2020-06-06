@@ -27,6 +27,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     @ORM\Index(name="time_idx", columns={"time"}),
  *     @ORM\Index(name="social_energy_idx", columns={"social_energy"}),
  *     @ORM\Index(name="in_daycare_idx", columns={"in_daycare"}),
+ *     @ORM\Index(name="name_idx", columns={"name"}),
  * })
  */
 class Pet
@@ -35,7 +36,7 @@ class Pet
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent", "petFriend", "fireplaceFuel", "petGroupDetails"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent", "petFriend", "fireplaceFuel", "petGroupDetails", "spiritCompanionPublicProfile"})
      */
     private $id;
 
@@ -47,7 +48,7 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "spiritCompanionPublicProfile"})
      */
     private $name;
 
@@ -834,7 +835,7 @@ class Pet
     }
 
     /**
-     * @Groups({"myPet"})
+     * @Groups({"myPet", "petPublicProfile"})
      */
     public function getLevel(): int
     {

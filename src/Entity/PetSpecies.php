@@ -7,6 +7,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PetSpeciesRepository")
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="name_idx", columns={"name"}),
+ *     @ORM\Index(name="family_idx", columns={"family"}),
+ * })
  */
 class PetSpecies
 {
@@ -113,6 +117,12 @@ class PetSpecies
      * @ORM\JoinColumn(nullable=false)
      */
     private $sheds;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"myPet", "petEncyclopedia"})
+     */
+    private $family;
 
     public function getId(): ?int
     {
@@ -307,11 +317,6 @@ class PetSpecies
         return $this->getId() <= 16;
     }
 
-    public function getClassification(): string
-    {
-        return substr($this->image, 0, strpos($this->image, '/'));
-    }
-
     public function getAvailableForTransmigration(): bool
     {
         return $this->getAvailableAtSignup() || $this->getAvailableFromBreeding() || $this->getAvailableFromPetShelter();
@@ -325,6 +330,18 @@ class PetSpecies
     public function setSheds(?Item $sheds): self
     {
         $this->sheds = $sheds;
+
+        return $this;
+    }
+
+    public function getFamily(): ?string
+    {
+        return $this->family;
+    }
+
+    public function setFamily(string $family): self
+    {
+        $this->family = $family;
 
         return $this;
     }

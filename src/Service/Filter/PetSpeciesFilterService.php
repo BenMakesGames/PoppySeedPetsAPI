@@ -25,7 +25,7 @@ class PetSpeciesFilterService
             ],
             [
                 'name' => [ $this, 'filterName' ],
-                'classification' => [ $this, 'filterClassification' ],
+                'family' => [ $this, 'filterFamily' ],
                 'canTransmigrate' => [ $this, 'filterCanTransmigrate' ],
             ]
         );
@@ -44,11 +44,11 @@ class PetSpeciesFilterService
         ;
     }
 
-    public function filterClassification(QueryBuilder $qb, $value)
+    public function filterFamily(QueryBuilder $qb, $value)
     {
         $qb
-            ->andWhere('i.image LIKE :imageLike')
-            ->setParameter('imageLike', $value . '/%')
+            ->andWhere('i.family LIKE :family')
+            ->setParameter('family', $value)
         ;
     }
 

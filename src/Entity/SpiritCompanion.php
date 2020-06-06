@@ -39,29 +39,31 @@ class SpiritCompanion
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"spiritCompanionPublicProfile"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet"})
+     * @Groups({"myPet", "spiritCompanionPublicProfile"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet", "parkEvent", "hollowEarth", "petPublicProfile", "petGroupDetails"})
+     * @Groups({"myPet", "parkEvent", "hollowEarth", "petPublicProfile", "petGroupDetails", "spiritCompanionPublicProfile"})
      */
     private $image;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="spiritCompanion")
+     * @Groups({"spiritCompanionPublicProfile"})
      */
     private $pet;
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet"})
+     * @Groups({"myPet", "spiritCompanionPublicProfile"})
      */
     private $star;
 

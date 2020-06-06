@@ -56,7 +56,7 @@ class TransmigrationSerumController extends PoppySeedPetsItemController
         if(!$newSpecies)
             throw new UnprocessableEntityHttpException('The selected species doesn\'t exist?? Try reloading and trying again.');
 
-        if($newSpecies->getClassification() !== $pet->getSpecies()->getClassification() || !$newSpecies->getAvailableForTransmigration())
+        if($newSpecies->getFamily() !== $pet->getSpecies()->getFamily() || !$newSpecies->getAvailableForTransmigration())
             throw new UnprocessableEntityHttpException($pet->getName() . ' can\'t be transmigrated into a ' . $newSpecies->getName() . '.');
 
         $em->remove($inventory);

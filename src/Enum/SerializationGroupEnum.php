@@ -44,4 +44,5 @@ final class SerializationGroupEnum
     public const MY_BEEHIVE = 'myBeehive';
     public const MY_TRANSACTION = 'myTransaction';
     public const MERIT_ENCYCLOPEDIA = 'meritEncyclopedia';
+    public const SPIRIT_COMPANION_PUBLIC_PROFILE = 'spiritCompanionPublicProfile';
 }

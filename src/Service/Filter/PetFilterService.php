@@ -22,6 +22,8 @@ class PetFilterService
                 'id' => [ 'p.id' => 'asc' ],
             ],
             [
+                'name' => [ $this, 'filterName' ],
+                'species' => [ $this, 'filterSpecies' ],
                 'owner' => [ $this, 'filterOwner' ],
                 'inDaycare' => [ $this, 'filterInDaycare' ],
             ]
@@ -31,6 +33,28 @@ class PetFilterService
     public function createQueryBuilder(): QueryBuilder
     {
         return $this->repository->createQueryBuilder('p');
+    }
+
+    public function filterName(QueryBuilder $qb, $value)
+    {
+        $qb
+            ->andWhere('p.name LIKE :nameLike')
+            ->setParameter('nameLike', '%' . $value . '%')
+        ;
+    }
+
+    public function filterSpecies(QueryBuilder $qb, $value)
+    {
+        if(!in_array('species', $qb->getAllAliases()))
+            $qb->join('p.species', 'species');
+
+        $qb
+            ->andWhere($qb->expr()->orX(
+                'species.name LIKE :speciesLike',
+                'species.family LIKE :speciesLike'
+            ))
+            ->setParameter('speciesLike', '%' . $value . '%')
+        ;
     }
 
     public function filterOwner(QueryBuilder $qb, $value)
