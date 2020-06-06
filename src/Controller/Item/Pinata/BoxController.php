@@ -463,7 +463,9 @@ class BoxController extends PoppySeedPetsItemController
             $petExperienceService->gainExp($pet, 1, [ PetSkillEnum::MUSIC ]);
             $pet->increaseSafety(2);
 
-            $responseService->createActivityLog($pet, $pet->getName() . ' listened to the Jukebox.', '', $changes->compare($pet));
+            $responseService->createActivityLog($pet, $pet->getName() . ' listened to the Jukebox.', '', $changes->compare($pet))
+                ->setViewed()
+            ;
         }
 
         $em->flush();
