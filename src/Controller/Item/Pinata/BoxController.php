@@ -193,7 +193,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openBakers(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository
     )
     {
         $user = $this->getUser();
@@ -205,7 +205,16 @@ class BoxController extends PoppySeedPetsItemController
 
         $location = $inventory->getLocation();
 
-        for($i = 0; $i < 5; $i++)
+        $freeBasicRecipes = $userQuestRepository->findOrCreate($user, 'Got free Basic Recipes', false);
+        if(!$freeBasicRecipes->getValue())
+        {
+            $newInventory[] = $inventoryService->receiveItem('Cooking 101', $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location, $inventory->getLockedToOwner());
+            $freeBasicRecipes->setValue(true);
+        }
+
+        $newInventory[] = $inventoryService->receiveItem('Wheat', $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location, $inventory->getLockedToOwner());
+
+        for($i = 0; $i < 4; $i++)
             $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Egg', 'Wheat Flour', 'Sugar', 'Creamy Milk' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location, $inventory->getLockedToOwner());
 
         for($i = 0; $i < 4; $i++)
@@ -223,7 +232,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openFruitsNVeggies(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository
     )
     {
         $user = $this->getUser();
@@ -235,11 +244,21 @@ class BoxController extends PoppySeedPetsItemController
 
         $location = $inventory->getLocation();
 
-        for($i = 0; $i < 5; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Orange', 'Red', 'Blackberries', 'Blueberries']), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location, $inventory->getLockedToOwner());
+        $freeBasicRecipes = $userQuestRepository->findOrCreate($user, 'Got free Basic Recipes', false);
+        if(!$freeBasicRecipes->getValue())
+        {
+            $newInventory[] = $inventoryService->receiveItem('Cooking 101', $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location, $inventory->getLockedToOwner());
+            $freeBasicRecipes->setValue(true);
+        }
+
+        // guaranteed orange or red
+        $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Orange', 'Red' ]), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location, $inventory->getLockedToOwner());
 
         for($i = 0; $i < 4; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Carrot', 'Onion', 'Celery', 'Carrot', 'Sweet Beet']), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location, $inventory->getLockedToOwner());
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Orange', 'Red', 'Blackberries', 'Blueberries' ]), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location, $inventory->getLockedToOwner());
+
+        for($i = 0; $i < 4; $i++)
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Carrot', 'Onion', 'Celery', 'Carrot', 'Sweet Beet' ]), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location, $inventory->getLockedToOwner());
 
         return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
@@ -270,7 +289,7 @@ class BoxController extends PoppySeedPetsItemController
 
         for($i = 0; $i < 3; $i++)
         {
-            $itemName = ArrayFunctions::pick_one(['Limestone', 'Glass', 'Iron Bar', 'Iron Ore', 'Silver Ore']);
+            $itemName = ArrayFunctions::pick_one([ 'Limestone', 'Glass', 'Iron Bar', 'Iron Ore', 'Silver Ore' ]);
 
             if($itemName === 'Limestone')
                 $description = $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '. I don\'t know how it fit in there, either. Your guess is as good as mine.';
