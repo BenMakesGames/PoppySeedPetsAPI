@@ -65,7 +65,7 @@ class HotPotatoController extends PoppySeedPetsItemController
 
             $em->flush();
 
-            return $responseService->itemActionSuccess('You toss the Hot Potato to <a href="/poppyopedia/directory/' . $target->getId() . '">' . $target->getName() . '</a>!', [ 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess('You toss the Hot Potato to <a href="/poppyopedia/resident/' . $target->getId() . '">' . $target->getName() . '</a>!', [ 'itemDeleted' => true ]);
         }
     }
 }
