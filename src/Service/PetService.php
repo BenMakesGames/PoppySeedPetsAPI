@@ -707,7 +707,7 @@ class PetService
                     break;
 
                 case SocialTimeWantEnum::GROUP:
-                    $this->petGroupService->doGroupActivity($pet, ArrayFunctions::pick_one($availableGroups->toArray()));
+                    $this->petGroupService->doGroupActivity(ArrayFunctions::pick_one($availableGroups->toArray()));
                     return true;
 
                 case SocialTimeWantEnum::CREATE_GROUP:
@@ -1053,8 +1053,6 @@ class PetService
 
         $this->em->persist($petLog);
         $this->em->persist($friendLog);
-
-        $this->responseService->addActivityLog($petLog);
     }
 
     private function meetRoommates(Pet $pet): bool

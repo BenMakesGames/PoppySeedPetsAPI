@@ -248,7 +248,7 @@ class BlueprintController extends PoppySeedPetsItemController
 
         $petService->gainAffection($pet, 10);
 
-        $responseService->addActivityLog((new PetActivityLog())->setEntry($flashMessage));
+        $responseService->addFlashMessage((new PetActivityLog())->setEntry($flashMessage));
 
         $responseService->createActivityLog($pet, $logMessage, '', $changes->compare($pet))
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)

@@ -115,7 +115,7 @@ class AstronomyClubService
         return str_replace(['_', ' ,'], [' ', ','], implode(' ', $newParts));
     }
 
-    public function meet(Pet $instigatingPet, PetGroup $group)
+    public function meet(PetGroup $group)
     {
         $groupSize = count($group->getMembers());
 
@@ -229,9 +229,6 @@ class AstronomyClubService
                 }
 
                 $this->em->persist($activityLog);
-
-                if($member->getId() === $instigatingPet->getId())
-                    $this->responseService->addActivityLog($activityLog);
             }
         }
         else
@@ -252,9 +249,6 @@ class AstronomyClubService
                 ;
 
                 $this->em->persist($activityLog);
-
-                if($member->getId() === $instigatingPet->getId())
-                    $this->responseService->addActivityLog($activityLog);
             }
         }
 

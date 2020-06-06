@@ -55,7 +55,7 @@ class HyperchromaticPrismController extends PoppySeedPetsItemController
         $em->remove($inventory);
         $em->flush();
 
-        $responseService->addActivityLog((new PetActivityLog())->setEntry($pet->getName() . ' glows, briefly... (they\'re now Hyperchromatic!)'));
+        $responseService->addFlashMessage((new PetActivityLog())->setEntry($pet->getName() . ' glows, briefly... (they\'re now Hyperchromatic!)'));
 
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }

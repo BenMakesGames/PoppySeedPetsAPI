@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\PetActivityLog;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,32 +20,19 @@ class PetActivityLogRepository extends ServiceEntityRepository
         parent::__construct($registry, PetActivityLog::class);
     }
 
-    // /**
-    //  * @return PetActivityLog[] Returns an array of PetActivityLog objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return PetActivityLog[]
+     */
+    public function findUnreadForUser(User $user): array
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        return $this->createQueryBuilder('l')
+            ->join('l.pet', 'pet')
+            ->andWhere('pet.owner = :user')
+            ->andWhere('l.viewed = 0')
+            ->setParameter('user', $user)
 
-    /*
-    public function findOneBySomeField($value): ?PetActivityLog
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
             ->getQuery()
-            ->getOneOrNullResult()
+            ->execute()
         ;
     }
-    */
 }

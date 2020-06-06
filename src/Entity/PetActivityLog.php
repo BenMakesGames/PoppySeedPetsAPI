@@ -58,6 +58,11 @@ class PetActivityLog
      */
     private $interestingness = 0;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $viewed = false;
+
     public function __construct()
     {
         $this->createdOn = new \DateTimeImmutable();
@@ -133,6 +138,18 @@ class PetActivityLog
     {
         if($interestingness > $this->interestingness)
             $this->interestingness = $interestingness;
+
+        return $this;
+    }
+
+    public function getViewed(): bool
+    {
+        return $this->viewed;
+    }
+
+    public function setViewed(): self
+    {
+        $this->viewed = true;
 
         return $this;
     }

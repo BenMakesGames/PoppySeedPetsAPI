@@ -187,22 +187,22 @@ class BandService
         'It was a little stressful, but they made good progress!',
     ];
 
-    public function meet(Pet $instigatingPet, PetGroup $group)
+    public function meet(PetGroup $group)
     {
         if($group->getNumberOfProducts() > 0 && mt_rand(1, 10) === 1)
         {
             $r = mt_rand(1, 100);
 
             if ($r <= 75)
-                $this->receiveFanMail($instigatingPet, $group);
+                $this->receiveFanMail($group);
             else //if ($r <= 75)
-                $this->receiveRoyalties($instigatingPet, $group);
+                $this->receiveRoyalties($group);
             // TODO:
             //else
             //    $this->receiveRandomItem($instigatingPet, $group);
         }
         else
-            $this->produceAlbum($instigatingPet, $group);
+            $this->produceAlbum($group);
 
         $group->setLastMetOn();
     }
@@ -212,7 +212,7 @@ class BandService
         'ecstatic!', 'moved.'
     ];
 
-    public function receiveFanMail(Pet $instigatingPet, PetGroup $group)
+    public function receiveFanMail(PetGroup $group)
     {
         foreach($group->getMembers() as $pet)
         {
@@ -234,13 +234,10 @@ class BandService
             ;
 
             $this->em->persist($activityLog);
-
-            if($pet->getId() === $instigatingPet->getId())
-                $this->responseService->addActivityLog($activityLog);
         }
     }
 
-    public function receiveRoyalties(Pet $instigatingPet, PetGroup $group)
+    public function receiveRoyalties(PetGroup $group)
     {
         $moneys = mt_rand(1, 3) + floor(
             sqrt($group->getNumberOfProducts() * 10) / count($group->getMembers())
@@ -263,16 +260,13 @@ class BandService
             ;
 
             $this->em->persist($activityLog);
-
-            if($pet->getId() === $instigatingPet->getId())
-                $this->responseService->addActivityLog($activityLog);
         }
     }
 
     /**
      * @throws EnumInvalidValueException
      */
-    public function produceAlbum(Pet $instigatingPet, PetGroup $group)
+    public function produceAlbum(PetGroup $group)
     {
         $bandSize = count($group->getMembers());
 
@@ -341,9 +335,6 @@ class BandService
                 ;
 
                 $this->em->persist($activityLog);
-
-                if($member->getId() === $instigatingPet->getId())
-                    $this->responseService->addActivityLog($activityLog);
             }
         }
         else
@@ -371,9 +362,6 @@ class BandService
                 ;
 
                 $this->em->persist($activityLog);
-
-                if($member->getId() === $instigatingPet->getId())
-                    $this->responseService->addActivityLog($activityLog);
             }
         }
 

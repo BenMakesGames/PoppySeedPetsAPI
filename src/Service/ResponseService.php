@@ -4,8 +4,10 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Model\PetChangesSummary;
+use App\Repository\PetActivityLogRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +18,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class ResponseService
 {
     /** @var PetActivityLog[] */
-    private $activityLogs = [];
+    private $flashMessages = [];
     private $reloadInventory = false;
     private $reloadPets = false;
     private $em;
@@ -25,10 +27,11 @@ class ResponseService
     private $normalizer;
     private $sessionId = 0;
     private $calendarService;
+    private $petActivityLogRepository;
 
     public function __construct(
         SerializerInterface $serializer, NormalizerInterface $normalizer, EntityManagerInterface $em, Security $security,
-        CalendarService $calendarService
+        CalendarService $calendarService, PetActivityLogRepository $petActivityLogRepository
     )
     {
         $this->serializer = $serializer;
@@ -36,6 +39,7 @@ class ResponseService
         $this->em = $em;
         $this->security = $security;
         $this->calendarService = $calendarService;
+        $this->petActivityLogRepository = $petActivityLogRepository;
     }
 
     public function setSessionId(?string $sessionId)
@@ -59,7 +63,9 @@ class ResponseService
     {
         if(!\is_array($groups)) $groups = [ $groups ];
 
-        if($this->security->getUser() && $this->security->getUser()->getIsAdmin())
+        $user = $this->security->getUser();
+
+        if($user && $user->getIsAdmin())
             $groups[] = SerializationGroupEnum::QUERY_ADMIN;
 
         $responseData = [
@@ -69,13 +75,15 @@ class ResponseService
         if($data !== null)
             $responseData['data'] = $this->normalizer->normalize($data, null, [ 'groups' => $groups ]);
 
-        if(count($this->activityLogs) > 0)
-            $responseData['activity'] = $this->normalizer->normalize($this->activityLogs, null, [ 'groups' => [ SerializationGroupEnum::PET_ACTIVITY_LOGS ] ]);
+        $activity = $this->getUnreadMessages($user);
+
+        if(count($activity) > 0)
+            $responseData['activity'] = $this->normalizer->normalize($activity, null, [ 'groups' => [ SerializationGroupEnum::PET_ACTIVITY_LOGS ] ]);
 
         if($this->sessionId !== 0)
             $responseData['sessionId'] = $this->sessionId;
 
-        $responseData['event'] = $this->calendarService->getEventData($this->security->getUser());
+        $responseData['event'] = $this->calendarService->getEventData($user);
 
         if($this->security->getUser() && $this->security->getUser()->getIsAdmin())
             $responseData['serializationGroups'] = $groups;
@@ -90,6 +98,27 @@ class ResponseService
         ]);
 
         return new JsonResponse($json, Response::HTTP_OK, [], true);
+    }
+
+    /**
+     * @return PetActivityLog[]
+     */
+    private function getUnreadMessages(?User $user): array
+    {
+        if($user === null)
+            return $this->flashMessages;
+
+        $unreadMessages = $this->petActivityLogRepository->findUnreadForUser($user);
+
+        foreach($unreadMessages as $message)
+            $message->setViewed();
+
+        $this->em->flush();
+
+        return array_merge(
+            $this->flashMessages,
+            $unreadMessages
+        );
     }
 
     public function error(int $httpResponse, array $messages): JsonResponse
@@ -130,8 +159,6 @@ class ResponseService
             ->setIcon($icon)
         ;
 
-        $this->activityLogs[] = $log;
-
         $this->em->persist($log);
 
         return $log;
@@ -147,8 +174,10 @@ class ResponseService
         $this->reloadInventory = true;
     }
 
-    public function addActivityLog(PetActivityLog $log)
+    public function addFlashMessage(PetActivityLog $log)
     {
-        $this->activityLogs[] = $log;
+        $log->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE);
+
+        $this->flashMessages[] = $log;
     }
 }

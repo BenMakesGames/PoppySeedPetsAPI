@@ -162,7 +162,7 @@ class BugController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        $responseService->addActivityLog((new PetActivityLog())->setEntry($message));
+        $responseService->addFlashMessage((new PetActivityLog())->setEntry($message));
 
         return $responseService->itemActionSuccess(null, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
@@ -248,7 +248,7 @@ class BugController extends PoppySeedPetsItemController
             $reloadPets = true;
         }
 
-        $responseService->addActivityLog((new PetActivityLog())->setEntry($message));
+        $responseService->addFlashMessage((new PetActivityLog())->setEntry($message));
 
         $em->persist($newPet);
         $em->remove($inventory);

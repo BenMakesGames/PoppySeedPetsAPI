@@ -21,6 +21,11 @@ class PetGroupService
 {
     public const SOCIAL_ENERGY_PER_MEET = 60 * 12;
 
+    public const GROUP_TYPE_NAMES = [
+        PetGroupTypeEnum::BAND => 'band',
+        PetGroupTypeEnum::ASTRONOMY => 'astronomy lab'
+    ];
+
     private $em;
     private $petRepository;
     private $responseService;
@@ -41,24 +46,24 @@ class PetGroupService
         $this->astronomyClubService = $astronomyClubService;
     }
 
-    public function doGroupActivity(Pet $instigatingPet, PetGroup $group)
+    public function doGroupActivity(PetGroup $group)
     {
         $group->spendSocialEnergy(PetGroupService::SOCIAL_ENERGY_PER_MEET);
 
-        if($this->checkForSplitUp($instigatingPet, $group))
+        if($this->checkForSplitUp($group))
             return;
 
-        if($this->checkForRecruitment($instigatingPet, $group))
+        if($this->checkForRecruitment($group))
             return;
 
         switch ($group->getType())
         {
             case PetGroupTypeEnum::BAND:
-                $this->bandService->meet($instigatingPet, $group);
+                $this->bandService->meet($group);
                 break;
 
             case PetGroupTypeEnum::ASTRONOMY:
-                $this->astronomyClubService->meet($instigatingPet, $group);
+                $this->astronomyClubService->meet($group);
                 break;
 
             default:
@@ -85,7 +90,7 @@ class PetGroupService
         return $happiness;
     }
 
-    private function checkForSplitUp(Pet $instigatingPet, PetGroup $group): bool
+    private function checkForSplitUp(PetGroup $group): bool
     {
         $unhappyMembers = [];
 
@@ -143,9 +148,6 @@ class PetGroupService
             ;
 
             $this->em->persist($logEntry);
-
-            if($instigatingPet->getId() === $member->getId())
-                $this->responseService->addActivityLog($logEntry);
         }
 
         $unhappiestPet->removeGroup($group);
@@ -156,7 +158,7 @@ class PetGroupService
         return true;
     }
 
-    private function checkForRecruitment(Pet $instigatingPet, PetGroup $group): bool
+    private function checkForRecruitment(PetGroup $group): bool
     {
         $numMembers = count($group->getMembers());
 
@@ -192,7 +194,7 @@ class PetGroupService
 
         if(count($recruits) > 0)
         {
-            $this->recruitMember($instigatingPet, $group, $recruits[array_key_first($recruits)]);
+            $this->recruitMember($group, $recruits[array_key_first($recruits)]);
 
             return true;
         }
@@ -200,7 +202,7 @@ class PetGroupService
         // if you failed to recruit, and you don't have enough members, the group might disband
         if(count($group->getMembers()) === 1 || (count($group->getMembers()) < $group->getMinimumSize() && mt_rand(1, 2) === 1))
         {
-            $this->disbandGroup($instigatingPet, $group);
+            $this->disbandGroup($group);
 
             return true;
         }
@@ -219,15 +221,12 @@ class PetGroupService
             ;
 
             $this->em->persist($log);
-
-            if($member->getId() === $instigatingPet->getId())
-                $this->responseService->addActivityLog($log);
         }
 
         return true;
     }
 
-    private function disbandGroup(Pet $instigatingPet, PetGroup $group): void
+    private function disbandGroup(PetGroup $group): void
     {
         foreach($group->getMembers() as $member)
         {
@@ -247,15 +246,12 @@ class PetGroupService
             ;
 
             $this->em->persist($log);
-
-            if($member->getId() === $instigatingPet->getId())
-                $this->responseService->addActivityLog($log);
         }
 
         $this->em->remove($group);
     }
 
-    private function recruitMember(Pet $instigatingPet, PetGroup $group, Pet $recruit): void
+    private function recruitMember(PetGroup $group, Pet $recruit): void
     {
         $recruit->addGroup($group);
 
@@ -296,9 +292,6 @@ class PetGroupService
             ;
 
             $this->em->persist($log);
-
-            if($member->getId() === $instigatingPet->getId())
-                $this->responseService->addActivityLog($log);
         }
     }
 
@@ -314,13 +307,13 @@ class PetGroupService
         $groupTypePreferences = [
             [
                 'type' => PetGroupTypeEnum::BAND,
-                'description' => 'band',
+                'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::BAND],
                 'icon' => 'groups/band',
                 'preference' => 5 + $pet->getMusic(),
             ],
             [
                 'type' => PetGroupTypeEnum::ASTRONOMY,
-                'description' => 'astronomy lab',
+                'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::ASTRONOMY],
                 'icon' => 'groups/astronomy',
                 'preference' => 5 + $pet->getScience(),
             ]
@@ -356,24 +349,20 @@ class PetGroupService
                 shuffle($availableFriends);
         }
 
-        $friendNames = [
-            $availableFriends[0]->getName(),
-            $availableFriends[1]->getName(),
-        ];
+        $friendsToInvite = array_slice($availableFriends, 0, min(count($availableFriends), mt_rand(2, mt_rand(3, 4))));
+        $friendNames = array_map(function(Pet $p) { return $p->getName(); }, $friendsToInvite);
 
-        $availableFriends[0]->addGroup($group);
-        $availableFriends[1]->addGroup($group);
-
-        if(count($availableFriends) >= 3 && mt_rand(1, 2) === 1)
+        foreach($friendsToInvite as $friend)
         {
-            $availableFriends[2]->addGroup($group);
-            $friendNames[] = $availableFriends[2]->getName();
-        }
+            $friend->addGroup($group);
 
-        if(count($availableFriends) >= 4 && mt_rand(1, 2) === 1)
-        {
-            $availableFriends[3]->addGroup($group);
-            $friendNames[] = $availableFriends[3]->getName();
+            $log = (new PetActivityLog())
+                ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
+                ->setPet($friend)
+                ->setEntry($friend->getName() . ' was invited to join ' . $pet->getName() . '\'s new ' . self::GROUP_TYPE_NAMES[$type] . ', ' . $group->getName() . '!')
+            ;
+
+            $this->em->persist($log);
         }
 
         $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
