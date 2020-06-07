@@ -13,6 +13,7 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetSkillEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
@@ -610,10 +611,15 @@ class PetController extends PoppySeedPetsController
     }
 
     /**
+     * remove this route some time later (after 2020-06-07)
      * @Route("/{pet}/chooseAffectionReward", methods={"POST"}, requirements={"pet"="\d+"})
+     *
+     * keep this one, though :P
+     * @Route("/{pet}/chooseAffectionReward/merit", methods={"POST"}, requirements={"pet"="\d+"})
+     *
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function chooseAffectionReward(
+    public function chooseAffectionRewardMerit(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, MeritService $meritService
     )
     {
@@ -654,6 +660,35 @@ class PetController extends PoppySeedPetsController
         {
             $pet->setIsFertile(true);
         }
+
+        $em->flush();
+
+        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+    }
+
+    /**
+     * @Route("/{pet}/chooseAffectionReward/skill", methods={"POST"}, requirements={"pet"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function chooseAffectionRewardSkill(
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, MeritService $meritService
+    )
+    {
+        $user = $this->getUser();
+
+        if($pet->getOwner()->getId() !== $user->getId())
+            throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
+
+        if($pet->getAffectionRewardsClaimed() >= $pet->getAffectionLevel())
+            throw new UnprocessableEntityHttpException('You\'ll have to raise ' . $pet->getName() . '\'s affection, first.');
+
+        $skillName = $request->request->get('skill');
+
+        if(!PetSkillEnum::isAValue($skillName))
+            throw new UnprocessableEntityHttpException('"' . $skillName . '" is not a skill!');
+
+        $pet->getSkills()->increaseStat($skillName);
+        $pet->increaseAffectionRewardsClaimed();
 
         $em->flush();
 
