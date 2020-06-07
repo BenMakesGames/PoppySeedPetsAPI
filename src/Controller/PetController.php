@@ -671,7 +671,7 @@ class PetController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function chooseAffectionRewardSkill(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, MeritService $meritService
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -686,6 +686,9 @@ class PetController extends PoppySeedPetsController
 
         if(!PetSkillEnum::isAValue($skillName))
             throw new UnprocessableEntityHttpException('"' . $skillName . '" is not a skill!');
+
+        if($pet->getSkills()->{'get' . $skillName}() >= 20)
+            throw new UnprocessableEntityHttpException($pet->getName() . '\'s ' . $skillName . ' is already max!');
 
         $pet->getSkills()->increaseStat($skillName);
         $pet->increaseAffectionRewardsClaimed();
