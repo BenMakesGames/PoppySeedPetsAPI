@@ -89,8 +89,10 @@ class Filterer
         $numResults = count($paginator);
         $lastPage = ceil($numResults / $this->pageSize);
 
-        if($page < 0)
+        if($page < -$lastPage)
             $page = 0;
+        else if($page < 0)
+            $page = $lastPage + $page;
         else if($lastPage > 0 && $page >= $lastPage)
             $page = $lastPage - 1;
 

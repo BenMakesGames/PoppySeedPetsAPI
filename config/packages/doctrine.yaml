@@ -20,3 +20,7 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+
+        dql:
+            datetime_functions:
+                date: Oro\ORM\Query\AST\Functions\SimpleFunction

@@ -24,7 +24,6 @@ use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
-use App\Service\Filter\DaycareFilterService;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\Filter\PetFilterService;
 use App\Service\InventoryService;
@@ -33,6 +32,7 @@ use App\Service\PetActivityStatsService;
 use App\Service\PetService;
 use App\Service\ResponseService;
 use App\Service\Typeahead\PetTypeaheadService;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -696,6 +696,36 @@ class PetController extends PoppySeedPetsController
         $em->flush();
 
         return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+    }
+
+    /**
+     * @Route("/{pet}/logs/calendar/{year}/{month}", methods={"GET"}, requirements={"pet":"\d+", "year":"\d+", "month":"\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function logCalendar(
+        ResponseService $responseService, PetActivityLogRepository $petActivityLogRepository,
+
+        // route arguments:
+        Pet $pet, ?int $year = null, ?int $month = null
+    )
+    {
+        if($year === null && $month === null)
+        {
+            $year = (int)date('Y');
+            $month = (int)date('n');
+        }
+
+        if($month < 1 || $month > 12)
+            throw new UnprocessableEntityHttpException('"month" must be between 1 and 12!');
+
+        $user = $this->getUser();
+
+        if($user->getId() !== $pet->getOwner()->getId())
+            throw new AccessDeniedHttpException();
+
+        $results = $petActivityLogRepository->findLogsForPetByDate($pet, $year, $month);
+
+        return $responseService->success($results);
     }
 
     /**
