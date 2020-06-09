@@ -725,7 +725,11 @@ class PetController extends PoppySeedPetsController
 
         $results = $petActivityLogRepository->findLogsForPetByDate($pet, $year, $month);
 
-        return $responseService->success($results);
+        return $responseService->success([
+            'year' => $year,
+            'month' => $month,
+            'calendar' => $results
+        ]);
     }
 
     /**
