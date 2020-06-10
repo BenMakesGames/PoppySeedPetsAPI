@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\SpiritCompanion;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\SpiritCompanionFilterService;
 use App\Service\ResponseService;
@@ -12,6 +13,14 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SpiritCompanionController extends PoppySeedPetsController
 {
+    /**
+     * @Route("/{spiritCompanion}", methods={"GET"}, requirements={"spiritCompanion"="\d+"})
+     */
+    public function find(SpiritCompanion $spiritCompanion, ResponseService $responseService)
+    {
+        return $responseService->success($spiritCompanion, SerializationGroupEnum::SPIRIT_COMPANION_PUBLIC_PROFILE);
+    }
+
     /**
      * @Route("/search", methods={"GET"})
      */
