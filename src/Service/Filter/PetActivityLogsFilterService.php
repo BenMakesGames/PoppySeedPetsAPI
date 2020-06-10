@@ -46,7 +46,7 @@ class PetActivityLogsFilterService
         if($date === false)
             throw new UnprocessableEntityHttpException('"date" must be in yyyy-mm-dd format.');
 
-        $this->filterer->setPageSize(100);
+        $this->filterer->setPageSize(200);
 
         $qb
             ->andWhere('l.createdOn >= :date')

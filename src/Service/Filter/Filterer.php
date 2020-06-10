@@ -23,6 +23,11 @@ class Filterer
         $this->filterMap = $filterCallbacks;
     }
 
+    public function setPageSize(int $pageSize)
+    {
+        $this->pageSize = $pageSize;
+    }
+
     public function addDefaultFilter(string $key, $value)
     {
         $this->defaultFilters[$key] = $value;
