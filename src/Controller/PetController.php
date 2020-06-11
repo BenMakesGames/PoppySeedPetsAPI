@@ -360,6 +360,7 @@ class PetController extends PoppySeedPetsController
 
         $inventory
             ->setLocation(LocationEnum::HOME)
+            ->setModifiedOn()
         ;
 
         $em->remove($inventory->getLunchboxItem());
