@@ -6,6 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DailyMarketInventoryTransactionRepository")
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="inventory_idx", columns={"inventory"}),
+ * })
  */
 class DailyMarketInventoryTransaction
 {
@@ -26,6 +29,12 @@ class DailyMarketInventoryTransaction
      */
     private $price;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Item")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $item;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -36,14 +45,14 @@ class DailyMarketInventoryTransaction
         return $this->inventory;
     }
 
-    public function setInventory(?Inventory $inventory): self
+    public function setInventory(int $inventoryId): self
     {
-        $this->inventory = $inventory->getId();
+        $this->inventory = $inventoryId;
 
         return $this;
     }
 
-    public function getPrice(): ?int
+    public function getPrice(): int
     {
         return $this->price;
     }
@@ -51,6 +60,18 @@ class DailyMarketInventoryTransaction
     public function setPrice(int $price): self
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getItem(): Item
+    {
+        return $this->item;
+    }
+
+    public function setItem(Item $item): self
+    {
+        $this->item = $item;
 
         return $this;
     }

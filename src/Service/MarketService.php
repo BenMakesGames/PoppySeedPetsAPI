@@ -41,7 +41,8 @@ class MarketService
     public function logExchange(Inventory $itemForSale): DailyMarketInventoryTransaction
     {
         $log = (new DailyMarketInventoryTransaction())
-            ->setInventory($itemForSale)
+            ->setInventory($itemForSale->getId())
+            ->setItem($itemForSale->getItem())
             ->setPrice($itemForSale->getBuyPrice())
         ;
 

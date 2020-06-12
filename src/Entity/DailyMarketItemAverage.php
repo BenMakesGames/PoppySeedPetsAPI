@@ -8,6 +8,9 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DailyMarketItemAverageRepository")
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="date_idx", columns={"date"}),
+ * })
  */
 class DailyMarketItemAverage
 {
