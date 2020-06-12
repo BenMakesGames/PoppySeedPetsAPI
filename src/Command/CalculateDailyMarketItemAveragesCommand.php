@@ -43,16 +43,16 @@ class CalculateDailyMarketItemAveragesCommand extends Command
                         AVG(t.price) AS price,
                         MIN(t.price) AS min_price,
                         MAX(t.price) AS max_price,
-                        item.id AS item_id
-                    FROM `daily_market_inventory_transaction` AS t
-                    INNER JOIN inventory AS i ON i.id=t.inventory_id
-                    INNER JOIN item ON item.id=i.item_id
-                    GROUP BY t.inventory_id
+                        item_id
+                    FROM daily_market_inventory_transaction AS t
+                    GROUP BY t.inventory
                 ) AS averages
                 GROUP BY averages.item_id            
             ')
             ->fetchAll(FetchMode::ASSOCIATIVE)
         ;
+
+        $this->em->getConnection()->executeQuery('TRUNCATE daily_market_inventory_transaction');
 
         $sqlRows = [];
         $date = date('Y-m-d');

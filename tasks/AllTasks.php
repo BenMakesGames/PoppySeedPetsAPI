@@ -18,4 +18,9 @@ $schedule->run('php bin/console app:buzz-buzz')
     ->everyHour()
 ;
 
+$schedule->run('php bin/console app:calculate-daily-market-item-averages')
+    ->description('Calculates daily min, max, and average market prices for all items bought/sold.')
+    ->daily()
+;
+
 return $schedule;
