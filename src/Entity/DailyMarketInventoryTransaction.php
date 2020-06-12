@@ -17,8 +17,7 @@ class DailyMarketInventoryTransaction
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Inventory")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Column(type="integer")
      */
     private $inventory;
 
@@ -32,14 +31,14 @@ class DailyMarketInventoryTransaction
         return $this->id;
     }
 
-    public function getInventory(): ?Inventory
+    public function getInventory(): int
     {
         return $this->inventory;
     }
 
     public function setInventory(?Inventory $inventory): self
     {
-        $this->inventory = $inventory;
+        $this->inventory = $inventory->getId();
 
         return $this;
     }
