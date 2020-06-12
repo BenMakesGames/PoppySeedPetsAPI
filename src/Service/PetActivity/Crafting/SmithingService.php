@@ -44,6 +44,9 @@ class SmithingService
     {
         $possibilities = [];
 
+        if(array_key_exists('Charcoal', $quantities))
+            $possibilities[] = [ $this, 'createCoke' ];
+
         if(array_key_exists('Iron Ore', $quantities))
             $possibilities[] = [ $this, 'createIronBar' ];
 
@@ -764,9 +767,6 @@ class SmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createWandOfIce(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + max($pet->getDexterity(), $pet->getIntelligence()) + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
@@ -794,9 +794,67 @@ class SmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
+    public function createCoke(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll === 1)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->inventoryService->loseItem('Iron Ore', $pet->getOwner(), LocationEnum::HOME, 1);
+            $pet->increaseEsteem(-1);
+            $pet->increaseSafety(-mt_rand(2, 24));
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to refine some Charcoal, but got burned while trying, and ruined the Charcoal! :(', 'icons/activity-logs/burn');
+        }
+        else if($roll >= 12)
+        {
+            $getRareStone = mt_rand(1, $pet->hasMerit(MeritEnum::LUCKY) ? 50 : 100) === 1;
+            $rareStone = ArrayFunctions::pick_one([ 'Blackonite', 'Firestone' ]);
+            $attributeLuckiness = false;
+
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Charcoal', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            $pet->increaseEsteem($getRareStone ? 8 : 1);
+
+            if($getRareStone)
+            {
+                $attributeLuckiness = $pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 4) > 1;
+
+                if($attributeLuckiness)
+                {
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' refined some Charcoal into Coke, and what\'s this?! There was a piece of ' . $rareStone . ' inside! Lucky~!', 'items/resource/coke')
+                        ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                    ;
+                }
+                else
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' refined some Charcoal into Coke, and what\'s this?! There was a piece of ' . $rareStone . ' inside!', 'items/resource/coke');
+            }
+            else
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' refined some Charcoal into Coke.', 'items/resource/coke');
+
+            $this->inventoryService->petCollectsItem('Coke', $pet, $pet->getName() . ' refined this from Charcoal.', $activityLog);
+
+            if($getRareStone)
+            {
+                if($attributeLuckiness)
+                    $this->inventoryService->petCollectsItem($rareStone, $pet, $pet->getName() . ' found this while refining Charcoal into Coke! Lucky~!', $activityLog);
+                else
+                    $this->inventoryService->petCollectsItem($rareStone, $pet, $pet->getName() . ' found this while refining Charcoal into Coke!', $activityLog);
+            }
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to refine Coke from Charcoal, but couldn\'t figure it out.', 'icons/activity-logs/confused');
+        }
+    }
+
     public function createIronBar(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
@@ -827,9 +885,6 @@ class SmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createSilverBar(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
@@ -860,9 +915,6 @@ class SmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createGoldBar(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
