@@ -167,6 +167,9 @@ class SmithingService
         if(array_key_exists('Antipode', $quantities) && array_key_exists('Lightning Sword', $quantities))
             $possibilities[] = [ $this, 'createTrinityBlade' ];
 
+        if(array_key_exists('Poker', $quantities) && array_key_exists('Everice', $quantities))
+            $possibilities[] = [ $this, 'createWandOfIce' ];
+
         return $possibilities;
     }
 
