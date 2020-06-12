@@ -17,7 +17,7 @@ class Item
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"itemEncyclopedia", "myPet", "marketItem"})
+     * @Groups({"itemEncyclopedia", "myPet", "marketItem", "myInventory"})
      */
     private $id;
 

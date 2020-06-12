@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Repository;
+
+use App\Entity\DailyMarketInventoryTransaction;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
+
+/**
+ * @method DailyMarketInventoryTransaction|null find($id, $lockMode = null, $lockVersion = null)
+ * @method DailyMarketInventoryTransaction|null findOneBy(array $criteria, array $orderBy = null)
+ * @method DailyMarketInventoryTransaction[]    findAll()
+ * @method DailyMarketInventoryTransaction[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
+class DailyMarketInventoryTransactionRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, DailyMarketInventoryTransaction::class);
+    }
+}

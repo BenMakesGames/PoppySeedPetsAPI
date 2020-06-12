@@ -2,9 +2,11 @@
 namespace App\Controller;
 
 use App\Entity\Inventory;
+use App\Entity\Item;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Repository\DailyMarketItemAverageRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\Filter\MarketFilterService;
@@ -26,6 +28,24 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class MarketController extends PoppySeedPetsController
 {
+    /**
+     * @Route("/history/{item}", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getItemHistory(
+        ResponseService $responseService, DailyMarketItemAverageRepository $dailyMarketItemAverageRepository,
+
+        Item $item
+    )
+    {
+        /*$itemHistory = $dailyMarketItemAverageRepository->findHistoryForItem(
+            $item, \DateInterval::createFromDateString('7 days')
+        );*/
+        $itemHistory = [];
+
+        return $responseService->success($itemHistory, SerializationGroupEnum::MARKET_ITEM_HISTORY);
+    }
+
     /**
      * @Route("/search", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
@@ -90,7 +110,7 @@ class MarketController extends PoppySeedPetsController
     public function buy(
         Request $request, ResponseService $responseService, AdapterInterface $cache, EntityManagerInterface $em,
         UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
-        TransactionService $transactionService
+        TransactionService $transactionService, MarketService $marketService
     )
     {
         $user = $this->getUser();
@@ -133,7 +153,7 @@ class MarketController extends PoppySeedPetsController
             ->getResult()
         ;
 
-        $buy = null;
+        $itemToBuy = null;
 
         foreach($forSale as $inventory)
         {
@@ -145,44 +165,46 @@ class MarketController extends PoppySeedPetsController
             {
                 $item->set(true)->expiresAfter(\DateInterval::createFromDateString('2 minutes'));
                 $cache->save($item);
-                $buy = $inventory;
+                $itemToBuy = $inventory;
                 break;
             }
         }
 
-        if($buy === null)
+        if($itemToBuy === null)
             throw new NotFoundHttpException('An item for that price could not be found on the market. Someone may have bought it up just for you did! Sorry :|');
 
         try
         {
-            $transactionService->getMoney($buy->getOwner(), $buy->getSellPrice(), 'Sold ' . $buy->getItem()->getName() . ' in the Market.');
-            $userStatsRepository->incrementStat($buy->getOwner(), UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $buy->getSellPrice());
-            $userStatsRepository->incrementStat($buy->getOwner(), UserStatEnum::ITEMS_SOLD_IN_MARKET, 1);
+            $transactionService->getMoney($itemToBuy->getOwner(), $itemToBuy->getSellPrice(), 'Sold ' . $itemToBuy->getItem()->getName() . ' in the Market.');
+            $userStatsRepository->incrementStat($itemToBuy->getOwner(), UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $itemToBuy->getSellPrice());
+            $userStatsRepository->incrementStat($itemToBuy->getOwner(), UserStatEnum::ITEMS_SOLD_IN_MARKET, 1);
 
-            $transactionService->spendMoney($user, $buy->getBuyPrice(), 'Bought ' . $buy->getItem()->getName() . ' in the Market.');
+            $transactionService->spendMoney($user, $itemToBuy->getBuyPrice(), 'Bought ' . $itemToBuy->getItem()->getName() . ' in the Market.');
             $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_BOUGHT_IN_MARKET, 1);
 
-            $buy
+            $marketService->logExchange($itemToBuy);
+
+            $itemToBuy
                 ->setOwner($user)
                 ->setSellPrice(null)
                 ->setLocation($placeItemsIn)
                 ->setModifiedOn()
             ;
 
-            if($buy->getHolder())
-                $buy->getHolder()->setTool(null);
+            if($itemToBuy->getHolder())
+                $itemToBuy->getHolder()->setTool(null);
 
-            if($buy->getWearer())
-                $buy->getWearer()->setHat(null);
+            if($itemToBuy->getWearer())
+                $itemToBuy->getWearer()->setHat(null);
 
             $em->flush();
         }
         finally
         {
-            $cache->deleteItem('Trading Inventory #' . $buy->getId());
+            $cache->deleteItem('Trading Inventory #' . $itemToBuy->getId());
         }
 
-        return $responseService->success($buy, SerializationGroupEnum::MY_INVENTORY);
+        return $responseService->success($itemToBuy, SerializationGroupEnum::MY_INVENTORY);
     }
 
     /**

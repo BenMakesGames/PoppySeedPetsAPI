@@ -1,10 +1,20 @@
 <?php
 namespace App\Service;
 
+use App\Entity\DailyMarketInventoryTransaction;
+use App\Entity\Inventory;
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 
 class MarketService
 {
+    private $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     public function getItemToRaiseLimit(User $user): ?array
     {
         switch($user->getMaxSellPrice())
@@ -26,5 +36,17 @@ class MarketService
         }
 
         return null;
+    }
+
+    public function logExchange(Inventory $itemForSale): DailyMarketInventoryTransaction
+    {
+        $log = (new DailyMarketInventoryTransaction())
+            ->setInventory($itemForSale)
+            ->setPrice($itemForSale->getBuyPrice())
+        ;
+
+        $this->em->persist($log);
+
+        return $log;
     }
 }
