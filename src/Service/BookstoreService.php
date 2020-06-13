@@ -58,6 +58,11 @@ class BookstoreService
             }
         }
 
+        if($user->getUnlockedFireplace())
+        {
+            $bookPrices['Melt'] = 25;
+        }
+
         if($itemsDonatedToMuseum)
         {
             if($itemsDonatedToMuseum->getValue() >= 100)

@@ -122,9 +122,9 @@ class RunParkEventsCommand extends Command
 
                         $this->inventoryService->receiveItem(
                             ArrayFunctions::pick_one([
-                                'Red Present',
-                                'Yellow Present',
-                                'Purple Present'
+                                'Red PSP B-day Present',
+                                'Yellow PSP B-day Present',
+                                'Purple PSP B-day Present'
                             ]),
                             $pet->getOwner(),
                             $pet->getOwner(),

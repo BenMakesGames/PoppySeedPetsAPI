@@ -63,6 +63,11 @@ class PetActivityLog
      */
     private $viewed = false;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Item")
+     */
+    private $equippedItem;
+
     public function __construct()
     {
         $this->createdOn = new \DateTimeImmutable();
@@ -81,6 +86,9 @@ class PetActivityLog
     public function setPet(?Pet $pet): self
     {
         $this->pet = $pet;
+
+        if($pet && $pet->getTool())
+            $this->equippedItem = $pet->getTool()->getItem();
 
         return $this;
     }
@@ -150,6 +158,18 @@ class PetActivityLog
     public function setViewed(): self
     {
         $this->viewed = true;
+
+        return $this;
+    }
+
+    public function getEquippedItem(): ?Item
+    {
+        return $this->equippedItem;
+    }
+
+    public function setEquippedItem(?Item $equippedItem): self
+    {
+        $this->equippedItem = $equippedItem;
 
         return $this;
     }
