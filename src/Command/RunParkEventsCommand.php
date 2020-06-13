@@ -4,11 +4,15 @@ namespace App\Command;
 
 use App\Entity\ParkEvent;
 use App\Entity\Pet;
+use App\Enum\LocationEnum;
 use App\Enum\ParkEventTypeEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\TriDChessParticipant;
 use App\Repository\PetRepository;
+use App\Repository\UserQuestRepository;
+use App\Service\CalendarService;
+use App\Service\InventoryService;
 use App\Service\ParkEvent\JoustingService;
 use App\Service\ParkEvent\KinBallService;
 use App\Service\ParkEvent\TriDChessService;
@@ -25,10 +29,14 @@ class RunParkEventsCommand extends Command
     private $em;
     private $triDChessService;
     private $joustingService;
+    private $userQuestRepository;
+    private $calendarService;
+    private $inventoryService;
 
     public function __construct(
         KinBallService $kinBallService, PetRepository $petRepository, EntityManagerInterface $em,
-        TriDChessService $triDChessService, JoustingService $joustingService
+        TriDChessService $triDChessService, JoustingService $joustingService, UserQuestRepository $userQuestRepository,
+        CalendarService $calendarService, InventoryService $inventoryService
     )
     {
         $this->kinBallService = $kinBallService;
@@ -36,6 +44,9 @@ class RunParkEventsCommand extends Command
         $this->em = $em;
         $this->triDChessService = $triDChessService;
         $this->joustingService = $joustingService;
+        $this->userQuestRepository = $userQuestRepository;
+        $this->calendarService = $calendarService;
+        $this->inventoryService = $inventoryService;
 
         parent::__construct();
     }
@@ -89,12 +100,40 @@ class RunParkEventsCommand extends Command
 
             $this->em->persist($parkEvent);
 
+            $birthdayPresentsByUser = [];
+
             foreach($parkEvent->getParticipants() as $pet)
             {
                 $pet
                     ->setLastParkEvent()
                     ->setParkEventType(null)
                 ;
+
+                if($this->calendarService->isPSPBirthday())
+                {
+                    $userId = $pet->getOwner()->getId();
+
+                    if(!array_key_exists($userId, $birthdayPresentsByUser))
+                        $birthdayPresentsByUser[$userId] = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'PSP Birthday Present ' . date('Y-m-d'), 0);
+
+                    if($birthdayPresentsByUser[$userId]->getValue() < 2)
+                    {
+                        $birthdayPresentsByUser[$userId]->setValue($birthdayPresentsByUser[$userId]->getValue() + 1);
+
+                        $this->inventoryService->receiveItem(
+                            ArrayFunctions::pick_one([
+                                'Red Present',
+                                'Yellow Present',
+                                'Purple Present'
+                            ]),
+                            $pet->getOwner(),
+                            $pet->getOwner(),
+                            $pet->getName() . ' got this from participating in a park event!',
+                            LocationEnum::HOME,
+                            true
+                        );
+                    }
+                }
             }
 
             $this->em->flush();

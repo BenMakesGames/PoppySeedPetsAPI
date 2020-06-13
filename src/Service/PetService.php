@@ -130,8 +130,6 @@ class PetService
 
         if($pet->getFood() + $pet->getAlcohol() < 0) $divideBy++;
         if($pet->getSafety() + $pet->getAlcohol() < 0) $divideBy++;
-        if($pet->getLove() + $pet->getAlcohol() < 0) $divideBy++;
-        if($pet->getEsteem() + $pet->getAlcohol() < 0) $divideBy++;
 
         $points = ceil($points / $divideBy);
 
@@ -293,7 +291,7 @@ class PetService
                 $ateAFortuneCookie = true;
         }
 
-        // gain love & safety equal to 1/8 food gained, when hand-fed
+        // gain safety & affection equal to 1/8 food gained, when hand-fed
         $foodGained = $pet->getFood() - $petChanges->food;
 
         if($foodGained > 0)

@@ -29,6 +29,11 @@ class CalendarService
         return $this->monthAndDay;
     }
 
+    public function isPSPBirthday(): bool
+    {
+        return $this->monthAndDay >= 621 && $this->monthAndDay <= 623;
+    }
+
     public function isThanksgiving(): bool
     {
         // if it's not November, just get outta' here
