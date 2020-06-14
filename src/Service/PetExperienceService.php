@@ -108,6 +108,9 @@ class PetExperienceService
             $energy = ceil($energy * 3 / 4);
         }
 
+        if($energy < 0)
+            throw new \Exception('Somehow, the game tried to spend negative social energy. This is bad, and Ben should fix it.');
+
         $pet->spendSocialEnergy($energy);
     }
 

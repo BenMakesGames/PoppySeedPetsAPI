@@ -1750,7 +1750,11 @@ class Pet
 
     public function spendSocialEnergy(int $amount): self
     {
-        $this->socialEnergy -= $amount;
+        $this->socialEnergy = NumberFunctions::constrain(
+            $this->socialEnergy - $amount,
+            -PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT,
+            PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 5
+        );
 
         return $this;
     }
