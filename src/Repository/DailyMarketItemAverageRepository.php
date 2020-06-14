@@ -35,4 +35,9 @@ class DailyMarketItemAverageRepository extends ServiceEntityRepository
             ->execute()
         ;
     }
+
+    public function findLastHistoryForItem(Item $item): ?DailyMarketItemAverage
+    {
+        return $this->findOneBy([ 'item' => $item ], [ 'date' => 'DESC' ]);
+    }
 }

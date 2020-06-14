@@ -50,6 +50,11 @@ class DailyMarketItemAverage
      */
     private $maxPrice;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $volume;
+
     public function __construct()
     {
         $this->date = new \DateTimeImmutable();
@@ -120,5 +125,17 @@ class DailyMarketItemAverage
     public function getDateString()
     {
         return $this->date->format('Y-m-d');
+    }
+
+    public function getVolume(): ?int
+    {
+        return $this->volume;
+    }
+
+    public function setVolume(int $volume): self
+    {
+        $this->volume = $volume;
+
+        return $this;
     }
 }

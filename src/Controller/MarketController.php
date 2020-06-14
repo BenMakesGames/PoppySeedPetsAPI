@@ -38,12 +38,17 @@ class MarketController extends PoppySeedPetsController
         Item $item
     )
     {
-        /*$itemHistory = $dailyMarketItemAverageRepository->findHistoryForItem(
+        $itemHistory = $dailyMarketItemAverageRepository->findHistoryForItem(
             $item, \DateInterval::createFromDateString('7 days')
-        );*/
-        $itemHistory = [];
+        );
 
-        return $responseService->success($itemHistory, SerializationGroupEnum::MARKET_ITEM_HISTORY);
+        return $responseService->success(
+            [
+                'history' => $itemHistory,
+                'lastHistory' => $dailyMarketItemAverageRepository->findLastHistoryForItem($item)
+            ],
+            SerializationGroupEnum::MARKET_ITEM_HISTORY
+        );
     }
 
     /**

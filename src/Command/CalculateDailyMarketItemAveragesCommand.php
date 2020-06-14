@@ -37,6 +37,7 @@ class CalculateDailyMarketItemAveragesCommand extends Command
                     AVG(averages.price) AS price,
                     MIN(averages.min_price) AS min_price,
                     MAX(averages.max_price) AS max_price,
+                    COUNT(averages.price) AS volume,
                     averages.item_id
                 FROM (
                     SELECT
@@ -55,7 +56,7 @@ class CalculateDailyMarketItemAveragesCommand extends Command
         $this->em->getConnection()->executeQuery('TRUNCATE daily_market_inventory_transaction');
 
         $sqlRows = [];
-        $date = date('Y-m-d');
+        $date = (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d');
 
         $output->writeln('Computed ' . count($averages) . ' averages.');
 
@@ -73,7 +74,8 @@ class CalculateDailyMarketItemAveragesCommand extends Command
                 '"' . $date . '"',
                 (float)$average['price'],
                 (float)$average['min_price'],
-                (float)$average['max_price']
+                (float)$average['max_price'],
+                (int)$average['volume']
             ];
 
             $sqlRows[] = '(' . implode(',', $dataPoints) . ')';
@@ -90,7 +92,7 @@ class CalculateDailyMarketItemAveragesCommand extends Command
 
         $this->em->getConnection()->executeQuery('
             INSERT INTO daily_market_item_average
-            (item_id, `date`, average_price, min_price, max_price)
+            (item_id, `date`, average_price, min_price, max_price, volume)
             VALUES
             ' . implode(',', $sqlRows) . '
         ');
