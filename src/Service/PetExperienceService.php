@@ -96,7 +96,7 @@ class PetExperienceService
         }
 
         // a small drift based on number of extra friends a pet can have
-        $energy = ceil($energy * (20 - $pet->getMaximumFriends()) / 20);
+        $energy = ceil($energy * (20 - $pet->getBonusMaximumFriends()) / 20);
 
         // introverted pets spend more social energy; extroverted pets spend less
         if($pet->getExtroverted() < 0)
