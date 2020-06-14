@@ -733,25 +733,83 @@ class PetService
             $this->hangOutWithSpiritCompanion($pet);
         else
         {
-            /** @var PetRelationship $relationship */
-            $relationship = ArrayFunctions::pick_one_weighted($relationships, function(PetRelationship $r) {
-                return $r->getCommitment();
-            });
+            $friendRelationshipsByFriendId = $this->getFriendRelationships($pet, $relationships);
+            $chosenRelationship = $this->pickRelationshipToHangOutWith($relationships, $friendRelationshipsByFriendId);
 
-            $friend = $relationship->getRelationship();
+            $friend = $chosenRelationship->getRelationship();
 
-            $friendRelationship = $friend->getPetRelationships()->filter(function(PetRelationship $p) use($pet) { return $p->getRelationship()->getId() === $pet->getId(); })->first();
+            $friendRelationship = $friendRelationshipsByFriendId[$friend->getId()];
 
-            if($friendRelationship === false)
+            // @TODO: one or both of: separate pool of energy reserved for OTHERS to spend;
+            //        and/or if the pet you can't hang out with is busy, DON'T look for someone else, and keep trying with that pet for a few hours
+
+            $skipped = mt_rand(0, 5);
+
+            foreach($relationships as $r)
             {
-                throw new \Exception($pet->getName() . ' (#' . $pet->getId() . ') knows ' . $friend->getName() . ' (#' . $friend->getId() . '), but not the other way around! This is a bug, and should never happen! Make Ben fix it!');
+                if($r->getId() === $chosenRelationship->getId())
+                {
+                    $r->increaseCommitment($skipped);
+                    break;
+                }
+
+                $r->increaseCommitment(-1);
+                $skipped++;
             }
 
             // hang out with selected pet
-            $this->hangOutWithOtherPet($relationship, $friendRelationship);
+            $this->hangOutWithOtherPet($chosenRelationship, $friendRelationship);
         }
 
         return true;
+    }
+
+    /**
+     * @param PetRelationship[] $relationships
+     * @return PetRelationship[]
+     */
+    private function getFriendRelationships(Pet $pet, array $relationships): array
+    {
+        /** @var PetRelationship[] $friendRelationships */
+        $friendRelationships = $this->petRelationshipRepository->findBy([
+            'pet' => array_map(function(PetRelationship $r) { return $r->getRelationship(); }, $relationships),
+            'relationship' => $pet
+        ]);
+
+        /** @var $friendRelationshipsByFriendId[] $friendRelationships */
+        $friendRelationshipsByFriendId = [];
+
+        foreach($friendRelationships as $fr)
+            $friendRelationshipsByFriendId[$fr->getPet()->getId()] = $fr;
+
+        return $friendRelationshipsByFriendId;
+    }
+
+    /**
+     * @param PetRelationship[] $relationships
+     * @param PetRelationship[] $friendRelationshipsByFriendId
+     */
+    private function pickRelationshipToHangOutWith(array $relationships, array $friendRelationshipsByFriendId): PetRelationship
+    {
+        $relationships = array_filter($relationships, function(PetRelationship $r) use($friendRelationshipsByFriendId) {
+            // sanity check (the game isn't always sane...)
+            if(!array_key_exists($r->getRelationship()->getId(), $friendRelationshipsByFriendId))
+                throw new \Exception($r->getPet()->getName() . ' (#' . $r->getPet()->getId() . ') knows ' . $r->getRelationship()->getName() . ' (#' . $r->getRelationship()->getId() . '), but not the other way around! This is a bug, and should never happen! Make Ben fix it!');
+
+            if($r->getRelationship()->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 2)
+                return true;
+
+            if($friendRelationshipsByFriendId[$r->getRelationship()->getId()]->getCommitment() >= $r->getCommitment())
+                return true;
+
+            $chanceToHangOut = $friendRelationshipsByFriendId[$r->getRelationship()->getId()]->getCommitment() * 1000 / $r->getCommitment();
+
+            return mt_rand(0, 999) < $chanceToHangOut;
+        });
+
+        return ArrayFunctions::pick_one_weighted($relationships, function(PetRelationship $r) {
+            return $r->getCommitment();
+        });
     }
 
     private function hangOutWithSpiritCompanion(Pet $pet)
@@ -1048,6 +1106,9 @@ class PetService
 
         $petLog->setChanges($petChanges->compare($pet->getPet()));
         $friendLog->setChanges($friendChanges->compare($friend->getPet()));
+
+        if($petLog->getPet()->getOwner()->getId() === $friendLog->getPet()->getOwner()->getId())
+            $friendLog->setViewed();
 
         $this->em->persist($petLog);
         $this->em->persist($friendLog);

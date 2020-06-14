@@ -82,7 +82,21 @@ class PetExperienceService
 
     public function spendSocialEnergy(Pet $pet, int $energy)
     {
-        $energy = mt_rand(ceil($energy * 8 / 10), ceil($energy * 12 / 10));
+        if(mt_rand(1, 10) === 1)
+        {
+            // smallish chance to consume WAY less energy. this was added to help jiggle pets out of a situation where
+            // two pets owned by the same account are always offset in social energy such that they're never able to hang
+            // out with each other.
+            $energy = mt_rand(ceil($energy / 4), ceil($energy * 3 / 4));
+        }
+        else
+        {
+            // always add a LITTLE random jiggle, though:
+            $energy = mt_rand(ceil($energy * 8 / 10), ceil($energy * 12 / 10));
+        }
+
+        // a small drift based on number of extra friends a pet can have
+        $energy = ceil($energy * (20 - $pet->getMaximumFriends()) / 20);
 
         // introverted pets spend more social energy; extroverted pets spend less
         if($pet->getExtroverted() < 0)
@@ -95,8 +109,6 @@ class PetExperienceService
         }
 
         $pet->spendSocialEnergy($energy);
-
-        // @TODO
     }
 
     /**

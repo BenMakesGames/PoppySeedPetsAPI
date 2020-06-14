@@ -349,6 +349,11 @@ class Pet
      */
     private $socialEnergy = 0;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $bonusMaximumFriends;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -357,6 +362,7 @@ class Pet
         $this->petRelationships = new ArrayCollection();
         $this->statusEffects = new ArrayCollection();
         $this->extroverted = mt_rand(-1, 1);
+        $this->bonusMaximumFriends = mt_rand(-2, 2);
 
         $this->socialEnergy = ceil(PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * (4 + $this->extroverted) / 4);
 
@@ -1592,6 +1598,19 @@ class Pet
         return $this;
     }
 
+    /**
+     * @Groups({"petPublicProfile", "myPet"})
+     */
+    public function getMaximumFriends(): int
+    {
+        if($this->extroverted <= -1)
+            return 10 + $this->getBonusMaximumFriends();
+        else if($this->extroverted === 0)
+            return 15 + $this->getBonusMaximumFriends();
+        else //if($this->extroverted >= 1)
+            return 20 + $this->getBonusMaximumFriends();
+    }
+
     public function getMaximumGroups(): int
     {
         if($this->hasMerit(MeritEnum::EXTROVERTED))
@@ -1732,6 +1751,18 @@ class Pet
     public function spendSocialEnergy(int $amount): self
     {
         $this->socialEnergy -= $amount;
+
+        return $this;
+    }
+
+    public function getBonusMaximumFriends(): ?int
+    {
+        return $this->bonusMaximumFriends;
+    }
+
+    public function setBonusMaximumFriends(int $bonusMaximumFriends): self
+    {
+        $this->bonusMaximumFriends = $bonusMaximumFriends;
 
         return $this;
     }

@@ -26,6 +26,7 @@ use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\Filter\PetFilterService;
+use App\Service\Filter\PetRelationshipFilterService;
 use App\Service\InventoryService;
 use App\Service\MeritService;
 use App\Service\PetActivityStatsService;
@@ -222,24 +223,42 @@ class PetController extends PoppySeedPetsController
     }
 
     /**
+     * @Route("/{pet}/relationships", methods={"GET"}, requirements={"pet"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getPetRelationships(
+        Pet $pet, ResponseService $responseService, Request $request,
+        PetRelationshipFilterService $petRelationshipFilterService
+    )
+    {
+        $petRelationshipFilterService->addRequiredFilter('pet', $pet);
+
+        $relationships = $petRelationshipFilterService->getResults($request->query);
+
+        return $responseService->success($relationships, [
+            SerializationGroupEnum::FILTER_RESULTS,
+            SerializationGroupEnum::PET_FRIEND
+        ]);
+    }
+
+    /**
      * @Route("/{pet}/friends", methods={"GET"}, requirements={"pet"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function getPetFriends(Pet $pet, ResponseService $responseService, NormalizerInterface $normalizer)
+    public function getPetFriends(
+        Pet $pet, ResponseService $responseService, NormalizerInterface $normalizer,
+        PetRelationshipRepository $petRelationshipRepository
+    )
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
             throw new AccessDeniedHttpException('This isn\'t your pet.');
 
-        // sort relationships by commitment
-        $relationships = $pet->getPetRelationships()->toArray();
-
-        usort($relationships, function(PetRelationship $a, PetRelationship $b) {
-            return $b->getCommitment() <=> $a->getCommitment();
-        });
+        $relationships = $petRelationshipRepository->getFriends($pet);
 
         return $responseService->success([
             'spiritCompanion' => $normalizer->normalize($pet->getSpiritCompanion(), null, [ 'groups' => SerializationGroupEnum::MY_PET ]),
             'groups' => $normalizer->normalize($pet->getGroups(), null, [ 'groups' => SerializationGroupEnum::PET_GROUP ]),
+            'relationshipCount' => $petRelationshipRepository->countRelationships($pet),
             'friends' => $normalizer->normalize($relationships, null, [ 'groups' => SerializationGroupEnum::PET_FRIEND ]),
             'guild' => $normalizer->normalize($pet->getGuildMembership(), null, [ 'groups' => SerializationGroupEnum::PET_GUILD ])
         ]);

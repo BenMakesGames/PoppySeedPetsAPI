@@ -27,6 +27,8 @@ class PetRelationshipRepository extends ServiceEntityRepository
      */
     public function getRelationshipsToHangOutWith(Pet $pet): array
     {
+        $maxFriendsToConsider = $pet->getMaximumFriends();
+
         $qb = $this->createQueryBuilder('r')
             ->leftJoin('r.pet', 'pet')
             ->leftJoin('r.relationship', 'friend')
@@ -34,11 +36,40 @@ class PetRelationshipRepository extends ServiceEntityRepository
             ->andWhere('friend.food + friend.alcohol + friend.junk > 0')
             ->andWhere('r.currentRelationship NOT IN (:excludedRelationshipTypes)')
             ->andWhere('friend.socialEnergy >= :minimumFriendSocialEnergy')
+            ->addOrderBy('r.commitment', 'DESC')
+            ->setMaxResults($maxFriendsToConsider)
             ->setParameter('petId', $pet->getId())
             ->setParameter('excludedRelationshipTypes', [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ])
-            ->setParameter('minimumFriendSocialEnergy', PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 2)
+            ->setParameter('minimumFriendSocialEnergy', floor(PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 3 / 2))
         ;
 
         return $qb->getQuery()->execute();
+    }
+
+    /**
+     * @return PetRelationship[]
+     */
+    public function getFriends(Pet $pet): array
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->leftJoin('r.relationship', 'friend')
+            ->andWhere('r.pet=:pet')
+            ->addOrderBy('r.commitment', 'DESC')
+            ->setMaxResults($pet->getMaximumFriends())
+            ->setParameter('pet', $pet)
+        ;
+
+        return $qb->getQuery()->execute();
+    }
+
+    public function countRelationships(Pet $pet): int
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->select('COUNT(r)')
+            ->andWhere('r.pet=:pet')
+            ->setParameter('pet', $pet)
+        ;
+
+        return (int)$qb->getQuery()->getSingleScalarResult();
     }
 }

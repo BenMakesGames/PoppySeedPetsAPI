@@ -12,6 +12,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PetRelationshipRepository")
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="commitment_idx", columns={"commitment"}),
+ * })
  */
 class PetRelationship
 {
@@ -69,6 +72,11 @@ class PetRelationship
      * @Groups({"petFriend"})
      */
     private $lastMet;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $commitment;
 
     public function __construct()
     {
@@ -221,27 +229,6 @@ class PetRelationship
         }
     }
 
-    public function getCommitment(): int
-    {
-        $commitment = 0;
-
-        switch($this->currentRelationship)
-        {
-            case RelationshipEnum::BROKE_UP: $commitment = 0; break;
-            case RelationshipEnum::DISLIKE: $commitment = 0; break;
-            case RelationshipEnum::FRIENDLY_RIVAL: $commitment = 10; break;
-            case RelationshipEnum::FRIEND: $commitment = 20; break;
-            case RelationshipEnum::BFF: $commitment = 35; break;
-            case RelationshipEnum::FWB: $commitment = 30; break;
-            case RelationshipEnum::MATE: $commitment = 50; break;
-        }
-
-        if($this->currentRelationship === $this->relationshipGoal)
-            $commitment += round($commitment / 4);
-
-        return $commitment;
-    }
-
     public function getLastMet(): \DateTimeImmutable
     {
         return $this->lastMet;
@@ -250,6 +237,25 @@ class PetRelationship
     public function setLastMet(): self
     {
         $this->lastMet = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getCommitment(): ?int
+    {
+        return $this->commitment;
+    }
+
+    public function setCommitment(int $commitment): self
+    {
+        $this->commitment = $commitment;
+
+        return $this;
+    }
+
+    public function increaseCommitment(int $amount): self
+    {
+        $this->commitment = max(0, $this->commitment + $amount);
 
         return $this;
     }

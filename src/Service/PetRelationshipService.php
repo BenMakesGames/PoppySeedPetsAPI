@@ -77,7 +77,7 @@ class PetRelationshipService
 
         if($p1Relationships)
             $this->hangOutPublicly($p1Relationships, $p2->getRelationshipWith($p1), $hangOutDescription, $enemyDescription);
-        else if(mt_rand(1, 100 + ($p1->getRelationshipCount() + $p2->getRelationshipCount()) * 10) <= $meetChance)
+        else if(mt_rand(1, 100) <= $meetChance)
             $this->introducePets($p1, $p2, $meetSummary, $meetActivityLogTemplate);
     }
 
@@ -191,13 +191,16 @@ class PetRelationshipService
             }
         }
 
+        $relationshipGoal = ArrayFunctions::pick_one($possibleRelationships);
+
         // pet
         $petRelationship = (new PetRelationship())
             ->setRelationship($otherPet)
             ->setMetDescription($howMetSummary)
             ->setCurrentRelationship($initialRelationship)
             ->setPet($pet)
-            ->setRelationshipGoal(ArrayFunctions::pick_one($possibleRelationships))
+            ->setRelationshipGoal($relationshipGoal)
+            ->setCommitment($this->generateInitialCommitment($initialRelationship, $relationshipGoal))
         ;
 
         $pet->addPetRelationship($petRelationship);
@@ -216,12 +219,15 @@ class PetRelationshipService
         $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP);
 
         // other pet
+        $relationshipGoal = ArrayFunctions::pick_one($possibleRelationships);
+
         $otherPetRelationship = (new PetRelationship())
             ->setRelationship($pet)
             ->setMetDescription($howMetSummary)
             ->setCurrentRelationship($initialRelationship)
             ->setPet($otherPet)
-            ->setRelationshipGoal(ArrayFunctions::pick_one($possibleRelationships))
+            ->setRelationshipGoal($relationshipGoal)
+            ->setCommitment($this->generateInitialCommitment($initialRelationship, $relationshipGoal))
         ;
 
         $otherPet->addPetRelationship($otherPetRelationship);
@@ -240,6 +246,31 @@ class PetRelationshipService
         $otherActivityPet->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP);
 
         return [ $petRelationship, $otherPetRelationship ];
+    }
+
+    public function generateInitialCommitment(string $startingRelationship, string $relationshipGoal)
+    {
+        $commitment = mt_rand(0, 30);
+
+        switch($relationshipGoal)
+        {
+            case RelationshipEnum::MATE: $commitment += 100; break;
+            case RelationshipEnum::FWB: $commitment += 80; break;
+            case RelationshipEnum::BFF: $commitment += 70; break;
+            case RelationshipEnum::FRIEND: $commitment += 50; break;
+            case RelationshipEnum::FRIENDLY_RIVAL: $commitment += 20; break;
+        }
+
+        switch($startingRelationship)
+        {
+            case RelationshipEnum::MATE: $commitment += 30; break;
+            case RelationshipEnum::FWB: $commitment += 20; break;
+            case RelationshipEnum::BFF: $commitment += 18; break;
+            case RelationshipEnum::FRIEND: $commitment += 12; break;
+            case RelationshipEnum::FRIENDLY_RIVAL: $commitment += 5; break;
+        }
+
+        return $commitment;
     }
 
     public function calculateRelationshipDistance($initialRelationship, $targetRelationship): int
