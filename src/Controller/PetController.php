@@ -844,7 +844,7 @@ class PetController extends PoppySeedPetsController
         $data['byActivity'] = array_map(function($a) use($byActivityTotal) {
             return [
                 'label' => $a['label'],
-                'value' => $a['value'] / $byActivityTotal,
+                'value' => $a['value'] === 0 ? null : $a['value'] / $byActivityTotal,
                 'percentDeleted' => $a['value'] > 0 ? $a['deleted'] / $a['value'] : 0,
                 'color' => $a['color']
             ];
