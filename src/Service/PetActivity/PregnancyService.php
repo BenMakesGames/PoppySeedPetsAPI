@@ -321,6 +321,7 @@ class PregnancyService
             ->setPet($baby)
             ->setRelationshipGoal(RelationshipEnum::BFF)
             ->setMetDescription($mother->getName() . ' gave birth to ' . $baby->getName() . '!')
+            ->setCommitment(90) // BFF + BFF
         ;
 
         $baby->addPetRelationship($petWithMother);
@@ -331,6 +332,7 @@ class PregnancyService
             ->setPet($baby)
             ->setRelationshipGoal(RelationshipEnum::BFF)
             ->setMetDescription($father->getName() . ' fathered ' . $baby->getName() . '!')
+            ->setCommitment(90) // BFF + BFF
         ;
 
         $baby->addPetRelationship($petWithFather);
@@ -341,6 +343,7 @@ class PregnancyService
             ->setPet($mother)
             ->setRelationshipGoal(RelationshipEnum::BFF)
             ->setMetDescription($mother->getName() . ' gave birth to ' . $baby->getName() . '!')
+            ->setCommitment(90) // BFF + BFF
         ;
 
         $mother->addPetRelationship($motherWithBaby);
@@ -351,6 +354,7 @@ class PregnancyService
             ->setPet($father)
             ->setRelationshipGoal(RelationshipEnum::BFF)
             ->setMetDescription($father->getName() . ' fathered ' . $baby->getName() . '!')
+            ->setCommitment(90) // BFF + BFF
         ;
 
         $father->addPetRelationship($fatherWithBaby);
