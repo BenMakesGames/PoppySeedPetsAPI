@@ -808,7 +808,7 @@ class PetService
         });
 
         return ArrayFunctions::pick_one_weighted($relationships, function(PetRelationship $r) {
-            return $r->getCommitment();
+            return $r->getCommitment() + 1;
         });
     }
 
