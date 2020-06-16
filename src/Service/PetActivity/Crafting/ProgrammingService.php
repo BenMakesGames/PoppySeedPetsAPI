@@ -9,6 +9,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\ActivityCallback;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -30,61 +31,64 @@ class ProgrammingService
         $this->petExperienceService = $petExperienceService;
     }
 
+    /**
+     * @return ActivityCallback[]
+     */
     public function getCraftingPossibilities(Pet $pet, array $quantities): array
     {
         $possibilities = [];
 
         if(array_key_exists('Macintosh', $quantities))
-            $possibilities[] = [ $this, 'hackMacintosh' ];
+            $possibilities[] = new ActivityCallback($this, 'hackMacintosh', 10);
 
         if(array_key_exists('3D Printer', $quantities) && array_key_exists('Plastic', $quantities))
         {
             if(array_key_exists('Glass', $quantities) && (array_key_exists('Silver Bar', $quantities) || array_key_exists('Gold Bar', $quantities)))
-                $possibilities[] = [ $this, 'createLaserPointer' ];
+                $possibilities[] = new ActivityCallback($this, 'createLaserPointer', 10);
 
             if((array_key_exists('Silver Bar', $quantities) || array_key_exists('Iron Bar', $quantities)) && array_key_exists('Magic Smoke', $quantities))
-                $possibilities[] = [ $this, 'createMetalDetector' ];
+                $possibilities[] = new ActivityCallback($this, 'createMetalDetector', 10);
         }
 
         if(array_key_exists('Metal Detector (Iron)', $quantities) || array_key_exists('Metal Detector (Silver)', $quantities) || array_key_exists('Metal Detector (Gold)', $quantities))
         {
             if(array_key_exists('Gold Bar', $quantities) && (array_key_exists('Fiberglass', $quantities) || array_key_exists('Fiberglass Flute', $quantities)))
-                $possibilities[] = [ $this, 'createSeashellDetector' ];
+                $possibilities[] = new ActivityCallback($this, 'createSeashellDetector', 10);
         }
 
         if(array_key_exists('Pointer', $quantities))
         {
-            $possibilities[] = [ $this, 'createStringFromPointer' ];
+            $possibilities[] = new ActivityCallback($this, 'createStringFromPointer', 10);
 
             if(array_key_exists('Finite State Machine', $quantities))
-                $possibilities[] = [ $this, 'createRegex' ];
+                $possibilities[] = new ActivityCallback($this, 'createRegex', 10);
 
             if(array_key_exists('NUL', $quantities) && array_key_exists('Plastic Fishing Rod', $quantities))
-                $possibilities[] = [ $this, 'createPhishingRod' ];
+                $possibilities[] = new ActivityCallback($this, 'createPhishingRod', 10);
         }
 
         if(array_key_exists('Regex', $quantities) && array_key_exists('Password', $quantities))
             $possibilities[] = [$this, 'createBruteForce'];
 
         if(array_key_exists('Brute Force', $quantities) && array_key_exists('XOR', $quantities) && array_key_exists('Gold Bar', $quantities))
-            $possibilities[] = [ $this, 'createL33tH4xx0r' ];
+            $possibilities[] = new ActivityCallback($this, 'createL33tH4xx0r', 10);
 
         if(array_key_exists('Hash Table', $quantities))
         {
             if(array_key_exists('Finite State Machine', $quantities) && array_key_exists('String', $quantities))
-                $possibilities[] = [ $this, 'createCompiler' ];
+                $possibilities[] = new ActivityCallback($this, 'createCompiler', 10);
 
             if(array_key_exists('Elvish Magnifying Glass', $quantities))
-                $possibilities[] = [ $this, 'createRijndael' ];
+                $possibilities[] = new ActivityCallback($this, 'createRijndael', 10);
 
             if(array_key_exists('Ruler', $quantities))
-                $possibilities[] = [ $this, 'createViswanathsConstant' ];
+                $possibilities[] = new ActivityCallback($this, 'createViswanathsConstant', 10);
         }
 
         if(array_key_exists('Lightning in a Bottle', $quantities))
         {
             if(array_key_exists('Iron Sword', $quantities))
-                $possibilities[] = [ $this, 'createLightningSword' ];
+                $possibilities[] = new ActivityCallback($this, 'createLightningSword', 10);
 
             if(
                 array_key_exists('Weird Beetle', $quantities) &&
@@ -95,21 +99,21 @@ class ProgrammingService
                 )
             )
             {
-                $possibilities[] = [ $this, 'createSentientBeetle' ];
+                $possibilities[] = new ActivityCallback($this, 'createSentientBeetle', 10);
             }
         }
 
         if(array_key_exists('Magic Smoke', $quantities))
         {
             if(array_key_exists('Laser Pointer', $quantities) && array_key_exists('Toy Alien Gun', $quantities))
-                $possibilities[] = [ $this, 'createAlienGun' ];
+                $possibilities[] = new ActivityCallback($this, 'createAlienGun', 10);
 
             if(array_key_exists('Lightning Sword', $quantities) && array_key_exists('Alien Tissue', $quantities))
-                $possibilities[] = [ $this, 'createDNA' ];
+                $possibilities[] = new ActivityCallback($this, 'createDNA', 10);
         }
 
         if(array_key_exists('Sylvan Fishing Rod', $quantities) && array_key_exists('Laser Pointer', $quantities) && array_key_exists('Alien Tissue', $quantities))
-            $possibilities[] = [ $this, 'createAlienFishingRod' ];
+            $possibilities[] = new ActivityCallback($this, 'createAlienFishingRod', 10);
 
         return $possibilities;
     }
@@ -125,7 +129,7 @@ class ProgrammingService
         $changes = new PetChanges($pet);
 
         /** @var PetActivityLog $activityLog */
-        $activityLog = $method($pet);
+        $activityLog = $method->callable($pet);
 
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));

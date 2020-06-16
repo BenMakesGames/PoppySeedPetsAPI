@@ -8,6 +8,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\ActivityCallback;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -27,28 +28,31 @@ class PlasticPrinterService
         $this->petExperienceService = $petExperienceService;
     }
 
+    /**
+     * @return ActivityCallback[]
+     */
     public function getCraftingPossibilities(Pet $pet, array $quantities): array
     {
         $possibilities = [];
 
         if(array_key_exists('3D Printer', $quantities) && array_key_exists('Plastic', $quantities))
         {
-            $possibilities[] = [ $this, 'createPlasticCraft' ];
+            $possibilities[] = new ActivityCallback($this, 'createPlasticCraft', 10);
 
             if(mt_rand(1, 3) === 1)
-                $possibilities[] = [ $this, 'createPlasticIdol' ];
+                $possibilities[] = new ActivityCallback($this, 'createPlasticIdol', 10);
 
             if(array_key_exists('Iron Bar', $quantities))
-                $possibilities[] = [ $this, 'createCompass' ];
+                $possibilities[] = new ActivityCallback($this, 'createCompass', 10);
 
             if(array_key_exists('String', $quantities))
-                $possibilities[] = [ $this, 'createPlasticFishingRod' ];
+                $possibilities[] = new ActivityCallback($this, 'createPlasticFishingRod', 10);
 
             if(array_key_exists('Green Dye', $quantities))
-                $possibilities[] = [ $this, 'createAlienLaser' ];
+                $possibilities[] = new ActivityCallback($this, 'createAlienLaser', 10);
 
             if(array_key_exists('Black Feathers', $quantities))
-                $possibilities[] = [ $this, 'createEvilFeatherDuster' ];
+                $possibilities[] = new ActivityCallback($this, 'createEvilFeatherDuster', 10);
         }
 
         return $possibilities;

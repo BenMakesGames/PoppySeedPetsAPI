@@ -10,6 +10,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\ActivityCallback;
 use App\Service\InventoryService;
 use App\Service\PetActivity\Crafting\Helpers\GoldSmithingService;
 use App\Service\PetActivity\Crafting\Helpers\IronSmithingService;
@@ -45,133 +46,133 @@ class SmithingService
         $possibilities = [];
 
         if(array_key_exists('Charcoal', $quantities))
-            $possibilities[] = [ $this, 'createCoke' ];
+            $possibilities[] = new ActivityCallback($this, 'createCoke', 10);
 
         if(array_key_exists('Iron Ore', $quantities))
-            $possibilities[] = [ $this, 'createIronBar' ];
+            $possibilities[] = new ActivityCallback($this, 'createIronBar', 10);
 
         if(array_key_exists('Silver Ore', $quantities))
-            $possibilities[] = [ $this, 'createSilverBar' ];
+            $possibilities[] = new ActivityCallback($this, 'createSilverBar', 10);
 
         if(array_key_exists('Gold Ore', $quantities))
-            $possibilities[] = [ $this, 'createGoldBar' ];
+            $possibilities[] = new ActivityCallback($this, 'createGoldBar', 10);
 
         if(array_key_exists('Silica Grounds', $quantities) && array_key_exists('Limestone', $quantities))
-            $possibilities[] = [ $this, 'createGlass' ];
+            $possibilities[] = new ActivityCallback($this, 'createGlass', 10);
 
         if(array_key_exists('Glass', $quantities) && array_key_exists('Plastic', $quantities))
-            $possibilities[] = [ $this, 'createFiberglass' ];
+            $possibilities[] = new ActivityCallback($this, 'createFiberglass', 10);
 
         if(array_key_exists('Fiberglass', $quantities) && array_key_exists('String', $quantities))
-            $possibilities[] = [ $this, 'createFiberglassBow' ];
+            $possibilities[] = new ActivityCallback($this, 'createFiberglassBow', 10);
 
         if(array_key_exists('Iron Bar', $quantities))
         {
-            $possibilities[] = [ $this->ironSmithingService, 'createIronKey' ];
-            $possibilities[] = [ $this->ironSmithingService, 'createBasicIronCraft' ];
+            $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createIronKey', 10);
+            $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createBasicIronCraft', 10);
 
             if(array_key_exists('Plastic', $quantities))
             {
                 if(array_key_exists('Yellow Dye', $quantities))
-                    $possibilities[] = [ $this->ironSmithingService, 'createYellowScissors' ];
+                    $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createYellowScissors', 10);
 
                 if(array_key_exists('Green Dye', $quantities))
-                    $possibilities[] = [ $this->ironSmithingService, 'createGreenScissors' ];
+                    $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createGreenScissors', 10);
             }
 
             if(array_key_exists('Crooked Stick', $quantities) && array_key_exists('Iron Bar', $quantities))
-                $possibilities[] = [ $this->ironSmithingService, 'createScythe' ];
+                $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createScythe', 10);
 
             if(array_key_exists('String', $quantities))
-                $possibilities[] = [ $this->ironSmithingService, 'createGrapplingHook' ];
+                $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createGrapplingHook', 10);
 
             if(array_key_exists('Dark Matter', $quantities) && $pet->getStrength() >= 3)
-                $possibilities[] = [ $this->ironSmithingService, 'createHeavyHammer' ];
+                $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createHeavyHammer', 10);
 
             if(array_key_exists('Mirror', $quantities))
-                $possibilities[] = [ $this->ironSmithingService, 'createMirrorShield' ];
+                $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createMirrorShield', 10);
         }
 
         if(array_key_exists('Silver Bar', $quantities))
         {
-            $possibilities[] = [ $this, 'createSilverKey' ];
+            $possibilities[] = new ActivityCallback($this, 'createSilverKey', 10);
 
             if(array_key_exists('"Rustic" Magnifying Glass', $quantities))
-                $possibilities[] = [ $this, 'createElvishMagnifyingGlass' ];
+                $possibilities[] = new ActivityCallback($this, 'createElvishMagnifyingGlass', 10);
 
             if(array_key_exists('Leaf Spear', $quantities))
-                $possibilities[] = [ $this, 'createSylvanFishingRod' ];
+                $possibilities[] = new ActivityCallback($this, 'createSylvanFishingRod', 10);
 
             if(array_key_exists('Glass', $quantities))
             {
                 if(array_key_exists('Silica Grounds', $quantities))
-                    $possibilities[] = [ $this, 'createHourglass' ];
+                    $possibilities[] = new ActivityCallback($this, 'createHourglass', 10);
                 else
-                    $possibilities[] = [ $this, 'createMirror' ];
+                    $possibilities[] = new ActivityCallback($this, 'createMirror', 10);
             }
 
             if(array_key_exists('Gold Key', $quantities) && array_key_exists('White Cloth', $quantities))
-                $possibilities[] = [ $this, 'createGoldKeyblade' ];
+                $possibilities[] = new ActivityCallback($this, 'createGoldKeyblade', 10);
         }
 
         if(array_key_exists('Gold Bar', $quantities))
         {
-            $possibilities[] = [ $this->goldSmithingService, 'createGoldKey' ];
+            $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createGoldKey', 10);
 
             if(mt_rand(1, 2) === 1)
-                $possibilities[] = [ $this->goldSmithingService, 'createGoldTuningFork' ];
+                $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createGoldTuningFork', 10);
 
             if(array_key_exists('Fiberglass', $quantities) && array_key_exists('Moon Pearl', $quantities))
-                $possibilities[] = [ $this->goldSmithingService, 'createMoonhammer' ];
+                $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createMoonhammer', 10);
 
             if(array_key_exists('Dark Scales', $quantities) && array_key_exists('Dragon Flag', $quantities))
-                $possibilities[] = [ $this->goldSmithingService, 'createKundravsStandard' ];
+                $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createKundravsStandard', 10);
 
             if(array_key_exists('String', $quantities))
-                $possibilities[] = [ $this->goldSmithingService, 'createGoldTriangle' ];
+                $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createGoldTriangle', 10);
 
             if(array_key_exists('Chanterelle', $quantities) && array_key_exists('Flute', $quantities))
-                $possibilities[] = [ $this->goldSmithingService, 'createFungalClarinet' ];
+                $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createFungalClarinet', 10);
 
             if(array_key_exists('Glass', $quantities))
-                $possibilities[] = [ $this->goldSmithingService, 'createGoldTelescope' ];
+                $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createGoldTelescope', 10);
 
             if(array_key_exists('Plastic Shovel', $quantities) && array_key_exists('Green Dye', $quantities))
-                $possibilities[] = [ $this->goldSmithingService, 'createCoreopsis' ];
+                $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createCoreopsis', 10);
 
             if(array_key_exists('Plastic', $quantities) && array_key_exists('3D Printer', $quantities))
-                $possibilities[] = [ $this->goldSmithingService, 'createGoldRod' ];
+                $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createGoldRod', 10);
 
             if(array_key_exists('Enchanted Compass', $quantities))
-                $possibilities[] = [ $this->goldSmithingService, 'createGoldCompass' ];
+                $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createGoldCompass', 10);
 
             if(array_key_exists('Silver Key', $quantities) && array_key_exists('White Cloth', $quantities))
-                $possibilities[] = [ $this, 'createSilverKeyblade' ];
+                $possibilities[] = new ActivityCallback($this, 'createSilverKeyblade', 10);
 
             if(array_key_exists('Leaf Spear', $quantities) && array_key_exists('Iron Bar', $quantities))
-                $possibilities[] = [ $this, 'createSiderealLeafSpear' ];
+                $possibilities[] = new ActivityCallback($this, 'createSiderealLeafSpear', 10);
         }
 
         if(array_key_exists('Silver Bar', $quantities) && array_key_exists('Gold Bar', $quantities) && array_key_exists('White Cloth', $quantities))
-            $possibilities[] = [ $this, 'createCeremonialTrident' ];
+            $possibilities[] = new ActivityCallback($this, 'createCeremonialTrident', 10);
 
         if(array_key_exists('Iron Sword', $quantities))
         {
             if(array_key_exists('Scales', $quantities) && array_key_exists('Fluff', $quantities))
-                $possibilities[] = [ $this, 'createDragonscale' ];
+                $possibilities[] = new ActivityCallback($this, 'createDragonscale', 10);
 
             if(array_key_exists('Dark Scales', $quantities) && array_key_exists('Fluff', $quantities))
-                $possibilities[] = [ $this, 'createDrakkonscale' ];
+                $possibilities[] = new ActivityCallback($this, 'createDrakkonscale', 10);
 
             if(array_key_exists('Everice', $quantities) && array_key_exists('Firestone', $quantities))
-                $possibilities[] = [ $this, 'createAntipode' ];
+                $possibilities[] = new ActivityCallback($this, 'createAntipode', 10);
         }
 
         if(array_key_exists('Antipode', $quantities) && array_key_exists('Lightning Sword', $quantities))
-            $possibilities[] = [ $this, 'createTrinityBlade' ];
+            $possibilities[] = new ActivityCallback($this, 'createTrinityBlade', 10);
 
         if(array_key_exists('Poker', $quantities) && array_key_exists('Everice', $quantities))
-            $possibilities[] = [ $this, 'createWandOfIce' ];
+            $possibilities[] = new ActivityCallback($this, 'createWandOfIce', 10);
 
         return $possibilities;
     }

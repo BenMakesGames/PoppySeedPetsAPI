@@ -10,6 +10,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\ActivityCallback;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -34,145 +35,145 @@ class MagicBindingService
         $possibilities = [];
 
         if(array_key_exists('Mermaid Egg', $quantities))
-            $possibilities[] = [ $this, 'mermaidEggToQuint' ];
+            $possibilities[] = new ActivityCallback($this, 'mermaidEggToQuint', 8);
 
         if(array_key_exists('Wings', $quantities))
         {
             if(array_key_exists('Talon', $quantities) && array_key_exists('Paper', $quantities))
-                $possibilities[] = [ $this, 'createSummoningScroll' ];
+                $possibilities[] = new ActivityCallback($this, 'createSummoningScroll', 8);
 
             if(array_key_exists('Painted Dumbbell', $quantities) && array_key_exists('Glass', $quantities) && array_key_exists('Quinacridone Magenta Dye', $quantities))
-                $possibilities[] = [ $this, 'createSmilingWand' ];
+                $possibilities[] = new ActivityCallback($this, 'createSmilingWand', 8);
 
             if(array_key_exists('Potato', $quantities) && array_key_exists('Crooked Stick', $quantities))
-                $possibilities[] = [ $this, 'createRussetStaff' ];
+                $possibilities[] = new ActivityCallback($this, 'createRussetStaff', 8);
 
             if(array_key_exists('Bindle', $quantities))
-                $possibilities[] = [ $this, 'createFlyingBindle' ];
+                $possibilities[] = new ActivityCallback($this, 'createFlyingBindle', 8);
 
             if(array_key_exists('Grappling Hook', $quantities))
-                $possibilities[] = [ $this, 'createFlyingGrapplingHook' ];
+                $possibilities[] = new ActivityCallback($this, 'createFlyingGrapplingHook', 8);
         }
 
         if(array_key_exists('Armor', $quantities) && array_key_exists('Ruby Feather', $quantities))
-            $possibilities[] = [ $this, 'createRubyeye' ];
+            $possibilities[] = new ActivityCallback($this, 'createRubyeye', 8);
 
         if(array_key_exists('Quintessence', $quantities))
         {
             if(array_key_exists('Sidereal Leaf Spear', $quantities))
-                $possibilities[] = [ $this, 'enchantSiderealLeafSpear' ];
+                $possibilities[] = new ActivityCallback($this, 'enchantSiderealLeafSpear', 8);
 
             if(array_key_exists('Gold Trifecta', $quantities))
-                $possibilities[] = [ $this, 'createGoldTriskaidecta' ];
+                $possibilities[] = new ActivityCallback($this, 'createGoldTriskaidecta', 8);
 
             if(array_key_exists('Stereotypical Torch', $quantities))
-                $possibilities[] = [ $this, 'createCrazyHotTorch' ];
+                $possibilities[] = new ActivityCallback($this, 'createCrazyHotTorch', 8);
 
             if(array_key_exists('Hourglass', $quantities))
-                $possibilities[] = [ $this, 'createMagicHourglass' ];
+                $possibilities[] = new ActivityCallback($this, 'createMagicHourglass', 8);
 
             if(array_key_exists('Straw Broom', $quantities) && array_key_exists('Witch-hazel', $quantities))
-                $possibilities[] = [ $this, 'createWitchsBroom' ];
+                $possibilities[] = new ActivityCallback($this, 'createWitchsBroom', 8);
 
             if(array_key_exists('Blackonite', $quantities))
-                $possibilities[] = [ $this, 'createBunchOfDice' ];
+                $possibilities[] = new ActivityCallback($this, 'createBunchOfDice', 8);
 
             if(array_key_exists('Gold Tuning Fork', $quantities))
-                $possibilities[] = [ $this, 'createAstralTuningFork' ];
+                $possibilities[] = new ActivityCallback($this, 'createAstralTuningFork', 8);
 
             if(array_key_exists('Mirror', $quantities) && array_key_exists('Crooked Stick', $quantities))
-                $possibilities[] = [ $this, 'createMagicMirror' ];
+                $possibilities[] = new ActivityCallback($this, 'createMagicMirror', 8);
 
             if(array_key_exists('Feathers', $quantities))
-                $possibilities[] = [ $this, 'createWings' ];
+                $possibilities[] = new ActivityCallback($this, 'createWings', 8);
 
             if(array_key_exists('Level 2 Sword', $quantities) && array_key_exists('White Feathers', $quantities))
-                $possibilities[] = [ $this, 'createArmor' ];
+                $possibilities[] = new ActivityCallback($this, 'createArmor', 8);
 
             // magic scrolls
             if(array_key_exists('Paper', $quantities))
             {
                 if(array_key_exists('Red', $quantities))
-                    $possibilities[] = [ $this, 'createFruitScroll' ];
+                    $possibilities[] = new ActivityCallback($this, 'createFruitScroll', 8);
 
                 if(array_key_exists('Wheat Flower', $quantities))
-                    $possibilities[] = [ $this, 'createFarmerScroll' ];
+                    $possibilities[] = new ActivityCallback($this, 'createFarmerScroll', 8);
 
                 if(array_key_exists('Rice Flower', $quantities))
-                    $possibilities[] = [ $this, 'createFlowerScroll' ];
+                    $possibilities[] = new ActivityCallback($this, 'createFlowerScroll', 8);
 
                 if(array_key_exists('Seaweed', $quantities))
-                    $possibilities[] = [ $this, 'createSeaScroll' ];
+                    $possibilities[] = new ActivityCallback($this, 'createSeaScroll', 8);
 
                 if(array_key_exists('Silver Bar', $quantities))
-                    $possibilities[] = [ $this, 'createSilverScroll' ];
+                    $possibilities[] = new ActivityCallback($this, 'createSilverScroll', 8);
 
                 if(array_key_exists('Gold Bar', $quantities))
-                    $possibilities[] = [ $this, 'createGoldScroll' ];
+                    $possibilities[] = new ActivityCallback($this, 'createGoldScroll', 8);
 
                 if(array_key_exists('Musical Scales', $quantities))
-                    $possibilities[] = [ $this, 'createMusicScroll' ];
+                    $possibilities[] = new ActivityCallback($this, 'createMusicScroll', 8);
             }
 
             if(array_key_exists('Ceremonial Trident', $quantities))
             {
                 if(array_key_exists('Seaweed', $quantities) && array_key_exists('Sand Dollar', $quantities))
-                    $possibilities[] = [ $this, 'createCeremonyOfSandAndSea' ];
+                    $possibilities[] = new ActivityCallback($this, 'createCeremonyOfSandAndSea', 8);
 
                 if(array_key_exists('Blackonite', $quantities))
-                    $possibilities[] = [ $this, 'createCeremonyOfShadows' ];
+                    $possibilities[] = new ActivityCallback($this, 'createCeremonyOfShadows', 8);
 
                 if(array_key_exists('Firestone', $quantities))
-                    $possibilities[] = [ $this, 'createCeremonyOfFire' ];
+                    $possibilities[] = new ActivityCallback($this, 'createCeremonyOfFire', 8);
             }
 
             if(array_key_exists('Moon Pearl', $quantities))
             {
                 if(array_key_exists('Blunderbuss', $quantities) && array_key_exists('Crooked Stick', $quantities))
-                    $possibilities[] = [ $this, 'createIridescentHandCannon' ];
+                    $possibilities[] = new ActivityCallback($this, 'createIridescentHandCannon', 8);
                 else if(array_key_exists('Plastic Shovel', $quantities))
-                    $possibilities[] = [ $this, 'createInvisibleShovel' ];
+                    $possibilities[] = new ActivityCallback($this, 'createInvisibleShovel', 8);
             }
 
             if(array_key_exists('Dark Scales', $quantities) && array_key_exists('Double Scythe', $quantities))
-                $possibilities[] = [ $this, 'createNewMoon' ];
+                $possibilities[] = new ActivityCallback($this, 'createNewMoon', 8);
 
             if(array_key_exists('Farmer\'s Multi-tool', $quantities) && array_key_exists('Smallish Pumpkin', $quantities))
-                $possibilities[] = [ $this, 'createGizubisShovel' ];
+                $possibilities[] = new ActivityCallback($this, 'createGizubisShovel', 8);
 
             if(array_key_exists('Rapier', $quantities))
             {
                 if(array_key_exists('Sunflower', $quantities) && array_key_exists('Dark Matter', $quantities))
-                    $possibilities[] = [ $this, 'createNightAndDay' ];
+                    $possibilities[] = new ActivityCallback($this, 'createNightAndDay', 8);
             }
 
             if(array_key_exists('Iron Sword', $quantities))
             {
                 if(array_key_exists('Musical Scales', $quantities))
-                    $possibilities[] = [ $this, 'createDancingSword' ];
+                    $possibilities[] = new ActivityCallback($this, 'createDancingSword', 8);
             }
 
             if(array_key_exists('Poker', $quantities))
             {
                 if(array_key_exists('Lightning in a Bottle', $quantities))
-                    $possibilities[] = [ $this, 'createLightningWand' ];
+                    $possibilities[] = new ActivityCallback($this, 'createLightningWand', 8);
             }
 
             if(array_key_exists('Decorated Flute', $quantities) && array_key_exists('Quinacridone Magenta Dye', $quantities))
-                $possibilities[] = [ $this, 'createPraxilla' ];
+                $possibilities[] = new ActivityCallback($this, 'createPraxilla', 8);
 
             if(array_key_exists('Compass', $quantities))
-                $possibilities[] = [ $this, 'createEnchantedCompass' ];
+                $possibilities[] = new ActivityCallback($this, 'createEnchantedCompass', 8);
 
             if(array_key_exists('Striped Microcline', $quantities))
-                $possibilities[] = [ $this, 'createWhisperStone' ];
+                $possibilities[] = new ActivityCallback($this, 'createWhisperStone', 8);
         }
         else
         {
             // no quint?
 
             if(array_key_exists('Magic Smoke', $quantities))
-                $possibilities[] = [ $this, 'magicSmokeToQuint' ];
+                $possibilities[] = new ActivityCallback($this, 'magicSmokeToQuint', 8);
         }
 
         return $possibilities;

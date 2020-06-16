@@ -10,6 +10,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\ActivityCallback;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetActivity\Crafting\PlasticPrinterService;
@@ -45,64 +46,67 @@ class CraftingService
         $this->stickCraftingService = $stickCraftingService;
     }
 
+    /**
+     * @return ActivityCallback[]
+     */
     public function getCraftingPossibilities(Pet $pet, array $quantities): array
     {
         $possibilities = [];
 
         if(array_key_exists('Fluff', $quantities))
         {
-            $possibilities[] = [ $this, 'spinFluff' ];
+            $possibilities[] = new ActivityCallback($this, 'spinFluff', 10);
         }
 
         if(array_key_exists('Tea Leaves', $quantities))
         {
             if($quantities['Tea Leaves']->quantity >= 2)
-                $possibilities[] = [ $this, 'createYellowDyeFromTeaLeaves' ];
+                $possibilities[] = new ActivityCallback($this, 'createYellowDyeFromTeaLeaves', 10);
         }
 
         if(array_key_exists('Scales', $quantities))
         {
             if($quantities['Scales']->quantity >= 2)
-                $possibilities[] = [ $this, 'extractFromScales' ];
+                $possibilities[] = new ActivityCallback($this, 'extractFromScales', 10);
 
             if(array_key_exists('Talon', $quantities) && array_key_exists('Wooden Sword', $quantities))
-                $possibilities[] = [ $this, 'createSnakebite' ];
+                $possibilities[] = new ActivityCallback($this, 'createSnakebite', 10);
         }
 
         if(array_key_exists('Crooked Stick', $quantities))
         {
             if(array_key_exists('String', $quantities))
             {
-                $possibilities[] = [ $this->stickCraftingService, 'createCrookedFishingRod' ];
-                $possibilities[] = [ $this->stickCraftingService, 'createWoodenSword' ];
+                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createCrookedFishingRod', 10);
+                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createWoodenSword', 10);
 
                 if(array_key_exists('Talon', $quantities))
-                    $possibilities[] = [ $this->stickCraftingService, 'createHuntingSpear' ];
+                    $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createHuntingSpear', 10);
 
                 if(array_key_exists('Hunting Spear', $quantities))
-                    $possibilities[] = [ $this->stickCraftingService, 'createVeryLongSpear' ];
+                    $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createVeryLongSpear', 10);
 
                 if(array_key_exists('Overly-long Spear', $quantities))
-                    $possibilities[] = [ $this->stickCraftingService, 'createRidiculouslyLongSpear' ];
+                    $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createRidiculouslyLongSpear', 10);
 
                 if(array_key_exists('Corn', $quantities) && array_key_exists('Rice', $quantities))
-                    $possibilities[] = [ $this->stickCraftingService, 'createHarvestStaff' ];
+                    $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createHarvestStaff', 10);
             }
 
             if(array_key_exists('Glue', $quantities) && (array_key_exists('Wheat', $quantities) || array_key_exists('Rice', $quantities)))
-                $possibilities[] = [ $this->stickCraftingService, 'createStrawBroom' ];
+                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createStrawBroom', 10);
 
             if(array_key_exists('White Cloth', $quantities))
-                $possibilities[] = [ $this->stickCraftingService, 'createTorchOrFlag' ];
+                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createTorchOrFlag', 10);
 
             if(array_key_exists('Toadstool', $quantities) && array_key_exists('Quintessence', $quantities))
-                $possibilities[] = [ $this->stickCraftingService, 'createChampignon' ];
+                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createChampignon', 10);
 
             if(array_key_exists('Glass', $quantities))
-                $possibilities[] = [ $this->stickCraftingService, 'createRusticMagnifyingGlass' ];
+                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createRusticMagnifyingGlass', 10);
 
             if(array_key_exists('Sweet Beet', $quantities) && array_key_exists('Glue', $quantities))
-                $possibilities[] = [ $this->stickCraftingService, 'createSweetBeat' ];
+                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createSweetBeat', 10);
         }
 
         if(array_key_exists('Glue', $quantities))
@@ -116,28 +120,28 @@ class CraftingService
                 if(array_key_exists('Fiberglass Flute', $quantities))
                 {
                     $foundSomethingCooler = true;
-                    $possibilities[] = [ $this, 'createFiberglassPanFlute' ];
+                    $possibilities[] = new ActivityCallback($this, 'createFiberglassPanFlute', 10);
                 }
 
                 if(!$foundSomethingCooler || mt_rand(1, 2) === 1)
-                    $possibilities[] = [ $this, 'createFabricMache' ];
+                    $possibilities[] = new ActivityCallback($this, 'createFabricMache', 10);
             }
 
             if(array_key_exists('Gold Triangle', $quantities) && $quantities['Gold Triangle']->quantity >= 3)
-                $possibilities[] = [ $this, 'createGoldTrifecta' ];
+                $possibilities[] = new ActivityCallback($this, 'createGoldTrifecta', 10);
 
             if(array_key_exists('Ruler', $quantities) && $quantities['Ruler']->quantity >= 2)
-                $possibilities[] = [ $this, 'createLSquare' ];
+                $possibilities[] = new ActivityCallback($this, 'createLSquare', 10);
 
             if(array_key_exists('Cooking Buddy', $quantities) && array_key_exists('Antenna', $quantities))
-                $possibilities[] = [ $this, 'createAlienCookingBuddy' ];
+                $possibilities[] = new ActivityCallback($this, 'createAlienCookingBuddy', 10);
 
             if(array_key_exists('Iron Sword', $quantities) && array_key_exists('Laser Pointer', $quantities))
-                $possibilities[] = [ $this, 'createLaserGuidedSword' ];
+                $possibilities[] = new ActivityCallback($this, 'createLaserGuidedSword', 10);
         }
 
         if(array_key_exists('White Cloth', $quantities) && array_key_exists('String', $quantities) && array_key_exists('Ruby Feather', $quantities))
-            $possibilities[] = [ $this, 'createFeatheredHat' ];
+            $possibilities[] = new ActivityCallback($this, 'createFeatheredHat', 10);
 
         if(array_key_exists('String', $quantities))
         {
@@ -145,66 +149,66 @@ class CraftingService
                 $possibilities[] = [$this, 'createGlassPendulum'];
 
             if(array_key_exists('Paper', $quantities) && array_key_exists('Silver Key', $quantities))
-                $possibilities[] = [ $this, 'createBenjaminFranklin' ];
+                $possibilities[] = new ActivityCallback($this, 'createBenjaminFranklin', 10);
 
             if(array_key_exists('Really Big Leaf', $quantities))
-                $possibilities[] = [ $this, 'createLeafSpear' ];
+                $possibilities[] = new ActivityCallback($this, 'createLeafSpear', 10);
         }
 
         if(array_key_exists('Feathers', $quantities))
         {
             if(array_key_exists('Hunting Spear', $quantities))
-                $possibilities[] = [ $this, 'createDecoratedSpear' ];
+                $possibilities[] = new ActivityCallback($this, 'createDecoratedSpear', 10);
 
             if(array_key_exists('Fiberglass Pan Flute', $quantities) && array_key_exists('Yellow Dye', $quantities))
-                $possibilities[] = [ $this, 'createOrnatePanFlute' ];
+                $possibilities[] = new ActivityCallback($this, 'createOrnatePanFlute', 10);
         }
 
         if(array_key_exists('Decorated Spear', $quantities) && array_key_exists('Quintessence', $quantities))
-            $possibilities[] = [ $this, 'createVeilPiercer' ];
+            $possibilities[] = new ActivityCallback($this, 'createVeilPiercer', 10);
 
         if(array_key_exists('Crooked Fishing Rod', $quantities) && array_key_exists('Yellow Dye', $quantities) && array_key_exists('Green Dye', $quantities))
-            $possibilities[] = [ $this, 'createPaintedFishingRod' ];
+            $possibilities[] = new ActivityCallback($this, 'createPaintedFishingRod', 10);
 
         if(array_key_exists('Yellow Dye', $quantities))
         {
             if(array_key_exists('Plastic Idol', $quantities))
-                $possibilities[] = [ $this, 'createGoldIdol' ];
+                $possibilities[] = new ActivityCallback($this, 'createGoldIdol', 10);
             else
             {
                 if(array_key_exists('Small Plastic Bucket', $quantities))
-                    $possibilities[] = [ $this, 'createYellowBucket' ];
+                    $possibilities[] = new ActivityCallback($this, 'createYellowBucket', 10);
 
                 if(array_key_exists('Dumbbell', $quantities))
-                    $possibilities[] = [ $this, 'createPaintedDumbbell' ];
+                    $possibilities[] = new ActivityCallback($this, 'createPaintedDumbbell', 10);
             }
         }
 
         if(array_key_exists('Fiberglass', $quantities))
-            $possibilities[] = [ $this, 'createSimpleFiberglassItem' ];
+            $possibilities[] = new ActivityCallback($this, 'createSimpleFiberglassItem', 10);
 
         if(array_key_exists('Glass Pendulum', $quantities) && array_key_exists('Flute', $quantities) && array_key_exists('White Cloth', $quantities))
-            $possibilities[] = [ $this, 'createDecoratedFlute' ];
+            $possibilities[] = new ActivityCallback($this, 'createDecoratedFlute', 10);
 
         if(array_key_exists('Scythe', $quantities))
         {
             if($quantities['Scythe']->quantity >= 2)
-                $possibilities[] = [ $this, 'createDoubleScythe' ];
+                $possibilities[] = new ActivityCallback($this, 'createDoubleScythe', 10);
 
             if(array_key_exists('Garden Shovel', $quantities))
-                $possibilities[] = [ $this, 'createFarmersMultiTool' ];
+                $possibilities[] = new ActivityCallback($this, 'createFarmersMultiTool', 10);
         }
 
         if(array_key_exists('White Flag', $quantities))
         {
             if(array_key_exists('Yellow Dye', $quantities))
-                $possibilities[] = [ $this, 'createSunFlag' ];
+                $possibilities[] = new ActivityCallback($this, 'createSunFlag', 10);
 
             if(array_key_exists('Green Dye', $quantities))
-                $possibilities[] = [ $this, 'createDragonFlag' ];
+                $possibilities[] = new ActivityCallback($this, 'createDragonFlag', 10);
 
             if(array_key_exists('String', $quantities))
-                $possibilities[] = [ $this, 'createBindle' ];
+                $possibilities[] = new ActivityCallback($this, 'createBindle', 10);
         }
 
         // pets won't try any smithing tasks if they don't feel sufficiently safe
@@ -217,21 +221,23 @@ class CraftingService
                 $possibilities = array_merge($possibilities, $this->plasticPrinterService->getCraftingPossibilities($pet, $quantities));
 
             if(array_key_exists('Smallish Pumpkin', $quantities) && array_key_exists('Crooked Stick', $quantities))
-                $possibilities[] = [ $this, 'createDrumpkin' ];
+                $possibilities[] = new ActivityCallback($this, 'createDrumpkin', 10);
         }
 
         if(array_key_exists('Rusty Blunderbuss', $quantities) && ($pet->getSmithing() >= 5 || $pet->getCrafts() >= 5))
-            $possibilities[] = [ $this, 'repairRustyBlunderbuss' ];
+            $possibilities[] = new ActivityCallback($this, 'repairRustyBlunderbuss', 10);
 
         if(array_key_exists('Rusty Rapier', $quantities) && ($pet->getSmithing() >= 5 || $pet->getCrafts() >= 5))
-            $possibilities[] = [ $this, 'repairRustyRapier' ];
+            $possibilities[] = new ActivityCallback($this, 'repairRustyRapier', 10);
 
-        if(mt_rand(1, 20 + $pet->getUmbra()) >= 15)
-            $possibilities = array_merge($possibilities, $this->magicBindingService->getCraftingPossibilities($pet, $quantities));
+        $possibilities = array_merge($possibilities, $this->magicBindingService->getCraftingPossibilities($pet, $quantities));
 
         return $possibilities;
     }
 
+    /**
+     * @param ActivityCallback[] $possibilities
+     */
     public function adventure(Pet $pet, array $possibilities): PetActivityLog
     {
         if(count($possibilities) === 0)
@@ -243,7 +249,7 @@ class CraftingService
         $changes = new PetChanges($pet);
 
         /** @var PetActivityLog $activityLog */
-        $activityLog = $method($pet);
+        $activityLog = $method->callable($pet);
 
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));
