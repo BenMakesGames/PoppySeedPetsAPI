@@ -83,7 +83,7 @@ class BookstoreService
         ],
         [
             'askingFor' => [ 'EP' ],
-            'dialog' => 'I\'m looking for an LP. Do you have any pets in skilled bands?',
+            'dialog' => 'I\'m looking for an EP. Do you have any pets in skilled bands?',
         ],
         [
             'askingFor' => [ 'Heart Beetle' ],
