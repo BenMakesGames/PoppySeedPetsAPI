@@ -45,7 +45,7 @@ class PoopingService
             $this->inventoryService->receiveItem('Dark Matter', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' pooped this.', LocationEnum::HOME);
         }
 
-        $this->responseService->createActivityLog($pet, $pet->getName() . ', um, created some Dark Matter.', '')
+        $this->responseService->createActivityLog($pet, $pet->getName() . ', um, _created_ some Dark Matter.', 'items/element/dark-matter')
             ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
         ;
     }
