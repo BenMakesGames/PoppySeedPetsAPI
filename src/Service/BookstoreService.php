@@ -63,7 +63,7 @@ class BookstoreService
         ],
         [
             'askingFor' => [ 'Moon Pearl' ],
-            'dialog' => 'I\'d like to get a Moon Pearl... I don\'t suppose you\'ve ',
+            'dialog' => 'I\'d like to get a Moon Pearl... I don\'t suppose you\'ve found any?',
         ],
         [
             'askingFor' => [ 'Weird Beetle' ],
@@ -83,19 +83,19 @@ class BookstoreService
         ],
         [
             'askingFor' => [ 'EP' ],
-            'dialog' => '',
+            'dialog' => 'I\'m looking for an LP. Do you have any pets in skilled bands?',
         ],
         [
             'askingFor' => [ 'Heart Beetle' ],
-            'dialog' => '',
+            'dialog' => 'Oh, I\'d really like a Heart Beetle. They can only be found in the Crystal Heart Dimension...',
         ],
         [
             'askingFor' => [ 'Tiny Black Hole' ],
-            'dialog' => '',
+            'dialog' => 'I\'ve been looking for a Tiny Black Hole. Astronomy groups can discover them, sometimes...',
         ],
         [
             'askingFor' => [ 'LP' ],
-            'dialog' => 'I\'m looking for an LP. Do you have any pets in skilled bands?',
+            'dialog' => 'I\'m looking for an LP. Do you have any pets in REALLY skilled bands?',
         ],
         [
             'askingFor' => [ 'Weird, Blue Egg', 'Unexpectedly-familiar Metal Box' ],
@@ -107,7 +107,7 @@ class BookstoreService
         ],
         [
             'askingFor' => [ 'Spirit Polymorph Potion' ],
-            'dialog' => '',
+            'dialog' => 'Could you get me a Spirit Polymorph Potion? The recipe is apparently a bit hard to come by...',
         ]
     ];
 
