@@ -199,7 +199,7 @@ class HuntingService
     {
         if($pet->getOwner()->getGreenhouse() && $pet->getOwner()->getGreenhouse()->getHasBirdBath() && !$pet->getOwner()->getGreenhouse()->getVisitingBird())
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::OTHER, false);
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::HUNT, false);
 
             if($pet->getSkills()->getBrawl() < 5)
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
@@ -209,7 +209,7 @@ class HuntingService
                 ->increaseEsteem(mt_rand(1, 2))
             ;
 
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' watched some small birds play in the Greenhouse Bird Bath.', '')
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' couldn\'t find anything to hunt, so watched some small birds play in the Greenhouse Bird Bath, instead.', 'icons/activity-logs/birb')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
         }

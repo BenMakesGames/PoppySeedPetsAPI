@@ -68,7 +68,7 @@ class ProgrammingService
         }
 
         if(array_key_exists('Regex', $quantities) && array_key_exists('Password', $quantities))
-            $possibilities[] = [$this, 'createBruteForce'];
+            $possibilities[] = new ActivityCallback($this, 'createBruteForce', 10);
 
         if(array_key_exists('Brute Force', $quantities) && array_key_exists('XOR', $quantities) && array_key_exists('Gold Bar', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createL33tH4xx0r', 10);
@@ -118,18 +118,22 @@ class ProgrammingService
         return $possibilities;
     }
 
+    /**
+     * @param ActivityCallback[] $possibilities
+     */
     public function adventure(Pet $pet, array $possibilities): PetActivityLog
     {
         if(count($possibilities) === 0)
             throw new \InvalidArgumentException('possibilities must contain at least one item.');
 
+        /** @var ActivityCallback $method */
         $method = ArrayFunctions::pick_one($possibilities);
 
         $activityLog = null;
         $changes = new PetChanges($pet);
 
         /** @var PetActivityLog $activityLog */
-        $activityLog = $method->callable($pet);
+        $activityLog = ($method->callable)($pet);
 
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));

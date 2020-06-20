@@ -3,8 +3,8 @@ namespace App\Model;
 
 class ActivityCallback
 {
-    public $callable;
-    public $weight;
+    /** @var callable */ public $callable;
+    /** @var int */ public $weight;
 
     public function __construct($object, string $method, int $weight)
     {

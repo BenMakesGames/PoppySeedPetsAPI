@@ -146,7 +146,7 @@ class Protocol7Service
             $pet->increaseEsteem(1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' saw a Garbage Collector in Project-E, and took one of the Pointers it was discarding.', '')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' saw a Garbage Collector in Project-E, and took one of the Pointers it was discarding.', 'items/resource/digital/pointer')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
             ;
             $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' took this from a Garbage Collector in Project-E.', $activityLog);

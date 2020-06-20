@@ -30,6 +30,9 @@ class MagicBindingService
         $this->petExperienceService = $petExperienceService;
     }
 
+    /**
+     * @return ActivityCallback[]
+     */
     public function getCraftingPossibilities(Pet $pet, array $quantities): array
     {
         $possibilities = [];

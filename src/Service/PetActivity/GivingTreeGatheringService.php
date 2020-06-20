@@ -67,7 +67,7 @@ class GivingTreeGatheringService
 
             $this->petExperienceService->spendTime($pet, mt_rand(10, 20), PetActivityStatEnum::OTHER, null);
 
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' visited The Giving Tree, and picked up several items that other players had discarded.', '')
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' visited The Giving Tree, and picked up several items that other players had discarded.', 'icons/activity-logs/giving-tree')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
         }

@@ -12,6 +12,7 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
 use App\Model\PetChanges;
+use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetActivity\Crafting\PlasticPrinterService;
 use App\Service\PetActivity\Crafting\SmithingService;
@@ -29,12 +30,13 @@ class CraftingService
     private $magicBindingService;
     private $plasticPrinterService;
     private $stickCraftingService;
+    private $itemRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService,
         SmithingService $smithingService, MagicBindingService $magicBindingService,
         PlasticPrinterService $plasticPrinterService, PetExperienceService $petExperienceService,
-        StickCraftingService $stickCraftingService
+        StickCraftingService $stickCraftingService, ItemRepository $itemRepository
     )
     {
         $this->responseService = $responseService;
@@ -44,6 +46,7 @@ class CraftingService
         $this->plasticPrinterService = $plasticPrinterService;
         $this->petExperienceService = $petExperienceService;
         $this->stickCraftingService = $stickCraftingService;
+        $this->itemRepository = $itemRepository;
     }
 
     /**
@@ -113,18 +116,10 @@ class CraftingService
         {
             if(array_key_exists('White Cloth', $quantities))
             {
-                // this is a very specific combination of materials which is shared by several crafts; to try and even
-                // things out, we make the SIMPLEST combination less likely if more-complex combinations are available...
-                $foundSomethingCooler = false;
-
                 if(array_key_exists('Fiberglass Flute', $quantities))
-                {
-                    $foundSomethingCooler = true;
-                    $possibilities[] = new ActivityCallback($this, 'createFiberglassPanFlute', 10);
-                }
+                    $possibilities[] = new ActivityCallback($this, 'createFiberglassPanFlute', 11);
 
-                if(!$foundSomethingCooler || mt_rand(1, 2) === 1)
-                    $possibilities[] = new ActivityCallback($this, 'createFabricMache', 10);
+                $possibilities[] = new ActivityCallback($this, 'createFabricMache', 7);
             }
 
             if(array_key_exists('Gold Triangle', $quantities) && $quantities['Gold Triangle']->quantity >= 3)
@@ -146,7 +141,7 @@ class CraftingService
         if(array_key_exists('String', $quantities))
         {
             if(array_key_exists('Glass', $quantities))
-                $possibilities[] = [$this, 'createGlassPendulum'];
+                $possibilities[] = new ActivityCallback($this, 'createGlassPendulum', 10);
 
             if(array_key_exists('Paper', $quantities) && array_key_exists('Silver Key', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createBenjaminFranklin', 10);
@@ -211,9 +206,7 @@ class CraftingService
                 $possibilities[] = new ActivityCallback($this, 'createBindle', 10);
         }
 
-        // pets won't try any smithing tasks if they don't feel sufficiently safe
-        if($pet->getSafety() > 0)
-            $possibilities = array_merge($possibilities, $this->smithingService->getCraftingPossibilities($pet, $quantities));
+        $possibilities = array_merge($possibilities, $this->smithingService->getCraftingPossibilities($pet, $quantities));
 
         if(array_key_exists('Plastic', $quantities))
         {
@@ -224,11 +217,13 @@ class CraftingService
                 $possibilities[] = new ActivityCallback($this, 'createDrumpkin', 10);
         }
 
-        if(array_key_exists('Rusty Blunderbuss', $quantities) && ($pet->getSmithing() >= 5 || $pet->getCrafts() >= 5))
-            $possibilities[] = new ActivityCallback($this, 'repairRustyBlunderbuss', 10);
+        $repairWeight = ($pet->getSmithing() >= 3 || $pet->getCrafts() >= 5) ? 10 : 1;
 
-        if(array_key_exists('Rusty Rapier', $quantities) && ($pet->getSmithing() >= 5 || $pet->getCrafts() >= 5))
-            $possibilities[] = new ActivityCallback($this, 'repairRustyRapier', 10);
+        if(array_key_exists('Rusty Blunderbuss', $quantities))
+            $possibilities[] = new ActivityCallback($this, 'repairRustyBlunderbuss', $repairWeight);
+
+        if(array_key_exists('Rusty Rapier', $quantities))
+            $possibilities[] = new ActivityCallback($this, 'repairRustyRapier', $repairWeight);
 
         $possibilities = array_merge($possibilities, $this->magicBindingService->getCraftingPossibilities($pet, $quantities));
 
@@ -243,13 +238,14 @@ class CraftingService
         if(count($possibilities) === 0)
             throw new \InvalidArgumentException('possibilities must contain at least one item.');
 
+        /** @var ActivityCallback $method */
         $method = ArrayFunctions::pick_one($possibilities);
 
         $activityLog = null;
         $changes = new PetChanges($pet);
 
         /** @var PetActivityLog $activityLog */
-        $activityLog = $method->callable($pet);
+        $activityLog = ($method->callable)($pet);
 
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));
@@ -495,14 +491,14 @@ class CraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function spinFluff(Pet $pet): PetActivityLog
     {
-        $making = ArrayFunctions::pick_one([ 'String', 'White Cloth' ]);
+        $making = $this->itemRepository->findOneByName(ArrayFunctions::pick_one([
+            'String',
+            'White Cloth'
+        ]));
 
-        $difficulty = $making === 'String' ? 10 : 13;
+        $difficulty = $making->getName() === 'String' ? 10 : 13;
 
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
         if($roll <= 2)
@@ -510,7 +506,7 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->inventoryService->loseItem('Fluff', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spin some Fluff into ' . $making . ', but messed it up; the Fluff was wasted :(', '');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spin some Fluff into ' . $making->getName() . ', but messed it up; the Fluff was wasted :(', '');
         }
         else if($roll >= $difficulty)
         {
@@ -519,7 +515,7 @@ class CraftingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' spun some Fluff into ' . $making . '.', '')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' spun some Fluff into ' . $making->getName() . '.', 'items/' . $making->getImage())
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $difficulty)
             ;
 
@@ -1195,7 +1191,7 @@ class CraftingService
             $this->inventoryService->loseItem('Rusty Blunderbuss', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(3);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' repaired a Rusty Blunderbuss. It\'s WAY less rusty now!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' repaired a Rusty Blunderbuss. It\'s WAY less rusty now!', 'items/tool/gun/blunderbuss')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
             ;
             $this->inventoryService->petCollectsItem('Blunderbuss', $pet, $pet->getName() . ' repaired this Rusty Blunderbuss.', $activityLog);
@@ -1230,7 +1226,7 @@ class CraftingService
             $this->inventoryService->loseItem('Rusty Rapier', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' repaired a Rusty Rapier. It\'s WAY less rusty now!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' repaired a Rusty Rapier. It\'s WAY less rusty now!', 'items/tool/sword/rapier')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
             ;
             $this->inventoryService->petCollectsItem('Rapier', $pet, $pet->getName() . ' repaired this Rapier.', $activityLog);

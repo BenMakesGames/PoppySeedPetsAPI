@@ -117,6 +117,8 @@ class PetGroupService
         /** @var Pet $unhappiestPet */
         $unhappiestPet = $unhappyMembers[0]['pet'];
 
+        $userIdsMessaged = [];
+
         foreach($group->getMembers() as $member)
         {
             $changes = new PetChanges($member);
@@ -146,6 +148,13 @@ class PetGroupService
                 ->setChanges($changes->compare($member))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
             ;
+
+            // if the group has many pets from the same house, we should mark subsequent messages
+            // as viewed, so we don't spam the player.
+            if(in_array($member->getOwner()->getId(), $userIdsMessaged))
+                $logEntry->setViewed();
+            else
+                $userIdsMessaged[] = $member->getOwner()->getId();
 
             $this->em->persist($logEntry);
         }

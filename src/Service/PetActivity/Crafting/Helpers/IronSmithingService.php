@@ -231,7 +231,10 @@ class IronSmithingService
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
 
-        $item = $this->itemRepository->findOneByName(ArrayFunctions::pick_one([ 'Scythe', 'Garden Shovel' ]));
+        $item = $this->itemRepository->findOneByName(ArrayFunctions::pick_one([
+            'Scythe',
+            'Garden Shovel'
+        ]));
 
         if($roll <= 3)
         {
