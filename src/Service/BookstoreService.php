@@ -231,7 +231,7 @@ class BookstoreService
         // 800 -> 250
         $bookstoreQuestStep = $this->userQuestRepository->findOrCreate($user, self::BOOKSTORE_QUEST_NAME, 0);
 
-        return max(500, 800 - $bookstoreQuestStep->getValue() * 25);
+        return max(250, 800 - $bookstoreQuestStep->getValue() * 25);
     }
 
     public function renamingScrollAvailable(User $user): bool
