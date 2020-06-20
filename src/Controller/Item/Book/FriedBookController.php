@@ -31,6 +31,7 @@ class FriedBookController extends PoppySeedPetsItemController
 
 #### Recipes
 
+* Battered, Fried Fish
 * Chili Calamari
 * Deep-fried Toad Legs
 * Fried Donut
@@ -66,6 +67,15 @@ If you don\'t have any bread on-hand, you can make some:
 Alright! You\'ve got your Oil... you\'ve got your Plain Bread...
 
 Let\'s fry some stuff!
+
+#### Battered, Fried Fish
+
+* Oil!
+* Fish
+* Wheat Flour
+* Baking Soda
+* Milk
+* Egg (optional)
 
 #### Chili Calamari
 
