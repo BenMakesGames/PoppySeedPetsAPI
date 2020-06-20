@@ -34,6 +34,7 @@ class FishBookController extends PoppySeedPetsItemController
 
 * Baked Fish Fingers
 * Basic Fish Taco
+* Battered, Fried Fish
 * Fermented Fish
 * Fisherman\'s Pie
 * Gefilte Fish
@@ -86,6 +87,15 @@ Life as a pet truly isn\'t fair.
 * Tortilla
 * Fish
 * Salsa
+
+#### Battered, Fried Fish
+
+* Wheat Flour
+* Baking Soda
+* Milk
+* Egg (optional)
+* Fish
+* Oil (for frying)
 
 #### Fermented Fish
 
