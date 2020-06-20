@@ -2,9 +2,11 @@
 namespace App\Controller;
 
 use App\Entity\Item;
+use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\ItemRepository;
+use App\Repository\UserQuestRepository;
 use App\Service\BookstoreService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -27,7 +29,7 @@ class BookstoreController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getAvailableBooks(
-        BookstoreService $bookstoreService, ItemRepository $itemRepository, ResponseService $responseService
+        BookstoreService $bookstoreService, ResponseService $responseService
     )
     {
         $user = $this->getUser();
@@ -35,21 +37,33 @@ class BookstoreController extends PoppySeedPetsController
         if($user->getUnlockedBookstore() === null)
             throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
 
-        $bookPrices = $bookstoreService->getAvailableInventory($user);
+        $data = $bookstoreService->getResponseData($user);
 
-        $bookItems = $itemRepository->findBy([ 'name' => array_keys($bookPrices) ], [ 'name' => 'ASC' ]);
+        return $responseService->success($data, [ SerializationGroupEnum::MARKET_ITEM ]);
+    }
 
-        $books = [];
+    /**
+     * @Route("/giveItem/{item}", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function giveItem(
+        string $item, BookstoreService $bookstoreService, ResponseService $responseService, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
 
-        foreach($bookItems as $bookItem)
-        {
-            $books[] = [
-                'item' => $bookItem,
-                'price' => $bookPrices[$bookItem->getName()]
-            ];
-        }
+        if($user->getUnlockedBookstore() === null)
+            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
 
-        return $responseService->success($books, [ SerializationGroupEnum::MARKET_ITEM ]);
+        $bookstoreService->advanceBookstoreQuest($user, $item);
+
+        $em->flush();
+
+        $data = $bookstoreService->getResponseData($user);
+
+        $responseService->addFlashMessage((new PetActivityLog())->setEntry('Thanks! Renaming Scrolls now cost ' . $bookstoreService->getRenamingScrollCost($user) . '~~m~~!'));
+
+        return $responseService->success($data, [ SerializationGroupEnum::MARKET_ITEM ]);
     }
 
     /**

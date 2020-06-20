@@ -41,6 +41,7 @@ class FishBookController extends PoppySeedPetsItemController
 * Nigiri
 * Orange Fish
 * Sushi
+* Zongzi
 
 ## Crafts
 
@@ -134,6 +135,13 @@ Just grill some Fish with Charcoal!
 1. Place a bed of sushi rice on the seaweed (Rice, Sugar, Vinegar)
 1. Place pieces of Fish on the sushi rice, in a line about 1-2 inches away from one edge 
 1. Roll!
+
+#### Zongzi
+
+1. Lay Rice on a Really Big Leaf
+1. Place Fish, Chanterelle, Beans, and Mixed nuts on the rice
+1. Fold/wrap into a triangular shape
+1. Bind with String
 ');
     }
 }
