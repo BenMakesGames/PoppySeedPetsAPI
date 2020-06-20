@@ -256,11 +256,17 @@ class BookstoreService
             ];
         }, $bookItems);
 
-        $bookstoreQuestStep = $this->userQuestRepository->findOrCreate($user, BookstoreService::BOOKSTORE_QUEST_NAME, 0);
+        if($this->renamingScrollAvailable($user))
+        {
+            $bookstoreQuestStep = $this->userQuestRepository->findOrCreate($user, BookstoreService::BOOKSTORE_QUEST_NAME, 0);
+            $quest = $this->getBookstoreQuestStep($bookstoreQuestStep->getValue());
+        }
+        else
+            $quest = null;
 
         return [
             'books' => $books,
-            'quest' => $this->getBookstoreQuestStep($bookstoreQuestStep->getValue()),
+            'quest' => $quest,
         ];
     }
 }
