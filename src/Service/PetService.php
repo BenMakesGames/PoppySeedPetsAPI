@@ -730,36 +730,37 @@ class PetService
 
         // maybe hang out with a spirit companion, if you have one
         if($spiritCompanionAvailable && (count($relationships) === 0 || mt_rand(1, count($relationships) + 1) === 1))
-            $this->hangOutWithSpiritCompanion($pet);
-        else
         {
-            $friendRelationshipsByFriendId = $this->getFriendRelationships($pet, $relationships);
-            $chosenRelationship = $this->pickRelationshipToHangOutWith($relationships, $friendRelationshipsByFriendId);
+            $this->hangOutWithSpiritCompanion($pet);
+            return true;
+        }
 
-            $friend = $chosenRelationship->getRelationship();
+        $friendRelationshipsByFriendId = $this->getFriendRelationships($pet, $relationships);
+        $chosenRelationship = $this->pickRelationshipToHangOutWith($relationships, $friendRelationshipsByFriendId);
 
-            $friendRelationship = $friendRelationshipsByFriendId[$friend->getId()];
+        if(!$chosenRelationship)
+            return false;
 
-            // @TODO: one or both of: separate pool of energy reserved for OTHERS to spend;
-            //        and/or if the pet you can't hang out with is busy, DON'T look for someone else, and keep trying with that pet for a few hours
+        $friend = $chosenRelationship->getRelationship();
 
-            $skipped = mt_rand(0, 5);
+        $friendRelationship = $friendRelationshipsByFriendId[$friend->getId()];
 
-            foreach($relationships as $r)
+        $skipped = mt_rand(0, 5);
+
+        foreach($relationships as $r)
+        {
+            if($r->getId() === $chosenRelationship->getId())
             {
-                if($r->getId() === $chosenRelationship->getId())
-                {
-                    $r->increaseCommitment($skipped);
-                    break;
-                }
-
-                $r->increaseCommitment(-1);
-                $skipped++;
+                $r->increaseCommitment($skipped);
+                break;
             }
 
-            // hang out with selected pet
-            $this->hangOutWithOtherPet($chosenRelationship, $friendRelationship);
+            $r->increaseCommitment(-1);
+            $skipped++;
         }
+
+        // hang out with selected pet
+        $this->hangOutWithOtherPet($chosenRelationship, $friendRelationship);
 
         return true;
     }
@@ -789,7 +790,7 @@ class PetService
      * @param PetRelationship[] $relationships
      * @param PetRelationship[] $friendRelationshipsByFriendId
      */
-    private function pickRelationshipToHangOutWith(array $relationships, array $friendRelationshipsByFriendId): PetRelationship
+    private function pickRelationshipToHangOutWith(array $relationships, array $friendRelationshipsByFriendId): ?PetRelationship
     {
         $relationships = array_filter($relationships, function(PetRelationship $r) use($friendRelationshipsByFriendId) {
             // sanity check (the game isn't always sane...)
@@ -806,6 +807,9 @@ class PetService
 
             return mt_rand(0, 999) < $chanceToHangOut;
         });
+
+        if(count($relationships) === 0)
+            return null;
 
         return ArrayFunctions::pick_one_weighted($relationships, function(PetRelationship $r) {
             return $r->getCommitment() + 1;

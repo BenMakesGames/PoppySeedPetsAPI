@@ -248,7 +248,7 @@ class PetRelationship
 
     public function setCommitment(int $commitment): self
     {
-        $this->commitment = $commitment;
+        $this->commitment = max(0, $commitment);
 
         return $this;
     }
