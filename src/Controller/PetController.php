@@ -844,18 +844,26 @@ class PetController extends PoppySeedPetsController
         $data['byActivity'] = array_map(function($a) use($byActivityTotal) {
             return [
                 'label' => $a['label'],
-                'value' => $a['value'] === 0 ? null : $a['value'] / $byActivityTotal,
-                'percentDeleted' => $a['value'] > 0 ? $a['deleted'] / $a['value'] : 0,
-                'color' => $a['color']
+                'value' => $a['value'] > 0 ? ($a['value'] / $byActivityTotal) : 0,
+                'percentDeleted' => $a['value'] > 0 ? ($a['deleted'] / $a['value']) : 0,
+                'color' => $a['color'],
             ];
         }, $data['byActivity']);
 
         $data['byActivityCombined'] = array_map(function($a) use($byActivityCombinedTotal) {
-            return [ 'label' => $a['label'], 'value' => $a['value'] / $byActivityCombinedTotal, 'color' => $a['color'] ];
+            return [
+                'label' => $a['label'],
+                'value' => $byActivityCombinedTotal > 0 ? ($a['value'] / $byActivityCombinedTotal) : 0,
+                'color' => $a['color'],
+            ];
         }, $data['byActivityCombined']);
 
         $data['byTime'] = array_map(function($a) use($byTimeTotal) {
-            return [ 'label' => $a['label'], 'value' => $a['value'] / $byTimeTotal, 'color' => $a['color'] ];
+            return [
+                'label' => $a['label'],
+                'value' => $byTimeTotal > 0 ? ($a['value'] / $byTimeTotal) : 0,
+                'color' => $a['color']
+            ];
         }, $data['byTime']);
 
         // the chart order is important; the transition from one chart to the next (in order) teaches what the charts mean
