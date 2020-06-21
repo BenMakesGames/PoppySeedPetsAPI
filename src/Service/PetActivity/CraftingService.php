@@ -527,7 +527,7 @@ class CraftingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spin some Fluff into ' . $making . ', but couldn\'t figure it out.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spin some Fluff into ' . $making->getName() . ', but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
 
