@@ -707,7 +707,7 @@ class UmbraService
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found an Overgrown Garden, and harvested ' . ArrayFunctions::list_nice($loot) . '.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Cursed Garden, and harvested ' . ArrayFunctions::list_nice($loot) . '.', '');
 
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
         }
