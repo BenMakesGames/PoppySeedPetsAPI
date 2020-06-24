@@ -37,6 +37,7 @@ class MarketFilterService
                 'equipable' => [ $this, 'filterEquipable' ],
                 'equipStats' => [ $this, 'filterEquipStats' ],
                 'aHat' => [ $this, 'filterAHat' ],
+                'hasDonated' => [ $this, 'filterHasDonated' ],
             ]
         );
     }
@@ -136,5 +137,20 @@ class MarketFilterService
         {
             $qb->andWhere('tool.' . $stat . ' > 0');
         }
+    }
+
+    public function filterHasDonated(QueryBuilder $qb, $value)
+    {
+        if(!in_array('donations', $qb->getAllAliases()))
+            $qb->leftJoin('i.museumDonations', 'donations', 'WITH', 'donations.user=:user');
+
+        $qb
+            ->setParameter('user', $this->user)
+        ;
+
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('donations.id IS NULL');
+        else
+            $qb->andWhere('donations.id IS NOT NULL');
     }
 }

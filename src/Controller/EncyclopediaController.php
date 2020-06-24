@@ -30,6 +30,8 @@ class EncyclopediaController extends PoppySeedPetsController
      */
     public function itemSearch(Request $request, ItemFilterService $itemFilterService, ResponseService $responseService)
     {
+        $itemFilterService->setUser($this->getUser());
+
         return $responseService->success(
             $itemFilterService->getResults($request->query),
             [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::ITEM_ENCYCLOPEDIA ]

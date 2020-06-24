@@ -68,6 +68,8 @@ class InventoryController extends PoppySeedPetsController
         $inventoryFilterService->addRequiredFilter('user', $user->getId());
         $inventoryFilterService->addRequiredFilter('location', $location);
 
+        $inventoryFilterService->setUser($user);
+
         $inventory = $inventoryFilterService->getResults($request->query);
 
         return $responseService->success($inventory, [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MY_INVENTORY ]);

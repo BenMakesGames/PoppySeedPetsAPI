@@ -3,6 +3,7 @@ namespace App\Service\Filter;
 
 use App\Entity\ItemFood;
 use App\Entity\ItemTool;
+use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -15,6 +16,7 @@ class ItemFilterService
     public const PAGE_SIZE = 20;
 
     private $repository;
+    private $user;
 
     public function __construct(ItemRepository $itemRepository)
     {
@@ -34,8 +36,14 @@ class ItemFilterService
                 'equipStats' => [ $this, 'filterEquipStats' ],
                 'notDonatedBy' => [ $this, 'filterNotDonatedBy' ],
                 'aHat' => [ $this, 'filterAHat' ],
+                'hasDonated' => [ $this, 'filterHasDonated' ],
             ]
         );
+    }
+
+    public function setUser(User $user)
+    {
+        $this->user = $user;
     }
 
     public function createQueryBuilder(): QueryBuilder
@@ -132,5 +140,20 @@ class ItemFilterService
         {
             $qb->andWhere('tool.' . $stat . ' > 0');
         }
+    }
+
+    public function filterHasDonated(QueryBuilder $qb, $value)
+    {
+        if(!in_array('donations', $qb->getAllAliases()))
+            $qb->leftJoin('i.museumDonations', 'donations', 'WITH', 'donations.user=:user');
+
+        $qb
+            ->setParameter('user', $this->user)
+        ;
+
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('donations.id IS NULL');
+        else
+            $qb->andWhere('donations.id IS NOT NULL');
     }
 }

@@ -2,6 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Entity\ItemTool;
+use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Repository\InventoryRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -13,6 +14,7 @@ class InventoryFilterService
     public const PAGE_SIZE = 100;
 
     private $repository;
+    private $user;
 
     public function __construct(InventoryRepository $inventoryRepository)
     {
@@ -33,8 +35,14 @@ class InventoryFilterService
                 'equipable' => [ $this, 'filterEquipable' ],
                 'equipStats' => [ $this, 'filterEquipStats' ],
                 'aHat' => [ $this, 'filterAHat' ],
+                'hasDonated' => [ $this, 'filterHasDonated' ],
             ]
         );
+    }
+
+    public function setUser(User $user)
+    {
+        $this->user = $user;
     }
 
     public function createQueryBuilder(): QueryBuilder
@@ -102,7 +110,6 @@ class InventoryFilterService
         }
     }
 
-
     public function filterAHat(QueryBuilder $qb, $value)
     {
         if(strtolower($value) === 'false' || !$value)
@@ -139,5 +146,18 @@ class InventoryFilterService
         {
             $qb->andWhere('tool.' . $stat . ' > 0');
         }
+    }
+
+    public function filterHasDonated(QueryBuilder $qb, $value)
+    {
+        if(!in_array('donations', $qb->getAllAliases()))
+            $qb->leftJoin('item.museumDonations', 'donations', 'WITH', 'donations.user=:user');
+
+        $qb->setParameter('user', $this->user);
+
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('donations.id IS NULL');
+        else
+            $qb->andWhere('donations.id IS NOT NULL');
     }
 }
