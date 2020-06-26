@@ -243,9 +243,9 @@ class Item
     /**
      * @Groups({"myInventory", "itemEncyclopedia"})
      */
-    public function getIsGrowable(): bool
+    public function getGreenhouseType(): ?string
     {
-        return $this->getPlant() !== null;
+        return $this->getPlant() === null ? null : $this->getPlant()->getType();
     }
 
     /**
