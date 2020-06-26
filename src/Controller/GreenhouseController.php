@@ -11,6 +11,7 @@ use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\MoonPhaseEnum;
+use App\Enum\PlantTypeEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
@@ -411,21 +412,30 @@ class GreenhouseController extends PoppySeedPetsController
     }
 
     /**
-     * @Route("/seeds", methods={"GET"})
+     * @Route("/seeds/{type}", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function getSeeds(ResponseService $responseService, InventoryRepository $inventoryRepository)
+    public function getSeeds(
+        ResponseService $responseService, InventoryRepository $inventoryRepository,
+        string $type = PlantTypeEnum::EARTH
+    )
     {
+        if(!PlantTypeEnum::isAValue($type))
+            throw new UnprocessableEntityHttpException('Must provide a valid seed type ("earth", "water", etc...)');
+
         $user = $this->getUser();
 
         $seeds = $inventoryRepository->createQueryBuilder('i')
             ->andWhere('i.owner=:owner')
             ->andWhere('i.location IN (:consumableLocations)')
             ->leftJoin('i.item', 'item')
+            ->leftJoin('item.plant', 'plant')
             ->andWhere('item.plant IS NOT NULL')
+            ->andWhere('plant.type=:plantType')
             ->addOrderBy('item.name', 'ASC')
             ->setParameter('owner', $user->getId())
             ->setParameter('consumableLocations', Inventory::CONSUMABLE_LOCATIONS)
+            ->setParameter('plantType', $type)
             ->getQuery()
             ->getResult()
         ;
@@ -443,31 +453,47 @@ class GreenhouseController extends PoppySeedPetsController
     )
     {
         $user = $this->getUser();
+        $greenhouse = $user->getGreenhouse();
 
-        if(count($user->getGreenhousePlants()) >= $user->getMaxPlants())
-            throw new UnprocessableEntityHttpException('You can\'t plant anymore plants.');
+        if($greenhouse === null)
+            throw new AccessDeniedHttpException('You don\'t have a greenhouse!');
 
         $seedId = $request->request->getInt('seed', 0);
 
         if($seedId <= 0)
             throw new UnprocessableEntityHttpException('"seed" is missing, or invalid.');
 
-        $item = $inventoryRepository->findOneBy([
+        $seed = $inventoryRepository->findOneBy([
             'id' => $seedId,
             'owner' => $user->getId(),
             'location' => Inventory::CONSUMABLE_LOCATIONS,
         ]);
 
-        if($item === null || $item->getItem()->getPlant() === null)
+        if($seed === null || $seed->getItem()->getPlant() === null)
             throw new NotFoundHttpException('There is no such seed. That\'s super-weird. Can you reload and try again?');
+
+        $plantsOfSameType = $user->getGreenhousePlants()->filter(function(GreenhousePlant $plant) use($seed) {
+            return $plant->getPlant()->getType() === $seed->getItem()->getPlant()->getType();
+        });
+
+        switch($seed->getItem()->getPlant()->getType())
+        {
+            case PlantTypeEnum::EARTH: $numberOfPlots = $greenhouse->getMaxPlants(); break;
+            case PlantTypeEnum::WATER: $numberOfPlots = $greenhouse->getMaxWaterPlants(); break;
+            case PlantTypeEnum::DARK: $numberOfPlots = $greenhouse->getMaxDarkPlants(); break;
+            default: throw new \Exception('Selected item doesn\'t have a valid plant type! Someone let Ben know he messed up!');
+        }
+
+        if(count($plantsOfSameType) >= $numberOfPlots)
+            throw new UnprocessableEntityHttpException('You can\'t plant anymore plants of this type.');
 
         $plant = (new GreenhousePlant())
             ->setOwner($user)
-            ->setPlant($item->getItem()->getPlant())
+            ->setPlant($seed->getItem()->getPlant())
         ;
 
         $em->persist($plant);
-        $em->remove($item);
+        $em->remove($seed);
         $em->flush();
 
         return $responseService->success();

@@ -63,6 +63,12 @@ class ItemPlant
      */
     private $timeToFruit;
 
+    /**
+     * @ORM\Column(type="string", length=20)
+     * @Groups({"greenhousePlant"})
+     */
+    private $type;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -178,6 +184,18 @@ class ItemPlant
     public function setTimeToFruit(int $timeToFruit): self
     {
         $this->timeToFruit = $timeToFruit;
+
+        return $this;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }

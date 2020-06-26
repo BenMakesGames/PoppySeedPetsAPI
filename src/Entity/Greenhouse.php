@@ -24,7 +24,7 @@ class Greenhouse
     private $owner;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="smallint")
      * @Groups({"myGreenhouse"})
      */
     private $maxPlants = 3;
@@ -40,6 +40,18 @@ class Greenhouse
      * @Groups({"myGreenhouse"})
      */
     private $visitingBird = null;
+
+    /**
+     * @ORM\Column(type="smallint")
+     * @Groups({"myGreenhouse"})
+     */
+    private $maxWaterPlants = 0;
+
+    /**
+     * @ORM\Column(type="smallint")
+     * @Groups({"myGreenhouse"})
+     */
+    private $maxDarkPlants = 0;
 
     public function getId(): ?int
     {
@@ -90,6 +102,30 @@ class Greenhouse
     public function setVisitingBird(?string $visitingBird): self
     {
         $this->visitingBird = $visitingBird;
+
+        return $this;
+    }
+
+    public function getMaxWaterPlants(): ?int
+    {
+        return $this->maxWaterPlants;
+    }
+
+    public function increaseMaxWaterPlants(int $amount): self
+    {
+        $this->maxWaterPlants += $amount;
+
+        return $this;
+    }
+
+    public function getMaxDarkPlants(): ?int
+    {
+        return $this->maxDarkPlants;
+    }
+
+    public function increaseMaxDarkPlants(int $amount): self
+    {
+        $this->maxDarkPlants += $amount;
 
         return $this;
     }
