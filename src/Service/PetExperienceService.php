@@ -200,7 +200,7 @@ class PetExperienceService
         if($randomFlavor !== null && $randomFlavor === $pet->getFavoriteFlavor())
             $favoriteFlavorStrength += $item->getFood()->getRandomFlavor();
 
-        if($pet->hasMerit(MeritEnum::LOLLIGOVORE) && $item->containsTentacles())
+        if($pet->hasMerit(MeritEnum::LOLLIGOVORE) && $item->getFood()->getContainsTentacles())
             $favoriteFlavorStrength += 2;
 
         return $favoriteFlavorStrength;

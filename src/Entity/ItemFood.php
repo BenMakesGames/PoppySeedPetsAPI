@@ -125,6 +125,11 @@ class ItemFood
      */
     private $randomFlavor = 0;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $containsTentacles = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -501,6 +506,18 @@ class ItemFood
     public function setRandomFlavor(int $randomFlavor): self
     {
         $this->randomFlavor = $randomFlavor;
+
+        return $this;
+    }
+
+    public function getContainsTentacles(): ?bool
+    {
+        return $this->containsTentacles;
+    }
+
+    public function setContainsTentacles(bool $containsTentacles): self
+    {
+        $this->containsTentacles = $containsTentacles;
 
         return $this;
     }
