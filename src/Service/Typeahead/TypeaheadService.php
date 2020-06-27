@@ -2,7 +2,6 @@
 namespace App\Service\Typeahead;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\QueryBuilder;
 
 abstract class TypeaheadService

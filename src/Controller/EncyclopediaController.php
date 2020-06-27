@@ -13,6 +13,8 @@ use App\Service\Filter\MeritFilterService;
 use App\Service\Filter\PetSpeciesFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Typeahead\ItemTypeaheadService;
+use App\Service\Typeahead\UserTypeaheadService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -25,6 +27,25 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class EncyclopediaController extends PoppySeedPetsController
 {
+    /**
+     * @Route("/typeahead/item", methods={"GET"})
+     */
+    public function typeaheadSearch(
+        Request $request, ResponseService $responseService, ItemTypeaheadService $itemTypeaheadService
+    )
+    {
+        try
+        {
+            $suggestions = $itemTypeaheadService->search('name', $request->query->get('search', ''), 5);
+
+            return $responseService->success($suggestions, SerializationGroupEnum::ITEM_TYPEAHEAD);
+        }
+        catch(\InvalidArgumentException $e)
+        {
+            throw new UnprocessableEntityHttpException($e->getMessage(), $e);
+        }
+    }
+
     /**
      * @Route("/item", methods={"GET"})
      */

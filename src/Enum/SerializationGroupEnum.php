@@ -46,4 +46,5 @@ final class SerializationGroupEnum
     public const MERIT_ENCYCLOPEDIA = 'meritEncyclopedia';
     public const SPIRIT_COMPANION_PUBLIC_PROFILE = 'spiritCompanionPublicProfile';
     public const MARKET_ITEM_HISTORY = 'marketItemHistory';
+    public const ITEM_TYPEAHEAD = 'itemTypeahead';
 }
