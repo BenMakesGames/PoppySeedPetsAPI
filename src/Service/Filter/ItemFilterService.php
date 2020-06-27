@@ -41,7 +41,7 @@ class ItemFilterService
         );
     }
 
-    public function setUser(User $user)
+    public function setUser(?User $user)
     {
         $this->user = $user;
     }
@@ -144,6 +144,9 @@ class ItemFilterService
 
     public function filterHasDonated(QueryBuilder $qb, $value)
     {
+        if($this->user === null)
+            return;
+
         if(!in_array('donations', $qb->getAllAliases()))
             $qb->leftJoin('i.museumDonations', 'donations', 'WITH', 'donations.user=:user');
 
