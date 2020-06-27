@@ -318,8 +318,8 @@ class InventoryController extends PoppySeedPetsController
 
         if($location === LocationEnum::MANTLE)
         {
-            if ($itemsInTargetLocation + count($inventory) > 12)
-                throw new UnprocessableEntityHttpException('The mantle only has space for 12 items.');
+            if ($itemsInTargetLocation + count($inventory) > $user->getFireplace()->getMantleSize())
+                throw new UnprocessableEntityHttpException('The mantle only has space for ' . $user->getFireplace()->getMantleSize() . ' items.');
         }
 
         foreach($inventory as $i)

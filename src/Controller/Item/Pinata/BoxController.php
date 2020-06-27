@@ -852,4 +852,50 @@ class BoxController extends PoppySeedPetsItemController
 
         return $this->countRemoveFlushAndRespond('Opening the chest revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
+
+    /**
+     * @Route("/fishBag/{inventory}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openFishBag(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/fishBag/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
+
+        $newInventory = [];
+
+        $location = $inventory->getLocation();
+
+        $message = $user->getName() . ' got this from a Fish Bag.';
+
+        $newInventory[] = $inventoryService->receiveItem('Fish', $user, $user, $message, $location, $inventory->getLockedToOwner());
+        $newInventory[] = $inventoryService->receiveItem('Fish', $user, $user, $message, $location, $inventory->getLockedToOwner());
+
+        $otherDrops = [
+            'Fish',
+            'Fish',
+            'Silica Grounds',
+            'Silica Grounds',
+            'Crooked Stick',
+            'Sand Dollar',
+            'Tentacle',
+            'Mermaid Egg',
+        ];
+
+        for($i = 0; $i < 3; $i++)
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($otherDrops), $user, $user, $message, $location, $inventory->getLockedToOwner());
+
+        if(mt_rand(1, 5) === 1)
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Jellyfish Jelly', 'Small, Yellow Plastic Bucket' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
+
+        if(mt_rand(1, 20) === 1)
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Merchant Fish', 'Secret Seashell', 'Ceremonial Trident' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
+
+        return $this->countRemoveFlushAndRespond('Opening the bag revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+    }
 }

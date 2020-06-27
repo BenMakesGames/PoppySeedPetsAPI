@@ -32,16 +32,26 @@ class AdoptionService
     {
         $statValue = $this->userStatsRepository->getStatValue($user, UserStatEnum::PETS_ADOPTED);
 
+        $itemsDonated = $this->userStatsRepository->getStatValue($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM);
+
+        $bonus = 0;
+
+        if($itemsDonated >= 300)
+            $bonus += 5;
+
+        if($itemsDonated >= 600)
+            $bonus += 5;
+
         if($statValue <= 6)
-            return 50;
+            return 50 - $bonus;
         else if($statValue <= 28)
-            return 75;
+            return 75 - $bonus;
         else if($statValue <= 496)
-            return 100;
+            return 100 - $bonus;
         else if($statValue <= 8128)
-            return 50;
+            return 50 - $bonus;
         else
-            return 10;
+            return 20 - $bonus;
     }
 
     private function getNumberOfPets(User $user): int

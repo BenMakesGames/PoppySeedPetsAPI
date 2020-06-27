@@ -71,6 +71,12 @@ class Fireplace
      */
     private $whelpColorB;
 
+    /**
+     * @ORM\Column(type="smallint")
+     * @Groups({"myFireplace"})
+     */
+    private $mantleSize = 12;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -232,5 +238,17 @@ class Fireplace
         }
         else
             return null;
+    }
+
+    public function getMantleSize(): int
+    {
+        return $this->mantleSize;
+    }
+
+    public function setMantleSize(int $mantleSize): self
+    {
+        $this->mantleSize = $mantleSize;
+
+        return $this;
     }
 }

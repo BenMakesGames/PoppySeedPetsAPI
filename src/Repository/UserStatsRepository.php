@@ -50,12 +50,19 @@ class UserStatsRepository extends ServiceEntityRepository
 
         $stat->increaseValue($change);
 
-        if($user->getUnlockedBookstore() === null && ($name === UserStatEnum::ITEMS_THROWN_AWAY || $name === UserStatEnum::ITEMS_DONATED_TO_MUSEUM))
+        if($name === UserStatEnum::ITEMS_DONATED_TO_MUSEUM)
         {
-            $tossedAndDonated = $this->findBy([ 'user' => $user, 'stat' => [ UserStatEnum::ITEMS_THROWN_AWAY, UserStatEnum::ITEMS_DONATED_TO_MUSEUM ] ]);
-            $total = array_sum(array_map(function(UserStats $s) { return $s->getValue(); }, $tossedAndDonated));
-            if($total >= 10)
-                $user->setUnlockedBookstore();
+            if($user->getUnlockedBookstore() === null)
+            {
+                if($stat->getValue() >= 10)
+                    $user->setUnlockedBookstore();
+            }
+
+            if($user->getFireplace() && $user->getFireplace()->getMantleSize() === 12)
+            {
+                if($stat->getValue() >= 400)
+                    $user->getFireplace()->setMantleSize(24);
+            }
         }
 
         return $stat;

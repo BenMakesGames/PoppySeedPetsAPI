@@ -4,8 +4,10 @@ namespace App\Controller\Item\Blueprint;
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Fireplace;
 use App\Entity\Inventory;
+use App\Enum\UserStatEnum;
 use App\Repository\InventoryRepository;
 use App\Repository\UserQuestRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -106,7 +108,8 @@ class HouseFairyController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function buildBasement(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, InventoryRepository $inventoryRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository
     )
     {
         $this->validateInventory($inventory, 'fairy/#/buildFireplace');
@@ -133,6 +136,9 @@ class HouseFairyController extends PoppySeedPetsItemController
             $user->setUnlockedFireplace();
 
             $fireplace = (new Fireplace())->setUser($user);
+
+            if($userStatsRepository->getStatValue($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM) >= 400)
+                $fireplace->setMantleSize(24);
 
             $em->persist($fireplace);
 
