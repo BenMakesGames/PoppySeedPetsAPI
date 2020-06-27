@@ -36,7 +36,7 @@ class Pet
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent", "petFriend", "fireplaceFuel", "petGroupDetails", "spiritCompanionPublicProfile"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent", "petFriend", "fireplaceFuel", "petGroupDetails", "spiritCompanionPublicProfile", "guildMember"})
      */
     private $id;
 
@@ -48,7 +48,7 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "spiritCompanionPublicProfile"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "spiritCompanionPublicProfile", "guildMember"})
      */
     private $name;
 
@@ -89,13 +89,13 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember"})
      */
     private $colorA;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember"})
      */
     private $colorB;
 
@@ -135,7 +135,7 @@ class Pet
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\PetSpecies")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember"})
      */
     private $species;
 
@@ -324,7 +324,7 @@ class Pet
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\GuildMembership", mappedBy="pet", cascade={"persist", "remove"})
-     * @Groups({"petPublicProfile"})
+     * @Groups({"petPublicProfile", "guildMember"})
      */
     private $guildMembership;
 

@@ -74,15 +74,15 @@ class GuildService
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
         $preferredGuild = [
-            GuildEnum::TIMES_ARROW => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getPerception() + $pet->getSkills()->getScience() + mt_rand(-20, 20) / 10,
-            GuildEnum::LIGHT_AND_SHADOW => $pet->getSkills()->getPerception() + $pet->getSkills()->getUmbra() + $pet->getSkills()->getIntelligence() + mt_rand(-20, 20) / 10,
-            GuildEnum::TAPESTRIES => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + ($pet->getSkills()->getUmbra() + $pet->getSkills()->getCrafts()) / 2 + mt_rand(-20, 20) / 10,
-            GuildEnum::INNER_SANCTUM => $pet->getSkills()->getIntelligence() * 2 + $pet->getSkills()->getPerception() + mt_rand(-20, 20) / 10,
-            GuildEnum::DWARFCRAFT => $pet->getStrength() + $pet->getStamina() + $pet->getSkills()->getCrafts() + mt_rand(-20, 20) / 10,
-            GuildEnum::GIZUBIS_GARDEN => ($pet->getExtroverted() + $pet->getSexDrive() + $pet->getPoly() + 3) * 2 + $pet->getSkills()->getNature() + 1 + mt_rand(-20, 20) / 10,
-            GuildEnum::HIGH_IMPACT => ($pet->getStrength() + $pet->getDexterity() + $pet->getIntelligence() + $pet->getStamina() + $pet->getSkills()->getBrawl() + $pet->getSkills()->getScience()) / 2 + mt_rand(-20, 20) / 10,
-            GuildEnum::THE_UNIVERSE_FORGETS => $pet->getPerception() + $pet->getIntelligence() + ((1 - $pet->getExtroverted()) * 2 + 1 + $pet->getUmbra()) / 2 + mt_rand(-20, 20) / 10,
-            GuildEnum::CORRESPONDENCE => $pet->getStamina() + $pet->getStrength() + ($pet->getSkills()->getUmbra() + $pet->getSkills()->getStealth() + $pet->getSkills()->getScience()) / 3 + mt_rand(-20, 20) / 10,
+            GuildEnum::TIMES_ARROW => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getPerception() + $pet->getSkills()->getScience() + mt_rand(0, 10),
+            GuildEnum::LIGHT_AND_SHADOW => $pet->getSkills()->getPerception() + $pet->getSkills()->getUmbra() + $pet->getSkills()->getIntelligence() + mt_rand(0, 10),
+            GuildEnum::TAPESTRIES => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + ($pet->getSkills()->getUmbra() + $pet->getSkills()->getCrafts()) / 2 + mt_rand(0, 10),
+            GuildEnum::INNER_SANCTUM => $pet->getSkills()->getIntelligence() * 2 + $pet->getSkills()->getPerception() + mt_rand(0, 10),
+            GuildEnum::DWARFCRAFT => $pet->getStrength() + $pet->getStamina() + $pet->getSkills()->getCrafts() + mt_rand(0, 10),
+            GuildEnum::GIZUBIS_GARDEN => ($pet->getExtroverted() + $pet->getSexDrive() + $pet->getPoly() + 1) * 3 + $pet->getSkills()->getNature() / 2 + mt_rand(0, 10),
+            GuildEnum::HIGH_IMPACT => ($pet->getStrength() + $pet->getDexterity() + $pet->getIntelligence() + $pet->getStamina() + $pet->getSkills()->getBrawl() + $pet->getSkills()->getScience()) / 2 + mt_rand(0, 10),
+            GuildEnum::THE_UNIVERSE_FORGETS => $pet->getPerception() + $pet->getIntelligence() + ((1 - $pet->getExtroverted()) * 2 + 1 + $pet->getUmbra()) / 2 + mt_rand(0, 10),
+            GuildEnum::CORRESPONDENCE => $pet->getStamina() + $pet->getStrength() + ($pet->getSkills()->getUmbra() + $pet->getSkills()->getStealth() + $pet->getSkills()->getScience()) / 3 + mt_rand(0, 10),
         ];
 
         arsort($preferredGuild);

@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\GuildRepository")
@@ -15,11 +16,13 @@ class Guild
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"guildEncyclopedia", "petGuild", "petPublicProfile"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"guildEncyclopedia", "petGuild", "petPublicProfile"})
      */
     private $name;
 
@@ -30,14 +33,22 @@ class Guild
 
     /**
      * @ORM\Column(type="string", length=40)
+     * @Groups({"guildEncyclopedia", "petGuild", "petPublicProfile"})
      */
     private $emblem;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Item")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"guildEncyclopedia"})
      */
     private $starterTool;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"guildEncyclopedia"})
+     */
+    private $quote;
 
     public function getId(): ?int
     {
@@ -88,6 +99,18 @@ class Guild
     public function setStarterTool(?Item $starterTool): self
     {
         $this->starterTool = $starterTool;
+
+        return $this;
+    }
+
+    public function getQuote(): ?string
+    {
+        return $this->quote;
+    }
+
+    public function setQuote(string $quote): self
+    {
+        $this->quote = $quote;
 
         return $this;
     }

@@ -26,12 +26,13 @@ class GuildMembership
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Guild")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"petGuild", "petPublicProfile"})
      */
     private $guild;
 
     /**
      * @ORM\Column(type="datetime_immutable")
-     * @Groups({"petGuild", "petPublicProfile"})
+     * @Groups({"petGuild", "petPublicProfile", "guildMember"})
      */
     private $joinedOn;
 
@@ -126,7 +127,7 @@ class GuildMembership
     }
 
     /**
-     * @Groups({"petGuild", "petPublicProfile"})
+     * @Groups({"petGuild", "petPublicProfile", "guildMember"})
      */
     public function getRank(): string
     {
@@ -139,21 +140,5 @@ class GuildMembership
             return 'Master';
         else
             return $titles[$title] . ' ' . $rank;
-    }
-
-    /**
-     * @Groups({"petGuild", "petPublicProfile"})
-     */
-    public function getGuildName(): string
-    {
-        return $this->getGuild()->getName();
-    }
-
-    /**
-     * @Groups({"petGuild", "petPublicProfile"})
-     */
-    public function getGuildEmblem(): string
-    {
-        return $this->getGuild()->getEmblem();
     }
 }

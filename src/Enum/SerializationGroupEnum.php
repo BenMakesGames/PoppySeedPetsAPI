@@ -47,4 +47,6 @@ final class SerializationGroupEnum
     public const SPIRIT_COMPANION_PUBLIC_PROFILE = 'spiritCompanionPublicProfile';
     public const MARKET_ITEM_HISTORY = 'marketItemHistory';
     public const ITEM_TYPEAHEAD = 'itemTypeahead';
+    public const GUILD_ENCYCLOPEDIA= 'guildEncyclopedia';
+    public const GUILD_MEMBER = 'guildMember';
 }

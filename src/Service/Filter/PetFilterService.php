@@ -26,6 +26,7 @@ class PetFilterService
                 'species' => [ $this, 'filterSpecies' ],
                 'owner' => [ $this, 'filterOwner' ],
                 'inDaycare' => [ $this, 'filterInDaycare' ],
+                'guild' => [ $this, 'filterGuild' ],
             ]
         );
     }
@@ -71,5 +72,16 @@ class PetFilterService
             $qb->andWhere('p.inDaycare = 0');
         else
             $qb->andWhere('p.inDaycare = 1');
+    }
+
+    public function filterGuild(QueryBuilder $qb, $value)
+    {
+        if(!in_array('guildMembership', $qb->getAllAliases()))
+            $qb->join('p.guildMembership', 'guildMembership');
+
+        $qb
+            ->andWhere('guildMembership.guild=:guild')
+            ->setParameter('guild', $value)
+        ;
     }
 }
