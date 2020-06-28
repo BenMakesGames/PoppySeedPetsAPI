@@ -157,17 +157,17 @@ class GuildService
         switch($member->getReputation())
         {
             case 0:
-                $message = $pet->getName() . ' was introduced to some of the more-important important NPCs in ' . $member->getGuildName() . '.';
+                $message = $pet->getName() . ' was introduced to some of the more-important important NPCs in ' . $member->getGuild()->getName() . '.';
                 break;
             case 1:
-                $message = $pet->getName() . ' visited ' . $member->getGuildName() . ', and received a guild-issued ' . $member->getGuild()->getStarterTool()->getName() . '.';
-                $this->inventoryService->petCollectsItem($member->getGuild()->getStarterTool(), $pet, $pet->getName() . ' was given this by their guild, ' . $member->getGuildName() . '.', null);
+                $message = $pet->getName() . ' visited ' . $member->getGuild()->getName() . ', and received a guild-issued ' . $member->getGuild()->getStarterTool()->getName() . '.';
+                $this->inventoryService->petCollectsItem($member->getGuild()->getStarterTool(), $pet, $pet->getName() . ' was given this by their guild, ' . $member->getGuild()->getName() . '.', null);
                 break;
             case 2:
-                $message = $pet->getName() . ' explored the ' . $member->getGuildName() . ' guild house for a while.';
+                $message = $pet->getName() . ' explored the ' . $member->getGuild()->getName() . ' guild house for a while.';
                 break;
             default:
-                throw new \Exception('Ben forgot to code stuff for a ' . $member->getRank() . ' in ' . $member->getGuildName() . ' to do! (Way to go, _Ben_!)');
+                throw new \Exception('Ben forgot to code stuff for a ' . $member->getRank() . ' in ' . $member->getGuild()->getName() . ' to do! (Way to go, _Ben_!)');
         }
 
         $member->increaseReputation();
@@ -182,9 +182,9 @@ class GuildService
         $member = $pet->getGuildMembership();
 
         $message = ArrayFunctions::pick_one([
-            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuildName() . ' seniors.',
-            $pet->getName() . ' practiced using one of ' . $member->getGuildName() . '\'s Timescrawlers. (Supervised, of course!)',
-            $pet->getName() . ' shadowed a ' . $member->getGuildName() . ' senior for a little bit, to watch them work.'
+            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
+            $pet->getName() . ' practiced using one of ' . $member->getGuild()->getName() . '\'s Timescrawlers. (Supervised, of course!)',
+            $pet->getName() . ' shadowed a ' . $member->getGuild()->getName() . ' senior for a little bit, to watch them work.'
         ]);
 
         $member->increaseReputation();
@@ -200,9 +200,9 @@ class GuildService
         $member = $pet->getGuildMembership();
 
         $message = ArrayFunctions::pick_one([
-            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuildName() . ' seniors.',
+            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
             $pet->getName() . ' practiced peering into the Umbra without having to actually go there.',
-            $pet->getName() . ' shadowed a ' . $member->getGuildName() . ' senior for a little bit, to watch them work.'
+            $pet->getName() . ' shadowed a ' . $member->getGuild()->getName() . ' senior for a little bit, to watch them work.'
         ]);
 
         $member->increaseReputation();
@@ -218,9 +218,9 @@ class GuildService
         $member = $pet->getGuildMembership();
 
         $message = ArrayFunctions::pick_one([
-            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuildName() . ' seniors.',
+            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
             $pet->getName() . ' practiced peering into the Umbra without having to actually go there.',
-            $pet->getName() . ' watched a ' . $member->getGuildName() . ' senior sew a tear in the fabric of reality...'
+            $pet->getName() . ' watched a ' . $member->getGuild()->getName() . ' senior sew a tear in the fabric of reality...'
         ]);
 
         $member->increaseReputation();
@@ -236,9 +236,9 @@ class GuildService
         $member = $pet->getGuildMembership();
 
         $message = ArrayFunctions::pick_one([
-            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuildName() . ' seniors.',
-            $pet->getName() . ' joined a ' . $member->getGuildName() . ' session of group meditation.',
-            $pet->getName() . ' had a minor philosophical debate with a senior ' . $member->getGuildName() . ' member.'
+            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
+            $pet->getName() . ' joined a ' . $member->getGuild()->getName() . ' session of group meditation.',
+            $pet->getName() . ' had a minor philosophical debate with a senior ' . $member->getGuild()->getName() . ' member.'
         ]);
 
         $member->increaseReputation();
@@ -254,9 +254,9 @@ class GuildService
         $member = $pet->getGuildMembership();
 
         $message = ArrayFunctions::pick_one([
-            $pet->getName() . ' picked up some Liquid-hot Magma for one of their ' . $member->getGuildName() . ' seniors.',
-            $pet->getName() . ' delivered Lightning in a Bottle to one of their ' . $member->getGuildName() . ' seniors.',
-            $pet->getName() . ' shadowed a ' . $member->getGuildName() . ' senior for a little bit, to watch them work.'
+            $pet->getName() . ' picked up some Liquid-hot Magma for one of their ' . $member->getGuild()->getName() . ' seniors.',
+            $pet->getName() . ' delivered Lightning in a Bottle to one of their ' . $member->getGuild()->getName() . ' seniors.',
+            $pet->getName() . ' shadowed a ' . $member->getGuild()->getName() . ' senior for a little bit, to watch them work.'
         ]);
 
         $member->increaseReputation();
@@ -274,15 +274,15 @@ class GuildService
         switch(mt_rand(1, 3))
         {
             case 1:
-                $message = $pet->getName() . ' helped one of their seniors tend to ' . $member->getGuildName() . ' gardens.';
+                $message = $pet->getName() . ' helped one of their seniors tend to ' . $member->getGuild()->getName() . ' gardens.';
                 $skill = PetSkillEnum::NATURE;
                 break;
             case 2:
-                $message = $pet->getName() . ' helped cook for a ' . $member->getGuildName() . ' feast.';
+                $message = $pet->getName() . ' helped cook for a ' . $member->getGuild()->getName() . ' feast.';
                 $skill = PetSkillEnum::CRAFTS;
                 break;
             case 3:
-                $message = $pet->getName() . ' participated in an impromptu ' . $member->getGuildName() . ' jam session.';
+                $message = $pet->getName() . ' participated in an impromptu ' . $member->getGuild()->getName() . ' jam session.';
                 $skill = PetSkillEnum::MUSIC;
                 break;
             default:
@@ -302,9 +302,9 @@ class GuildService
         $member = $pet->getGuildMembership();
 
         $message = ArrayFunctions::pick_one([
-            $pet->getName() . ' delivered Lightning in a Bottle to one of their ' . $member->getGuildName() . ' seniors.',
-            $pet->getName() . ' shadowed a ' . $member->getGuildName() . ' senior for a little bit, to watch them work.',
-            $pet->getName() . ' participated in a ' . $member->getGuildName() . ' obstacle course competition.',
+            $pet->getName() . ' delivered Lightning in a Bottle to one of their ' . $member->getGuild()->getName() . ' seniors.',
+            $pet->getName() . ' shadowed a ' . $member->getGuild()->getName() . ' senior for a little bit, to watch them work.',
+            $pet->getName() . ' participated in a ' . $member->getGuild()->getName() . ' obstacle course competition.',
         ]);
 
         $member->increaseReputation();
@@ -320,9 +320,9 @@ class GuildService
         $member = $pet->getGuildMembership();
 
         $message = ArrayFunctions::pick_one([
-            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuildName() . ' seniors.',
+            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
             $pet->getName() . ' practiced peering into the Umbra without having to actually go there.',
-            $pet->getName() . ' followed a ' . $member->getGuildName() . ' through unfamiliar regions of the Umbra, looking for any unusual changes.'
+            $pet->getName() . ' followed a ' . $member->getGuild()->getName() . ' through unfamiliar regions of the Umbra, looking for any unusual changes.'
         ]);
 
         $member->increaseReputation();
@@ -338,9 +338,9 @@ class GuildService
         $member = $pet->getGuildMembership();
 
         $message = ArrayFunctions::pick_one([
-            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuildName() . ' seniors.',
-            $pet->getName() . ' participated in a ' . $member->getGuildName() . ' race.',
-            $pet->getName() . ' followed a ' . $member->getGuildName() . ' through unfamiliar regions of Project-E, to deliver a message.'
+            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
+            $pet->getName() . ' participated in a ' . $member->getGuild()->getName() . ' race.',
+            $pet->getName() . ' followed a ' . $member->getGuild()->getName() . ' through unfamiliar regions of Project-E, to deliver a message.'
         ]);
 
         $member->increaseReputation();
