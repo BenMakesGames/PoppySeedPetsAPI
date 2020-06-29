@@ -354,6 +354,12 @@ class Pet
      */
     private $bonusMaximumFriends;
 
+    /**
+     * @ORM\Column(type="smallint")
+     * @Groups({"myPet"})
+     */
+    private $selfReflectionPoint = 0;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -1767,6 +1773,18 @@ class Pet
     public function setBonusMaximumFriends(int $bonusMaximumFriends): self
     {
         $this->bonusMaximumFriends = $bonusMaximumFriends;
+
+        return $this;
+    }
+
+    public function getSelfReflectionPoint(): ?int
+    {
+        return $this->selfReflectionPoint;
+    }
+
+    public function increaseSelfReflectionPoint(int $amount): self
+    {
+        $this->selfReflectionPoint += $amount;
 
         return $this;
     }

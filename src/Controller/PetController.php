@@ -14,6 +14,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\RelationshipEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
@@ -630,12 +631,7 @@ class PetController extends PoppySeedPetsController
     }
 
     /**
-     * remove this route some time later (after 2020-06-07)
-     * @Route("/{pet}/chooseAffectionReward", methods={"POST"}, requirements={"pet"="\d+"})
-     *
-     * keep this one, though :P
      * @Route("/{pet}/chooseAffectionReward/merit", methods={"POST"}, requirements={"pet"="\d+"})
-     *
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function chooseAffectionRewardMerit(
@@ -715,6 +711,71 @@ class PetController extends PoppySeedPetsController
         $em->flush();
 
         return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+    }
+
+    /**
+     * @Route("/{pet}/selfReflection/reconcile", methods={"POST"}, requirements={"pet"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function reconcileWithAnotherPet(
+        Pet $pet, Request $request, ResponseService $responseService, PetRelationshipRepository $petRelationshipRepository,
+        EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        if($user->getId() !== $pet->getOwner()->getId())
+            throw new AccessDeniedHttpException();
+
+        if($pet->getSelfReflectionPoint() < 1)
+            throw new UnprocessableEntityHttpException($pet->getName() . ' does not have any Self-reflection Points remaining.');
+
+        $relationshipId = $request->request->getInt('relationshipId');
+
+        if(!$relationshipId)
+            throw new UnprocessableEntityHttpException('You gotta\' choose a relationship.');
+
+        $relationship = $petRelationshipRepository->find($relationshipId);
+
+        if($relationship->getPet()->getId() !== $pet->getId())
+            throw new NotFoundHttpException();
+
+        if($relationship->getCurrentRelationship() !== RelationshipEnum::BROKE_UP && $relationship->getCurrentRelationship() !== RelationshipEnum::DISLIKE)
+            throw new UnprocessableEntityHttpException('Those pets are totally okay with each other already!');
+
+        $friend = $relationship->getRelationship();
+
+        $otherSide = $petRelationshipRepository->findOneBy([
+            'pet' => $friend,
+            'relationship' => $pet
+        ]);
+
+        if(!$otherSide)
+            throw new \Exception($pet->getName() . ' knows ' . $friend->getName() . ', but not the other way around! This is a terrible bug! Make Ben fix it!');
+
+        $relationship
+            ->setCurrentRelationship(RelationshipEnum::FRIEND)
+            ->setRelationshipGoal(RelationshipEnum::FRIEND)
+        ;
+
+        $responseService->createActivityLog($pet, $pet->getName() . ' and ' . $friend->getName() . ' talked and made up!', 'icons/activity-logs/friend')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
+        ;
+
+        $otherSide
+            ->setCurrentRelationship(RelationshipEnum::FRIEND)
+            ->setRelationshipGoal(RelationshipEnum::FRIEND)
+        ;
+
+        $responseService->createActivityLog($friend, $pet->getName() . ' came over; they talked with ' . $friend->getName() . ', and the two made up!', 'icons/activity-logs/friend')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
+        ;
+
+        $pet->increaseSelfReflectionPoint(-1);
+
+        $em->flush();
+
+        return $responseService->success();
     }
 
     /**

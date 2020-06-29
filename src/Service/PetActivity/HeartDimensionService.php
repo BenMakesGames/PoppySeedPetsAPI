@@ -32,7 +32,7 @@ class HeartDimensionService
     {
         return
             $pet->getAffectionAdventures() < $pet->getAffectionLevel() &&
-            $pet->getAffectionAdventures() < 4
+            $pet->getAffectionAdventures() < 5
         ;
     }
 
@@ -56,6 +56,8 @@ class HeartDimensionService
             case 4:
                 $activityLog = $this->haveDivineVision($pet);
                 break;
+            case 5:
+                //$activityLog = $this->
             default:
                 throw new \Exception('Ben made a bad error! There is no Heart Dimension adventure that ' . $pet->getName() . ' can go on!');
         }
