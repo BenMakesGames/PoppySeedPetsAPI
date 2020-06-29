@@ -116,7 +116,7 @@ class GuildService
             case GuildEnum::TAPESTRIES: return $this->doTapestriesMission($pet);
             case GuildEnum::INNER_SANCTUM: return $this->doInnerSanctumMission($pet);
             case GuildEnum::DWARFCRAFT: return $this->doDwarfcraftMission($pet);
-            case GuildEnum::GIZUBIS_GARDEN: return $this->doGizubisGardenMission($pet);
+            case GuildEnum::GIZUBIS_GARDEN: return $this->gizubisGardenService->doAdventure($pet);
             case GuildEnum::HIGH_IMPACT: return $this->doHighImpactMission($pet);
             case GuildEnum::THE_UNIVERSE_FORGETS: return $this->doTheUniverseForgetsMission($pet);
             case GuildEnum::CORRESPONDENCE: return $this->doCorrespondenceMission($pet);
@@ -262,36 +262,6 @@ class GuildService
         $member->increaseReputation();
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
-
-        return $this->responseService->createActivityLog($pet, $message, '');
-    }
-
-    private function doGizubisGardenMission(Pet $pet): PetActivityLog
-    {
-        $member = $pet->getGuildMembership();
-
-        switch(mt_rand(1, 3))
-        {
-            case 1:
-                $message = $pet->getName() . ' helped one of their seniors tend to ' . $member->getGuild()->getName() . ' gardens.';
-                $skill = PetSkillEnum::NATURE;
-                break;
-            case 2:
-                $message = $pet->getName() . ' helped cook for a ' . $member->getGuild()->getName() . ' feast.';
-                $skill = PetSkillEnum::CRAFTS;
-                break;
-            case 3:
-                $message = $pet->getName() . ' participated in an impromptu ' . $member->getGuild()->getName() . ' jam session.';
-                $skill = PetSkillEnum::MUSIC;
-                break;
-            default:
-                throw new \Exception('Ben poorly-coded a switch statement in a Gizbui\'s Garden guild activity!');
-        }
-
-        $member->increaseReputation();
-
-        $this->petExperienceService->gainExp($pet, 1, [ $skill ]);
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $this->responseService->createActivityLog($pet, $message, '');
