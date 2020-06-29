@@ -32,7 +32,7 @@ class GizubisGardenService
     {
         $member = $pet->getGuildMembership();
 
-        $activity = mt_rand(1, $member->getTitle());
+        $activity = mt_rand(1, $member->getTitle() + 1);
         $activity = NumberFunctions::constrain($activity, 1, 3);
 
         switch($activity)
