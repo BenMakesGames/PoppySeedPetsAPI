@@ -224,7 +224,6 @@ class PetController extends PoppySeedPetsController
 
     /**
      * @Route("/{pet}/relationships", methods={"GET"}, requirements={"pet"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getPetRelationships(
         Pet $pet, ResponseService $responseService, Request $request,
