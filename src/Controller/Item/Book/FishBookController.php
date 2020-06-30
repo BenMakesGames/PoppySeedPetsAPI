@@ -37,6 +37,7 @@ class FishBookController extends PoppySeedPetsItemController
 * Battered, Fried Fish
 * Fermented Fish
 * Fisherman\'s Pie
+* Fish Onigiri
 * Gefilte Fish
 * Grilled Fish
 * Nigiri
@@ -112,6 +113,14 @@ An acquired taste!
 * Fish
 * Onion
 * Carrot (or Corn)
+
+#### Fish Onigiri
+
+* Rice
+* Seaweed
+* Fish
+
+You can substitute Fish with other things, too: Tentacle, Melowatern... experiment!
 
 #### Gefilte Fish
 

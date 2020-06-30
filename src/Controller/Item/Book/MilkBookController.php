@@ -29,6 +29,7 @@ Whatever the circumstances that lead to your overabundance of milk, fret not! Th
 * Chocolate Cream Pie
 * Chocomilk
 * Creamed Corn
+* Eggnog
 * Hakuna Frittata
 * Lassi
 * Melonpan (Melonbun)
@@ -60,6 +61,12 @@ Whatever the circumstances that lead to your overabundance of milk, fret not! Th
 
 * Creamy Milk!
 * Corn
+
+#### Eggnog
+
+* Creamy Milk!
+* Egg
+* Sugar
 
 #### Hakuna Frittata
 

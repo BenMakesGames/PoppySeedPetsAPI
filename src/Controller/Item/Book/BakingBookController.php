@@ -34,6 +34,7 @@ class BakingBookController extends PoppySeedPetsItemController
 
 #### Recipes
 
+* Brownie
 * Chocolate Chip Cookies
 * Donut (Cake)
 * Donut (Yeast)
@@ -72,6 +73,15 @@ Can be found as a byproduct of wine-making. (As an example, you can age some Blu
 Simply grind some Wheat into a fine powder.
 
 ## Recipes
+
+#### Brownie
+
+* Baking Powder
+* Butter
+* Cocoa Powder
+* Egg
+* Sugar
+* Wheat Flour
 
 #### Chocolate Chip Cookies
 
