@@ -76,6 +76,9 @@ class GuildMembership
     public function setGuild(?Guild $guild): self
     {
         $this->guild = $guild;
+        $this->joinedOn = new \DateTimeImmutable();
+        $this->reputation = 0;
+        $this->level = 0;
 
         return $this;
     }
@@ -83,13 +86,6 @@ class GuildMembership
     public function getJoinedOn(): ?\DateTimeImmutable
     {
         return $this->joinedOn;
-    }
-
-    public function setJoinedOn(\DateTimeImmutable $joinedOn): self
-    {
-        $this->joinedOn = $joinedOn;
-
-        return $this;
     }
 
     public function getReputation(): int

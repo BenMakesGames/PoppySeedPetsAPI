@@ -108,4 +108,23 @@ final class ArrayFunctions
 
         return $list;
     }
+
+    public static function max(iterable $values, callable $getter)
+    {
+        $max = null;
+        $maxValue = null;
+
+        foreach($values as $value)
+        {
+            $currentValue = $getter($value);
+
+            if($max === null || $currentValue > $maxValue)
+            {
+                $max = $value;
+                $maxValue = $currentValue;
+            }
+        }
+
+        return $max;
+    }
 }

@@ -4,8 +4,10 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
@@ -57,7 +59,8 @@ class HeartDimensionService
                 $activityLog = $this->haveDivineVision($pet);
                 break;
             case 5:
-                //$activityLog = $this->
+                $activityLog = $this->defeatShadow($pet);
+                break;
             default:
                 throw new \Exception('Ben made a bad error! There is no Heart Dimension adventure that ' . $pet->getName() . ' can go on!');
         }
@@ -223,6 +226,42 @@ class HeartDimensionService
             $pet->setNote($pet->getNote() . "\n\n" . $message);
         else
             $pet->setNote($message);
+
+        return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/heart-dimension');
+    }
+
+    public function defeatShadow(Pet $pet)
+    {
+        $stats = [
+            [
+                'stat' => PetSkillEnum::CRAFTS,
+                'value' => $pet->getCrafts() + $pet->getDexterity(),
+                'message' => 'The shadow drew a sword, but ' . $pet->getName() . ' patched up the mirror before the shadow could escape!',
+            ],
+            [
+                'stat' => PetSkillEnum::BRAWL,
+                'value' => $pet->getBrawl() + $pet->getStrength(),
+                'message' => 'The shadow drew a sword, and leaped out of the mirror! But ' . $pet->getName() . ' struck first, and the shadow dissipated!',
+            ],
+            [
+                'stat' => PetSkillEnum::MUSIC,
+                'value' => $pet->getMusic() + $pet->getIntelligence(),
+                'message' => 'The shadow drew a sword, and leaped out of the mirror! But ' . $pet->getName() . ' sung a song of power, and the shadow dissipated!'
+            ],
+        ];
+
+        $doIt = ArrayFunctions::max($stats, function($v) {
+            return $v['value'];
+        });
+
+        $this->petExperienceService->gainExp($pet, 3, [ $doIt['stat'] ]);
+
+        $message = $pet->getName() . ' saw their cursed reflection in a cracked mirror! ' . $doIt['message'];
+
+        $pet
+            ->increaseSelfReflectionPoint(1)
+            ->incrementAffectionAdventures()
+        ;
 
         return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/heart-dimension');
     }

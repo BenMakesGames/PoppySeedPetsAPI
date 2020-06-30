@@ -62,13 +62,21 @@ class PetRelationshipRepository extends ServiceEntityRepository
         return $qb->getQuery()->execute();
     }
 
-    public function countRelationships(Pet $pet): int
+    public function countRelationships(Pet $pet, ?array $status = null): int
     {
         $qb = $this->createQueryBuilder('r')
             ->select('COUNT(r)')
             ->andWhere('r.pet=:pet')
             ->setParameter('pet', $pet)
         ;
+
+        if($status !== null)
+        {
+            $qb = $qb
+                ->andWhere('r.currentRelationship IN (:currentRelationship)')
+                ->setParameter('currentRelationship', $status)
+            ;
+        }
 
         return (int)$qb->getQuery()->getSingleScalarResult();
     }

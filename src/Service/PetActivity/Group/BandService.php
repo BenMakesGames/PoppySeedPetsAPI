@@ -247,13 +247,13 @@ class BandService
         {
             $changes = new PetChanges($pet);
 
-            $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' collected royalties from ' . $group->getName() . ' sales!');
+            $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' got royalties from ' . $group->getName() . ' sales!');
 
             $pet->increaseEsteem(mt_rand(4, 8));
 
             $activityLog = (new PetActivityLog())
                 ->setPet($pet)
-                ->setEntry($group->getName() . ' collected royalties from ' . $group->getName() . ' sales!')
+                ->setEntry($pet->getName() . ' got royalties from ' . $group->getName() . ' sales!')
                 ->setIcon('items/music/note')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))

@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Guild;
 use App\Entity\Inventory;
 use App\Entity\LunchboxItem;
 use App\Entity\Merit;
@@ -18,6 +19,7 @@ use App\Enum\RelationshipEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
+use App\Repository\GuildRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogRepository;
@@ -31,8 +33,10 @@ use App\Service\Filter\PetRelationshipFilterService;
 use App\Service\InventoryService;
 use App\Service\MeritService;
 use App\Service\PetActivityStatsService;
+use App\Service\PetRelationshipService;
 use App\Service\PetService;
 use App\Service\ResponseService;
+use App\Service\Typeahead\PetRelationshipTypeaheadService;
 use App\Service\Typeahead\PetTypeaheadService;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
@@ -262,6 +266,59 @@ class PetController extends PoppySeedPetsController
             'friends' => $normalizer->normalize($relationships, null, [ 'groups' => SerializationGroupEnum::PET_FRIEND ]),
             'guild' => $normalizer->normalize($pet->getGuildMembership(), null, [ 'groups' => SerializationGroupEnum::PET_GUILD ])
         ]);
+    }
+
+    /**
+     * @Route("/{pet}/selfReflection", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getGuildMembership(
+        Pet $pet, ResponseService $responseService, GuildRepository $guildRepository,
+        PetRelationshipRepository $petRelationshipRepository
+    )
+    {
+        // just to prevent scraping (this endpoint is currently - 2020-06-29 - used only for changing a pet's guild)
+        if($pet->getOwner()->getId() !== $this->getUser()->getId())
+            throw new AccessDeniedHttpException('That pet doesn\'t belong to you.');
+
+        $guildData = array_map(
+            function(Guild $g) {
+                return [
+                    'id' => $g->getId(),
+                    'name' => $g->getName(),
+                ];
+            },
+            $guildRepository->findAll()
+        );
+
+        $numberDisliked = $petRelationshipRepository->countRelationships($pet, [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ]);
+
+        if($numberDisliked <= 5)
+        {
+            $relationships = $petRelationshipRepository->findBy([
+                'pet' => $pet,
+                'currentRelationship' => [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ]
+            ], [], $numberDisliked);
+
+            $troubledRelationships = array_map(
+                function(PetRelationship $r)
+                {
+                    return $r->getRelationship();
+                },
+                $relationships
+            );
+        }
+        else
+            $troubledRelationships = null;
+
+        $data = [
+            'troubledRelationships' => $troubledRelationships,
+            'troubledRelationshipsCount' => $numberDisliked,
+            'membership' => $pet->getGuildMembership(),
+            'guilds' => $guildData,
+        ];
+
+        return $responseService->success($data, [ SerializationGroupEnum::PET_GUILD, SerializationGroupEnum::PET_PUBLIC_PROFILE ]);
     }
 
     /**
@@ -714,12 +771,12 @@ class PetController extends PoppySeedPetsController
     }
 
     /**
-     * @Route("/{pet}/selfReflection/reconcile", methods={"POST"}, requirements={"pet"="\d+"})
+     * @Route("/{pet}/selfReflection/changeGuild", methods={"POST"}, requirements={"pet"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function reconcileWithAnotherPet(
-        Pet $pet, Request $request, ResponseService $responseService, PetRelationshipRepository $petRelationshipRepository,
-        EntityManagerInterface $em
+    public function changeGuild(
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        GuildRepository $guildRepository
     )
     {
         $user = $this->getUser();
@@ -730,14 +787,67 @@ class PetController extends PoppySeedPetsController
         if($pet->getSelfReflectionPoint() < 1)
             throw new UnprocessableEntityHttpException($pet->getName() . ' does not have any Self-reflection Points remaining.');
 
-        $relationshipId = $request->request->getInt('relationshipId');
+        if(!$pet->getGuildMembership())
+            throw new UnprocessableEntityHttpException($pet->getName() . 'isn\'t in a guild!');
 
-        if(!$relationshipId)
-            throw new UnprocessableEntityHttpException('You gotta\' choose a relationship.');
+        $guildId = $request->request->getInt('guildId');
 
-        $relationship = $petRelationshipRepository->find($relationshipId);
+        if(!$guildId)
+            throw new UnprocessableEntityHttpException('You gotta\' choose a guild!');
 
-        if($relationship->getPet()->getId() !== $pet->getId())
+        $guild = $guildRepository->find($guildId);
+
+        if(!$guild)
+            throw new NotFoundHttpException();
+
+        if($pet->getGuildMembership()->getGuild()->getId() === $guild->getId())
+            throw new UnprocessableEntityHttpException($pet->getName() . ' is already a member of ' . $guild->getName() . '...');
+
+        $oldGuildName = $pet->getGuildMembership()->getGuild()->getName();
+
+        $pet->getGuildMembership()
+            ->setGuild($guild)
+        ;
+
+        $pet->increaseSelfReflectionPoint(-1);
+
+        $responseService->createActivityLog($pet, $pet->getName() . ' left ' . $oldGuildName . ', and joined ' . $guild->getName() . '!', '')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
+        ;
+
+        $em->flush();
+
+        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+    }
+
+    /**
+     * @Route("/{pet}/selfReflection/reconcile", methods={"POST"}, requirements={"pet"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function reconcileWithAnotherPet(
+        Pet $pet, Request $request, ResponseService $responseService, PetRelationshipRepository $petRelationshipRepository,
+        EntityManagerInterface $em, PetRelationshipService $petRelationshipService
+    )
+    {
+        $user = $this->getUser();
+
+        if($user->getId() !== $pet->getOwner()->getId())
+            throw new AccessDeniedHttpException();
+
+        if($pet->getSelfReflectionPoint() < 1)
+            throw new UnprocessableEntityHttpException($pet->getName() . ' does not have any Self-reflection Points remaining.');
+
+        $friendId = $request->request->getInt('petId');
+
+        if(!$friendId)
+            throw new UnprocessableEntityHttpException('You gotta\' choose a pet to reconcile with!');
+
+        $relationship = $petRelationshipRepository->findOneBy([
+            'pet' => $pet->getId(),
+            'relationship' => $friendId
+        ]);
+
+        if(!$relationship)
             throw new NotFoundHttpException();
 
         if($relationship->getCurrentRelationship() !== RelationshipEnum::BROKE_UP && $relationship->getCurrentRelationship() !== RelationshipEnum::DISLIKE)
@@ -753,29 +863,37 @@ class PetController extends PoppySeedPetsController
         if(!$otherSide)
             throw new \Exception($pet->getName() . ' knows ' . $friend->getName() . ', but not the other way around! This is a terrible bug! Make Ben fix it!');
 
+        $minimumCommitment = $petRelationshipService->generateInitialCommitment(RelationshipEnum::FRIEND, RelationshipEnum::FRIEND);
+
         $relationship
             ->setCurrentRelationship(RelationshipEnum::FRIEND)
             ->setRelationshipGoal(RelationshipEnum::FRIEND)
+            ->setCommitment(max($relationship->getCommitment(), $minimumCommitment))
         ;
 
         $responseService->createActivityLog($pet, $pet->getName() . ' and ' . $friend->getName() . ' talked and made up!', 'icons/activity-logs/friend')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
+            ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
         ;
 
         $otherSide
             ->setCurrentRelationship(RelationshipEnum::FRIEND)
             ->setRelationshipGoal(RelationshipEnum::FRIEND)
+            ->setCommitment(max($otherSide->getCommitment(), $minimumCommitment))
         ;
 
-        $responseService->createActivityLog($friend, $pet->getName() . ' came over; they talked with ' . $friend->getName() . ', and the two made up!', 'icons/activity-logs/friend')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
+        $friendActivityLog = $responseService->createActivityLog($friend, $pet->getName() . ' came over; they talked with ' . $friend->getName() . ', and the two made up!', 'icons/activity-logs/friend')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
         ;
+
+        // don't show the message "twice"
+        if($pet->getOwner()->getId() === $friend->getOwner()->getId())
+            $friendActivityLog->setViewed();
 
         $pet->increaseSelfReflectionPoint(-1);
 
         $em->flush();
 
-        return $responseService->success();
+        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
     }
 
     /**
@@ -1203,6 +1321,41 @@ class PetController extends PoppySeedPetsController
             $suggestions = $petTypeaheadService->search('name', $request->query->get('search', ''));
 
             return $responseService->success($suggestions, SerializationGroupEnum::MY_PET);
+        }
+        catch(\InvalidArgumentException $e)
+        {
+            throw new UnprocessableEntityHttpException($e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * @Route("/typeahead/troubledRelationships", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function troubledRelationshipsTypeaheadSearch(
+        Request $request, ResponseService $responseService, PetRepository $petRepository,
+        PetRelationshipTypeaheadService $petRelationshipTypeaheadService
+    )
+    {
+        $user = $this->getUser();
+
+        $petId = $request->query->getInt('petId');
+
+        $pet = $petRepository->find($petId);
+
+        if(!$pet || $pet->getOwner()->getId() !== $user->getId())
+            throw new NotFoundHttpException();
+
+        $petRelationshipTypeaheadService->setParameters($pet, [
+            RelationshipEnum::BROKE_UP,
+            RelationshipEnum::DISLIKE
+        ]);
+
+        try
+        {
+            $suggestions = $petRelationshipTypeaheadService->search('name', $request->query->get('search', ''));
+
+            return $responseService->success($suggestions, SerializationGroupEnum::PET_PUBLIC_PROFILE);
         }
         catch(\InvalidArgumentException $e)
         {

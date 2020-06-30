@@ -314,7 +314,7 @@ class PetService
         if(count($foodsEaten) > 0)
         {
             $message = 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.';
-            $icon = '';
+            $icon = 'icons/activity-logs/mangia';
 
             if(count($favorites) > 0)
             {
@@ -878,7 +878,7 @@ class PetService
                     break;
 
                 case SpiritCompanionStarEnum::GEMINI:
-                    $message = $companion->getName() . ' played ' . ArrayFunctions::pick_one([
+                    $message = $pet->getName() . ' played ' . ArrayFunctions::pick_one([
                         'hide-and-go-seek tag',
                         'hacky sack',
                         'soccer',
