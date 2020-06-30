@@ -124,15 +124,31 @@ class BugController extends PoppySeedPetsItemController
                 break;
 
             case 'Line of Ants':
-                if(mt_rand(1, 6) === 6)
+                if($item->getItem()->getName() === 'Ants on a Log')
                 {
-                    $inventoryService->receiveItem('Ant Queen', $user, $user, $user->getName() . ' fed a Line of Ants; as a result, this Queen Ant showed up! (Is this a good thing?)', $inventory->getLocation());
-                    $message = 'Oh? You\'ve attracted an Ant Queen!';
+                    if(mt_rand(1, 6) === 6)
+                    {
+                        $inventoryService->receiveItem('Ant Queen', $user, $user, $user->getName() . ' fed a Line of Ants; as a result, this Queen Ant showed up! (Is this a good thing?)', $inventory->getLocation());
+                        $message = 'As part of a study on cannibalism in other species, you feed the Line of Ants some Ants on a Log. And oh: you\'ve attracted the attention of an Ant Queen! (What a surprising result! What could it mean!?)';
+                    }
+                    else
+                    {
+                        $inventoryService->receiveItem('Line of Ants', $user, $user, $user->getName() . ' fed a Line of Ants; as a result, _these_ ants showed up. (Is this a good thing?)', $inventory->getLocation());
+                        $message = 'As part of a study on cannibalism in other species, you feed the Line of Ants some Ants on a Log. And oh: you\'ve attracted more ants! Interesting... interesting...';
+                    }
                 }
                 else
                 {
-                    $inventoryService->receiveItem('Line of Ants', $user, $user, $user->getName() . ' fed a Line of Ants; as a result, _these_ ants showed up. (Is this a good thing?)', $inventory->getLocation());
-                    $message = 'Oh. You\'ve attracted more ants! (You were hoping for an Ant Queen, but oh well... maybe next time...)';
+                    if(mt_rand(1, 6) === 6)
+                    {
+                        $inventoryService->receiveItem('Ant Queen', $user, $user, $user->getName() . ' fed a Line of Ants; as a result, this Queen Ant showed up! (Is this a good thing?)', $inventory->getLocation());
+                        $message = 'Oh? You\'ve attracted an Ant Queen!';
+                    }
+                    else
+                    {
+                        $inventoryService->receiveItem('Line of Ants', $user, $user, $user->getName() . ' fed a Line of Ants; as a result, _these_ ants showed up. (Is this a good thing?)', $inventory->getLocation());
+                        $message = 'Oh. You\'ve attracted more ants! (You were hoping for an Ant Queen, but oh well... maybe next time...)';
+                    }
                 }
 
                 break;
