@@ -34,6 +34,7 @@ use App\Service\PetActivity\FishingService;
 use App\Service\PetActivity\GatheringService;
 use App\Service\PetActivity\GenericAdventureService;
 use App\Service\PetActivity\GivingTreeGatheringService;
+use App\Service\PetActivity\GuildService;
 use App\Service\PetActivity\HeartDimensionService;
 use App\Service\PetActivity\HuntingService;
 use App\Service\PetActivity\MagicBeanstalkService;
@@ -74,6 +75,7 @@ class PetService
     private $calendarService;
     private $heartDimensionService;
     private $petRelationshipRepository;
+    private $guildService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -86,7 +88,7 @@ class PetService
         PregnancyService $pregnancyService, PetActivityStatsService $petActivityStatsService, PetGroupService $petGroupService,
         PetExperienceService $petExperienceService, DreamingService $dreamingService, MagicBeanstalkService $beanStalkService,
         EasterEggHuntingService $easterEggHuntingService, HeartDimensionService $heartDimensionService,
-        PetRelationshipRepository $petRelationshipRepository
+        PetRelationshipRepository $petRelationshipRepository, GuildService $guildService
     )
     {
         $this->em = $em;
@@ -116,6 +118,7 @@ class PetService
         $this->easterEggHuntingService = $easterEggHuntingService;
         $this->heartDimensionService = $heartDimensionService;
         $this->petRelationshipRepository = $petRelationshipRepository;
+        $this->guildService = $guildService;
     }
 
     /**
@@ -617,6 +620,12 @@ class PetService
         if(mt_rand(1, 4) === 1 && $this->calendarService->isEaster())
         {
             $this->easterEggHuntingService->adventure($pet);
+            return;
+        }
+
+        if($pet->getGuildMembership() && mt_rand(1, 35) === 1)
+        {
+            $this->guildService->doGuildActivity($pet);
             return;
         }
 

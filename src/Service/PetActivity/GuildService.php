@@ -6,6 +6,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\GuildEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
@@ -69,25 +70,48 @@ class GuildService
         $this->timesArrowService = $timesArrowService;
     }
 
-    public function joinGuild(Pet $pet): PetActivityLog
+    public function joinGuildProjectE(Pet $pet): PetActivityLog
     {
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
-        $preferredGuild = [
-            GuildEnum::TIMES_ARROW => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getPerception() + $pet->getSkills()->getScience() + mt_rand(0, 10),
-            GuildEnum::LIGHT_AND_SHADOW => $pet->getSkills()->getPerception() + $pet->getSkills()->getUmbra() + $pet->getSkills()->getIntelligence() + mt_rand(0, 10),
-            GuildEnum::TAPESTRIES => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + ($pet->getSkills()->getUmbra() + $pet->getSkills()->getCrafts()) / 2 + mt_rand(0, 10),
-            GuildEnum::INNER_SANCTUM => $pet->getSkills()->getIntelligence() * 2 + $pet->getSkills()->getPerception() + mt_rand(0, 10),
-            GuildEnum::DWARFCRAFT => $pet->getStrength() + $pet->getStamina() + $pet->getSkills()->getCrafts() + mt_rand(0, 10),
-            GuildEnum::GIZUBIS_GARDEN => ($pet->getExtroverted() + $pet->getSexDrive() + $pet->getPoly() + 1) * 3 + $pet->getSkills()->getNature() / 2 + mt_rand(0, 10),
-            GuildEnum::HIGH_IMPACT => ($pet->getStrength() + $pet->getDexterity() + $pet->getIntelligence() + $pet->getStamina() + $pet->getSkills()->getBrawl() + $pet->getSkills()->getScience()) / 2 + mt_rand(0, 10),
-            GuildEnum::THE_UNIVERSE_FORGETS => $pet->getPerception() + $pet->getIntelligence() + ((1 - $pet->getExtroverted()) * 2 + 1 + $pet->getUmbra()) / 2 + mt_rand(0, 10),
-            GuildEnum::CORRESPONDENCE => $pet->getStamina() + $pet->getStrength() + ($pet->getSkills()->getUmbra() + $pet->getSkills()->getStealth() + $pet->getSkills()->getScience()) / 3 + mt_rand(0, 10),
-        ];
+        return $this->joinGuild(
+            $pet,
+            [
+                GuildEnum::TIMES_ARROW => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getPerception() + $pet->getSkills()->getScience() + mt_rand(0, 10),
+                GuildEnum::TAPESTRIES => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + ($pet->getSkills()->getUmbra() + $pet->getSkills()->getCrafts()) / 2 + mt_rand(0, 10),
+                GuildEnum::INNER_SANCTUM => $pet->getSkills()->getIntelligence() * 2 + $pet->getSkills()->getPerception() + mt_rand(0, 10),
+                GuildEnum::DWARFCRAFT => $pet->getStrength() + $pet->getStamina() + $pet->getSkills()->getCrafts() + mt_rand(0, 10),
+                GuildEnum::HIGH_IMPACT => ($pet->getStrength() + $pet->getDexterity() + $pet->getIntelligence() + $pet->getStamina() + $pet->getSkills()->getBrawl() + $pet->getSkills()->getScience()) / 2 + mt_rand(0, 10),
+                GuildEnum::THE_UNIVERSE_FORGETS => $pet->getPerception() + $pet->getIntelligence() + ((1 - $pet->getExtroverted()) * 2 + 1 + $pet->getUmbra()) / 2 + mt_rand(0, 10),
+                GuildEnum::CORRESPONDENCE => $pet->getStamina() + $pet->getStrength() + ($pet->getSkills()->getUmbra() + $pet->getSkills()->getStealth() + $pet->getSkills()->getScience()) / 3 + mt_rand(0, 10),
+            ],
+            $pet->getName() . ' accessed Project-E, and stumbled upon The Hall of Nine - a meeting place for members of nine major Guilds.'
+        );
+    }
 
-        arsort($preferredGuild);
+    public function joinGuildUmbra(Pet $pet): PetActivityLog
+    {
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
 
-        $guildName = array_key_first($preferredGuild);
+        return $this->joinGuild(
+            $pet,
+            [
+                GuildEnum::LIGHT_AND_SHADOW => $pet->getSkills()->getPerception() + $pet->getSkills()->getUmbra() + $pet->getSkills()->getIntelligence() + mt_rand(0, 10),
+                GuildEnum::TAPESTRIES => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + ($pet->getSkills()->getUmbra() + $pet->getSkills()->getCrafts()) / 2 + mt_rand(0, 10),
+                GuildEnum::INNER_SANCTUM => $pet->getSkills()->getIntelligence() * 2 + $pet->getSkills()->getPerception() + mt_rand(0, 10),
+                GuildEnum::GIZUBIS_GARDEN => ($pet->getExtroverted() + $pet->getSexDrive() + $pet->getPoly() + 1) * 3 + $pet->getSkills()->getNature() / 2 + mt_rand(0, 10),
+                GuildEnum::THE_UNIVERSE_FORGETS => $pet->getPerception() + $pet->getIntelligence() + ((1 - $pet->getExtroverted()) * 2 + 1 + $pet->getUmbra()) / 2 + mt_rand(0, 10),
+                GuildEnum::CORRESPONDENCE => $pet->getStamina() + $pet->getStrength() + ($pet->getSkills()->getUmbra() + $pet->getSkills()->getStealth() + $pet->getSkills()->getScience()) / 3 + mt_rand(0, 10),
+            ],
+            $pet->getName() . ' visited the Library of Fire, and stumbled upon a meeting between members from the nine major Guilds.'
+        );
+    }
+
+    private function joinGuild(Pet $pet, array $possibilities, string $message): PetActivityLog
+    {
+        arsort($possibilities);
+
+        $guildName = array_key_first($possibilities);
 
         $guild = $this->guildRepository->findOneBy([ 'name' => $guildName ]);
 
@@ -96,13 +120,15 @@ class GuildService
 
         $this->em->persist($membership);
 
-        return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, and stumbled upon The Hall of Nine - a meeting place for members of nine major guilds of Project-E. After chatting with a member of ' . $guildName . ' for a while, ' . $pet->getName() . ' decided to join!', '');
+        return $this->responseService->createActivityLog($pet, $message . ' After chatting with a member of ' . $guildName . ' for a while, ' . $pet->getName() . ' decided to join!', '')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+        ;
     }
 
     /**
      * @throws EnumInvalidValueException
      */
-    public function doGuildTraining(Pet $pet): PetActivityLog
+    public function doGuildActivity(Pet $pet): PetActivityLog
     {
         if($pet->getGuildMembership()->getLevel() === 0)
         {
@@ -120,29 +146,6 @@ class GuildService
             case GuildEnum::HIGH_IMPACT: return $this->doHighImpactMission($pet);
             case GuildEnum::THE_UNIVERSE_FORGETS: return $this->doTheUniverseForgetsMission($pet);
             case GuildEnum::CORRESPONDENCE: return $this->doCorrespondenceMission($pet);
-
-            default:
-                throw new EnumInvalidValueException('GuildEnum', $pet->getGuildMembership()->getGuild()->getName());
-                break;
-        }
-    }
-
-    /**
-     * @throws EnumInvalidValueException
-     */
-    public function doGuildActivity(Pet $pet): PetActivityLog
-    {
-        switch($pet->getGuildMembership()->getGuild()->getName())
-        {
-            case GuildEnum::TIMES_ARROW: return $this->timesArrowService->doAdventure($pet);
-            case GuildEnum::LIGHT_AND_SHADOW: return $this->lightAndShadowService->doAdventure($pet);
-            case GuildEnum::TAPESTRIES: return $this->tapestriesService->doAdventure($pet);
-            case GuildEnum::INNER_SANCTUM: return $this->innerSanctumService->doAdventure($pet);
-            case GuildEnum::DWARFCRAFT: return $this->dwarfCraftService->doAdventure($pet);
-            case GuildEnum::GIZUBIS_GARDEN: return $this->gizubisGardenService->doAdventure($pet);
-            case GuildEnum::HIGH_IMPACT: return $this->highImpactService->doAdventure($pet);
-            case GuildEnum::THE_UNIVERSE_FORGETS: return $this->theUniverseForgetsService->doAdventure($pet);
-            case GuildEnum::CORRESPONDENCE: return $this->correspondenceService->doAdventure($pet);
 
             default:
                 throw new EnumInvalidValueException('GuildEnum', $pet->getGuildMembership()->getGuild()->getName());

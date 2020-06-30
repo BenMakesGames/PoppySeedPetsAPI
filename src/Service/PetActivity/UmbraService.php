@@ -26,13 +26,14 @@ class UmbraService
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService
+        TransactionService $transactionService, GuildService $guildService
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
+        $this->guildService = $guildService;
     }
 
     public function adventure(Pet $pet)
@@ -122,10 +123,10 @@ class UmbraService
 
     private function visitLibraryOfFire(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, 'true');
-
         if(mt_rand(1, 10) === 1)
         {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, 'true');
+
             // visit the library's arboretum
 
             if(mt_rand(1, 5) === 1)
@@ -146,8 +147,14 @@ class UmbraService
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
         }
+        else if(mt_rand(1, 3) === 1 && $pet->getGuildMembership() === null)
+        {
+            $activityLog = $this->guildService->joinGuildUmbra($pet);
+        }
         else
         {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, 'true');
+
             // visit a floor of the library and read some books
 
             $floor = mt_rand(8, 414);
