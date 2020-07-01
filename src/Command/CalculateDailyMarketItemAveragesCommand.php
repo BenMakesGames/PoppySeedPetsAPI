@@ -3,6 +3,7 @@ namespace App\Command;
 
 use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -10,11 +11,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CalculateDailyMarketItemAveragesCommand extends Command
 {
     private $em;
+    private $logger;
     /** @var OutputInterface */ private $output;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
     {
         $this->em = $em;
+        $this->logger = $logger;
 
         parent::__construct();
     }
@@ -29,6 +32,8 @@ class CalculateDailyMarketItemAveragesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $startTime = microtime(true);
+
         $this->output = $output;
 
         $averages = $this->em->getConnection()
@@ -82,6 +87,10 @@ class CalculateDailyMarketItemAveragesCommand extends Command
         }
 
         $this->insert($sqlRows);
+
+        $runTime = microtime(true) - $startTime;
+
+        $this->logger->notice('Calculating market averages took ' . round($runTime, 3) . 's.');
 
         $output->writeln('Done!');
     }
