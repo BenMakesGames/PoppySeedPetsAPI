@@ -17,6 +17,7 @@ use App\Service\ParkEvent\JoustingService;
 use App\Service\ParkEvent\KinBallService;
 use App\Service\ParkEvent\TriDChessService;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -32,11 +33,12 @@ class RunParkEventsCommand extends Command
     private $userQuestRepository;
     private $calendarService;
     private $inventoryService;
+    private $logger;
 
     public function __construct(
         KinBallService $kinBallService, PetRepository $petRepository, EntityManagerInterface $em,
         TriDChessService $triDChessService, JoustingService $joustingService, UserQuestRepository $userQuestRepository,
-        CalendarService $calendarService, InventoryService $inventoryService
+        CalendarService $calendarService, InventoryService $inventoryService, LoggerInterface $logger
     )
     {
         $this->kinBallService = $kinBallService;
@@ -47,6 +49,7 @@ class RunParkEventsCommand extends Command
         $this->userQuestRepository = $userQuestRepository;
         $this->calendarService = $calendarService;
         $this->inventoryService = $inventoryService;
+        $this->logger = $logger;
 
         parent::__construct();
     }
@@ -62,6 +65,8 @@ class RunParkEventsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $startTime = microtime(true);
+
         $now = new \DateTimeImmutable();
         $minuteOfTheDay = (int)$now->format('i') + (int)$now->format('h') * 60;
 
@@ -138,8 +143,17 @@ class RunParkEventsCommand extends Command
 
             $this->em->flush();
         }
+
+        $runTime = microtime(true) - $startTime;
+
+        if($parkEvent)
+        {
+            $this->logger->info('Ran park event ' . $parkEvent->getType() . ' with ' . count($parkEvent->getParticipants()) . ' participants. Took ' . round($runTime, 3) . 's.');
+        }
         else
-            $output->writeln('No park event was run.');
+        {
+            $this->logger->info('No park event to run. Took ' . round($runTime, 3) . 's.');
+        }
     }
 
     private function playKinBall(): ?ParkEvent
