@@ -79,7 +79,7 @@ class PetRepository extends ServiceEntityRepository
         $today = new \DateTimeImmutable();
 
         return $this->createQueryBuilder('p')
-            ->join('p.skills', 's')
+            //->join('p.skills', 's')
             ->andWhere('p.parkEventType=:eventType')
             ->andWhere('(p.lastParkEvent<:today OR p.lastParkEvent IS NULL)')
             ->andWhere('p.inDaycare=0')
