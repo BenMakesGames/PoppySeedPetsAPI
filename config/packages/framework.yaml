@@ -16,5 +16,6 @@ framework:
     php_errors:
         log: true
 
-    cache:
-        system: cache.adapter.redis
+    #TODO figure out why this makes prod angry??
+    #cache:
+    #    system: cache.adapter.redis
