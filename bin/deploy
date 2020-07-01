@@ -1,6 +1,9 @@
 #!/bin/sh
 git pull
-composer install
+
+php -r 'opcache_reset();'
+
+composer install --no-dev --optimize-autoloader
 
 # clear all caches
 php bin/console cache:clear --env=prod
