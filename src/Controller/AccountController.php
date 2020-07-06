@@ -180,7 +180,7 @@ class AccountController extends PoppySeedPetsController
 
         $user = $session->getUser();
 
-        if($user->getUnlockedMuseum() === null && $user->getRegisteredOn() <= (new \DateTimeImmutable())->modify('-5 days'))
+        if($user->getUnlockedMuseum() === null && $user->getRegisteredOn() <= (new \DateTimeImmutable())->modify('-3 days'))
             $user->setUnlockedMuseum();
 
         $em->flush();
@@ -266,7 +266,7 @@ class AccountController extends PoppySeedPetsController
     {
         $user = $this->getUser();
 
-        if($user->getUnlockedMuseum() === null && $user->getRegisteredOn() <= (new \DateTimeImmutable())->modify('-5 days'))
+        if($user->getUnlockedMuseum() === null && $user->getRegisteredOn() <= (new \DateTimeImmutable())->modify('-3 days'))
         {
             $user->setUnlockedMuseum();
             $em->flush();

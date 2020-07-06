@@ -1042,6 +1042,13 @@ class Pet
         return $this->affectionLevel;
     }
 
+    public function increaseAffectionLevel(int $amount = 1): self
+    {
+        $this->affectionLevel += $amount;
+
+        return $this;
+    }
+
     public function increaseAffectionPoints(int $amount): self
     {
         $this->affectionPoints += $amount;

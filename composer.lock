@@ -8063,20 +8063,20 @@
         },
         {
             "name": "symfony/web-server-bundle",
-            "version": "v4.4.4",
+            "version": "v4.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/web-server-bundle.git",
-                "reference": "92a37564d8577f01a21e7a77dab2f4fcad32f4ba"
+                "reference": "d617765de8a65d4d42f1b2843c7df36645936216"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/web-server-bundle/zipball/92a37564d8577f01a21e7a77dab2f4fcad32f4ba",
-                "reference": "92a37564d8577f01a21e7a77dab2f4fcad32f4ba",
+                "url": "https://api.github.com/repos/symfony/web-server-bundle/zipball/d617765de8a65d4d42f1b2843c7df36645936216",
+                "reference": "d617765de8a65d4d42f1b2843c7df36645936216",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1.3",
+                "php": ">=7.1.3",
                 "symfony/config": "^3.4|^4.0|^5.0",
                 "symfony/console": "^3.4|^4.0|^5.0",
                 "symfony/dependency-injection": "^3.4|^4.0|^5.0",
@@ -8118,7 +8118,7 @@
             ],
             "description": "Symfony WebServerBundle",
             "homepage": "https://symfony.com",
-            "time": "2020-01-04T13:00:46+00:00"
+            "time": "2020-05-30T18:50:54+00:00"
         }
     ],
     "aliases": [],
