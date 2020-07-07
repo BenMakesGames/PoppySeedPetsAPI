@@ -77,7 +77,7 @@ class Inventory
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"myInventory", "marketItem", "fireplaceFuel", "myGreenhouse"})
+     * @Groups({"myInventory", "marketItem", "fireplaceFuel", "myGreenhouse", "myPet"})
      */
     private $sellPrice;
 

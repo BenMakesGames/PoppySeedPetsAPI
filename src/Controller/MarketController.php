@@ -196,6 +196,9 @@ class MarketController extends PoppySeedPetsController
                 ->setModifiedOn()
             ;
 
+            if($itemToBuy->getLunchboxItem())
+                $em->remove($itemToBuy->getLunchboxItem());
+
             if($itemToBuy->getHolder())
                 $itemToBuy->getHolder()->setTool(null);
 
