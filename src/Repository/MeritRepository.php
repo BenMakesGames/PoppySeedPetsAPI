@@ -26,7 +26,7 @@ class MeritRepository extends ServiceEntityRepository
         MeritEnum::LOLLIGOVORE,
         MeritEnum::HYPERCHROMATIC,
         MeritEnum::DREAMWALKER,
-        MeritEnum::EXTROVERTED,
+        MeritEnum::GREGARIOUS,
         MeritEnum::SHEDS,
         MeritEnum::DARKVISION,
     ];
@@ -37,7 +37,7 @@ class MeritRepository extends ServiceEntityRepository
         MeritEnum::PREHENSILE_TONGUE,
         MeritEnum::LOLLIGOVORE,
         MeritEnum::DREAMWALKER,
-        MeritEnum::EXTROVERTED,
+        MeritEnum::GREGARIOUS,
         MeritEnum::SHEDS,
         MeritEnum::DARKVISION,
     ];

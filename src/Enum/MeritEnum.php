@@ -45,7 +45,7 @@ final class MeritEnum
     public const LOLLIGOVORE = 'Lolligovore'; // bonus from eating tentacles
     public const HYPERCHROMATIC = 'Hyperchromatic'; // randomly changes colors
     public const DREAMWALKER = 'Dreamwalker'; // gets items from dreams
-    public const EXTROVERTED = 'Extroverted'; // can be in up to 4 groups
+    public const GREGARIOUS = 'Gregarious'; // can be in up to 4 groups
     public const SHEDS = 'Sheds';
     public const DARKVISION = 'Darkvision'; // can see in the dark
 

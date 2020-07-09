@@ -1634,7 +1634,7 @@ class Pet
 
     public function getMaximumGroups(): int
     {
-        if($this->hasMerit(MeritEnum::EXTROVERTED))
+        if($this->hasMerit(MeritEnum::GREGARIOUS))
             return 4;
 
         if($this->extroverted <= -1)
