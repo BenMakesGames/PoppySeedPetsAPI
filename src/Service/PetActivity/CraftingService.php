@@ -217,6 +217,9 @@ class CraftingService
                 $possibilities[] = new ActivityCallback($this, 'createDrumpkin', 10);
         }
 
+        if(array_key_exists('Rice Flour', $quantities) && array_key_exists('Potato', $quantities))
+            $possibilities[] = new ActivityCallback($this, 'createRicePaper', 10);
+
         $repairWeight = ($pet->getSmithing() >= 3 || $pet->getCrafts() >= 5) ? 10 : 1;
 
         if(array_key_exists('Rusty Blunderbuss', $quantities))
@@ -365,6 +368,56 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Drumpkin, but couldn\'t get the Plastic thin enough...', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createRicePaper(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            if(mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('Rice Flour', $pet->getOwner(), LocationEnum::HOME, 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Paper, but messed up the Rice Flour :(', '');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Potato', $pet->getOwner(), LocationEnum::HOME, 1);
+                $pet->increaseFood(4);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Paper, but messed up the Potato :( (Not wanting to waste it, ' . $pet->getName() . ' ate the remains...)', '');
+            }
+        }
+        else if($roll >= 15)
+        {
+            $paperCount = 2;
+
+            if($roll >= 20) $paperCount++;
+            if($roll >= 25) $paperCount++;
+
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 55 + $paperCount * 5), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->gainExp($pet, $paperCount, [ PetSkillEnum::CRAFTS ]);
+            $this->inventoryService->loseItem('Rice Flour', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Potato', $pet->getOwner(), LocationEnum::HOME, 1);
+            $pet->increaseEsteem($paperCount * 2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created ' . $paperCount . ' Paper!', 'items/resource/paper')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 5 + $paperCount * 5)
+            ;
+
+            for($i = 0; $i < $paperCount; $i++)
+                $this->inventoryService->petCollectsItem('Paper', $pet, $pet->getName() . ' created this!', $activityLog);
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Paper, but almost wasted the Rice Flour...', 'icons/activity-logs/confused');
         }
     }
 
