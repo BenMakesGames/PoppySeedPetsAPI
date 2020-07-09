@@ -404,9 +404,17 @@ class Pet
         return $this->owner;
     }
 
-    public function setOwner(?User $owner): self
+    public function setOwner(User $owner): self
     {
         $this->owner = $owner;
+
+        foreach($this->getLunchboxItems() as $lunchboxItem)
+        {
+            $lunchboxItem->getInventoryItem()
+                ->setSellPrice(null)
+                ->setOwner($owner)
+            ;
+        }
 
         return $this;
     }

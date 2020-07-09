@@ -398,7 +398,7 @@ class UmbraService
         // @TODO: add more possible encounters
 
         // Agares (a spirit-duke)
-        return $this->responseService->createActivityLog($pet, 'While exploring some ruins in the Umbra, ' . $pet->getName() . ' was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language ' . $pet->getName() . ' didn\'t know. Frustrated, the old man left.', 'icons/activity-logs/confused');
+        return $this->responseService->createActivityLog($pet, 'While exploring some ruins in the Umbra, ' . $pet->getName() . ' was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language ' . $pet->getName() . ' didn\'t know. Frustrated, the old man left.', '');
     }
 
     private function fishingAtRiver(Pet $pet): PetActivityLog
