@@ -31,25 +31,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class FloristController extends PoppySeedPetsController
 {
-    private const FLOWERS_FOR_SALE = [
-        'Agrimony' => 10,
-        'Bird\'s-foot Trefoil' => 10,
-        'Coriander Flower' => 10,
-        'Green Carnation' => 10,
-        'Iris' => 10,
-        'Purple Violet' => 10,
-        'Red Clover' => 10,
-        'Viscaria' => 10,
-        'Witch-hazel' => 10,
-        'Wheat' => 10,
-    ];
-
     /**
-     * @Route("/send", methods={"POST"})
+     * @Route("/buyFlowerbomb", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function send(
-        Request $request, UserRepository $userRepository, InventoryService $inventoryService, ResponseService $responseService,
+    public function buyFlowerbomb(
+        UserRepository $userRepository, InventoryService $inventoryService, ResponseService $responseService,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
     )
     {
@@ -58,35 +45,14 @@ class FloristController extends PoppySeedPetsController
         if($user->getUnlockedFlorist() === null)
             throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
 
-        $flowerName = $request->request->get('flower');
-        $recipientId = $request->request->get('recipient');
-
-        if(!array_key_exists($flowerName, self::FLOWERS_FOR_SALE))
-            throw new UnprocessableEntityHttpException('"I don\'t have that flower available; sorry."');
-
-        $cost = self::FLOWERS_FOR_SALE[$flowerName];
-
-        if($cost > $user->getMoneys())
+        if($user->getMoneys() < 150)
             throw new UnprocessableEntityHttpException('"It seems you don\'t have quite enough moneys."');
 
-        $recipient = $userRepository->find($recipientId);
+        $transactionService->spendMoney($user, 150, 'Purchased a Flowerbomb at The Florist.');
 
-        if(!$recipient)
-            throw new UnprocessableEntityHttpException('"Hm. I don\'t know who that is."');
+        $inventoryService->receiveItem('Flowerbomb', $user, $user, $user->getName() . ' bought this at The Florist\'s.', LocationEnum::HOME, true);
 
-        if($recipient->getId() === $this->getUser()->getId())
-        {
-            $transactionMessage = 'Bought ' . GrammarFunctions::indefiniteArticle($flowerName) . ' ' . $flowerName . ' for yourself at the Florist. Received a Narcissus instead...';
-            $flowerName = 'Narcissus';
-        }
-        else
-            $transactionMessage = 'Bought ' . GrammarFunctions::indefiniteArticle($flowerName) . ' ' . $flowerName . ' for ' . $recipient->getName() . ' at the Florist.';
-
-        $transactionService->spendMoney($user, 10, $transactionMessage);
-
-        $inventoryService->receiveItem($flowerName, $recipient, $user, $user->getName() . ' bought this for you at The Florist\'s.', LocationEnum::HOME);
-
-        $stat = $userStatsRepository->incrementStat($user, UserStatEnum::FLOWERS_PURCHASED);
+        $stat = $userStatsRepository->incrementStat($user, UserStatEnum::FLOWERBOMBS_PURCHASED);
 
         if($stat->getValue() === 1)
             $inventoryService->receiveItem('Book of Flowers', $user, $user, 'This was delivered to you from The Florist\'s.', LocationEnum::HOME, true);
