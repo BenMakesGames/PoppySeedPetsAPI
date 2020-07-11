@@ -48,6 +48,7 @@ class BakingBookController extends PoppySeedPetsItemController
 * Plain Bread
 * Shortbread Cookies
 * Sugar Cookies (World\'s Best!)
+* Sweet Roll
 * Thicc Mints
 
 ## Basic Ingredients
@@ -218,6 +219,17 @@ Or, for a simpler recipe (has a smaller yield):
 * Wheat Flour
 
 If you have Baking Soda and Cream of Tartar lying around, but no Baking Powder, feel free to substitute the Baking Powder here with Baking Soda and Cream of Tartar directly.
+
+#### Sweet Roll
+
+If only there was cinnamon in the game! Alas... you\'ll just have to settle for pure, unadulterated sugar overload.
+
+* Creamy Milk
+* Egg
+* Butter
+* Wheat Flour
+* Sugar
+* Yeast
 
 #### Thicc Mints
 
