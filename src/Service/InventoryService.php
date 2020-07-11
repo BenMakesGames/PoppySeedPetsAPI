@@ -14,6 +14,7 @@ use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class InventoryService
 {
@@ -145,32 +146,6 @@ class InventoryService
         }
 
         return \implode(',', $items);
-    }
-
-    /**
-     * @param Inventory[] $inventory
-     * @return ItemQuantity[]
-     */
-    public function buildQuantitiesFromInventory($inventory)
-    {
-        /** @var ItemQuantity[] $quantities */
-        $quantities = [];
-
-        foreach($inventory as $i)
-        {
-            $item = $i->getItem();
-
-            if(array_key_exists($item->getId(), $quantities))
-                $quantities[$item->getId()]->quantity++;
-            else
-            {
-                $quantities[$item->getId()] = new ItemQuantity();
-                $quantities[$item->getId()]->item = $item;
-                $quantities[$item->getId()]->quantity = 1;
-            }
-        }
-
-        return array_values($quantities);
     }
 
     /**
@@ -384,5 +359,23 @@ class InventoryService
         }
 
         return $food;
+    }
+
+    /**
+     * @param Inventory[] $inventory
+     */
+    public function inventoryInSameLocation(array $inventory): bool
+    {
+        if(count($inventory) === 0)
+            throw new \InvalidArgumentException('$inventory must contain at least 1 element.');
+
+        if(count($inventory) === 1)
+            return true;
+
+        $locationOfFirstItem = $inventory[0]->getLocation();
+
+        return ArrayFunctions::all($inventory, function(Inventory $i) use($locationOfFirstItem) {
+            return $i->getLocation() === $locationOfFirstItem;
+        });
     }
 }

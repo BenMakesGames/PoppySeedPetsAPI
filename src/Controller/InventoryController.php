@@ -14,6 +14,7 @@ use App\Repository\RecipeRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\CalendarService;
+use App\Service\CookingService;
 use App\Service\Filter\InventoryFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -81,8 +82,7 @@ class InventoryController extends PoppySeedPetsController
      */
     public function prepareRecipe(
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
-        RecipeRepository $recipeRepository, InventoryService $inventoryService, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository, KnownRecipesRepository $knownRecipesRepository
+        InventoryService $inventoryService, EntityManagerInterface $em, CookingService $cookingService
     )
     {
         $user = $this->getUser();
@@ -98,57 +98,20 @@ class InventoryController extends PoppySeedPetsController
         if(count($inventory) !== count($inventoryIds))
             throw new UnprocessableEntityHttpException('Some of the items could not be found??');
 
-        $locationOfFirstItem = $inventory[0]->getLocation();
+        if(count($inventory) === 0)
+            throw new UnprocessableEntityHttpException('You gotta\' select at least ONE item!');
 
-        if(count($inventory) > 1)
-        {
-            if(ArrayFunctions::any($inventory, function(Inventory $i) use($locationOfFirstItem) {
-                return $i->getLocation() !== $locationOfFirstItem;
-            }))
-            {
-                throw new UnprocessableEntityHttpException('All of the items must be in the same location.');
-            }
-        }
+        if(!$inventoryService->inventoryInSameLocation($inventory))
+            throw new UnprocessableEntityHttpException('All of the items must be in the same location.');
 
-        $quantities = $inventoryService->buildQuantitiesFromInventory($inventory);
-        $recipe = $recipeRepository->findOneBy([ 'ingredients' => $inventoryService->serializeItemList($quantities) ]);
+        $newInventory = $cookingService->prepareRecipe($user, $inventory);
 
-        if(!$recipe)
-            throw new UnprocessableEntityHttpException('You can\'t make anything with those ingredients.');
-
-        foreach($inventory as $i)
-            $em->remove($i);
-
-        $makes = $inventoryService->deserializeItemList($recipe->getMakes());
-
-        $newInventory = $inventoryService->giveInventory($makes, $user, $user, $user->getName() . ' prepared this.', $locationOfFirstItem);
-
-        $userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING);
-
-        if(
-            $inventoryService->countInventory($user, 'Cooking Buddy', $locationOfFirstItem) > 0 ||
-            $inventoryService->countInventory($user, 'Cooking "Alien"', $locationOfFirstItem) > 0
-        )
-        {
-            $alreadyKnownRecipe = $knownRecipesRepository->findOneBy([
-                'user' => $user,
-                'recipe' => $recipe
-            ]);
-
-            if(!$alreadyKnownRecipe)
-            {
-                $knownRecipe = (new KnownRecipes())
-                    ->setUser($user)
-                    ->setRecipe($recipe)
-                ;
-
-                $em->persist($knownRecipe);
-
-                $userStatsRepository->incrementStat($user, UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY);
-            }
-        }
-
+        // do this before checking if anything was made
+        // because if NOTHING was made, a record in "RecipeAttempted" was made :P
         $em->flush();
+
+        if($newInventory === null)
+            throw new UnprocessableEntityHttpException('You can\'t make anything with those ingredients.');
 
         return $responseService->success($newInventory, SerializationGroupEnum::MY_INVENTORY);
     }
