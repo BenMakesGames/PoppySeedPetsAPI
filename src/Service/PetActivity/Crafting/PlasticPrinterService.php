@@ -215,7 +215,8 @@ class PlasticPrinterService
             'Small Plastic Bucket',
             'Plastic Shovel',
             'Egg Carton',
-            'Ruler'
+            'Ruler',
+            'Plastic Boomerang',
         ]);
 
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts());

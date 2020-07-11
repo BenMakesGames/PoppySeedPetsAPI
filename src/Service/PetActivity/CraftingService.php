@@ -165,6 +165,9 @@ class CraftingService
         if(array_key_exists('Crooked Fishing Rod', $quantities) && array_key_exists('Yellow Dye', $quantities) && array_key_exists('Green Dye', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createPaintedFishingRod', 10);
 
+        if(array_key_exists('Plastic Boomerang', $quantities) && array_key_exists('Quinacridone Magenta Dye', $quantities))
+            $possibilities[] = new ActivityCallback($this, 'createPaintedBoomerang', 10);
+
         if(array_key_exists('Yellow Dye', $quantities))
         {
             if(array_key_exists('Plastic Idol', $quantities))
@@ -1156,9 +1159,6 @@ class CraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createPaintedFishingRod(Pet $pet): PetActivityLog
     {
         $this->petExperienceService->spendTime($pet, mt_rand(45, 90), PetActivityStatEnum::CRAFT, true);
@@ -1172,9 +1172,18 @@ class CraftingService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
+    private function createPaintedBoomerang(Pet $pet): PetActivityLog
+    {
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 90), PetActivityStatEnum::CRAFT, true);
+        $this->inventoryService->loseItem('Plastic Boomerang', $pet->getOwner(), LocationEnum::HOME, 1);
+        $this->inventoryService->loseItem('Quinacridone Magenta Dye', $pet->getOwner(), LocationEnum::HOME, 1);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+        $pet->increaseEsteem(3);
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Painted Boomerang.', '');
+        $this->inventoryService->petCollectsItem('Painted Boomerang', $pet, $pet->getName() . ' painted this, using Quinacridone Magenta Dye.', $activityLog);
+        return $activityLog;
+    }
+
     private function createGoldIdol(Pet $pet): PetActivityLog
     {
         $this->petExperienceService->spendTime($pet, mt_rand(45, 90), PetActivityStatEnum::CRAFT, true);
