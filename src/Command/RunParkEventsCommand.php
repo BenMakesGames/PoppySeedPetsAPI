@@ -4,11 +4,15 @@ namespace App\Command;
 
 use App\Entity\ParkEvent;
 use App\Entity\Pet;
+use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\TriDChessParticipant;
+use App\Model\PetChanges;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\CalendarService;
@@ -113,6 +117,41 @@ class RunParkEventsCommand extends Command
                     ->setLastParkEvent()
                     ->setParkEventType(null)
                 ;
+
+                if(mt_rand(1, 10) === 1)
+                {
+                    $changes = new PetChanges($pet);
+
+                    $log = (new PetActivityLog())
+                        ->setPet($pet)
+                        ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+                    ;
+
+                    $pet
+                        ->increaseEsteem(mt_rand(2, 4))
+                        ->increaseSafety(mt_rand(2, 4))
+                    ;
+
+                    $balloon = $this->inventoryService->petCollectsRandomBalloon($pet, $pet->getName() . ' found this while participating in a ' . $parkEvent->getType() . ' event!', $log);
+
+                    $log
+                        ->setEntry($pet->getName() . ' found a ' . $balloon->getItem()->getName() . ' while participating in a ' . $parkEvent->getType() . ' event!')
+                        ->setChanges($changes->compare($pet))
+                    ;
+
+                    $this->em->persist($log);
+
+                    if(!$pet->getTool())
+                    {
+                        $pet->setTool($balloon);
+                        $balloon->setLocation(LocationEnum::WARDROBE);
+                    }
+                    else if(!$pet->getHat() && $pet->hasMerit(MeritEnum::BEHATTED))
+                    {
+                        $pet->setHat($balloon);
+                        $balloon->setLocation(LocationEnum::WARDROBE);
+                    }
+                }
 
                 if($this->calendarService->isPSPBirthday())
                 {

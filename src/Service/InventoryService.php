@@ -180,6 +180,20 @@ class InventoryService
         return $inventory;
     }
 
+    public function petCollectsRandomBalloon(Pet $pet, string $message, ?PetActivityLog $log)
+    {
+        $balloons = [
+            'Red Balloon',
+            'Orange Balloon',
+            'Yellow Balloon',
+            'Green Balloon',
+            'Blue Balloon',
+            'Purple Balloon',
+        ];
+
+        return $this->petCollectsItem(ArrayFunctions::pick_one($balloons), $pet, $message, $log);
+    }
+
     /**
      * @param Item|string $item
      */
