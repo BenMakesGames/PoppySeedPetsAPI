@@ -43,7 +43,7 @@ If you have raw Wheat, it can be prepared alone to get Wheat Flour!
 
 #### Fruit Juice (and Pectin)
 
-Prepare a Red, Orange, Carrot (or other fruit or veggie high in Pectin) to create juice, and get a bit of Pectin on the side!
+Prepare either a Red, Orange, Carrot, or other fruit or veggie high in Pectin, to create juice (and get a bit of Pectin on the side!)
 
 #### Candy
 
