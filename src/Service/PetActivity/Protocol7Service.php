@@ -76,10 +76,12 @@ class Protocol7Service
                 break;
             case 12:
             case 13:
-            case 14:
                 $activityLog = $this->foundProtectedSector($pet);
                 break;
+            case 14:
             case 15:
+                $activityLog = $this->watchOnlineVideo($pet);
+                break;
             case 16:
             case 17:
                 $activityLog = $this->exploreInsecurePort($pet);
@@ -236,6 +238,41 @@ class Protocol7Service
             $pet->increaseSafety(-1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to access a protected sector of Project-E, but couldn\'t get elevated permissions.', '');
+        }
+    }
+
+    private function watchOnlineVideo(Pet $pet): PetActivityLog
+    {
+        $video = ArrayFunctions::pick_one([
+            [
+                'subject' => 'about fractals',
+                'loot' => [ 'Imaginary Number' ],
+            ],
+            [
+                'subject' => 'about blockchains',
+                'loot' => [ 'Password', 'Cryptocurrency Wallet', 'Cryptocurrency Wallet' ],
+            ]
+        ]);
+
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+
+        if($roll >= 16)
+        {
+            $loot = ArrayFunctions::pick_one($video['loot']);
+
+            $pet->increaseEsteem(2);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' watched a video ' . $video['subject'] . ' in Project-E, and got a ' . $loot . ' out of it.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+            ;
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' got this by watching a video ' . $video['subject'] . ' in Project-E.' , $activityLog);
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' watched a video ' . $video['subject'] . ' in Project-E, but didn\'t really get anything out of it.', 'icons/activity-logs/confused');
         }
     }
 
