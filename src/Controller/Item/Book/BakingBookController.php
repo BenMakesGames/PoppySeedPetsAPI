@@ -218,7 +218,7 @@ Or, for a simpler recipe (has a smaller yield):
 * Sugar
 * Wheat Flour
 
-If you have Baking Soda and Cream of Tartar lying around, but no Baking Powder, feel free to substitute the Baking Powder here with Baking Soda and Cream of Tartar directly.
+If you have Baking Soda and Cream of Tartar lying around, but no Baking Powder, feel free to substitute the Baking Powder here with Baking Soda and Cream of Tartar directly. Just don\'t use Baking Soda alone, or your cookies won\'t rise properly! (They certainly wouldn\'t be the world\'s _best_ sugar cookies!)
 
 #### Sweet Roll
 
