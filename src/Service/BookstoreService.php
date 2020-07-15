@@ -208,7 +208,10 @@ class BookstoreService
                 $bookPrices['Electrical Engineering Textbook'] = 50;
 
             if($itemsDonatedToMuseum->getValue() >= 200)
+            {
                 $bookPrices['SOUP'] = 25;
+                $bookPrices['The Art of Tofu'] = 25;
+            }
         }
 
         if($user->getGreenhouse() && $user->getGreenhouse()->getMaxPlants() > 6)
