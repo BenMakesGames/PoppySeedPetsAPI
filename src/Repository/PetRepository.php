@@ -52,7 +52,9 @@ class PetRepository extends ServiceEntityRepository
 
         return $this->createQueryBuilder('p')
             ->andWhere('p.mom IN (:petParents) OR p.dad IN (:petParents)')
+            ->andWhere('p.id != :pet')
             ->setParameter('petParents', array_map(function(Pet $p) { return $p->getId(); }, $parents))
+            ->setParameter('pet', $pet->getId())
             ->getQuery()
             ->getResult()
         ;
