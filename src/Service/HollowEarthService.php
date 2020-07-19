@@ -4,14 +4,11 @@ namespace App\Service;
 use App\Entity\HollowEarthPlayer;
 use App\Entity\HollowEarthTile;
 use App\Entity\Inventory;
-use App\Entity\Item;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Enum\EnumInvalidValueException;
-use App\Enum\HollowEarthActionTypeEnum;
 use App\Enum\HollowEarthMoveDirectionEnum;
 use App\Enum\HollowEarthRequiredActionEnum;
-use App\Enum\LocationEnum;
 use App\Model\PetChanges;
 use App\Repository\HollowEarthTileRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -215,6 +212,8 @@ class HollowEarthService
             $doLog = true;
         }
 
+        $activityLog = null;
+
         if(array_key_exists('description', $event) && $doLog)
         {
             $description = $this->formatEventDescription($event['description'], $player);
@@ -230,38 +229,31 @@ class HollowEarthService
         }
 
         if(array_key_exists('receiveItems', $event))
-        {
-            if(is_array($event['receiveItems']))
-            {
-                foreach($event['receiveItems'] as $itemName)
-                    $this->inventoryService->receiveItem($itemName, $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);
-            }
-            else
-                $this->inventoryService->receiveItem($event['receiveItems'], $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);
-        }
+            $this->receiveItems($player, $event['receiveItems'], $activityLog);
 
         // because I'm likely to screw up and forget to make it plural:
         if(array_key_exists('receiveItem', $event))
-        {
-            if(is_array($event['receiveItem']))
-            {
-                foreach($event['receiveItem'] as $itemName)
-                    $this->inventoryService->receiveItem($itemName, $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);
-            }
-            else
-                $this->inventoryService->receiveItem($event['receiveItem'], $player->getUser(), $player->getUser(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', LocationEnum::HOME);
-        }
+            $this->receiveItems($player, $event['receiveItem'], $activityLog);
 
         if(array_key_exists('receiveMoneys', $event))
-        {
-            $this->transactionService->getMoney($player->getUser(), $event['receiveMoneys'], 'Received this while exploring the Hollow Earth.');
-        }
+            $this->transactionService->getMoney($player->getUser(), $event['receiveMoneys'], $player->getChosenPet()->getName() . ' got this while exploring the Hollow Earth.');
 
         if(array_key_exists('changeDirection', $event))
             $player->setCurrentDirection($event['changeDirection']);
 
         if(array_key_exists('type', $event))
             $player->setCurrentAction($event);
+    }
+
+    private function receiveItems(HollowEarthPlayer $player, $items, ?PetActivityLog $activityLog)
+    {
+        if(is_array($items))
+        {
+            foreach($items as $itemName)
+                $this->inventoryService->petCollectsItem($itemName, $player->getChosenPet(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', $activityLog);
+        }
+        else
+            $this->inventoryService->petCollectsItem($items, $player->getChosenPet(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', $activityLog);
     }
 
     public function formatEventDescription(string $description, HollowEarthPlayer $player): string
