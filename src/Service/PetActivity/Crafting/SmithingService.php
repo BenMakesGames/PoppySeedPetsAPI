@@ -689,7 +689,7 @@ class SmithingService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(4);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' upgraded an Iron Sword into Dragonscale!', 'items/tool/sword/dragonscale')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' upgraded an Iron Sword into Dragonscale!', 'items/tool/sword/dragon-scale')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
             ;
             $this->inventoryService->petCollectsItem('Dragonscale', $pet, $pet->getName() . ' made this by inlaying Scales into an Iron Sword!', $activityLog);
@@ -725,7 +725,7 @@ class SmithingService
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(4);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' upgraded an Iron Sword into Drakkonscale!', 'items/tool/sword/drakkonscale')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' upgraded an Iron Sword into Drakkonscale!', 'items/tool/sword/drakkon-scale')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
             ;
             $this->inventoryService->petCollectsItem('Drakkonscale', $pet, $pet->getName() . ' made this by inlaying Dark Scales into an Iron Sword!', $activityLog);
