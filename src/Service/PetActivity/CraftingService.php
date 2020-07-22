@@ -61,6 +61,9 @@ class CraftingService
             $possibilities[] = new ActivityCallback($this, 'spinFluff', 10);
         }
 
+        if(array_key_exists('Gold Telescope', $quantities) && array_key_exists('Flying Grappling Hook', $quantities))
+            $possibilities[] = new ActivityCallback($this, 'createLassoscope', 10);
+
         if(array_key_exists('Tea Leaves', $quantities))
         {
             if($quantities['Tea Leaves']->quantity >= 2)
@@ -1122,9 +1125,6 @@ class CraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createVeilPiercer(Pet $pet): PetActivityLog
     {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence());
@@ -1155,6 +1155,49 @@ class CraftingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
             ;
             $this->inventoryService->petCollectsItem('Veil-piercer', $pet, $pet->getName() . ' made this by enchanting a Decorated Spear.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    private function createLassoscope(Pet $pet): PetActivityLog
+    {
+        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getStrength() + $pet->getDexterity());
+
+        if($craftsCheck <= 3)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Lassoscope by roping a Gold Telescope with a Flying Grappling Hook, but the Wings broke off, and flew away!', '');
+
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->inventoryService->loseItem('Flying Grappling Hook', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->petCollectsItem('Grapping Hook', $pet, 'A Flying Grappling Hook lost its wings when ' . $pet->getName() . ' tried to make a Lassoscope. A plain Grappling Hook was all that remained...', $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-1);
+            return $activityLog;
+        }
+        else if($craftsCheck < 20)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to make a Lassoscope, but couldn\'t successfully lasso a Gold Telescope...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Flying Grappling Hook', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Gold Telescope', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(mt_rand(4, 8));
+
+            $message = (mt_rand(1, 10) === 1)
+                ? $pet->getName() . ' made this by lassoing a Gold Telescope with a Flying Grappling Hook. (Now they can safely examine lions!)'
+                : $pet->getName() . ' made this by lassoing a Gold Telescope with a Flying Grappling Hook.'
+            ;
+
+            $activityLog = $this->responseService->createActivityLog($pet, $message, '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+            ;
+
+            $this->inventoryService->petCollectsItem('Lassoscope', $pet, $pet->getName() . ' made this by lassoing a Gold Telescope with a Flying Grappling Hook!', $activityLog);
             return $activityLog;
         }
     }
