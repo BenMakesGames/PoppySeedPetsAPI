@@ -293,6 +293,7 @@ class UmbraService
     private function found2Moneys(Pet $pet): PetActivityLog
     {
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
 
         if($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 80) === 1)
         {
