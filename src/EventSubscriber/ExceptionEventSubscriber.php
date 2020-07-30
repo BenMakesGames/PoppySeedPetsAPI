@@ -66,10 +66,12 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
         {
             $event->setResponse($this->responseService->error(
                 Response::HTTP_INTERNAL_SERVER_ERROR,
-                [ $e->getMessage() ]
+                [ 'A nasty error occurred! Don\'t worry: Ben has been e-mailed... he\'ll get in sorted. In the meanwhile, just try reloading and trying again!' ]
             ));
 
-            $this->logger->critical($e->getMessage(), $e->getTrace());
+            $throwable = $event->getThrowable();
+
+            $this->logger->critical($throwable->getMessage(), [ 'trace' => $throwable->getTraceAsString() ]);
         }
     }
 }
