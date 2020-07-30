@@ -4,6 +4,7 @@ namespace App\EventSubscriber;
 use App\Functions\StringFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityNotFoundException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -13,13 +14,15 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class ExceptionEventSubscriber implements EventSubscriberInterface
 {
+    private $logger;
     private $responseService;
     private $kernel;
 
-    public function __construct(ResponseService $responseService, KernelInterface $kernel)
+    public function __construct(ResponseService $responseService, KernelInterface $kernel, LoggerInterface $logger)
     {
         $this->responseService = $responseService;
         $this->kernel = $kernel;
+        $this->logger = $logger;
     }
 
     public static function getSubscribedEvents()
@@ -65,6 +68,8 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
                 Response::HTTP_INTERNAL_SERVER_ERROR,
                 [ $e->getMessage() ]
             ));
+
+            $this->logger->critical($e->getMessage(), $e->getTrace());
         }
     }
 }
