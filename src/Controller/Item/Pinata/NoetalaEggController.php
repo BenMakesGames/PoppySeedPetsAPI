@@ -51,6 +51,6 @@ class NoetalaEggController extends PoppySeedPetsItemController
         if($includeFluff)
             return $responseService->itemActionSuccess('You pull the clinging fibers off of the Noetala Egg, and break it open; a strange, purple liquid oozes out. Your reward? ' . $loot . '. (Well, and some Fluff from the fibers.)' , [ 'reloadInventory' => true, 'itemDeleted' => true ]);
         else
-            return $responseService->itemActionSuccess('You break the egg open; a strange, purple liquid oozes out. Your reward? ' . $loot . '. (Well, and some Fluff from the fibers.)' , [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess('You break the egg open; a strange, purple liquid oozes out. Your reward? ' . $loot . '.' , [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
 }
