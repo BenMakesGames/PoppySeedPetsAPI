@@ -49,6 +49,24 @@ class PetRelationshipRepository extends ServiceEntityRepository
     /**
      * @return PetRelationship[]
      */
+    public function getDislikedRelationshipsWithCommitment(Pet $pet): array
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->leftJoin('r.pet', 'pet')
+            ->leftJoin('r.relationship', 'friend')
+            ->andWhere('r.currentRelationship IN (:dislikedRelationshipTypes)')
+            ->andWhere('r.commitment>0')
+            ->andWhere('pet.id=:petId')
+            ->setParameter('petId', $pet->getId())
+            ->setParameter('dislikedRelationshipTypes', [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ])
+        ;
+
+        return $qb->getQuery()->execute();
+    }
+
+    /**
+     * @return PetRelationship[]
+     */
     public function getFriends(Pet $pet): array
     {
         $qb = $this->createQueryBuilder('r')

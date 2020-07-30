@@ -771,6 +771,11 @@ class PetService
         // hang out with selected pet
         $this->hangOutWithOtherPet($chosenRelationship, $friendRelationship);
 
+        $dislikedRelationships = $this->petRelationshipRepository->getDislikedRelationshipsWithCommitment($pet);
+
+        foreach($dislikedRelationships as $r)
+            $r->increaseCommitment(-2);
+
         return true;
     }
 
