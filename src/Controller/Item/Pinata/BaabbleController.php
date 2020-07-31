@@ -134,10 +134,10 @@ class BaabbleController extends PoppySeedPetsItemController
 
         $items = [];
 
-        $lameThings = mt_rand(3, 11);
+        $lameThings = mt_rand(4, 14);
         $okayThings = mt_rand(10, 18);
         $goodThings = mt_rand(0, 9);
-        $rareThings = mt_rand(1, 3);
+        $rareThings = 1;
 
         for($i = 0; $i < $lameThings; $i++)
             $items[] = ArrayFunctions::pick_one(self::LAME_SHIT);
@@ -191,11 +191,11 @@ class BaabbleController extends PoppySeedPetsItemController
 
         $items = [];
 
-        $lameThings = mt_rand(3, 13);
+        $lameThings = mt_rand(4, 14);
         $okayThings = mt_rand(6, 16);
-        $goodThings = mt_rand(0, 10);
+        $goodThings = mt_rand(0, 12);
         $weirdThings = mt_rand(0, 10);
-        $rareThings = mt_rand(2, 8);
+        $rareThings = mt_rand(1, 5);
 
         for($i = 0; $i < $lameThings; $i++)
             $items[] = ArrayFunctions::pick_one(self::LAME_SHIT);
@@ -251,11 +251,11 @@ class BaabbleController extends PoppySeedPetsItemController
 
         $items = [];
 
-        $lameThings = mt_rand(0, 8);
-        $okayThings = mt_rand(4, 14);
-        $goodThings = mt_rand(4, 14);
+        $lameThings = mt_rand(0, 12);
+        $okayThings = mt_rand(4, 16);
+        $goodThings = mt_rand(4, 16);
         $weirdThings = mt_rand(4, 14);
-        $rareThings = mt_rand(4, 14);
+        $rareThings = mt_rand(3, 7);
 
         for($i = 0; $i < $lameThings; $i++)
             $items[] = ArrayFunctions::pick_one(self::LAME_SHIT);
