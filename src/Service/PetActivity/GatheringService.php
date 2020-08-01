@@ -9,6 +9,8 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\DateFunctions;
+use App\Functions\GrammarFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
@@ -544,10 +546,56 @@ class GatheringService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function foundMicroJungle(Pet $pet): PetActivityLog
+    {
+        if(DateFunctions::moonPhase(new \DateTimeImmutable()))
+            $activityLog = $this->encounterNangTani($pet);
+        else
+            $activityLog = $this->doNormalMicroJungle($pet);
+
+        // more chances to get bugs in the jungle!
+        if(mt_rand(1, 25) === 1)
+            $this->inventoryService->petAttractsRandomBug($pet);
+
+        return $activityLog;
+    }
+
+    private function encounterNangTani(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getNature() + $pet->getUmbra());
+        $success = $roll >= 12;
+
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, $success);
+
+        $pet->increaseSafety(mt_rand(2, 4));
+
+        if($success)
+        {
+            $loot = ArrayFunctions::pick_one([
+                'Fishkebab Stew',
+                'Grilled Fish',
+                'Honeydont Ice Cream',
+                'Coconut',
+                'Orange',
+            ]);
+
+            $pet->increaseEsteem(mt_rand(2, 4));
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a lone Banana Tree in the island\'s Micro-Jungle. They left a small offering for Nang Tani... who appeared out of thin air, and gave them ' . GrammarFunctions::indefiniteArticle($loot) . ' ' . $loot . '!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ;
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a lone Banana Tree in the island\'s Micro-Jungle. They left a small offering for Nang Tani, and left.', '');
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+        }
+
+        return $activityLog;
+    }
+
+    private function doNormalMicroJungle(Pet $pet): PetActivityLog
     {
         $possibleLoot = [
             'Naner', 'Naner', 'Orange', 'Orange', 'Cocoa Beans', 'Cocoa Beans', 'Coffee Beans',
@@ -610,10 +658,6 @@ class GatheringService
                     $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and ' . $pet->getName() . ' got a bit light-headed.');
             }
         }
-
-        // more chances to get bugs in the jungle!
-        if(mt_rand(1, 25) === 1)
-            $this->inventoryService->petAttractsRandomBug($pet);
 
         return $activityLog;
     }

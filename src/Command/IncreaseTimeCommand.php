@@ -59,7 +59,7 @@ class IncreaseTimeCommand extends Command
         // delete expired sessions...
         $this->em->getConnection()->executeQuery(
             'DELETE FROM user_session WHERE session_expiration<:now',
-            [ 'now' => (new \DateTimeImmutable())->format('Y-m-d') ]
+            [ 'now' => (new \DateTimeImmutable())->format('Y-m-d H:i:s') ]
         );
 
         // delete old device stats...
