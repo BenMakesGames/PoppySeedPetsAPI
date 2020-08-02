@@ -400,6 +400,8 @@ class FireplaceController extends PoppySeedPetsController
 
         $fireplace = $user->getFireplace();
 
+        $fuelNotUsed = [];
+
         foreach($items as $item)
         {
             // don't feed an item if doing so would waste more than half the item's fuel
@@ -408,9 +410,21 @@ class FireplaceController extends PoppySeedPetsController
                 $fireplace->addHeat($item->getItem()->getFuel());
                 $em->remove($item);
             }
+            else
+            {
+                $fuelNotUsed[] = $item;
+            }
         }
 
         $em->flush();
+
+        if(count($fuelNotUsed) > 0)
+        {
+            $responseService->addFlashMessage((new PetActivityLog())->setEntry(
+                'Your fireplace is burning with OVERWHELMING intensity. The ' . ArrayFunctions::list_nice($fuelNotUsed) . ' ' .
+                (count($fuelNotUsed) == 1 ? 'was' : 'were') . ' not used.'
+            ));
+        }
 
         return $responseService->success($user->getFireplace(), SerializationGroupEnum::MY_FIREPLACE);
     }
