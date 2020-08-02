@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\Fireplace;
 use App\Entity\Inventory;
+use App\Entity\Item;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Enum\LocationEnum;
@@ -389,6 +390,7 @@ class FireplaceController extends PoppySeedPetsController
 
         if(!is_array($itemIds)) $itemIds = [ $itemIds ];
 
+        /** @var Inventory[] $items */
         $items = $inventoryRepository->findBy([
             'id' => $itemIds,
             'owner' => $user->getId(),
@@ -412,7 +414,7 @@ class FireplaceController extends PoppySeedPetsController
             }
             else
             {
-                $fuelNotUsed[] = $item;
+                $fuelNotUsed[] = $item->getItem()->getName();
             }
         }
 
