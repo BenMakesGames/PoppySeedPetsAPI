@@ -421,8 +421,8 @@ class FireplaceController extends PoppySeedPetsController
         if(count($fuelNotUsed) > 0)
         {
             $responseService->addFlashMessage((new PetActivityLog())->setEntry(
-                'Your fireplace is burning with OVERWHELMING intensity. The ' . ArrayFunctions::list_nice($fuelNotUsed) . ' ' .
-                (count($fuelNotUsed) == 1 ? 'was' : 'were') . ' not used.'
+                'The fireplace can only handle so much fire! Adding the ' . ArrayFunctions::list_nice($fuelNotUsed) .
+                ' would be wasteful at this point, so ' . (count($fuelNotUsed) == 1 ? 'it was' : 'they were') . ' not used.'
             ));
         }
 
