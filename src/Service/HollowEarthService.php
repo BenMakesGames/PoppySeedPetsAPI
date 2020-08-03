@@ -223,6 +223,7 @@ class HollowEarthService
                 ->setEntry($description)
                 ->setIcon('')
                 ->setChanges($petChanges->compare($pet))
+                ->setViewed()
             ;
 
             $this->em->persist($activityLog);

@@ -187,6 +187,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
                 ->setPet($pet)
                 ->setEntry($result)
                 ->setChanges($petChanges[$pet->getId()]->compare($pet))
+                ->setViewed()
             ;
 
             $em->persist($activityLog);
