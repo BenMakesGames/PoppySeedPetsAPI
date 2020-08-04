@@ -48,6 +48,7 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
         {
             if($e->getStatusCode() === 470)
             {
+                // @TODO: remove this error message; just return an empty array here:
                 $event->setResponse($this->responseService->error(470, [ 'An EXPECTED error occurred. You have an old version of the game! Please refresh, and try again.' ]));
             }
             else
