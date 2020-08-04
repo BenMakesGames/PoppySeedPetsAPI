@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\DeviceStats;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,6 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class DeviceStatsController extends PoppySeedPetsController
 {
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("", methods={"PUT"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */

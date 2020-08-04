@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Annotations\DoesNotRequireHouseHours;
 use App\Service\ResponseService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class IndexController extends PoppySeedPetsController
 {
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/about")
      */
     public function about(ResponseService $responseService)
@@ -19,11 +21,21 @@ class IndexController extends PoppySeedPetsController
         return $responseService->success([
             'design' => [ 'Ben Hendel-Doying' ],
             'programming' => [ 'Ben Hendel-Doying' ],
-            'art' => [ 'Aileen MacKay', 'Ben Hendel-Doying' ],
+            'art' => [
+                'Aileen MacKay',
+                'Ben Hendel-Doying',
+                'Sabrina Silli',
+                'Hae-Rhee',
+                'TBNRskye',
+                'Moopyloots',
+                'Mothnox',
+                'Vermidia',
+            ],
             'thanks' => [
                 'Hector Lee',
                 'Katie Stanonik',
                 'Mothnox',
+                'Verdale',
                 'pericarditis',
                 'Shirley Farrow',
                 'All my friends in college',

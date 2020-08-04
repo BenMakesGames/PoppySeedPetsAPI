@@ -111,7 +111,7 @@ class PetExperienceService
         if($energy < 0)
             throw new \Exception('Somehow, the game tried to spend negative social energy. This is bad, and Ben should fix it.');
 
-        $pet->spendSocialEnergy($energy);
+        $pet->getHouseTime()->spendSocialEnergy($energy);
     }
 
     /**
@@ -119,7 +119,7 @@ class PetExperienceService
      */
     public function spendTime(Pet $pet, int $time, string $activityStat, ?bool $success)
     {
-        $pet->spendTime($time);
+        $pet->getHouseTime()->spendActivityTime($time);
         $this->petActivityStatsService->logStat($pet, $activityStat, $success, $time);
 
         if($pet->getPregnancy())

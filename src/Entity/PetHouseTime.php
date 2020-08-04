@@ -1,0 +1,131 @@
+<?php
+
+namespace App\Entity;
+
+use App\Functions\NumberFunctions;
+use App\Service\PetExperienceService;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass="App\Repository\PetHouseTimeRepository")
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="activity_time_idx", columns={"activity_time"}),
+ *     @ORM\Index(name="social_energy_idx", columns={"social_energy"}),
+ * })
+ */
+class PetHouseTime
+{
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Pet", inversedBy="houseTime", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $pet;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $activityTime = 60;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $socialEnergy = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $timeSpent = 0;
+
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     */
+    private $lastSocialHangoutAttempt;
+
+    public function __construct()
+    {
+        $this->lastSocialHangoutAttempt = (new \DateTimeImmutable())->modify('-1 day');
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getPet(): ?Pet
+    {
+        return $this->pet;
+    }
+
+    public function setPet(Pet $pet): self
+    {
+        $this->pet = $pet;
+
+        return $this;
+    }
+
+    public function getActivityTime(): ?int
+    {
+        return $this->activityTime;
+    }
+
+    public function setActivityTime(int $activityTime): self
+    {
+        $this->activityTime = $activityTime;
+
+        return $this;
+    }
+
+    public function spendActivityTime(int $amount): self
+    {
+        $this->activityTime -= $amount;
+        $this->timeSpent += $amount;
+
+        return $this;
+    }
+
+    public function getSocialEnergy(): ?int
+    {
+        return $this->socialEnergy;
+    }
+
+    public function setSocialEnergy(int $initialSocialEnergy): self
+    {
+        $this->socialEnergy = $initialSocialEnergy;
+        return $this;
+    }
+
+    public function spendSocialEnergy(int $amount): self
+    {
+        $this->socialEnergy = NumberFunctions::constrain(
+            $this->socialEnergy - $amount,
+            -PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT,
+            PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 5
+        );
+
+        return $this;
+    }
+
+    public function getTimeSpent(): ?int
+    {
+        return $this->timeSpent;
+    }
+
+    public function getLastSocialHangoutAttempt(): ?\DateTimeImmutable
+    {
+        return $this->lastSocialHangoutAttempt;
+    }
+
+    public function setLastSocialHangoutAttempt(): self
+    {
+        $this->lastSocialHangoutAttempt = new \DateTimeImmutable();
+
+        return $this;
+    }
+}

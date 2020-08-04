@@ -25,6 +25,7 @@ use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
+use App\Service\PetFactory;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -39,12 +40,13 @@ class PregnancyService
     private $petSpeciesRepository;
     private $userStatsRepository;
     private $meritRepository;
+    private $petFactory;
 
     public function __construct(
         EntityManagerInterface $em, InventoryService $inventoryService, PetRepository $petRepository,
         ResponseService $responseService, PetExperienceService $petExperienceService,
         UserQuestRepository $userQuestRepository, PetSpeciesRepository $petSpeciesRepository,
-        UserStatsRepository $userStatsRepository, MeritRepository $meritRepository
+        UserStatsRepository $userStatsRepository, MeritRepository $meritRepository, PetFactory $petFactory
     )
     {
         $this->em = $em;
@@ -56,6 +58,7 @@ class PregnancyService
         $this->petSpeciesRepository = $petSpeciesRepository;
         $this->userStatsRepository = $userStatsRepository;
         $this->meritRepository = $meritRepository;
+        $this->petFactory = $petFactory;
     }
 
     public function getPregnant(Pet $pet1, Pet $pet2)
@@ -116,26 +119,20 @@ class PregnancyService
         $user = $pet->getOwner();
         $pregnancy = $pet->getPregnancy();
 
-        $baby = (new Pet())
-            ->setOwner($user)
-            ->setSpecies($pregnancy->getSpecies())
-            ->setColorA($pregnancy->getColorA())
-            ->setColorB($pregnancy->getColorB())
-            ->setMom($pregnancy->getParent())
-            ->setDad($pregnancy->getOtherParent())
-            ->setName($this->combineNames($pregnancy->getParent()->getName(), $pregnancy->getOtherParent()->getName()))
-            ->setFavoriteFlavor(FlavorEnum::getRandomValue())
-            ->addMerit($this->meritRepository->getRandomStartingMerit())
-        ;
+        $name = $this->combineNames($pregnancy->getParent()->getName(), $pregnancy->getOtherParent()->getName());
+
+        $baby = $this->petFactory->createPet(
+            $user,
+            $name,
+            $pregnancy->getSpecies(),
+            $pregnancy->getColorA(),
+            $pregnancy->getColorB(),
+            FlavorEnum::getRandomValue(),
+            $this->meritRepository->getRandomStartingMerit()
+        );
 
         if($pregnancy->getAffection() > 0)
             $baby->increaseAffectionPoints($baby->getAffectionPointsToLevel());
-
-        $babySkills = new PetSkills();
-
-        $this->em->persist($babySkills);
-
-        $baby->setSkills($babySkills);
 
         $this->createParentalRelationships($baby, $pregnancy->getParent(), $pregnancy->getOtherParent());
 
@@ -179,7 +176,6 @@ class PregnancyService
 
         $pet->setPregnancy(null);
 
-        $this->em->persist($baby);
         $this->em->remove($pregnancy);
 
         $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::OTHER, null);

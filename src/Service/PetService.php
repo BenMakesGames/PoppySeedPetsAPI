@@ -344,7 +344,7 @@ class PetService
         if($pet->getInDaycare())
             throw new \InvalidArgumentException('Pets in daycare cannot be interacted with.');
 
-        if($pet->getTime() < 60)
+        if($pet->getHouseTime()->getActivityTime() < 60)
             throw new \InvalidArgumentException('Pet does not have enough Time. (Ben did something horrible; please let him know.)');
 
         $pet->increaseFood(-1);
@@ -671,6 +671,8 @@ class PetService
 
     public function runSocialTime(Pet $pet): bool
     {
+        $pet->getHouseTime()->setLastSocialHangoutAttempt();
+
         if($pet->getFood() + $pet->getAlcohol() + $pet->getJunk() < 0)
             return false;
 
@@ -811,7 +813,7 @@ class PetService
             if(!array_key_exists($r->getRelationship()->getId(), $friendRelationshipsByFriendId))
                 throw new \Exception($r->getPet()->getName() . ' (#' . $r->getPet()->getId() . ') knows ' . $r->getRelationship()->getName() . ' (#' . $r->getRelationship()->getId() . '), but not the other way around! This is a bug, and should never happen! Make Ben fix it!');
 
-            if($r->getRelationship()->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 2)
+            if($r->getRelationship()->getHouseTime()->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 2)
                 return true;
 
             if($friendRelationshipsByFriendId[$r->getRelationship()->getId()]->getCommitment() >= $r->getCommitment())

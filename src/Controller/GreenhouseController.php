@@ -5,6 +5,7 @@ use App\Entity\GreenhousePlant;
 use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\PetHouseTime;
 use App\Entity\PetSkills;
 use App\Enum\BirdBathBirdEnum;
 use App\Enum\FlavorEnum;
@@ -27,6 +28,7 @@ use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\PetActivity\GreenhouseAdventureService;
+use App\Service\PetFactory;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -182,7 +184,8 @@ class GreenhouseController extends PoppySeedPetsController
         GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository, PetRepository $petRepository,
         PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository,
-        UserQuestRepository $userQuestRepository, GreenhouseAdventureService $greenhouseAdventureService
+        UserQuestRepository $userQuestRepository, GreenhouseAdventureService $greenhouseAdventureService,
+        PetFactory $petFactory
     )
     {
         $user = $this->getUser();
@@ -251,8 +254,6 @@ class GreenhouseController extends PoppySeedPetsController
 
                 $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
 
-                $tomateSkills = new PetSkills();
-
                 $colorA = ColorFunctions::tweakColor(ArrayFunctions::pick_one([
                     'FF6622', 'FFCC22', '77FF22', 'FF2222', '7722FF'
                 ]));
@@ -269,21 +270,13 @@ class GreenhouseController extends PoppySeedPetsController
                     'Pomidor', 'Utamatisi'
                 ]);
 
-                $tomate = (new Pet())
-                    ->setOwner($user)
-                    ->setName($tomateName)
-                    ->setSpecies($petSpeciesRepository->findOneBy([ 'name' => 'Tomate' ]))
-                    ->setSkills($tomateSkills)
-                    ->setColorA($colorA)
-                    ->setColorB($colorB)
-                    ->setFavoriteFlavor(FlavorEnum::getRandomValue())
-                    ->setNeeds(mt_rand(10, 12), -9)
-                    ->addMerit($meritRepository->findOneByName(MeritEnum::MOON_BOUND))
-                    ->addMerit($meritRepository->getRandomStartingMerit())
-                ;
+                $species = $petSpeciesRepository->findOneBy([ 'name' => 'Tomate' ]);
 
-                $em->persist($tomateSkills);
-                $em->persist($tomate);
+                $tomate = $petFactory->createPet($user, $tomateName, $species, $colorA, $colorB, FlavorEnum::getRandomValue(), $meritRepository->getRandomStartingMerit());
+
+                $tomate->addMerit($meritRepository->findOneByName(MeritEnum::MOON_BOUND));
+
+                $tomate->setFoodAndSafety(mt_rand(10, 12), -9);
 
                 $em->remove($plant);
 

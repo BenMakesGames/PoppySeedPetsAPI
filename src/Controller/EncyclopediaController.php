@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\Item;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\InventoryRepository;
@@ -28,6 +29,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class EncyclopediaController extends PoppySeedPetsController
 {
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/typeahead/item", methods={"GET"})
      */
     public function typeaheadSearch(
@@ -47,6 +49,7 @@ class EncyclopediaController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/item", methods={"GET"})
      */
     public function itemSearch(Request $request, ItemFilterService $itemFilterService, ResponseService $responseService)
@@ -60,6 +63,7 @@ class EncyclopediaController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/item/{itemName}", methods={"GET"})
      */
     public function getItemByName(string $itemName, ItemRepository $itemRepository, ResponseService $responseService)
@@ -73,6 +77,7 @@ class EncyclopediaController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/species", methods={"GET"})
      */
     public function speciesSearch(Request $request, PetSpeciesFilterService $petSpeciesFilterService, ResponseService $responseService)
@@ -84,6 +89,7 @@ class EncyclopediaController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/species/{speciesName}", methods={"GET"})
      */
     public function getSpeciesByName(string $speciesName, PetSpeciesRepository $petSpeciesRepository, ResponseService $responseService)
@@ -95,7 +101,9 @@ class EncyclopediaController extends PoppySeedPetsController
 
         return $responseService->success($species, SerializationGroupEnum::PET_ENCYCLOPEDIA);
     }
+
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/merit", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */

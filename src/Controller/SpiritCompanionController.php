@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\SpiritCompanion;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\SpiritCompanionFilterService;
@@ -14,6 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class SpiritCompanionController extends PoppySeedPetsController
 {
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/{spiritCompanion}", methods={"GET"}, requirements={"spiritCompanion"="\d+"})
      */
     public function find(SpiritCompanion $spiritCompanion, ResponseService $responseService)
@@ -22,6 +24,7 @@ class SpiritCompanionController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/search", methods={"GET"})
      */
     public function search(

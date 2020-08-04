@@ -15,6 +15,7 @@ use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\AdoptionService;
+use App\Service\PetFactory;
 use App\Service\ProfanityFilterService;
 use App\Service\ResponseService;
 use App\Service\StoryService;
@@ -86,7 +87,7 @@ class PetShelterController extends PoppySeedPetsController
         int $id, PetRepository $petRepository, AdoptionService $adoptionService, Request $request,
         ResponseService $responseService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
         UserQuestRepository $userQuestRepository, TransactionService $transactionService,
-        MeritRepository $meritRepository, ProfanityFilterService $profanityFilterService
+        MeritRepository $meritRepository, ProfanityFilterService $profanityFilterService, PetFactory $petFactory
     )
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
@@ -118,26 +119,16 @@ class PetShelterController extends PoppySeedPetsController
         if(!StringFunctions::isISO88591(str_replace($petToAdopt->name, '', $petName)))
             throw new UnprocessableEntityHttpException('Your pet\'s name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
 
-        $petSkills = new PetSkills();
+        $newPet = $petFactory->createPet(
+            $user, $petName, $petToAdopt->species, $petToAdopt->colorA, $petToAdopt->colorB,
+            FlavorEnum::getRandomValue(),
+            $meritRepository->getRandomAdoptedPetStartingMerit()
+        );
 
-        $em->persist($petSkills);
-
-        $newPet = (new Pet())
-            ->setOwner($user)
-            ->setName($petName)
-            ->setSpecies($petToAdopt->species)
-            ->setColorA($petToAdopt->colorA)
-            ->setColorB($petToAdopt->colorB)
-            ->setFavoriteFlavor(FlavorEnum::getRandomValue())
-            ->setNeeds(mt_rand(10, 12), -9)
-            ->setSkills($petSkills)
-            ->addMerit($meritRepository->getRandomAdoptedPetStartingMerit())
-        ;
+        $newPet->setFoodAndSafety(mt_rand(10, 12), -9);
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
             $newPet->setInDaycare(true);
-
-        $em->persist($newPet);
 
         $transactionService->spendMoney($user, $costToAdopt, 'Adopted a new pet.');
 

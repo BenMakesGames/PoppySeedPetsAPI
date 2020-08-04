@@ -81,9 +81,6 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
         $user->setLastActivity();
         $this->em->flush();
 
-        $this->houseService->run($user);
-        $this->em->flush();
-
         return $user;
     }
 

@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\User;
 use App\Entity\UserFollowing;
 use App\Enum\SerializationGroupEnum;
@@ -22,6 +23,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class FollowingController extends PoppySeedPetsController
 {
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -67,6 +69,7 @@ class FollowingController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -86,6 +89,7 @@ class FollowingController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/{following}", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -117,6 +121,7 @@ class FollowingController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/{following}", methods={"DELETE"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */

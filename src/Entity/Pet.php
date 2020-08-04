@@ -24,8 +24,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Table(indexes={
  *     @ORM\Index(name="park_event_type_idx", columns={"park_event_type"}),
  *     @ORM\Index(name="park_event_order_idx", columns={"park_event_order"}),
- *     @ORM\Index(name="time_idx", columns={"time"}),
- *     @ORM\Index(name="social_energy_idx", columns={"social_energy"}),
  *     @ORM\Index(name="in_daycare_idx", columns={"in_daycare"}),
  *     @ORM\Index(name="name_idx", columns={"name"}),
  * })
@@ -51,16 +49,6 @@ class Pet
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "spiritCompanionPublicProfile", "guildMember"})
      */
     private $name;
-
-    /**
-     * @ORM\Column(type="integer", name="`time`")
-     */
-    private $time = 60;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $timeSpent = 0;
 
     /**
      * @ORM\Column(type="integer")
@@ -345,11 +333,6 @@ class Pet
     private $lunchboxItems;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $socialEnergy = 0;
-
-    /**
      * @ORM\Column(type="smallint")
      */
     private $bonusMaximumFriends;
@@ -360,6 +343,11 @@ class Pet
      */
     private $selfReflectionPoint = 0;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\PetHouseTime", mappedBy="pet", cascade={"persist", "remove"})
+     */
+    private $houseTime;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -369,8 +357,6 @@ class Pet
         $this->statusEffects = new ArrayCollection();
         $this->extroverted = mt_rand(-1, 1);
         $this->bonusMaximumFriends = mt_rand(-2, 2);
-
-        $this->socialEnergy = ceil(PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * (4 + $this->extroverted) / 4);
 
         // 10% poly; 10% flexible; 80% monogamous
         if(mt_rand(1, 10) === 1)
@@ -431,32 +417,7 @@ class Pet
         return $this;
     }
 
-    public function getTime(): int
-    {
-        return $this->time;
-    }
-
-    public function spendTime(int $amount): self
-    {
-        $this->time -= $amount;
-        $this->timeSpent += $amount;
-
-        return $this;
-    }
-
-    public function getTimeSpent(): int
-    {
-        return $this->timeSpent;
-    }
-
-    public function setTimeSpent(int $timeSpent): self
-    {
-        $this->timeSpent = $timeSpent;
-
-        return $this;
-    }
-
-    public function setNeeds(int $food, int $safety): self
+    public function setFoodAndSafety(int $food, int $safety): self
     {
         $this->food = $food;
         $this->safety = $safety;
@@ -1294,12 +1255,12 @@ class Pet
     {
         if($this->getSkills()->getTalent() === null)
         {
-            if($this->timeSpent >= 15000) // 15000 = ~10.4 days of minutes
+            if($this->getHouseTime()->getTimeSpent() >= 15000) // 15000 = ~10.4 days of minutes
                 return 'talent';
         }
         else if($this->getSkills()->getExpertise() === null)
         {
-            if($this->timeSpent >= 150000) // 150000 = 104 days of minutes
+            if($this->getHouseTime()->getTimeSpent() >= 150000) // 150000 = 104 days of minutes
                 return 'expertise';
         }
 
@@ -1764,22 +1725,6 @@ class Pet
         return $this;
     }
 
-    public function getSocialEnergy(): int
-    {
-        return $this->socialEnergy;
-    }
-
-    public function spendSocialEnergy(int $amount): self
-    {
-        $this->socialEnergy = NumberFunctions::constrain(
-            $this->socialEnergy - $amount,
-            -PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT,
-            PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 5
-        );
-
-        return $this;
-    }
-
     public function getBonusMaximumFriends(): ?int
     {
         return $this->bonusMaximumFriends;
@@ -1800,6 +1745,23 @@ class Pet
     public function increaseSelfReflectionPoint(int $amount): self
     {
         $this->selfReflectionPoint += $amount;
+
+        return $this;
+    }
+
+    public function getHouseTime(): ?PetHouseTime
+    {
+        return $this->houseTime;
+    }
+
+    public function setHouseTime(PetHouseTime $houseTime): self
+    {
+        $this->houseTime = $houseTime;
+
+        // set the owning side of the relation if necessary
+        if ($houseTime->getPet() !== $this) {
+            $houseTime->setPet($this);
+        }
 
         return $this;
     }

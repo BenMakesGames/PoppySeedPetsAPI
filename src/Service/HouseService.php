@@ -34,9 +34,32 @@ class HouseService
         $this->em = $em;
     }
 
+    public function needsToBeRun(User $user)
+    {
+        $petsWithTime = (int)$this->petRepository->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->join('p.houseTime', 'ht')
+            ->andWhere('p.owner=:user')
+            ->andWhere('(ht.activityTime>=60 OR (ht.socialEnergy>=:minimumSocialEnergy AND ht.lastSocialHangoutAttempt<:fifteenMinutesAgo))')
+            ->andWhere('p.inDaycare=0')
+            ->setParameter('user', $user->getId())
+            ->setParameter('minimumSocialEnergy', PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
+            ->setParameter('fifteenMinutesAgo', (new \DateTimeImmutable())->modify('-15 minutes'))
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+
+        return $petsWithTime > 0;
+    }
+
+    public function getHouseRunLock(User $user)
+    {
+        return $this->cache->getItem('User #' . $user->getId() . ' - Running House Hours');
+    }
+
     public function run(User $user)
     {
-        $item = $this->cache->getItem('User #' . $user->getId() . ' - Running House Hours');
+        $item = $this->getHouseRunLock($user);
 
         if($item->isHit())
             return;
@@ -58,11 +81,13 @@ class HouseService
 
         /** @var Pet[] $petsWithTime */
         $petsWithTime = $this->petRepository->createQueryBuilder('p')
+            ->join('p.houseTime', 'ht')
             ->andWhere('p.owner=:user')
-            ->andWhere('(p.time>=60 OR p.socialEnergy>=:minimumSocialEnergy)')
+            ->andWhere('(ht.activityTime>=60 OR (ht.socialEnergy>=:minimumSocialEnergy AND ht.lastSocialHangoutAttempt<:fifteenMinutesAgo))')
             ->andWhere('p.inDaycare=0')
             ->setParameter('user', $user->getId())
             ->setParameter('minimumSocialEnergy', PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
+            ->setParameter('fifteenMinutesAgo', (new \DateTimeImmutable())->modify('-15 minutes'))
             ->getQuery()
             ->execute();
 
@@ -84,12 +109,12 @@ class HouseService
 
         foreach($petsWithTime as $pet)
         {
-            if($pet->getTime() >= 60)
+            if($pet->getHouseTime()->getActivityTime() >= 60)
                 $this->petService->runHour($pet);
 
             $hungOut = false;
 
-            if($pet->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
+            if($pet->getHouseTime()->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
             {
                 $hungOut = $this->petService->runSocialTime($pet);
             }
@@ -108,10 +133,10 @@ class HouseService
         if($pet->getInDaycare())
             return false;
 
-        if($pet->getTime() < 60 && $pet->getSocialEnergy() < PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
+        if($pet->getHouseTime()->getActivityTime() < 60 && $pet->getHouseTime()->getSocialEnergy() < PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
             return false;
 
-        if($pet->getTime() < 60 && !$hungOut)
+        if($pet->getHouseTime()->getActivityTime() < 60 && !$hungOut)
             return false;
 
         return true;

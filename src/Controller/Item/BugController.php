@@ -21,6 +21,7 @@ use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\PetFactory;
 use App\Service\PetService;
 use App\Service\ResponseService;
 use App\Service\StoryService;
@@ -189,7 +190,8 @@ class BugController extends PoppySeedPetsItemController
      */
     public function adopt(
         Inventory $inventory, EntityManagerInterface $em, PetSpeciesRepository $petSpeciesRepository,
-        MeritRepository $meritRepository, PetRepository $petRepository, ResponseService $responseService
+        MeritRepository $meritRepository, PetRepository $petRepository, ResponseService $responseService,
+        PetFactory $petFactory
     )
     {
         $user = $this->getUser();
@@ -234,21 +236,16 @@ class BugController extends PoppySeedPetsItemController
         $colorA = ColorFunctions::HSL2Hex($h1, $s1, $l1);
         $colorB = ColorFunctions::HSL2Hex($h2, $s2, $l2);
 
-        $petSkills = new PetSkills();
-
-        $em->persist($petSkills);
-
-        $newPet = (new Pet())
-            ->setOwner($user)
-            ->setName($petName)
-            ->setSpecies($petSpeciesRepository->find(40))
-            ->setColorA($colorA)
-            ->setColorB($colorB)
-            ->setFavoriteFlavor(FlavorEnum::getRandomValue())
-            ->setNeeds(mt_rand(10, 12), -9)
-            ->setSkills($petSkills)
-            ->addMerit($meritRepository->getRandomAdoptedPetStartingMerit())
-        ;
+        $newPet = $petFactory->createPet(
+            $user,
+            $petName,
+            $petSpeciesRepository->find(40),
+            $colorA,
+            $colorB,
+            FlavorEnum::getRandomValue(),
+            $meritRepository->getRandomAdoptedPetStartingMerit()
+        );
+        $newPet->setFoodAndSafety(mt_rand(10, 12), -9);
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
 

@@ -14,6 +14,7 @@ use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
+use App\Service\PetFactory;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -32,7 +33,7 @@ class EggController extends PoppySeedPetsItemController
     public function hatchWeirdBlueEgg(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
         EntityManagerInterface $em, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository,
-        MeritRepository $meritRepository
+        MeritRepository $meritRepository, PetFactory $petFactory
     )
     {
         $this->validateInventory($inventory, 'egg/weird-blue/#/hatch');
@@ -65,24 +66,27 @@ class EggController extends PoppySeedPetsItemController
 
         $message .= "\n\nAnyway, it's super cute, and... really seems to like you! In fact, it's already named itself after you??";
 
-        $petSkills = new PetSkills();
+        $monkeyName = ArrayFunctions::pick_one([
+            'Fuzzy',
+            'Naner',
+            'Monkey',
+            'Howling',
+            'Climbing',
+            'Tree',
+            'Stinky',
+            'Poppy'
+        ]) . ' ' . $user->getName();
 
-        $em->persist($petSkills);
+        $newPet = $petFactory->createPet(
+            $user, $monkeyName, $starMonkey, '', '', FlavorEnum::getRandomValue(), $meritRepository->getRandomStartingMerit()
+        );
 
-        $newPet = (new Pet())
-            ->setSpecies($starMonkey)
-            ->setFavoriteFlavor(FlavorEnum::getRandomValue())
-            ->setOwner($user)
-            ->setName($user->getName())
+        $newPet
             ->increaseLove(10)
             ->increaseSafety(10)
             ->increaseEsteem(10)
             ->increaseFood(-8)
-            ->setSkills($petSkills)
-            ->addMerit($meritRepository->getRandomStartingMerit())
         ;
-
-        $em->persist($newPet);
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
 
@@ -105,7 +109,7 @@ class EggController extends PoppySeedPetsItemController
     public function openMetalBox(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
         EntityManagerInterface $em, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository,
-        MeritRepository $meritRepository
+        MeritRepository $meritRepository, PetFactory $petFactory
     )
     {
         $this->validateInventory($inventory, 'egg/metalBox/#/open');
@@ -138,24 +142,31 @@ class EggController extends PoppySeedPetsItemController
 
         $message .= "\n\nAnyway, it's dashing around like it's excited to be here; it really seems to like you! In fact, it's already named itself after you??";
 
-        $petSkills = new PetSkills();
+        $newPet = $petFactory->createPet(
+            $user, '', $grabber, '', '', FlavorEnum::getRandomValue(), $meritRepository->getRandomStartingMerit()
+        );
 
-        $em->persist($petSkills);
+        $this->recolorPet($newPet, 0.2);
 
-        $newPet = (new Pet())
-            ->setSpecies($grabber)
-            ->setFavoriteFlavor(FlavorEnum::getRandomValue())
-            ->setOwner($user)
-            ->setName('Metal ' . $user->getName())
+        $robotName = 'Metal ' . $user->getName() . ' ' . ArrayFunctions::pick_one([
+            '2.0',
+            'Beta',
+            'Mk 2',
+            '#' . $newPet->getColorA(),
+            'X',
+            '',
+            'RC1',
+            'SP2'
+        ]);
+
+        $newPet->setName(trim($robotName));
+
+        $newPet
             ->increaseLove(10)
             ->increaseSafety(10)
             ->increaseEsteem(10)
             ->increaseFood(-8)
-            ->setSkills($petSkills)
-            ->addMerit($meritRepository->getRandomStartingMerit())
         ;
-
-        $em->persist($newPet);
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
 
@@ -164,8 +175,6 @@ class EggController extends PoppySeedPetsItemController
             $newPet->setInDaycare(true);
             $message .= "\n\nBut, you know, your house is full, so into the daycare it goes, I guess!";
         }
-
-        $this->recolorPet($newPet, 0.2);
 
         $em->flush();
 

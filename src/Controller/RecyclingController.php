@@ -21,7 +21,7 @@ class RecyclingController extends PoppySeedPetsController
      * @Route("/gamble", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function harvestPlant(
+    public function gamble(
         ResponseService $responseService, EntityManagerInterface $em, InventoryService $inventoryService,
         Request $request
     )

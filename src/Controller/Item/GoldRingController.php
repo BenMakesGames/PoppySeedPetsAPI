@@ -12,6 +12,7 @@ use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Service\InventoryService;
+use App\Service\PetFactory;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -67,7 +68,8 @@ class GoldRingController extends PoppySeedPetsItemController
      */
     public function collect100(
         Inventory $inventory, EntityManagerInterface $em, InventoryService $inventoryService, ResponseService $responseService,
-        PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository, PetRepository $petRepository
+        PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository, PetRepository $petRepository,
+        PetFactory $petFactory
     )
     {
         $this->validateInventory($inventory, 'goldRing/#/collect100');
@@ -114,27 +116,26 @@ class GoldRingController extends PoppySeedPetsItemController
 
             $hedgehog = $petSpeciesRepository->findOneBy([ 'name' => 'Hedgehog' ]);
 
-            $petSkills = new PetSkills();
+            $hedgehogName = ArrayFunctions::pick_one([
+                'Speedy', 'Dash', 'Blur', 'Quickly', 'Knuckles', 'Boots', 'Nitro', 'Catalyst', 'Dodger',
+                'Runner', 'Jumps', 'Spins', 'Miles',
+            ]);
 
-            $em->persist($petSkills);
+            $petColors = ColorFunctions::generateRandomPetColors();
 
-            $newPet = (new Pet())
-                ->setSpecies($hedgehog)
-                ->setFavoriteFlavor(FlavorEnum::getRandomValue())
-                ->setOwner($user)
-                ->setName(ArrayFunctions::pick_one([
-                    'Speedy', 'Dash', 'Blur', 'Quickly', 'Knuckles', 'Boots', 'Nitro', 'Catalyst', 'Dodger',
-                    'Runner', 'Jumps', 'Spins', 'Miles',
-                ]))
+            $newPet = $petFactory->createPet(
+                $user, $hedgehogName, $hedgehog,
+                $petColors[0], $petColors[1],
+                FlavorEnum::getRandomValue(),
+                $meritRepository->getRandomStartingMerit()
+            );
+
+            $newPet
                 ->increaseLove(10)
                 ->increaseSafety(10)
                 ->increaseEsteem(10)
                 ->increaseFood(-8)
-                ->setSkills($petSkills)
-                ->addMerit($meritRepository->getRandomStartingMerit())
             ;
-
-            $em->persist($newPet);
 
             $message = '100 Gold Rings!!! That\'s one extra Hedgehog!';
 
@@ -147,12 +148,6 @@ class GoldRingController extends PoppySeedPetsItemController
                 $newPet->setInDaycare(true);
                 $message .= "\n\nYour house is full, so it dashes off the daycare.";
             }
-
-            $petColors = ColorFunctions::generateRandomPetColors();
-            $newPet
-                ->setColorA($petColors[0])
-                ->setColorB($petColors[1]);
-            ;
 
             $em->flush();
 

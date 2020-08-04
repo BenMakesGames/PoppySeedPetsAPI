@@ -1,9 +1,11 @@
 <?php
 namespace App\Controller;
 
+use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\Inventory;
 use App\Entity\PassphraseResetRequest;
 use App\Entity\Pet;
+use App\Entity\PetHouseTime;
 use App\Entity\PetSkills;
 use App\Entity\User;
 use App\Entity\UserNotificationPreferences;
@@ -25,6 +27,8 @@ use App\Repository\UserStatsRepository;
 use App\Service\Filter\UserFilterService;
 use App\Service\InventoryService;
 use App\Service\PassphraseResetService;
+use App\Service\PetExperienceService;
+use App\Service\PetFactory;
 use App\Service\ProfanityFilterService;
 use App\Service\ResponseService;
 use App\Service\SessionService;
@@ -47,13 +51,14 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 class AccountController extends PoppySeedPetsController
 {
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/register", methods={"POST"})
      */
     public function register(
         Request $request, EntityManagerInterface $em, ResponseService $responseService,
         SessionService $sessionService, UserRepository $userRepository, PetSpeciesRepository $petSpeciesRepository,
         UserPasswordEncoderInterface $userPasswordEncoder, InventoryService $inventoryService,
-        ProfanityFilterService $profanityFilterService, MeritRepository $meritRepository
+        ProfanityFilterService $profanityFilterService, MeritRepository $meritRepository, PetFactory $petFactory
     )
     {
         $petName = $profanityFilterService->filter(trim($request->request->get('petName')));
@@ -119,26 +124,16 @@ class AccountController extends PoppySeedPetsController
 
         $em->persist($user);
 
-        $petSkills = new PetSkills();
+        $favoriteFlavor = ArrayFunctions::pick_one([
+            FlavorEnum::EARTHY, FlavorEnum::FRUITY, FlavorEnum::CREAMY, FlavorEnum::MEATY, FlavorEnum::PLANTY,
+            FlavorEnum::FISHY, FlavorEnum::FATTY,
+        ]);
 
-        $em->persist($petSkills);
+        $startingMerit = $meritRepository->getRandomFirstPetStartingMerit();
 
-        $pet = (new Pet())
-            ->setOwner($user)
-            ->setName($petName)
-            ->setSpecies($species)
-            ->setColorA($petColorA)
-            ->setColorB($petColorB)
-            ->setNeeds(mt_rand(10, 12), -9)
-            ->setSkills($petSkills)
-            ->setFavoriteFlavor(ArrayFunctions::pick_one([
-                FlavorEnum::EARTHY, FlavorEnum::FRUITY, FlavorEnum::CREAMY, FlavorEnum::MEATY, FlavorEnum::PLANTY,
-                FlavorEnum::FISHY, FlavorEnum::FATTY,
-            ]))
-            ->addMerit($meritRepository->getRandomFirstPetStartingMerit())
-        ;
+        $pet = $petFactory->createPet($user, $petName, $species, $petColorA, $petColorB, $favoriteFlavor, $startingMerit);
 
-        $em->persist($pet);
+        $pet->setFoodAndSafety(mt_rand(10, 12), -9);
 
         $inventoryService->receiveItem('Welcome Note', $user, null, 'This Welcome Note was waiting for ' . $user->getName() . ' in their house.', LocationEnum::HOME, true);
 
@@ -154,6 +149,7 @@ class AccountController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/logIn", methods={"POST"})
      */
     public function logIn(
@@ -190,6 +186,7 @@ class AccountController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/updateEmail", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -233,6 +230,7 @@ class AccountController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/updatePassphrase", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -259,6 +257,7 @@ class AccountController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -276,6 +275,7 @@ class AccountController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/search", methods={"GET"})
      */
     public function search(Request $request, UserFilterService $userFilterService, ResponseService $responseService)
@@ -287,6 +287,7 @@ class AccountController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/logOut", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -402,6 +403,7 @@ class AccountController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/requestPassphraseReset", methods={"POST"})
      */
     public function requestPassphraseReset(
@@ -428,6 +430,7 @@ class AccountController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/requestPassphraseReset/{code}", methods={"POST"})
      */
     public function resetPassphrase(
@@ -495,6 +498,7 @@ class AccountController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/typeahead", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -515,6 +519,7 @@ class AccountController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/{user}", methods={"GET"}, requirements={"user"="\d+"})
      */
     public function getProfile(
@@ -540,6 +545,7 @@ class AccountController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/{user}/minimal", methods={"GET"}, requirements={"user"="\d+"})
      */
     public function getProfileMinimal(User $user, ResponseService $responseService)

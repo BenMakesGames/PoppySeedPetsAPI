@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\PushSubscription;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\PushSubscriptionRepository;
@@ -20,6 +21,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class NotificationController extends PoppySeedPetsController
 {
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -55,6 +57,7 @@ class NotificationController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/pushSubscription", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -92,6 +95,7 @@ class NotificationController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/pushSubscription/{subscription}/delete", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */

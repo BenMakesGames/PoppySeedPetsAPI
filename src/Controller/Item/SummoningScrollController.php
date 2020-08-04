@@ -24,6 +24,7 @@ use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
+use App\Service\PetFactory;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -205,7 +206,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
     public function summonSomethingFriendly(
         Inventory $inventory, ResponseService $responseService, PetRepository $petRepository,
         UserRepository $userRepository, UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
-        PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository
+        PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository, PetFactory $petFactory
     )
     {
         $user = $this->getUser();
@@ -220,7 +221,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
         if(mt_rand(1, 19) === 1)
         {
-            $pet = $this->createRandomPetOfSpecies($petSpeciesRepository->findOneBy([ 'name' => 'Sentinel' ]), $petRepository, $em, $meritRepository);
+            $pet = $petFactory->createRandomPetOfSpecies($petSpeciesRepository->findOneBy([ 'name' => 'Sentinel' ]), $petRepository, $em, $meritRepository);
         }
 
         if($pet === null)
@@ -259,52 +260,4 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
         return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true, 'reloadPets' => $numberOfPetsAtHome < $user->getMaxPets() ]);
     }
-
-    private function createRandomPetOfSpecies(
-        PetSpecies $petSpecies, PetRepository $petRepository, EntityManagerInterface $em,
-        MeritRepository $meritRepository
-    ): Pet
-    {
-        $now = new \DateTimeImmutable();
-
-        $petCount = $petRepository->createQueryBuilder('p')
-            ->select('COUNT(p.id)')
-            ->andWhere('p.birthDate<:today')
-            ->setParameter('today', $now)
-            ->getQuery()
-            ->getSingleScalarResult();
-        ;
-
-        $basePet = $petRepository->createQueryBuilder('p')
-            ->andWhere('p.birthDate<:today')
-            ->setParameter('today', $now)
-            ->setMaxResults(1)
-            ->setFirstResult(mt_rand(0, $petCount - 1))
-            ->getQuery()
-            ->getSingleResult()
-        ;
-
-        $colorA = ColorFunctions::tweakColor($basePet->getColorA());
-        $colorB = ColorFunctions::tweakColor($basePet->getColorB());
-
-        $petSkills = new PetSkills();
-
-        $em->persist($petSkills);
-
-        $pet = (new Pet())
-            ->setName(ArrayFunctions::pick_one(PetShelterPet::PET_NAMES))
-            ->setSpecies($petSpecies)
-            ->setColorA($colorA)
-            ->setColorB($colorB)
-            ->setFavoriteFlavor(FlavorEnum::getRandomValue())
-            ->setNeeds(mt_rand(10, 12), -9)
-            ->setSkills($petSkills)
-            ->addMerit($meritRepository->getRandomStartingMerit())
-        ;
-
-        $em->persist($pet);
-
-        return $pet;
-    }
-
 }

@@ -38,15 +38,22 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
 
         if($e instanceof HttpException)
         {
-            if($e->getMessage() && strpos($e->getMessage(), 'App\\Entity\\Inventory') !== false)
-                $message = 'That item doesn\'t exist... weird. Maybe it got used up? Reload and try again.';
+            if($e->getStatusCode() === 470)
+            {
+                $event->setResponse($this->responseService->error(470, []));
+            }
             else
-                $message = $e->getMessage() ? $e->getMessage() : 'Generic 4044444444444444!!1!';
+            {
+                if($e->getMessage() && strpos($e->getMessage(), 'App\\Entity\\Inventory') !== false)
+                    $message = 'That item doesn\'t exist... weird. Maybe it got used up? Reload and try again.';
+                else
+                    $message = $e->getMessage() ? $e->getMessage() : 'Generic 4044444444444444!!1!';
 
-            $event->setResponse($this->responseService->error(
-                Response::HTTP_NOT_FOUND,
-                [ $message ]
-            ));
+                $event->setResponse($this->responseService->error(
+                    Response::HTTP_NOT_FOUND,
+                    [ $message ]
+                ));
+            }
         }
         else if($e instanceof EntityNotFoundException)
         {
@@ -66,7 +73,7 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
         {
             $event->setResponse($this->responseService->error(
                 Response::HTTP_INTERNAL_SERVER_ERROR,
-                [ 'A nasty error occurred! Don\'t worry: Ben has been e-mailed... he\'ll get in sorted. In the meanwhile, just try reloading and trying again!' ]
+                [ 'A nasty error occurred! Don\'t worry: Ben has been e-mailed... he\'ll get it sorted. In the meanwhile, just try reloading and trying again!' ]
             ));
 
             $throwable = $event->getThrowable();

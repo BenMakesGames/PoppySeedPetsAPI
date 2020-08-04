@@ -34,9 +34,9 @@ class IncreaseTimeCommand extends Command
     {
         // pet logic...
         $this->em->getConnection()->executeQuery('
-            LOCK TABLES pet WRITE;
-            UPDATE pet SET `time` = `time` + 1 WHERE in_daycare = 0 AND `time` < 2880;
-            UPDATE pet SET `social_energy` = `social_energy` + 1 WHERE `social_energy` < 2880;
+            LOCK TABLES pet_house_time WRITE, pet WRITE;
+            UPDATE pet_house_time LEFT JOIN pet ON pet_id=pet.id SET `activity_time` = `activity_time` + 1 WHERE in_daycare = 0 AND `activity_time` < 2880;
+            UPDATE pet_house_time SET `social_energy` = `social_energy` + 1 WHERE `social_energy` < 2880;
             UNLOCK TABLES;
         ');
 

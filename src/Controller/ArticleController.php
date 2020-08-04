@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\Article;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\ArticleRepository;
@@ -19,6 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class ArticleController extends PoppySeedPetsController
 {
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/latest", methods={"GET"})
      */
     public function getLatest(ResponseService $responseService, ArticleRepository $articleRepository)
@@ -30,6 +32,7 @@ class ArticleController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("", methods={"GET"})
      */
     public function getAll(Request $request, ResponseService $responseService, ArticleFilterService $articleFilterService)
@@ -41,6 +44,7 @@ class ArticleController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("", methods={"POST"})
      * @IsGranted("ROLE_ADMIN")
      */
@@ -70,6 +74,7 @@ class ArticleController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/{article}", methods={"POST"}, requirements={"article"="\d+"})
      * @IsGranted("ROLE_ADMIN")
      */
@@ -96,6 +101,7 @@ class ArticleController extends PoppySeedPetsController
     }
 
     /**
+     * @DoesNotRequireHouseHours()
      * @Route("/{article}/tweet", methods={"POST"}, requirements={"article"="\d+"})
      * @IsGranted("ROLE_ADMIN")
      */
