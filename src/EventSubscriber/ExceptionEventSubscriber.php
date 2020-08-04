@@ -32,6 +32,14 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
         ];
     }
 
+    private function getGenericErrorCodeString(HttpException $exception)
+    {
+        $errorString = (string)$exception->getStatusCode();
+        $lastChar = substr($errorString, -1);
+
+        return 'Generic ' . $errorString . str_repeat($lastChar, mt_rand(9, 13)) . '!!1!';
+    }
+
     public function onKernelException(ExceptionEvent $event)
     {
         $e = $event->getException();
@@ -44,13 +52,13 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
             }
             else
             {
-                if($e->getMessage() && strpos($e->getMessage(), 'App\\Entity\\Inventory') !== false)
-                    $message = 'That item doesn\'t exist... weird. Maybe it got used up? Reload and try again.';
+                if($e->getMessage())
+                    $message = $e->getMessage();
                 else
-                    $message = $e->getMessage() ? $e->getMessage() : 'Generic 4044444444444444!!1!';
+                    $message = 'Generic ' . $this->getGenericErrorCodeString($e) . ' Reload and try again; if the problem persists, let Ben know, so he can fix it! :P';
 
                 $event->setResponse($this->responseService->error(
-                    Response::HTTP_NOT_FOUND,
+                    $e->getStatusCode(),
                     [ $message ]
                 ));
             }
