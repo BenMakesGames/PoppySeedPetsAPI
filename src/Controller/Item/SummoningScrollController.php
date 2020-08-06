@@ -221,7 +221,10 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
         if(mt_rand(1, 19) === 1)
         {
-            $pet = $petFactory->createRandomPetOfSpecies($petSpeciesRepository->findOneBy([ 'name' => 'Sentinel' ]), $petRepository, $em, $meritRepository);
+            $pet = $petFactory->createRandomPetOfSpecies(
+                $user,
+                $petSpeciesRepository->findOneBy([ 'name' => 'Sentinel' ])
+            );
         }
 
         if($pet === null)
@@ -238,7 +241,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
         {
             $allSpecies = $petSpeciesRepository->findAll();
 
-            $pet = $this->createRandomPetOfSpecies(ArrayFunctions::pick_one($allSpecies), $petRepository, $em, $meritRepository);
+            $pet = $petFactory->createRandomPetOfSpecies($user, ArrayFunctions::pick_one($allSpecies));
         }
 
         $pet->setOwner($user);

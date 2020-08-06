@@ -46,10 +46,21 @@ class MagicHourglassController extends PoppySeedPetsItemController
 
         $userStatsRepository->incrementStat($user, UserStatEnum::MAGIC_HOURGLASSES_SMASHED);
 
-        $em->getConnection()->executeQuery(
-            'UPDATE pet SET `time` = `time` + 600 WHERE owner_id=:ownerId AND in_daycare=0 AND `time` < 4320',
-            [ 'ownerId' => $user->getId() ]
-        );
+        $query = $em->createQuery('
+            UPDATE App\Entity\PetHouseTime AS ht
+            SET ht.activityTime = ht.activityTime + 600
+            WHERE
+                ht.activityTime < 4320
+                AND ht.id IN (
+                    SELECT p.id FROM App\Entity\Pet AS p
+                    WHERE p.owner=:ownerId
+                    AND p.inDaycare=0
+                )
+        ');
+
+        $query->execute([
+            'ownerId' => $user->getId()
+        ]);
 
         $em->flush();
 
