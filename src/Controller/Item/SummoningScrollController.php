@@ -206,7 +206,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
     public function summonSomethingFriendly(
         Inventory $inventory, ResponseService $responseService, PetRepository $petRepository,
         UserRepository $userRepository, UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
-        PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository, PetFactory $petFactory
+        PetSpeciesRepository $petSpeciesRepository, PetFactory $petFactory
     )
     {
         $user = $this->getUser();

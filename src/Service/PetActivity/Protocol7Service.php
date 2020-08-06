@@ -149,9 +149,6 @@ class Protocol7Service
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function foundLayer02(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
@@ -194,9 +191,6 @@ class Protocol7Service
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function foundProtectedSector(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
@@ -258,6 +252,8 @@ class Protocol7Service
 
         if($roll >= 16)
         {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+
             $loot = ArrayFunctions::pick_one($video['loot']);
 
             $pet->increaseEsteem(2);
@@ -271,6 +267,8 @@ class Protocol7Service
         }
         else
         {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' watched a video ' . $video['subject'] . ' in Project-E, but didn\'t really get anything out of it.', 'icons/activity-logs/confused');
         }
