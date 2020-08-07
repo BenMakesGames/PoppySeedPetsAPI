@@ -139,6 +139,6 @@ class Filterer
 
         $paginator = new Paginator($qb->getQuery());
 
-        return count($paginator);
+        return $paginator->count();
     }
 }

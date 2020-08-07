@@ -944,7 +944,7 @@ class PetController extends PoppySeedPetsController
         if($user->getId() !== $pet->getOwner()->getId())
             throw new AccessDeniedHttpException();
 
-        $petActivityLogsFilterService->addDefaultFilter('pet', $pet->getId());
+        $petActivityLogsFilterService->addRequiredFilter('pet', $pet->getId());
 
         return $responseService->success(
             $petActivityLogsFilterService->getResults($request->query),
