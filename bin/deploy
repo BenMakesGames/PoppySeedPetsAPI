@@ -1,5 +1,6 @@
 #!/bin/sh
 git checkout bin/deploy
+
 git pull
 
 php -r 'opcache_reset();'
@@ -24,4 +25,5 @@ sudo php bin/console cache:warmup --env=prod
 
 sudo chmod 777 -R var/cache
 sudo chmod 777 -R var/log
-sudo chmod +x bin/deploy
+
+chmod +x bin/deploy
