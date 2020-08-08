@@ -51,7 +51,7 @@ class MagicHourglassController extends PoppySeedPetsItemController
             SET ht.activityTime = ht.activityTime + 600
             WHERE
                 ht.activityTime < 4320
-                AND ht.id IN (
+                AND ht.pet IN (
                     SELECT p.id FROM App\Entity\Pet AS p
                     WHERE p.owner=:ownerId
                     AND p.inDaycare=0

@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
+use App\Enum\MoonPhaseEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
@@ -548,7 +549,7 @@ class GatheringService
 
     private function foundMicroJungle(Pet $pet): PetActivityLog
     {
-        if(DateFunctions::moonPhase(new \DateTimeImmutable()))
+        if(DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON)
             $activityLog = $this->encounterNangTani($pet);
         else
             $activityLog = $this->doNormalMicroJungle($pet);
