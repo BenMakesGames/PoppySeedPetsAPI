@@ -1188,16 +1188,24 @@ class CraftingService
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(mt_rand(4, 8));
 
-            $message = (mt_rand(1, 10) === 1)
+            $safelyExamineLions = mt_rand(1, 10) === 1;
+
+            $activityLogMessage = $safelyExamineLions
+                ? $pet->getName() . ' made a Lassoscope! (Now they can safely examine lions!)'
+                : $pet->getName() . ' made a Lassoscope!'
+            ;
+
+            $activityLog = $this->responseService->createActivityLog($pet, $activityLogMessage, '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+            ;
+
+            $itemComment = $safelyExamineLions
                 ? $pet->getName() . ' made this by lassoing a Gold Telescope with a Flying Grappling Hook. (Now they can safely examine lions!)'
                 : $pet->getName() . ' made this by lassoing a Gold Telescope with a Flying Grappling Hook.'
             ;
 
-            $activityLog = $this->responseService->createActivityLog($pet, $message, '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
-            ;
+            $this->inventoryService->petCollectsItem('Lassoscope', $pet, $itemComment, $activityLog);
 
-            $this->inventoryService->petCollectsItem('Lassoscope', $pet, $pet->getName() . ' made this by lassoing a Gold Telescope with a Flying Grappling Hook!', $activityLog);
             return $activityLog;
         }
     }
