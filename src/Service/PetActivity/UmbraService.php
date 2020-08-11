@@ -214,6 +214,7 @@ class UmbraService
 
     private function helpedLostSoul(Pet $pet): PetActivityLog
     {
+        $hasEideticMemory = $pet->hasMerit(MeritEnum::EIDETIC_MEMORY);
         $hasRelevantSpirit = $pet->getSpiritCompanion() !== null && $pet->getSpiritCompanion()->getStar() === SpiritCompanionStarEnum::ALTAIR;
 
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getUmbra());
@@ -231,7 +232,34 @@ class UmbraService
 
         $reward = array_rand($rewards);
 
-        if($roll >= 14)
+        if($hasEideticMemory || $hasRelevantSpirit)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            $messageDetail = $hasEideticMemory
+                ? $pet->getName() . ' had already memorize the lay of the land, and pointed the way'
+                : $pet->getName() . ' and ' . $pet->getSpiritCompanion()->getName() . ' were able to point the way'
+            ;
+
+            if(mt_rand(1, 2) === 1)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. ' . $messageDetail . '; the spirit was very thankful, and insisted that ' . $pet->getName() . ' take ' . $rewards[$reward] . ' ' . $reward . '.', '');
+                $this->inventoryService->petCollectsItem($reward, $pet, $pet->getName() . ' received this from a friendly spirit as thanks for helping it navigate the Umbra.', $activityLog);
+                $pet->increaseEsteem(1);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. ' . $messageDetail . '; the spirit was very thankful, and wished ' . $pet->getName() . ' well.', '');
+                $pet->increaseEsteem(4);
+            }
+
+            $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT);
+
+            return $activityLog;
+        }
+        else if($roll >= 14)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
 
@@ -248,28 +276,6 @@ class UmbraService
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. ' . $pet->getName() . ' was able to point the way; the spirit was very thankful, and wished ' . $pet->getName() . ' well.', '');
                 $pet->increaseEsteem(4);
             }
-
-            return $activityLog;
-        }
-        else if($hasRelevantSpirit && $roll >= 11)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
-
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-
-            if(mt_rand(1, 2) === 1)
-            {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. ' . $pet->getName() . ' and ' . $pet->getSpiritCompanion()->getName() . ' were able to point the way; the spirit was very thankful, and insisted that ' . $pet->getName() . ' take ' . $rewards[$reward] . ' ' . $reward . '.', '');
-                $this->inventoryService->petCollectsItem($reward, $pet, $pet->getName() . ' received this from a friendly spirit as thanks for helping it navigate the Umbra.', $activityLog);
-                $pet->increaseEsteem(1);
-            }
-            else
-            {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. ' . $pet->getName() . ' and ' . $pet->getSpiritCompanion()->getName() . ' were able to point the way; the spirit was very thankful, and wished ' . $pet->getName() . ' well.', '');
-                $pet->increaseEsteem(4);
-            }
-
-            $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT);
 
             return $activityLog;
         }

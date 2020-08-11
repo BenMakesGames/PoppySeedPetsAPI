@@ -6,6 +6,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\GuildEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
@@ -117,7 +118,10 @@ class Protocol7Service
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::SCIENCE ]);
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
-        return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, but got lost.', 'icons/activity-logs/confused');
+        if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY) || mt_rand(1, 3) === 1)
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, but got distracted playing a minigame!', 'icons/activity-logs/confused');
+        else
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, but got lost.', 'icons/activity-logs/confused');
     }
 
     /**

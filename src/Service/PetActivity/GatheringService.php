@@ -857,17 +857,10 @@ class GatheringService
      */
     private function foundGypsumCave(Pet $pet): PetActivityLog
     {
+        $eideticMemory = $pet->hasMerit(MeritEnum::EIDETIC_MEMORY);
         $check = mt_rand(1, 20 + $pet->getPerception() + $pet->getStrength() + $pet->getNature() + $pet->getGathering());
 
-        if($check < 15)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::GATHER, false);
-
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored a huge cave, and got lost for a while!', 'icons/activity-logs/confused');
-            $pet->increaseSafety(-4);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
-        }
-        else
+        if($check >= 15 || $eideticMemory)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, true);
 
@@ -887,12 +880,27 @@ class GatheringService
                 $pet->increaseEsteem(4);
             }
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored a huge cave, and found ' . ArrayFunctions::list_nice($loot) . '.', '');
+            if($eideticMemory)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored a huge cave, perfectly memorizing its layout as they went, and found ' . ArrayFunctions::list_nice($loot) . '.', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ;
+            }
+            else
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored a huge cave, and found ' . ArrayFunctions::list_nice($loot) . '.', '');
 
             foreach($loot as $item)
                 $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this in a huge cave.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, max(2, count($loot)), [ PetSkillEnum::NATURE ]);
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::GATHER, false);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored a huge cave, and got lost for a while!', 'icons/activity-logs/confused');
+            $pet->increaseSafety(-4);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
         }
 
         return $activityLog;
