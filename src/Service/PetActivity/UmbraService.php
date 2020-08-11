@@ -712,6 +712,8 @@ class UmbraService
                     ->increaseSafety(-4)
                 ;
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Cursed Garden, but, while looking for food, was attacked and routed by an Angry Spirit.', '');
+
+                return $activityLog;
             }
         }
         else

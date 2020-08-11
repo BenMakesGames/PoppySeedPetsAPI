@@ -130,6 +130,11 @@ class PregnancyService
             $this->meritRepository->getRandomStartingMerit()
         );
 
+        $baby
+            ->setMom($pregnancy->getParent())
+            ->setDad($pregnancy->getOtherParent())
+        ;
+
         if($pregnancy->getAffection() > 0)
             $baby->increaseAffectionPoints($baby->getAffectionPointsToLevel());
 
