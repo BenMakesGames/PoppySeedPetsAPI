@@ -216,6 +216,8 @@ class PetGroupService
             return true;
         }
 
+        $usersAlerted = [];
+
         foreach($group->getMembers() as $member)
         {
             $message = $group->getName() . ' tried to recruit another member, but couldn\'t find anyone.';
@@ -228,6 +230,11 @@ class PetGroupService
                 ->setPet($member)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
             ;
+
+            if(!in_array($member->getOwner()->getId(), $usersAlerted))
+                $usersAlerted[] = $member->getOwner()->getId();
+            else
+                $log->setViewed();
 
             $this->em->persist($log);
         }
@@ -262,6 +269,8 @@ class PetGroupService
 
     private function recruitMember(PetGroup $group, Pet $recruit): void
     {
+        $usersAlerted = [];
+
         $recruit->addGroup($group);
 
         foreach($group->getMembers() as $member)
@@ -299,6 +308,11 @@ class PetGroupService
                 ->setChanges($changes->compare($member))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
             ;
+
+            if(!in_array($member->getOwner()->getId(), $usersAlerted))
+                $usersAlerted[] = $member->getOwner()->getId();
+            else
+                $log->setViewed();
 
             $this->em->persist($log);
         }
