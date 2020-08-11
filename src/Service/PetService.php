@@ -76,6 +76,7 @@ class PetService
     private $heartDimensionService;
     private $petRelationshipRepository;
     private $guildService;
+    private $inventoryService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -88,7 +89,7 @@ class PetService
         PregnancyService $pregnancyService, PetActivityStatsService $petActivityStatsService, PetGroupService $petGroupService,
         PetExperienceService $petExperienceService, DreamingService $dreamingService, MagicBeanstalkService $beanStalkService,
         EasterEggHuntingService $easterEggHuntingService, HeartDimensionService $heartDimensionService,
-        PetRelationshipRepository $petRelationshipRepository, GuildService $guildService
+        PetRelationshipRepository $petRelationshipRepository, GuildService $guildService, InventoryService $inventoryService
     )
     {
         $this->em = $em;
@@ -119,6 +120,7 @@ class PetService
         $this->heartDimensionService = $heartDimensionService;
         $this->petRelationshipRepository = $petRelationshipRepository;
         $this->guildService = $guildService;
+        $this->inventoryService = $inventoryService;
     }
 
     /**
@@ -259,7 +261,7 @@ class PetService
                 continue;
             }
 
-            $this->petExperienceService->applyFoodEffects($pet, $i->getItem());
+            $this->inventoryService->applyFoodEffects($pet, $i->getItem());
 
             // consider favorite flavor:
             if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
@@ -267,7 +269,7 @@ class PetService
 
             $randomFlavor = $i->getItem()->getFood()->getRandomFlavor() > 0 ? FlavorEnum::getRandomValue() : null;
 
-            $favoriteFlavorStrength = $this->petExperienceService->getFavoriteFlavorStrength($pet, $i->getItem(), $randomFlavor);
+            $favoriteFlavorStrength = $this->inventoryService->getFavoriteFlavorStrength($pet, $i->getItem(), $randomFlavor);
 
             $loveAndEsteemGain = $favoriteFlavorStrength + $food->getLove();
 
@@ -479,8 +481,8 @@ class PetService
 
             // sorted from most-delicious to least-delicious
             usort($sortedLunchboxItems, function(LunchboxItem $a, LunchboxItem $b) use($pet) {
-                $aValue = $this->petExperienceService->getFavoriteFlavorStrength($pet, $a->getInventoryItem()->getItem()) + $a->getInventoryItem()->getItem()->getFood()->getLove();
-                $bValue = $this->petExperienceService->getFavoriteFlavorStrength($pet, $b->getInventoryItem()->getItem()) + $a->getInventoryItem()->getItem()->getFood()->getLove();
+                $aValue = $this->inventoryService->getFavoriteFlavorStrength($pet, $a->getInventoryItem()->getItem()) + $a->getInventoryItem()->getItem()->getFood()->getLove();
+                $bValue = $this->inventoryService->getFavoriteFlavorStrength($pet, $b->getInventoryItem()->getItem()) + $a->getInventoryItem()->getItem()->getFood()->getLove();
 
                 if($aValue === $bValue)
                     return $b->getInventoryItem()->getItem()->getFood()->getFood() <=> $a->getInventoryItem()->getItem()->getFood()->getFood();
@@ -496,7 +498,7 @@ class PetService
             {
                 $itemToEat = array_shift($sortedLunchboxItems);
 
-                $ateIt = $this->petExperienceService->doEat($pet, $itemToEat->getInventoryItem()->getItem(), null);
+                $ateIt = $this->inventoryService->doEat($pet, $itemToEat->getInventoryItem()->getItem(), null);
 
                 if($ateIt)
                 {

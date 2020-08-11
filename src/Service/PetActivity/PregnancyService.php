@@ -112,7 +112,6 @@ class PregnancyService
 
     /**
      * @param Pet $pet
-     * @throws EnumInvalidValueException
      */
     public function giveBirth(Pet $pet)
     {
@@ -307,7 +306,6 @@ class PregnancyService
      * @param Pet $baby
      * @param Pet $mother
      * @param Pet $father
-     * @throws EnumInvalidValueException
      */
     private function createParentalRelationships(Pet $baby, Pet $mother, Pet $father)
     {
