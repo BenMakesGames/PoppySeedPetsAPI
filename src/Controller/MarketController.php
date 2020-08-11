@@ -6,6 +6,7 @@ use App\Entity\Item;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\ArrayFunctions;
 use App\Repository\DailyMarketItemAverageRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\UserStatsRepository;
@@ -130,17 +131,24 @@ class MarketController extends PoppySeedPetsController
             throw new UnprocessableEntityHttpException('You do not have enough moneys.');
 
         $itemsAtHome = $inventoryRepository->countItemsInLocation($user, LocationEnum::HOME);
-        $hasBasement = $user->getUnlockedBasement();
-        $itemsInBasement = $hasBasement ? 0 : $inventoryRepository->countItemsInLocation($user, LocationEnum::BASEMENT);
         $placeItemsIn = LocationEnum::HOME;
 
         if($itemsAtHome >= 100)
         {
-            if(!$hasBasement)
+            if(!$user->getUnlockedBasement())
                 throw new UnprocessableEntityHttpException('Your house has ' . $itemsAtHome . ' items; you\'ll need to make some space, first!');
 
+            $itemsInBasement = $inventoryRepository->countItemsInLocation($user, LocationEnum::BASEMENT);
+
+            $dang = ArrayFunctions::pick_one([
+                'Dang!',
+                'Goodness!',
+                'Great googly-moogly!',
+                'Whaaaat?!',
+            ]);
+
             if($itemsInBasement >= 10000)
-                throw new UnprocessableEntityHttpException('Your house has ' . $itemsAtHome . ', and your basement has ' . $itemsInBasement . ' items! (Dang!) You\'ll need to make some space, first...');
+                throw new UnprocessableEntityHttpException('Your house has ' . $itemsAtHome . ', and your basement has ' . $itemsInBasement . ' items! (' . $dang . ') You\'ll need to make some space, first...');
 
             $placeItemsIn = LocationEnum::BASEMENT;
         }
