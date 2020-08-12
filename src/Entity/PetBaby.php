@@ -171,7 +171,7 @@ class PetBaby
             $messages = [
                 $this->getParent()->getName() . ' just got eggnant!',
                 $this->getParent()->getName() . ' is going to lay their egg soon!',
-                $this->getParent()->getName() . '\'s egg is sitting quietly.',
+                $this->getParent()->getName() . '\'s egg was recently laid!',
                 $this->getParent()->getName() . '\'s egg is starting to move around...',
                 $this->getParent()->getName() . '\'s egg is moving around a bit!',
                 $this->getParent()->getName() . '\'s egg is close to hatching!',
