@@ -65,7 +65,7 @@ class PetExperienceService
         if($pet->getLove() + $pet->getAlcohol() < 0) $divideBy++;
         if($pet->getEsteem() + $pet->getAlcohol() < 0) $divideBy++;
 
-        $divideBy += 1 + ($pet->getAlcohol() / $pet->getStomachSize());
+        $divideBy += 2 * $pet->getAlcohol() / $pet->getStomachSize();
 
         $exp = round($exp / $divideBy);
 
