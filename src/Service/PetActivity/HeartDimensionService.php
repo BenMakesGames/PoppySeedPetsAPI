@@ -156,7 +156,7 @@ class HeartDimensionService
 
         $pet->incrementAffectionAdventures();
 
-        $this->petExperienceService->applyStatusEffect($pet, StatusEffectEnum::INSPIRED, 24 * 60, 24 * 60);
+        $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::INSPIRED, 24 * 60, 24 * 60);
 
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' relaxed for a while in the Heart Dimension, and became Inspired.', 'icons/activity-logs/heart-dimension');
     }
@@ -199,7 +199,7 @@ class HeartDimensionService
 
         $pet->incrementAffectionAdventures();
 
-        $this->petExperienceService->applyStatusEffect($pet, StatusEffectEnum::INSPIRED, 24 * 60, 24 * 60);
+        $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::INSPIRED, 24 * 60, 24 * 60);
 
         $figure = ArrayFunctions::pick_one([
             [ 'the First Vampire', [ '; it was really scary!', ', but it was oddly calming...' ]],
