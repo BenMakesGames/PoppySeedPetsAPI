@@ -782,6 +782,8 @@ class GatheringService
                 ;
             }
 
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
+
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, true);
         }
 
