@@ -98,6 +98,9 @@ class SmithingService
         if(array_key_exists('Yellow Scissors', $quantities) && array_key_exists('Green Scissors', $quantities) && array_key_exists('Quinacridone Magenta Dye', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createTriColorScissors', 10);
 
+        if(array_key_exists('Tri-color Scissors', $quantities) && array_key_exists('Firestone', $quantities))
+            $possibilities[] = new ActivityCallback($this, 'createPapersBane', $weight);
+
         if(array_key_exists('Silver Bar', $quantities))
         {
             $possibilities[] = new ActivityCallback($this, 'createSilverKey', $weight);
@@ -224,6 +227,54 @@ class SmithingService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Tri-color Scissors, but got confused just thinking about what it would even look like...', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createPapersBane(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + max($pet->getDexterity(), $pet->getIntelligence()) + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 1)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+
+            $gainedItem = ArrayFunctions::pick_one([
+                'Yellow Scissors', 'Green Scissors'
+            ]);
+
+            $this->inventoryService->loseItem('Tri-colored Scissors', $pet->getOwner(), LocationEnum::HOME, 1);
+            $pet
+                ->increaseEsteem(-mt_rand(2, 4))
+                ->increaseSafety(-2)
+            ;
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Paper\'s Bane, but melted the Tri-color Scissors, leaving only ' . $gainedItem . '! (And getting slightly singed...)', '');
+
+            $this->inventoryService->petCollectsItem($gainedItem, $pet, $pet->getName() . ' all the remains of a melted pair (trio?) of Tri-color Scissors...', $activityLog);
+
+            return $activityLog;
+        }
+        else if($roll >= 20)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Tri-color Scissors', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Firestone', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(4);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' infused Tri-color Scissors with the eternal heat of Firestone!', 'items/tool/scissors/papersbane')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+            ;
+            $this->inventoryService->petCollectsItem('Paper\'s Bane', $pet, $pet->getName() . ' made this by infusing Tri-color Scissors with the eternal heat of Firestone!', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Paper\'s Bane, but almost burned themselves on the Firestone...', 'icons/activity-logs/confused');
         }
     }
 
