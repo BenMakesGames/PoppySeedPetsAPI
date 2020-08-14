@@ -6,9 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\ItemPlantRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\PlantRepository")
  */
-class ItemPlant
+class Plant
 {
     /**
      * @ORM\Id()

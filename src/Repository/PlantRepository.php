@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\ItemPlant;
+use App\Entity\Plant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method ItemPlant|null find($id, $lockMode = null, $lockVersion = null)
- * @method ItemPlant|null findOneBy(array $criteria, array $orderBy = null)
- * @method ItemPlant[]    findAll()
- * @method ItemPlant[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Plant|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Plant|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Plant[]    findAll()
+ * @method Plant[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ItemPlantRepository extends ServiceEntityRepository
+class PlantRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, ItemPlant::class);
+        parent::__construct($registry, Plant::class);
     }
 
     // /**
-    //  * @return ItemPlant[] Returns an array of ItemPlant objects
+    //  * @return Plant[] Returns an array of Plant objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class ItemPlantRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?ItemPlant
+    public function findOneBySomeField($value): ?Plant
     {
         return $this->createQueryBuilder('i')
             ->andWhere('i.exampleField = :val')

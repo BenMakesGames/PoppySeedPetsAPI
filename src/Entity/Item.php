@@ -63,7 +63,7 @@ class Item
     private $fertilizer = 0;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\ItemPlant", inversedBy="item", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Plant", inversedBy="item", cascade={"persist", "remove"})
      */
     private $plant;
 
@@ -196,12 +196,12 @@ class Item
         return $this;
     }
 
-    public function getPlant(): ?ItemPlant
+    public function getPlant(): ?Plant
     {
         return $this->plant;
     }
 
-    public function setPlant(?ItemPlant $plant): self
+    public function setPlant(?Plant $plant): self
     {
         $this->plant = $plant;
 
