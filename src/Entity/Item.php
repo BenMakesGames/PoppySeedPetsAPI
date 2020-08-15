@@ -257,7 +257,7 @@ class Item
     }
 
     /**
-     * @Groups({"myGreenhouse"})
+     * @Groups({"greenhouseFertilizer"})
      */
     public function getFertilizerRating(): int
     {
