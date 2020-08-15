@@ -52,6 +52,22 @@ abstract class PoppySeedPetsCommand extends Command
         return $this->ask($question);
     }
 
+    protected function askString(string $prompt, ?string $defaultValue, callable $constraint = null): string
+    {
+        if($defaultValue === null) $defaultValue = '';
+
+        $question = new Question($prompt . ' (' . $defaultValue . ') ', $defaultValue);
+
+        $question->setValidator(function($answer) use($constraint) {
+            if($constraint && !$constraint(trim($answer)))
+                throw new \RuntimeException('That input was no good. Try again.');
+
+            return $answer;
+        });
+
+        return trim($this->ask($question));
+    }
+
     protected function askFloat(string $prompt, float $defaultValue, callable $constraint = null): float
     {
         $question = new Question($prompt . ' (' . $defaultValue . ') ', $defaultValue);

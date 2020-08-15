@@ -64,6 +64,12 @@ Other good offerings include:
 * Seaweed (as mentioned before)
 * Flowers; Rice Flower in particular
 * Talons & Wings (be careful with this one!)
+
+### Food & Drink
+
+* Hallucinogens can grant access to the Umbra, even to those untrained in cosmology. Toadstools are a well-known example, but many aren\'t aware that Royal Jelly also has this property.
+* A drink known as "Dreamwalker\'s Tea" - made from Ginger, Witch-hazel, and Rice Flower - pushes the drinker\'s sleeping mind to the Dreamscapes, areas of the Umbra which border dreams.
+* Some food & drink are so imbued with magic, those that consume it may gain their first glimpse of the Umbra. Blood Wine - a fermented drink made from the blood of mythical creatures - is one such item.
 ');
     }
 }

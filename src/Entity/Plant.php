@@ -58,7 +58,7 @@ class Plant
      * @ORM\Column(type="string", length=20)
      * @Groups({"greenhousePlant"})
      */
-    private $type;
+    private $type = 'earth';
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\PlantYield", mappedBy="plant", orphanRemoval=true)

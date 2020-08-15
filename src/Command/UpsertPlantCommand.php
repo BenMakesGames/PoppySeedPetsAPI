@@ -6,6 +6,8 @@ use App\Command\Traits\AskItemTrait;
 use App\Entity\Plant;
 use App\Entity\PlantYield;
 use App\Entity\PlantYieldItem;
+use App\Enum\PlantTypeEnum;
+use App\Functions\ArrayFunctions;
 use App\Repository\ItemRepository;
 use App\Repository\PlantRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -47,11 +49,15 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
         {
             $this->output->writeln('Creating "' . $name . '"');
 
-            $recipe = (new Plant())
+            $plant = (new Plant())
                 ->setName($name)
             ;
 
-            $this->em->persist($recipe);
+            $this->em->persist($plant);
+
+            $this->editType($plant);
+            $this->editImages($plant);
+            $this->editGrowingTimes($plant);
         }
 
         do
@@ -86,9 +92,12 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
             $this->output->writeln('1. Edit a yield');
             $this->output->writeln('2. Delete a yield');
             $this->output->writeln('3. Add a yield');
-            $this->output->writeln('4. Flush changes, and quit');
+            $this->output->writeln('4. Edit plant type');
+            $this->output->writeln('5. Edit images');
+            $this->output->writeln('6. Edit growing times');
+            $this->output->writeln('7. Flush changes, and quit');
 
-            $choice = $this->askInt('', 4, function(int $n) { return $n >= 1 && $n <= 4; });
+            $choice = $this->askInt('', 7, function(int $n) { return $n >= 1 && $n <= 7; });
 
             switch($choice)
             {
@@ -101,11 +110,51 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
                 case 3:
                     $this->addYield($plant);
                     break;
+                case 4:
+                    $this->editType($plant);
+                    break;
+                case 5:
+                    $this->editImages($plant);
+                    break;
+                case 6:
+                    $this->editGrowingTimes($plant);
+                    break;
             }
         }
-        while($choice !== 4);
+        while($choice !== 7);
 
         $this->em->flush();
+    }
+
+    private function editType(Plant $plant)
+    {
+        $type = $this->askString(ArrayFunctions::list_nice(PlantTypeEnum::getValues(), ', ', ', or ') . '?', $plant->getType(), function(string $s) {
+            return in_array(strtolower($s), PlantTypeEnum::getValues());
+        });
+
+        $plant->setType(strtolower($type));
+    }
+
+    private function editGrowingTimes(Plant $plant)
+    {
+        $timeToAdult = $this->askInt('Time to adult', (int)$plant->getTimeToAdult());
+        $timeToFruit = $this->askInt('Time to fruit', (int)$plant->getTimeToFruit());
+
+        $plant->setTimeToAdult($timeToAdult);
+        $plant->setTimeToFruit($timeToFruit);
+    }
+
+    private function editImages(Plant $plant)
+    {
+        $sprout = $this->askString('Sprout', $plant->getSproutImage());
+        $medium = $this->askString('Medium', $plant->getMediumImage());
+        $adult = $this->askString('Adult', $plant->getAdultImage());
+        $fruiting = $this->askString('Fruiting', $plant->getHarvestableImage());
+
+        $plant->setSproutImage($sprout);
+        $plant->setMediumImage($medium);
+        $plant->setAdultImage($adult);
+        $plant->setHarvestableImage($fruiting);
     }
 
     private function selectYieldToEdit(Plant $plant)

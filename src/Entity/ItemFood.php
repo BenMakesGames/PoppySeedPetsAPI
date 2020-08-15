@@ -532,6 +532,9 @@ class ItemFood
         return $this;
     }
 
+    /**
+     * @Groups({"myInventory", "itemEncyclopedia"})
+     */
     public function getGrantedStatusEffect(): ?string
     {
         return $this->grantedStatusEffect;
