@@ -1,0 +1,30 @@
+<?php
+namespace App\Command\Traits;
+
+use App\Entity\Item;
+use App\Repository\ItemRepository;
+use Symfony\Component\Console\Question\Question;
+
+trait AskItemTrait
+{
+    /** @var ItemRepository */
+    private $itemRepository;
+
+    private function askItem(string $prompt): ?Item
+    {
+        $question = new Question($prompt . ' ', null);
+        $question->setValidator(function($itemName) {
+            $itemName = trim($itemName);
+
+            if($itemName === '') return null;
+
+            $item = $this->itemRepository->findOneBy([ 'name' => $itemName ]);
+            if($item === null)
+                throw new \RuntimeException('There is no Item called "' . $itemName . '".');
+
+            return $item;
+        });
+
+        return $this->ask($question);
+    }
+}

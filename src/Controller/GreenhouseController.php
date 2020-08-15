@@ -7,6 +7,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetHouseTime;
 use App\Entity\PetSkills;
+use App\Entity\PlantYieldItem;
 use App\Enum\BirdBathBirdEnum;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
@@ -199,9 +200,9 @@ class GreenhouseController extends PoppySeedPetsController
         if(!$plant->getIsAdult() || $plant->getProgress() < 1)
             throw new UnprocessableEntityHttpException('This plant is not yet ready to harvest.');
 
-        if($plant->getPlant()->getMinYield() <= 0 || $plant->getPlant()->getMaxYield() <= 0)
+        if(count($plant->getPlant()->getPlantYields()) === 0)
         {
-            if($plant->getPlant()->getItem()->getName() === 'Magic Beans')
+            if($plant->getPlant()->getName() === 'Magic Beanstalk')
             {
                 $expandedGreenhouseWithMagicBeanstalk = $userQuestRepository->findOrCreate($user, 'Expanded Greenhouse with Magic Bean-stalk', false);
 
@@ -218,91 +219,85 @@ class GreenhouseController extends PoppySeedPetsController
                     return $responseService->success();
                 }
             }
-            throw new UnprocessableEntityHttpException($plant->getPlant()->getItem()->getName() . ' plants cannot be harvested!');
+
+            throw new UnprocessableEntityHttpException($plant->getPlant()->getName() . ' cannot be harvested!');
         }
 
         $plant->clearGrowth();
 
-        $yield = mt_rand($plant->getPlant()->getMinYield(), $plant->getPlant()->getMaxYield());
-
-        if($plant->getPlant()->getItem()->getName() === 'Mysterious Seed')
+        if($plant->getPlant()->getName() === 'Tomato Plant' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON)
         {
-            $possibleYield = [
-                'Celery', 'Sugar', 'Egg', 'Toad Legs', 'Crooked Stick',
-                'Fluff', 'Aging Powder', 'Beans', 'Noodles', 'Algae',
-                'Orange', 'Red', 'Mermaid Egg', 'Tentacle', 'Carrot',
-                'Butter', 'Pectin', 'Plain Yogurt', 'Naner', 'Pie Crust'
-            ];
+            $message = 'You harvested-- WHOA, WAIT, WHAT?! It\'s a living tomato!?';
 
-            shuffle($possibleYield);
+            $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
 
-            $items = [];
+            $colorA = ColorFunctions::tweakColor(ArrayFunctions::pick_one([
+                'FF6622', 'FFCC22', '77FF22', 'FF2222', '7722FF'
+            ]));
 
-            for($i = 0; $i < $yield; $i++)
+            $colorB = ColorFunctions::tweakColor(ArrayFunctions::pick_one([
+                '007700', '009922', '00bb44'
+            ]));
+
+            $tomateName = ArrayFunctions::pick_one([
+                'Alicante', 'Azoychka', 'Krim', 'Brandywine', 'Campari', 'Canario', 'Tomkin',
+                'Flamenco', 'Giulietta', 'Grandero', 'Trifele', 'Jubilee', 'Juliet', 'Kumato',
+                'Monterosa', 'Montserrat', 'Plum', 'Raf', 'Roma', 'Rutgers', 'Marzano', 'Cherry',
+                'Nebula', 'Santorini', 'Tomaccio', 'Tamatie', 'Tamaatar', 'Matomatisi', 'Yaanyo',
+                'Pomidor', 'Utamatisi'
+            ]);
+
+            $species = $petSpeciesRepository->findOneBy([ 'name' => 'Tomate' ]);
+
+            $tomate = $petFactory->createPet($user, $tomateName, $species, $colorA, $colorB, FlavorEnum::getRandomValue(), $meritRepository->getRandomStartingMerit());
+
+            $tomate->addMerit($meritRepository->findOneByName(MeritEnum::MOON_BOUND));
+
+            $tomate->setFoodAndSafety(mt_rand(10, 12), -9);
+
+            $em->remove($plant);
+
+            if($numberOfPetsAtHome >= $user->getMaxPets())
             {
-                $inventoryService->receiveItem($possibleYield[$i], $user, $user, $user->getName() . ' grew this in their greenhouse.', LocationEnum::HOME);
-                $items[] = $possibleYield[$i];
-            }
-
-            $message = 'You harvested ' . ArrayFunctions::list_nice($items) . '!';
-        }
-        else
-        {
-            if($plant->getPlant()->getItem()->getName() === 'Tomato' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON)
-            {
-                $message = 'You harvested-- WHOA, WAIT, WHAT?! It\'s a living tomato!?';
-
-                $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
-
-                $colorA = ColorFunctions::tweakColor(ArrayFunctions::pick_one([
-                    'FF6622', 'FFCC22', '77FF22', 'FF2222', '7722FF'
-                ]));
-
-                $colorB = ColorFunctions::tweakColor(ArrayFunctions::pick_one([
-                    '007700', '009922', '00bb44'
-                ]));
-
-                $tomateName = ArrayFunctions::pick_one([
-                    'Alicante', 'Azoychka', 'Krim', 'Brandywine', 'Campari', 'Canario', 'Tomkin',
-                    'Flamenco', 'Giulietta', 'Grandero', 'Trifele', 'Jubilee', 'Juliet', 'Kumato',
-                    'Monterosa', 'Montserrat', 'Plum', 'Raf', 'Roma', 'Rutgers', 'Marzano', 'Cherry',
-                    'Nebula', 'Santorini', 'Tomaccio', 'Tamatie', 'Tamaatar', 'Matomatisi', 'Yaanyo',
-                    'Pomidor', 'Utamatisi'
-                ]);
-
-                $species = $petSpeciesRepository->findOneBy([ 'name' => 'Tomate' ]);
-
-                $tomate = $petFactory->createPet($user, $tomateName, $species, $colorA, $colorB, FlavorEnum::getRandomValue(), $meritRepository->getRandomStartingMerit());
-
-                $tomate->addMerit($meritRepository->findOneByName(MeritEnum::MOON_BOUND));
-
-                $tomate->setFoodAndSafety(mt_rand(10, 12), -9);
-
-                $em->remove($plant);
-
-                if($numberOfPetsAtHome >= $user->getMaxPets())
-                {
-                    $message .= "\n\n" . 'Seeing no space in your house, the creature wanders off to Daycare.';
-                    $tomate->setInDaycare(true);
-                }
-                else
-                {
-                    $message .= "\n\n" . 'The creature wastes no time in setting up residence in your house.';
-                    $tomate->setInDaycare(false);
-                }
+                $message .= "\n\n" . 'Seeing no space in your house, the creature wanders off to Daycare.';
+                $tomate->setInDaycare(true);
             }
             else
             {
-                $quantity = new ItemQuantity();
-
-                $quantity->item = $plant->getPlant()->getItem();
-                $quantity->quantity = $yield;
-
-                $inventoryService->giveInventory($quantity, $user, $user, $user->getName() . ' grew this in their greenhouse.', LocationEnum::HOME);
-
-                $message = 'You harvested ' . $yield . '× ' . $plant->getPlant()->getItem()->getName() . '!';
+                $message .= "\n\n" . 'The creature wastes no time in setting up residence in your house.';
+                $tomate->setInDaycare(false);
             }
         }
+        else
+        {
+            $lootList = [];
+
+            foreach($plant->getPlant()->getPlantYields() as $yield)
+            {
+                $quantity = mt_rand($yield->getMin(), $yield->getMax());
+
+                for($i = 0; $i < $quantity; $i++)
+                {
+                    /** @var PlantYieldItem $loot */
+                    $loot = ArrayFunctions::pick_one_weighted($yield->getItems(), function(PlantYieldItem $yieldItem) {
+                        return $yieldItem->getPercentChance();
+                    });
+
+                    $lootItem = $loot->getItem();
+                    $lootItemName = $lootItem->getName();
+
+                    $inventoryService->receiveItem($lootItem, $user, $user, $user->getName() . ' grew this in their greenhouse.', LocationEnum::HOME);
+
+                    if(array_key_exists($lootItemName, $lootList))
+                        $lootList[$lootItemName]++;
+                    else
+                        $lootList[$lootItemName] = 1;
+                }
+            }
+
+            $message = 'You harvested ' . ArrayFunctions::list_nice_quantities($lootList) . '!';
+        }
+
 
         $plantsHarvested = $userStatsRepository->incrementStat($user, UserStatEnum::HARVESTED_PLANT);
 
@@ -383,13 +378,13 @@ class GreenhouseController extends PoppySeedPetsController
         if($plant->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException('That plant does not exist.');
 
-        if($plant->getPlant()->getItem()->getName() === 'Magic Beans')
+        if($plant->getPlant()->getName() === 'Magic Beanstalk')
         {
             $responseService->addFlashMessage((new PetActivityLog())->setEntry('Pulling up the stalk is surprisingly easy, but perhaps more surprising, you find yourself holding Magic Beans, instead of a stalk!'));
 
             $inventoryService->receiveItem('Magic Beans', $user, $user, 'Received by pulling up a Magic Beanstalk, apparently. Magically.', LocationEnum::HOME);
         }
-        else if($plant->getPlant()->getItem()->getName() === 'Creamy Milk' && $plant->getIsAdult())
+        else if($plant->getPlant()->getName() === 'Goat' && $plant->getIsAdult())
         {
             $responseService->addFlashMessage((new PetActivityLog())->setEntry('The goat, startled, runs into the jungle, shedding a bit of Fluff in the process.'));
 

@@ -643,7 +643,7 @@ class PetService
 
         if($pet->getOwner()->getGreenhousePlants()->exists(function(int $key, GreenhousePlant $p) {
             return
-                $p->getPlant()->getItem()->getName() === 'Magic Beans' &&
+                $p->getPlant()->getName() === 'Magic Beanstalk' &&
                 $p->getIsAdult() &&
                 $p->getProgress() >= 1
             ;

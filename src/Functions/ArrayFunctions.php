@@ -79,6 +79,21 @@ final class ArrayFunctions
         return $array[array_rand($array)];
     }
 
+    public static function list_nice_quantities(array $quantities, string $separator = ', ', string $lastSeparator = ', and ')
+    {
+        $list = [];
+
+        foreach($quantities as $item=>$quantity)
+        {
+            if($quantity == 1)
+                $list[] = $item;
+            else
+                $list[] = $quantity . '× ' . $item;
+        }
+
+        return self::list_nice($list, $separator, $lastSeparator);
+    }
+
     /**
      * @param string[] $strings
      */

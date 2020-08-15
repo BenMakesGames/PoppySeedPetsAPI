@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Command\Traits\AskItemTrait;
 use App\Entity\Item;
 use App\Entity\Recipe;
 use App\Model\ItemQuantity;
@@ -14,10 +15,11 @@ use Symfony\Component\Console\Question\Question;
 
 class UpsertRecipeCommand extends PoppySeedPetsCommand
 {
+    use AskItemTrait;
+
     private $em;
     private $recipeRepository;
     private $inventoryService;
-    private $itemRepository;
 
     public function __construct(
         EntityManagerInterface $em, RecipeRepository $recipeRepository, InventoryService $inventoryService,
@@ -150,7 +152,7 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         {
             $itemQuantity = new ItemQuantity();
 
-            $itemQuantity->item = $this->askItem('Enter an Item name to add ');
+            $itemQuantity->item = $this->askItem('Enter an Item name to add');
             if($itemQuantity->item === null)
                 break;
 
@@ -161,23 +163,4 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
 
         return $quantities;
     }
-
-    private function askItem(string $prompt): ?Item
-    {
-        $question = new Question($prompt, null);
-        $question->setValidator(function($itemName) {
-            $itemName = trim($itemName);
-
-            if($itemName === '') return null;
-
-            $item = $this->itemRepository->findOneBy([ 'name' => $itemName ]);
-            if($item === null)
-                throw new \RuntimeException('There is no Item called "' . $itemName . '".');
-
-            return $item;
-        });
-
-        return $this->ask($question);
-    }
-
 }
