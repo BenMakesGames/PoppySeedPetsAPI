@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\GreenhousePlant;
 use App\Entity\Inventory;
 use App\Entity\LunchboxItem;
+use App\Entity\Merit;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetBaby;
@@ -18,6 +19,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SocialTimeWantEnum;
 use App\Enum\SpiritCompanionStarEnum;
+use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
@@ -534,7 +536,12 @@ class PetService
             ;
         }
 
-        if($pet->hasMerit(MeritEnum::DREAMWALKER) && mt_rand(1, 200) === 1)
+        if($pet->hasStatusEffect(StatusEffectEnum::DREAMSPRING) && mt_rand(1, 2) === 1)
+        {
+            $this->dreamingService->dream($pet);
+            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::DREAMSPRING));
+        }
+        else if($pet->hasMerit(MeritEnum::DREAMWALKER) && mt_rand(1, 200) === 1)
         {
             $this->dreamingService->dream($pet);
             return;

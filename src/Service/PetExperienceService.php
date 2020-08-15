@@ -82,6 +82,9 @@ class PetExperienceService
 
     public function spendSocialEnergy(Pet $pet, int $energy)
     {
+        if($pet->hasStatusEffect(StatusEffectEnum::EXTRA_EXTROVERTED))
+            $energy = ceil($energy / 2);
+
         if(mt_rand(1, 10) === 1)
         {
             // smallish chance to consume WAY less energy. this was added to help jiggle pets out of a situation where

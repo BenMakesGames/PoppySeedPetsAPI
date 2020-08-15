@@ -102,6 +102,10 @@ class StatusEffect
 
     public function spendTime(int $time): self
     {
+        // these status effects don't go away unless/until something SPECIAL happens:
+        if($this->status === StatusEffectEnum::DREAMSPRING)
+            return $this;
+
         $this->timeRemaining -= $time;
 
         return $this;

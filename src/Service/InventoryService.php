@@ -463,7 +463,7 @@ class InventoryService
         if($caffeine > 0)
         {
             $pet->increaseCaffeine($caffeine);
-            $this->applyStatusEffect($pet, StatusEffectEnum::CAFFEINATED, $caffeine * 60, 8 * 60);
+            $this->applyStatusEffect($pet, StatusEffectEnum::CAFFEINATED, $caffeine * 60);
         }
         else if($caffeine < 0)
             $pet->increaseCaffeine($caffeine);
@@ -471,6 +471,11 @@ class InventoryService
         $pet->increasePsychedelic($food->getPsychedelic());
         $pet->increaseFood($food->getFood());
         $pet->increaseJunk($food->getJunk());
+
+        if($food->getGrantedStatusEffect() !== null && $food->getGrantedStatusEffectDuration() > 0)
+        {
+            $this->applyStatusEffect($pet, $food->getGrantedStatusEffect(), $food->getGrantedStatusEffectDuration());
+        }
 
         if($food->getChanceForBonusItem() !== null && mt_rand(1, 1000) <= $food->getChanceForBonusItem())
         {
@@ -511,11 +516,23 @@ class InventoryService
             $pet->getSkills()->increaseStat($food->getGrantedSkill());
     }
 
+    public function getStatusEffectMaxDuration(string $status)
+    {
+        switch($status)
+        {
+            case StatusEffectEnum::INSPIRED: return 24 * 60;
+            case StatusEffectEnum::CAFFEINATED: return 8 * 60;
+            default: return 24 * 60;
+        }
+    }
+
     /**
      * @throws EnumInvalidValueException
      */
-    public function applyStatusEffect(Pet $pet, string $status, int $duration, int $maxDuration)
+    public function applyStatusEffect(Pet $pet, string $status, int $duration)
     {
+        $maxDuration = $this->getStatusEffectMaxDuration($status);
+
         $statusEffect = $pet->getStatusEffect($status);
 
         if(!$statusEffect)

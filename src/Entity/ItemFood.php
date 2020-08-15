@@ -133,7 +133,12 @@ class ItemFood
     /**
      * @ORM\Column(type="string", length=40, nullable=true)
      */
-    private $grantedStatusEffect;
+    private $grantedStatusEffect = null;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $grantedStatusEffectDuration = null;
 
     public function getId(): ?int
     {
@@ -535,6 +540,18 @@ class ItemFood
     public function setGrantedStatusEffect(?string $grantedStatusEffect): self
     {
         $this->grantedStatusEffect = $grantedStatusEffect;
+
+        return $this;
+    }
+
+    public function getGrantedStatusEffectDuration(): ?int
+    {
+        return $this->grantedStatusEffectDuration;
+    }
+
+    public function setGrantedStatusEffectDuration(?int $grantedStatusEffectDuration): self
+    {
+        $this->grantedStatusEffectDuration = $grantedStatusEffectDuration;
 
         return $this;
     }

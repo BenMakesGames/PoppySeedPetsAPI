@@ -208,7 +208,7 @@ class HollowEarthService
 
         if(array_key_exists('statusEffect', $event))
         {
-            $this->inventoryService->applyStatusEffect($pet, $event['statusEffect']['status'], $event['statusEffect']['duration'], $event['statusEffect']['maxDuration']);
+            $this->inventoryService->applyStatusEffect($pet, $event['statusEffect']['status'], $event['statusEffect']['duration']);
             $doLog = true;
         }
 
