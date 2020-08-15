@@ -38,6 +38,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @Route("/greenhouse")
@@ -50,7 +51,8 @@ class GreenhouseController extends PoppySeedPetsController
      */
     public function getGreenhouse(
         ResponseService $responseService, GreenhousePlantRepository $greenhousePlantRepository,
-        InventoryRepository $inventoryRepository, UserQuestRepository $userQuestRepository, EntityManagerInterface $em
+        InventoryRepository $inventoryRepository, UserQuestRepository $userQuestRepository, EntityManagerInterface $em,
+        NormalizerInterface $normalizer
     )
     {
         $user = $this->getUser();
@@ -79,12 +81,14 @@ class GreenhouseController extends PoppySeedPetsController
         if(!$weeds->getId())
             $em->flush();
 
+        $fertilizers = $inventoryRepository->findFertilizers($user);
+
         return $responseService->success(
             [
                 'greenhouse' => $user->getGreenhouse(),
                 'weeds' => $weedText,
                 'plants' => $greenhousePlantRepository->findBy([ 'owner' => $user->getId() ]),
-                'fertilizer' => $inventoryRepository->findFertilizers($user),
+                'fertilizer' => $normalizer->normalize($fertilizers, null, [ 'groups' => [ SerializationGroupEnum::GREENHOUSE_FERTILIZER ] ]),
             ],
             [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE ]
         );

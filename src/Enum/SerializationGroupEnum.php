@@ -33,6 +33,7 @@ final class SerializationGroupEnum
     public const GREENHOUSE_PLANT = 'greenhousePlant';
     public const MY_GREENHOUSE = 'myGreenhouse';
     public const MY_SEEDS = 'mySeeds';
+    public const GREENHOUSE_FERTILIZER = 'greenhouseFertilizer';
     public const REMINDER = 'reminder';
     public const HOLLOW_EARTH = 'hollowEarth';
     public const USER_TYPEAHEAD = 'userTypeahead';

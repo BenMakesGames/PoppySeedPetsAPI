@@ -28,14 +28,14 @@ class Inventory
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "myInventory", "marketItem", "greenhousePlant", "mySeeds", "fireplaceFuel"})
+     * @Groups({"myPet", "myInventory", "marketItem", "greenhouseFertilizer", "mySeeds", "fireplaceFuel"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Item", inversedBy="inventory")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "greenhousePlant", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "petGroupDetails"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "greenhouseFertilizer", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "petGroupDetails"})
      */
     private $item;
 
