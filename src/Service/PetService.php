@@ -536,10 +536,10 @@ class PetService
             ;
         }
 
-        if($pet->hasStatusEffect(StatusEffectEnum::DREAMSPRING) && mt_rand(1, 2) === 1)
+        if($pet->hasStatusEffect(StatusEffectEnum::ONEIRIC) && mt_rand(1, 2) === 1)
         {
             $this->dreamingService->dream($pet);
-            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::DREAMSPRING));
+            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::ONEIRIC));
         }
         else if($pet->hasMerit(MeritEnum::DREAMWALKER) && mt_rand(1, 200) === 1)
         {
