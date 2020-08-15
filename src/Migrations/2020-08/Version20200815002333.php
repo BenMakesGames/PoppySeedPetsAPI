@@ -23,7 +23,7 @@ final class Version20200815002333 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE plant DROP min_yield, DROP max_yield, CHANGE name name VARCHAR(40) NOT NULL');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_AB030D725E237E06 ON plant (name)');
+        //$this->addSql('CREATE UNIQUE INDEX UNIQ_AB030D725E237E06 ON plant (name)');
     }
 
     public function down(Schema $schema) : void
@@ -31,7 +31,7 @@ final class Version20200815002333 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP INDEX UNIQ_AB030D725E237E06 ON plant');
+        //$this->addSql('DROP INDEX UNIQ_AB030D725E237E06 ON plant');
         $this->addSql('ALTER TABLE plant ADD min_yield INT NOT NULL, ADD max_yield INT NOT NULL, CHANGE name name VARCHAR(20) CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_unicode_ci`');
     }
 }
