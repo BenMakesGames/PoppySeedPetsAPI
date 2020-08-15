@@ -130,6 +130,11 @@ class ItemFood
      */
     private $containsTentacles = false;
 
+    /**
+     * @ORM\Column(type="string", length=40, nullable=true)
+     */
+    private $grantedStatusEffect;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -518,6 +523,18 @@ class ItemFood
     public function setContainsTentacles(bool $containsTentacles): self
     {
         $this->containsTentacles = $containsTentacles;
+
+        return $this;
+    }
+
+    public function getGrantedStatusEffect(): ?string
+    {
+        return $this->grantedStatusEffect;
+    }
+
+    public function setGrantedStatusEffect(?string $grantedStatusEffect): self
+    {
+        $this->grantedStatusEffect = $grantedStatusEffect;
 
         return $this;
     }
