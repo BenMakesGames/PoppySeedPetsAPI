@@ -38,6 +38,15 @@ class HeartDimensionService
         ;
     }
 
+    public function noAdventuresRemaining(Pet $pet): PetActivityLog
+    {
+        $this->petExperienceService->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::OTHER, null);
+
+        $this->inventoryService->unequipPet($pet);
+
+        return $this->responseService->createActivityLog($pet, 'There being nothing more ' . $pet->getName() . ' can do in the Heart Dimension right now, they put the Heartstone down.', '');
+    }
+
     public function adventure(Pet $pet): PetActivityLog
     {
         $changes = new PetChanges($pet);
@@ -79,11 +88,7 @@ class HeartDimensionService
     private function unequipHeartstone(Pet $pet, PetActivityLog $activityLog)
     {
         $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' put the Heartstone down.');
-        $pet->getTool()
-            ->setLocation(LocationEnum::HOME)
-            ->setModifiedOn()
-        ;
-        $pet->setTool(null);
+        $this->inventoryService->unequipPet($pet);
     }
 
     public function fightAngrySpirit(Pet $pet)

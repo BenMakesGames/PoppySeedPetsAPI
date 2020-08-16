@@ -7,9 +7,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserStatsRepository")
- * @ORM\Table(indexes={
- *     @ORM\Index(name="stat_index", columns={"stat"})
- * })
+ * @ORM\Table(
+ *    uniqueConstraints={
+ *        @ORM\UniqueConstraint(name="user_id_stat_idx", columns={"user_id", "stat"})
+ *    }
+ * )
  */
 class UserStats
 {

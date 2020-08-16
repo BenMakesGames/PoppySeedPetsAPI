@@ -451,7 +451,8 @@ class PetController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function equipPet(
-        Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
+        Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        InventoryService $inventoryService
     )
     {
         $user = $this->getUser();
@@ -470,12 +471,7 @@ class PetController extends PoppySeedPetsController
             if($inventory->getId() === $pet->getTool()->getId())
                 throw new UnprocessableEntityHttpException($pet->getName() . ' is already equipped with that ' . $pet->getTool()->getItem()->getName() . '!');
 
-            $pet->getTool()
-                ->setLocation(LocationEnum::HOME)
-                ->setModifiedOn()
-            ;
-
-            $pet->setTool(null);
+            $inventoryService->unequipPet($pet);
         }
 
         if($inventory->getHolder())
@@ -583,7 +579,9 @@ class PetController extends PoppySeedPetsController
      * @Route("/{pet}/unequip", methods={"POST"}, requirements={"pet"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function unequipPet(Pet $pet, ResponseService $responseService, EntityManagerInterface $em)
+    public function unequipPet(
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em,  InventoryService $inventoryService
+    )
     {
         $user = $this->getUser();
 
@@ -596,12 +594,7 @@ class PetController extends PoppySeedPetsController
         if(!$pet->getTool())
             throw new UnprocessableEntityHttpException($pet->getName() . ' is not currently equipped.');
 
-        $pet->getTool()
-            ->setLocation(LocationEnum::HOME)
-            ->setModifiedOn()
-        ;
-
-        $pet->setTool(null);
+        $inventoryService->unequipPet($pet);
 
         $em->flush();
 

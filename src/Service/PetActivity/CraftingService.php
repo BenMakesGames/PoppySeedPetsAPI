@@ -61,6 +61,12 @@ class CraftingService
             $possibilities[] = new ActivityCallback($this, 'spinFluff', 10);
         }
 
+        if(array_key_exists('White Cloth', $quantities) && array_key_exists('Quinacridone Magenta Dye', $quantities))
+        {
+            if(array_key_exists('Fluff', $quantities) || array_key_exists('Beans', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createPeacockPlushy', 10);
+        }
+
         if(array_key_exists('Gold Telescope', $quantities) && array_key_exists('Flying Grappling Hook', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createLassoscope', 10);
 
@@ -1483,5 +1489,47 @@ class CraftingService
         }
 
         return $activityLog;
+    }
+
+    public function createPeacockPlushy(Pet $pet): PetActivityLog
+    {
+        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
+
+        if($craftsCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            if(mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a plushy, but cut the cloth wrong :(', '');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Quinacridone Magenta Dye', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a plushy, but spilled the dye :(', '');
+            }
+        }
+        else if($craftsCheck >= 13)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Quinacridone Magenta Dye', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $stuffing = $this->inventoryService->loseOneOf([ 'Beans', 'Fluff' ], $pet->getOwner(), LocationEnum::HOME);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Peacock Plushy stuffed with ' . $stuffing . '!', '');
+            $this->inventoryService->petCollectsItem('Peacock Plushy', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a plushy, but couldn\'t come up with a good pattern...', 'icons/activity-logs/confused');
+        }
     }
 }

@@ -571,4 +571,16 @@ class InventoryService
             'White Cloth'
         ]));
     }
+
+    public function unequipPet(Pet $pet)
+    {
+        if($pet->getTool() === null)
+            return;
+
+        $pet->getTool()
+            ->setLocation(LocationEnum::HOME)
+            ->setModifiedOn()
+        ;
+        $pet->setTool(null);
+    }
 }

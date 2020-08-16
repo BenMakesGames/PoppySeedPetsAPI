@@ -21,32 +21,45 @@ class UserStatsRepository extends ServiceEntityRepository
         parent::__construct($registry, UserStats::class);
     }
 
+    private $userStatsPerRequestCache = [];
+
+    public function findOrCreate(User $user, string $name): UserStats
+    {
+        $cacheKey = $user->getId() . '-' . $name;
+
+        if(!array_key_exists($cacheKey, $this->userStatsPerRequestCache))
+        {
+            $stat = $this->findOneBy([
+                'user' => $user,
+                'stat' => $name
+            ]);
+
+            if(!$stat)
+            {
+                $stat = (new UserStats())
+                    ->setUser($user)
+                    ->setStat($name)
+                ;
+
+                $this->getEntityManager()->persist($stat);
+            }
+
+            $this->userStatsPerRequestCache[$cacheKey] = $stat;
+        }
+
+        return $this->userStatsPerRequestCache[$cacheKey];
+    }
+
     public function getStatValue(User $user, string $name): int
     {
-        $stat = $this->findOneBy([
-            'user' => $user,
-            'stat' => $name
-        ]);
+        $stat = $this->findOrCreate($user, $name);
 
-        return $stat ? $stat->getValue() : 0;
+        return $stat->getValue();
     }
 
     public function incrementStat(User $user, string $name, int $change = 1): UserStats
     {
-        $stat = $this->findOneBy([
-            'user' => $user,
-            'stat' => $name
-        ]);
-
-        if(!$stat)
-        {
-            $stat = (new UserStats())
-                ->setUser($user)
-                ->setStat($name)
-            ;
-
-            $this->getEntityManager()->persist($stat);
-        }
+        $stat = $this->findOrCreate($user, $name);
 
         $stat->increaseValue($change);
 

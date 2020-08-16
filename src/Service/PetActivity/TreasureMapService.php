@@ -3,20 +3,27 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\User;
+use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\TradeGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\PetChanges;
+use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\PetService;
 use App\Service\ResponseService;
+use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Location;
 
 class TreasureMapService
 {
@@ -25,10 +32,13 @@ class TreasureMapService
     private $userStatsRepository;
     private $em;
     private $petExperienceService;
+    private $userQuestRepository;
+    private $traderService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
-        EntityManagerInterface $em, PetExperienceService $petExperienceService
+        EntityManagerInterface $em, PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
+        TraderService $traderService
     )
     {
         $this->responseService = $responseService;
@@ -36,6 +46,8 @@ class TreasureMapService
         $this->userStatsRepository = $userStatsRepository;
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
+        $this->userQuestRepository = $userQuestRepository;
+        $this->traderService = $traderService;
     }
 
     public function doCetguelisTreasureMap(Pet $pet)
@@ -55,11 +67,7 @@ class TreasureMapService
             if(mt_rand(1, 3) === 1)
             {
                 $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' put the treasure map down.');
-                $pet->getTool()
-                    ->setLocation(LocationEnum::HOME)
-                    ->setModifiedOn()
-                ;
-                $pet->setTool(null);
+                $this->inventoryService->unequipPet($pet);
             }
         }
         else
@@ -189,5 +197,130 @@ class TreasureMapService
 
         if(mt_rand(1, 20) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);
+    }
+
+    public function doFluffmongerTrade(Pet $pet): PetActivityLog
+    {
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
+
+        if($this->inventoryService->loseItem('Fluff', $pet->getOwner(), LocationEnum::HOME, 1) === 1)
+        {
+            // had fluff!
+            $fluffTradedStat = $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER);
+
+            $fluffmongerSpecialTrades = [
+                'Behatting Scroll' => 20,
+                'Top Hat' => 40
+            ];
+
+            $possibleTrades = [];
+
+            foreach($fluffmongerSpecialTrades as $item=>$tradeCount)
+            {
+                if($fluffTradedStat->getValue() >= $tradeCount)
+                {
+                    $traded = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Fluffmonger Trade #' . $tradeCount, false);
+                    if(!$traded->getValue())
+                    {
+                        $traded->setValue(true);
+
+                        $possibleTrades = [
+                            [ 'item' => $item, 'weight' => 1, 'message' => 'Here\'s something special for you for our ' . GrammarFunctions::ordinalize($tradeCount) . ' trade!', 'locked' => true ],
+                        ];
+                    }
+                }
+            }
+
+            if(count($possibleTrades) === 0)
+            {
+                $foods = $this->getFluffmongerFlavorFoods($pet->getFavoriteFlavor());
+
+                $possibleTrades = [];
+
+                foreach($foods as $food)
+                    $possibleTrades[] = [ 'item' => $food, 'weight' => 50, 'message' => 'You really like ' . $food . ', eh? That works out perfectly: I really like Fluff!' ];
+
+                if($pet->getFood() + $pet->getJunk() > 0)
+                {
+                    if(!$pet->wantsSobriety())
+                        $possibleTrades[] = [ 'item' => 'Coffee Jelly', 'weight' => 50, 'message' => 'Those who partake of its wobbling flesh will never know sadness again,' ];
+
+                    $possibleTrades = array_merge($possibleTrades, [
+                        [ 'item' => 'Rice Flower', 'weight' => 50, 'message' => 'I hear these have some special uses, so I grow them for trading.' ],
+                        [ 'item' => 'Paper Bag', 'weight' => 50, 'message' => 'I really hope there isn\'t just another Fluff in here. Or roaches. (Which would be worse, actually?)' ],
+                        [ 'item' => 'Secret Seashell', 'weight' => 5, 'message' => 'It\'s a secret to everyone,' ],
+                        [ 'item' => 'Silica Grounds', 'weight' => 50, 'message' => 'I mean, you could just scoop some up on the beach, but if you insist...' ],
+                        [ 'item' => 'Magic Smoke', 'weight' => 35, 'message' => 'Are you going to make something with that?' ],
+                    ]);
+
+                    if($this->hasUnlockedTraderFoodTrades($pet->getOwner()))
+                        $possibleTrades[] = [ 'item' => 'Limestone', 'weight' => 20, 'message' => 'You working on a trade with those Tell Samarzhoustia merchants, or something?' ];
+
+                    if($pet->getOwner()->getUnlockedBeehive())
+                        $possibleTrades[] = [ 'item' => 'Red Clover', 'weight' => 40, 'message' => 'You keep bees? Is this Bee Fluff you gave me??' ];
+
+                    if($pet->getOwner()->getUnlockedFireplace())
+                        $possibleTrades[] = [ 'item' => 'Charcoal', 'weight' => 40, 'message' => 'Trying to keep that Fireplace going? Have you got a Fairy Ring, yet?' ];
+                }
+
+                if($fluffTradedStat->getValue() > 40)
+                {
+                    $possibleTrades = [
+                        [ 'item' => 'Top Hat', 'weight' => 15, 'message' => 'Want another hat? Can\'t blame you. It\'s a fine hat!' ],
+                    ];
+                }
+            }
+
+            $trade = ArrayFunctions::pick_one_weighted($possibleTrades, function($t) { return $t['weight']; });
+            $item = $trade['item'];
+            $message = $trade['message'];
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Fluffmonger, and traded Fluff for ' . $item . '. "' . $message . '" said the Fluffmonger.', '');
+
+            $inventoryItem = $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' received this in a trade with the Fluffmonger.', $activityLog);
+
+            if(array_key_exists('locked', $trade) && $trade['locked'])
+                $inventoryItem->setLockedToOwner(true);
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Fluffmonger, but didn\'t have any Fluff to trade! They put the Peacock Plushy down...', '');
+
+            // didn't have fluff
+            $this->inventoryService->unequipPet($pet);
+        }
+
+        return $activityLog;
+    }
+
+    private function hasUnlockedTraderFoodTrades(User $user): bool
+    {
+        if(!$user->getUnlockedTrader())
+            return false;
+
+        $groups = $this->traderService->getUnlockedTradeGroups($user);
+
+        return in_array(TradeGroupEnum::FOODS, $groups);
+    }
+
+    public function getFluffmongerFlavorFoods($flavor)
+    {
+        switch($flavor)
+        {
+            case FlavorEnum::EARTHY: return [ 'Fried Tomato', 'Matzah Bread', 'Smashed Potatoes' ];
+            case FlavorEnum::FRUITY: return [ 'Fried Tomato', 'Naner Yogurt', 'Red' ];
+            case FlavorEnum::TANNIC: return [ 'Chocolate Ice Cream', 'Warm Red Muffin', 'Mixed Nuts' ];
+            case FlavorEnum::SPICY: return [ 'Candied Ginger', 'Onion Rings', 'Shakshouka' ];
+            case FlavorEnum::CREAMY: return [ 'Chocolate Ice Cream', 'Coconut Half', 'Eggnog' ];
+            case FlavorEnum::MEATY: return [ 'Fish', 'Beans', 'Hakuna Frittata' ];
+            case FlavorEnum::PLANTY: return [ 'Shakshouka', 'Hakuna Frittata', 'Coconut Half' ];
+            case FlavorEnum::FISHY: return [ 'Battered, Fried Fish', 'Fermented Fish Onigiri' ];
+            case FlavorEnum::FLORAL: return [ 'Apricot', 'Berry Muffin', 'Orange Juice' ];
+            case FlavorEnum::FATTY: return [ 'Onion Rings', 'Eggnog', 'Hakuna Frittata' ];
+            case FlavorEnum::ONIONY: return [ 'Onion Rings', 'Hakuna Frittata', 'Instant Ramen (Dry)' ];
+            case FlavorEnum::CHEMICALLY: return [ 'Fermented Fish Onigiri', 'Century Egg', 'Tomato "Sushi"' ];
+        }
+
+        throw new \InvalidArgumentException('Ben forgot to code Fluffmonger foods for the flavor "' . $flavor . '"!');
     }
 }

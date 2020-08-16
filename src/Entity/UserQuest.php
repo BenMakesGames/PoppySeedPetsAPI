@@ -6,9 +6,11 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserQuestRepository")
- * @ORM\Table(indexes={
- *     @ORM\Index(name="name_idx", columns={"name"})
- * })
+ * @ORM\Table(
+ *    uniqueConstraints={
+ *        @ORM\UniqueConstraint(name="user_id_name_idx", columns={"user_id", "name"})
+ *    }
+ * )
  */
 class UserQuest
 {

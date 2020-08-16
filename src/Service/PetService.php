@@ -594,29 +594,8 @@ class PetService
 
         if($pet->getTool())
         {
-            if($pet->getTool()->getItem()->getName() === 'Cetgueli\'s Treasure Map')
-            {
-                $this->treasureMapService->doCetguelisTreasureMap($pet);
+            if($this->doTreasureMapAdventure($pet))
                 return;
-            }
-
-            if(mt_rand(1, 10) === 1 && $pet->getFood() > 0 && ($pet->getTool()->getItem()->getName() === 'Silver Keyblade' || $pet->getTool()->getItem()->getName() === 'Gold Keyblade'))
-            {
-                $this->treasureMapService->doKeybladeTower($pet);
-                return;
-            }
-
-            if($pet->getTool()->getItem()->getName() === '"Gold" Idol')
-            {
-                $this->treasureMapService->doGoldIdol($pet);
-                return;
-            }
-
-            if(mt_rand(1, 3) === 1 && $pet->getTool()->getItem()->getName() === 'Heartstone' && $this->heartDimensionService->canAdventure($pet))
-            {
-                $this->heartDimensionService->adventure($pet);
-                return;
-            }
         }
 
         if(mt_rand(1, 50) === 1)
@@ -676,6 +655,54 @@ class PetService
             case 'beanStalk': $this->beanStalkService->adventure($pet); break;
             default: $this->doNothing($pet); break;
         }
+    }
+
+    private function doTreasureMapAdventure(Pet $pet): bool
+    {
+        switch($pet->getTool()->getItem()->getName())
+        {
+            case 'Cetgueli\'s Treasure Map':
+                $this->treasureMapService->doCetguelisTreasureMap($pet);
+                return true;
+
+            case 'Silver Keyblade':
+            case 'Gold Keyblade':
+                if($pet->getFood() > 0 && mt_rand(1, 10) === 1)
+                {
+                    $this->treasureMapService->doKeybladeTower($pet);
+                    return true;
+                }
+
+                return false;
+
+            case 'Peacock Plushy':
+                if(mt_rand(1, 6) === 1 || $this->userStatsRepository->getStatValue($pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER) === 0)
+                {
+                    $this->treasureMapService->doFluffmongerTrade($pet);
+                    return true;
+                }
+
+                return false;
+
+            case '"Gold" Idol':
+                $this->treasureMapService->doGoldIdol($pet);
+                return true;
+
+            case 'Heartstone':
+                if(mt_rand(1, 3) === 1)
+                {
+                    if($this->heartDimensionService->canAdventure($pet))
+                        $this->heartDimensionService->adventure($pet);
+                    else
+                        $this->heartDimensionService->noAdventuresRemaining($pet);
+
+                    return true;
+                }
+
+                return false;
+        }
+
+        return false;
     }
 
     public function runSocialTime(Pet $pet): bool

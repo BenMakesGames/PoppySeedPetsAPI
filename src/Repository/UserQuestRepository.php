@@ -20,25 +20,34 @@ class UserQuestRepository extends ServiceEntityRepository
         parent::__construct($registry, UserQuest::class);
     }
 
+    private $userQuestPerRequestCache = [];
+
     public function findOrCreate(User $user, string $name, $default): UserQuest
     {
-        $record = $this->findOneBy([
-            'user' => $user,
-            'name' => $name,
-        ]);
+        $cacheKey = $user->getId() . '-' . $name;
 
-        if(!$record)
+        if(!array_key_exists($cacheKey, $this->userQuestPerRequestCache))
         {
-            $record = (new UserQuest())
-                ->setUser($user)
-                ->setName($name)
-                ->setValue($default)
-            ;
+            $record = $this->findOneBy([
+                'user' => $user,
+                'name' => $name,
+            ]);
 
-            $this->getEntityManager()->persist($record);
+            if(!$record)
+            {
+                $record = (new UserQuest())
+                    ->setUser($user)
+                    ->setName($name)
+                    ->setValue($default)
+                ;
+
+                $this->getEntityManager()->persist($record);
+            }
+
+            $this->userQuestPerRequestCache[$cacheKey] = $record;
         }
 
-        return $record;
+        return $this->userQuestPerRequestCache[$cacheKey];
     }
 
     // /**

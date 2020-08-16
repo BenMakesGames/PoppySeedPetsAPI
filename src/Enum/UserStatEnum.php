@@ -28,4 +28,5 @@ final class UserStatEnum
     const READ_A_SCROLL = 'Read a Scroll';
     const PETS_BIRTHED = 'Babies Born in Your House';
     const BURNT_LOGS_BROKEN = 'Broke Apart a Burnt Log';
+    const TRADED_WITH_THE_FLUFFMONGER = 'Fluff Traded to the Fluffmonger';
 }

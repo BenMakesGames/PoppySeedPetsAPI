@@ -144,6 +144,11 @@ class ItemTool
      */
     private $climbing = 0;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $leadsToAdventure;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -344,6 +349,9 @@ class ItemTool
                 $modifiers[] = ($value > 0 ? '+' : '') . $value . ' ' . $modifier;
         }
 
+        if($this->getLeadsToAdventure())
+            $modifiers[] = 'leads to adventure!';
+
         if($this->getProvidesLight())
             $modifiers[] = 'provides light';
 
@@ -482,6 +490,18 @@ class ItemTool
     public function setClimbing(int $climbing): self
     {
         $this->climbing = $climbing;
+
+        return $this;
+    }
+
+    public function getLeadsToAdventure(): ?bool
+    {
+        return $this->leadsToAdventure;
+    }
+
+    public function setLeadsToAdventure(bool $leadsToAdventure): self
+    {
+        $this->leadsToAdventure = $leadsToAdventure;
 
         return $this;
     }
