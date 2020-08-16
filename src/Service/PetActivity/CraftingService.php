@@ -1175,7 +1175,7 @@ class CraftingService
 
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->inventoryService->loseItem('Flying Grappling Hook', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->petCollectsItem('Grapping Hook', $pet, 'A Flying Grappling Hook lost its wings when ' . $pet->getName() . ' tried to make a Lassoscope. A plain Grappling Hook was all that remained...', $activityLog);
+            $this->inventoryService->petCollectsItem('Grappling Hook', $pet, 'A Flying Grappling Hook lost its wings when ' . $pet->getName() . ' tried to make a Lassoscope. A plain Grappling Hook was all that remained...', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-1);
             return $activityLog;
