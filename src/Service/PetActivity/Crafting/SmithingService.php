@@ -242,7 +242,7 @@ class SmithingService
                 'Yellow Scissors', 'Green Scissors'
             ]);
 
-            $this->inventoryService->loseItem('Tri-colored Scissors', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Tri-color Scissors', $pet->getOwner(), LocationEnum::HOME, 1);
             $pet
                 ->increaseEsteem(-mt_rand(2, 4))
                 ->increaseSafety(-2)
