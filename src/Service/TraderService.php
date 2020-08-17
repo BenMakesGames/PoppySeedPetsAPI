@@ -65,6 +65,12 @@ class TraderService
     private const ID_UPGRADE_YELLOW_PLASTIC_EGGS = 'upgradeYellowPlasticEgg';
     private const ID_UPGRADE_PINK_PLASTIC_EGGS = 'upgradePinkPlasticEgg';
     private const ID_FAIRY_SWARM = 'fairySwarm';
+    private const ID_PEACOCK_TO_FLUFF_HEART = 'peacockToFluffHeart';
+    private const ID_BULBUN_TO_FLUFF_HEART = 'bulbunToFluffHeart';
+    private const ID_SNEQO_TO_FLUFF_HEART = 'sneqoToFluffHeart';
+    private const ID_FLUFF_HEART_TO_PEACOCK = 'fluffHeartToPeacock';
+    private const ID_FLUFF_HEART_TO_BULBUN = 'fluffHeartToBulbun';
+    private const ID_FLUFF_HEART_TO_SNEQO = 'fluffHeartToSneqo';
 
     private const TRADER_NAMES = [
         // Saffron
@@ -216,6 +222,10 @@ class TraderService
                 case TradeGroupEnum::CURIOSITIES:
                     $title = 'Curiosities';
                     $trades = $this->getCuriositiesOffers($user);
+                    break;
+                case TradeGroupEnum::PLUSHIES:
+                    $title = 'Plushies';
+                    $trades = $this->getPlushyOffers($user);
                     break;
                 case TradeGroupEnum::GAMING:
                     $title = 'Portal';
@@ -643,6 +653,62 @@ class TraderService
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Music Note'), 7) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Musical Scales'), 1) ],
                 'I don\'t mind letting you in on a little Tell Samarzhoustian secret: you can do this "trade" yourself at home. Just combine 7 Music Notes.'
+            ),
+        ];
+    }
+
+    private function getPlushyOffers(User $user)
+    {
+        return [
+            new TraderOffer(
+                self::ID_PEACOCK_TO_FLUFF_HEART,
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Peacock Plushy'), 1) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1) ],
+                'These things are so cute...'
+            ),
+
+            new TraderOffer(
+                self::ID_BULBUN_TO_FLUFF_HEART,
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Bulbun Plushy'), 1) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1) ],
+                'These things are so cute...'
+            ),
+
+            new TraderOffer(
+                self::ID_SNEQO_TO_FLUFF_HEART,
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Sneqo Plushy'), 1) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1) ],
+                'These things are so cute...'
+            ),
+
+            new TraderOffer(
+                self::ID_FLUFF_HEART_TO_PEACOCK,
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1),
+                    TraderOfferCostOrYield::createMoney(10),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Peacock Plushy'), 1) ],
+                'These things are so cute...'
+            ),
+
+            new TraderOffer(
+                self::ID_FLUFF_HEART_TO_BULBUN,
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1),
+                    TraderOfferCostOrYield::createMoney(10),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Bulbun Plushy'), 1) ],
+                'These things are so cute...'
+            ),
+
+            new TraderOffer(
+                self::ID_FLUFF_HEART_TO_SNEQO,
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1),
+                    TraderOfferCostOrYield::createMoney(10),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Sneqo Plushy'), 1) ],
+                'These things are so cute...'
             ),
         ];
     }

@@ -147,7 +147,7 @@ class ItemTool
     /**
      * @ORM\Column(type="boolean")
      */
-    private $leadsToAdventure;
+    private $leadsToAdventure = false;
 
     public function getId(): ?int
     {
@@ -494,7 +494,7 @@ class ItemTool
         return $this;
     }
 
-    public function getLeadsToAdventure(): ?bool
+    public function getLeadsToAdventure(): bool
     {
         return $this->leadsToAdventure;
     }

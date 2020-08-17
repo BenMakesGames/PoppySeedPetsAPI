@@ -162,6 +162,11 @@ class UpsertItemCommand extends PoppySeedPetsCommand
 
             foreach(ItemTool::MODIFIER_FIELDS as $modifier)
                 $tool->{'set' . $modifier}($this->askInt(ucfirst($modifier) . '', $tool->{'get' . $modifier}()));
+
+            $tool->setProvidesLight($this->askBool('Provides light?', $tool->getProvidesLight()));
+            $tool->setProtectionFromHeat($this->askBool('Protects from heat?', $tool->getProtectionFromHeat()));
+            $tool->setIsRanged($this->askBool('Is ranged?', $tool->getIsRanged()));
+            $tool->setLeadsToAdventure($this->askBool('Leads to adventure?', $tool->getLeadsToAdventure()));
         }
         else
         {

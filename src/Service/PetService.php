@@ -675,6 +675,8 @@ class PetService
 
                 return false;
 
+            case 'Sneqo Plushy':
+            case 'Bulbun Plushy':
             case 'Peacock Plushy':
                 if(mt_rand(1, 6) === 1 || $this->userStatsRepository->getStatValue($pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER) === 0)
                 {

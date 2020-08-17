@@ -52,6 +52,11 @@ abstract class PoppySeedPetsCommand extends Command
         return $this->ask($question);
     }
 
+    protected function askBool(string $prompt, int $defaultValue): int
+    {
+        return $this->confirm($prompt, $defaultValue);
+    }
+
     protected function askString(string $prompt, ?string $defaultValue, callable $constraint = null): string
     {
         if($defaultValue === null) $defaultValue = '';

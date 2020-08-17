@@ -11,5 +11,6 @@ final class TradeGroupEnum
     public const GAMING = 4;
     public const BOX_BOX = 5;
     public const CURIOSITIES = 6;
+    public const PLUSHIES = 7;
 
 }
