@@ -23,7 +23,7 @@ class UserStats
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\user", inversedBy="stats")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="stats")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
