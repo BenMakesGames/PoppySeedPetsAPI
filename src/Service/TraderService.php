@@ -6,6 +6,7 @@ use App\Entity\TradesUnlocked;
 use App\Entity\User;
 use App\Enum\CostOrYieldTypeEnum;
 use App\Enum\LocationEnum;
+use App\Enum\TradeEnum;
 use App\Enum\TradeGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
@@ -18,60 +19,6 @@ use App\Repository\UserStatsRepository;
 
 class TraderService
 {
-    private const ID_LEVEL_2_SWORD = 'level2Sword';
-    private const ID_RUSTY_RAPIER = 'rustyRapier';
-    private const ID_GREENHOUSE_DEED = 'greenhouseDeed';
-    private const ID_COOKING_BUDDY = 'cookingBuddy';
-    private const ID_QUINT_FOR_MOON_PEARL = 'quintForMoonPearl';
-    private const ID_SELL_LASER_GUIDED_SWORD = 'sellLaserGuidedSword';
-    private const ID_TRIDENT_FOR_BAG_OF_BEANS = 'bagOfBeans';
-    private const ID_QUINT_FOR_FEATHERS = 'quintForFeathers';
-    private const ID_FEATHERS_FOR_QUINT = 'feathersForQuint';
-    private const ID_GET_YOGURT = 'buyYogurt';
-    private const ID_SELL_YOGURT = 'sellYogurt';
-    private const ID_NOT_RED_GOLD_1 = 'notRedGold1';
-    private const ID_NOT_RED_GOLD_2 = 'notRedGold2';
-    private const ID_GLASS_FOR_KETCHUP = 'glassForKetchup';
-    private const ID_MUSICAL_SCALES = 'musicalScales';
-    private const ID_BEAN_MILK_FOR_PAPER = 'beanMilkForPaper';
-    private const ID_TOFU_FOR_PAPER = 'tofuForPaper';
-    private const ID_BLACKONITE = 'blackonite';
-    private const ID_LIMESTONE_FOR_ROOTS = 'limestoneForRoots';
-    private const ID_BAG_FOR_PAINTED_ROD = 'bagForPaintedRod';
-    private const ID_3D_PRINTER = '3DPrinterPlz';
-    private const ID_BLUE_CANDY_FOR_WITCH_HAZEL = 'blueCandyForWitchHazel';
-    private const ID_GOLD_TO_SILVER_1 = 'goldToSilver1';
-    private const ID_GOLD_TO_SILVER_2 = 'goldToSilver2';
-    private const ID_IRON_TO_SILVER_1 = 'ironToSilver1';
-    private const ID_IRON_TO_SILVER_2 = 'ironToSilver2';
-    private const ID_SILVER_TO_IRON_1 = 'silverToIron1';
-    private const ID_SILVER_TO_IRON_2 = 'silverToIron2';
-    private const ID_SILVER_TO_GOLD_1 = 'silverToGold1';
-    private const ID_SILVER_TO_GOLD_2 = 'silverToGold2';
-    private const ID_BOX_BOX_FOR_RIDICULOUS = 'boxBox1';
-    private const ID_BOX_BOX_FOR_FLYING_BINDLE = 'boxBox2';
-    private const ID_BOX_BOX_FOR_GOLD_TRIFECTA = 'boxBox3';
-    private const ID_BOX_BOX_FOR_L33T_H4XX0R = 'boxBox4';
-    private const ID_GLOWING_D4 = 'glowingD4';
-    private const ID_GLOWING_D6_A = 'glowingD6a';
-    private const ID_GLOWING_D6_B = 'glowingD6b';
-    private const ID_GLOWING_D8 = 'glowingD8';
-    private const ID_MONEY_SINK = 'moneySink';
-    private const ID_GARBAGE_DISPOSAL = 'garbageDisposal';
-    private const ID_UNICORN_HORN = 'unicornHorn';
-    private const ID_TINFOIL_HAT = 'tinfoilHat';
-    private const ID_KEY_RING = 'keyRing';
-    private const ID_UPGRADE_BLUE_PLASTIC_EGGS = 'upgradeBluePlasticEgg';
-    private const ID_UPGRADE_YELLOW_PLASTIC_EGGS = 'upgradeYellowPlasticEgg';
-    private const ID_UPGRADE_PINK_PLASTIC_EGGS = 'upgradePinkPlasticEgg';
-    private const ID_FAIRY_SWARM = 'fairySwarm';
-    private const ID_PEACOCK_TO_FLUFF_HEART = 'peacockToFluffHeart';
-    private const ID_BULBUN_TO_FLUFF_HEART = 'bulbunToFluffHeart';
-    private const ID_SNEQO_TO_FLUFF_HEART = 'sneqoToFluffHeart';
-    private const ID_FLUFF_HEART_TO_PEACOCK = 'fluffHeartToPeacock';
-    private const ID_FLUFF_HEART_TO_BULBUN = 'fluffHeartToBulbun';
-    private const ID_FLUFF_HEART_TO_SNEQO = 'fluffHeartToSneqo';
-
     private const TRADER_NAMES = [
         // Saffron
         'Azafrán', 'Zaeafran',
@@ -250,28 +197,28 @@ class TraderService
     {
         return [
             new TraderOffer(
-                self::ID_BOX_BOX_FOR_RIDICULOUS,
+                TradeEnum::ID_BOX_BOX_FOR_RIDICULOUS,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('This is Getting Ridiculous'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Box Box'), 1) ],
                 'I honestly don\'t remember what exactly is in here. Memory of a fish, I suppose.'
             ),
 
             new TraderOffer(
-                self::ID_BOX_BOX_FOR_FLYING_BINDLE,
+                TradeEnum::ID_BOX_BOX_FOR_FLYING_BINDLE,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Flying Bindle'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Box Box'), 1) ],
                 'I honestly don\'t remember what exactly is in here. Memory of a fish, I suppose.'
             ),
 
             new TraderOffer(
-                self::ID_BOX_BOX_FOR_GOLD_TRIFECTA,
+                TradeEnum::ID_BOX_BOX_FOR_GOLD_TRIFECTA,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Trifecta'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Box Box'), 1) ],
                 'I honestly don\'t remember what exactly is in here. Memory of a fish, I suppose.'
             ),
 
             new TraderOffer(
-                self::ID_BOX_BOX_FOR_L33T_H4XX0R,
+                TradeEnum::ID_BOX_BOX_FOR_L33T_H4XX0R,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('l33t h4xx0r'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Box Box'), 1) ],
                 'I honestly don\'t remember what exactly is in here. Memory of a fish, I suppose.'
@@ -283,35 +230,35 @@ class TraderService
     {
         return [
             new TraderOffer(
-                self::ID_GLOWING_D4,
+                TradeEnum::ID_GLOWING_D4,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Iron Sword'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Glowing Four-sided Die'), 1) ],
                 'To be honest, those dice kind of give me the willies. And only four sides? That\'s just not right.'
             ),
 
             new TraderOffer(
-                self::ID_GLOWING_D6_A,
+                TradeEnum::ID_GLOWING_D6_A,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Dragon Flag'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Glowing Six-sided Die'), 1) ],
                 'To be honest, those dice kind of give me the willies.'
             ),
 
             new TraderOffer(
-                self::ID_GLOWING_D6_B,
+                TradeEnum::ID_GLOWING_D6_B,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Sun Flag'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Glowing Six-sided Die'), 1) ],
                 'To be honest, those dice kind of give me the willies.'
             ),
 
             new TraderOffer(
-                self::ID_GLOWING_D8,
+                TradeEnum::ID_GLOWING_D8,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Glass Pendulum'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Glowing Eight-sided Die'), 1) ],
                 'To be honest, those dice kind of give me the willies. And _eight_ sides?? It\'s unnatural.'
             ),
 
             new TraderOffer(
-                self::ID_KEY_RING,
+                TradeEnum::ID_KEY_RING,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Iron Key'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Key'), 1),
@@ -344,7 +291,7 @@ class TraderService
             ][($user->getId() + (int)date('Y')) % 3];
 
             $offers[] = new TraderOffer(
-                self::ID_UPGRADE_BLUE_PLASTIC_EGGS,
+                TradeEnum::ID_UPGRADE_BLUE_PLASTIC_EGGS,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Blue Plastic Egg'), 10)
                 ],
@@ -357,7 +304,7 @@ class TraderService
             );
 
             $offers[] = new TraderOffer(
-                self::ID_UPGRADE_YELLOW_PLASTIC_EGGS,
+                TradeEnum::ID_UPGRADE_YELLOW_PLASTIC_EGGS,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Yellow Plastic Egg'), 5),
                 ],
@@ -370,7 +317,7 @@ class TraderService
             );
 
             $offers[] = new TraderOffer(
-                self::ID_UPGRADE_PINK_PLASTIC_EGGS,
+                TradeEnum::ID_UPGRADE_PINK_PLASTIC_EGGS,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Pink Plastic Egg'), 2),
                 ],
@@ -385,7 +332,7 @@ class TraderService
         if($now->format('M') === 'Oct')
         {
             $offers[] = new TraderOffer(
-                self::ID_UNICORN_HORN,
+                TradeEnum::ID_UNICORN_HORN,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Talon'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Quintessence'), 1),
@@ -397,7 +344,7 @@ class TraderService
             );
 
             $offers[] = new TraderOffer(
-                self::ID_TINFOIL_HAT,
+                TradeEnum::ID_TINFOIL_HAT,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Toadstool'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Tea Leaves'), 1),
@@ -414,7 +361,7 @@ class TraderService
         if($this->calendarService->isTalkLikeAPirateDay())
         {
             $offers[] = new TraderOffer(
-                self::ID_RUSTY_RAPIER,
+                TradeEnum::ID_RUSTY_RAPIER,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Scales'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Seaweed'), 1),
@@ -434,7 +381,7 @@ class TraderService
     {
         $offers = [
             new TraderOffer(
-                self::ID_GOLD_TO_SILVER_1,
+                TradeEnum::ID_GOLD_TO_SILVER_1,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Bar'), 1),
                     TraderOfferCostOrYield::createRecyclingPoints(3),
@@ -444,7 +391,7 @@ class TraderService
             ),
 
             new TraderOffer(
-                self::ID_GOLD_TO_SILVER_2,
+                TradeEnum::ID_GOLD_TO_SILVER_2,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Ore'), 1),
                     TraderOfferCostOrYield::createRecyclingPoints(2),
@@ -454,7 +401,7 @@ class TraderService
             ),
 
             new TraderOffer(
-                self::ID_IRON_TO_SILVER_1,
+                TradeEnum::ID_IRON_TO_SILVER_1,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Iron Bar'), 1),
                     TraderOfferCostOrYield::createRecyclingPoints(3),
@@ -466,7 +413,7 @@ class TraderService
             ),
 
             new TraderOffer(
-                self::ID_IRON_TO_SILVER_2,
+                TradeEnum::ID_IRON_TO_SILVER_2,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Iron Ore'), 1),
                     TraderOfferCostOrYield::createRecyclingPoints(2),
@@ -478,7 +425,7 @@ class TraderService
             ),
 
             new TraderOffer(
-                self::ID_SILVER_TO_IRON_1,
+                TradeEnum::ID_SILVER_TO_IRON_1,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Bar'), 1),
                     TraderOfferCostOrYield::createRecyclingPoints(3),
@@ -490,7 +437,7 @@ class TraderService
             ),
 
             new TraderOffer(
-                self::ID_SILVER_TO_IRON_2,
+                TradeEnum::ID_SILVER_TO_IRON_2,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Ore'), 1),
                     TraderOfferCostOrYield::createRecyclingPoints(2),
@@ -502,7 +449,7 @@ class TraderService
             ),
 
             new TraderOffer(
-                self::ID_SILVER_TO_GOLD_1,
+                TradeEnum::ID_SILVER_TO_GOLD_1,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Bar'), 1),
                     TraderOfferCostOrYield::createRecyclingPoints(3),
@@ -514,7 +461,7 @@ class TraderService
             ),
 
             new TraderOffer(
-                self::ID_SILVER_TO_GOLD_2,
+                TradeEnum::ID_SILVER_TO_GOLD_2,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Ore'), 1),
                     TraderOfferCostOrYield::createRecyclingPoints(2),
@@ -533,7 +480,7 @@ class TraderService
     {
         return [
             new TraderOffer(
-                self::ID_BLACKONITE,
+                TradeEnum::ID_BLACKONITE,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Charcoal'), 2),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Dark Matter'), 2),
@@ -544,7 +491,7 @@ class TraderService
                 'The technique for forging Blackonite is unknown, even to Tell Samarzhoustia. But we _have_ established trade with a creature that knows the secret. The Charcoal, etc, is essentially an offering.'
             ),
             new TraderOffer(
-                self::ID_FAIRY_SWARM,
+                TradeEnum::ID_FAIRY_SWARM,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fairy Ring'), 3),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Quinacridone Magenta Dye'), 1),
@@ -559,19 +506,19 @@ class TraderService
     {
         return [
             new TraderOffer(
-                self::ID_COOKING_BUDDY,
+                TradeEnum::ID_COOKING_BUDDY,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Moon Pearl'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Cooking Buddy'), 1) ],
                 'That\'s no knock-off! Tell Samarzhoustia trades directly with the Eridanus Federation!'
             ),
             new TraderOffer(
-                self::ID_BAG_FOR_PAINTED_ROD,
+                TradeEnum::ID_BAG_FOR_PAINTED_ROD,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Painted Fishing Rod'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Paper Bag'), 1) ],
                 'I just can\'t believe humans are allowed to carry a rod without a permit.'
             ),
             new TraderOffer(
-                self::ID_LIMESTONE_FOR_ROOTS,
+                TradeEnum::ID_LIMESTONE_FOR_ROOTS,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Limestone'), 2),
                 ],
@@ -584,7 +531,7 @@ class TraderService
             ),
 
             new TraderOffer(
-                self::ID_GLASS_FOR_KETCHUP,
+                TradeEnum::ID_GLASS_FOR_KETCHUP,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Glass'), 1 ) ],
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Sweet Beet'), 1),
@@ -595,21 +542,21 @@ class TraderService
             ),
 
             new TraderOffer(
-                self::ID_BEAN_MILK_FOR_PAPER,
+                TradeEnum::ID_BEAN_MILK_FOR_PAPER,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Bean Milk'), 1 ) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Paper'), 1) ],
                 'We make something similar in Tell Samarzhoustia, but your Land Beans have a subtler flavor that\'s really starting to catch on.'
             ),
 
             new TraderOffer(
-                self::ID_TOFU_FOR_PAPER,
+                TradeEnum::ID_TOFU_FOR_PAPER,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Tofu'), 1 ) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Paper'), 3) ],
                 'We make something similar in Tell Samarzhoustia, but your Land Beans have a subtler flavor that\'s really starting to catch on.'
             ),
 
             new TraderOffer(
-                self::ID_BLUE_CANDY_FOR_WITCH_HAZEL,
+                TradeEnum::ID_BLUE_CANDY_FOR_WITCH_HAZEL,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Rock Candy'), 1 ) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Witch-hazel'), 1) ],
                 'As you can imagine, Rock Candy doesn\'t last long in Tell Samarzhoustia. It has to be packaged - and consumed - very carefully. It\'s all a bit bougie, really. Not that I mind: trade\'s trade!'
@@ -621,35 +568,35 @@ class TraderService
     {
         return [
             new TraderOffer(
-                self::ID_MONEY_SINK,
+                TradeEnum::ID_MONEY_SINK,
                 [ TraderOfferCostOrYield::createMoney(1000) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Money Sink'), 1) ],
                 'The Museum\'s curator insisted I make this offer...'
             ),
 
             new TraderOffer(
-                self::ID_GARBAGE_DISPOSAL,
+                TradeEnum::ID_GARBAGE_DISPOSAL,
                 [ TraderOfferCostOrYield::createRecyclingPoints(1000) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Garbage Disposal'), 1) ],
                 'The Museum\'s curator insisted I make this offer...'
             ),
 
             new TraderOffer(
-                self::ID_LEVEL_2_SWORD,
+                TradeEnum::ID_LEVEL_2_SWORD,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Secret Seashell'), 20) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Level 2 Sword'), 1) ],
                 'It\'s dangerous to go alone. Take this.'
             ),
 
             new TraderOffer(
-                self::ID_3D_PRINTER,
+                TradeEnum::ID_3D_PRINTER,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Black Baabble'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('3D Printer'), 1) ],
                 'Please use this responsibly, human. The amount of Plastic ending up in the oceans these days is a bit troubling.'
             ),
 
             new TraderOffer(
-                self::ID_MUSICAL_SCALES,
+                TradeEnum::ID_MUSICAL_SCALES,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Music Note'), 7) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Musical Scales'), 1) ],
                 'I don\'t mind letting you in on a little Tell Samarzhoustian secret: you can do this "trade" yourself at home. Just combine 7 Music Notes.'
@@ -661,54 +608,71 @@ class TraderService
     {
         return [
             new TraderOffer(
-                self::ID_PEACOCK_TO_FLUFF_HEART,
+                TradeEnum::ID_PEACOCK_TO_FLUFF_HEART,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Peacock Plushy'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1) ],
                 'These things are so cute...'
             ),
 
             new TraderOffer(
-                self::ID_BULBUN_TO_FLUFF_HEART,
+                TradeEnum::ID_BULBUN_TO_FLUFF_HEART,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Bulbun Plushy'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1) ],
                 'These things are so cute...'
             ),
 
             new TraderOffer(
-                self::ID_SNEQO_TO_FLUFF_HEART,
+                TradeEnum::ID_SNEQO_TO_FLUFF_HEART,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Sneqo Plushy'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1) ],
                 'These things are so cute...'
             ),
 
             new TraderOffer(
-                self::ID_FLUFF_HEART_TO_PEACOCK,
+                TradeEnum::ID_RAINBOW_DOLPHIN_TO_FLUFF_HEART,
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Rainbow Dolphin Plushy'), 1) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1) ],
+                'These things are so cute...'
+            ),
+
+            new TraderOffer(
+                TradeEnum::ID_FLUFF_HEART_TO_PEACOCK,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1),
                     TraderOfferCostOrYield::createMoney(10),
                 ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Peacock Plushy'), 1) ],
-                'These things are so cute...'
+                'Such a classic.'
             ),
 
             new TraderOffer(
-                self::ID_FLUFF_HEART_TO_BULBUN,
+                TradeEnum::ID_FLUFF_HEART_TO_BULBUN,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1),
                     TraderOfferCostOrYield::createMoney(10),
                 ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Bulbun Plushy'), 1) ],
-                'These things are so cute...'
+                'These make great body pillows. Well, I guess it is a bit small for you, though.'
             ),
 
             new TraderOffer(
-                self::ID_FLUFF_HEART_TO_SNEQO,
+                TradeEnum::ID_FLUFF_HEART_TO_SNEQO,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1),
                     TraderOfferCostOrYield::createMoney(10),
                 ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Sneqo Plushy'), 1) ],
-                'These things are so cute...'
+                'I don\'t know why these things are plushies. They have arms! Snakes shouldn\'t have arms!'
+            ),
+
+            new TraderOffer(
+                TradeEnum::ID_FLUFF_HEART_TO_RAINBOW_DOLPHIN,
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1),
+                    TraderOfferCostOrYield::createMoney(12),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Rainbow Dolphin Plushy'), 1) ],
+                'The extra 2~~m~~ covers a tax imposed by the Great Rainbow Dolphin Empire.'
             ),
         ];
     }
@@ -722,7 +686,7 @@ class TraderService
         if($dayOfWeek === 'Mon' || $leapDay)
         {
             $offers[] = new TraderOffer(
-                self::ID_QUINT_FOR_MOON_PEARL,
+                TradeEnum::ID_QUINT_FOR_MOON_PEARL,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Wings'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Benjamin Franklin'), 1),
@@ -736,7 +700,7 @@ class TraderService
         if($dayOfWeek === 'Tue' || $leapDay)
         {
             $offers[] = new TraderOffer(
-                self::ID_SELL_LASER_GUIDED_SWORD,
+                TradeEnum::ID_SELL_LASER_GUIDED_SWORD,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Laser-guided Sword'), 1) ],
                 [ TraderOfferCostOrYield::createMoney(50) ],
                 'Did you know "Tuesday" is named for a god of combat, and justice?'
@@ -746,7 +710,7 @@ class TraderService
         if($dayOfWeek === 'Wed' || $leapDay)
         {
             $offers[] = new TraderOffer(
-                self::ID_QUINT_FOR_FEATHERS,
+                TradeEnum::ID_QUINT_FOR_FEATHERS,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Feathers'), 3),
                     TraderOfferCostOrYield::createMoney(5),
@@ -756,7 +720,7 @@ class TraderService
             );
 
             $offers[] = new TraderOffer(
-                self::ID_FEATHERS_FOR_QUINT,
+                TradeEnum::ID_FEATHERS_FOR_QUINT,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Quintessence'), 1),
                     TraderOfferCostOrYield::createMoney(5),
@@ -769,7 +733,7 @@ class TraderService
         if($dayOfWeek === 'Thu' || $leapDay)
         {
             $offers[] = new TraderOffer(
-                self::ID_TRIDENT_FOR_BAG_OF_BEANS,
+                TradeEnum::ID_TRIDENT_FOR_BAG_OF_BEANS,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Ceremonial Trident'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Bag of Beans'), 1) ],
                 $dayOfWeek === 'Thu' ? 'If it were up to me, today would be called Poseidon\'s Day, but it wasn\'t, so fine: Thor\'s Day it is, I guess.' : 'It\'s like all the rules go out the window on leap days!'
@@ -779,7 +743,7 @@ class TraderService
         if($dayOfWeek === 'Fri' || $leapDay)
         {
             $offers[] = new TraderOffer(
-                self::ID_NOT_RED_GOLD_1,
+                TradeEnum::ID_NOT_RED_GOLD_1,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Wheat Flower'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Quintessence'), 1),
@@ -792,7 +756,7 @@ class TraderService
             );
 
             $offers[] = new TraderOffer(
-                self::ID_NOT_RED_GOLD_2,
+                TradeEnum::ID_NOT_RED_GOLD_2,
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Rice Flower'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Quintessence'), 1),
@@ -808,7 +772,7 @@ class TraderService
         if($dayOfWeek === 'Sat' || $leapDay)
         {
             $offers[] = new TraderOffer(
-                self::ID_GET_YOGURT,
+                TradeEnum::ID_GET_YOGURT,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Flute'), 1) ],
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Plain Yogurt'), 1),
@@ -818,7 +782,7 @@ class TraderService
             );
 
             $offers[] = new TraderOffer(
-                self::ID_SELL_YOGURT,
+                TradeEnum::ID_SELL_YOGURT,
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Plain Yogurt'), 2) ],
                 [ TraderOfferCostOrYield::createMoney(5) ],
                 'I\'m not sure what this deal is about. Those Satyrs put me up to it. I guess they like yogurt?'
@@ -828,7 +792,7 @@ class TraderService
         if($dayOfWeek === 'Sun')
         {
             $offers[] = new TraderOffer(
-                self::ID_GREENHOUSE_DEED,
+                TradeEnum::ID_GREENHOUSE_DEED,
                 [ TraderOfferCostOrYield::createMoney(100) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Deed for Greenhouse Plot'), 1) ],
                 "Oh, fun, a greenhouse! What kind of Kelp will you be gr-- oh. Right, I suppose you'll just be growing Landweed, and such.\n\nWell.\n\nHave fun with that, I suppose."
