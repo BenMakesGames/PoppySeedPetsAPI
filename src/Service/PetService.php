@@ -675,6 +675,7 @@ class PetService
 
                 return false;
 
+            case 'Rainbow Dolphin Plushy':
             case 'Sneqo Plushy':
             case 'Bulbun Plushy':
             case 'Peacock Plushy':
