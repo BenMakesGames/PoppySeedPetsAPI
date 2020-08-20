@@ -601,6 +601,17 @@ class TraderService
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Musical Scales'), 1) ],
                 'I don\'t mind letting you in on a little Tell Samarzhoustian secret: you can do this "trade" yourself at home. Just combine 7 Music Notes.'
             ),
+
+            new TraderOffer(
+                TradeEnum::ID_RINGS_ON_STRINGS,
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Ring'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Planetary Ring'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('String'), 1)
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Rings on Strings'), 1) ],
+                'This item feels kind of silly, doesn\'t it? Well, I suppose it\'s not for me to say.'
+            ),
         ];
     }
 

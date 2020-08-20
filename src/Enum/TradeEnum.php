@@ -20,6 +20,7 @@ class TradeEnum
     public const ID_NOT_RED_GOLD_2 = 'notRedGold2';
     public const ID_GLASS_FOR_KETCHUP = 'glassForKetchup';
     public const ID_MUSICAL_SCALES = 'musicalScales';
+    public const ID_RINGS_ON_STRINGS = 'ringsOnStrings';
     public const ID_BEAN_MILK_FOR_PAPER = 'beanMilkForPaper';
     public const ID_TOFU_FOR_PAPER = 'tofuForPaper';
     public const ID_BLACKONITE = 'blackonite';
