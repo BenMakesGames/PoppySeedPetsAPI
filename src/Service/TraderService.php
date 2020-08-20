@@ -607,10 +607,11 @@ class TraderService
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Ring'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Planetary Ring'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Onion Rings'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('String'), 1)
                 ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Rings on Strings'), 1) ],
-                'This item feels kind of silly, doesn\'t it? Well, I suppose it\'s not for me to say.'
+                'This item feels kind of silly, doesn\'t it? Well, I suppose it\'s not for me to say. Oh, and thanks for the Onion Rings. I was feeling a little peckish.'
             ),
         ];
     }
