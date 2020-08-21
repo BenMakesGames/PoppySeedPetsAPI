@@ -284,7 +284,7 @@ class TreasureMapService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Fluffmonger, but didn\'t have any Fluff to trade! They put the Peacock Plushy down...', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Fluffmonger, but didn\'t have any Fluff to trade! They put the ' . $pet->getTool()->getItem()->getName() . ' down...', '');
 
             // didn't have fluff
             $this->inventoryService->unequipPet($pet);
