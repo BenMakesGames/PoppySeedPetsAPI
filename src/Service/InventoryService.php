@@ -240,7 +240,7 @@ class InventoryService
 
     public function petAttractsRandomBug(Pet $pet, $bugName = null): ?Inventory
     {
-        if($pet->getTool() && $pet->getTool()->getItem()->getName() === 'Debugger')
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool()->getPreventsBugs())
             return null;
 
         if($bugName === null)
@@ -248,22 +248,22 @@ class InventoryService
 
         $bug = $this->itemRepository->findOneByName($bugName);
 
-        $hasNet = $pet->getTool() && $pet->getTool()->getItem()->getName() === 'Bug-catching Net';
+        $attractsBugs = $pet->getTool() && $pet->getTool()->getItem()->getTool()->getAttractsBugs();
 
-        $bugs = $hasNet ? 2 : 1;
-        $comment = $hasNet ? $pet->getName() . ' caught this in their ' .$pet->getTool()->getItem()->getName() . '!' : 'Ah! How\'d this get inside?!';
+        $bugs = $attractsBugs ? 2 : 1;
+        $comment = $attractsBugs ? $pet->getName() . ' caught this in their ' . $pet->getTool()->getItem()->getName() . '!' : 'Ah! How\'d this get inside?!';
         $inventory = null;
 
         for($i = 0; $i < $bugs; $i++)
         {
-            $location = (!$hasNet && $pet->getOwner()->getUnlockedBasement() && mt_rand(1, 4) === 1)
+            $location = (!$attractsBugs && $pet->getOwner()->getUnlockedBasement() && mt_rand(1, 4) === 1)
                 ? LocationEnum::BASEMENT
                 : LocationEnum::HOME
             ;
 
             $inventory = $this->receiveItem($bug, $pet->getOwner(), null, $comment, $location);
 
-            if(!$hasNet && $bugName === 'Spider')
+            if(!$attractsBugs && $bugName === 'Spider')
                 $this->receiveItem('Cobweb', $pet->getOwner(), null, 'Cobwebs?! Some Spider must have made this...', $location);
         }
 

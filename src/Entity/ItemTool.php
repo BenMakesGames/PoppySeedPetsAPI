@@ -149,6 +149,16 @@ class ItemTool
      */
     private $leadsToAdventure = false;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $preventsBugs = false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $attractsBugs = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -369,6 +379,12 @@ class ItemTool
                 $modifiers[] = 'when the pet obtains ' . $this->getWhenGather()->getName() . ', it also gets ' . $this->getWhenGatherAlsoGather()->getName();
         }
 
+        if($this->getAttractsBugs())
+            $modifiers[] = 'when the pet obtains any bug, it gets another of the same bug';
+
+        if($this->getPreventsBugs())
+            $modifiers[] = 'prevents bugs from following the pet home';
+
         if($this->getIsRanged())
             $modifiers[] = 'is only useful at a distance';
 
@@ -502,6 +518,30 @@ class ItemTool
     public function setLeadsToAdventure(bool $leadsToAdventure): self
     {
         $this->leadsToAdventure = $leadsToAdventure;
+
+        return $this;
+    }
+
+    public function getPreventsBugs(): ?bool
+    {
+        return $this->preventsBugs;
+    }
+
+    public function setPreventsBugs(bool $preventsBugs): self
+    {
+        $this->preventsBugs = $preventsBugs;
+
+        return $this;
+    }
+
+    public function getAttractsBugs(): ?bool
+    {
+        return $this->attractsBugs;
+    }
+
+    public function setAttractsBugs(bool $attractsBugs): self
+    {
+        $this->attractsBugs = $attractsBugs;
 
         return $this;
     }

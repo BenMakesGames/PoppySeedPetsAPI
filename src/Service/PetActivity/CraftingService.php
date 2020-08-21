@@ -105,6 +105,9 @@ class CraftingService
                     $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createHarvestStaff', 10);
             }
 
+            if(array_key_exists('Cobweb', $quantities))
+                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createBugCatchersNet', 10);
+
             if(array_key_exists('Glue', $quantities) && (array_key_exists('Wheat', $quantities) || array_key_exists('Rice', $quantities)))
                 $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createStrawBroom', 10);
 

@@ -213,6 +213,46 @@ class StickCraftingService
         }
     }
 
+    public function createBugCatchersNet(Pet $pet): PetActivityLog
+    {
+        $craftsCheck = mt_rand(1, 20 + max($pet->getCrafts(), $pet->getSkills()->getNature()) + $pet->getDexterity() + $pet->getIntelligence());
+
+        if($craftsCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            if(mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('Cobweb', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Bug-catcher\'s Net, but a passing fly got stuck in the Cobweb, and tangled it up! >:(', '');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Bug catcher\'s Net, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
+            }
+        }
+        else if($craftsCheck >= 13)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Cobweb', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Bug-catcher\'s Net.', '');
+            $this->inventoryService->petCollectsItem('Bug-catcher\'s Net', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Bug-catcher\'s Net, but couldn\'t quite figure it out.', 'icons/activity-logs/confused');
+        }
+    }
+
     /**
      * @throws EnumInvalidValueException
      */
