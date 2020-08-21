@@ -105,7 +105,7 @@ class Protocol7Service
             $activityLog->setChanges($changes->compare($pet));
 
         if(mt_rand(1, 75) === 1)
-            $this->inventoryService->petAttractsRandomBug($pet);
+            $this->inventoryService->petAttractsRandomBug($pet, 'Beta Bug');
     }
 
     /**
