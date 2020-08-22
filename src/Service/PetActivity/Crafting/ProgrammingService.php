@@ -105,6 +105,11 @@ class ProgrammingService
             {
                 $possibilities[] = new ActivityCallback($this, 'createSentientBeetle', 10);
             }
+
+            if(array_key_exists('Iron Bar', $quantities) && array_key_exists('Plastic', $quantities) && array_key_exists('Gravitational Waves', $quantities))
+            {
+                $possibilities[] = new ActivityCallback($this, 'createGravitonGun', 10);
+            }
         }
 
         if(array_key_exists('Magic Smoke', $quantities))
@@ -790,6 +795,52 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to hack a Macintosh, but couldn\'t get anywhere.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createGravitonGun(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll === 1)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+
+            $this->inventoryService->loseItem('Lightning in a Bottle', $pet->getOwner(), LocationEnum::HOME, 1);
+            $pet->increaseSafety(-mt_rand(4, 8));
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to engineer a Graviton Gun, but the lightning escaped, and ' . $pet->getName() . ' got shocked :(', '');
+            return $activityLog;
+        }
+        else if($roll === 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+
+            $this->inventoryService->loseItem('Gravitational Waves', $pet->getOwner(), LocationEnum::HOME, 1);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to engineer a Graviton Gun, but the Gravitational Waves became too weak to detect :(', '');
+            return $activityLog;
+        }
+        else if($roll >= 24)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::PROGRAM, true);
+            $this->inventoryService->loseItem('Lightning in a Bottle', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Gravitational Waves', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(4);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Graviton Gun! Neat!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 24)
+            ;
+            $this->inventoryService->petCollectsItem('Graviton Gun', $pet, $pet->getName() . ' engineered this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' had an idea for how to make an Graviton Gun, but couldn\'t quite figure out the physics...', 'icons/activity-logs/confused');
         }
     }
 }

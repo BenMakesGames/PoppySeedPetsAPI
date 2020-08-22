@@ -57,7 +57,7 @@ class AstronomyClubService
     private const SINGULAR_NOUN_LIST = [
         'Phenomenon', 'Sun', 'Star', 'Galaxy', 'Nebula', 'Nova', 'Sphere', 'Expanse', 'Void', 'Shift', 'Particle',
         'Positron', 'Spin', 'String', 'Brane', 'Energy', 'Mass', 'Graviton', 'Field', 'Limit', 'Horizon', 'Plurality',
-        'Symmetry', 'Matter', 'Force',
+        'Symmetry', 'Matter', 'Force', 'Parsec',
     ];
 
     private const PLURAL_NOUN_LIST = [
@@ -190,6 +190,11 @@ class AstronomyClubService
             {
                 $item = 'Everice';
                 $description = 'a cube of Everice';
+            }
+            else if($reward < 65) // 10%
+            {
+                $item = 'Tiny Black Hole';
+                $description = 'a Tiny Black Hole';
             }
             else
             {
