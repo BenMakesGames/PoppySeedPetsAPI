@@ -201,7 +201,6 @@ class AstronomyClubService
             {
                 if($item !== null)
                 {
-                    $this->inventoryService->receiveItem($item, $member->getOwner(), $member->getOwner(), $this->formatMessage($messageTemplate, $member, $group, 'this'), LocationEnum::HOME);
                     $member->increaseEsteem(mt_rand(3, 6));
 
                     $activityLog = (new PetActivityLog())
@@ -211,6 +210,8 @@ class AstronomyClubService
                         ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                         ->setChanges($petChanges[$member->getId()]->compare($member))
                     ;
+
+                    $this->inventoryService->petCollectsItem($item, $member, $this->formatMessage($messageTemplate, $member, $group, 'this'), $activityLog);
                 }
                 else
                 {

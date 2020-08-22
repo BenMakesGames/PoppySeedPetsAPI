@@ -322,8 +322,6 @@ class BandService
 
             foreach($group->getMembers() as $member)
             {
-                $this->inventoryService->receiveItem($item, $member->getOwner(), $member->getOwner(), $member->getName() . '\'s band made this!', LocationEnum::HOME);
-
                 $member->increaseEsteem(mt_rand(8, 12));
 
                 $activityLog = (new PetActivityLog())
@@ -335,6 +333,8 @@ class BandService
                 ;
 
                 $this->em->persist($activityLog);
+
+                $this->inventoryService->petCollectsItem($item, $member, $member->getName() . '\'s band made this!', $activityLog);
             }
         }
         else
