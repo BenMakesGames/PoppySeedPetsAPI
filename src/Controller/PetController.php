@@ -274,7 +274,7 @@ class PetController extends PoppySeedPetsController
      */
     public function getGuildMembership(
         Pet $pet, ResponseService $responseService, GuildRepository $guildRepository,
-        PetRelationshipRepository $petRelationshipRepository
+        PetRelationshipRepository $petRelationshipRepository, PetRelationshipService $petRelationshipService
     )
     {
         // just to prevent scraping (this endpoint is currently - 2020-06-29 - used only for changing a pet's guild)
@@ -297,13 +297,21 @@ class PetController extends PoppySeedPetsController
         {
             $relationships = $petRelationshipRepository->findBy([
                 'pet' => $pet,
-                'currentRelationship' => [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ]
+                'currentRelationship' => [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ],
             ], [], $numberDisliked);
 
             $troubledRelationships = array_map(
-                function(PetRelationship $r)
+                function(PetRelationship $r) use($petRelationshipService)
                 {
-                    return $r->getRelationship();
+                    $possibleRelationships = $petRelationshipService->getRelationshipsBetween(
+                        $petRelationshipService->max(RelationshipEnum::FRIEND, $r->getRelationshipGoal()),
+                        $petRelationshipService->max(RelationshipEnum::FRIEND, $r->getRelationship()->getRelationshipWith($r->getPet())->getRelationshipGoal())
+                    );
+
+                    return [
+                        'pet' => $r->getRelationship(),
+                        'possibleRelationships' => $possibleRelationships
+                    ];
                 },
                 $relationships
             );
@@ -856,25 +864,39 @@ class PetController extends PoppySeedPetsController
         if(!$otherSide)
             throw new \Exception($pet->getName() . ' knows ' . $friend->getName() . ', but not the other way around! This is a terrible bug! Make Ben fix it!');
 
-        $minimumCommitment = $petRelationshipService->generateInitialCommitment(RelationshipEnum::FRIEND, RelationshipEnum::FRIEND);
+        $possibleRelationships = $petRelationshipService->getRelationshipsBetween(
+            $petRelationshipService->max($relationship->getRelationshipGoal(), RelationshipEnum::FRIEND),
+            $petRelationshipService->max($otherSide->getRelationshipGoal(), RelationshipEnum::FRIEND)
+        );
+
+        $newRelationship = ArrayFunctions::pick_one($possibleRelationships);
+
+        $minimumCommitment = $petRelationshipService->generateInitialCommitment($newRelationship, $newRelationship);
+
+        $relationshipDescriptions = [
+            RelationshipEnum::FRIEND => 'friends',
+            RelationshipEnum::BFF => 'BFFs',
+            RelationshipEnum::FWB => 'FWBs',
+            RelationshipEnum::MATE => 'dating'
+        ];
 
         $relationship
-            ->setCurrentRelationship(RelationshipEnum::FRIEND)
-            ->setRelationshipGoal(RelationshipEnum::FRIEND)
+            ->setCurrentRelationship($newRelationship)
+            ->setRelationshipGoal($newRelationship)
             ->setCommitment(max($relationship->getCommitment(), $minimumCommitment))
         ;
 
-        $responseService->createActivityLog($pet, $pet->getName() . ' and ' . $friend->getName() . ' talked and made up!', 'icons/activity-logs/friend')
+        $responseService->createActivityLog($pet, $pet->getName() . ' and ' . $friend->getName() . ' talked and made up! They are now ' . $relationshipDescriptions[$newRelationship ] . '!', 'icons/activity-logs/friend')
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
         ;
 
         $otherSide
-            ->setCurrentRelationship(RelationshipEnum::FRIEND)
-            ->setRelationshipGoal(RelationshipEnum::FRIEND)
+            ->setCurrentRelationship($newRelationship)
+            ->setRelationshipGoal($newRelationship)
             ->setCommitment(max($otherSide->getCommitment(), $minimumCommitment))
         ;
 
-        $friendActivityLog = $responseService->createActivityLog($friend, $pet->getName() . ' came over; they talked with ' . $friend->getName() . ', and the two made up!', 'icons/activity-logs/friend')
+        $friendActivityLog = $responseService->createActivityLog($friend, $pet->getName() . ' came over; they talked with ' . $friend->getName() . ', and the two made up! They are now ' . $relationshipDescriptions[$newRelationship ] . '!', 'icons/activity-logs/friend')
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
         ;
 
@@ -1327,7 +1349,7 @@ class PetController extends PoppySeedPetsController
      */
     public function troubledRelationshipsTypeaheadSearch(
         Request $request, ResponseService $responseService, PetRepository $petRepository,
-        PetRelationshipTypeaheadService $petRelationshipTypeaheadService
+        PetRelationshipTypeaheadService $petRelationshipTypeaheadService, PetRelationshipService $petRelationshipService
     )
     {
         $user = $this->getUser();
@@ -1346,7 +1368,17 @@ class PetController extends PoppySeedPetsController
 
         try
         {
-            $suggestions = $petRelationshipTypeaheadService->search('name', $request->query->get('search', ''));
+            $suggestions = array_map(function(Pet $otherPet) use($petRelationshipService, $pet) {
+                $possibleRelationships = $petRelationshipService->getRelationshipsBetween(
+                    $petRelationshipService->max(RelationshipEnum::FRIEND, $otherPet->getRelationshipWith($pet)->getRelationshipGoal()),
+                    $petRelationshipService->max(RelationshipEnum::FRIEND, $pet->getRelationshipWith($otherPet)->getRelationshipGoal())
+                );
+
+                return [
+                    'pet' => $otherPet,
+                    'possibleRelationships' => $possibleRelationships
+                ];
+            }, $petRelationshipTypeaheadService->search('name', $request->query->get('search', '')));
 
             return $responseService->success($suggestions, SerializationGroupEnum::PET_PUBLIC_PROFILE);
         }

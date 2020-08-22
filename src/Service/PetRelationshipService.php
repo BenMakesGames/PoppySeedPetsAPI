@@ -19,6 +19,16 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetRelationshipService
 {
+    public const RELATIONSHIP_COMMITMENTS = [
+        RelationshipEnum::BROKE_UP => -1,
+        RelationshipEnum::DISLIKE => 0,
+        RelationshipEnum::FRIENDLY_RIVAL => 1,
+        RelationshipEnum::FRIEND => 2,
+        RelationshipEnum::BFF => 3,
+        RelationshipEnum::FWB => 4,
+        RelationshipEnum::MATE => 5,
+    ];
+
     private $petRelationshipRepository;
     private $em;
     private $responseService;
@@ -40,6 +50,48 @@ class PetRelationshipService
         $this->friendlyRivalsService = $friendlyRivalsService;
         $this->loveService = $loveService;
         $this->relationshipChangeService = $relationshipChangeService;
+    }
+
+    public function min(string $relationship1, string $relationship2): string
+    {
+        $r1Commitment = self::RELATIONSHIP_COMMITMENTS[$relationship1];
+        $r2Commitment = self::RELATIONSHIP_COMMITMENTS[$relationship2];
+
+        $min = min($r1Commitment, $r2Commitment);
+
+        return $min === $r1Commitment ? $relationship1 : $relationship2;
+    }
+
+    public function max(string $relationship1, string $relationship2): string
+    {
+        $r1Commitment = self::RELATIONSHIP_COMMITMENTS[$relationship1];
+        $r2Commitment = self::RELATIONSHIP_COMMITMENTS[$relationship2];
+
+        $max = max($r1Commitment, $r2Commitment);
+
+        return $max === $r1Commitment ? $relationship1 : $relationship2;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getRelationshipsBetween(string $relationship1, string $relationship2): array
+    {
+        $r1Commitment = self::RELATIONSHIP_COMMITMENTS[$relationship1];
+        $r2Commitment = self::RELATIONSHIP_COMMITMENTS[$relationship2];
+
+        $minCommitment = min($r1Commitment, $r2Commitment);
+        $maxCommitment = max($r1Commitment, $r2Commitment);
+
+        $between = [];
+
+        foreach(self::RELATIONSHIP_COMMITMENTS as $relationship=>$commitment)
+        {
+            if($commitment >= $minCommitment && $commitment <= $maxCommitment)
+                $between[] = $relationship;
+        }
+
+        return $between;
     }
 
     /**
