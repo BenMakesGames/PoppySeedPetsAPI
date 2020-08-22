@@ -9,6 +9,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
+use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
@@ -24,10 +25,12 @@ class GenericAdventureService
     private $userQuestRepository;
     private $transactionService;
     private $meritRepository;
+    private $itemRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        UserQuestRepository $userQuestRepository, TransactionService $transactionService, MeritRepository $meritRepository
+        UserQuestRepository $userQuestRepository, TransactionService $transactionService, MeritRepository $meritRepository,
+        ItemRepository $itemRepository
     )
     {
         $this->responseService = $responseService;
@@ -36,10 +39,24 @@ class GenericAdventureService
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
         $this->meritRepository = $meritRepository;
+        $this->itemRepository = $itemRepository;
     }
 
     public function adventure(Pet $pet): PetActivityLog
     {
+        $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::OTHER, null);
+
+        if($pet->getHat() && $pet->getHat()->getItem()->getName() === 'Red')
+        {
+            $pet->getHat()->changeItem($this->itemRepository->findOneByName('William, Shush'));
+
+            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, some random dude jumped out of nowhere and shot an arrow in ' . $pet->getName() . '\'s Red!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ;
+
+            return $activityLog;
+        }
+
         if($pet->getIsGrandparent() && !$pet->getClaimedGrandparentMerit())
         {
             /** @var string $newMerit */
@@ -74,8 +91,6 @@ class GenericAdventureService
         $level = $pet->getLevel();
         $activityLog = null;
         $changes = new PetChanges($pet);
-
-        $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::OTHER, null);
 
         $rescuedAFairy = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Rescued a House Fairy from a Raccoon', null);
         if(!$rescuedAFairy->getValue())
