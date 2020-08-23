@@ -239,7 +239,7 @@ class UmbraService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
             $messageDetail = $hasEideticMemory
-                ? $pet->getName() . ' had already memorize the lay of the land, and pointed the way'
+                ? $pet->getName() . ' had already memorized the lay of the land, and pointed the way'
                 : $pet->getName() . ' and ' . $pet->getSpiritCompanion()->getName() . ' were able to point the way'
             ;
 

@@ -7,6 +7,7 @@ use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\GrammarFunctions;
 use App\Repository\PetSpeciesRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -36,7 +37,7 @@ class DreamingService
         'in some ruins',
         'on a cliff-edge',
         'at home',
-        'on Mercury',
+        'on %planet%',
         'in an underwater castle',
         'in a swamp',
         'on a pirate ship',
@@ -54,26 +55,42 @@ class DreamingService
 
     public function dream(Pet $pet): PetActivityLog
     {
-        $item = ArrayFunctions::pick_one([
-            'Beans', 'Bungee Cord',
-            'Candle', 'Chanterelle', 'Chocomilk', 'Cobbler Recipe', 'Compass (the Math Kind)', 'Crooked Stick',
+        $possibleItems = [
+            'Beans',
+            'Chanterelle', 'Chocomilk', 'Cobbler Recipe',
             'Egg',
-            'Feathers', 'Fig', 'Fluff',
-            'Giant Turkey Leg', 'Ginger', 'Gold Triangle',
-            'Handicrafts Supply Box', 'Honeydont',
-            'Iron Key',
-            'Music Note', 'Mysterious Seed',
+            'Fig',
+            'Giant Turkey Leg', 'Ginger',
+            'Honeydont',
             'Oil', 'Orange',
-            'Paper', 'Paper Bag', 'Password', 'Plastic', 'Plastic Idol', 'Purple Violet',
-            'Quintessence',
+            'Purple Violet',
             'Red',
-            'Seaweed', 'Secret Seashell', 'Silica Grounds', 'Single', 'Smallish Pumpkin',
-            'Spirit Polymorph Potion Recipe', 'String', 'Striped Microcline', 'Stroganoff Recipe', 'Sunflower',
+            'Seaweed', 'Smallish Pumpkin',
+            'Stroganoff Recipe', 'Sunflower',
             'Sweet Beet', 'Sweet Coffee Bean Tea with Mammal Extract',
             'Tentacle', 'Tentacle Onigiri', 'Tomato "Sushi"', 'Trout Yogurt',
-            'Unicorn Horn', 'Useless Fizz',
             'Wheat Flower', 'Witch-hazel',
-        ]);
+        ];
+
+        if($pet->getFood() + $pet->getJunk() > 0)
+        {
+            $possibleItems = array_merge($possibleItems, [
+                'Bungee Cord',
+                'Candle', 'Compass (the Math Kind)', 'Crooked Stick',
+                'Feathers', 'Fluff',
+                'Gold Triangle',
+                'Handicrafts Supply Box',
+                'Iron Key',
+                'Music Note', 'Mysterious Seed',
+                'Paper', 'Paper Bag', 'Password', 'Plastic', 'Plastic Idol',
+                'Quintessence',
+                'Secret Seashell', 'Silica Grounds', 'Single',
+                'Spirit Polymorph Potion Recipe', 'String', 'Striped Microcline',
+                'Unicorn Horn', 'Useless Fizz',
+            ]);
+        }
+
+        $item = ArrayFunctions::pick_one($possibleItems);
 
         $dream = ArrayFunctions::pick_one([
             [
@@ -93,7 +110,7 @@ class DreamingService
                 '%dreamer% received this from a friend in a dream.'
             ],
             [
-                '%dreamer% dreamed that they were making out with a %species% on %surface%. A %item% got in the way, so %dreamer% tossed it aside.',
+                '%dreamer% dreamed that they were making out with a %species% on %surface% %location1%. A %item% got in the way, so %dreamer% tossed it aside.',
                 '%dreamer%, um, found this in a dream.'
             ],
             [
@@ -111,6 +128,18 @@ class DreamingService
             [
                 'In a dream, %dreamer% found a secret compartment %location1%. They crawled inside, and arrived %location2%. On %surface%, there was %item%. %dreamer% took it.',
                 '%dreamer% found this on %surface% %location2% in a dream.',
+            ],
+            [
+                'In a dream, %dreamer% bumped into a %pet_adjective% %species%, causing them to drop %item_article% %item%. %dreamer% %adverb% picked it up, and tried to call out, but their voice wasn\'t working.',
+                '%dreamer% %adverb% picked this up in a dream.'
+            ],
+            [
+                'In a dream, %dreamer% was approached by a huge %item%. They %adverb% ran away; as they did so, the %item% shrank. Eventually, %dreamer% stopped, and picked it up.',
+                '%dreamer% was chased by this in a dream. (It was bigger in the dream...)'
+            ],
+            [
+                '%location1% in a %dream%, %dreamer% looked in a mirror. They were %more% than usual. Also, there was %item_article% %item% on their head!',
+                '%dreamer% saw this on their head while looking in a mirror in a dream.'
             ]
         ]);
 
@@ -118,18 +147,29 @@ class DreamingService
 
         $replacements = [
             '%item%' => $item,
+            '%item_article%' => GrammarFunctions::indefiniteArticle($item),
             '%dreamer%' => $pet->getName(),
             '%location1%' => self::LOCATIONS[$locationIndicies[0]],
             '%location2%' => self::LOCATIONS[$locationIndicies[1]],
             '%wandering%' => ArrayFunctions::pick_one(self::WANDERING_WORDS),
             '%species%' => ArrayFunctions::pick_one($this->petSpeciesRepository->findAll())->getName(),
-            '%pet_adjective%' => ArrayFunctions::pick_one([ 'colorful', 'suspicious-looking', 'strong', 'big', 'small', 'cute', 'dangerous-looking', 'hungry', 'lost' ]),
-            '%more%' => ArrayFunctions::pick_one([ 'bigger', 'more colorful', 'smaller', 'more fragrant', 'undulating more', 'paler', 'shinier' ]),
-            '%surface%' => ArrayFunctions::pick_one([ 'a table', 'a moss-covered rock', 'the floor', 'a pile of pillows', 'a sturdy box' ])
+            '%adverb%' => ArrayFunctions::pick_one([ 'hesitantly', 'eagerly', 'grumpily', 'apathetically' ]),
+            '%pet_adjective%' => ArrayFunctions::pick_one([ 'colorful', 'suspicious-looking', 'strong', 'big', 'small', 'cute', 'dangerous-looking', 'hungry', 'lost', 'cheerful' ]),
+            '%more%' => ArrayFunctions::pick_one([ 'bigger', 'more colorful', 'smaller', 'more fragrant', 'undulating more', 'paler', 'shinier', 'stickier', 'more fabulous' ]),
+            '%surface%' => ArrayFunctions::pick_one([ 'a table', 'a moss-covered rock', 'the floor', 'a pile of pillows', 'a sturdy box', 'a raw slab of acorn fugu', 'the roof of a skyscraper' ]),
+            '%planet%' => ArrayFunctions::pick_one([ 'the Moon', 'Mars', 'Pluto', 'Enceladus' ]),
         ];
 
-        $eventDescription = str_replace(array_keys($replacements), $replacements, $dream[0]);
-        $itemDescription = str_replace(array_keys($replacements), $replacements, $dream[1]);
+        // JS does it better, but:
+        $dream = array_map(function(string $description) use($replacements) {
+            while(preg_match('/%[a-z0-9_]+%/i', $description))
+                $description = str_replace(array_keys($replacements), $replacements, $description);
+
+            return $description;
+        }, $dream);
+
+        $eventDescription = ucfirst($dream[0]);
+        $itemDescription = ucfirst($dream[1]);
 
         $this->inventoryService->receiveItem($item, $pet->getOwner(), $pet->getOwner(), $itemDescription, LocationEnum::HOME);
 
