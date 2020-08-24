@@ -108,6 +108,12 @@ class Inventory
      */
     private $lunchboxItem;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Enchantment")
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails"})
+     */
+    private $enchantment;
+
     public function __construct()
     {
         $this->createdOn = new \DateTimeImmutable();
@@ -327,5 +333,156 @@ class Inventory
         }
 
         return $this;
+    }
+
+    public function getEnchantment(): ?Enchantment
+    {
+        return $this->enchantment;
+    }
+
+    public function setEnchantment(?Enchantment $enchantment): self
+    {
+        $this->enchantment = $enchantment;
+
+        return $this;
+    }
+
+    public function providesLight(): bool
+    {
+        return
+            $this->getItem()->getTool()->getProvidesLight() ||
+            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getProvidesLight())
+        ;
+    }
+
+    public function protectsFromHeat(): bool
+    {
+        return
+            $this->getItem()->getTool()->getProtectionFromHeat() ||
+            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getProtectionFromHeat())
+        ;
+    }
+
+    public function natureBonus(): int
+    {
+        return
+            $this->getItem()->getTool()->getNature() +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getNature() : 0)
+        ;
+    }
+
+    public function stealthBonus(): int
+    {
+        return
+            $this->getItem()->getTool()->getStealth() +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getStealth() : 0)
+        ;
+    }
+
+    public function rangedOnly(): bool
+    {
+        return
+            $this->getItem()->getTool()->getIsRanged() ||
+            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getIsRanged())
+        ;
+    }
+
+    public function brawlBonus($allowRanged = true): int
+    {
+        if($allowRanged || $this->rangedOnly())
+            return 0;
+
+        return
+            $this->getItem()->getTool()->getBrawl() +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getBrawl() : 0)
+        ;
+    }
+
+    public function craftsBonus(): int
+    {
+        return
+            $this->getItem()->getTool()->getCrafts() +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getCrafts() : 0)
+        ;
+    }
+
+    public function umbraBonus(): int
+    {
+        return
+            $this->getItem()->getTool()->getUmbra() +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getUmbra() : 0)
+        ;
+    }
+
+    public function fishingBonus(): int
+    {
+        return
+            $this->getItem()->getTool()->getFishing() +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getFishing() : 0)
+        ;
+    }
+
+    public function musicBonus(): int
+    {
+        return
+            $this->getItem()->getTool()->getMusic() +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getMusic() : 0)
+        ;
+    }
+
+    public function smithingBonus(): int
+    {
+        return
+            $this->getItem()->getTool()->getSmithing() +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getSmithing() : 0)
+        ;
+    }
+
+    public function gatheringBonus(): int
+    {
+        return
+            $this->getItem()->getTool()->getGathering() +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getGathering() : 0)
+        ;
+    }
+
+    public function scienceBonus(): int
+    {
+        return
+            $this->getItem()->getTool()->getScience() +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getScience() : 0)
+        ;
+    }
+
+    public function climbingBonus(): int
+    {
+        return
+            $this->getItem()->getTool()->getClimbing() +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getClimbing() : 0)
+        ;
+    }
+
+    public function preventsBugs(): int
+    {
+        return
+            $this->getItem()->getTool()->getPreventsBugs() ||
+            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getPreventsBugs())
+        ;
+    }
+
+    public function attractsBugs(): int
+    {
+        return
+            $this->getItem()->getTool()->getAttractsBugs() ||
+            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getAttractsBugs())
+        ;
+    }
+
+    public function focusesSkill(string $skill): bool
+    {
+        return
+            $this->getItem()->getTool()->getFocusSkill() === $skill ||
+            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getFocusSkill() === $skill)
+        ;
     }
 }

@@ -7,6 +7,7 @@ use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\GrammarFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\KnownRecipesRepository;
@@ -15,6 +16,7 @@ use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\CalendarService;
 use App\Service\CookingService;
+use App\Service\EnchantmentService;
 use App\Service\Filter\InventoryFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -82,7 +84,8 @@ class InventoryController extends PoppySeedPetsController
      */
     public function prepareRecipe(
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
-        InventoryService $inventoryService, EntityManagerInterface $em, CookingService $cookingService
+        InventoryService $inventoryService, EntityManagerInterface $em, CookingService $cookingService,
+        EnchantmentService $enchantmentService
     )
     {
         $user = $this->getUser();
@@ -103,6 +106,40 @@ class InventoryController extends PoppySeedPetsController
 
         if(!$inventoryService->inventoryInSameLocation($inventory))
             throw new UnprocessableEntityHttpException('All of the items must be in the same location.');
+
+        if(count($inventory) === 2)
+        {
+            try
+            {
+                $enchanted = null;
+
+                if($inventory[0]->getItem()->getTool() && $inventory[1]->getItem()->getEnchants())
+                {
+                    $enchantmentService->enchant($inventory[0], $inventory[1]);
+                    $enchanted = $inventory[0];
+                }
+                else if($inventory[1]->getItem()->getTool() && $inventory[0]->getItem()->getEnchants())
+                {
+                    $enchantmentService->enchant($inventory[1], $inventory[0]);
+                    $enchanted = $inventory[1];
+                }
+
+                if($enchanted)
+                {
+                    $newName = $enchantmentService->enchantedName($enchanted);
+
+                    $responseService->addFlashMessageString('The ' . $enchanted->getItem()->getName() . ' is now ' . GrammarFunctions::indefiniteArticle($newName) . ' ' . $newName . '!');
+
+                    $em->flush();
+
+                    return $responseService->success($enchanted, SerializationGroupEnum::MY_INVENTORY);
+                }
+            }
+            catch(\InvalidArgumentException $exception)
+            {
+                throw new UnprocessableEntityHttpException($exception->getMessage(), $exception);
+            }
+        }
 
         $newInventory = $cookingService->prepareRecipe($user, $inventory);
 

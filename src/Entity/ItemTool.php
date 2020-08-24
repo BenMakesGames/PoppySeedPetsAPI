@@ -159,6 +159,11 @@ class ItemTool
      */
     private $attractsBugs = false;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Enchantment", mappedBy="effects", cascade={"persist", "remove"})
+     */
+    private $enchantment;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -542,6 +547,23 @@ class ItemTool
     public function setAttractsBugs(bool $attractsBugs): self
     {
         $this->attractsBugs = $attractsBugs;
+
+        return $this;
+    }
+
+    public function getEnchantment(): ?Enchantment
+    {
+        return $this->enchantment;
+    }
+
+    public function setEnchantment(Enchantment $enchantment): self
+    {
+        $this->enchantment = $enchantment;
+
+        // set the owning side of the relation if necessary
+        if ($enchantment->getEffects() !== $this) {
+            $enchantment->setEffects($this);
+        }
 
         return $this;
     }

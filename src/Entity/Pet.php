@@ -894,18 +894,18 @@ class Pet
     {
         return
             $this->hasMerit(MeritEnum::DARKVISION) ||
-            ($this->getTool() && $this->getTool()->getItem()->getTool()->getProvidesLight())
+            ($this->getTool() && $this->getTool()->providesLight())
         ;
     }
 
     public function hasProtectionFromHeat(): bool
     {
-        return $this->getTool() ? $this->getTool()->getItem()->getTool()->getProtectionFromHeat() : false;
+        return $this->getTool() ? $this->getTool()->protectsFromHeat() : false;
     }
 
     public function getNature(): int
     {
-        return $this->getSkills()->getNature() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getNature() : 0);
+        return $this->getSkills()->getNature() + ($this->getTool() ? $this->getTool()->natureBonus() : 0);
     }
 
     public function getBrawl($allowRanged = true): int
@@ -913,7 +913,7 @@ class Pet
         return
             $this->getSkills()->getBrawl() +
             // the pet has a tool, and: either it's not ranged, or ranged weapons are allowed
-            (($this->getTool() && (!$this->getTool()->getItem()->getTool()->getIsRanged() || $allowRanged)) ? $this->getTool()->getItem()->getTool()->getBrawl() : 0)
+            ($this->getTool() ? $this->getTool()->brawlBonus($allowRanged) : 0)
         ;
     }
 
@@ -921,7 +921,7 @@ class Pet
     {
         return
             $this->getSkills()->getStealth() +
-            ($this->getTool() ? $this->getTool()->getItem()->getTool()->getStealth() : 0) +
+            ($this->getTool() ? $this->getTool()->stealthBonus() : 0) +
             ($this->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION) ? 1 : 0) +
             ($this->hasMerit(MeritEnum::SPECTRAL) ? 1 : 0)
         ;
@@ -929,14 +929,14 @@ class Pet
 
     public function getCrafts(): int
     {
-        return $this->getSkills()->getCrafts() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getCrafts() : 0);
+        return $this->getSkills()->getCrafts() + ($this->getTool() ? $this->getTool()->craftsBonus() : 0);
     }
 
     public function getUmbra(): int
     {
         return
             $this->getSkills()->getUmbra() +
-            ($this->getTool() ? $this->getTool()->getItem()->getTool()->getUmbra() : 0) +
+            ($this->getTool() ? $this->getTool()->umbraBonus() : 0) +
             ceil($this->getPsychedelic() * 5 / $this->getMaxPsychedelic())
         ;
     }
@@ -945,33 +945,33 @@ class Pet
     {
         // no bonus for the casting no reflection merit; we grant that bonus elsewhere
         return
-            ($this->getTool() ? $this->getTool()->getItem()->getTool()->getFishing() : 0)
+            ($this->getTool() ? $this->getTool()->fishingBonus() : 0)
         ;
     }
 
     public function getMusic(): int
     {
-        return $this->getSkills()->getMusic() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getMusic() : 0);
+        return $this->getSkills()->getMusic() + ($this->getTool() ? $this->getTool()->musicBonus() : 0);
     }
 
     public function getSmithing(): int
     {
-        return $this->getTool() ? $this->getTool()->getItem()->getTool()->getSmithing() : 0;
+        return $this->getTool() ? $this->getTool()->smithingBonus() : 0;
     }
 
     public function getGathering(): int
     {
-        return $this->getTool() ? $this->getTool()->getItem()->getTool()->getGathering() : 0;
+        return $this->getTool() ? $this->getTool()->gatheringBonus() : 0;
     }
 
     public function getScience(): int
     {
-        return $this->getSkills()->getScience() + ($this->getTool() ? $this->getTool()->getItem()->getTool()->getScience() : 0);
+        return $this->getSkills()->getScience() + ($this->getTool() ? $this->getTool()->scienceBonus() : 0);
     }
 
     public function getClimbing(): int
     {
-        return $this->getTool() ? $this->getTool()->getItem()->getTool()->getClimbing() : 0;
+        return $this->getTool() ? $this->getTool()->climbingBonus() : 0;
     }
 
     public function getFavoriteFlavor(): string

@@ -52,10 +52,9 @@ class PetExperienceService
 
         if(count($possibleStats) === 0) return;
 
-        if($pet->getTool() && $pet->getTool()->getItem()->getTool()->getFocusSkill())
+        if($pet->getTool() && ArrayFunctions::any($possibleStats, function(string $stat) use($pet) { return $pet->getTool()->focusesSkill($stat); }))
         {
-            if(in_array($pet->getTool()->getItem()->getTool()->getFocusSkill(), $possibleStats))
-                $exp++;
+            $exp++;
         }
 
         $divideBy = 1;

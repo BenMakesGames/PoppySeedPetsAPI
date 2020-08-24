@@ -94,6 +94,11 @@ class Item
      */
     private $recycleValue = 0;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Enchantment")
+     */
+    private $enchants;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -291,6 +296,18 @@ class Item
     public function setRecycleValue(int $recycleValue): self
     {
         $this->recycleValue = $recycleValue;
+
+        return $this;
+    }
+
+    public function getEnchants(): ?Enchantment
+    {
+        return $this->enchants;
+    }
+
+    public function setEnchants(?Enchantment $enchants): self
+    {
+        $this->enchants = $enchants;
 
         return $this;
     }

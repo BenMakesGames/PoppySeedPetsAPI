@@ -206,12 +206,27 @@ class InventoryService
     {
         $item = $this->getItemWithChanceForLuckyTransformation($item);
 
+        // bonus gather from equipment
         if($pet->getTool() && $pet->getTool()->getItem()->getTool()->getWhenGather() && $item->getName() === $pet->getTool()->getItem()->getTool()->getWhenGather()->getName())
         {
             $extraItem = (new Inventory())
                 ->setOwner($pet->getOwner())
                 ->setCreatedBy($pet->getOwner())
                 ->setItem($pet->getTool()->getItem()->getTool()->getWhenGatherAlsoGather())
+                ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
+                ->setLocation(LocationEnum::HOME)
+            ;
+
+            $this->em->persist($extraItem);
+        }
+
+        // bonus gather from equipment enchantment effects
+        if($pet->getTool() && $pet->getTool()->getEnchantment() && $pet->getTool()->getEnchantment()->getEffects()->getWhenGather() && $item->getName() === $pet->getTool()->getEnchantment()->getEffects()->getWhenGather())
+        {
+            $extraItem = (new Inventory())
+                ->setOwner($pet->getOwner())
+                ->setCreatedBy($pet->getOwner())
+                ->setItem($pet->getTool()->getEnchantment()->getEffects()->getWhenGatherAlsoGather())
                 ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
                 ->setLocation(LocationEnum::HOME)
             ;
@@ -240,7 +255,7 @@ class InventoryService
 
     public function petAttractsRandomBug(Pet $pet, $bugName = null): ?Inventory
     {
-        if($pet->getTool() && $pet->getTool()->getItem()->getTool()->getPreventsBugs())
+        if($pet->getTool() && $pet->getTool()->preventsBugs())
             return null;
 
         if($bugName === null)
@@ -248,7 +263,7 @@ class InventoryService
 
         $bug = $this->itemRepository->findOneByName($bugName);
 
-        $attractsBugs = $pet->getTool() && $pet->getTool()->getItem()->getTool()->getAttractsBugs();
+        $attractsBugs = $pet->getTool() && $pet->getTool()->attractsBugs();
 
         $bugs = $attractsBugs ? 2 : 1;
         $comment = $attractsBugs ? $pet->getName() . ' caught this in their ' . $pet->getTool()->getItem()->getName() . '!' : 'Ah! How\'d this get inside?!';
