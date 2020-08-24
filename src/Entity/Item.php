@@ -96,6 +96,7 @@ class Item
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Enchantment")
+     * @Groups({"myInventory", "marketItem", "itemEncyclopedia"})
      */
     private $enchants;
 

@@ -16,7 +16,7 @@ class EnchantmentService
     public function enchant(Inventory $tool, Inventory $enchantment)
     {
         if($tool->getEnchantment())
-            throw new \InvalidArgumentException('That tool is already enchanted.');
+            throw new \InvalidArgumentException('That tool has has the "' . $tool->getEnchantment()->getName() . '" bonus.');
 
         $tool->setEnchantment($enchantment->getItem()->getEnchants());
 
