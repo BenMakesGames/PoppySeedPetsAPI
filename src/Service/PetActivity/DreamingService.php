@@ -47,6 +47,8 @@ class DreamingService
         'in an airport',
         'on a boat',
         'on a spaceship',
+        'on the beach',
+        'in some crystal caves',
     ];
 
     private const WANDERING_WORDS = [
