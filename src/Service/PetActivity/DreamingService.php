@@ -43,6 +43,10 @@ class DreamingService
         'on a pirate ship',
         'in a forest',
         'in a huge treehouse',
+        'near a train station',
+        'in an airport',
+        'on a boat',
+        'on a spaceship',
     ];
 
     private const WANDERING_WORDS = [
@@ -51,6 +55,11 @@ class DreamingService
         'searching for something',
         'taking a break',
         'chilling',
+        'treasure-hunting',
+        'fighting %a_monster%',
+        'solving a math problem',
+        'drinking %a_drink%',
+        'eating %a_food%'
     ];
 
     public function dream(Pet $pet): PetActivityLog
@@ -95,8 +104,8 @@ class DreamingService
 
         $dream = ArrayFunctions::pick_one([
             [
-                'In a dream, %dreamer% was %wandering% %location1%, when they spotted a %pet_adjective% %species%. It whispered something, but %dreamer% can\'t remember what, and gave %dreamer% %item%.',
-                'A %pet_adjective% %species% gave this to %dreamer% in a dream.',
+                'In a dream, %dreamer% was %wandering% %location1%, when they spotted %a_pet_or_monster%. It whispered something, but %dreamer% can\'t remember what, and gave %dreamer% %item%.',
+                '%a_pet_or_monster% gave this to %dreamer% in a dream.',
             ],
             [
                 'While %wandering% %location1% in a dream, %dreamer% spotted %item%. They reached down and grabbed it, and when they looked up, they were %location2%.',
@@ -119,7 +128,7 @@ class DreamingService
                 'A stupid %species% threw this at %dreamer% in a dream.',
             ],
             [
-                'In a dream, %dreamer% and a friend went out to eat, and ordered %item%. When it arrived, it was %more% than expected!',
+                'In a dream, %dreamer% and a friend went out to eat, and ordered %item_article% %item% and %a_food_or_drink%. When the %item% arrived, it was %more% than expected!',
                 '%dreamer% ordered this at a restaurant in a dream.',
             ],
             [
@@ -131,7 +140,7 @@ class DreamingService
                 '%dreamer% found this on %surface% %location2% in a dream.',
             ],
             [
-                'In a dream, %dreamer% bumped into a %pet_adjective% %species%, causing them to drop %item_article% %item%. %dreamer% %adverb% picked it up, and tried to call out, but their voice wasn\'t working.',
+                'In a dream, %dreamer% bumped into %a_pet_or_monster%, causing them to drop %item_article% %item%. %dreamer% %adverb% picked it up, and tried to call out, but their voice wasn\'t working.',
                 '%dreamer% %adverb% picked this up in a dream.'
             ],
             [
@@ -159,6 +168,11 @@ class DreamingService
             '%more%' => ArrayFunctions::pick_one([ 'bigger', 'more colorful', 'smaller', 'more fragrant', 'undulating more', 'paler', 'shinier', 'stickier', 'more fabulous' ]),
             '%surface%' => ArrayFunctions::pick_one([ 'a table', 'a moss-covered rock', 'the floor', 'a pile of pillows', 'a sturdy box', 'a raw slab of acorn fugu', 'the roof of a skyscraper' ]),
             '%planet%' => ArrayFunctions::pick_one([ 'the Moon', 'Mars', 'Pluto', 'Enceladus' ]),
+            '%a_drink%' => ArrayFunctions::pick_one([ 'a chai milkshake', 'a mango lassi', 'some tea', 'some fruit punch', 'some coconut cordial' ]),
+            '%a_food%' => ArrayFunctions::pick_one([ 'a cellular peptide cake', 'a piece of naan', 'a slice of za', 'some donburi', 'a lobster', 'some succotash', 'a bowl of chili' ]),
+            '%a_food_or_drink%' => ArrayFunctions::pick_one([ '%a_food%', '%a_drink%' ]),
+            '%a_monster%' => ArrayFunctions::pick_one([ 'a goblin', 'a dragon', 'a huge ant', 'a plant-monster', 'their own shadow' ]),
+            '%a_pet_or_monster%' => ArrayFunctions::pick_one([ 'a %pet_adjective% %species%', '%a_monster%' ]),
         ];
 
         // JS does it better, but:
