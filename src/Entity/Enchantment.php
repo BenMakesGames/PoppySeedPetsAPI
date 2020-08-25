@@ -20,13 +20,13 @@ class Enchantment
 
     /**
      * @ORM\Column(type="string", length=20)
-     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer"})
+     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer"})
+     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet"})
      */
     private $isSuffix;
 
