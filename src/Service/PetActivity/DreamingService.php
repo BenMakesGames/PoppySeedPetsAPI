@@ -163,8 +163,10 @@ class DreamingService
 
         // JS does it better, but:
         $dream = array_map(function(string $description) use($replacements) {
-            while(preg_match('/%[a-z0-9_]+%/i', $description))
-                $description = str_replace(array_keys($replacements), $replacements, $description);
+            do
+            {
+                $description = str_replace(array_keys($replacements), $replacements, $description, $replaced);
+            } while($replaced > 0);
 
             return $description;
         }, $dream);
