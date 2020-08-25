@@ -112,8 +112,10 @@ class MuseumController extends PoppySeedPetsController
             ->andWhere('item.id NOT IN (SELECT miitem.id FROM App\\Entity\\MuseumItem mi LEFT JOIN mi.item miitem WHERE mi.user=:user)')
             ->setParameter('locations', [ LocationEnum::HOME, LocationEnum::BASEMENT ])
             ->setParameter('user', $user)
-            ->groupBy('item.id')
-            ->orderBy('item.name', 'ASC')
+            ->addGroupBy('item.id')
+            ->addGroupBy('i.enchantment')
+            ->addOrderBy('item.name')
+            ->addOrderBy('i.enchantment')
         ;
 
         $paginator = new Paginator($qb);

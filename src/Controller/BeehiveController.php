@@ -214,20 +214,20 @@ class BeehiveController extends PoppySeedPetsController
             $beehive->setMiscProgress(0);
 
             $possibleItems = [
-                'Fluff', 'Talon', 'Yellow Dye', 'Crooked Stick', 'Glue', 'Sugar', 'Antenna'
+                'Fluff', 'Talon', 'Yellow Dye', 'Crooked Stick', 'Glue', 'Sugar', 'Antenna', 'Jar of Fireflies',
             ];
 
             switch($beehive->getSpecialization())
             {
                 case BeehiveSpecializationEnum::FARMING:
                     $possibleItems = array_merge($possibleItems, [
-                        'Wheat', 'Blueberries', 'Blackberries', 'Mixed Nuts'
+                        'Wheat', 'Blueberries', 'Blackberries', 'Mixed Nuts',
                     ]);
                     break;
 
                 case BeehiveSpecializationEnum::FISHING:
                     $possibleItems = array_merge($possibleItems, [
-                        'Fish', 'Fish', 'Fish', 'Fish', 'Scales'
+                        'Fish', 'Fish', 'Fish', 'Fish', 'Scales', 'Jar of Fireflies'
                     ]);
                     break;
 

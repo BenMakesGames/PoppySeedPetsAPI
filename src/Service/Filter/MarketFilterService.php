@@ -21,14 +21,14 @@ class MarketFilterService
 
     private $repository;
 
-    public function __construct(ItemRepository $itemRepository)
+    public function __construct(InventoryRepository $inventoryRepository)
     {
-        $this->repository = $itemRepository;
+        $this->repository = $inventoryRepository;
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
             [
-                'name' => [ 'i.name' => 'asc' ], // first one is the default
+                'name' => [ 'item.name' => 'asc' ], // first one is the default
             ],
             [
                 'name' => [ $this, 'filterName' ],
@@ -45,11 +45,13 @@ class MarketFilterService
     public function createQueryBuilder(): QueryBuilder
     {
         return $this->repository->createQueryBuilder('i')
-            ->select('i AS item,MIN(inventory.sellPrice) AS minSellPrice')
-            ->leftJoin('i.inventory', 'inventory')
-            ->andWhere('inventory.sellPrice IS NOT NULL')
-            ->andWhere('inventory.owner != :user')
-            ->addGroupBy('i.name')
+            ->select('i AS inventory,item,enchantment,MIN(i.sellPrice) AS minSellPrice')
+            ->leftJoin('i.item', 'item')
+            ->leftJoin('i.enchantment', 'enchantment')
+            ->andWhere('i.sellPrice IS NOT NULL')
+            ->andWhere('i.owner != :user')
+            ->addGroupBy('item.name')
+            ->addGroupBy('enchantment.name')
             ->setParameter('user', $this->user->getId())
         ;
     }
@@ -66,7 +68,7 @@ class MarketFilterService
         if(!$name) return;
 
         $qb
-            ->andWhere('i.name LIKE :nameLike')
+            ->andWhere('item.name LIKE :nameLike')
             ->setParameter('nameLike', '%' . $name . '%')
         ;
     }
@@ -74,9 +76,9 @@ class MarketFilterService
     public function filterEdible(QueryBuilder $qb, $value)
     {
         if(strtolower($value) === 'false' || !$value)
-            $qb->andWhere('i.food IS NULL');
+            $qb->andWhere('item.food IS NULL');
         else
-            $qb->andWhere('i.food IS NOT NULL');
+            $qb->andWhere('item.food IS NOT NULL');
     }
 
     public function filterFoodFlavors(QueryBuilder $qb, $value)
@@ -89,10 +91,10 @@ class MarketFilterService
         if(count($value) === 0) return;
 
         if(!in_array('food', $qb->getAllAliases()))
-            $qb->leftJoin('i.food', 'food');
+            $qb->leftJoin('item.food', 'food');
 
         $qb
-            ->andWhere('i.food IS NOT NULL')
+            ->andWhere('item.food IS NOT NULL')
         ;
 
         foreach($value as $stat)
@@ -104,17 +106,17 @@ class MarketFilterService
     public function filterEquipable(QueryBuilder $qb, $value)
     {
         if(strtolower($value) === 'false' || !$value)
-            $qb->andWhere('i.tool IS NULL');
+            $qb->andWhere('item.tool IS NULL');
         else
-            $qb->andWhere('i.tool IS NOT NULL');
+            $qb->andWhere('item.tool IS NOT NULL');
     }
 
     public function filterAHat(QueryBuilder $qb, $value)
     {
         if(strtolower($value) === 'false' || !$value)
-            $qb->andWhere('i.hat IS NULL');
+            $qb->andWhere('item.hat IS NULL');
         else
-            $qb->andWhere('i.hat IS NOT NULL');
+            $qb->andWhere('item.hat IS NOT NULL');
     }
 
     public function filterEquipStats(QueryBuilder $qb, $value)
@@ -127,10 +129,10 @@ class MarketFilterService
         if(count($value) === 0) return;
 
         if(!in_array('tool', $qb->getAllAliases()))
-            $qb->leftJoin('i.tool', 'tool');
+            $qb->leftJoin('item.tool', 'tool');
 
         $qb
-            ->andWhere('i.tool IS NOT NULL')
+            ->andWhere('item.tool IS NOT NULL')
         ;
 
         foreach($value as $stat)
@@ -142,7 +144,7 @@ class MarketFilterService
     public function filterHasDonated(QueryBuilder $qb, $value)
     {
         if(!in_array('donations', $qb->getAllAliases()))
-            $qb->leftJoin('i.museumDonations', 'donations', 'WITH', 'donations.user=:user');
+            $qb->leftJoin('item.museumDonations', 'donations', 'WITH', 'donations.user=:user');
 
         $qb
             ->setParameter('user', $this->user)

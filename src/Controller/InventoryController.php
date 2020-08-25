@@ -154,6 +154,24 @@ class InventoryController extends PoppySeedPetsController
     }
 
     /**
+     * @Route("/{inventory}/removeBonus", methods={"PATCH"}, requirements={"inventory"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function removeBonus(Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em)
+    {
+        $user = $this->getUser();
+
+        if($inventory->getOwner()->getId() !== $user->getId())
+            throw new NotFoundHttpException('That item does not belong to you.');
+
+        $inventory->setEnchantment(null);
+
+        $em->flush();
+
+        return $responseService->success();
+    }
+
+    /**
      * @Route("/{inventory}/sellPrice", methods={"POST"}, requirements={"inventory"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */

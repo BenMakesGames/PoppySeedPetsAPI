@@ -28,7 +28,7 @@ class Inventory
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "myInventory", "marketItem", "greenhouseFertilizer", "mySeeds", "fireplaceFuel"})
+     * @Groups({"myPet", "myInventory", "greenhouseFertilizer", "mySeeds", "fireplaceFuel"})
      */
     private $id;
 
@@ -77,7 +77,7 @@ class Inventory
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"myInventory", "marketItem", "fireplaceFuel", "myGreenhouse", "myPet"})
+     * @Groups({"myInventory", "fireplaceFuel", "myGreenhouse", "myPet"})
      */
     private $sellPrice;
 
@@ -110,7 +110,7 @@ class Inventory
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Enchantment")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer"})
      */
     private $enchantment;
 
@@ -253,9 +253,6 @@ class Inventory
         return $this;
     }
 
-    /**
-     * @Groups({"marketItem"})
-     */
     public function getBuyPrice(): ?int
     {
         if($this->sellPrice === null || $this->sellPrice <= 0) return null;

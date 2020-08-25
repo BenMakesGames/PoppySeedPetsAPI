@@ -14,25 +14,26 @@ class Enchantment
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"myInventory", "marketItem", "greenhouseFertilizer"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=20)
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer"})
      */
     private $isSuffix;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\ItemTool", inversedBy="enchantment", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myInventory", "itemEncyclopedia"})
      */
     private $effects;
 

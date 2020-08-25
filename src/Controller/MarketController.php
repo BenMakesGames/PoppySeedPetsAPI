@@ -122,6 +122,7 @@ class MarketController extends PoppySeedPetsController
         $user = $this->getUser();
 
         $itemId = $request->request->getInt('item', 0);
+        $bonusId = $request->request->getInt('bonus', 0);
         $price = $request->request->getInt('sellPrice', 0);
 
         if($itemId === 0 || $price === 0)
@@ -153,8 +154,7 @@ class MarketController extends PoppySeedPetsController
             $placeItemsIn = LocationEnum::BASEMENT;
         }
 
-        /** @var Inventory[] $forSale */
-        $forSale = $inventoryRepository->createQueryBuilder('i')
+        $qb = $inventoryRepository->createQueryBuilder('i')
             ->andWhere('i.owner!=:user')
             ->andWhere('i.sellPrice=:price')
             ->andWhere('i.item=:item')
@@ -162,9 +162,22 @@ class MarketController extends PoppySeedPetsController
             ->setParameter('user', $user->getId())
             ->setParameter('price', $price)
             ->setParameter('item', $itemId)
-            ->getQuery()
-            ->getResult()
         ;
+
+        if($bonusId)
+        {
+            $qb = $qb
+                ->andWhere('i.enchantment=:bonusId')
+                ->setParameter('bonusId', $bonusId)
+            ;
+        }
+        else
+        {
+            $qb = $qb->andWhere('i.enchantment IS NULL');
+        }
+
+        /** @var Inventory[] $forSale */
+        $forSale = $qb->getQuery()->getResult();
 
         $itemToBuy = null;
 

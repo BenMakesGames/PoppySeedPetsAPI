@@ -148,7 +148,7 @@ class GenericAdventureService
 
             if($level >= 15)
             {
-                $possibleRewards[] = [ 'a ', 'Baker\'s Box' ];
+                $possibleRewards[] = [ 'a ', 'Jar of Fireflies' ];
                 $possibleRewards[] = [ 'a ', 'Fishkebab' ];
             }
 
