@@ -221,7 +221,7 @@ class InventoryService
         }
 
         // bonus gather from equipment enchantment effects
-        if($pet->getTool() && $pet->getTool()->getEnchantment() && $pet->getTool()->getEnchantment()->getEffects()->getWhenGather() && $item->getName() === $pet->getTool()->getEnchantment()->getEffects()->getWhenGather())
+        if($pet->getTool() && $pet->getTool()->getEnchantment() && $pet->getTool()->getEnchantment()->getEffects()->getWhenGather() && $item->getName() === $pet->getTool()->getEnchantment()->getEffects()->getWhenGather()->getName())
         {
             $extraItem = (new Inventory())
                 ->setOwner($pet->getOwner())
