@@ -664,7 +664,7 @@ class UmbraService
                 ->increaseEsteem(3)
                 ->increaseSafety(3)
             ;
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered an Abandondero! It whipped out a laser gun, but ' . $pet->getName() . ' ' . $defeated . ' , defeated it, and claimed its ' . $prize . '!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered an Abandondero! It whipped out a laser gun, but ' . $pet->getName() . ' ' . $defeated . ', defeated it, and claimed its ' . $prize . '!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
             ;
             $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' defeated an Abandondero, and took this.', $activityLog);
