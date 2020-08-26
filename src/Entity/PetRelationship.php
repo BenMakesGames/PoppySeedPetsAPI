@@ -9,6 +9,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PetRelationshipRepository")
@@ -41,7 +42,6 @@ class PetRelationship
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"petFriend"})
      */
     private $metDescription;
 
@@ -258,5 +258,18 @@ class PetRelationship
         $this->commitment = max(0, $this->commitment + $amount);
 
         return $this;
+    }
+
+    /**
+     * @Groups({"petFriend"})
+     * @SerializedName("metDescription")
+     */
+    public function getFormattedMetDescription()
+    {
+        return str_replace(
+            [ '%pet.name%', '%relationship.name%' ],
+            [ $this->getPet()->getName(), $this->getRelationship()->getName() ],
+            $this->getMetDescription()
+        );
     }
 }

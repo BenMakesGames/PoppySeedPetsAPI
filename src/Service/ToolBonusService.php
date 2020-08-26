@@ -4,7 +4,7 @@ namespace App\Service;
 use App\Entity\Inventory;
 use Doctrine\ORM\EntityManagerInterface;
 
-class EnchantmentService
+class ToolBonusService
 {
     private $em;
 

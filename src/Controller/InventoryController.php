@@ -16,7 +16,7 @@ use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\CalendarService;
 use App\Service\CookingService;
-use App\Service\EnchantmentService;
+use App\Service\ToolBonusService;
 use App\Service\Filter\InventoryFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -85,7 +85,7 @@ class InventoryController extends PoppySeedPetsController
     public function prepareRecipe(
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
         InventoryService $inventoryService, EntityManagerInterface $em, CookingService $cookingService,
-        EnchantmentService $enchantmentService
+        ToolBonusService $enchantmentService
     )
     {
         $user = $this->getUser();

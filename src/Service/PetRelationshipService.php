@@ -142,7 +142,7 @@ class PetRelationshipService
             $this->introducePets(
                 $pet,
                 $otherPet,
-                'Met at ' . $pet->getOwner()->getName() . '\'s house; they\'re roomies!',
+                'Met at ' . $pet->getOwner()->getName() . '\'s house as roomies!',
                 '%p1% met their new roommate, %p2%.'
             );
         }
