@@ -150,7 +150,7 @@ class DreamingService
                 '%dreamer% was chased by this in a dream. (It was bigger in the dream...)'
             ],
             [
-                '%location1% in a %dream%, %dreamer% looked in a mirror. They were %more% than usual. Also, there was %item_article% %item% on their head!',
+                '%location1% in a dream, %dreamer% looked in a mirror. They were %more% than usual. Also, there was %item_article% %item% on their head!',
                 '%dreamer% saw this on their head while looking in a mirror in a dream.'
             ]
         ]);
