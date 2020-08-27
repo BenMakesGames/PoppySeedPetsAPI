@@ -263,8 +263,10 @@ class GatheringService
         }
         else if($pet->hasMerit(MeritEnum::BEHATTED) && mt_rand(1, 75) === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Red Bow inside a Hollow Log!', 'items/hat/bow-red');
-            $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' found this inside a Hollow Log!', $activityLog);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Red Bow inside a Hollow Log!', 'items/hat/bow-red')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ;
+            $this->inventoryService->petCollectsItem('Red Bow', $pet, $pet->getName() . ' found this inside a Hollow Log!', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::GATHER, true);

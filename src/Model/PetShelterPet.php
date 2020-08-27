@@ -7,54 +7,55 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class PetShelterPet
 {
     public const PET_NAMES = [
-        'Aalina', 'Aaron', 'Abrahil', 'Aedoc', 'Aelfric', 'Alain', 'Alda', 'Aldreda', 'Alienora', 'Aliette',
-        'Artaca', 'Aureliana',
+        'Aalina', 'Aaron', 'Abrahil', 'Aedoc', 'Aelfric', 'Alain', 'Alda', 'Aldreda', 'Aldus', 'Alienora', 'Aliette',
+        'Amis', 'Artaca', 'Aureliana',
 
-        'Batu', 'Belka', 'Bezzhen', 'Biedeluue', 'Blicze',
+        'Batu', 'Belka', 'Berislav', 'Bezzhen', 'Biedeluue', 'Blicze', 'Bogdan', 'Bogdana',
 
-        'Cateline', 'Ceinguled', 'Ceri', 'Ceslinus', 'Christien', 'Clement', 'Cyra', 'Czestobor',
+        'Cateline', 'Ceinguled', 'Ceri', 'Ceslinus', 'Chedomir', 'Christien', 'Clement', 'Col', 'Cyra', 'Czestobor',
 
-        'Dagena', 'Denyw', 'Dicun', 'Disideri',
+        'Dagena', 'Denyw', 'Dicun', 'Disideri', 'Dmitrei', 'Dragomir',
 
-        'Eda', 'Eileve', 'Emilija', 'Enim', 'Enynny', 'Erasmus', 'Eve',
+        'Eda', 'Eileve', 'Elis', 'Emilija', 'Enguerrand', 'Enim', 'Enynny', 'Erasmus', 'Estienne', 'Eve',
 
-        'Felix', 'Fiora', 'Fluri', 'Frotlildis',
+        'Felix', 'Fiora', 'Firmin', 'Fluri', 'Frotlildis',
 
-        'Galine', 'Gennoveus', 'Genoveva', 'Geoffroi', 'Giliana', 'Godelive', 'Gubin',
+        'Galine', 'Garnier', 'Garsea', 'Gennoveus', 'Genoveva', 'Geoffroi', 'Gidie', 'Giliana', 'Godelive', 'Gomes',
+        'Gubin',
 
-        'Hamon',
+        'Hamon', 'Hamon',
 
         'Ibb', 'Idzi',
 
-        'Jadviga', 'Jehanne',
+        'Jadviga', 'Jehanne', 'Jurian',
 
-        'Kaija', 'Kain', 'Kima', 'Kint', 'Kirik', 'Klara', 'Kryspin',
+        'Kaija', 'Kain', 'Kima', 'Kinborough', 'Kint', 'Kirik', 'Klara', 'Kryspin',
 
-        'Leodhild', 'Leon', 'Levi', 'Lowri', 'Lucass', 'Ludmila',
+        'Larkin', 'Leodhild', 'Leon', 'Levi', 'Lorencio', 'Lowri', 'Lucass', 'Ludmila',
 
         'Maccos', 'Maeldoi', 'Magdalena', 'Makrina', 'Malik', 'Margaret', 'Marsley', 'Masayasu', 'Mateline',
         'Mathias', 'Matty', 'Maurifius', 'Meduil', 'Melita', 'Meoure', 'Merewen', 'Milesent', 'Milian', 'Mold',
         'Montgomery', 'Morys',
 
-        'Newt', 'Nicholina', 'Nilus', 'Noe',
+        'Newt', 'Nicholina', 'Nilus', 'Noe', 'Nuño',
 
         'Onfroi', 'Oswyn',
 
         'Paperclip', 'Perkhta', 'Pesczek',
 
-        'Regina', 'Reina', 'Rimoete', 'Rocatos', 'Rozalia', 'Rum', 'Runne', 'Ryd',
+        'Radomil', 'Raven', 'Regina', 'Reina', 'Rimoete', 'Rocatos', 'Rostislav', 'Rozalia', 'Rum', 'Runne', 'Ryd',
 
-        'Saewine', 'Sandivoi', 'Skenfrith', 'Sulimir', 'Sybil',
+        'Saewine', 'Sancha', 'Sandivoi', 'Skenfrith', 'Sulimir', 'Sybil',
 
-        'Talan', 'Tede', 'Tephaine', 'Tetris', 'Tiecia', 'Timur', 'Toregene', 'Trenewydd',
+        'Taki', 'Talan', 'Tede', 'Tephaine', 'Tetris', 'Tiecia', 'Timur', 'Toregene', 'Trenewydd',
 
         'Usk',
 
         'Vasilii', 'Vitseslav', 'Vivka',
 
-        'Wilkin', 'Wrexham',
+        'Wilkin', 'Wrexham', 'Wymond',
 
-        'Ysabeau', 'Ystradewel',
+        'Yaromir', 'Yrian', 'Ysabeau', 'Ystradewel',
 
         'Zofija', 'Zygmunt'
     ];

@@ -65,7 +65,10 @@ class Protocol7Service
             case 5:
             case 6:
             case 7:
-                $activityLog = $this->encounterGarbageCollector($pet);
+                if($pet->hasMerit(MeritEnum::BEHATTED) && mt_rand(1, 100) === 1)
+                    $activityLog = $this->encounterAnnabellastasia($pet);
+                else
+                    $activityLog = $this->encounterGarbageCollector($pet);
                 break;
             case 8:
             case 9:
@@ -124,9 +127,16 @@ class Protocol7Service
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, but got lost.', 'icons/activity-logs/confused');
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
+    private function encounterAnnabellastasia(Pet $pet): PetActivityLog
+    {
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $activityLog = $this->responseService->createActivityLog($pet, 'In Project-E, ' . $pet->getName() . ' ran into a girl named Annabellastasia, who handed ' . $pet->getName() . ' a Black Bow.', 'items/hat/bow-black')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+        ;
+        $this->inventoryService->petCollectsItem('Black Bow', $pet, $pet->getName() . ' received this from a girl named Annabellastasia in Project-E.', $activityLog);
+        return $activityLog;
+    }
+
     private function encounterGarbageCollector(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getDexterity() + $pet->getIntelligence() + $pet->getScience());
