@@ -12,6 +12,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\PetChanges;
+use App\Repository\EnchantmentRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -23,10 +24,11 @@ class UmbraService
     private $inventoryService;
     private $petExperienceService;
     private $transactionService;
+    private $enchantmentRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, GuildService $guildService
+        TransactionService $transactionService, GuildService $guildService, EnchantmentRepository $enchantmentRepository
     )
     {
         $this->responseService = $responseService;
@@ -34,6 +36,7 @@ class UmbraService
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
         $this->guildService = $guildService;
+        $this->enchantmentRepository = $enchantmentRepository;
     }
 
     public function adventure(Pet $pet)
@@ -405,7 +408,18 @@ class UmbraService
         // @TODO: add more possible encounters
 
         // Agares (a spirit-duke)
-        return $this->responseService->createActivityLog($pet, 'While exploring some ruins in the Umbra, ' . $pet->getName() . ' was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language ' . $pet->getName() . ' didn\'t know. Frustrated, the old man left.', '');
+        if($pet->getTool() && !$pet->getTool()->getEnchantment())
+        {
+            $enchantment = $this->enchantmentRepository->findOneBy([ 'name' => 'of Agares' ]);
+
+            $pet->getTool()->setEnchantment($enchantment);
+
+            return $this->responseService->createActivityLog($pet, 'While exploring some ruins in the Umbra, ' . $pet->getName() . ' was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language ' . $pet->getName() . ' didn\'t know. ' . $pet->getName() . '\'s ' . $pet->getTool()->getItem()->getName() . ' began to glow, and the old man left...', '');
+        }
+        else
+        {
+            return $this->responseService->createActivityLog($pet, 'While exploring some ruins in the Umbra, ' . $pet->getName() . ' was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language ' . $pet->getName() . ' didn\'t know. Frustrated, the old man left.', '');
+        }
     }
 
     private function fishingAtRiver(Pet $pet): PetActivityLog
