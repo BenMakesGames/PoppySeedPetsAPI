@@ -45,6 +45,9 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
 
     protected function doCommand()
     {
+        if(strtolower($_SERVER['APP_ENV']) !== 'dev')
+            throw new \Exception('Can only be run in dev environments.');
+
         $name = $this->input->getArgument('recipe');
         $recipe = $this->recipeRepository->findOneBy(['name' => $name]);
 

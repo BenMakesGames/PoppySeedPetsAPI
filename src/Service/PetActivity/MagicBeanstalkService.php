@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
@@ -131,6 +132,29 @@ class MagicBeanstalkService
         return $activityLog;
     }
 
+    private function foundMagicLeaf(Pet $pet, bool $lucky = false): PetActivityLog
+    {
+        $meters = mt_rand(300, 1800) / 2;
+
+        if($lucky)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they spotted a Magic Leaf! Lucky~!', '');
+
+            $this->inventoryService->petCollectsItem('Magic Leaf', $pet, $pet->getName() . ' harvested this from your magic bean-stalk! Lucky~!', $activityLog);
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they spotted a Magic Leaf, so plucked it, and headed back down.', '');
+
+            $this->inventoryService->petCollectsItem('Magic Leaf', $pet, $pet->getName() . ' harvested this from your magic bean-stalk.', $activityLog);
+        }
+
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, true);
+
+        return $activityLog;
+    }
+
     private function foundBirdNest(Pet $pet, $roll)
     {
         $meters = mt_rand(7 + $roll, 6 + $roll * 2) / 2;
@@ -188,6 +212,11 @@ class MagicBeanstalkService
 
     private function foundNothing(Pet $pet): PetActivityLog
     {
+        if(mt_rand(1, 50) === 1)
+            return $this->foundMagicLeaf($pet);
+        else if($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 10) === 1)
+            return $this->foundMagicLeaf($pet, true);
+
         $meters = mt_rand(300, 1800) / 2;
 
         $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters! There wasn\'t anything noteworthy up there, but it was a good work-out!', '');
