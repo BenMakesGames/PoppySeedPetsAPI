@@ -340,9 +340,13 @@ class MagicBeanstalkService
                 ArrayFunctions::pick_one($possibleLoot),
             ];
 
+            if(mt_rand(1, 1000) <= $pet->getPerception() && $pet->hasMerit(MeritEnum::BEHATTED))
+                $loot[] = 'White Bow';
+
             if(mt_rand(1, 40 - $pet->getPerception()) === 1)
                 $loot[] = 'Very Strongbox';
-            else if(mt_rand(1, 20 + $pet->getPerception()) >= 20)
+
+            if(mt_rand(1, 20 + $pet->getPerception()) >= 20)
                 $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk all the way to the clouds, and found a huge castle! They explored it for a little while, eventually making off with ' . ArrayFunctions::list_nice($loot) . '!', '');
