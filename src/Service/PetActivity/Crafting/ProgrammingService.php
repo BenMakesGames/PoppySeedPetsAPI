@@ -87,6 +87,9 @@ class ProgrammingService
 
             if(array_key_exists('Ruler', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createViswanathsConstant', 10);
+
+            if(array_key_exists('XOR', $quantities) && array_key_exists('Fiberglass Bow', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createResonatingBow', 10);
         }
 
         if(array_key_exists('Lightning in a Bottle', $quantities))
@@ -439,6 +442,44 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to calculate Viswanath\'s Constant, but couldn\'t figure out any of the maths; not even a single one!', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createResonatingBow(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getMusic());
+
+        if($roll >= 18)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->inventoryService->loseItem('Hash Table', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('XOR', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Fiberglass Bow', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ]);
+
+            if($pet->hasMerit(MeritEnum::SOOTHING_VOICE))
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' coded up a Resonating Bow. They sang as they plucked the last string, producing a Music Note.', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ;
+
+                $this->inventoryService->petCollectsItem('Music Note', $pet, $pet->getName() . ' produced this while coding up a Resonating Bow.', $activityLog);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' coded up a Resonating Bow.', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ;
+            }
+
+            $this->inventoryService->petCollectsItem('Resonating Bow', $pet, $pet->getName() . ' coded this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to code up a Resonating Bow, but couldn\'t get the harmonics logic right...', 'icons/activity-logs/confused');
         }
     }
 
