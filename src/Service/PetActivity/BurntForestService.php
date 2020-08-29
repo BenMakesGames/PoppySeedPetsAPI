@@ -1,0 +1,345 @@
+<?php
+namespace App\Service\PetActivity;
+
+use App\Entity\Pet;
+use App\Entity\PetActivityLog;
+use App\Enum\PetActivityStatEnum;
+use App\Enum\PetSkillEnum;
+use App\Enum\StatusEffectEnum;
+use App\Functions\ArrayFunctions;
+use App\Functions\NumberFunctions;
+use App\Model\PetChanges;
+use App\Service\InventoryService;
+use App\Service\PetExperienceService;
+use App\Service\ResponseService;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\expr;
+
+class BurntForestService
+{
+    private $petExperienceService;
+    private $responseService;
+    private $inventoryService;
+
+    public function __construct(
+        PetExperienceService $petExperienceService, ResponseService $responseService, InventoryService $inventoryService
+    )
+    {
+        $this->petExperienceService = $petExperienceService;
+        $this->responseService = $responseService;
+        $this->inventoryService = $inventoryService;
+    }
+
+    public function adventure(Pet $pet)
+    {
+        $maxSkill = 10 + ($pet->getStrength() + $pet->getBrawl() + $pet->getIntelligence() + $pet->getUmbra()) / 2 - $pet->getAlcohol();
+
+        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 15);
+
+        $roll = mt_rand(1, $maxSkill);
+
+        $activityLog = null;
+        $changes = new PetChanges($pet);
+
+        switch($roll)
+        {
+            case 1:
+            case 2:
+            case 3:
+                $activityLog = $this->failToFindAnything($pet);
+                break;
+
+            case 4:
+            case 5:
+                $activityLog = $this->findAWoundedFairy($pet);
+                break;
+
+            case 6:
+                $activityLog = $this->findABitOfCharcoal($pet);
+                break;
+
+            case 7:
+                $activityLog = $this->findSquirmingMass($pet);
+                break;
+
+            case 8:
+            case 9:
+                $activityLog = $this->findBurningTree($pet);
+                break;
+
+            case 10:
+            case 11:
+                $activityLog = $this->findTearInTheTapestry($pet);
+                break;
+
+            case 12:
+            case 13:
+                $activityLog = $this->breakToolBonus($pet);
+                break;
+
+            case 14:
+            case 15:
+                $activityLog = $this->findScalySquirmingMass($pet);
+                break;
+        }
+
+        if($activityLog)
+            $activityLog->setChanges($changes->compare($pet));
+    }
+
+    private function failToFindAnything(Pet $pet): PetActivityLog
+    {
+        $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::UMBRA, false);
+
+        return $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, but all they found were ashes...', 'icons/activity-logs/confused');
+    }
+
+    private function findABitOfCharcoal(Pet $pet): PetActivityLog
+    {
+        if(mt_rand(1, 2000) < $pet->getPerception())
+        {
+            $loot = 'Striped Microcline';
+            $pet->increaseEsteem(4);
+        }
+        else
+        {
+            $loot = ArrayFunctions::pick_one([
+                'Charcoal', 'Charcoal',
+                'Crooked Stick',
+                'Chanterelle',
+                'Iron Ore',
+                'Silica Grounds',
+                'Grandparoot',
+                ArrayFunctions::pick_one([ 'Glowing Four-sided Die', 'Glowing Six-sided Die' ])
+            ]);
+        }
+
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
+
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the Burnt Forest for a while. They didn\'t encounter anything _super_ weird, but they did find ' . $loot . '!', '');
+
+        $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while exploring the Burnt Forest.', $activityLog);
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+        return $activityLog;
+    }
+
+    private function findAWoundedFairy(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getDexterity());
+
+        if($roll >= 11)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a wounded fairy! They bandaged it up; thankful, the Fairy cast a minor blessing on ' . $pet->getName() . '!', '');
+
+            $this->inventoryService->applyStatusEffect($pet, ArrayFunctions::pick_one([
+                StatusEffectEnum::INSPIRED, StatusEffectEnum::ONEIRIC, StatusEffectEnum::EXTRA_EXTROVERTED
+            ]), 4 * 60);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(mt_rand(1, 2));
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::UMBRA, false);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a wounded fairy! They weren\'t able to help, though. The fairy thanked them for trying, anyway...', '');
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+        }
+
+        return $activityLog;
+    }
+
+    private function findSquirmingMass(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getBrawl() + $pet->getStrength() + $pet->getDexterity());
+
+        $resistsFire = $pet->hasProtectionFromHeat();
+
+        if($roll >= 12)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
+
+            $loot = ArrayFunctions::pick_one([ 'Tentacle', 'Tentacle', 'Quintessence' ]);
+
+            if($resistsFire || mt_rand(1, 20 + $pet->getStamina()) >= 10)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and encountered a mass of flaming tentacles! They beat the tentacles back, and got a ' . $loot . '!', '');
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and encountered a mass of flaming tentacles! They beat the tentacles back, and got a ' . $loot . ', but not without getting burned in the fight!', '');
+                $pet->increaseSafety(-mt_rand(2, 4));
+            }
+
+            $pet->increaseEsteem(mt_rand(2, 4));
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' received this by defeating a mass of flaming tentacles in the Burnt Forest!', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
+
+            if($resistsFire || mt_rand(1, 20 + $pet->getStamina()) >= 15)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and encountered a mass of flaming tentacles! They tried to fight, but were forced to flee...', '');
+                $pet->increaseSafety(-mt_rand(2, 4));
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and encountered a mass of flaming tentacles! They tried to fight, but got burned by one of the tentacles, and was forced to flee...', '');
+                $pet->increaseSafety(-mt_rand(4, 8));
+            }
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+        }
+
+        return $activityLog;
+    }
+
+    private function findBurningTree(Pet $pet): PetActivityLog
+    {
+        $umbraRoll = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $brawlRoll = mt_rand(1, 20 + $pet->getBrawl() + $pet->getStrength() + $pet->getDexterity());
+
+        $loot = ArrayFunctions::pick_one([
+            'Crooked Stick',
+            'Quintessence',
+            ArrayFunctions::pick_one([ 'Red', 'Orange', 'Pamplemousse', 'Apricot', 'Naner' ])
+        ]);
+
+        if($umbraRoll > $brawlRoll)
+        {
+            if($umbraRoll >= 15)
+            {
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
+
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' found a piece of Charcoal, and convinced the spirit to eat that, instead. Grateful, the tree offered them ' . $loot . '.', '');
+                $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' was given this by a tree in the Burnt Forest, as thanks for saving it!', $activityLog);
+                $pet->increaseLove(mt_rand(2, 4));
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            }
+            else
+            {
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
+
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' tried to find a piece of Charcoal to distract the spirit with, but couldn\'t find any...', '');
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            }
+        }
+        else
+        {
+            if($brawlRoll >= 15)
+            {
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
+
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' was able to put the fire out; grateful, the tree offered them ' . $loot . '.', '');
+                $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' was given this by a tree in the Burnt Forest, as thanks for saving it!', $activityLog);
+                $pet->increaseLove(mt_rand(2, 4));
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+            }
+            else
+            {
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
+
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' tried to put out the fire, but by the time they chased it off, the tree was already dead...', '');
+                $pet->increaseEsteem(-mt_rand(2, 4));
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+            }
+        }
+
+        return $activityLog;
+    }
+
+    private function findTearInTheTapestry(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getDexterity());
+
+        if($roll >= 13)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a tear in the fabric of reality! They were able to stitch it back together, and got some Quintessence!', '');
+            $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this in the Burnt Forest while repairing a tear in the fabric of reality.', $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::UMBRA, false);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a tear in the fabric of reality! They tried to repair it, but were worried about getting unraveled, themselves!', '');
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+        }
+
+        return $activityLog;
+    }
+
+    private function breakToolBonus(Pet $pet): PetActivityLog
+    {
+        $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::OTHER, true);
+
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to visit the Burnt Forest, but a crack of light appeared on ' . $pet->getTool()->getItem()->getName() . ', and it lost its "' . $pet->getTool()->getEnchantment()->getName() . '" bonus! Before the crack faded, a strange piece of paper slipped out of it...', '');
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+        $this->inventoryService->petCollectsItem('Fairy\'s Scroll', $pet, 'This slipped out of a crack of light in ' . $pet->getName() . '\'s ' . $pet->getTool()->getItem()->getName() . '...', $activityLog);
+
+        $pet->getTool()->setEnchantment(null);
+
+        return $activityLog;
+    }
+
+    private function findScalySquirmingMass(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getBrawl() + $pet->getStrength() + $pet->getDexterity());
+
+        $resistsFire = $pet->hasProtectionFromHeat();
+
+        if($roll >= 16)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
+
+            $loot = ArrayFunctions::pick_one([ 'Dark Scales', 'Quinacridone Magenta Dye', 'Quintessence' ]);
+
+            if($resistsFire || mt_rand(1, 20 + $pet->getStamina()) >= 15)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They beat the tentacles back, and got a Tentacle, and ' . $loot . '!', '');
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They beat the tentacles back, and got a Tentacle, and ' . $loot . ', but not without getting burned in the fight!', '');
+                $pet->increaseSafety(-mt_rand(2, 4));
+            }
+
+            $pet->increaseEsteem(mt_rand(2, 4));
+
+            $this->inventoryService->petCollectsItem('Tentacle', $pet, $pet->getName() . ' received this by defeating a mass of flaming, scaly tentacles in the Burnt Forest!', $activityLog);
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' received this by defeating a mass of flaming, scaly tentacles in the Burnt Forest!', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
+
+            if($resistsFire || mt_rand(1, 20 + $pet->getStamina()) >= 20)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They tried to fight, but were forced to flee...', '');
+                $pet->increaseSafety(-mt_rand(2, 4));
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They tried to fight, but got burned by one of the tentacles, and was forced to flee...', '');
+                $pet->increaseSafety(-mt_rand(4, 8));
+            }
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+        }
+
+        return $activityLog;
+    }
+}

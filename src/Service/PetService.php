@@ -29,6 +29,7 @@ use App\Repository\InventoryRepository;
 use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
+use App\Service\PetActivity\BurntForestService;
 use App\Service\PetActivity\CraftingService;
 use App\Service\PetActivity\DreamingService;
 use App\Service\PetActivity\EasterEggHuntingService;
@@ -79,6 +80,7 @@ class PetService
     private $petRelationshipRepository;
     private $guildService;
     private $inventoryService;
+    private $burntForestService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -91,7 +93,8 @@ class PetService
         PregnancyService $pregnancyService, PetActivityStatsService $petActivityStatsService, PetGroupService $petGroupService,
         PetExperienceService $petExperienceService, DreamingService $dreamingService, MagicBeanstalkService $beanStalkService,
         EasterEggHuntingService $easterEggHuntingService, HeartDimensionService $heartDimensionService,
-        PetRelationshipRepository $petRelationshipRepository, GuildService $guildService, InventoryService $inventoryService
+        PetRelationshipRepository $petRelationshipRepository, GuildService $guildService, InventoryService $inventoryService,
+        BurntForestService $burntForestService
     )
     {
         $this->em = $em;
@@ -123,6 +126,7 @@ class PetService
         $this->petRelationshipRepository = $petRelationshipRepository;
         $this->guildService = $guildService;
         $this->inventoryService = $inventoryService;
+        $this->burntForestService = $burntForestService;
     }
 
     /**
@@ -627,6 +631,9 @@ class PetService
         if($pet->hasMerit(MeritEnum::PROTOCOL_7))
             $petDesires['hack'] = $this->generateHackingDesire($pet);
 
+        if($pet->getTool() && $pet->getTool()->getEnchantment() && $pet->getTool()->getEnchantment()->getName() === 'Burnt')
+            $petDesires['burntForest'] = $this->generateBurntForestDesire($pet);
+
         if($pet->getOwner()->getGreenhousePlants()->exists(function(int $key, GreenhousePlant $p) {
             return
                 $p->getPlant()->getName() === 'Magic Beanstalk' &&
@@ -653,6 +660,7 @@ class PetService
             case 'hack': $this->protocol7Service->adventure($pet); break;
             case 'umbra': $this->umbraService->adventure($pet); break;
             case 'beanStalk': $this->beanStalkService->adventure($pet); break;
+            case 'burntForest': $this->burntForestService->adventure($pet); break;
             default: $this->doNothing($pet); break;
         }
     }
@@ -1279,6 +1287,14 @@ class PetService
         }
         else
             return 0;
+    }
+
+    public function generateBurntForestDesire(Pet $pet): int
+    {
+        $umbraDesire = $this->generateExploreUmbraDesire($pet);
+        $brawlDesire = $this->generateMonsterHuntingDesire($pet);
+
+        return max($umbraDesire, $brawlDesire) * 3 / 4 + min($umbraDesire, $brawlDesire) / 4;
     }
 
     public function generateGatheringDesire(Pet $pet): int

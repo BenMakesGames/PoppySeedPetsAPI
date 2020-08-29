@@ -20,6 +20,38 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class ScrollController extends PoppySeedPetsItemController
 {
     /**
+     * @Route("/fairy/{inventory}/read", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function readFairyScroll(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'scroll/fairy/#/read');
+        $this->validateHouseSpace($inventory, $inventoryService);
+
+        $lameItems = [ 'Toadstool', 'Charcoal', 'Toad Legs', 'Bird\'s-foot Trefoil', 'Coriander Flower' ];
+
+        $loot = [
+            'Wings',
+            ArrayFunctions::pick_one($lameItems),
+            ArrayFunctions::pick_one($lameItems),
+        ];
+
+        foreach($loot as $item)
+            $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' summoned this by reading a Fairy\'s Scroll.', $inventory->getLocation(), $inventory->getLockedToOwner());
+
+        $em->remove($inventory);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess('You read the scroll perfectly, summoning ' . ArrayFunctions::list_nice($loot) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+    }
+
+    /**
      * @Route("/fruit/{inventory}/invoke", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */

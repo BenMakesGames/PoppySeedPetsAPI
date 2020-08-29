@@ -611,7 +611,7 @@ class UmbraService
                     ->increaseSafety(-2)
                 ;
 
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' stumbled upon a castle. While exploring it, a vampire attacked them! ' . $pet->getName() . ', caught completely by surprised, was forced to flee...', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' stumbled upon a castle. While exploring it, a vampire attacked them! ' . $pet->getName() . ', caught completely by surprise, was forced to flee...', '');
             }
         }
 
