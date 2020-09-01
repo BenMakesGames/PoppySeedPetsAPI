@@ -206,32 +206,48 @@ class InventoryService
     {
         $item = $this->getItemWithChanceForLuckyTransformation($item);
 
-        // bonus gather from equipment
-        if($pet->getTool() && $pet->getTool()->getItem()->getTool()->getWhenGather() && $item->getName() === $pet->getTool()->getItem()->getTool()->getWhenGather()->getName())
+        if($pet->getTool())
         {
-            $extraItem = (new Inventory())
-                ->setOwner($pet->getOwner())
-                ->setCreatedBy($pet->getOwner())
-                ->setItem($pet->getTool()->getItem()->getTool()->getWhenGatherAlsoGather())
-                ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
-                ->setLocation(LocationEnum::HOME)
-            ;
+            $toolTool = $pet->getTool()->getItem()->getTool();
 
-            $this->em->persist($extraItem);
-        }
+            // bonus gather from equipment
+            if(
+                ($toolTool->getWhenGather() && $item->getName() === $toolTool->getWhenGather()->getName()) ||
+                ($toolTool->getAttractsBugs() && $item->getName() === 'Weird Beetle')
+            )
+            {
+                $extraItem = (new Inventory())
+                    ->setOwner($pet->getOwner())
+                    ->setCreatedBy($pet->getOwner())
+                    ->setItem($pet->getTool()->getItem()->getTool()->getWhenGatherAlsoGather())
+                    ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
+                    ->setLocation(LocationEnum::HOME)
+                ;
 
-        // bonus gather from equipment enchantment effects
-        if($pet->getTool() && $pet->getTool()->getEnchantment() && $pet->getTool()->getEnchantment()->getEffects()->getWhenGather() && $item->getName() === $pet->getTool()->getEnchantment()->getEffects()->getWhenGather()->getName())
-        {
-            $extraItem = (new Inventory())
-                ->setOwner($pet->getOwner())
-                ->setCreatedBy($pet->getOwner())
-                ->setItem($pet->getTool()->getEnchantment()->getEffects()->getWhenGatherAlsoGather())
-                ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
-                ->setLocation(LocationEnum::HOME)
-            ;
+                $this->em->persist($extraItem);
+            }
 
-            $this->em->persist($extraItem);
+            // bonus gather from equipment enchantment effects
+            if($pet->getTool()->getEnchantment())
+            {
+                $bonusEffects = $pet->getTool()->getEnchantment()->getEffects();
+
+                if(
+                    ($bonusEffects->getWhenGather() && $item->getName() === $bonusEffects->getWhenGather()->getName()) ||
+                    ($bonusEffects->getAttractsBugs() && $item->getName() === 'Weird Beetle')
+                )
+                {
+                    $extraItem = (new Inventory())
+                        ->setOwner($pet->getOwner())
+                        ->setCreatedBy($pet->getOwner())
+                        ->setItem($pet->getTool()->getEnchantment()->getEffects()->getWhenGatherAlsoGather())
+                        ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
+                        ->setLocation(LocationEnum::HOME)
+                    ;
+
+                    $this->em->persist($extraItem);
+                }
+            }
         }
 
         if($item->getFood() !== null && count($pet->getLunchboxItems()) === 0 && mt_rand(1, 20) < 10 - $pet->getFood())
