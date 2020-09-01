@@ -53,27 +53,25 @@ class GatheringService
             case 1:
             case 2:
             case 3:
-                $activityLog = $this->foundNothing($pet, $roll);
-                break;
             case 4:
-                $activityLog = $this->foundPaperBag($pet);
+                $activityLog = $this->foundNothing($pet);
                 break;
             case 5:
-                $activityLog = $this->foundTeaBush($pet);
+                $activityLog = $this->foundPaperBag($pet);
                 break;
             case 6:
+                $activityLog = $this->foundTeaBush($pet);
+                break;
             case 7:
+            case 8:
                 $activityLog = $this->foundBerryBush($pet);
                 break;
-            case 8:
             case 9:
+            case 10:
                 $activityLog = $this->foundHollowLog($pet);
                 break;
-            case 10:
-                $activityLog = $this->foundAbandonedQuarry($pet);
-                break;
             case 11:
-                $activityLog = $this->foundNothing($pet, $roll);
+                $activityLog = $this->foundAbandonedQuarry($pet);
                 break;
             case 12:
                 $activityLog = $this->foundBirdNest($pet);
@@ -91,8 +89,6 @@ class GatheringService
                 $activityLog = $this->foundMicroJungle($pet);
                 break;
             case 17:
-                $activityLog = $this->foundNothing($pet, $roll);
-                break;
             case 18:
                 $activityLog = $this->foundWildHedgemaze($pet);
                 break;
@@ -145,15 +141,8 @@ class GatheringService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    private function foundNothing(Pet $pet, int $roll): PetActivityLog
+    private function foundNothing(Pet $pet): PetActivityLog
     {
-        $exp = ceil($roll / 10);
-
-        $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::NATURE ]);
-
         $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::GATHER, false);
 
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' went out gathering, but couldn\'t find anything.', 'icons/activity-logs/confused');
@@ -756,7 +745,7 @@ class GatheringService
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA, PetSkillEnum::NATURE ]);
                 $pet->increaseEsteem(mt_rand(2, 3));
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' got lost in a Wild Hedgemaze, and ran into a Hedgemaze Sphinx. ' . $pet->getName() . ' was able to solve it\'s riddle, and kept exploring, coming away with ' . ArrayFunctions::list_nice($loot) . '.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' got lost in a Wild Hedgemaze, and ran into a Hedgemaze Sphinx. ' . $pet->getName() . ' was able to solve its riddle, and kept exploring, coming away with ' . ArrayFunctions::list_nice($loot) . '.', '');
             }
             else
             {
