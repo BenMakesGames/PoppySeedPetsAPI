@@ -67,14 +67,14 @@ class EggController extends PoppySeedPetsItemController
         $message .= "\n\nAnyway, it's super cute, and... really seems to like you! In fact, it's already named itself after you??";
 
         $monkeyName = ArrayFunctions::pick_one([
-            'Fuzzy',
-            'Naner',
-            'Monkey',
-            'Howling',
             'Climbing',
-            'Tree',
+            'Fuzzy',
+            'Howling',
+            'Monkey',
+            'Naner',
+            'Poppy',
             'Stinky',
-            'Poppy'
+            'Tree',
         ]) . ' ' . $user->getName();
 
         $newPet = $petFactory->createPet(
