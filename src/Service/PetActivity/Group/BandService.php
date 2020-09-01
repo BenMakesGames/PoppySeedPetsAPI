@@ -60,7 +60,7 @@ class BandService
         'Questionable', 'Quiet', 'Quibbling',
         'Rancid', 'Raucous', 'Red', 'Red-hot', 'Rich', 'Riverside', 'Rolling', 'Romantic', 'Round', 'Rose-colored', 'Rude',
         'Rundown',
-        'Savage', 'Second', 'Short', 'Silver', 'Simple', 'Single-minded', 'Sinning', 'Smallish', 'Small Town', 'Smashing', 'Sorry',
+        'Sappho\'s', 'Savage', 'Second', 'Short', 'Silver', 'Simple', 'Single-minded', 'Sinning', 'Smallish', 'Small Town', 'Smashing', 'Sorry',
         'Star-crossed', 'Shakespearean', 'Sonic', 'Soft', 'Sleepy', 'Spicy', 'Strange', 'Sweet',
         'Third', 'Three-sided', 'Time-traveling', 'Tropical', 'Tricky', 'Toothsome',
         'Unknown', 'Unwilling', 'Unapologetic', 'Unjust', 'Unhealthy', 'Undecided',

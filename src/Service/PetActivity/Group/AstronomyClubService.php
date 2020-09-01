@@ -40,29 +40,30 @@ class AstronomyClubService
     ];
 
     private const SUFFIX_LIST = [
-        'Law', 'Theory', 'Proposal', 'Axiom', 'System', 'Model', 'Problem', 'Solution', 'Paradox', 'Thesis',
-        'Hypothesis'
+        'Axiom', 'Law', 'Theory', 'Proposal', 'System', 'Model', 'Problem', 'Solution', 'Paradox', 'Thesis',
+        'Hypothesis', 'Survey',
     ];
 
     private const ADJECTIVE_LIST = [
-        'Big', 'Really Big', 'Alpha', 'Beta', 'Theta', 'Omega', 'Delta', 'Heavy', 'Strongly-interacting',
-        'Vibrating', 'Elementary', 'Rotating', 'Plank', 'Absolute', 'Small', 'Weakly-interacting', 'Large-scale',
-        'Small-scale', 'Microwave', 'Radio', 'X-ray', 'Gamma-ray',
+        'Absolute', 'Alpha', 'Attracting', 'Beta', 'Big', 'Colliding', 'Copernican', 'Cosmic', 'Delta', 'Elementary', 'Expanding',
+        'Finite', 'Galilean', 'Gamma-ray', 'Gravitational', 'Heavy', 'Infinite', 'Large-scale', 'Local', 'Microwave', 'Omega',
+        'Plank', 'Quantized', 'Quantum', 'Radio', 'Really Big', 'Rotating', 'Small', 'Small-scale', 'Strongly-interacting',
+        'Theta', 'Timey-wimey', 'Universal', 'Vibrating', 'Weakly-interacting', 'X-ray',
     ];
 
     private const COLOR_LIST = [
-        'Red', 'White', 'Black', 'Yellow', 'Dark', 'Light',
+        'Red', 'White', 'Black', 'Yellow', 'Dark', 'Light', 'Blue'
     ];
 
     private const SINGULAR_NOUN_LIST = [
         'Phenomenon', 'Sun', 'Star', 'Galaxy', 'Nebula', 'Nova', 'Sphere', 'Expanse', 'Void', 'Shift', 'Particle',
         'Positron', 'Spin', 'String', 'Brane', 'Energy', 'Mass', 'Graviton', 'Field', 'Limit', 'Horizon', 'Plurality',
-        'Symmetry', 'Matter', 'Force', 'Parsec',
+        'Symmetry', 'Matter', 'Force', 'Parsec', 'Quark', 'Inflation',
     ];
 
     private const PLURAL_NOUN_LIST = [
         'Suns', 'Stars', 'Galaxies', 'Novas', 'Circles', 'Shifts', 'Particles', 'Metals', 'Strings', 'Branes',
-        'Masses', 'Gravitons', 'Fields', 'Symmetries', 'Forces',
+        'Masses', 'Gravitons', 'Fields', 'Symmetries', 'Forces', 'Quarks', 'Super-clusters',
     ];
 
     private const NUMBER_LIST = [
