@@ -211,15 +211,24 @@ class InventoryService
             $toolTool = $pet->getTool()->getItem()->getTool();
 
             // bonus gather from equipment
-            if(
-                ($toolTool->getWhenGather() && $item->getName() === $toolTool->getWhenGather()->getName()) ||
-                ($toolTool->getAttractsBugs() && $item->getName() === 'Weird Beetle')
-            )
+            if($toolTool->getWhenGather() && $item->getName() === $toolTool->getWhenGather()->getName())
             {
                 $extraItem = (new Inventory())
                     ->setOwner($pet->getOwner())
                     ->setCreatedBy($pet->getOwner())
                     ->setItem($pet->getTool()->getItem()->getTool()->getWhenGatherAlsoGather())
+                    ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
+                    ->setLocation(LocationEnum::HOME)
+                ;
+
+                $this->em->persist($extraItem);
+            }
+            else if($toolTool->getAttractsBugs() && $item->getName() === 'Weird Beetle')
+            {
+                $extraItem = (new Inventory())
+                    ->setOwner($pet->getOwner())
+                    ->setCreatedBy($pet->getOwner())
+                    ->setItem($item)
                     ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
                     ->setLocation(LocationEnum::HOME)
                 ;
@@ -232,15 +241,24 @@ class InventoryService
             {
                 $bonusEffects = $pet->getTool()->getEnchantment()->getEffects();
 
-                if(
-                    ($bonusEffects->getWhenGather() && $item->getName() === $bonusEffects->getWhenGather()->getName()) ||
-                    ($bonusEffects->getAttractsBugs() && $item->getName() === 'Weird Beetle')
-                )
+                if($bonusEffects->getWhenGather() && $item->getName() === $bonusEffects->getWhenGather()->getName())
                 {
                     $extraItem = (new Inventory())
                         ->setOwner($pet->getOwner())
                         ->setCreatedBy($pet->getOwner())
                         ->setItem($pet->getTool()->getEnchantment()->getEffects()->getWhenGatherAlsoGather())
+                        ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
+                        ->setLocation(LocationEnum::HOME)
+                    ;
+
+                    $this->em->persist($extraItem);
+                }
+                else if($bonusEffects->getAttractsBugs() && $item->getName() === 'Weird Beetle')
+                {
+                    $extraItem = (new Inventory())
+                        ->setOwner($pet->getOwner())
+                        ->setCreatedBy($pet->getOwner())
+                        ->setItem($item)
                         ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
                         ->setLocation(LocationEnum::HOME)
                     ;
