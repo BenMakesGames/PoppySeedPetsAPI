@@ -143,7 +143,7 @@ class BlueprintController extends PoppySeedPetsItemController
 
         if($user->getGreenhouse())
         {
-            return $responseService->itemActionSuccess('You\'ve already claimed a plot in the Greenhouse.');
+            throw new UnprocessableEntityHttpException('You\'ve already claimed a plot in the Greenhouse.');
         }
         else
         {
