@@ -250,6 +250,14 @@ class TraderService
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('White Firework'), 1) ],
                 'There\'s a little Tell Samarzhoustia chemistry for you!'
             ),
+            new TraderOffer(
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Top Hat'), 1),
+                    TraderOfferCostOrYield::createMoney(10),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Bright Top Hat'), 1) ],
+                'Huh: the band bleached out to be purple? Must be some kind of powerful dye they used, there...'
+            ),
         ];
     }
 
