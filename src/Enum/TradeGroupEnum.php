@@ -12,5 +12,5 @@ final class TradeGroupEnum
     public const BOX_BOX = 5;
     public const CURIOSITIES = 6;
     public const PLUSHIES = 7;
-
+    public const BLEACH = 8;
 }

@@ -36,7 +36,6 @@ class SharuminyinkaController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $exchange = new TraderOffer(
-            'Sharuminyinka\'s Hope',
             [
                 TraderOfferCostOrYield::createItem($itemRepository->findOneByName('Poker'), 1),
                 TraderOfferCostOrYield::createItem($itemRepository->findOneByName('Spider'), 1),
