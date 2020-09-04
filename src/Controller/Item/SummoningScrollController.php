@@ -173,9 +173,15 @@ class SummoningScrollController extends PoppySeedPetsItemController
         }
 
         if($won)
+        {
             $message = ArrayFunctions::list_nice($petNames) . ' got this by defeating ' . GrammarFunctions::indefiniteArticle($monster->name) . ' ' . $monster->name . '.';
+            $userStatsRepository->incrementStat($user, 'Won Against Something... Unfriendly');
+        }
         else
+        {
             $message = ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'was' : 'were') . ' defeated by ' . GrammarFunctions::indefiniteArticle($monster->name) . ' ' . $monster->name . ', but managed to ' . $grab . ' this during the fight.';
+            $userStatsRepository->incrementStat($user, 'Lost Against Something... Unfriendly');
+        }
 
         foreach($loot as $item)
             $inventoryService->receiveItem($item, $user, $user, $message, LocationEnum::HOME);
