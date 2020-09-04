@@ -772,7 +772,7 @@ class TraderService
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Red'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Bar'), 1),
                 ],
-                'Sorry: we couldn\'t get out flippers on actual Red Gold.'
+                'Sorry: we couldn\'t get our flippers on actual Red Gold.'
             );
 
             $offers[] = new TraderOffer(
@@ -784,7 +784,7 @@ class TraderService
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Red'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Bar'), 1),
                 ],
-                'Sorry: we couldn\'t get out flippers on actual Red Gold.'
+                'Sorry: we couldn\'t get our flippers on actual Red Gold.'
             );
         }
 
