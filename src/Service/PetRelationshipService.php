@@ -297,6 +297,9 @@ class PetRelationshipService
 
         $otherActivityPet->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP);
 
+        if($otherActivityPet->getPet()->getOwner()->getId() === $activityLog->getPet()->getOwner()->getId())
+            $otherActivityPet->setViewed();
+
         return [ $petRelationship, $otherPetRelationship ];
     }
 
