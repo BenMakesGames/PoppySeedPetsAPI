@@ -9,6 +9,7 @@ use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\SpiritCompanionStarEnum;
 use App\Enum\TradeGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
@@ -197,6 +198,36 @@ class TreasureMapService
 
         if(mt_rand(1, 20) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);
+    }
+
+    public function doCookSomething(Pet $pet): PetActivityLog
+    {
+        $food = ArrayFunctions::pick_one([
+            '"Mud Pie" (made from actual mud)',
+            '"Useless Fizz Soda"',
+            '"Deep-fried Planetary Rings"',
+            '"Grass Soup"',
+            '"Liquid-hot Magma Cake"',
+            '"Stick Salad"',
+            '"Bug Gumbo"',
+            '"Acorn Fugu"'
+        ]);
+
+        $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
+
+        if($pet->getSpiritCompanion() && $pet->getSpiritCompanion()->getStar() === SpiritCompanionStarEnum::SAGITTARIUS)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' and ' . $pet->getSpiritCompanion()->getName() . ' made you ' . $food . ' with their ' . $pet->getTool()->getItem()->getName() . '. You all pretend to eat it together. It\'s very good.', '');
+            $pet->increaseLove(6);
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made you ' . $food . ' with their ' . $pet->getTool()->getItem()->getName() . '. You and ' . $pet->getName() . ' pretend to eat it together. It\'s very good.', '');
+            $pet->increaseLove(4);
+        }
+
+        return $activityLog;
     }
 
     public function doFluffmongerTrade(Pet $pet): PetActivityLog

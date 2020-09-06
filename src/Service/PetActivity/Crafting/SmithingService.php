@@ -80,6 +80,8 @@ class SmithingService
 
                 if(array_key_exists('Green Dye', $quantities))
                     $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createGreenScissors', 10);
+
+                $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createSaucepan', 7);
             }
 
             if(array_key_exists('Crooked Stick', $quantities) && array_key_exists('Iron Bar', $quantities))

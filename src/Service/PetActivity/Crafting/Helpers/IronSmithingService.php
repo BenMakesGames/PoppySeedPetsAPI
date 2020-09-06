@@ -175,9 +175,6 @@ class IronSmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createGreenScissors(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
@@ -213,7 +210,12 @@ class IronSmithingService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made Green Scissors.', 'items/tool/scissors/green')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
             ;
-            $this->inventoryService->petCollectsItem('Green Scissors', $pet, $pet->getName() . ' created.', $activityLog);
+
+            if(mt_rand(1, 20 + ($pet->getId() % 4) * 3) >= 23)
+                $this->inventoryService->petCollectsItem('Green Scissors', $pet, $pet->getName() . ' created (and sharpened) this!', $activityLog);
+            else
+                $this->inventoryService->petCollectsItem('Green Scissors', $pet, $pet->getName() . ' created this.', $activityLog);
+
             return $activityLog;
         }
         else
@@ -224,9 +226,48 @@ class IronSmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
+    public function createSaucepan(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 1)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::SMITH, false);
+
+            $pet
+                ->increaseEsteem(-1)
+                ->increaseSafety(-1)
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Saucepan, but burnt the Plastic! :(', '');
+        }
+        else if($roll >= 10)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, true);
+
+            $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(1);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Saucepan.', 'items/tool/saucepan')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+            ;
+            $this->inventoryService->petCollectsItem('Saucepan', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Saucepan, but couldn\'t figure out the purpose of the thing...', 'icons/activity-logs/confused');
+        }
+    }
+
     public function createScythe(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());

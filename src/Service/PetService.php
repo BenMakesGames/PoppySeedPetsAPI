@@ -711,6 +711,15 @@ class PetService
                 }
 
                 return false;
+
+            case 'Saucepan':
+                if(mt_rand(1, 10) === 1)
+                {
+                    $this->treasureMapService->doCookSomething($pet);
+                    return true;
+                }
+
+                return false;
         }
 
         return false;
