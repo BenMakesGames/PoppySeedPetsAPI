@@ -21,7 +21,7 @@ monolog:
             type: swift_mailer
             from_email: 'api@poppyseedpets.com'
             to_email: 'ben@poppyseedpets.com'
-            subject: "Poppy Seed Pets Exception: %%message%%"
+            subject: "✿ Poppy Seed Pets Exception: %%message%%"
             level: debug
             formatter: monolog.formatter.html
             content_type: text/html

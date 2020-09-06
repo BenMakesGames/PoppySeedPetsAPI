@@ -62,7 +62,7 @@ class PassphraseResetService
 
     private function sendPasswordResetEmail(PassphraseResetRequest $request)
     {
-        $message = (new \Swift_Message('Poppy Seed Pets: Password Reset Request'))
+        $message = (new \Swift_Message('✿ Poppy Seed Pets: Password Reset Request'))
             ->setFrom('help+resetpassword@poppyseedpets.com')
             ->setTo($request->getUser()->getEmail())
             ->setBody(
