@@ -98,8 +98,14 @@ class SmithingService
         if(array_key_exists('Yellow Scissors', $quantities) && array_key_exists('Green Scissors', $quantities) && array_key_exists('Quinacridone Magenta Dye', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createTriColorScissors', 10);
 
-        if(array_key_exists('Tri-color Scissors', $quantities) && array_key_exists('Firestone', $quantities))
-            $possibilities[] = new ActivityCallback($this, 'createPapersBane', $weight);
+        if(array_key_exists('Firestone', $quantities))
+        {
+            if(array_key_exists('Tri-color Scissors', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createPapersBane', $weight);
+
+            if(array_key_exists('Warping Wand', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createRedWarpingWand', 10);
+        }
 
         if(array_key_exists('Silver Bar', $quantities))
         {
@@ -275,6 +281,40 @@ class SmithingService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Paper\'s Bane, but almost burned themselves on the Firestone...', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createRedWarpingWand(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getDexterity() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll >= 26)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Warping Wand', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Firestone', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(6);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' infused a Warping Wand with the eternal heat of Firestone!', 'items/tool/scissors/papersbane')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 25)
+            ;
+            $this->inventoryService->petCollectsItem('Red Warping Wand', $pet, $pet->getName() . ' made this by infusing a Warping Wand with the eternal heat of Firestone!', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+
+            if(mt_rand(1, 2) === 1)
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Red Warping Wand, but almost burned themselves on the Firestone...', 'icons/activity-logs/confused');
+            else
+            {
+                $location = ArrayFunctions::pick_one([ 'on the roof', 'in the bathtub', 'in the dishwasher', 'under your bed', 'in your closet', 'in the mailbox' ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Red Warping Wand, but accidentally warped the Firestone away. They looked around for a while, and finally found it ' . $location . '.', 'icons/activity-logs/confused');
+            }
         }
     }
 
