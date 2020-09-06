@@ -835,7 +835,6 @@ class TraderService
             );
 
             $offers[] = new TraderOffer(
-                'sunflower3',
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Tuning Fork'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Sunflower'), 1) ],
                 'Ah: you doing some Beehive stuff? Or making one of those Night and Day swords? Well, have a happy Sunday, regardless!'
