@@ -78,6 +78,9 @@
     "doctrine/reflection": {
         "version": "v1.0.0"
     },
+    "doctrine/sql-formatter": {
+        "version": "1.1.1"
+    },
     "dragonmantank/cron-expression": {
         "version": "v2.3.0"
     },
@@ -95,12 +98,6 @@
     },
     "guzzlehttp/psr7": {
         "version": "1.6.1"
-    },
-    "jdorn/sql-formatter": {
-        "version": "v1.2.17"
-    },
-    "jeremeamia/superclosure": {
-        "version": "2.4.0"
     },
     "lavary/crunz": {
         "version": "v2.0.4"
@@ -128,6 +125,9 @@
     },
     "ocramius/proxy-manager": {
         "version": "2.1.1"
+    },
+    "opis/closure": {
+        "version": "3.5.7"
     },
     "oro/doctrine-extensions": {
         "version": "1.3.0"
@@ -371,6 +371,9 @@
     "symfony/polyfill-intl-idn": {
         "version": "v1.11.0"
     },
+    "symfony/polyfill-intl-normalizer": {
+        "version": "v1.18.1"
+    },
     "symfony/polyfill-mbstring": {
         "version": "v1.11.0"
     },
@@ -379,6 +382,9 @@
     },
     "symfony/polyfill-php73": {
         "version": "v1.11.0"
+    },
+    "symfony/polyfill-php80": {
+        "version": "v1.18.1"
     },
     "symfony/process": {
         "version": "v4.3.1"
