@@ -5,6 +5,8 @@ use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\User;
 use App\Service\HouseService;
 use Doctrine\Common\Annotations\Reader;
+use phpDocumentor\Reflection\Types\Array_;
+use phpDocumentor\Reflection\Types\Callable_;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
@@ -41,7 +43,9 @@ class ControllerActionSubscriber implements EventSubscriberInterface
 
     public function beforeFilter(ControllerEvent $event)
     {
-        $this->checkHouseHours($event);
+        if(is_array($event->getController()))
+            $this->checkHouseHours($event);
+
         $this->convertJsonStringToArray($event);
     }
 
