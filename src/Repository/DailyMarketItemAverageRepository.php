@@ -6,7 +6,7 @@ use App\Entity\DailyMarketItemAverage;
 use App\Entity\Item;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method DailyMarketItemAverage|null find($id, $lockMode = null, $lockVersion = null)

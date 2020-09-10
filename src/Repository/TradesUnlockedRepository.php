@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\TradesUnlocked;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method TradesUnlocked|null find($id, $lockMode = null, $lockVersion = null)

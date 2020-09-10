@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\PlantYield;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method PlantYield|null find($id, $lockMode = null, $lockVersion = null)
