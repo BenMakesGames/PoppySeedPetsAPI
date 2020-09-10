@@ -162,7 +162,7 @@ class CraftingService
                 $possibilities[] = new ActivityCallback($this, 'createLeafSpear', 10);
 
             if(array_key_exists('L-Square', $quantities) && array_key_exists('Green Dye', $quantities))
-                $possibilities[] = new ActivityCallback($this, 'createRibbleysComposite', 10);
+                $possibilities[] = new ActivityCallback($this, 'createRibbelysComposite', 10);
         }
 
         if(array_key_exists('Feathers', $quantities))
