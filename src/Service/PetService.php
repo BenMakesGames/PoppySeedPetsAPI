@@ -638,7 +638,8 @@ class PetService
             return
                 $p->getPlant()->getName() === 'Magic Beanstalk' &&
                 $p->getIsAdult() &&
-                $p->getProgress() >= 1
+                $p->getProgress() >= 1 &&
+                new \DateTimeImmutable() >= $p->getCanNextInteract()
             ;
         }))
         {
