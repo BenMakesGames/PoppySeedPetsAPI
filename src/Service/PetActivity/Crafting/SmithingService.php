@@ -137,6 +137,9 @@ class SmithingService
 
             $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createGoldTuningFork', ceil($weight / 2));
 
+            if(array_key_exists('Blackonite', $quantities) && array_key_exists('White Cloth', $quantities))
+                $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createVicious', 10);
+
             if(array_key_exists('Fiberglass', $quantities) && array_key_exists('Moon Pearl', $quantities))
                 $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createMoonhammer', 10);
 

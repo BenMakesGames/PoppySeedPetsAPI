@@ -63,6 +63,9 @@ class MagicBindingService
 
         if(array_key_exists('Quintessence', $quantities))
         {
+            if(array_key_exists('Vicious', $quantities) && array_key_exists('Black Feathers', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createBatmanIGuess', 8);
+
             if(array_key_exists('Sidereal Leaf Spear', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'enchantSiderealLeafSpear', 8);
 
@@ -821,6 +824,53 @@ class MagicBindingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 19)
             ;
             $this->inventoryService->petCollectsItem('Wand of Lightning', $pet, $pet->getName() . ' enchanted this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createBatmanIGuess(Pet $pet): PetActivityLog
+    {
+        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            $pet->increaseEsteem(-1);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant Vicious, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+        }
+        else if($umbraCheck < 24)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+
+            switch(mt_rand(1, 4))
+            {
+                case 1:
+                    return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make The Dark Knight, but couldn\'t get Batman out of their head! It was so distracting!', 'icons/activity-logs/confused');
+
+                case 2:
+                    $pet->increaseSafety(-4);
+                    return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant Vicious, but accidentally cut themselves on the blade! :(', '');
+
+                default: // 3 & 4
+                    return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant Vicious, but it kept resisting the enchantment! >:(', 'icons/activity-logs/confused');
+            }
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Black Feathers', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Vicious', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(5);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' bound The Dark Knight!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 24)
+            ;
+            $this->inventoryService->petCollectsItem('The Dark Knight', $pet, $pet->getName() . ' enchanted this.', $activityLog);
             return $activityLog;
         }
     }
