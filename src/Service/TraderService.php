@@ -602,6 +602,10 @@ class TraderService
 
     private function getCuriositiesOffers(User $user): array
     {
+        $moonName = ArrayFunctions::pick_one([
+            'Europa', 'Ganymede', 'Callisto', 'Mimas', 'Enceladus', 'Titan', 'Miranda', 'Umbriel', 'Triton'
+        ]);
+
         return [
             new TraderOffer(
                 [ TraderOfferCostOrYield::createMoney(1000) ],
@@ -643,6 +647,15 @@ class TraderService
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Rings on Strings'), 1) ],
                 'This item feels kind of silly, doesn\'t it? Well, I suppose it\'s not for me to say. Oh, and thanks for the Onion Rings. I was feeling a little peckish.'
             ),
+
+            new TraderOffer(
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Planetary Ring'), 3),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Everice'), 1),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Icy Moon'), 1) ],
+                'Does that one look kind of like ' . $moonName . ' to you?'
+            )
         ];
     }
 
