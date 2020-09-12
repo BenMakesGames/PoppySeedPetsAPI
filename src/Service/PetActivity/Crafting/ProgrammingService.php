@@ -67,8 +67,14 @@ class ProgrammingService
             if(array_key_exists('Finite State Machine', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createRegex', 10);
 
-            if(array_key_exists('NUL', $quantities) && array_key_exists('Plastic Fishing Rod', $quantities))
-                $possibilities[] = new ActivityCallback($this, 'createPhishingRod', 10);
+            if(array_key_exists('NUL', $quantities))
+            {
+                if(array_key_exists('Plastic Fishing Rod', $quantities))
+                    $possibilities[] = new ActivityCallback($this, 'createPhishingRod', 10);
+
+                if(array_key_exists('Gold Key', $quantities))
+                    $possibilities[] = new ActivityCallback($this, 'createDiffieHKey', 10);
+            }
         }
 
         if(array_key_exists('Regex', $quantities) && array_key_exists('Password', $quantities))
@@ -621,6 +627,41 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' considered making a Phishing Rod, but ended up boondoggling.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createDiffieHKey(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+
+            $this->inventoryService->loseItem('NUL', $pet->getOwner(), LocationEnum::HOME, 1);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a Diffie-H Key, but their NUL got reallocated :(', 'icons/activity-logs/null');
+            return $activityLog;
+        }
+        else if($roll >= 13)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->inventoryService->loseItem('Gold Key', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Pointer', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('NUL', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+            $pet->increaseEsteem(1);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Diffie-H Key.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+            ;
+            $this->inventoryService->petCollectsItem('Diffie-H Key', $pet, $pet->getName() . ' made this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Diffie-H Key, but some passing qubits messed it all up.', 'icons/activity-logs/confused');
         }
     }
 

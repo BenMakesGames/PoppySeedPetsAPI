@@ -6,6 +6,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
@@ -226,6 +227,37 @@ class TreasureMapService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made you ' . $food . ' with their ' . $pet->getTool()->getItem()->getName() . '. You and ' . $pet->getName() . ' pretend to eat it together. It\'s very good.', '');
             $pet->increaseLove(4);
         }
+
+        return $activityLog;
+    }
+
+    public function doUseDiffieHKey(Pet $pet): PetActivityLog
+    {
+        if(!$pet->hasMerit(MeritEnum::PROTOCOL_7))
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::PROTOCOL_7, false);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' didn\'t understand what they were supposed to do with the ' . $pet->getTool()->getItem()->getName() . ', so put it down...', '');
+
+            $this->inventoryService->unequipPet($pet);
+
+            return $activityLog;
+        }
+
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+
+        $this->em->remove($pet->getTool());
+        $pet->setTool(null);
+
+        $loot = ArrayFunctions::pick_one([
+            'Alice\'s Secret', 'Bob\'s Secret'
+        ]);
+
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found ' . $loot . ' in Project-E by using their Diffie-H Key.', '')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+        ;
+        $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this in Project-E by using a Diffie-H Key.', $activityLog);
 
         return $activityLog;
     }

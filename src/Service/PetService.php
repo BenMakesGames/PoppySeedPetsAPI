@@ -720,6 +720,10 @@ class PetService
                 }
 
                 return false;
+
+            case 'Diffie-H Key':
+                $this->treasureMapService->doUseDiffieHKey($pet);
+                return true;
         }
 
         return false;

@@ -5,6 +5,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 
@@ -55,6 +56,13 @@ abstract class PoppySeedPetsCommand extends Command
     protected function askBool(string $prompt, int $defaultValue): int
     {
         return $this->confirm($prompt, $defaultValue);
+    }
+
+    protected function askChoice(string $prompt, array $choices, $defaultValue): string
+    {
+        $question = new ChoiceQuestion($prompt, $choices, $defaultValue);
+
+        return $this->ask($question);
     }
 
     protected function askString(string $prompt, ?string $defaultValue, callable $constraint = null): string

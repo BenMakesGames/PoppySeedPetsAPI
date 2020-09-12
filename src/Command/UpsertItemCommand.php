@@ -7,6 +7,7 @@ use App\Entity\ItemFood;
 use App\Entity\ItemHat;
 use App\Entity\ItemTool;
 use App\Enum\FlavorEnum;
+use App\Enum\PetSkillEnum;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -170,6 +171,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
             $tool->setProtectionFromHeat($this->askBool('Protects from heat?', $tool->getProtectionFromHeat()));
             $tool->setIsRanged($this->askBool('Is ranged?', $tool->getIsRanged()));
             $tool->setLeadsToAdventure($this->askBool('Leads to adventure?', $tool->getLeadsToAdventure()));
+            $tool->setFocusSkill($this->askFocusSkill($tool->getFocusSkill()));
         }
         else
         {
@@ -178,6 +180,13 @@ class UpsertItemCommand extends PoppySeedPetsCommand
 
             $item->setTool(null);
         }
+    }
+
+    private function askFocusSkill(?string $default): ?string
+    {
+        $result = $this->askChoice('Skill to focus?', array_merge(PetSkillEnum::getValues(), [ 'NULL' ]), $default);
+
+        return $result === 'NULL' ? null : $result;
     }
 
     private function hat(Item $item)
