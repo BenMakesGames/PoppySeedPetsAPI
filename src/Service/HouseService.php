@@ -110,16 +110,20 @@ class HouseService
         foreach($petsWithTime as $pet)
         {
             if($pet->getHouseTime()->getActivityTime() >= 60)
+            {
                 $this->petService->runHour($pet);
+
+                $this->em->flush();
+            }
 
             $hungOut = false;
 
             if($pet->getHouseTime()->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
             {
                 $hungOut = $this->petService->runSocialTime($pet);
-            }
 
-            $this->em->flush();
+                $this->em->flush();
+            }
 
             if($this->petCanStillProcess($pet, $hungOut))
                 $petsRemaining[] = $pet;

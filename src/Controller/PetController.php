@@ -1094,7 +1094,7 @@ class PetController extends PoppySeedPetsController
         {
             $petService->doPet($pet);
         }
-        catch(\Exception $e)
+        catch(\InvalidArgumentException $e)
         {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
@@ -1122,7 +1122,7 @@ class PetController extends PoppySeedPetsController
         {
             $petService->doPraise($pet);
         }
-        catch(\Exception $e)
+        catch(\InvalidArgumentException $e)
         {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
