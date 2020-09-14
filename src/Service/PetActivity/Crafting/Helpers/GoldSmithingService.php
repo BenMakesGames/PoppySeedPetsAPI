@@ -31,9 +31,6 @@ class GoldSmithingService
         $this->transactionService = $transactionService;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createGoldTriangle(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + max($pet->getCrafts(), $pet->getMusic()) + $pet->getSmithing());
@@ -69,6 +66,60 @@ class GoldSmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Gold Triangle, but couldn\'t figure it out.', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createAubergineScepter(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+        $reRoll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->inventoryService->loseItem('Eggplant', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseSafety(-mt_rand(4, 8));
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make an Aubergine Scepter, but accidentally burnt the Eggplant. It smelled _awful_!', 'icons/activity-logs/broke-string');
+        }
+        else if($reRoll >= 12)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(75, 90), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $moneys = mt_rand(20, 30);
+            $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' tried to forge a gold scepter, but couldn\'t get the shape right, so just made gold coins, instead.');
+            $pet->increaseFood(-1);
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge a scepter from a Gold Bar, but couldn\'t get the shape right, so just made ' . $moneys . ' Moneys worth of gold coins, instead.', 'icons/activity-logs/moneys');
+        }
+        else if($roll >= 12)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Eggplant', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(1);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made an Aubergine Scepter.', 'items/tool/instrument/triangle-gold')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+            ;
+            $this->inventoryService->petCollectsItem('Gold Triangle', $pet, $pet->getName() . ' created... _this_.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            if(mt_rand(1, 10) === 1)
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make an Aubergine Scepter, but couldn\'t figure it out. (It\'s probably for the better.)', 'icons/activity-logs/confused');
+            else
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make an Aubergine Scepter, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
 

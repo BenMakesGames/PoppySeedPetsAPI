@@ -18,6 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PetRepository")
@@ -77,13 +78,11 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember"})
      */
     private $colorA;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember"})
      */
     private $colorB;
 
@@ -559,6 +558,30 @@ class Pet
         $this->experience -= $amount;
 
         return $this;
+    }
+
+    /**
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember"})
+     * @SerializedName("colorA")
+     */
+    public function getPerceivedColorA(): string
+    {
+        if($this->hasStatusEffect(StatusEffectEnum::EGGPLANT_CURSED))
+            return '673192';
+        else
+            return $this->getColorA();
+    }
+
+    /**
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember"})
+     * @SerializedName("colorB")
+     */
+    public function getPerceivedColorB(): string
+    {
+        if($this->hasStatusEffect(StatusEffectEnum::EGGPLANT_CURSED))
+            return '8b48c1';
+        else
+            return $this->getColorB();
     }
 
     public function getColorA(): ?string

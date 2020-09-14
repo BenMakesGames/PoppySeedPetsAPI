@@ -10,4 +10,5 @@ final class StatusEffectEnum
     public const INSPIRED = 'Inspired';
     public const ONEIRIC = 'Oneiric';
     public const EXTRA_EXTROVERTED = 'Extra Extroverted';
+    public const EGGPLANT_CURSED = 'Eggplant-cursed';
 }

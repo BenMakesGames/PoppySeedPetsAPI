@@ -11,6 +11,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SpiritCompanionStarEnum;
+use App\Enum\StatusEffectEnum;
 use App\Enum\TradeGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
@@ -21,11 +22,10 @@ use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
-use App\Service\PetService;
 use App\Service\ResponseService;
+use App\Service\ToolBonusService;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\Location;
 
 class TreasureMapService
 {
@@ -36,11 +36,12 @@ class TreasureMapService
     private $petExperienceService;
     private $userQuestRepository;
     private $traderService;
+    private $toolBonusService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         EntityManagerInterface $em, PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
-        TraderService $traderService
+        TraderService $traderService, ToolBonusService $toolBonusService
     )
     {
         $this->responseService = $responseService;
@@ -50,6 +51,7 @@ class TreasureMapService
         $this->petExperienceService = $petExperienceService;
         $this->userQuestRepository = $userQuestRepository;
         $this->traderService = $traderService;
+        $this->toolBonusService = $toolBonusService;
     }
 
     public function doCetguelisTreasureMap(Pet $pet)
@@ -199,6 +201,24 @@ class TreasureMapService
 
         if(mt_rand(1, 20) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);
+    }
+
+    public function doEggplantCurse(Pet $pet): PetActivityLog
+    {
+        $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+        $agk = ArrayFunctions::pick_one([ 'Agk!', 'Oh dang!', 'Noooo!', 'Quel dommage!', 'Welp!' ]);
+
+        $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, a weird, purple energy oozed out of their ' . $this->toolBonusService->enchantedName($pet->getTool()) . ', and enveloped them! (' . $agk . ' It\'s the Eggplant Curse!)', '');
+        $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::EGGPLANT_CURSED, mt_rand(24, 48) * 60);
+
+        $pet
+            ->increaseEsteem(-mt_rand(4, 8))
+            ->increaseSafety(-mt_rand(4, 8))
+        ;
+
+        return $activityLog;
     }
 
     public function doCookSomething(Pet $pet): PetActivityLog

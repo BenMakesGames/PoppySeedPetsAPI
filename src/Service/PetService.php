@@ -725,6 +725,14 @@ class PetService
             case 'Diffie-H Key':
                 $this->treasureMapService->doUseDiffieHKey($pet);
                 return true;
+
+            case 'Aubergine Commander':
+                if(mt_rand(1, 100) === 1)
+                {
+                    $this->treasureMapService->doEggplantCurse($pet);
+                    return true;
+                }
+                return false;
         }
 
         return false;

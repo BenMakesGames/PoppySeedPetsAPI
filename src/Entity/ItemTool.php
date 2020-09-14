@@ -365,7 +365,12 @@ class ItemTool
         }
 
         if($this->getLeadsToAdventure())
-            $modifiers[] = 'leads to adventure!';
+        {
+            if($this->getId() === 205) // aubergine commander
+                $modifiers[] = 'leads to... adventure??';
+            else
+                $modifiers[] = 'leads to adventure!';
+        }
 
         if($this->getProvidesLight())
             $modifiers[] = 'provides light';
