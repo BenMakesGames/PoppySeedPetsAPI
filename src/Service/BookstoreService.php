@@ -176,7 +176,10 @@ class BookstoreService
                 $bookPrices['Big Book of Baking'] = 25;
 
             if($cookedSomething->getValue() >= 20)
+            {
                 $bookPrices['Fish Book'] = 20;
+                $bookPrices['Of Rice'] = 50;
+            }
 
             if($cookedSomething->getValue() >= 25)
                 $bookPrices['Book of Noods'] = 20;
