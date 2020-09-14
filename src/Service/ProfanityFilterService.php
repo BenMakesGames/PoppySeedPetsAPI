@@ -20,7 +20,7 @@ class ProfanityFilterService
         'b+a+s+t+a+r+d+(s*)' => 'ne\'er-do-well$1',
         'p+u+s+(y+|i+e+)' => 'kitten',
         'c+l+i+t+($|[^io])' => 'gem$1',
-        '(^|[^cdg]|the)r+a+p+e+(s*)($|[^a-z])' => '$1wrong$2$3',
+        '(^|[^cdg])r+a+p+e+(s*)($|[^a-z])' => '$1wrong$2$3',
         '(^|s)c+r+a+p+y+' => '$1poopy',
         '(^|s)c+r+a+p+(s*)' => '$1poo$2',
         's+h+i+t+y+' => 'poopy',

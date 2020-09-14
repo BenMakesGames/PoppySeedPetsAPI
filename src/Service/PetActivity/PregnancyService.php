@@ -240,6 +240,7 @@ class PregnancyService
         'kike',
         'niger', // nigger
         'prick',
+        'rape',
         'rapist',
         'sket', // skeet
         'spic',
