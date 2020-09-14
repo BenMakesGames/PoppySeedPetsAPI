@@ -109,19 +109,22 @@ class InventoryController extends PoppySeedPetsController
 
         if(count($inventory) === 2)
         {
+            $tool = ArrayFunctions::find_one($inventory, function(Inventory $i) use($inventoryIds) { return $i->getId() === $inventoryIds[0]; });
+            $bonus = ArrayFunctions::find_one($inventory, function(Inventory $i) use($inventoryIds) { return $i->getId() === $inventoryIds[1]; });
+
             try
             {
                 $enchanted = null;
 
-                if($inventory[0]->getItem()->getTool() && $inventory[1]->getItem()->getEnchants())
+                if($tool->getItem()->getTool() && $bonus->getItem()->getEnchants())
                 {
-                    $enchantmentService->enchant($inventory[0], $inventory[1]);
-                    $enchanted = $inventory[0];
+                    $enchantmentService->enchant($tool, $bonus);
+                    $enchanted = $tool;
                 }
-                else if($inventory[1]->getItem()->getTool() && $inventory[0]->getItem()->getEnchants())
+                else if($bonus->getItem()->getTool() && $tool->getItem()->getEnchants())
                 {
-                    $enchantmentService->enchant($inventory[1], $inventory[0]);
-                    $enchanted = $inventory[1];
+                    $enchantmentService->enchant($bonus, $tool);
+                    $enchanted = $bonus;
                 }
 
                 if($enchanted)
