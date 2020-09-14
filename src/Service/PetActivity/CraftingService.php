@@ -174,8 +174,14 @@ class CraftingService
                 $possibilities[] = new ActivityCallback($this, 'createOrnatePanFlute', 10);
         }
 
-        if(array_key_exists('Decorated Spear', $quantities) && array_key_exists('Quintessence', $quantities))
-            $possibilities[] = new ActivityCallback($this, 'createVeilPiercer', 10);
+        if(array_key_exists('Decorated Spear', $quantities))
+        {
+            if(array_key_exists('Dark Scales', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createNagatooth', 10);
+
+            if(array_key_exists('Quintessence', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createVeilPiercer', 10);
+        }
 
         if(array_key_exists('Crooked Fishing Rod', $quantities) && array_key_exists('Yellow Dye', $quantities) && array_key_exists('Green Dye', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createPaintedFishingRod', 10);
@@ -1209,6 +1215,31 @@ class CraftingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
             ;
             $this->inventoryService->petCollectsItem('Veil-piercer', $pet, $pet->getName() . ' made this by enchanting a Decorated Spear.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    private function createNagatooth(Pet $pet): PetActivityLog
+    {
+        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
+
+        if($craftsCheck < 15)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried decorate a Decorated Spear _even more_, but couldn\'t get the pattern just right...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Dark Scales', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Decorated Spear', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' further decorated a Decorated Spear; now it\'s a Nagatooth!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+            ;
+            $this->inventoryService->petCollectsItem('Nagatooth', $pet, $pet->getName() . ' made this by further decorating a Decorated Spear.', $activityLog);
             return $activityLog;
         }
     }
