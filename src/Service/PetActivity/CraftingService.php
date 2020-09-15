@@ -56,6 +56,11 @@ class CraftingService
     {
         $possibilities = [];
 
+        if(array_key_exists('Chocolate Bar', $quantities))
+        {
+            $possibilities[] = new ActivityCallback($this, 'makeChocolateTool', 8);
+        }
+
         if(array_key_exists('Fluff', $quantities))
         {
             $possibilities[] = new ActivityCallback($this, 'spinFluff', 10);
@@ -608,9 +613,51 @@ class CraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
+    private function makeChocolateTool(Pet $pet): PetActivityLog
+    {
+        $making = $this->itemRepository->findOneByName(ArrayFunctions::pick_one([
+            'Chocolate Sword',
+            'Chocolate Hammer'
+        ]));
+
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        $botchChance = $pet->getFood() <= 0 ? 2 : 1;
+
+        if($roll <= $botchChance)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            $this->inventoryService->loseItem('Chocolate Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $pet->increaseFood(mt_rand(2, 4));
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' started making a ' . $making->getName() . ', but ended up eating the Chocolate Bar, instead >_>', '');
+        }
+        else if($roll >= 10)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Chocolate Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(1);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' molded a Chocolate Bar into a ' . $making->getName() . '.', 'items/' . $making->getImage())
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+            ;
+
+            $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' made this out of a Chocolate Bar.', $activityLog);
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $making->getName() . ', but couldn\'t get the mold right...', '');
+        }
+    }
+
     private function createYellowDyeFromTeaLeaves(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getNature() + $pet->getCrafts());
