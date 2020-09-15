@@ -152,6 +152,9 @@ class CraftingService
                 $possibilities[] = new ActivityCallback($this, 'createLaserGuidedSword', 10);
         }
 
+        if(array_key_exists('Antenna', $quantities) && array_key_exists('Cobweb', $quantities) && array_key_exists('Fiberglass Bow', $quantities))
+            $possibilities[] = new ActivityCallback($this, 'createBugBow', 10);
+
         if(array_key_exists('White Cloth', $quantities) && array_key_exists('String', $quantities) && array_key_exists('Ruby Feather', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createFeatheredHat', 10);
 
@@ -852,9 +855,6 @@ class CraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createAlienCookingBuddy(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
@@ -891,9 +891,41 @@ class CraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
+    private function createBugBow(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getNature(), $pet->getCrafts()));
+
+        if($roll <= 2)
+        {
+            $lostItem = mt_rand(1, 2) === 1 ? 'Cobweb' : 'Antenna';
+
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
+
+            $this->inventoryService->loseItem($lostItem, $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' starting making a Bug Bow, but accidentally tore the ' . $lostItem . ' :(', '');
+        }
+        else if($roll >= 12)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Fiberglass Bow', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Cobweb', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Antenna', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' turned a boring ol\' Fiberglass Bow into a Bug Bow!', '');
+            $this->inventoryService->petCollectsItem('Bug Bow', $pet, $pet->getName() . ' created this out of a Fiberglass Bow and some bug bits.', $activityLog);
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' started making a Bug Bow, but kept getting stuck to the Cobweb.', 'icons/activity-logs/confused');
+        }
+    }
+
     private function createFiberglassPanFlute(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getMusic(), $pet->getCrafts()));
