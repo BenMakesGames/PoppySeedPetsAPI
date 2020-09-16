@@ -92,6 +92,9 @@ class CraftingService
 
         if(array_key_exists('Crooked Stick', $quantities))
         {
+            if(array_key_exists('Sunflower', $quantities))
+                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createSunflowerStick', 10);
+
             if(array_key_exists('String', $quantities))
             {
                 $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createCrookedFishingRod', 10);
@@ -237,6 +240,9 @@ class CraftingService
             if(array_key_exists('String', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createBindle', 10);
         }
+
+        if(array_key_exists('Sun Flag', $quantities) && array_key_exists('Sunflower Stick', $quantities))
+            $possibilities[] = new ActivityCallback($this, 'createSunSunFlag', 10);
 
         $possibilities = array_merge($possibilities, $this->smithingService->getCraftingPossibilities($pet, $quantities));
 
@@ -1557,25 +1563,16 @@ class CraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createSunFlag(Pet $pet): PetActivityLog
     {
         return $this->createFlag($pet, 'Yellow Dye', 'Sun Flag');
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createDragonFlag(Pet $pet): PetActivityLog
     {
         return $this->createFlag($pet, 'Green Dye', 'Dragon Flag');
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function createFlag(Pet $pet, string $dye, string $making)
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
@@ -1610,9 +1607,42 @@ class CraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
+    private function createSunSunFlag(Pet $pet)
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::CRAFT, false);
+
+            $this->inventoryService->loseItem('Sunflower Stick', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Sun-sun Flag, but accidentally broke the flower on the Sunflower Stick, leaving only a stick :(', '');
+            $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' ruined the flower on a Sunflower Stick, leaving only this...', $activityLog);
+        }
+        else if($roll >= 12)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Sun Flag', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Sunflower Stick', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseSafety(mt_rand(2, 4));
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Sun-sun Flag!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+            ;
+            $this->inventoryService->petCollectsItem('Sun-sun Flag', $pet, $pet->getName() . ' made this.', $activityLog);
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(15, 45), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to make a Sun Flag even sunnier, but wasn\'t sure how...', 'icons/activity-logs/confused');
+        }
+
+        return $activityLog;
+    }
+
     private function createBindle(Pet $pet)
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
