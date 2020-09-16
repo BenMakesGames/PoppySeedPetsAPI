@@ -185,6 +185,11 @@ class CraftingService
                 $possibilities[] = new ActivityCallback($this, 'createOrnatePanFlute', 10);
         }
 
+        if(array_key_exists('White Feathers', $quantities) && array_key_exists('Leaf Spear', $quantities))
+        {
+            $possibilities[] = new ActivityCallback($this, 'createFishingRecorder', 10);
+        }
+
         if(array_key_exists('Decorated Spear', $quantities))
         {
             if(array_key_exists('Dark Scales', $quantities))
@@ -482,9 +487,34 @@ class CraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
+    public function createFishingRecorder(Pet $pet)
+    {
+        $roll = mt_rand(1, 20 + $pet->getDexterity() + $pet->getCrafts() + $pet->getMusic());
+
+        if($roll >= 14)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Leaf Spear', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('White Feathers', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::MUSIC ]);
+            $pet->increaseEsteem(4);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Fishing Recorder.', '');
+
+            if(mt_rand(1, 5) === 1)
+                $this->inventoryService->petCollectsItem('Fishing Recorder', $pet, $pet->getName() . ' made this. (The White Feathers are a nice touch, don\'t you think?)', $activityLog);
+            else
+                $this->inventoryService->petCollectsItem('Fishing Recorder', $pet, $pet->getName() . ' made this.', $activityLog);
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::MUSIC ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to make a Fishing Recorder, but couldn\'t figure out where all the holes should go...', 'icons/activity-logs/confused');
+        }
+    }
+
     private function createDoubleScythe(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
