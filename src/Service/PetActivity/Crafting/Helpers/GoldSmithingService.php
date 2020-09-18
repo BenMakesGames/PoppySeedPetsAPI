@@ -108,7 +108,7 @@ class GoldSmithingService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made an Aubergine Scepter.', 'items/tool/instrument/triangle-gold')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
             ;
-            $this->inventoryService->petCollectsItem('Gold Triangle', $pet, $pet->getName() . ' created... _this_.', $activityLog);
+            $this->inventoryService->petCollectsItem('Aubergine Scepter', $pet, $pet->getName() . ' created... _this_.', $activityLog);
             return $activityLog;
         }
         else
