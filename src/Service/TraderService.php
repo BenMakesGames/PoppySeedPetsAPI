@@ -632,6 +632,15 @@ class TraderService
             ),
 
             new TraderOffer(
+                [
+                    TraderOfferCostOrYield::createMoney(400),
+                    TraderOfferCostOrYield::createRecyclingPoints(200),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Submarine'), 1) ],
+                'Derelict submarines sometimes drift into Tell Samarzhoustia. We fix \'em up, and sell them to land-dwellers such as yourself! Have fun!'
+            ),
+
+            new TraderOffer(
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Music Note'), 7) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Musical Scales'), 1) ],
                 'I don\'t mind letting you in on a little Tell Samarzhoustian secret: you can do this "trade" yourself at home. Just combine 7 Music Notes.'

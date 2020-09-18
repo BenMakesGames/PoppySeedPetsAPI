@@ -795,9 +795,6 @@ class GatheringService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function foundVolcano(Pet $pet): PetActivityLog
     {
         $check = mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering());

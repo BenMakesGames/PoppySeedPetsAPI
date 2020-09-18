@@ -31,6 +31,7 @@ use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\BurntForestService;
 use App\Service\PetActivity\CraftingService;
+use App\Service\PetActivity\DeepSeaService;
 use App\Service\PetActivity\DreamingService;
 use App\Service\PetActivity\EasterEggHuntingService;
 use App\Service\PetActivity\FishingService;
@@ -81,6 +82,7 @@ class PetService
     private $guildService;
     private $inventoryService;
     private $burntForestService;
+    private $deepSeaService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -94,7 +96,7 @@ class PetService
         PetExperienceService $petExperienceService, DreamingService $dreamingService, MagicBeanstalkService $beanStalkService,
         EasterEggHuntingService $easterEggHuntingService, HeartDimensionService $heartDimensionService,
         PetRelationshipRepository $petRelationshipRepository, GuildService $guildService, InventoryService $inventoryService,
-        BurntForestService $burntForestService
+        BurntForestService $burntForestService, DeepSeaService $deepSeaService
     )
     {
         $this->em = $em;
@@ -127,6 +129,7 @@ class PetService
         $this->guildService = $guildService;
         $this->inventoryService = $inventoryService;
         $this->burntForestService = $burntForestService;
+        $this->deepSeaService = $deepSeaService;
     }
 
     /**
@@ -634,6 +637,9 @@ class PetService
         if($pet->getTool() && $pet->getTool()->getEnchantment() && $pet->getTool()->getEnchantment()->getName() === 'Burnt')
             $petDesires['burntForest'] = $this->generateBurntForestDesire($pet);
 
+        if(array_key_exists('Submarine', $quantities))
+            $petDesires['submarine'] = $this->generateSubmarineDesire($pet);
+
         if($pet->getOwner()->getGreenhousePlants()->exists(function(int $key, GreenhousePlant $p) {
             return
                 $p->getPlant()->getName() === 'Magic Beanstalk' &&
@@ -662,6 +668,7 @@ class PetService
             case 'umbra': $this->umbraService->adventure($pet); break;
             case 'beanStalk': $this->beanStalkService->adventure($pet); break;
             case 'burntForest': $this->burntForestService->adventure($pet); break;
+            case 'submarine': $this->deepSeaService->adventure($pet); break;
             default: $this->doNothing($pet); break;
         }
     }
@@ -1263,6 +1270,17 @@ class PetService
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getFishing();
+
+        return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
+    }
+
+    public function generateSubmarineDesire(Pet $pet): int
+    {
+        $desire = $pet->getIntelligence() + $pet->getScience() + $pet->getFishing() + mt_rand(1, 4);
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getScience() + $pet->getTool()->getItem()->getTool()->getFishing();
 
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
     }

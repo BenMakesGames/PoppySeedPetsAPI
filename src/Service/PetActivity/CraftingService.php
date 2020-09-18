@@ -95,10 +95,14 @@ class CraftingService
             if(array_key_exists('Sunflower', $quantities))
                 $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createSunflowerStick', 10);
 
+            if(array_key_exists('Glue', $quantities) || array_key_exists('String', $quantities))
+            {
+                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createWoodenSword', 10);
+            }
+
             if(array_key_exists('String', $quantities))
             {
                 $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createCrookedFishingRod', 10);
-                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createWoodenSword', 10);
 
                 if(array_key_exists('Talon', $quantities))
                     $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createHuntingSpear', 10);
