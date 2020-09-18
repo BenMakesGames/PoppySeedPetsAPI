@@ -445,9 +445,14 @@ class ProgrammingService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to calculate Viswanath\'s Constant, but couldn\'t figure out any of the maths; not even a single one!', 'icons/activity-logs/confused');
+            if(mt_rand(1, 3) === 1)
+                return $this->fightInfinityImp($pet, 'started computing Viswanath\'s Constant');
+            else
+            {
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, false);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to calculate Viswanath\'s Constant, but couldn\'t figure out any of the maths; not even a single one!', 'icons/activity-logs/confused');
+            }
         }
     }
 
@@ -465,7 +470,7 @@ class ProgrammingService
 
             if($pet->hasMerit(MeritEnum::SOOTHING_VOICE))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' coded up a Resonating Bow. They sang as they plucked the last string, producing a Music Note.', '')
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' coded up a Resonating Bow. They sang a soothing song as they plucked the last string, producing a Music Note.', '')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
                 ;
 
@@ -515,10 +520,49 @@ class ProgrammingService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' thought about computing a Strange Attractor, but kept getting infinities.', 'icons/activity-logs/confused');
+            if(mt_rand(1, 3) === 1)
+                return $this->fightInfinityImp($pet, 'computing a Strange Attractor');
+            else
+            {
+                $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' thought about computing a Strange Attractor, but kept getting infinities.', 'icons/activity-logs/confused');
+            }
         }
+    }
+
+    private function fightInfinityImp(Pet $pet, string $actionInterrupted): PetActivityLog
+    {
+        $scienceRoll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $brawlRoll = mt_rand(1, 20 + $pet->getDexterity() + $pet->getBrawl());
+
+        $loot = ArrayFunctions::pick_one([
+            'Quintessence',
+            'Pointer',
+        ]);
+
+        if($scienceRoll >= $brawlRoll)
+        {
+            if($scienceRoll >= 20)
+            {
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, false);
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' started ' . $actionInterrupted . ', but an Infinity Imp popped up, and started to attack! During the fight, ' . $pet->getName() . ' exploited a divergence in the imp\'s construction, and unraveled it, receiving ' . $loot . '!', 'icons/activity-logs/confused');
+            }
+        }
+        else
+        {
+            if($brawlRoll >= 20)
+            {
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, false);
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ]);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' started ' . $actionInterrupted . ', but an Infinity Imp popped up, and started to attack! ' . $pet->getName() . ' slew the creature outright, and claimed its ' . $loot . '!', 'icons/activity-logs/confused');
+            }
+        }
+
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, false);
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+        return $this->responseService->createActivityLog($pet, $pet->getName() . ' started ' . $actionInterrupted . ', but an Infinity Imp popped up, and started to attack! ' . $pet->getName() . ' ran away until the imp finally gave up and returned to the strange dimension from whence it came.', 'icons/activity-logs/confused');
     }
 
     private function createBruteForce(Pet $pet): PetActivityLog

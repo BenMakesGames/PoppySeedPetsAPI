@@ -952,17 +952,96 @@ class MagicBindingService
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
             $this->inventoryService->loseItem('Mirror', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' bound a Magic Mirror!', '')
+
+            $extraItem = null;
+            $extraItemMessage = null;
+            $usedMerit = false;
+
+            if(mt_rand(1, 4) === 1)
+            {
+                [ $message, $extraItem, $extraItemMessage, $additionalTime, $usedMerit ] = $this->doMagicMirrorMaze($pet);
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
+            }
+            else
+            {
+                $message = $pet->getName() . ' bound a Magic Mirror!';
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            }
+
+            $activityLog = $this->responseService->createActivityLog($pet, $message, '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
             ;
+
+            if($usedMerit)
+                $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT);
+
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60) + $additionalTime, PetActivityStatEnum::MAGIC_BIND, true);
+
+            if($extraItem)
+                $this->inventoryService->petCollectsItem($extraItem, $pet, $extraItemMessage, $activityLog);
+
             $this->inventoryService->petCollectsItem('Magic Mirror', $pet, $pet->getName() . ' bound this.', $activityLog);
+
             return $activityLog;
+        }
+    }
+
+    private function doMagicMirrorMaze(Pet $pet): array
+    {
+        $loot = ArrayFunctions::pick_one([
+            'Alien Tissue', 'Apricot PB&J', 'Baking Powder', 'Blue Balloon', 'Candied Ginger', 'Chili Calamari',
+            'Deed for Greenhouse Plot', 'Egg Carton', 'Feathers', 'Fortuneless Cookie', 'Glowing Six-sided Die',
+            'Iron Ore', 'Limestone', 'Papadum', 'Password', 'Purple Gummies', 'Red Yogurt', 'Toadstool', 'Welcome Note',
+        ]);
+
+        if($pet->getClimbing() > 0)
+        {
+            return [
+                $pet->getName() . ' bound a Magic Mirror! As soon as they did so, they were sucked inside, and into a giant maze! They easily climbed their way out of the maze, and out of the mirror! On the way, they found ' . $loot . '.',
+                $loot,
+                $pet->getName() . ' found this while climbing out of a maze inside a Magic Mirror!',
+                5,
+                false
+            ];
+        }
+        else if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
+        {
+            return [
+                $pet->getName() . ' bound a Magic Mirror! As soon as they did so, they were sucked inside, and into a giant maze! It turns out mazes are really easy if you have an Eidetic Memory! On the way, they found ' . $loot . ', and a path out of the mirror entirely!',
+                $loot,
+                $pet->getName() . ' found this while escaping a maze inside a Magic Mirror!',
+                15,
+                true
+            ];
+        }
+        else
+        {
+            $roll = mt_rand(1, 5 + $pet->getIntelligence() + $pet->getPerception());
+
+            if($roll >= 5)
+            {
+                return [
+                    $pet->getName() . ' bound a Magic Mirror! As soon as they did so, they were sucked inside, and into a giant maze! It took a while, but they were able to find a path out of the maze, and back into the real world! On the way, they found ' . $loot . '.',
+                    $loot,
+                    $pet->getName() . ' found this while escaping a maze inside a Magic Mirror!',
+                    30,
+                    false
+                ];
+            }
+            else
+            {
+                return [
+                    $pet->getName() . ' bound a Magic Mirror! As soon as they did so, they were sucked inside, and into a giant maze! They got totally lost for a while; fortunately, they were eventually, and inexplicably, ejected from the mirror and back into the real world!',
+                    null,
+                    null,
+                    30,
+                    false
+                ];
+            }
         }
     }
 
