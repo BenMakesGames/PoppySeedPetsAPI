@@ -113,6 +113,9 @@ class SmithingService
         {
             $possibilities[] = new ActivityCallback($this, 'createSilverKey', $weight);
 
+            if(array_key_exists('Crown Coral', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createCoralTrident', 10);
+
             if(array_key_exists('"Rustic" Magnifying Glass', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createElvishMagnifyingGlass', 10);
 
@@ -359,6 +362,41 @@ class SmithingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to improve a "Rustic" Magnifying Glass, but nearly burnt it to a crisp in the process! (Nearly!)', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createCoralTrident(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a trident out of Crown Coral, but shattered the coral completely :(', '');
+
+            $this->inventoryService->loseItem('Crown Coral', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-mt_rand(2, 4));
+
+            return $activityLog;
+        }
+        else if($roll >= 15)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Crown Coral', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Coral Trident.', '');
+            $this->inventoryService->petCollectsItem('Coral Trident', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' started making a Crown Coral, but working with coral is tricky! They gave up after a while...', 'icons/activity-logs/confused');
         }
     }
 
@@ -729,9 +767,6 @@ class SmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createCeremonialTrident(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
