@@ -960,6 +960,7 @@ class MagicBindingService
             $extraItem = null;
             $extraItemMessage = null;
             $usedMerit = false;
+            $additionalTime = 0;
 
             if(mt_rand(1, 4) === 1)
             {
