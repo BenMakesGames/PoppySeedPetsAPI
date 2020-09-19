@@ -105,7 +105,7 @@ class GoldSmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made an Aubergine Scepter.', 'items/tool/instrument/triangle-gold')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made an Aubergine Scepter.', 'items/tool/wand/aubergine-scepter')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
             ;
             $this->inventoryService->petCollectsItem('Aubergine Scepter', $pet, $pet->getName() . ' created... _this_.', $activityLog);

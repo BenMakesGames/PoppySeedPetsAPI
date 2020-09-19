@@ -294,13 +294,15 @@ class InventoryController extends PoppySeedPetsController
 
         $user = $this->getUser();
 
-        if($location === LocationEnum::WARDROBE)
-            throw new UnprocessableEntityHttpException('Invalid location given.');
+        $allowedLocations = [ LocationEnum::HOME ];
 
-        if($location === LocationEnum::BASEMENT && !$user->getUnlockedBasement())
-            throw new UnprocessableEntityHttpException('Invalid location given.');
+        if($user->getUnlockedFireplace())
+            $allowedLocations[] = LocationEnum::MANTLE;
 
-        if($location === LocationEnum::MANTLE && !$user->getUnlockedFireplace())
+        if($user->getUnlockedBasement())
+            $allowedLocations[] = LocationEnum::BASEMENT;
+
+        if(!in_array($location, $allowedLocations))
             throw new UnprocessableEntityHttpException('Invalid location given.');
 
         $inventoryIds = $request->request->get('inventory');
@@ -312,10 +314,10 @@ class InventoryController extends PoppySeedPetsController
         $inventory = $inventoryRepository->createQueryBuilder('i')
             ->andWhere('i.owner=:user')
             ->andWhere('i.id IN (:inventoryIds)')
-            ->leftJoin('\\App\\Entity\\Pet', 'p', Expr\Join::WITH, 'p.tool=i OR p.hat=i')
-            ->andWhere('p.id IS NULL')
+            ->andWhere('i.location IN (:allowedLocations)')
             ->setParameter('user', $user->getId())
             ->setParameter('inventoryIds', $inventoryIds)
+            ->setParameter('allowedLocations', $allowedLocations)
             ->getQuery()
             ->execute()
         ;
