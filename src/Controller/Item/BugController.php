@@ -79,7 +79,7 @@ class BugController extends PoppySeedPetsItemController
         $em->remove($inventory);
 
         $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_PUT_OUTSIDE);
-        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_THROWN_AWAY);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_RECYCLED);
 
         $em->flush();
 

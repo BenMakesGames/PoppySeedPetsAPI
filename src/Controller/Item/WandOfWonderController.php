@@ -6,12 +6,15 @@ use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
+use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
+use App\Service\PetService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,7 +35,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
     public function pointWandOfWonder(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
         EntityManagerInterface $em, InventoryService $inventoryService, PetRepository $petRepository,
-        TransactionService $transactionService, Request $request, MeritRepository $meritRepository
+        TransactionService $transactionService, Request $request, ItemRepository $itemRepository
     )
     {
         $this->validateInventory($inventory, 'wandOfWonder/#/point');
@@ -40,16 +43,18 @@ class WandOfWonderController extends PoppySeedPetsItemController
         $user = $this->getUser();
         $location = $inventory->getLocation();
 
-        $petId = $request->request->getInt('pet', 0);
-        $pet = $petRepository->find($petId);
+        /** @var Pet[] $petsAtHome */
+        $petsAtHome = $petRepository->findBy([
+            'owner' => $user,
+            'inDaycare' => false
+        ]);
 
-        if(!$pet || $pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('There is no such pet.');
+        /** @var Pet|null $randomPet */
+        $randomPet = ArrayFunctions::pick_one($petsAtHome);
 
         $expandedGreenhouseWithWand = $userQuestRepository->findOrCreate($user, 'Expanded Greenhouse With Wand of Wonder', false);
 
         $itemActionDescription = null;
-        $itemActionEffects = [];
 
         $possibleEffects = [
             'song',
@@ -57,10 +62,11 @@ class WandOfWonderController extends PoppySeedPetsItemController
             'butterflies',
             'oneMoney',
             'yellowDye',
-            'recolorAPet',
-            'toggleSpectral',
             'wine',
-            'secretSeashell'
+            'secretSeashell',
+            'pb&j',
+            'inspiring',
+            'redUmbrella',
         ];
 
         if($user->getGreenhouse() && !$expandedGreenhouseWithWand->getValue())
@@ -72,23 +78,35 @@ class WandOfWonderController extends PoppySeedPetsItemController
         {
             case 'song':
                 $notes = mt_rand(6, 10);
-                $itemActionDescription = "The wand begins to sing.\n\nThen, it keeps singing.\n\nS-- still singi-- oh, wait, no, it's stoppe-- ah, never mind, just a pause.\n\nStiiiiiiiill going...\n\nOh, okay, it's stopped again. Is it for real this time?\n\nIt seems to be for real.\n\nYeah, okay, it's done.\n\nYou shake your head; " . $notes . " Music Notes fall out of your ears and clatter on the ground!\n\nFrickin' wand!";
+
+                if($randomPet)
+                {
+                    $whose = $randomPet->getName() . '\'s';
+                    $itemComment = "These Music Notes fell out of {$randomPet->getName()}'s ears after a Wand of Wonder sang for a while.";
+                }
+                else
+                {
+                    $whose = 'your';
+                    $itemComment = "These Music Notes fell out of {$user->getName()}'s ears after a Wand of Wonder sang for a while.";
+                }
+
+                $itemActionDescription = "The wand begins to sing.\n\nThen, it keeps singing.\n\nS-- still singi-- oh, wait, no, it's stoppe-- ah, never mind, just a pause.\n\nStiiiiiiiill going...\n\nOh, okay, it's stopped again. Is it for real this time?\n\nIt seems to be for real.\n\nYeah, okay, it's done.\n\nYou shake your head; $notes Music Notes fall out of $whose ears and clatter on the ground!\n\nFrickin' wand!";
 
                 for($x = 0; $x < $notes; $x++)
-                    $inventoryService->receiveItem('Music Note', $user, $user, 'These Music Notes fell out of ' . $user->getName() . '\'s ears after a Wand of Wonder sang for a while.', $location);
-
-                $itemActionEffects['reloadInventory'] = true;
+                    $inventoryService->receiveItem('Music Note', $user, $user, $itemComment, $location);
 
                 break;
 
             case 'featherStorm':
                 $feathers = mt_rand(8, 12);
-                $itemActionDescription = 'Hundreds of Feathers stream from the wand, filling the room. You never knew Feathers could be so loud! Moments later they begin to escape through crevices in the wall, but not before you grab a few!';
+
+                if($randomPet)
+                    $itemActionDescription = 'Hundreds of Feathers stream from the wand, filling the room. You never knew Feathers could be so loud! Moments later they begin to escape through crevices in the wall, but not before you and ' . $randomPet->getName() . ' grab a few!';
+                else
+                    $itemActionDescription = 'Hundreds of Feathers stream from the wand, filling the room. You never knew Feathers could be so loud! Moments later they begin to escape through crevices in the wall, but not before you grab a few!';
 
                 for($x = 0; $x < $feathers; $x++)
                     $inventoryService->receiveItem('Feathers', $user, $user, 'A Wand of Wonder summoned these Feathers.', $location);
-
-                $itemActionEffects['reloadInventory'] = true;
 
                 break;
 
@@ -103,7 +121,11 @@ class WandOfWonderController extends PoppySeedPetsItemController
                 break;
 
             case 'oneMoney':
-                $itemActionDescription = 'The wand begins to glow and shake violently. You hold on with all your might until, at last, it spits out a single ~~m~~. (Lame!)';
+                if($randomPet)
+                    $itemActionDescription = 'The wand begins to glow and shake violently. You and ' . $randomPet->getName() . ' hold on with all your might until, at last, it spits out a single ~~m~~. (Lame!)';
+                else
+                    $itemActionDescription = 'The wand begins to glow and shake violently. You hold on with all your might until, at last, it spits out a single ~~m~~. (Lame!)';
+
                 $transactionService->getMoney($user, 1, 'Anticlimactically discharged by a Wand of Wonder.');
                 break;
 
@@ -116,33 +138,6 @@ class WandOfWonderController extends PoppySeedPetsItemController
 
                 break;
 
-            case 'recolorAPet':
-                if($pet)
-                {
-                    $this->recolorPet($pet);
-
-                    $itemActionDescription = "A rainbow of colors swirl out of the wand and around " . $pet->getName() . ", whose colors change before your eyes!";
-                }
-                else
-                {
-                    $itemActionDescription = "A rainbow of colors swirl out of the wand and around the room, as if looking for something.\n\nAfter a moment, the colors fade away. If they really were looking for something, it seems they didn't find it.";
-                }
-
-                break;
-
-            case 'toggleSpectral':
-                if($pet->hasMerit(MeritEnum::SPECTRAL))
-                {
-                    $pet->removeMerit($meritRepository->findOneByName(MeritEnum::SPECTRAL));
-                    $itemActionDescription = $pet->getName() . ' lands softly on the ground, and becomes completely opaque!';
-                }
-                else
-                {
-                    $pet->addMerit($meritRepository->findOneByName(MeritEnum::SPECTRAL));
-                    $itemActionDescription = $pet->getName() . ' becomes slightly translucent, and begins to float!';
-                }
-                break;
-
             case 'wine':
                 $wine = mt_rand(5, 10);
                 $wines = [ 'Blackberry Wine', 'Blackberry Wine', 'Blueberry Wine', 'Blueberry Wine', 'Red Wine', 'Red Wine', 'Blood Wine' ];
@@ -152,48 +147,117 @@ class WandOfWonderController extends PoppySeedPetsItemController
                 for($x = 0; $x < $wine; $x++)
                     $inventoryService->receiveItem(ArrayFunctions::pick_one($wines), $user, $user, $user->getName() . ' caught this wine pouring out of a Wand of Wonder.', $location);
 
-                $itemActionEffects['reloadInventory'] = true;
-
                 break;
 
             case 'secretSeashell':
-                $itemActionDescription = 'For a moment, you hear the sound of the ocean. ' . $pet->getName() . ' leans in to listen, and a Secret Seashell drops off of their head!';
-                $inventoryService->receiveItem('Secret Seashell', $user, $user, 'This fell off of ' . $pet->getName() . '\'s head after listening to a Wand of Wonder make ocean sounds.', $location);
-                $itemActionEffects['reloadInventory'] = true;
+                if($randomPet)
+                {
+                    $itemActionDescription = 'For a moment, you hear the sound of the ocean. ' . $randomPet->getName() . ' leans in to listen, and a Secret Seashell drops off of their head!';
+                    $inventoryService->receiveItem('Secret Seashell', $user, $user, 'This fell off of ' . $randomPet->getName() . '\'s head after listening to a Wand of Wonder make ocean sounds.', $location);
+                }
+                else
+                {
+                    $itemActionDescription = 'For a moment, you hear the sound of the ocean. You lean in to listen, and a Secret Seashell drops off of your head!';
+                    $inventoryService->receiveItem('Secret Seashell', $user, $user, 'This fell off of ' . $user->getName() . '\'s head after listening to a Wand of Wonder make ocean sounds.', $location);
+                }
+
                 break;
+
+            case 'pb&j':
+                $itemActionDescription = 'The wand turns into a PB&J, causing you to drop it. Upon impacting the floor, nuts and fruit spill everywhere!';
+
+                $numItems = mt_rand(4, 6);
+
+                $pbjItems = [
+                    'Mixed Nuts', 'Mixed Nuts', 'Mixed Nuts', 'Mixed Nuts', 'Mixed Nuts', 'Sugar', 'Sugar',
+                    'Apricot', 'Blackberries', 'Blueberries', 'Naner', 'Orange', 'Red', 'Pamplemousse'
+                ];
+
+                $inventoryService->receiveItem('Mixed Nuts', $user, $user, 'This spilled out of a Wand of Wonder after it turned into a PB&J!', $location);
+                $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Red', 'Orange', 'Naner' ]), $user, $user, 'This spilled out of a Wand of Wonder after it turned into a PB&J!', $location);
+
+                for($x = 0; $x < $numItems; $x++)
+                    $inventoryService->receiveItem(ArrayFunctions::pick_one($pbjItems), $user, $user, 'This spilled out of a Wand of Wonder after it turned into a PB&J!', $location);
+
+                break;
+
+            case 'inspiring':
+                if(count($petsAtHome) === 0)
+                {
+                    $itemActionDescription = 'The Wand of Wonder gave a very inspiring speech, but there weren\'t any pets around to listen...';
+                }
+                else
+                {
+                    $petNames = [];
+
+                    foreach($petsAtHome as $pet)
+                    {
+                        $petNames[] = $pet->getName();
+                        $inventoryService->applyStatusEffect($pet, StatusEffectEnum::INSPIRED, 8 * 60);
+                    }
+
+                    $itemActionDescription = 'The Wand of Wonder gave a very inspiring speech. ' . ArrayFunctions::list_nice($petNames) . ' listened, enraptured.';
+                }
+
+                break;
+
+            case 'redUmbrella':
+                $itemActionDescription = 'The wand straightens a bit, and, with a pop, an umbrella appears from one end!';
+                break;
+
         }
 
-        if(mt_rand(1, 5) === 1)
+        $itemActionDescription .= "\n\n";
+
+        $remains = mt_rand(1, 4);
+
+        if($effect === 'redUmbrella')
         {
-            $em->remove($inventory);
-
-            $itemActionDescription .= "\n\n";
-
-            $remains = mt_rand(1, 4);
-
-            if($remains === 1)
-            {
-                $itemActionDescription .= 'Then, the wand snaps in two and crumbles to dust! (Well, actually, it crumbles to Silica Grounds.)';
-                $inventoryService->receiveItem('Silica Grounds', $user, $user, 'These Silica Grounds were once a Wand of Wonder. Now they\'re just Silica Grounds. (Sorry, I guess that was a little redundant...)', $location);
-            }
-            else if($remains === 2)
-            {
-                $itemActionDescription .= 'Then, the wand burst into flames, and is reduced to Charcoal!';
-                $inventoryService->receiveItem('Charcoal', $user, $user, 'The charred remains of a Wand of Wonder :|', $location);
-            }
-            else // $remains 3 || 4
-            {
-                $itemActionDescription .= 'You feel the last bits of magic drain from the wand. It\'s now nothing more than a common, Crooked Stick...';
-                $inventoryService->receiveItem('Crooked Stick', $user, $user, 'The mundane remains of a Wand of Wonder...', $location);
-            }
-
-            $itemActionEffects['itemDeleted'] = true;
-            $itemActionEffects['reloadInventory'] = true;
+            $transformsInto = 'Red Umbrella';
+            $addedComment = 'This was once a Wand of Wonder!';
         }
+        else if($effect === 'pb&j')
+        {
+            $transformsInto = ArrayFunctions::pick_one([
+                'Apricot PB&J',
+                'Blackberry PB&J',
+                'Blueberry PB&J',
+                'Naner PB&J',
+                'Orange PB&J',
+                'Pamplemousse PB&J',
+                'Red PB&J'
+            ]);
+            $addedComment = 'This was once a Wand of Wonder... (it\'s _probably_ safe to eat??)';
+        }
+        else if($remains === 1)
+        {
+            $itemActionDescription .= 'Then, the wand snaps in two and crumbles to dust! (Well, actually, it crumbles to Silica Grounds.)';
+            $transformsInto = 'Silica Grounds';
+            $addedComment = 'These Silica Grounds were once a Wand of Wonder. Now they\'re just Silica Grounds. (Sorry, I guess that was a little redundant...)';
+        }
+        else if($remains === 2)
+        {
+            $itemActionDescription .= 'Then, the wand burst into flames, and is reduced to Charcoal!';
+            $transformsInto = 'Charcoal';
+            $addedComment = 'The charred remains of a Wand of Wonder :|';
+        }
+        else // $remains 3 || 4
+        {
+            $itemActionDescription .= 'You feel the last bits of magic drain from the wand. It\'s now nothing more than a common, Crooked Stick...';
+            $transformsInto = 'Crooked Stick';
+            $addedComment = 'The mundane remains of a Wand of Wonder...';
+        }
+
+        $inventory
+            ->changeItem($itemRepository->findOneByName($transformsInto))
+            ->addComment($addedComment)
+        ;
+
+        $responseService->addReloadInventory();
 
         $em->flush();
 
-        return $responseService->itemActionSuccess($itemActionDescription, $itemActionEffects);
+        return $responseService->itemActionSuccess($itemActionDescription);
     }
 
     private function pickRandomPetAtLocation(PetRepository $petRepository, string $location, User $user): ?Pet

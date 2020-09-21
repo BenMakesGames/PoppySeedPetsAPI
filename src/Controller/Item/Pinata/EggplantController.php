@@ -3,7 +3,9 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
+use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,7 +23,7 @@ class EggplantController extends PoppySeedPetsItemController
      */
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
     )
     {
         $this->validateInventory($inventory, 'eggplant/#/clean');
@@ -32,6 +34,7 @@ class EggplantController extends PoppySeedPetsItemController
         $location = $inventory->getLocation();
 
         $r = mt_rand(1, 6);
+        $eggs = 0;
 
         if($r === 1)
         {
@@ -39,29 +42,36 @@ class EggplantController extends PoppySeedPetsItemController
         }
         else if($r === 2)
         {
-            $inventoryService->receiveItem('Egg', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
+            $eggs = 1;
             $message = 'You clean the Eggplant as carefully as you can, but most of it is no good, and you\'re only able to harvest one Egg! :(';
         }
         else if($r === 3 || $r === 4)
         {
-            $inventoryService->receiveItem('Egg', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
-            $inventoryService->receiveItem('Egg', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
+            $eggs = 2;
             $message = 'You clean the Eggplant as carefully as you can, and harvest two Eggs. (Not too bad... right?)';
         }
         else if($r === 5)
         {
-            $inventoryService->receiveItem('Egg', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
-            $inventoryService->receiveItem('Egg', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
+            $eggs = 2;
             $inventoryService->receiveItem('Quinacridone Magenta Dye', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
             $message = 'You clean the Eggplant as carefully as you can, and harvest two Eggs. You also manage to extract a good amount of purplish dye from the thing! (Neat!)';
-
         }
         else if($r === 6)
         {
-            $inventoryService->receiveItem('Egg', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
-            $inventoryService->receiveItem('Egg', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
-            $inventoryService->receiveItem('Egg', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
+            $eggs = 3;
             $message = 'You clean the Eggplant as carefully as you can, and successfully harvest three Eggs!';
+        }
+
+        if($eggs > 0)
+        {
+            for($i = 0; $i < $eggs; $i++)
+                $inventoryService->receiveItem('Egg', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
+
+            $userStatsRepository->incrementStat($user, UserStatEnum::EGGS_HARVESTED_FROM_EGGPLANTS, $eggs);
+        }
+        else
+        {
+            $userStatsRepository->incrementStat($user, UserStatEnum::ROTTEN_EGGPLANTS, 1);
         }
 
         if(mt_rand(1, 100) === 1)

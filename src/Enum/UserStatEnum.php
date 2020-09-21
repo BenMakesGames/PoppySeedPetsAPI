@@ -11,13 +11,13 @@ final class UserStatEnum
     const ITEMS_BOUGHT_IN_MARKET = 'Items Bought in Market';
     const FLOWERBOMBS_PURCHASED = 'Flowerbombs Purchased';
     const COOKED_SOMETHING = 'Cooked Something';
-    const ITEMS_THROWN_AWAY = 'Items Thrown Away';
+    const ITEMS_RECYCLED = 'Items Recycled';
     const ITEMS_DONATED_TO_MUSEUM = 'Items Donated to Museum';
     const FOOD_HOURS_FED_TO_PETS = 'Food Hours Fed to Pets';
     const PETTED_A_PET = 'Petted a Pet';
     const PRAISED_A_PET = 'Praised a Pet';
     const MONEYS_STOLEN_BY_THIEVING_MAGPIES = 'Moneys Stolen by Thieving Magpies';
-    const RECIPES_LEARNED_BY_COOKING_BUDDY = 'Reciped Learned by Cooking Buddy';
+    const RECIPES_LEARNED_BY_COOKING_BUDDY = 'Recipes Learned by Cooking Buddy';
     const BUGS_SQUISHED = 'Bugs Squished';
     const BUGS_PUT_OUTSIDE = 'Bugs Put Outside';
     const BUGS_FED = 'Bugs Fed';
@@ -29,4 +29,6 @@ final class UserStatEnum
     const PETS_BIRTHED = 'Babies Born in Your House';
     const BURNT_LOGS_BROKEN = 'Broke Apart a Burnt Log';
     const TRADED_WITH_THE_FLUFFMONGER = 'Fluff Traded to the Fluffmonger';
+    const EGGS_HARVESTED_FROM_EGGPLANTS = 'Eggs Harvested from Eggplants';
+    const ROTTEN_EGGPLANTS = 'Eggplants Which Were Horrible and Rotten';
 }

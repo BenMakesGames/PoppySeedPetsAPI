@@ -265,7 +265,7 @@ class InventoryController extends PoppySeedPetsController
             $totalRecycleValue += $i->getItem()->getRecycleValue();
         }
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_THROWN_AWAY, count($inventory));
+        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_RECYCLED, count($inventory));
 
         if($totalRecycleValue > 0)
         {
