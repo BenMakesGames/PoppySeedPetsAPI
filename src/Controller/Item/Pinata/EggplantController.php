@@ -76,12 +76,24 @@ class EggplantController extends PoppySeedPetsItemController
 
         if(mt_rand(1, 100) === 1)
         {
-            $inventoryService->receiveItem('Mysterious Seed', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
+            if(mt_rand(1, 2) === 1)
+            {
+                $inventoryService->receiveItem('Mysterious Seed', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
 
-            if($r <= 2)
-                $message .= ' Oh, but what\'s this? There\'s some kind of super-weird seed! You clean it off, and keep it!';
+                if($eggs === 0)
+                    $message .= ' Oh, but what\'s this? There\'s some kind of super-weird seed! You clean it off, and keep it!';
+                else
+                    $message .= ' Oh, and what\'s this? There\'s some kind of super-weird seed! You clean it off, and keep it, as well!';
+            }
             else
-                $message .= ' Oh, and what\'s this? There\'s some kind of super-weird seed! You clean it off, and keep it, as well!';
+            {
+                $inventoryService->receiveItem('Eggplant Bow', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
+
+                if($eggs === 0)
+                    $message .= ' Oh, but what\'s this? There\'s a purple bow inside! You clean it off, and keep it!';
+                else
+                    $message .= ' Oh, and what\'s this? There\'s a purple bow inside! You clean it off, and keep it, as well!';
+            }
         }
 
         $em->remove($inventory);
