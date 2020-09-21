@@ -795,7 +795,10 @@ class CraftingService
         }
         else if($roll >= 14)
         {
-            $possibleItems = [ 'Fabric Mâché Basket' ];
+            $possibleItems = [
+                'Fabric Mâché Basket'
+            ];
+
             $item = ArrayFunctions::pick_one($possibleItems);
 
             $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::CRAFT, true);
@@ -803,8 +806,23 @@ class CraftingService
             $this->inventoryService->loseItem('Glue', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a ' . $item . '.', '');
-            $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from White Cloth and Glue.', $activityLog);
+
+            if($item === 'Fabric Mâché Basket' && mt_rand(1, 10) === 1)
+            {
+                $transformation = ArrayFunctions::pick_one([
+                    [ 'item' => 'Flower Basket', 'goodies' => 'flowers' ],
+                    [ 'item' => 'Fruit Basket', 'goodies' => 'fruit' ],
+                ]);
+
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Fabric Mâché Basket. Once they were done, a fairy appeared out of nowhere, and filled the basket up with ' . $transformation['goodies'] . '!', '');
+                $this->inventoryService->petCollectsItem($transformation['item'], $pet, $pet->getName() . ' created a Fabric Mâché Basket; once they were done, a fairy appeared and filled it with ' . $transformation['goodies'] . '!', $activityLog);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a ' . $item . '.', '');
+                $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from White Cloth and Glue.', $activityLog);
+            }
+
             return $activityLog;
         }
         else
