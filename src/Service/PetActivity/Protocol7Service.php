@@ -420,6 +420,7 @@ class Protocol7Service
     private function foundCorruptSector(Pet $pet): PetActivityLog
     {
         $check = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getPerception() + $pet->getScience());
+        $lucky = $pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 100) === 1;
 
         if($check < 20)
         {
@@ -427,6 +428,30 @@ class Protocol7Service
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a corrupt sector, but wasn\'t able to recover any data.', 'icons/activity-logs/confused');
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+        }
+        else if($lucky)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a corrupt sector, and managed to recover a Lo-res Crown from it! Lucky~!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+            ;
+
+            $this->inventoryService->petCollectsItem('Lo-res Crown', $pet, $pet->getName() . ' recovered this from a corrupt sector of Project-E! Lucky~!', $activityLog);
+
+            $pet->increaseEsteem(mt_rand(4, 8));
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ]);
+        }
+        else if(mt_rand(1, 100) === 1)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a corrupt sector, and managed to recover a Lo-res Crown from it!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ;
+
+            $this->inventoryService->petCollectsItem('Lo-res Crown', $pet, $pet->getName() . ' recovered this from a corrupt sector of Project-E!', $activityLog);
+
+            $pet->increaseEsteem(mt_rand(4, 8));
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ]);
         }
         else
         {
