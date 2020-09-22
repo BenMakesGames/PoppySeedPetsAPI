@@ -176,6 +176,9 @@ class CraftingService
 
         if(array_key_exists('String', $quantities))
         {
+            if(array_key_exists('Naner', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createNanerBow', 10);
+
             if(array_key_exists('Glass', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createGlassPendulum', 10);
 
@@ -1119,6 +1122,51 @@ class CraftingService
             $pet->increaseSafety(-1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Glass Pendulum, but almost cut themselves on the glass, and gave up.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createNanerBow(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+
+            if($pet->getFood() + $pet->getJunk() < 0)
+            {
+                $this->inventoryService->loseItem('Naner', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+                $pet->increaseFood(4);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make a bow out of a Naner, but was feeling hungry, so... they ate the Naner.', '');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+                $pet->increaseFood(4);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make a bow out of a Naner, but broke the String.', 'icons/activity-logs/broke-string');
+            }
+        }
+        else if($roll >= 11)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Naner', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a makeshift bow... out of a Naner.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+            ;
+            $this->inventoryService->petCollectsItem('Naner Bow', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $pet->increaseSafety(-1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Naner Bow, but the String kept getting all tangled.', 'icons/activity-logs/confused');
         }
     }
 
