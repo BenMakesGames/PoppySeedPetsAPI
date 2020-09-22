@@ -66,10 +66,22 @@ class CraftingService
             $possibilities[] = new ActivityCallback($this, 'spinFluff', 10);
         }
 
-        if(array_key_exists('White Cloth', $quantities) && array_key_exists('Quinacridone Magenta Dye', $quantities))
+        if(array_key_exists('White Cloth', $quantities))
         {
-            if(array_key_exists('Fluff', $quantities) || array_key_exists('Beans', $quantities))
-                $possibilities[] = new ActivityCallback($this, 'createPeacockPlushy', 10);
+            if(array_key_exists('Quinacridone Magenta Dye', $quantities))
+            {
+                if(array_key_exists('Fluff', $quantities) || array_key_exists('Beans', $quantities))
+                    $possibilities[] = new ActivityCallback($this, 'createPeacockPlushy', 10);
+            }
+
+            if(array_key_exists('String', $quantities) && array_key_exists('Ruby Feather', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createFeatheredHat', 10);
+
+            if(array_key_exists('Glass Pendulum', $quantities) && array_key_exists('Flute', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createDecoratedFlute', 10);
+
+            if(array_key_exists('Stereotypical Bone', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createTorchFromBone', 5);
         }
 
         if(array_key_exists('Gold Telescope', $quantities) && array_key_exists('Flying Grappling Hook', $quantities))
@@ -162,9 +174,6 @@ class CraftingService
         if(array_key_exists('Antenna', $quantities) && array_key_exists('Cobweb', $quantities) && array_key_exists('Fiberglass Bow', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createBugBow', 10);
 
-        if(array_key_exists('White Cloth', $quantities) && array_key_exists('String', $quantities) && array_key_exists('Ruby Feather', $quantities))
-            $possibilities[] = new ActivityCallback($this, 'createFeatheredHat', 10);
-
         if(array_key_exists('String', $quantities))
         {
             if(array_key_exists('Glass', $quantities))
@@ -225,9 +234,6 @@ class CraftingService
 
         if(array_key_exists('Fiberglass', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createSimpleFiberglassItem', 10);
-
-        if(array_key_exists('Glass Pendulum', $quantities) && array_key_exists('Flute', $quantities) && array_key_exists('White Cloth', $quantities))
-            $possibilities[] = new ActivityCallback($this, 'createDecoratedFlute', 10);
 
         if(array_key_exists('Scythe', $quantities))
         {
@@ -303,9 +309,38 @@ class CraftingService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
+    public function createTorchFromBone(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::CRAFT, false);
+
+            $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Stereotypical Torch, but accidentally tore the White Cloth into useless shapes :(', 'icons/activity-logs/torn-to-bits');
+        }
+        else if($roll >= 8)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Stereotypical Bone', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Stereotypical Torch.', '');
+            $this->inventoryService->petCollectsItem('Stereotypical Torch', $pet, $pet->getName() . ' created this from White Cloth and a Stereotypical Bone.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(15, 45), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Stereotypical Torch, but couldn\'t figure it out.', 'icons/activity-logs/confused');
+        }
+    }
+
     public function createSimpleFiberglassItem(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());

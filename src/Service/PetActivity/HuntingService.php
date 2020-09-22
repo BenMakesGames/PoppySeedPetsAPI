@@ -599,6 +599,8 @@ class HuntingService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
 
             if(mt_rand(1, 100) === 1)
+                $prize = ArrayFunctions::pick_one([ 'Rib', 'Stereotypical Bone ']);
+            else if(mt_rand(1, 100) === 1)
                 $prize = 'Little Strongbox';
             else if(mt_rand(1, 5) === 1)
                 $prize = 'Iron Bar';

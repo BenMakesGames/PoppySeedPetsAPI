@@ -131,15 +131,28 @@ class DeepSeaService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, true);
 
-            $loot = ArrayFunctions::pick_one([
-                'Seaweed', 'Silica Grounds', 'Fish', 'Scales'
-            ]);
+            if(mt_rand(1, 100) === 1)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the shelf sea using the Submarine, and found a Dino Skull!', 'items/tool/submarine');
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the shelf sea using the Submarine. All they found was ' . $loot . '...', 'items/tool/submarine');
+                $this->inventoryService->petCollectsItem('Dino Skull', $pet, $pet->getName() . ' found this while exploring the shelf sea using the Submarine!', $activityLog);
 
-            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while exploring the shelf sea using the Submarine.', $activityLog);
+                $pet->increaseEsteem(mt_rand(4, 8));
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
+            }
+            else
+            {
+                $loot = ArrayFunctions::pick_one([
+                    'Seaweed', 'Silica Grounds', 'Fish', 'Scales'
+                ]);
+
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the shelf sea using the Submarine. All they found was ' . $loot . '...', 'items/tool/submarine');
+
+                $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while exploring the shelf sea using the Submarine.', $activityLog);
+
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
+            }
         }
         else
         {

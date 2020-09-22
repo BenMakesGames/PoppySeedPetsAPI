@@ -122,6 +122,17 @@ class GatheringService
             $pet->increaseEsteem(4);
             $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::GATHER, true);
         }
+        else if(mt_rand(1, 150) === 1)
+        {
+            $bone = ArrayFunctions::pick_one([ 'Rib', 'Stereotypical Bone' ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to an Abandoned Quarry, and happened to find a ' . $bone . '!', '');
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
+            $this->inventoryService->petCollectsItem($bone, $pet, $pet->getName() . ' found this at an Abandoned Quarry!', $activityLog);
+            $pet->increaseEsteem(4);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, true);
+        }
         else if($pet->getStrength() < 4)
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a huge block of Limestone at an Abandoned Quarry, and, with all their might, pushed, dragged, and "rolled" it home.', 'items/mineral/limestone');
@@ -615,7 +626,12 @@ class GatheringService
             $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
             if($roll >= 16)
+            {
                 $loot[] = ArrayFunctions::pick_one($possibleLoot);
+
+                if(mt_rand(1, 50) === 1)
+                    $loot[] = ArrayFunctions::pick_one([ 'Rib', 'Stereotypical Bone' ]);
+            }
 
             if($roll >= 24)
                 $loot[] = ArrayFunctions::pick_one($possibleLoot);

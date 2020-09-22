@@ -102,9 +102,6 @@ class StickCraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createTorchOrFlag(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
