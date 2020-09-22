@@ -63,7 +63,7 @@ class Item
     private $fertilizer = 0;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Plant", inversedBy="item", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Plant", inversedBy="item", cascade={"persist", "remove"})
      */
     private $plant;
 

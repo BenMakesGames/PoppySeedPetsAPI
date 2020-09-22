@@ -535,8 +535,12 @@ class HuntingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
             $this->transactionService->spendMoney($pet->getOwner(), $moneysLost, $pet->getName() . ' was outsmarted by a Thieving Magpie, who stole this money.', false);
             $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::MONEYS_STOLEN_BY_THIEVING_MAGPIES, $moneysLost);
-            $pet->increaseEsteem(-2);
-            $pet->increaseSafety(-2);
+
+            $pet
+                ->increaseEsteem(-2)
+                ->increaseSafety(-2)
+            ;
+
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was outsmarted by a Thieving Magpie, and lost ' . $moneysLost . ' ' . ($moneysLost === 1 ? 'money' : 'moneys') . '.', '');
         }
         else if(mt_rand(1, $dexSkill) >= 9)
@@ -544,8 +548,11 @@ class HuntingService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
-            $pet->increaseEsteem(2);
-            $pet->increaseSafety(2);
+
+            $pet
+                ->increaseEsteem(2)
+                ->increaseSafety(2)
+            ;
 
             if(mt_rand(1, 4) === 1)
             {
@@ -612,9 +619,11 @@ class HuntingService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
             $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt ' . $pet->getName() . ', but ' . $pet->getName() . ' was able to dispel it (and got its ' . $prize . ')!', '');
             $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' collected this from the remains of a Pirate Ghost.', $activityLog);
-            $pet->increaseSafety(3);
-            $pet->increaseEsteem(2);
 
+            $pet
+                ->increaseSafety(3)
+                ->increaseEsteem(2)
+            ;
         }
         else
         {
