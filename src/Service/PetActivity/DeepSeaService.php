@@ -234,7 +234,7 @@ class DeepSeaService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' started exploring a coral reef using the Submarine, but was chased of by some sharks...', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' started exploring a coral reef using the Submarine, but was chased off by some sharks...', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
         }
@@ -449,7 +449,7 @@ class DeepSeaService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' started exploring a coral reef using the Submarine, but was chased of by some sharks...', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' started exploring a coral reef using the Submarine, but was chased off by some sharks...', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
         }
