@@ -349,6 +349,7 @@ class TreasureMapService
                 if($fluffTradedStat->getValue() > 40)
                 {
                     $possibleTrades[] = [ 'item' => 'Top Hat', 'weight' => 15, 'message' => 'Want another hat? Can\'t blame you. It\'s a fine hat!' ];
+                    $possibleTrades[] = [ 'item' => 'Green Bow', 'weight' => 5, 'message' => 'Every now and again, I get bored of making hats, and make bows, instead. Every now and again.' ];
                 }
             }
 

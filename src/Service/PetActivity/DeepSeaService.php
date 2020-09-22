@@ -410,7 +410,7 @@ class DeepSeaService
             {
                 if(mt_rand(1, 200) === 1)
                 {
-                    $rareTreasure = 'Species Transmigration Serum';
+                    $rareTreasure = ArrayFunctions::pick_one([ 'Species Transmigration Serum', 'Yellow Bow' ]);
                     $andMore = '; oh, and a ' . $rareTreasure . ', too!';
                 }
                 else
