@@ -35,6 +35,24 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class SummoningScrollController extends PoppySeedPetsItemController
 {
+    private const SENTINEL_NAMES = [
+        'Sentinel',
+        'Homunculus',
+        'Golem',
+        'Puppet',
+        'Guardian',
+        'Marionette',
+        'Familiar',
+        'Summon',
+        'Shield',
+        'Sentry',
+        'Substitute',
+        'Ersatz',
+        'Proxy',
+        'Placeholder',
+        'Surrogate',
+    ];
+
     /**
      * @Route("/{inventory}/unfriendly", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
@@ -224,6 +242,8 @@ class SummoningScrollController extends PoppySeedPetsItemController
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $pet = null;
+        $gotASentinel = false;
+        $gotAReusedSentinel = false;
 
         if(mt_rand(1, 19) === 1)
         {
@@ -231,6 +251,10 @@ class SummoningScrollController extends PoppySeedPetsItemController
                 $user,
                 $petSpeciesRepository->findOneBy([ 'name' => 'Sentinel' ])
             );
+
+            $pet->setName(ArrayFunctions::pick_one(self::SENTINEL_NAMES));
+
+            $gotASentinel = true;
         }
 
         if($pet === null)
@@ -241,6 +265,11 @@ class SummoningScrollController extends PoppySeedPetsItemController
                 ],
                 [ 'lastInteracted' => 'ASC' ]
             );
+
+            if($pet->getSpecies()->getName() === 'Sentinel')
+            {
+                $gotAReusedSentinel = true;
+            }
         }
 
         if($pet === null)
@@ -248,6 +277,13 @@ class SummoningScrollController extends PoppySeedPetsItemController
             $allSpecies = $petSpeciesRepository->findAll();
 
             $pet = $petFactory->createRandomPetOfSpecies($user, ArrayFunctions::pick_one($allSpecies));
+
+            if($pet->getSpecies()->getName() === 'Sentinel')
+            {
+                $pet->setName(ArrayFunctions::pick_one(self::SENTINEL_NAMES));
+
+                $gotASentinel = true;
+            }
         }
 
         $pet->setOwner($user);
@@ -257,12 +293,24 @@ class SummoningScrollController extends PoppySeedPetsItemController
         if($numberOfPetsAtHome >= $user->getMaxPets())
         {
             $pet->setInDaycare(true);
-            $message = 'You read the scroll... not ' . mt_rand(3, 6) . ' seconds later, ' . GrammarFunctions::indefiniteArticle($pet->getSpecies()->getName()) . ' ' . $pet->getSpecies()->getName() . ' named ' . $pet->getName() . ' opens the door, waves "hello", then closes it again before heading to the Pet Shelter!';
+
+            if($gotAReusedSentinel)
+                $message = 'You read the scroll... not ' . mt_rand(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet! But it looks like someone took care of it... has it done this before?) You put it in the Pet Shelter daycare...';
+            else if($gotASentinel)
+                $message = 'You read the scroll... not ' . mt_rand(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet!) You put it in the Pet Shelter daycare...';
+            else
+                $message = 'You read the scroll... not ' . mt_rand(3, 6) . ' seconds later, ' . GrammarFunctions::indefiniteArticle($pet->getSpecies()->getName()) . ' ' . $pet->getSpecies()->getName() . ' named ' . $pet->getName() . ' opens the door, waves "hello", then closes it again before heading to the Pet Shelter!';
         }
         else
         {
             $pet->setInDaycare(false);
-            $message = 'You read the scroll... not ' . mt_rand(3, 6) . ' seconds later, ' . GrammarFunctions::indefiniteArticle($pet->getSpecies()->getName()) . ' ' . $pet->getSpecies()->getName() . ' named ' . $pet->getName() . ' opens the door, and walks inside!';
+
+            if($gotAReusedSentinel)
+                $message = 'You read the scroll... not ' . mt_rand(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet! But it looks like someone took care of it... has it done this before?) Well... it\'s here now, I guess...';
+            else if($gotASentinel)
+                $message = 'You read the scroll... not ' . mt_rand(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet!) Well... it\'s here now, I guess...';
+            else
+                $message = 'You read the scroll... not ' . mt_rand(3, 6) . ' seconds later, ' . GrammarFunctions::indefiniteArticle($pet->getSpecies()->getName()) . ' ' . $pet->getSpecies()->getName() . ' named ' . $pet->getName() . ' opens the door, and walks inside!';
         }
 
         $em->flush();

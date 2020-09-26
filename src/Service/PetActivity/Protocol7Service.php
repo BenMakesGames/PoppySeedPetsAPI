@@ -353,7 +353,7 @@ class Protocol7Service
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . '\'s line was suddenly shorted while they were exploring Project-E. ' . $pet->getName() . ' managed to grab a couple Pointers before being forcefully disconnected,', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . '\'s line was suddenly shorted while they were exploring Project-E. ' . $pet->getName() . ' managed to grab a couple Pointers before being forcefully disconnected.', '');
 
             $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' captured this on a shorted line of Project-E!', $activityLog);
             $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' captured this on a shorted line of Project-E!', $activityLog);
