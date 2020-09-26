@@ -179,14 +179,17 @@ class MagicBindingService
 
             if(array_key_exists('Striped Microcline', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createWhisperStone', 8);
+
+            $magicSmokeWeight = 1;
         }
         else
         {
-            // no quint?
-
-            if(array_key_exists('Magic Smoke', $quantities))
-                $possibilities[] = new ActivityCallback($this, 'magicSmokeToQuint', 6);
+            // no quint??
+            $magicSmokeWeight = 6;
         }
+
+        if(array_key_exists('Magic Smoke', $quantities))
+            $possibilities[] = new ActivityCallback($this, 'magicSmokeToQuint', $magicSmokeWeight);
 
         return $possibilities;
     }

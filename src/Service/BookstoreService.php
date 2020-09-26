@@ -185,7 +185,10 @@ class BookstoreService
                 $bookPrices['Book of Noods'] = 20;
 
             if($cookedSomething->getValue() >= 35)
+            {
                 $bookPrices['Pie Recipes'] = 15;
+                $bookPrices['We All Scream'] = 15;
+            }
 
             if($cookedSomething->getValue() >= 50)
             {
