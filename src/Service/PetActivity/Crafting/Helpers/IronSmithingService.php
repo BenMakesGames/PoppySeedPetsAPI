@@ -77,9 +77,6 @@ class IronSmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createBasicIronCraft(Pet $pet): PetActivityLog
     {
         $making = ArrayFunctions::pick_one([
@@ -388,9 +385,6 @@ class IronSmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createMirrorShield(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
@@ -425,6 +419,41 @@ class IronSmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to make an iron shield, but couldn\'t come up with a good design...', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createMushkateer(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->inventoryService->loseItem('Toadstool', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a sword using a Toadstool, but ruined the Toadstool! :(', '');
+        }
+        else if($roll >= 15)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Toadstool', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Mushkateer!', 'items/tool/sword/mushkateer')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+            ;
+            $this->inventoryService->petCollectsItem('Mushkateer', $pet, $pet->getName() . ' created this from Iron Bar, and a Toadstool.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to make a sword using a Toadstool, but couldn\'t figure it out...', 'icons/activity-logs/confused');
         }
     }
 
