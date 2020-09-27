@@ -479,7 +479,7 @@ class StickCraftingService
                 $itemLost = $this->inventoryService->loseOneOf([ 'String', 'Glue' ], $pet->getOwner(), LocationEnum::HOME);
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
 
-                if($itemLost === 'string')
+                if($itemLost === 'String')
                     return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Wooden Sword, but broke the String :(', 'icons/activity-logs/broke-string');
                 else
                     return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Wooden Sword, but spilt the Glue :(', '');
