@@ -60,10 +60,15 @@ class PetShelterController extends PoppySeedPetsController
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
 
+        $dialog = count($pets) > 10
+            ? "Oh, goodness! A bunch of pets appeared from the Portal today! It just seems to happen now and again; we're still not sure why...\n\n Anyway, if "
+            : "Hello! Here to adopt a new friend?\n\nIf "
+        ;
+
         if($numberOfPetsAtHome >= $user->getMaxPets())
-            $dialog = "Hello! Here to adopt a new friend?\n\nIf no one catches your eye today, come back tomorrow. We get newcomers every day!\n\nSince you have so many pets in your house already, a pet you adopt will be placed into Daycare.";
+            $dialog .= "no one catches your eye today, come back tomorrow. We get newcomers every day!\n\nSince you have so many pets in your house already, a pet you adopt will be placed into Daycare.";
         else
-            $dialog = "Hello! Here to adopt a new friend?\n\nIf no one catches your eye today, come back tomorrow. We get newcomers every day!";
+            $dialog .= "no one catches your eye today, come back tomorrow. We get newcomers every day!";
 
         $data = [
             'dialog' => $dialog,

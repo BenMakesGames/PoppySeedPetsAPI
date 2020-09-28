@@ -58,16 +58,18 @@ class AdoptionService
     {
         $statValue = $this->userStatsRepository->getStatValue($user, UserStatEnum::PETS_ADOPTED);
 
+        $bonus = $statValue > 6 && mt_rand(1, 31) === 1 ? 10 : 0;
+
         if($statValue <= 6)
-            return mt_rand(4, 6);
+            return mt_rand(4, 6) + $bonus;
         else if($statValue <= 28)
-            return mt_rand(5, 8);
+            return mt_rand(5, 8) + $bonus;
         else if($statValue <= 496)
-            return mt_rand(6, 10);
+            return mt_rand(6, 10) + $bonus;
         else if($statValue <= 8128)
-            return mt_rand(6, 10);
+            return mt_rand(6, 10) + $bonus;
         else
-            return mt_rand(6, 10);
+            return mt_rand(6, 10) + $bonus;
     }
 
     /**
