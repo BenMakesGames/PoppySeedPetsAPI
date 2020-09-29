@@ -97,7 +97,7 @@ class SmithingService
                 $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createMirrorShield', $weight);
 
             if(array_key_exists('Toadstool', $quantities))
-                $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createMushkateer', $weight);
+                $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createMushketeer', $weight);
         }
 
         if(array_key_exists('Yellow Scissors', $quantities) && array_key_exists('Green Scissors', $quantities) && array_key_exists('Quinacridone Magenta Dye', $quantities))

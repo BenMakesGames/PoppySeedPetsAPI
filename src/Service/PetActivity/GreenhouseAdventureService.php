@@ -6,6 +6,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
+use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetService;
 use App\Service\ResponseService;
@@ -29,6 +30,8 @@ class GreenhouseAdventureService
         $skill = NumberFunctions::constrain($skill, 10, 15);
 
         $roll = mt_rand(1, $skill);
+
+        $changes = new PetChanges($pet);
 
         $this->petService->gainAffection($pet, 1);
 
@@ -56,6 +59,8 @@ class GreenhouseAdventureService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' had fun helping you harvest the ' . $plant->getPlant()->getName() . ', and found a Weird Beetle!', 'ui/affection');
             $this->inventoryService->petCollectsItem('Weird Beetle', $pet, $pet->getName() . ' found this while helping you harvest the ' . $plant->getPlant()->getName() . '.', $activityLog);
         }
+
+        $activityLog->setChanges($changes->compare($pet));
 
         return $activityLog;
     }

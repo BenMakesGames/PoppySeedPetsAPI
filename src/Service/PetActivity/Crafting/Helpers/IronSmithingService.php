@@ -422,7 +422,7 @@ class IronSmithingService
         }
     }
 
-    public function createMushkateer(Pet $pet): PetActivityLog
+    public function createMushketeer(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
 
@@ -442,10 +442,10 @@ class IronSmithingService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Mushkateer!', 'items/tool/sword/mushkateer')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Mushketeer!', 'items/tool/sword/mushroom')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
             ;
-            $this->inventoryService->petCollectsItem('Mushkateer', $pet, $pet->getName() . ' created this from Iron Bar, and a Toadstool.', $activityLog);
+            $this->inventoryService->petCollectsItem('Mushketeer', $pet, $pet->getName() . ' created this from Iron Bar, and a Toadstool.', $activityLog);
             return $activityLog;
         }
         else
