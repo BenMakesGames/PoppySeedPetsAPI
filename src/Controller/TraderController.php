@@ -82,10 +82,12 @@ class TraderController extends PoppySeedPetsController
 
         $message = null;
 
+        $now = new \DateTimeImmutable();
+
         // october
-        if((int)(new \DateTimeImmutable())->format('n') === 10)
+        if((int)$now->format('n') === 10)
         {
-            $quest = $userQuestRepository->findOrCreate($user, 'Get October Behatting Scroll', false);
+            $quest = $userQuestRepository->findOrCreate($user, 'Get October ' . $now->format('Y') . ' Behatting Scroll', false);
             if($quest->getValue() === false)
             {
                 $quest->setValue(true);
