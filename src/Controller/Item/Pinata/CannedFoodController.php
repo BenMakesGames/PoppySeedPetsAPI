@@ -1,9 +1,9 @@
 <?php
-namespace App\Controller\Item;
+namespace App\Controller\Item\Pinata;
 
+use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,7 +21,7 @@ class CannedFoodController extends PoppySeedPetsItemController
      */
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em
     )
     {
         $this->validateInventory($inventory, 'cannedFood/#/open');
