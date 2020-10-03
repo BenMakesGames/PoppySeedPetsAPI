@@ -546,7 +546,7 @@ class InventoryService
 
             $naniNani = ArrayFunctions::pick_one([ 'Convenient!', 'Where\'d that come from??', 'How serendipitous!', 'What are the odds!' ]);
 
-            $this->responseService->addFlashMessage((new PetActivityLog())->setEntry('While eating the ' . $item->getName() . ', ' . $pet->getName() . ' spotted ' . GrammarFunctions::indefiniteArticle($bonusItem->getName()) . ' ' . $bonusItem->getName() . '! (' . $naniNani . ')'));
+            $this->responseService->addFlashMessage((new PetActivityLog())->setEntry('While eating the ' . $item->getName() . ', ' . $pet->getName() . ' spotted ' . $bonusItem->getNameWithArticle() . '! (' . $naniNani . ')'));
         }
 
         if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && mt_rand(1, 200) < $food->getFood() + $food->getJunk())

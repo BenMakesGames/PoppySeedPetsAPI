@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Repository\ItemRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -24,7 +25,7 @@ class BurntLogController extends PoppySeedPetsItemController
      */
     public function openBurntLog(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, ItemRepository $itemRepository
     )
     {
         $this->validateInventory($inventory, 'burntLog/#/break');
@@ -36,13 +37,13 @@ class BurntLogController extends PoppySeedPetsItemController
 
         $stat = $userStatsRepository->incrementStat($user, UserStatEnum::BURNT_LOGS_BROKEN);
 
-        $extraItem = ArrayFunctions::pick_one([
+        $extraItem = $itemRepository->findOneByName(ArrayFunctions::pick_one([
             'Crooked Stick',
             'Iron Ore',
             'Glass',
             'Glowing Six-sided Die',
             'Fried Egg',
-        ]);
+        ]));
 
         if(mt_rand(1, 4) === 1)
         {
@@ -70,6 +71,6 @@ class BurntLogController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You break the Burnt Log apart, receiving ' . $charcoalReceived . ', and ' . GrammarFunctions::indefiniteArticle($extraItem) . ' ' . $extraItem . '!', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You break the Burnt Log apart, receiving ' . $charcoalReceived . ', and ' . $extraItem->getNameWithArticle() . '!', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
 }

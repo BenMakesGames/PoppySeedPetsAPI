@@ -9,6 +9,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
+use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -18,14 +19,17 @@ class PlasticPrinterService
     private $inventoryService;
     private $responseService;
     private $petExperienceService;
+    private $itemRepository;
 
     public function __construct(
-        InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService
+        InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
+        ItemRepository $itemRepository
     )
     {
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
+        $this->itemRepository = $itemRepository;
     }
 
     /**
@@ -211,13 +215,13 @@ class PlasticPrinterService
 
     public function createPlasticCraft(Pet $pet): PetActivityLog
     {
-        $item = ArrayFunctions::pick_one([
+        $item = $this->itemRepository->findOneByName(ArrayFunctions::pick_one([
             'Small Plastic Bucket',
             'Plastic Shovel',
             'Egg Carton',
             'Ruler',
             'Plastic Boomerang',
-        ]);
+        ]));
 
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts());
 
@@ -227,7 +231,7 @@ class PlasticPrinterService
 
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $item . ', but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make ' . $item->getNameWithArticle() . ', but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
         }
         else if($roll >= 10)
         {
@@ -235,7 +239,7 @@ class PlasticPrinterService
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a ' . $item . '.', '')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created ' . $item->getNameWithArticle() . '.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
             ;
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from Plastic.', $activityLog);

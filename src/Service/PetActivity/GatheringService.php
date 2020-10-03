@@ -14,6 +14,7 @@ use App\Functions\DateFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\PetChanges;
+use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -25,16 +26,18 @@ class GatheringService
     private $inventoryService;
     private $petExperienceService;
     private $transactionService;
+    private $itemRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService
+        TransactionService $transactionService, ItemRepository $itemRepository
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
+        $this->itemRepository = $itemRepository;
     }
 
     public function adventure(Pet $pet)
@@ -585,17 +588,17 @@ class GatheringService
 
         if($success)
         {
-            $loot = ArrayFunctions::pick_one([
+            $loot = $this->itemRepository->findOneByName(ArrayFunctions::pick_one([
                 'Fishkebab Stew',
                 'Grilled Fish',
                 'Honeydont Ice Cream',
                 'Coconut',
                 'Orange',
-            ]);
+            ]));
 
             $pet->increaseEsteem(mt_rand(2, 4));
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a lone Banana Tree in the island\'s Micro-Jungle. They left a small offering for Nang Tani... who appeared out of thin air, and gave them ' . GrammarFunctions::indefiniteArticle($loot) . ' ' . $loot . '!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a lone Banana Tree in the island\'s Micro-Jungle. They left a small offering for Nang Tani... who appeared out of thin air, and gave them ' . $loot->getNameWithArticle() . '!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);

@@ -9,6 +9,7 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\NumberFunctions;
+use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -18,14 +19,17 @@ class GizubisGardenService
     private $petExperienceService;
     private $responseService;
     private $inventoryService;
+    private $itemRepository;
 
     public function __construct(
-        PetExperienceService $petExperienceService, ResponseService $responseService, InventoryService $inventoryService
+        PetExperienceService $petExperienceService, ResponseService $responseService, InventoryService $inventoryService,
+        ItemRepository $itemRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
+        $this->itemRepository = $itemRepository;
     }
 
     public function doAdventure(Pet $pet): PetActivityLog
@@ -93,13 +97,13 @@ class GizubisGardenService
         }
         else if($roll >= 13)
         {
-            $loot = ArrayFunctions::pick_one([
+            $loot = $this->itemRepository->findOneByName(ArrayFunctions::pick_one([
                 'Red', 'Crooked Stick', 'Apricot', 'Orange', 'Naner', 'Pamplemousse'
-            ]);
+            ]));
 
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, true);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
-            $activityLog = $this->responseService->createActivityLog($pet, 'While watering the Tree of Life for Gizubi\'s Garden, ' . $pet->getName() . ' found ' . GrammarFunctions::indefiniteArticle($loot) . ' ' . $loot . '.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, 'While watering the Tree of Life for Gizubi\'s Garden, ' . $pet->getName() . ' found ' . $loot->getNameWithArticle() . '.', '');
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while watering the Tree of Life for Gizubi\'s Garden.', $activityLog);
             return $activityLog;
         }

@@ -8,6 +8,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Repository\ItemRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -19,16 +20,18 @@ class DreamingService
     private $responseService;
     private $petSpeciesRepository;
     private $petExperienceService;
+    private $itemRepository;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetSpeciesRepository $petSpeciesRepository,
-        PetExperienceService $petExperienceService
+        PetExperienceService $petExperienceService, ItemRepository $itemRepository
     )
     {
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->petSpeciesRepository = $petSpeciesRepository;
         $this->petExperienceService = $petExperienceService;
+        $this->itemRepository = $itemRepository;
     }
 
     private const LOCATIONS = [
@@ -102,7 +105,8 @@ class DreamingService
             ]);
         }
 
-        $item = ArrayFunctions::pick_one($possibleItems);
+        $itemName = ArrayFunctions::pick_one($possibleItems);
+        $item = $this->itemRepository->findOneByName($itemName);
 
         $dream = ArrayFunctions::pick_one([
             [
@@ -130,7 +134,7 @@ class DreamingService
                 'A stupid %species% threw this at %dreamer% in a dream.',
             ],
             [
-                'In a dream, %dreamer% and a friend went out to eat, and ordered %item_article% %item% and %a_food_or_drink%. When the %item% arrived, it was %more% than expected!',
+                'In a dream, %dreamer% and a friend went out to eat, and ordered %item_with_article% and %a_food_or_drink%. When the %item% arrived, it was %more% than expected!',
                 '%dreamer% ordered this at a restaurant in a dream.',
             ],
             [
@@ -142,7 +146,7 @@ class DreamingService
                 '%dreamer% found this on %surface% %location2% in a dream.',
             ],
             [
-                'In a dream, %dreamer% bumped into %a_pet_or_monster%, causing them to drop %item_article% %item%. %dreamer% %adverb% picked it up, and tried to call out, but their voice wasn\'t working.',
+                'In a dream, %dreamer% bumped into %a_pet_or_monster%, causing them to drop %item_with_article%. %dreamer% %adverb% picked it up, and tried to call out, but their voice wasn\'t working.',
                 '%dreamer% %adverb% picked this up in a dream.'
             ],
             [
@@ -150,7 +154,7 @@ class DreamingService
                 '%dreamer% was chased by this in a dream. (It was bigger in the dream...)'
             ],
             [
-                '%location1% in a dream, %dreamer% looked in a mirror. They were %more% than usual. Also, there was %item_article% %item% on their head!',
+                '%location1% in a dream, %dreamer% looked in a mirror. They were %more% than usual. Also, there was %item_with_article% on their head!',
                 '%dreamer% saw this on their head while looking in a mirror in a dream.'
             ]
         ]);
@@ -158,8 +162,8 @@ class DreamingService
         $locationIndicies = array_rand(self::LOCATIONS, 2);
 
         $replacements = [
-            '%item%' => $item,
-            '%item_article%' => GrammarFunctions::indefiniteArticle($item),
+            '%item%' => $itemName,
+            '%item_with_article%' => $item->getNameWithArticle(),
             '%dreamer%' => $pet->getName(),
             '%location1%' => self::LOCATIONS[$locationIndicies[0]],
             '%location2%' => self::LOCATIONS[$locationIndicies[1]],
@@ -190,7 +194,7 @@ class DreamingService
         $eventDescription = ucfirst($dream[0]);
         $itemDescription = ucfirst($dream[1]);
 
-        $this->inventoryService->receiveItem($item, $pet->getOwner(), $pet->getOwner(), $itemDescription, LocationEnum::HOME);
+        $this->inventoryService->receiveItem($itemName, $pet->getOwner(), $pet->getOwner(), $itemDescription, LocationEnum::HOME);
 
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
 

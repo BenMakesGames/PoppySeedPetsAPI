@@ -135,6 +135,11 @@ class BookstoreService
         if(!$this->renamingScrollAvailable($user))
             throw new UnprocessableEntityHttpException('What??');
 
+        $item = $this->itemRepository->findOneByName($itemToGive);
+
+        if(!$item)
+            throw new UnprocessableEntityHttpException('There is no such item in the game...');
+
         $bookstoreQuestStep = $this->userQuestRepository->findOrCreate($user, self::BOOKSTORE_QUEST_NAME, 0);
 
         $questStep = $this->getBookstoreQuestStep($bookstoreQuestStep->getValue());
@@ -145,8 +150,10 @@ class BookstoreService
         if(!in_array($itemToGive, $questStep['askingFor']))
             throw new UnprocessableEntityHttpException('That\'s not what I\'m looking for right now...');
 
-        if($this->inventoryService->loseItem($itemToGive, $user, [ LocationEnum::HOME, LocationEnum::BASEMENT ], 1) === 0)
-            throw new UnprocessableEntityHttpException('You don\'t seem to have ' . GrammarFunctions::indefiniteArticle($itemToGive) . ' ' . $itemToGive . '...');
+        if($this->inventoryService->loseItem($item, $user, [ LocationEnum::HOME, LocationEnum::BASEMENT ], 1) === 0)
+        {
+            throw new UnprocessableEntityHttpException('You don\'t seem to have ' . $item->getNameWithArticle() . '...');
+        }
 
         $bookstoreQuestStep->setValue($bookstoreQuestStep->getValue() + 1);
     }

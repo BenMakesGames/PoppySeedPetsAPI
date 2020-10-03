@@ -3,12 +3,10 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
-use App\Functions\GrammarFunctions;
 use App\Repository\ItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -57,13 +55,11 @@ class ReversableController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        $newItemNameArticle = GrammarFunctions::indefiniteArticle($newItemName);
-
         $message = ArrayFunctions::pick_one([
-            'The ' . $oldItemName . ' has been completely transformed, becoming ' . $newItemNameArticle . ' ' . $newItemName . '!' . "\n\n" . 'Incredible.',
-            'You rotate the ' . $oldItemName . ' approximately 3.14 radians about its x-axis, et voilà: ' . $newItemNameArticle . ' ' . $newItemName . '!',
-            'You deftly flip the ' . $oldItemName . ' into ' . $newItemNameArticle . ' ' . $newItemName . '!',
-            'You caaaaaarefully turn the ' . $oldItemName . ' over, then caaaaaarefully put it down...' . "\n\n" . 'Okay... okay, yeah! It worked!' . "\n\n" . 'You successfully made ' . $newItemNameArticle . ' ' . $newItemName . '!',
+            'The ' . $oldItemName . ' has been completely transformed, becoming ' . $newItem->getNameWithArticle() . '!' . "\n\n" . 'Incredible.',
+            'You rotate the ' . $oldItemName . ' approximately 3.14 radians about its x-axis, et voilà: ' . $newItem->getNameWithArticle() . '!',
+            'You deftly flip the ' . $oldItemName . ' into ' . $newItem->getNameWithArticle() . '!',
+            'You caaaaaarefully turn the ' . $oldItemName . ' over, then caaaaaarefully put it down...' . "\n\n" . 'Okay... okay, yeah! It worked!' . "\n\n" . 'You successfully made ' . $newItem->getNameWithArticle() . '!',
         ]);
 
         return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true, 'reloadPets' => $reloadPets ]);

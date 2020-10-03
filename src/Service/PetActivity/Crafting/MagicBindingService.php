@@ -11,6 +11,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
+use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -20,14 +21,17 @@ class MagicBindingService
     private $inventoryService;
     private $responseService;
     private $petExperienceService;
+    private $itemRepository;
 
     public function __construct(
-        InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService
+        InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
+        ItemRepository $itemRepository
     )
     {
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
+        $this->itemRepository = $itemRepository;
     }
 
     /**
@@ -421,8 +425,10 @@ class MagicBindingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::MAGIC_BIND, true);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+
             foreach($otherMaterials as $material)
                 $this->inventoryService->loseItem($material, $pet->getOwner(), LocationEnum::HOME, 1);
+
             $this->inventoryService->loseItem('Ceremonial Trident', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(3);
@@ -1028,16 +1034,16 @@ class MagicBindingService
 
     private function doMagicMirrorMaze(Pet $pet): array
     {
-        $loot = ArrayFunctions::pick_one([
+        $loot = $this->itemRepository->findOneByName(ArrayFunctions::pick_one([
             'Alien Tissue', 'Apricot PB&J', 'Baking Powder', 'Blue Balloon', 'Candied Ginger', 'Chili Calamari',
             'Deed for Greenhouse Plot', 'Egg Carton', 'Feathers', 'Fortuneless Cookie', 'Glowing Six-sided Die',
             'Iron Ore', 'Limestone', 'Papadum', 'Password', 'Purple Gummies', 'Red Yogurt', 'Toadstool', 'Welcome Note',
-        ]);
+        ]));
 
         if($pet->getClimbing() > 0)
         {
             return [
-                $pet->getName() . ' bound a Magic Mirror! As soon as they did so, they were sucked inside, and into a giant maze! They easily climbed their way out of the maze, and out of the mirror! On the way, they found ' . $loot . '.',
+                $pet->getName() . ' bound a Magic Mirror! As soon as they did so, they were sucked inside, and into a giant maze! They easily climbed their way out of the maze, and out of the mirror! On the way, they found ' . $loot->getNameWithArticle() . '.',
                 $loot,
                 $pet->getName() . ' found this while climbing out of a maze inside a Magic Mirror!',
                 5,
@@ -1047,7 +1053,7 @@ class MagicBindingService
         else if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
         {
             return [
-                $pet->getName() . ' bound a Magic Mirror! As soon as they did so, they were sucked inside, and into a giant maze! It turns out mazes are really easy if you have an Eidetic Memory! On the way, they found ' . $loot . ', and a path out of the mirror entirely!',
+                $pet->getName() . ' bound a Magic Mirror! As soon as they did so, they were sucked inside, and into a giant maze! It turns out mazes are really easy if you have an Eidetic Memory! On the way, they found ' . $loot->getNameWithArticle() . ', and a path out of the mirror entirely!',
                 $loot,
                 $pet->getName() . ' found this while escaping a maze inside a Magic Mirror!',
                 15,
@@ -1061,7 +1067,7 @@ class MagicBindingService
             if($roll >= 5)
             {
                 return [
-                    $pet->getName() . ' bound a Magic Mirror! As soon as they did so, they were sucked inside, and into a giant maze! It took a while, but they were able to find a path out of the maze, and back into the real world! On the way, they found ' . $loot . '.',
+                    $pet->getName() . ' bound a Magic Mirror! As soon as they did so, they were sucked inside, and into a giant maze! It took a while, but they were able to find a path out of the maze, and back into the real world! On the way, they found ' . $loot->getNameWithArticle() . '.',
                     $loot,
                     $pet->getName() . ' found this while escaping a maze inside a Magic Mirror!',
                     30,
@@ -1415,13 +1421,15 @@ class MagicBindingService
         $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
 
+        $scrollItem = $this->itemRepository->findOneByName($scroll);
+
         if($craftsCheck <= 2)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->inventoryService->loseItem('Paper', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a ' . $scroll . ', but accidentally tore the Paper in the process :(', 'icons/activity-logs/torn-to-bits');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create ' . $scrollItem->getNameWithArticle() . ', but accidentally tore the Paper in the process :(', 'icons/activity-logs/torn-to-bits');
         }
         else if($umbraCheck <= 2)
         {
@@ -1429,7 +1437,7 @@ class MagicBindingService
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a ' . $scroll . ', but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create ' . $scrollItem->getNameWithArticle() . ', but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
         }
         else if($umbraCheck < 15)
         {
@@ -1437,9 +1445,9 @@ class MagicBindingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
 
             if(mt_rand(1, 2) === 1 || $pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a ' . $scroll . ', but accidentally dropped the Paper at a crucial moment, and smudged the writing!', 'icons/activity-logs/confused');
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create ' . $scrollItem->getNameWithArticle() . ', but accidentally dropped the Paper at a crucial moment, and smudged the writing!', 'icons/activity-logs/confused');
             else
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a ' . $scroll . ', but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create ' . $scrollItem->getNameWithArticle() . ', but couldn\'t quite remember the steps.', 'icons/activity-logs/confused');
         }
         else // success!
         {
@@ -1449,10 +1457,10 @@ class MagicBindingService
             $this->inventoryService->loseItem($uniqueIngredient, $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a ' . $scroll . '.', '')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created ' . $scrollItem->getNameWithArticle() . '.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
             ;
-            $this->inventoryService->petCollectsItem($scroll, $pet, $pet->getName() . ' bound this.', $activityLog);
+            $this->inventoryService->petCollectsItem($scrollItem, $pet, $pet->getName() . ' bound this.', $activityLog);
             return $activityLog;
         }
     }

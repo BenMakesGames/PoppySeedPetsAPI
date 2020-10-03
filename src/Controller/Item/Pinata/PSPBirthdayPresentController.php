@@ -58,7 +58,7 @@ class PSPBirthdayPresentController extends PoppySeedPetsItemController
                 $itemName,
                 $user,
                 $user,
-                $user->getName() . ' found this in ' . GrammarFunctions::indefiniteArticle($inventory->getItem()->getName()) . ' ' . $inventory->getItem()->getName() . '!',
+                $user->getName() . ' found this in ' . $inventory->getItem()->getNameWithArticle() . '!',
                 $location,
                 $inventory->getLockedToOwner()
             );

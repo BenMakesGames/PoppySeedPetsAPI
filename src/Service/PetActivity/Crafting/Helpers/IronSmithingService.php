@@ -280,7 +280,7 @@ class IronSmithingService
 
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $item->getName() . ', but broke the Crooked Stick! :(', 'icons/activity-logs/broke-stick');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make ' . $item->getNameWithArticle() . ', but broke the Crooked Stick! :(', 'icons/activity-logs/broke-stick');
         }
         else if($roll >= 13)
         {
@@ -291,7 +291,7 @@ class IronSmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a ' . $item->getName() . ' from a Crooked Stick, and Iron Bar.', 'items/' . $item->getImage())
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made ' . $item->getNameWithArticle() . ' from a Crooked Stick, and Iron Bar.', 'items/' . $item->getImage())
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
             ;
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from a Crooked Stick, and Iron Bar.', $activityLog);
@@ -301,7 +301,7 @@ class IronSmithingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $item->getName() . ', but couldn\'t figure it out.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make ' . $item->getNameWithArticle() . ', but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
 

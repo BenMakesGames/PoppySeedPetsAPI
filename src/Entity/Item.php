@@ -100,6 +100,11 @@ class Item
      */
     private $enchants;
 
+    /**
+     * @ORM\OneToOne(targetEntity=ItemGrammar::class, mappedBy="item", cascade={"persist", "remove"})
+     */
+    private $grammar;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -115,6 +120,14 @@ class Item
         $this->name = $name;
 
         return $this;
+    }
+
+    public function getNameWithArticle(): string
+    {
+        if($this->getGrammar()->getArticle() === null)
+            return $this->getName();
+        else
+            return $this->getGrammar()->getArticle() . ' ' . $this->getName();
     }
 
     public function getDescription(): ?string
@@ -309,6 +322,23 @@ class Item
     public function setEnchants(?Enchantment $enchants): self
     {
         $this->enchants = $enchants;
+
+        return $this;
+    }
+
+    public function getGrammar(): ?ItemGrammar
+    {
+        return $this->grammar;
+    }
+
+    public function setGrammar(ItemGrammar $grammar): self
+    {
+        $this->grammar = $grammar;
+
+        // set the owning side of the relation if necessary
+        if ($grammar->getItem() !== $this) {
+            $grammar->setItem($this);
+        }
 
         return $this;
     }

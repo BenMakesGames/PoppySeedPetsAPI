@@ -9,6 +9,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -20,16 +21,18 @@ class StickCraftingService
     private $inventoryService;
     private $responseService;
     private $transactionService;
+    private $itemRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        TransactionService $transactionService
+        TransactionService $transactionService, ItemRepository $itemRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->transactionService = $transactionService;
+        $this->itemRepository = $itemRepository;
     }
 
     public function createCrookedFishingRod(Pet $pet): PetActivityLog
@@ -106,10 +109,10 @@ class StickCraftingService
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
 
-        $making = ArrayFunctions::pick_one([
+        $making = $this->itemRepository->findOneByName(ArrayFunctions::pick_one([
             'Stereotypical Torch',
             'White Flag'
-        ]);
+        ]));
 
         if($roll <= 2)
         {
@@ -119,13 +122,13 @@ class StickCraftingService
                 $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
                 $pet->increaseEsteem(-1);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $making . ', but accidentally tore the White Cloth into useless shapes :(', 'icons/activity-logs/torn-to-bits');
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make ' . $making->getNameWithArticle() . ', but accidentally tore the White Cloth into useless shapes :(', 'icons/activity-logs/torn-to-bits');
             }
             else
             {
                 $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $making . ', but accidentally split the Crooked Stick :(', 'icons/activity-logs/broke-stick');
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make ' . $making->getNameWithArticle() . ', but accidentally split the Crooked Stick :(', 'icons/activity-logs/broke-stick');
             }
         }
         else if($roll >= 8)
@@ -135,7 +138,7 @@ class StickCraftingService
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a ' . $making . '.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created ' . $making->getNameWithArticle() . '.', '');
             $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' created this from White Cloth and a Crooked Stick.', $activityLog);
             return $activityLog;
         }
@@ -143,7 +146,7 @@ class StickCraftingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(15, 45), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $making . ', but couldn\'t figure it out.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make ' . $making->getNameWithArticle() . ', but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
 
