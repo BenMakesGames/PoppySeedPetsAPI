@@ -44,7 +44,7 @@ class GatheringService
     {
         $maxSkill = 10 + $pet->getPerception() + $pet->getNature() + $pet->getGathering() - $pet->getAlcohol() - $pet->getPsychedelic();
 
-        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 21);
+        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 23);
 
         $roll = mt_rand(1, $maxSkill);
 
@@ -101,6 +101,10 @@ class GatheringService
                 break;
             case 21:
                 $activityLog = $this->foundGypsumCave($pet);
+                break;
+            case 22:
+            case 23:
+                $activityLog = $this->foundDeepMicroJungle($pet);
                 break;
         }
 
@@ -640,7 +644,7 @@ class GatheringService
                 $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
             if($roll >= 30 && mt_rand(1, 20) === 1)
-                $loot[] = 'Gold Ore';
+                $loot[] = 'Silver Ore';
         }
 
         sort($loot);
@@ -686,9 +690,6 @@ class GatheringService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function foundWildHedgemaze(Pet $pet): PetActivityLog
     {
         $possibleLoot = [
@@ -925,4 +926,91 @@ class GatheringService
 
         return $activityLog;
     }
+
+    private function foundDeepMicroJungle(Pet $pet): PetActivityLog
+    {
+        if(DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON)
+            $activityLog = $this->encounterNangTani($pet);
+        else
+            $activityLog = $this->doNormalDeepMicroJungle($pet);
+
+        // more chances to get bugs in the jungle!
+        if(mt_rand(1, 20) === 1)
+            $this->inventoryService->petAttractsRandomBug($pet);
+
+        return $activityLog;
+    }
+
+    private function doNormalDeepMicroJungle(Pet $pet): PetActivityLog
+    {
+        $possibleLoot = [
+            'Naner', 'Naner', 'Mango', 'Mango', 'Cocoa Beans', 'Coffee Beans',
+        ];
+
+        $loot = [];
+
+        $roll = mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering());
+
+        if($roll >= 16)
+        {
+            $loot[] = ArrayFunctions::pick_one($possibleLoot);
+
+            if($roll >= 18)
+            {
+                $loot[] = ArrayFunctions::pick_one($possibleLoot);
+
+                if(mt_rand(1, 40) === 1)
+                    $loot[] = ArrayFunctions::pick_one([ 'Rib', 'Stereotypical Bone' ]);
+            }
+
+            if($roll >= 24)
+                $loot[] = ArrayFunctions::pick_one($possibleLoot);
+
+            if($roll >= 30 && mt_rand(1, 10) === 1)
+                $loot[] = ArrayFunctions::pick_one([ 'Gold Ore', 'Gold Ore', 'Blackonite', 'Striped Microcline' ]);
+        }
+
+        sort($loot);
+
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60) + count($loot) * 5, PetActivityStatEnum::GATHER, count($loot) > 0);
+
+        if(count($loot) === 0)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored deep in the island\'s Micro-Jungle, but couldn\'t find anything.', 'icons/activity-logs/confused');
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored deep in the island\'s Micro-Jungle, and got ' . ArrayFunctions::list_nice($loot) . '.', '');
+
+            foreach($loot as $itemName)
+                $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this deep in the island\'s Micro-Jungle.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, mt_rand(2, 3), [ PetSkillEnum::NATURE ]);
+        }
+
+        if(mt_rand(1, 10 + $pet->getStamina()) < 8)
+        {
+            if($pet->hasProtectionFromHeat())
+            {
+                $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was hot, but their ' . $pet->getTool()->getItem()->getName() . ' protected them.')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ;
+            }
+            else
+            {
+                $pet->increaseFood(-1);
+                $pet->increaseSafety(-mt_rand(1, 2));
+
+                // why need to have unlocked the greenhouse? just testing that you've been playing for a while
+                if(mt_rand(1, 20) === 1 && $pet->getOwner()->getUnlockedGreenhouse() !== null)
+                    $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and I don\'t mean in a sexy way; ' . $pet->getName() . ' got a bit light-headed.');
+                else
+                    $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and ' . $pet->getName() . ' got a bit light-headed.');
+            }
+        }
+
+        return $activityLog;
+    }
+
 }
