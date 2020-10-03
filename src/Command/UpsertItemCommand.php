@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Entity\Item;
 use App\Entity\ItemFood;
+use App\Entity\ItemGrammar;
 use App\Entity\ItemHat;
 use App\Entity\ItemTool;
 use App\Enum\FlavorEnum;
@@ -57,6 +58,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
         }
 
         $this->name($item, $name);
+        $this->article($item);
         $this->image($item);
         $this->tool($item);
         $this->hat($item);
@@ -88,6 +90,27 @@ class UpsertItemCommand extends PoppySeedPetsCommand
     private function name(Item $item, string $name)
     {
         $item->setName($this->askName('What is it called?', $item, $name));
+    }
+
+    private function article(Item $item)
+    {
+        if(!$item->getGrammar())
+        {
+            $article = $this->askString('Article?', 'a');
+
+            $grammar = (new ItemGrammar())
+                ->setItem($item)
+                ->setArticle($article)
+            ;
+
+            $this->em->persist($grammar);
+        }
+        else
+        {
+            $article = $this->askString('Article?', $item->getGrammar()->getArticle());
+
+            $item->getGrammar()->setArticle($article);
+        }
     }
 
     private function image(Item $item)

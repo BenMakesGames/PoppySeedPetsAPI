@@ -124,10 +124,10 @@ class Item
 
     public function getNameWithArticle(): string
     {
-        if($this->getGrammar()->getArticle() === null)
-            return $this->getName();
-        else
+        if($this->getGrammar() && $this->getGrammar()->getArticle())
             return $this->getGrammar()->getArticle() . ' ' . $this->getName();
+        else
+            return $this->getName();
     }
 
     public function getDescription(): ?string
