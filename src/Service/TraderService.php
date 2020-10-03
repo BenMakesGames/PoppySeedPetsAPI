@@ -753,7 +753,10 @@ class TraderService
 
             $offers[] = new TraderOffer(
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Moon Pearl'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Paper Bag'), 3) ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Paper Bag'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Canned Food'), 1)
+                ],
                 'I don\'t know where all the Monday hate comes from. Mondays are _great_: you get to spend Moon Pearls on Mondays!'
             );
         }

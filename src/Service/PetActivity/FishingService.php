@@ -239,6 +239,15 @@ class FishingService
 
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, true);
         }
+        else if(mt_rand(1, 4) === 1)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing Under a Bridge, but all they got was an old can of food...', '');
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+
+            $this->inventoryService->petCollectsItem('Canned Food', $pet, 'Fished out of a river under a bridge...', $activityLog);
+
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
+        }
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing Under a Bridge, and almost caught a Muscly Trout, but it got away.', '');

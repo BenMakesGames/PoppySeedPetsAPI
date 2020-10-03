@@ -68,7 +68,7 @@ class DreamingService
     {
         $possibleItems = [
             'Beans',
-            'Chanterelle', 'Chocomilk', 'Cobbler Recipe',
+            'Canned Food', 'Chanterelle', 'Chocomilk', 'Cobbler Recipe',
             'Egg',
             'Fig',
             'Giant Turkey Leg', 'Ginger',
