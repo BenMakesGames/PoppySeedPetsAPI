@@ -5,6 +5,7 @@ use App\Entity\PetActivityLog;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\GrammarFunctions;
 use App\Repository\InventoryRepository;
+use App\Repository\UserQuestRepository;
 use App\Service\CalendarService;
 use App\Service\Holidays\HalloweenService;
 use App\Service\ResponseService;
@@ -46,7 +47,7 @@ class HalloweenController extends PoppySeedPetsController
      */
     public function getTrickOrTreater(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
-        NormalizerInterface $normalizer, CalendarService $calendarService
+        NormalizerInterface $normalizer, CalendarService $calendarService, UserQuestRepository $userQuestRepository
     )
     {
         $user = $this->getUser();
@@ -66,12 +67,13 @@ class HalloweenController extends PoppySeedPetsController
         $em->flush();
 
         if($trickOrTreater === null)
-            throw new UnprocessableEntityHttpException('No one else\'s pets are trick-or-treating right now! (Not many people must be playing :| TELL YOUR FRIENDS TO SIGN IN AND DRESS UP THEIR PETS!');
+            throw new UnprocessableEntityHttpException('No one else\'s pets are trick-or-treating right now! (Not many people must be playing :| TELL YOUR FRIENDS TO SIGN IN AND DRESS UP THEIR PETS!)');
 
         return $responseService->success([
             'trickOrTreater' => $normalizer->normalize($trickOrTreater, null, [ 'groups' => [ SerializationGroupEnum::PET_PUBLIC_PROFILE ] ]),
             'nextTrickOrTreater' => $nextTrickOrTreater->getValue(),
-            'candy' => $normalizer->normalize($halloweenService->getCandy($user), null, [ 'groups' => [ SerializationGroupEnum::MY_INVENTORY ] ])
+            'candy' => $normalizer->normalize($halloweenService->getCandy($user), null, [ 'groups' => [ SerializationGroupEnum::MY_INVENTORY ] ]),
+            'totalCandyGiven' => $userQuestRepository->findOrCreate($user, 'Trick-or-Treaters Treated', 0)->getValue()
         ]);
     }
 
