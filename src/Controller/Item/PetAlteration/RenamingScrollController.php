@@ -52,8 +52,11 @@ class RenamingScrollController extends PoppySeedPetsItemController
         if(\mb_strlen($petName) < 1 || \mb_strlen($petName) > 30)
             throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
 
+        // let's not worry about this for now... it's a suboptimal solution
+        /*
         if(!StringFunctions::isISO88591($petName))
             throw new UnprocessableEntityHttpException('Your pet\'s name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
+        */
 
         $em->remove($inventory);
 

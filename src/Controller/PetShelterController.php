@@ -121,8 +121,11 @@ class PetShelterController extends PoppySeedPetsController
         if($petToAdopt === null)
             throw new UnprocessableEntityHttpException('There is no such pet available for adoption... maybe reload and try again??');
 
+        // let's not worry about this for now... it's a suboptimal solution
+        /*
         if(!StringFunctions::isISO88591(str_replace($petToAdopt->name, '', $petName)))
             throw new UnprocessableEntityHttpException('Your pet\'s name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
+        */
 
         $newPet = $petFactory->createPet(
             $user, $petName, $petToAdopt->species, $petToAdopt->colorA, $petToAdopt->colorB,
