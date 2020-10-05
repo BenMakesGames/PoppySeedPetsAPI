@@ -1158,7 +1158,7 @@ class CraftingService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a makeshift bow... out of a Naner.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
             ;
-            $this->inventoryService->petCollectsItem('Naner Bow', $pet, $pet->getName() . ' created this.', $activityLog);
+            $this->inventoryService->petCollectsItem('Bownaner', $pet, $pet->getName() . ' created this.', $activityLog);
             return $activityLog;
         }
         else
@@ -1166,7 +1166,7 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             $pet->increaseSafety(-1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Naner Bow, but the String kept getting all tangled.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Bownaner, but the String kept getting all tangled.', 'icons/activity-logs/confused');
         }
     }
 
