@@ -39,6 +39,8 @@ class CannedFoodController extends PoppySeedPetsItemController
 
         $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' found this in a can. A Canned Food can.', $location, $lockedToOwner);
 
+        $user->increaseRecyclePoints(1);
+
         $em->remove($inventory);
 
         $em->flush();
