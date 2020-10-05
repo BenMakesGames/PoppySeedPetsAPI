@@ -62,13 +62,23 @@ class DragonVaseController extends PoppySeedPetsItemController
 
         $usedDragonVase->setValue($today);
 
-        $newEnchantment = $enchantmentRepository->findOneByName(ArrayFunctions::pick_one([
-            'Magpie\'s', 'Medium-hot', 'Piercing',
+        $dippingStat = $userStatsRepository->incrementStat($user, 'Tools Dipped in a Dragon Vase');
+
+        // Dragon Vase-only bonuses
+        $possibleEnchantments = [
             'of Swords', 'of Mangoes', 'Climbing',
             'Blackened', 'Archaeopteryx'
-        ]));
+        ];
 
-        $userStatsRepository->incrementStat($user, 'Tools Dipped in a Dragon Vase');
+        if($dippingStat->getValue() > 1)
+        {
+            // other bonuses:
+            $possibleEnchantments[] = 'Magpie\'s';
+            $possibleEnchantments[] = 'Medium-hot';
+            $possibleEnchantments[] = 'Piercing';
+        }
+
+        $newEnchantment = $enchantmentRepository->findOneByName(ArrayFunctions::pick_one($possibleEnchantments));
 
         $hadAnEnchantment = $dippedItem->getEnchantment() !== null;
         $oldName = $toolBonusService->enchantedName($dippedItem);
