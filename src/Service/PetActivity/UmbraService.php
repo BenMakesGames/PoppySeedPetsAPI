@@ -410,9 +410,12 @@ class UmbraService
         // Agares (a spirit-duke)
         if($pet->getTool() && !$pet->getTool()->getEnchantment())
         {
-            $enchantment = $this->enchantmentRepository->findOneBy([ 'name' => 'of Agares' ]);
+            $enchantment = $this->enchantmentRepository->findOneByName('of Agares');
 
-            $pet->getTool()->setEnchantment($enchantment);
+            $pet->getTool()
+                ->setEnchantment($enchantment)
+                ->addComment('This item was enchanted by an old man riding an alligator and holding a goshawk!')
+            ;
 
             return $this->responseService->createActivityLog($pet, 'While exploring some ruins in the Umbra, ' . $pet->getName() . ' was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language ' . $pet->getName() . ' didn\'t know. ' . $pet->getName() . '\'s ' . $pet->getTool()->getItem()->getName() . ' began to glow, and the old man left...', '');
         }

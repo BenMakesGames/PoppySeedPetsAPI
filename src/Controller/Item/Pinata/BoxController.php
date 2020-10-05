@@ -1071,7 +1071,7 @@ class BoxController extends PoppySeedPetsItemController
         $item = $inventoryService->receiveItem($tool, $user, $user, $user->getName() . ' got this from Bob\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
 
         $item->setEnchantment(
-            $enchantmentRepository->findOneBy([ 'name' => 'Bob\'s' ])
+            $enchantmentRepository->findOneByName('Bob\'s')
         );
 
         return $this->countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $userStatsRepository, $user, $inventory, [ $item ], $responseService, $em, $toolBonusService);

@@ -19,32 +19,8 @@ class EnchantmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Enchantment::class);
     }
 
-    // /**
-    //  * @return Enchantment[] Returns an array of Enchantment objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findOneByName(string $name)
     {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('e.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->findOneBy([ 'name' => $name ]);
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Enchantment
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
