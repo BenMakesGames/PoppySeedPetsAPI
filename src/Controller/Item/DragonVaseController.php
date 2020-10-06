@@ -78,6 +78,13 @@ class DragonVaseController extends PoppySeedPetsItemController
             $possibleBonuses[] = 'Piercing';
         }
 
+        if($dippedItem->getEnchantment())
+        {
+            $possibleBonuses = array_filter($possibleBonuses, function(string $bonus) use($dippedItem) {
+                return $bonus !== $dippedItem->getEnchantment()->getName();
+            });
+        }
+
         $newBonus = $enchantmentRepository->findOneByName(ArrayFunctions::pick_one($possibleBonuses));
 
         $hadAnEnchantment = $dippedItem->getEnchantment() !== null;
