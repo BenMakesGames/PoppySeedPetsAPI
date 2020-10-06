@@ -129,7 +129,7 @@ class InventoryController extends PoppySeedPetsController
 
                 if($enchanted)
                 {
-                    $newName = $enchantmentService->enchantedName($enchanted);
+                    $newName = $enchantmentService->getNameWithBonus($enchanted);
 
                     $responseService->addFlashMessageString('The ' . $enchanted->getItem()->getName() . ' is now ' . GrammarFunctions::indefiniteArticle($newName) . ' ' . $newName . '!');
 

@@ -23,7 +23,7 @@ class ToolBonusService
         $this->em->remove($enchantment);
     }
 
-    public function enchantedName(Inventory $tool)
+    public function getNameWithBonus(Inventory $tool)
     {
         if(!$tool->getEnchantment())
             return $tool->getItem()->getName();

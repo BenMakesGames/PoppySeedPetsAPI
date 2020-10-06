@@ -2,12 +2,15 @@
 namespace App\Controller;
 
 use App\Entity\PetActivityLog;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\CalendarService;
 use App\Service\Holidays\HalloweenService;
+use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -83,7 +86,8 @@ class HalloweenController extends PoppySeedPetsController
      */
     public function giveCandy(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
-        Request $request, InventoryRepository $inventoryRepository, CalendarService $calendarService
+        Request $request, InventoryRepository $inventoryRepository, CalendarService $calendarService,
+        InventoryService $inventoryService
     )
     {
         $user = $this->getUser();
@@ -123,6 +127,22 @@ class HalloweenController extends PoppySeedPetsController
             ->addComment($trickOrTreater->getName() . ' received this trick-or-treating at ' . $user->getName() . '\'s house!')
             ->setModifiedOn()
         ;
+
+        $logMessage = $trickOrTreater->getName() . ' went trick-or-treating at ' . $user->getName() . '\'s house, and received ' . $candy->getItem()->getNameWithArticle() . '!';
+
+        $favoriteFlavorStrength = $inventoryService->getFavoriteFlavorStrength($trickOrTreater, $candy->getItem());
+
+        if($favoriteFlavorStrength > 0)
+            $logMessage .= ' (' . ArrayFunctions::pick_one([ 'Just what they wanted!', 'Ah! The good stuff!', 'One of their favorites!' ]) . ')';
+
+        $log = (new PetActivityLog())
+            ->setPet($trickOrTreater)
+            ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
+            ->setIcon('ui/halloween')
+            ->setEntry($logMessage)
+        ;
+
+        $em->persist($log);
 
         $reward = $halloweenService->countCandyGiven($user, $trickOrTreater);
 

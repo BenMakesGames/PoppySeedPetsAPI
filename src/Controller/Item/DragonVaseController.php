@@ -65,7 +65,7 @@ class DragonVaseController extends PoppySeedPetsItemController
         $dippingStat = $userStatsRepository->incrementStat($user, 'Tools Dipped in a Dragon Vase');
 
         // Dragon Vase-only bonuses
-        $possibleEnchantments = [
+        $possibleBonuses = [
             'of Swords', 'of Mangoes', 'Climbing',
             'Blackened', 'Archaeopteryx'
         ];
@@ -73,22 +73,22 @@ class DragonVaseController extends PoppySeedPetsItemController
         if($dippingStat->getValue() > 1)
         {
             // other bonuses:
-            $possibleEnchantments[] = 'Magpie\'s';
-            $possibleEnchantments[] = 'Medium-hot';
-            $possibleEnchantments[] = 'Piercing';
+            $possibleBonuses[] = 'Magpie\'s';
+            $possibleBonuses[] = 'Medium-hot';
+            $possibleBonuses[] = 'Piercing';
         }
 
-        $newEnchantment = $enchantmentRepository->findOneByName(ArrayFunctions::pick_one($possibleEnchantments));
+        $newBonus = $enchantmentRepository->findOneByName(ArrayFunctions::pick_one($possibleBonuses));
 
         $hadAnEnchantment = $dippedItem->getEnchantment() !== null;
-        $oldName = $toolBonusService->enchantedName($dippedItem);
+        $oldName = $toolBonusService->getNameWithBonus($dippedItem);
 
         $dippedItem
-            ->setEnchantment($newEnchantment)
-            ->addComment('This item was enchanted in the waters of a Dragon Vase.')
+            ->setEnchantment($newBonus)
+            ->addComment('This item gained "' . $newBonus->getName() . '" from a Dragon Vase.')
         ;
 
-        $newName = $toolBonusService->enchantedName($dippedItem);
+        $newName = $toolBonusService->getNameWithBonus($dippedItem);
 
         $em->flush();
 

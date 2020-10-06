@@ -210,7 +210,7 @@ class TreasureMapService
 
         $agk = ArrayFunctions::pick_one([ 'Agk!', 'Oh dang!', 'Noooo!', 'Quel dommage!', 'Welp!' ]);
 
-        $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, a weird, purple energy oozed out of their ' . $this->toolBonusService->enchantedName($pet->getTool()) . ', and enveloped them! (' . $agk . ' It\'s the Eggplant Curse!)', '');
+        $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, a weird, purple energy oozed out of their ' . $this->toolBonusService->getNameWithBonus($pet->getTool()) . ', and enveloped them! (' . $agk . ' It\'s the Eggplant Curse!)', '');
         $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::EGGPLANT_CURSED, mt_rand(24, 48) * 60);
 
         $pet

@@ -9,6 +9,7 @@ final class PetActivityLogInterestingnessEnum
     public const UNCOMMON_ACTIVITY = 1000;
     public const ACTIVITY_USING_MERIT = 2000;
     public const PARK_EVENT = 3000;
+    public const HOLIDAY_OR_SPECIAL_EVENT = 3500;
     public const LUNCHBOX_EMPTY = 4000;
     public const RARE_ACTIVITY = 5000;
     public const LEVEL_UP = 6000;

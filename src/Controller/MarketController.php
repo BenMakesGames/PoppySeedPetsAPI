@@ -202,11 +202,11 @@ class MarketController extends PoppySeedPetsController
 
         try
         {
-            $transactionService->getMoney($itemToBuy->getOwner(), $itemToBuy->getSellPrice(), 'Sold ' . $bonusService->enchantedName($itemToBuy) . ' in the Market.');
+            $transactionService->getMoney($itemToBuy->getOwner(), $itemToBuy->getSellPrice(), 'Sold ' . $bonusService->getNameWithBonus($itemToBuy) . ' in the Market.');
             $userStatsRepository->incrementStat($itemToBuy->getOwner(), UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $itemToBuy->getSellPrice());
             $userStatsRepository->incrementStat($itemToBuy->getOwner(), UserStatEnum::ITEMS_SOLD_IN_MARKET, 1);
 
-            $transactionService->spendMoney($user, $itemToBuy->getBuyPrice(), 'Bought ' . $bonusService->enchantedName($itemToBuy) . ' in the Market.');
+            $transactionService->spendMoney($user, $itemToBuy->getBuyPrice(), 'Bought ' . $bonusService->getNameWithBonus($itemToBuy) . ' in the Market.');
             $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_BOUGHT_IN_MARKET, 1);
 
             $marketService->logExchange($itemToBuy);

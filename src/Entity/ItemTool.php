@@ -401,29 +401,6 @@ class ItemTool
         return $modifiers;
     }
 
-
-    public static function rate($value): ?string
-    {
-        if($value >= 10)
-            return '++++';
-        else if($value >= 6)
-            return '+++';
-        else if($value >= 3)
-            return '++';
-        else if($value >= 1)
-            return '+';
-        else if($value <= -10)
-            return '----';
-        else if($value <= -6)
-            return '---';
-        else if($value <= -3)
-            return '--';
-        else if($value <= -1)
-            return '-';
-        else
-            return null;
-    }
-
     public function getFocusSkill(): ?string
     {
         return $this->focusSkill;

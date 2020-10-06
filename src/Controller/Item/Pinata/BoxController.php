@@ -356,7 +356,7 @@ class BoxController extends PoppySeedPetsItemController
     {
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
-        $itemList = array_map(function(Inventory $i) use($toolBonusService) { return $toolBonusService->enchantedName($i); }, $newInventory);
+        $itemList = array_map(function(Inventory $i) use($toolBonusService) { return $toolBonusService->getNameWithBonus($i); }, $newInventory);
         sort($itemList);
 
         $em->remove($inventory);
