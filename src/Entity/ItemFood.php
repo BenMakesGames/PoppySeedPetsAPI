@@ -10,6 +10,9 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ItemFoodRepository")
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="is_candy_idx", columns={"is_candy"})
+ * })
  */
 class ItemFood
 {
