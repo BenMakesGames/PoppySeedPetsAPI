@@ -31,6 +31,7 @@ class InventoryFilterService
 
                 'name' => [ $this, 'filterName' ],
                 'edible' => [ $this, 'filterEdible' ],
+                'candy' => [ $this, 'filterCandy' ],
                 'foodFlavors' => [ $this, 'filterFoodFlavors' ],
                 'equipable' => [ $this, 'filterEquipable' ],
                 'equipStats' => [ $this, 'filterEquipStats' ],
@@ -86,6 +87,20 @@ class InventoryFilterService
             $qb->andWhere('item.food IS NULL');
         else
             $qb->andWhere('item.food IS NOT NULL');
+    }
+
+    public function filterCandy(QueryBuilder $qb, $value)
+    {
+        if((int)(new \DateTimeImmutable())->format('n') !== 10)
+            return;
+
+        if(!in_array('food', $qb->getAllAliases()))
+            $qb->leftJoin('item.food', 'food');
+
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('food.isCandy=0');
+        else
+            $qb->andWhere('food.isCandy=1');
     }
 
     public function filterFoodFlavors(QueryBuilder $qb, $value)

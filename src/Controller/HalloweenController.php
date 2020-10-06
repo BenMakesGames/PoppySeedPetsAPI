@@ -103,7 +103,7 @@ class HalloweenController extends PoppySeedPetsController
         if(!$candy->getItem()->getFood())
             throw new UnprocessableEntityHttpException($candy->getItem()->getName() . ' isn\'t even edible!');
 
-        if(!$candy->getItem()->getFood()->isCandy())
+        if(!$candy->getItem()->getFood()->getIsCandy())
             throw new UnprocessableEntityHttpException($candy->getItem()->getName() . ' isn\'t quiiiiiiite a candy.');
 
         $nextTrickOrTreater = $halloweenService->getNextTrickOrTreater($user);

@@ -33,6 +33,7 @@ class MarketFilterService
             [
                 'name' => [ $this, 'filterName' ],
                 'edible' => [ $this, 'filterEdible' ],
+                'candy' => [ $this, 'filterCandy' ],
                 'foodFlavors' => [ $this, 'filterFoodFlavors' ],
                 'equipable' => [ $this, 'filterEquipable' ],
                 'equipStats' => [ $this, 'filterEquipStats' ],
@@ -77,6 +78,20 @@ class MarketFilterService
             ))
             ->setParameter('nameLike', '%' . $name . '%')
         ;
+    }
+
+    public function filterCandy(QueryBuilder $qb, $value)
+    {
+        if((int)(new \DateTimeImmutable())->format('n') !== 10)
+            return;
+
+        if(!in_array('food', $qb->getAllAliases()))
+            $qb->leftJoin('item.food', 'food');
+
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('food.isCandy=0');
+        else
+            $qb->andWhere('food.isCandy=1');
     }
 
     public function filterEdible(QueryBuilder $qb, $value)

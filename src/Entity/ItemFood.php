@@ -6,6 +6,7 @@ use App\Enum\FlavorEnum;
 use App\Enum\PetSkillEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ItemFoodRepository")
@@ -139,6 +140,11 @@ class ItemFood
      * @ORM\Column(type="integer", nullable=true)
      */
     private $grantedStatusEffectDuration = null;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isCandy;
 
     public function getId(): ?int
     {
@@ -465,14 +471,6 @@ class ItemFood
         return $modifiers;
     }
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     */
-    public function isCandy(): bool
-    {
-        return $this->getLove() > $this->getFood() - $this->getJunk() / 2;
-    }
-
     public function getGrantedSkill(): ?string
     {
         return $this->grantedSkill;
@@ -555,6 +553,22 @@ class ItemFood
     public function setGrantedStatusEffectDuration(?int $grantedStatusEffectDuration): self
     {
         $this->grantedStatusEffectDuration = $grantedStatusEffectDuration;
+
+        return $this;
+    }
+
+    /**
+     * @Groups({"myInventory", "itemEncyclopedia"})
+     * @SerializedName("candy")
+     */
+    public function getIsCandy(): ?bool
+    {
+        return $this->isCandy;
+    }
+
+    public function setIsCandy(bool $isCandy): self
+    {
+        $this->isCandy = $isCandy;
 
         return $this;
     }
