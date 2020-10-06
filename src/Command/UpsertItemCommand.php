@@ -153,6 +153,8 @@ class UpsertItemCommand extends PoppySeedPetsCommand
 
             foreach(FlavorEnum::getValues() as $flavor)
                 $food->{'set' . $flavor}($this->askInt(ucfirst($flavor) . ' hours', $food->{'get' . $flavor}()));
+
+            $food->setIsCandy();
         }
         else
         {

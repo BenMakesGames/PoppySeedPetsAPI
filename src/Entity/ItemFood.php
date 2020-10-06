@@ -566,9 +566,9 @@ class ItemFood
         return $this->isCandy;
     }
 
-    public function setIsCandy(bool $isCandy): self
+    public function setIsCandy(): self
     {
-        $this->isCandy = $isCandy;
+        $this->isCandy = $this->love > $this->food - $this->junk / 2;
 
         return $this;
     }
