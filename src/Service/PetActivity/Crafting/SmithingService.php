@@ -14,6 +14,7 @@ use App\Model\ActivityCallback;
 use App\Service\InventoryService;
 use App\Service\PetActivity\Crafting\Helpers\GoldSmithingService;
 use App\Service\PetActivity\Crafting\Helpers\IronSmithingService;
+use App\Service\PetActivity\Crafting\Helpers\MeteoriteSmithingService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
@@ -26,11 +27,12 @@ class SmithingService
     private $transactionService;
     private $goldSmithingService;
     private $ironSmithingService;
+    private $meteoriteSmithingService;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, GoldSmithingService $goldSmithingService,
-        IronSmithingService $ironSmithingService
+        IronSmithingService $ironSmithingService, MeteoriteSmithingService $meteoriteSmithingService
     )
     {
         $this->inventoryService = $inventoryService;
@@ -39,6 +41,7 @@ class SmithingService
         $this->transactionService = $transactionService;
         $this->goldSmithingService = $goldSmithingService;
         $this->ironSmithingService = $ironSmithingService;
+        $this->meteoriteSmithingService = $meteoriteSmithingService;
     }
 
     public function getCraftingPossibilities(Pet $pet, array $quantities): array
@@ -200,6 +203,12 @@ class SmithingService
 
         if(array_key_exists('Poker', $quantities) && array_key_exists('Everice', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createWandOfIce', 10);
+
+        if(array_key_exists('Meteorite', $quantities))
+        {
+            if(array_key_exists('Iron Bar', $quantities) && array_key_exists('Gold Bar', $quantities))
+                $possibilities[] = new ActivityCallback($this->meteoriteSmithingService, 'createIlumetsa', 10);
+        }
 
         return $possibilities;
     }
