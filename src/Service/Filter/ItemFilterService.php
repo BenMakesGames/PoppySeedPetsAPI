@@ -35,6 +35,7 @@ class ItemFilterService
                 'foodFlavors' => [ $this, 'filterFoodFlavors' ],
                 'equipable' => [ $this, 'filterEquipable' ],
                 'equipStats' => [ $this, 'filterEquipStats' ],
+                'bonus' => [ $this, 'filterBonus' ],
                 'notDonatedBy' => [ $this, 'filterNotDonatedBy' ],
                 'aHat' => [ $this, 'filterAHat' ],
                 'hasDonated' => [ $this, 'filterHasDonated' ],
@@ -117,6 +118,14 @@ class ItemFilterService
                 implode(' AND ', $statsMatch)
             )
         );
+    }
+
+    public function filterBonus(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('i.enchants IS NULL');
+        else
+            $qb->andWhere('i.enchants IS NOT NULL');
     }
 
     public function filterAHat(QueryBuilder $qb, $value)
