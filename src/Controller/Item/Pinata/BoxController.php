@@ -11,6 +11,7 @@ use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\InventoryRepository;
+use App\Repository\ItemRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
@@ -30,6 +31,58 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class BoxController extends PoppySeedPetsItemController
 {
+    /**
+     * @Route("/hat/{box}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openHatBox(
+        Inventory $box, ResponseService $responseService, InventoryService $inventoryService, ItemRepository $itemRepository,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($box, 'box/hat/#/open');
+
+        $location = $box->getLocation();
+        $lockedToOwner = $box->getLockedToOwner();
+
+        $hatItem = $itemRepository->findOneByName(ArrayFunctions::pick_one([
+            'Purple Violet',
+            'Wings',
+            'Merchant\'s Hat',
+            'Wizarding Hat',
+            'Gray Bow',
+            'Cool Sunglasses'
+        ]));
+
+        $stat = $userStatsRepository->incrementStat($user, 'Opened a ' . $box->getItem()->getName());
+
+        if($hatItem->getName() === 'Gray Bow')
+        {
+            $itemComment = 'Made out of the strap of ' . $box->getItem()->getNameWithArticle() . '.';
+            $message = "You open the hat box... ta-da! It\'s... EMPTY?!?!\n\nRefusing to be outdone by a box, you tie the Hat Box\'s strap into a bow.";
+        }
+        else if($hatItem->getName() === 'Cool Sunglasses')
+        {
+            $itemComment = 'Found inside ' . $box->getItem()->getNameWithArticle() . '.';
+            $message = 'You open the hat box... ta-da! It\'s... ' . $hatItem->getNameWithArticle() . '? (Is that a hat?)';
+        }
+        else
+        {
+            $itemComment = 'Found inside ' . $box->getItem()->getNameWithArticle() . '.';
+            $message = 'You open the hat box... ta-da! It\'s ' . $hatItem->getNameWithArticle() . '!';
+        }
+
+        $inventoryService->receiveItem($hatItem, $user, $box->getCreatedBy(), $itemComment, $location, $lockedToOwner);
+
+        $em->remove($box);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+    }
+
     /**
      * @Route("/ores/{box}/loot", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")

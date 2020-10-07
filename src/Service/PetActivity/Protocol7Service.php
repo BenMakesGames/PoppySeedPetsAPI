@@ -119,6 +119,9 @@ class Protocol7Service
 
     private function foundNothing(Pet $pet, int $roll): PetActivityLog
     {
+        if($pet->isInGuild(GuildEnum::DWARFCRAFT))
+            return $this->doDwarfcraftDigging($pet);
+
         $exp = ceil($roll / 10);
 
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::SCIENCE ]);
@@ -128,6 +131,65 @@ class Protocol7Service
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, but got distracted playing a minigame!', 'icons/activity-logs/confused');
         else
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, but got lost.', 'icons/activity-logs/confused');
+    }
+
+    private function doDwarfcraftDigging(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 30 + $pet->getPerception() + $pet->getIntelligence() + $pet->getStamina() + $pet->getScience() + $pet->getGathering());
+
+        if($roll < 10)
+        {
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, and went to a Dwarfcraft excavation site. They dug for a while, but didn\'t find anything interesting.', 'icons/activity-logs/confused');
+        }
+
+        if($roll < 20)
+        {
+            $exp = 1;
+            $loot = ArrayFunctions::pick_one([ 'NUL', 'Pointer' ]);
+            $exclaim = '...';
+        }
+        else if($roll < 30)
+        {
+            $exp = 1;
+            $loot = ArrayFunctions::pick_one([ 'String', 'Green Dye', 'Green Dye', 'Imaginary Number' ]);
+            $exclaim = '.';
+        }
+        else if($roll < 40)
+        {
+            $exp = 2;
+            $loot = ArrayFunctions::pick_one([ 'Iron Ore', 'Silver Ore', 'Gold Ore', 'XOR' ]);
+            $exclaim = '. Okay.';
+        }
+        else if($roll < 50)
+        {
+            $exp = 2;
+            $loot = ArrayFunctions::pick_one([ 'Liquid-hot Magma', 'Cryptocurrency Wallet', 'Magic Smoke' ]);
+            $exclaim = '!';
+        }
+        else if($roll < 60)
+        {
+            $exp = 3;
+            $loot = ArrayFunctions::pick_one([ 'Fiberglass', 'Blackonite', 'Piece of Cetgueli\'s Map' ]);
+            $exclaim = '! Neat!';
+        }
+        else
+        {
+            $exp = 4;
+            $loot = ArrayFunctions::pick_one([ 'Firestone', 'Gold Ring' ]);
+            $exclaim = '! Whoa!';
+        }
+
+        $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::SCIENCE ]);
+        $this->petExperienceService->spendTime($pet, mt_rand(40, 55) + $exp * 5, PetActivityStatEnum::PROTOCOL_7, true);
+
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, and went to a Dwarfcraft excavation site. They dug for a while, and found ' . $loot . $exclaim, '');
+
+        $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while digging at a Dwarfcraft excavation site.', $activityLog);
+
+        return $activityLog;
     }
 
     private function deliverMessagesForCorrespondence(Pet $pet): PetActivityLog

@@ -186,6 +186,10 @@ class TraderService
                     $title = 'Bleach';
                     $trades = $this->getBleachOffers();
                     break;
+                case TradeGroupEnum::DIGITAL:
+                    $title = 'Digital';
+                    $trades = $this->getDigitalOffers();
+                    break;
                 default:
                     throw new \Exception('You have unlocked trade group #' . $group . '... which does not exist. Ben should fix this.');
             }
@@ -257,6 +261,48 @@ class TraderService
                 ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Bright Top Hat'), 1) ],
                 'Huh: the band bleached out to be purple? Must be some kind of powerful dye they used, there...'
+            ),
+        ];
+    }
+
+    private function getDigitalOffers(): array
+    {
+        return [
+            new TraderOffer(
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('NUL'), 5),
+                    TraderOfferCostOrYield::createMoney(2),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('XOR'), 1) ],
+                'XORs are, like, one of the de facto currencies for those trading in Project-E.'
+            ),
+            new TraderOffer(
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Pointer'), 3),
+                    TraderOfferCostOrYield::createMoney(1),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('XOR'), 1) ],
+                'XORs are, like, one of the de facto currencies for those trading in Project-E.'
+            ),
+            new TraderOffer(
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('XOR'), 5) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fruits & Veggies Box'), 1) ],
+                'Enjoy the fruits and veggies!'
+            ),
+            new TraderOffer(
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('XOR'), 5) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Baker\'s Box'), 1) ],
+                'Enjoy the baking supplies!'
+            ),
+            new TraderOffer(
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('XOR'), 5) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Handicrafts Supply Box'), 1) ],
+                'Enjoy the crafting supplies!'
+            ),
+            new TraderOffer(
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('XOR'), 5) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Hat Box'), 1) ],
+                'Enjoy the hat!'
             ),
         ];
     }

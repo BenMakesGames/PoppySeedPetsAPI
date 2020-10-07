@@ -13,4 +13,5 @@ final class TradeGroupEnum
     public const CURIOSITIES = 6;
     public const PLUSHIES = 7;
     public const BLEACH = 8;
+    public const DIGITAL = 9;
 }
