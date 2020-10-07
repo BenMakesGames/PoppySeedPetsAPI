@@ -95,7 +95,7 @@ class SmithingService
                 $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createGrapplingHook', 10);
 
             if(array_key_exists('Dark Matter', $quantities))
-                $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createHeavyHammer', $weight);
+                $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createHeavyHammer', $pet->getStrength() >= 3 ? $weight : ceil($weight / 2));
 
             if(array_key_exists('Mirror', $quantities))
                 $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createMirrorShield', $weight);
