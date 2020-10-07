@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
@@ -290,9 +291,18 @@ class DeepSeaService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, true);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Giant Squid while exploring the deep sea! They got out of the Submarine and fought it off, stealing a couple Tentacles!', 'items/tool/submarine');
-
             $tentacles = 2;
+
+            if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Giant Squid while exploring the deep sea! As a member of High Impact, they immediately stepped up to the challenge, fought the squid, and stole a few Tentacles before it swam away!', 'items/tool/submarine');
+                $roll += 5; // guaranteed to get at least 1 more tentacle
+                $pet->getGuildMembership()->increaseReputation();
+            }
+            else
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Giant Squid while exploring the deep sea! They got out of the Submarine and fought it off, stealing a couple Tentacles!', 'items/tool/submarine');
+
+            $pet->increaseEsteem(mt_rand(2, 4));
 
             if($roll >= 20) $tentacles++;
             if($roll >= 30) $tentacles++;
@@ -301,6 +311,16 @@ class DeepSeaService
                 $this->inventoryService->petCollectsItem('Tentacle', $pet, $pet->getName() . ' got this by defeating a Giant Squid in the deep sea!', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
+        }
+        else if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
+
+            $pet->increaseSafety(-mt_rand(2, 4));
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Giant Squid while exploring the deep sea! As a member of High Impact, they immediately stepped up to the challenge, but the squid attacked viciously, and ' . $pet->getName() . ' was forced to retreat...', '');
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
         }
         else
         {

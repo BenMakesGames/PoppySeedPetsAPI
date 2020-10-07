@@ -1682,6 +1682,15 @@ class Pet
         return $this;
     }
 
+    public function isInGuild(string $guildName, int $minTitle = 1): bool
+    {
+        return
+            $this->getGuildMembership() &&
+            $this->getGuildMembership()->getGuild()->getName() === $guildName &&
+            $this->getGuildMembership()->getTitle() >= $minTitle
+        ;
+    }
+
     public function getRevealedFavoriteFlavor(): int
     {
         return $this->revealedFavoriteFlavor;

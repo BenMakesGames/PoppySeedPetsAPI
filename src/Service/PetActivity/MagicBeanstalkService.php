@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
@@ -73,7 +74,10 @@ class MagicBeanstalkService
             case 15:
             case 16:
             case 17:
-                $activityLog = $this->foundPegasusNest($pet);
+                if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
+                    $activityLog = $this->foundPegasusNestHighImpact($pet);
+                else
+                    $activityLog = $this->foundPegasusNest($pet);
                 break;
             case 18:
                 $activityLog = $this->foundLightning($pet);
@@ -179,13 +183,47 @@ class MagicBeanstalkService
 
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, true);
         }
+        else if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
+        {
+            if(mt_rand(1, 20 + max($pet->getStrength(), $pet->getDexterity()) + $pet->getBrawl()) >= 10)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they found a bird\'s nest, guarded by its mother. It seemed a suitable challenge for a member of High Impact, so ' . $pet->getName() . ' fought the bird, chased it off, and raided its nest.', '');
+
+                $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
+                $this->inventoryService->petCollectsItem('Feathers', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
+
+                $perceptionRoll = mt_rand(1, 20 + $pet->getPerception());
+
+                if($perceptionRoll >= 20)
+                    $this->inventoryService->petCollectsItem('Black Feathers', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
+                else if($perceptionRoll >= 10)
+                    $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
+
+                $pet->getGuildMembership()->increaseReputation();
+
+                $pet->increaseEsteem(mt_rand(2, 4));
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ]);
+
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they found a bird\'s nest, guarded by its mother. It seemed a suitable challenge for a member of High Impact, so ' . $pet->getName() . ' fought the bird, but the bird fought back, and ' . $pet->getName() . ' was forced to climb back down as fast as they could...', '');
+
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ]);
+
+                $pet->increaseEsteem(-mt_rand(2, 4));
+
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, false);
+            }
+        }
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters. They found a bird nest, but the mother bird was around, and it didn\'t seem safe to pick a fight up there, so ' . $pet->getName() . ' left it alone.', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ]);
 
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, false);
         }
 
         return $activityLog;
@@ -257,7 +295,56 @@ class MagicBeanstalkService
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ]);
 
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::GATHER, false);
+        }
+
+        return $activityLog;
+    }
+
+    private function foundPegasusNestHighImpact(Pet $pet)
+    {
+        $meters = mt_rand(2000, 3000) / 2;
+
+        if(mt_rand(1, 20 + $pet->getStealth() + $pet->getDexterity()) >= 18)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found a white pegasus\' nest, which they raided.', '');
+
+            $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
+
+            $perceptionRoll = mt_rand(1, 20 + $pet->getPerception());
+
+            if($perceptionRoll >= 18)
+                $this->inventoryService->petCollectsItem('White Feathers', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
+            else if($perceptionRoll >= 10)
+                $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
+
+            $pet->increaseEsteem(mt_rand(1, 2));
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ]);
+
             $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::GATHER, true);
+        }
+        else if(mt_rand(1, 20 + max($pet->getStrength(), $pet->getDexterity()) + $pet->getBrawl()) >= 18)
+        {
+            $pet->increaseEsteem(mt_rand(4, 8));
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white pegasus\' nest. As a member of High Impact, they jumped at the challenge - literally! - and wrestled the mother pegasus as she flew! After a while, the pegasus, exhausted, was forced to land, and ' . $pet->getName() . ' made off with an Egg, some Fluff, and some White Feathers!', '');
+
+            $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
+            $this->inventoryService->petCollectsItem('White Feathers', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
+            $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
+
+            $pet->getGuildMembership()->increaseReputation();
+
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::HUNT, true);
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white pegasus\' nest. As a member of High Impact, they jumped at the challenge - literally! - and wrestled the mother pegasus as she flew! The pegasus dove down, through some trees, knocking ' . $pet->getName() . ' off with nothing to show for their efforts...', '');
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
+
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::HUNT, false);
         }
 
         return $activityLog;
@@ -274,7 +361,7 @@ class MagicBeanstalkService
             $this->inventoryService->petCollectsItem('Everice', $pet, $pet->getName() . ' pried this off your magic bean-stalk.', $activityLog);
 
             $pet->increaseEsteem(mt_rand(1, 2));
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ]);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE ]);
 
             $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::GATHER, true);
         }
@@ -282,9 +369,9 @@ class MagicBeanstalkService
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found some Everice stuck to part of the stalk, but were unable to pry any off...', '');
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
 
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::GATHER, false);
         }
 
         return $activityLog;
@@ -321,7 +408,7 @@ class MagicBeanstalkService
             $pet->increaseSafety(-mt_rand(4, 8));
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
 
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::GATHER, false);
         }
 
         return $activityLog;
@@ -364,7 +451,7 @@ class MagicBeanstalkService
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ]);
 
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::GATHER, false);
         }
 
         return $activityLog;

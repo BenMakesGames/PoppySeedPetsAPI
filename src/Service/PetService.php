@@ -620,8 +620,8 @@ class PetService
 
         if($pet->getGuildMembership() && mt_rand(1, 35) === 1)
         {
-            $this->guildService->doGuildActivity($pet);
-            return;
+            if($this->guildService->doGuildActivity($pet))
+                return;
         }
 
         $petDesires = [

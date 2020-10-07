@@ -4,6 +4,7 @@ namespace App\Service\PetActivity\Crafting;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
+use App\Enum\GuildEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -46,7 +47,7 @@ class SmithingService
 
     public function getCraftingPossibilities(Pet $pet, array $quantities): array
     {
-        $weight = $pet->getSafety() > 0 ? 10 : 1;
+        $weight = ($pet->getSafety() > 0 || $pet->isInGuild(GuildEnum::DWARFCRAFT)) ? 10 : 1;
 
         $possibilities = [];
 
@@ -93,7 +94,7 @@ class SmithingService
             if(array_key_exists('String', $quantities))
                 $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createGrapplingHook', 10);
 
-            if(array_key_exists('Dark Matter', $quantities) && $pet->getStrength() >= 3)
+            if(array_key_exists('Dark Matter', $quantities))
                 $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createHeavyHammer', $weight);
 
             if(array_key_exists('Mirror', $quantities))

@@ -350,7 +350,12 @@ class IronSmithingService
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + min($pet->getStrength(), $pet->getStamina()) + $pet->getCrafts() + $pet->getSmithing());
 
-        if($roll <= 3)
+        if($pet->getStrength() < 3)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to make a Heavy Hammer, but they aren\'t strong enough... (The Dark Matter is WAY too heavy!)', '');
+        }
+        else if($roll <= 3)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);

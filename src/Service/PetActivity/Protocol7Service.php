@@ -76,7 +76,10 @@ class Protocol7Service
                 $activityLog = $this->foundLayer02($pet);
                 break;
             case 11:
-                $activityLog = $this->foundNothing($pet, $roll);
+                if($pet->isInGuild(GuildEnum::CORRESPONDENCE))
+                    $activityLog = $this->deliverMessagesForCorrespondence($pet);
+                else
+                    $activityLog = $this->foundNothing($pet, $roll);
                 break;
             case 12:
             case 13:
@@ -100,7 +103,10 @@ class Protocol7Service
                 $activityLog = $this->foundCorruptSector($pet, $roll);
                 break;
             case 21:
-                $activityLog = $this->foundNothing($pet, $roll);
+                if($pet->isInGuild(GuildEnum::CORRESPONDENCE))
+                    $activityLog = $this->deliverMessagesForCorrespondence($pet);
+                else
+                    $activityLog = $this->foundNothing($pet, $roll);
                 break;
         }
 
@@ -111,9 +117,6 @@ class Protocol7Service
             $this->inventoryService->petAttractsRandomBug($pet, 'Beta Bug');
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function foundNothing(Pet $pet, int $roll): PetActivityLog
     {
         $exp = ceil($roll / 10);
@@ -125,6 +128,25 @@ class Protocol7Service
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, but got distracted playing a minigame!', 'icons/activity-logs/confused');
         else
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, but got lost.', 'icons/activity-logs/confused');
+    }
+
+    private function deliverMessagesForCorrespondence(Pet $pet): PetActivityLog
+    {
+        $effectiveScience = max(2, $pet->getScience());
+        $minMons = min($effectiveScience, $pet->getIntelligence());
+
+        $moneys = mt_rand(1, $effectiveScience);
+
+        if($moneys < $minMons)
+            $moneys = $minMons;
+
+        $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' received this for delivering messages for Correspondence.');
+
+        $pet->getGuildMembership()->increaseReputation();
+
+        $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::PROTOCOL_7, true);
+
+        return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E. Correspondence had some message-delivery jobs, so ' . $pet->getName() . ' picked a couple up, earning ' . $moneys . '~~m~~ for their trouble.', 'icons/activity-logs/confused');
     }
 
     private function encounterAnnabellastasia(Pet $pet): PetActivityLog

@@ -274,6 +274,10 @@ class GuildService
     {
         $member = $pet->getGuildMembership();
 
+        // High Impact members do other cool stuff, high up a magic bean stalks, and deep undersea
+        if($member->getTitle() >= 3)
+            return null;
+
         $message = ArrayFunctions::pick_one([
             $pet->getName() . ' delivered Lightning in a Bottle to one of their ' . $member->getGuild()->getName() . ' seniors.',
             $pet->getName() . ' shadowed a ' . $member->getGuild()->getName() . ' senior for a little bit, to watch them work.',
@@ -309,6 +313,10 @@ class GuildService
     private function doCorrespondenceMission(Pet $pet): PetActivityLog
     {
         $member = $pet->getGuildMembership();
+
+        // there are delivery messages that Correspondence members can do, during normal pet activities
+        if(mt_rand(0, 2) < $member->getTitle())
+            return null;
 
         $message = ArrayFunctions::pick_one([
             $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
