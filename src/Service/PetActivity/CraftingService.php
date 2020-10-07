@@ -89,14 +89,12 @@ class CraftingService
 
         if(array_key_exists('Tea Leaves', $quantities))
         {
-            if($quantities['Tea Leaves']->quantity >= 2)
-                $possibilities[] = new ActivityCallback($this, 'createYellowDyeFromTeaLeaves', 10);
+            $possibilities[] = new ActivityCallback($this, 'createYellowDyeFromTeaLeaves', 10);
         }
 
         if(array_key_exists('Scales', $quantities))
         {
-            if($quantities['Scales']->quantity >= 2)
-                $possibilities[] = new ActivityCallback($this, 'extractFromScales', 10);
+            $possibilities[] = new ActivityCallback($this, 'extractFromScales', 10);
 
             if(array_key_exists('Talon', $quantities) && array_key_exists('Wooden Sword', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createSnakebite', 10);
@@ -742,17 +740,31 @@ class CraftingService
     private function createYellowDyeFromTeaLeaves(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getNature() + $pet->getCrafts());
-        if($roll <= 2)
+
+        if($roll <= 5)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, false);
             $this->inventoryService->loseItem('Tea Leaves', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extract Yellow Dye from Tea Leaves, but messed it up, ruining the Tea Leaves :(', '');
+
+            if(mt_rand(1, 3) === 1)
+            {
+                $message = $pet->getName() . ' tried to extract Yellow Dye from Tea Leaves, but accidentally made Black Tea, instead!';
+
+                if(mt_rand(1, 10) === 1)
+                    $message .= ' (Aren\'t the leaves themselves green? Where are all these colors coming from?!)';
+
+                $activityLog = $this->responseService->createActivityLog($pet, $message, '');
+                $this->inventoryService->petCollectsItem('Black Tea', $pet, $pet->getName() . ' accidentally made this while trying to extract Yellow Dye from Tea Leaves.', $activityLog);
+                return $activityLog;
+            }
+            else
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to extract Yellow Dye from Tea Leaves, but messed it up, ruining the Tea Leaves :(', '');
         }
         else if($roll >= 12)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('Tea Leaves', $pet->getOwner(), LocationEnum::HOME, 2);
+            $this->inventoryService->loseItem('Tea Leaves', $pet->getOwner(), LocationEnum::HOME);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' extracted Yellow Dye from some Tea Leaves.', 'items/resource/dye-yellow');
@@ -767,15 +779,12 @@ class CraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function extractFromScales(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getNature() + $pet->getCrafts());
         $itemName = mt_rand(1, 2) === 1 ? 'Green Dye' : 'Glue';
 
-        if($roll <= 2)
+        if($roll <= 5)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, false);
             $this->inventoryService->loseItem('Scales', $pet->getOwner(), LocationEnum::HOME, 1);
@@ -789,7 +798,7 @@ class CraftingService
         else if($roll >= 20)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(60, 90), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('Scales', $pet->getOwner(), LocationEnum::HOME, 2);
+            $this->inventoryService->loseItem('Scales', $pet->getOwner(), LocationEnum::HOME);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' extracted Green Dye _and_ Glue from some Scales!', 'items/animal/scales');
@@ -800,7 +809,7 @@ class CraftingService
         else if($roll >= 12)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('Scales', $pet->getOwner(), LocationEnum::HOME, 2);
+            $this->inventoryService->loseItem('Scales', $pet->getOwner(), LocationEnum::HOME);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' extracted ' . $itemName . ' from some Scales.', 'items/animal/scales');
