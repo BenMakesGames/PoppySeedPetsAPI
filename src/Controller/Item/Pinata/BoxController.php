@@ -50,7 +50,7 @@ class BoxController extends PoppySeedPetsItemController
         $hatItem = $itemRepository->findOneByName(ArrayFunctions::pick_one([
             'Purple Violet',
             'Wings',
-            'Merchant\'s Hat',
+            'Merchant\'s Cap',
             'Wizarding Hat',
             'Gray Bow',
             'Cool Sunglasses'
