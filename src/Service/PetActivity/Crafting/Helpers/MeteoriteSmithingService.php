@@ -55,7 +55,7 @@ class MeteoriteSmithingService
             $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Meteorite', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' forged Illumetsa from gold, iron, and a chunk of Meteorite.', 'items/tool/hammer/red')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' forged Ilumetsa from gold, iron, and a chunk of Meteorite.', 'items/tool/hammer/red')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 25)
             ;
 
