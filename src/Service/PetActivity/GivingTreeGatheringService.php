@@ -66,7 +66,7 @@ class GivingTreeGatheringService
                 ]
             );
 
-            if($pet->isInGuild(GuildEnum::GIZUBIS_GARDEN, 0))
+            if($pet->isInGuild(GuildEnum::GIZUBIS_GARDEN, 1))
             {
                 $this->petExperienceService->spendTime($pet, mt_rand(20, 30), PetActivityStatEnum::OTHER, null);
 
