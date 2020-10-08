@@ -362,20 +362,26 @@ class PetRelationshipService
                 $p2Description = null;
             else
                 $p2Description = str_replace([ '%p1%', '%p2%' ], [ $p2->getPet()->getName(), $p1->getPet()->getName() ], $enemyDescription);
+
+            $icon = '';
         }
         else if($p1->getCurrentRelationship() === RelationshipEnum::BROKE_UP)
         {
             $p1Description = str_replace([ '%p1%', '%p2%' ], [ $p1->getPet()->getName(), $p2->getPet()->getName() ], $enemyDescription);
             $p2Description = str_replace([ '%p1%', '%p2%' ], [ $p2->getPet()->getName(), $p1->getPet()->getName() ], $enemyDescription);
+
+            $icon = '';
         }
         else
         {
             $p1Description = str_replace([ '%p1%', '%p2%' ], [ $p1->getPet()->getName(), $p2->getPet()->getName() ], $hangOutDescription);
             $p2Description = str_replace([ '%p1%', '%p2%' ], [ $p2->getPet()->getName(), $p1->getPet()->getName() ], $hangOutDescription);
+
+            $icon = 'icons/activity-logs/friend';
         }
 
-        if($p1Description) $this->responseService->createActivityLog($p1->getPet(), $p1Description, '');
-        if($p2Description) $this->responseService->createActivityLog($p2->getPet(), $p2Description, '');
+        if($p1Description) $this->responseService->createActivityLog($p1->getPet(), $p1Description, $icon);
+        if($p2Description) $this->responseService->createActivityLog($p2->getPet(), $p2Description, $icon);
     }
 
     /**

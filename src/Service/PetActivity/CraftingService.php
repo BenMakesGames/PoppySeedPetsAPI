@@ -1719,6 +1719,8 @@ class CraftingService
 
     private function createFlag(Pet $pet, string $dye, string $making)
     {
+        $makingItem = $this->itemRepository->findOneByName($making);
+
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
 
         if($roll <= 2)
@@ -1728,7 +1730,7 @@ class CraftingService
             $this->inventoryService->loseItem($dye, $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a ' . $making . ', but accidentally spilt the ' . $dye . ' :(', '');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make ' . $makingItem->getNameWithArticle() . ', but accidentally spilt the ' . $dye . ' :(', '');
         }
         else if($roll >= 10)
         {
@@ -1737,10 +1739,10 @@ class CraftingService
             $this->inventoryService->loseItem($dye, $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(3);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' painted a ' . $making . '.', '')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' painted ' . $makingItem->getNameWithArticle() . '.', 'items/' . $makingItem->getImage())
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
             ;
-            $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' painted this flag.', $activityLog);
+            $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' painted this flag.', $activityLog);
             return $activityLog;
         }
         else
