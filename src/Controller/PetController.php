@@ -1427,12 +1427,12 @@ class PetController extends PoppySeedPetsController
             ;
             $inventoryService->receiveItem('Heartstone', $user, $user, $user->getName() . ' received this from ' . $pet->getName() . ' for knowing their favorite flavor: ' . $pet->getFavoriteFlavor() . '!', LocationEnum::HOME);
             $responseService->addReloadInventory();
-            $responseService->addFlashMessage((new PetActivityLog())->setEntry('A Heartstone materializes in front of ' . $pet->getName() . '\'s body, and floats into your hands!'));
+            $responseService->addFlashMessage('A Heartstone materializes in front of ' . $pet->getName() . '\'s body, and floats into your hands!');
             $data = $pet;
         }
         else
         {
-            $responseService->addFlashMessage((new PetActivityLog())->setEntry('Hm... it seems that wasn\'t correct. ' . $pet->getName() . ' looks a little disappointed. (You can try again, tomorrow.)'));
+            $responseService->addFlashMessage('Hm... it seems that wasn\'t correct. ' . $pet->getName() . ' looks a little disappointed. (You can try again, tomorrow.)');
         }
 
         $em->flush();

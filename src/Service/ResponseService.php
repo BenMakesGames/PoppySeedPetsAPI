@@ -174,14 +174,12 @@ class ResponseService
         $this->reloadInventory = true;
     }
 
-    public function addFlashMessageString(string $message)
+    public function addFlashMessage(string $message)
     {
-        $this->addFlashMessage((new PetActivityLog())->setEntry($message));
-    }
-
-    public function addFlashMessage(PetActivityLog $log)
-    {
-        $log->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE);
+        $log = (new PetActivityLog())
+            ->setEntry($message)
+            ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
+        ;
 
         $this->flashMessages[] = $log;
     }

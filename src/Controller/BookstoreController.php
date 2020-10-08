@@ -61,7 +61,7 @@ class BookstoreController extends PoppySeedPetsController
 
         $data = $bookstoreService->getResponseData($user);
 
-        $responseService->addFlashMessage((new PetActivityLog())->setEntry('Thanks! Renaming Scrolls now cost ' . $bookstoreService->getRenamingScrollCost($user) . '~~m~~!'));
+        $responseService->addFlashMessage('Thanks! Renaming Scrolls now cost ' . $bookstoreService->getRenamingScrollCost($user) . '~~m~~!');
 
         return $responseService->success($data, [ SerializationGroupEnum::MARKET_ITEM ]);
     }

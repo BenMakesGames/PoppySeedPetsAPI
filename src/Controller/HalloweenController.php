@@ -148,15 +148,11 @@ class HalloweenController extends PoppySeedPetsController
 
         if($reward)
         {
-            $responseService->addFlashMessage(
-                (new PetActivityLog())->setEntry('Before leaving for the next house, ' . $trickOrTreater->getName() . ' hands you ' . $reward->getItem()->getNameWithArticle() . '!')
-            );
+            $responseService->addFlashMessage('Before leaving for the next house, ' . $trickOrTreater->getName() . ' hands you ' . $reward->getItem()->getNameWithArticle() . '!');
         }
         else
         {
-            $responseService->addFlashMessage(
-                (new PetActivityLog())->setEntry($trickOrTreater->getName() . ' happily takes the candy and heads off to the next house.')
-            );
+            $responseService->addFlashMessage($trickOrTreater->getName() . ' happily takes the candy and heads off to the next house.');
         }
 
         $em->flush();

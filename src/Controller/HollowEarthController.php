@@ -302,7 +302,7 @@ class HollowEarthController extends PoppySeedPetsController
         $sides = HollowEarthService::DICE_ITEMS[$itemName];
         $moves = mt_rand(1, $sides);
 
-        $responseService->addFlashMessage((new PetActivityLog())->setEntry('You rolled a ' . $moves . '!'));
+        $responseService->addFlashMessage('You rolled a ' . $moves . '!');
 
         $em->remove($inventory);
 
@@ -327,9 +327,9 @@ class HollowEarthController extends PoppySeedPetsController
             ;
 
             if(mt_rand(1, 10) === 1)
-                $responseService->addFlashMessage((new PetActivityLog())->setEntry('(While moving through the Hollow Earth, you spot a ' . $loot . '! But you decide to leave it there... ... nah, I\'m just kidding, of course you scoop the thing up immediately!)'));
+                $responseService->addFlashMessage('(While moving through the Hollow Earth, you spot a ' . $loot . '! But you decide to leave it there... ... nah, I\'m just kidding, of course you scoop the thing up immediately!)');
             else
-                $responseService->addFlashMessage((new PetActivityLog())->setEntry('(While moving through the Hollow Earth, you spot a ' . $loot . '!)'));
+                $responseService->addFlashMessage('(While moving through the Hollow Earth, you spot a ' . $loot . '!)');
         }
 
         $em->flush();

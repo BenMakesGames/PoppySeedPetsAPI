@@ -249,7 +249,7 @@ class BeehiveController extends PoppySeedPetsController
 
         $em->flush();
 
-        $responseService->addFlashMessage((new PetActivityLog())->setEntry('You received ' . ArrayFunctions::list_nice($itemNames) . '.'));
+        $responseService->addFlashMessage('You received ' . ArrayFunctions::list_nice($itemNames) . '.');
 
         return $responseService->success($user->getBeehive(), SerializationGroupEnum::MY_BEEHIVE);
     }

@@ -184,7 +184,7 @@ class FireplaceController extends PoppySeedPetsController
             foreach($loot as $item)
                 $inventoryService->receiveItem($item, $user, $user, $fireplace->getWhelpName() . ' spit this up.', LocationEnum::HOME);
 
-            $responseService->addFlashMessage((new PetActivityLog())->setEntry($fireplace->getWhelpName() . ' spit up ' . ArrayFunctions::list_nice($loot) . '.'));
+            $responseService->addFlashMessage($fireplace->getWhelpName() . ' spit up ' . ArrayFunctions::list_nice($loot) . '.');
         }
         else
         {
@@ -192,7 +192,7 @@ class FireplaceController extends PoppySeedPetsController
                 'happily', 'happily', 'happily', 'excitedly', 'blithely'
             ]);
 
-            $responseService->addFlashMessage((new PetActivityLog())->setEntry($fireplace->getWhelpName() . ' ' . $adverb . ' devoured your offering.'));
+            $responseService->addFlashMessage($fireplace->getWhelpName() . ' ' . $adverb . ' devoured your offering.');
         }
 
 
@@ -282,8 +282,8 @@ class FireplaceController extends PoppySeedPetsController
             'You peer into the stocking, but all you see darkness. Carefully, you reach inside... and find something! You pull it out as quickly as possible!',
         ];
 
-        $responseService->addFlashMessage((new PetActivityLog())
-            ->setEntry(ArrayFunctions::pick_one($messages) . "\n\n" . $item . '!')
+        $responseService->addFlashMessage(
+            ArrayFunctions::pick_one($messages) . "\n\n" . $item . '!'
         );
 
         $gotStockingPresent->setValue($now->format('Y-m-d'));
@@ -362,9 +362,9 @@ class FireplaceController extends PoppySeedPetsController
         $em->flush();
 
         if($fireplace->getHeat() >= 2 * 60 && mt_rand(1, 3) === 1)
-            $responseService->addFlashMessage((new PetActivityLog())->setEntry('You reach inside while the fire is still burning, just like a totally normal person would do, and pull out ' . ArrayFunctions::list_nice($itemsReceived) . '!'));
+            $responseService->addFlashMessage('You reach inside while the fire is still burning, just like a totally normal person would do, and pull out ' . ArrayFunctions::list_nice($itemsReceived) . '!');
         else
-            $responseService->addFlashMessage((new PetActivityLog())->setEntry('You reach inside, and pull out ' . ArrayFunctions::list_nice($itemsReceived) . '!'));
+            $responseService->addFlashMessage('You reach inside, and pull out ' . ArrayFunctions::list_nice($itemsReceived) . '!');
 
         return $responseService->success($fireplace, SerializationGroupEnum::MY_FIREPLACE);
     }
@@ -422,10 +422,10 @@ class FireplaceController extends PoppySeedPetsController
 
         if(count($fuelNotUsed) > 0)
         {
-            $responseService->addFlashMessage((new PetActivityLog())->setEntry(
+            $responseService->addFlashMessage(
                 'The fireplace can only handle so much fire! Adding the ' . ArrayFunctions::list_nice($fuelNotUsed) .
                 ' would be wasteful at this point, so ' . (count($fuelNotUsed) == 1 ? 'it was' : 'they were') . ' not used.'
-            ));
+            );
         }
 
         return $responseService->success($user->getFireplace(), SerializationGroupEnum::MY_FIREPLACE);

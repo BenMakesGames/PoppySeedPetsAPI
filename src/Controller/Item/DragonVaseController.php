@@ -100,9 +100,9 @@ class DragonVaseController extends PoppySeedPetsItemController
         $em->flush();
 
         if($hadAnEnchantment)
-            $responseService->addFlashMessageString('The ' . $oldName . '\'s bonus was replaced! It is now ' . GrammarFunctions::indefiniteArticle($newName) . ' ' . $newName . '!');
+            $responseService->addFlashMessage('The ' . $oldName . '\'s bonus was replaced! It is now ' . GrammarFunctions::indefiniteArticle($newName) . ' ' . $newName . '!');
         else
-            $responseService->addFlashMessageString('The ' . $oldName . ' has been enchanted! It is now ' . GrammarFunctions::indefiniteArticle($newName) . ' ' . $newName . '!');
+            $responseService->addFlashMessage('The ' . $oldName . ' has been enchanted! It is now ' . GrammarFunctions::indefiniteArticle($newName) . ' ' . $newName . '!');
 
         return $responseService->success();
     }

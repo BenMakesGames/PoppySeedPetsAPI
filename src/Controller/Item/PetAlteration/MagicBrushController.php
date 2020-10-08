@@ -62,7 +62,7 @@ class MagicBrushController extends PoppySeedPetsItemController
 
         $plural = strtolower(mb_substr($item->getName(), -1, 1)) === 's';
 
-        $responseService->addFlashMessage((new PetActivityLog())->setEntry('You brush ' . $pet->getName() . ', and some ' . $item->getName() . ' ' . ($plural ? 'come' : 'comes') . ' off! (They now Shed!) Also, the magic brush breaks in half and disappears! (It wasn\'t your fault; Magic Brushes just be like that.)'));
+        $responseService->addFlashMessage('You brush ' . $pet->getName() . ', and some ' . $item->getName() . ' ' . ($plural ? 'come' : 'comes') . ' off! (They now Shed!) Also, the magic brush breaks in half and disappears! (It wasn\'t your fault; Magic Brushes just be like that.)');
 
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true, 'reloadInventory' => true ]);
     }

@@ -176,7 +176,7 @@ class GreenhouseController extends PoppySeedPetsController
 
         $em->flush();
 
-        $responseService->addFlashMessage((new PetActivityLog())->setEntry($message));
+        $responseService->addFlashMessage($message);
 
         return $responseService->success();
     }
@@ -218,7 +218,7 @@ class GreenhouseController extends PoppySeedPetsController
 
                     $em->flush();
 
-                    $responseService->addFlashMessage((new PetActivityLog())->setEntry('You can\'t harvest a Magic Beans-stalk, unfortunately, BUT: your pets might decide to climb up it and explore! Also: you happen to notice that you have another greenhouse plot! (Must be some of that Magic Beans magic!)'));
+                    $responseService->addFlashMessage('You can\'t harvest a Magic Beans-stalk, unfortunately, BUT: your pets might decide to climb up it and explore! Also: you happen to notice that you have another greenhouse plot! (Must be some of that Magic Beans magic!)');
 
                     return $responseService->success();
                 }
@@ -325,7 +325,7 @@ class GreenhouseController extends PoppySeedPetsController
 
         $em->flush();
 
-        $responseService->addFlashMessage((new PetActivityLog())->setEntry($message));
+        $responseService->addFlashMessage($message);
 
         return $responseService->success();
     }
@@ -384,13 +384,13 @@ class GreenhouseController extends PoppySeedPetsController
 
         if($plant->getPlant()->getName() === 'Magic Beanstalk')
         {
-            $responseService->addFlashMessage((new PetActivityLog())->setEntry('Pulling up the stalk is surprisingly easy, but perhaps more surprising, you find yourself holding Magic Beans, instead of a stalk!'));
+            $responseService->addFlashMessage('Pulling up the stalk is surprisingly easy, but perhaps more surprising, you find yourself holding Magic Beans, instead of a stalk!');
 
             $inventoryService->receiveItem('Magic Beans', $user, $user, 'Received by pulling up a Magic Beanstalk, apparently. Magically.', LocationEnum::HOME);
         }
         else if($plant->getPlant()->getName() === 'Goat' && $plant->getIsAdult())
         {
-            $responseService->addFlashMessage((new PetActivityLog())->setEntry('The goat, startled, runs into the jungle, shedding a bit of Fluff in the process.'));
+            $responseService->addFlashMessage('The goat, startled, runs into the jungle, shedding a bit of Fluff in the process.');
 
             $inventoryService->receiveItem('Fluff', $user, $user, 'Dropped by a startled goat.', LocationEnum::HOME);
             if(mt_rand(1, 2) === 1)
