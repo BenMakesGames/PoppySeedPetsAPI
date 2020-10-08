@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\GuildEnum;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
@@ -65,11 +66,24 @@ class GivingTreeGatheringService
                 ]
             );
 
-            $this->petExperienceService->spendTime($pet, mt_rand(10, 20), PetActivityStatEnum::OTHER, null);
+            if($pet->isInGuild(GuildEnum::GIZUBIS_GARDEN, 0))
+            {
+                $this->petExperienceService->spendTime($pet, mt_rand(20, 30), PetActivityStatEnum::OTHER, null);
 
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' visited The Giving Tree, and picked up several items that other players had discarded.', 'icons/activity-logs/giving-tree')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-            ;
+                $pet->getGuildMembership()->increaseReputation();
+
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' visited The Giving Tree, and picked up several items that other players had discarded. In honor of Gizubi\'s Tree of Life, they also took a few minutes to water the Giving Tree.', 'icons/activity-logs/giving-tree')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ;
+            }
+            else
+            {
+                $this->petExperienceService->spendTime($pet, mt_rand(10, 20), PetActivityStatEnum::OTHER, null);
+
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' visited The Giving Tree, and picked up several items that other players had discarded.', 'icons/activity-logs/giving-tree')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ;
+            }
         }
     }
 
