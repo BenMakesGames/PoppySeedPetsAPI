@@ -11,6 +11,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
+use App\Model\ItemQuantity;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
@@ -50,6 +51,7 @@ class CraftingService
     }
 
     /**
+     * @param ItemQuantity[] $quantities
      * @return ActivityCallback[]
      */
     public function getCraftingPossibilities(Pet $pet, array $quantities): array
@@ -281,6 +283,9 @@ class CraftingService
 
         if(array_key_exists('Rusty Rapier', $quantities))
             $possibilities[] = new ActivityCallback($this, 'repairRustyRapier', $repairWeight);
+
+        if(array_key_exists('Sun-sun Flag', $quantities) && $quantities['Sun-sun Flag']->quantity >= 2)
+            $possibilities[] = new ActivityCallback($this, 'createSunSunFlagFlagSon', 10);
 
         $possibilities = array_merge($possibilities, $this->magicBindingService->getCraftingPossibilities($pet, $quantities));
 
@@ -1784,6 +1789,45 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, mt_rand(15, 45), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to make a Sun Flag even sunnier, but wasn\'t sure how...', 'icons/activity-logs/confused');
+        }
+
+        return $activityLog;
+    }
+
+    private function createSunSunFlagFlagSon(Pet $pet)
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::CRAFT, false);
+
+            $this->inventoryService->loseItem('Sun-sun Flag', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to combine two Sun-sun Flags, but accidentally tore one of them; all that\'s left is the stick :(', '');
+
+            if(mt_rand(1, 10) === 1)
+                $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' tore a Sun-sun Flag, leaving only this. (Dang, son!)', $activityLog);
+            else
+                $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' tore a Sun-sun Flag, leaving only this...', $activityLog);
+        }
+        else if($roll >= 20)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Sun-sun Flag', $pet->getOwner(), LocationEnum::HOME, 2);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(mt_rand(2, 4));
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Sun-sun Flag-flag, Son!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+            ;
+            $this->inventoryService->petCollectsItem('Sun-sun Flag-flag, Son', $pet, $pet->getName() . ' made this.', $activityLog);
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(15, 45), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to combine two Sun-sun Flags, but couldn\'t figure it out...', 'icons/activity-logs/confused');
         }
 
         return $activityLog;
