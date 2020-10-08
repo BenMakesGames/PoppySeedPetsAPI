@@ -42,6 +42,7 @@ use App\Service\PetActivity\GuildService;
 use App\Service\PetActivity\HeartDimensionService;
 use App\Service\PetActivity\HuntingService;
 use App\Service\PetActivity\MagicBeanstalkService;
+use App\Service\PetActivity\PetSummonedAwayService;
 use App\Service\PetActivity\PoopingService;
 use App\Service\PetActivity\PregnancyService;
 use App\Service\PetActivity\Crafting\ProgrammingService;
@@ -83,6 +84,7 @@ class PetService
     private $inventoryService;
     private $burntForestService;
     private $deepSeaService;
+    private $petSummonedAwayService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -96,7 +98,8 @@ class PetService
         PetExperienceService $petExperienceService, DreamingService $dreamingService, MagicBeanstalkService $beanStalkService,
         EasterEggHuntingService $easterEggHuntingService, HeartDimensionService $heartDimensionService,
         PetRelationshipRepository $petRelationshipRepository, GuildService $guildService, InventoryService $inventoryService,
-        BurntForestService $burntForestService, DeepSeaService $deepSeaService
+        BurntForestService $burntForestService, DeepSeaService $deepSeaService,
+        PetSummonedAwayService $petSummonedAwayService
     )
     {
         $this->em = $em;
@@ -130,6 +133,7 @@ class PetService
         $this->inventoryService = $inventoryService;
         $this->burntForestService = $burntForestService;
         $this->deepSeaService = $deepSeaService;
+        $this->petSummonedAwayService = $petSummonedAwayService;
     }
 
     /**
@@ -475,6 +479,14 @@ class PetService
                     ->setColorB(ColorFunctions::tweakColor($pet->getColorB(), 4))
                 ;
             }
+        }
+
+        if(mt_rand(1, 2000) === 1)
+        {
+            $activityLog = $this->petSummonedAwayService->adventure($pet);
+
+            if($activityLog)
+                return;
         }
 
         $hunger = mt_rand(0, 4);
