@@ -16,7 +16,7 @@ class ToolBonusService
     public function enchant(Inventory $tool, Inventory $enchantment)
     {
         if($tool->getEnchantment())
-            throw new \InvalidArgumentException('That tool has has the "' . $tool->getEnchantment()->getName() . '" bonus.');
+            throw new \InvalidArgumentException('That tool already has the "' . $tool->getEnchantment()->getName() . '" bonus. Remove it first if you want to apply a new bonus.');
 
         $tool->setEnchantment($enchantment->getItem()->getEnchants());
 
