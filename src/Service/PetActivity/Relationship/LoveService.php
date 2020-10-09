@@ -175,11 +175,6 @@ class LoveService
 
         $totalDrive = $p1->getSexDrive() + $p2->getSexDrive();
 
-        // TODO: before we can implement this, we also need to implement a way for pets to "suppress" goals to date/fwb
-        // with pets while in a monogamous relationship
-        /*if($p1->hasMonogamousRelationship($p2) || $p2->hasMonogamousRelationship($p1))
-            return 0;*/
-
         switch($relationshipType)
         {
             case RelationshipEnum::BFF:

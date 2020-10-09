@@ -219,11 +219,6 @@ class Pet
     /**
      * @ORM\Column(type="smallint")
      */
-    private $poly;
-
-    /**
-     * @ORM\Column(type="smallint")
-     */
     private $sexDrive;
 
     /**
@@ -356,12 +351,6 @@ class Pet
         $this->statusEffects = new ArrayCollection();
         $this->extroverted = mt_rand(-1, 1);
         $this->bonusMaximumFriends = mt_rand(-2, 2);
-
-        // 10% poly; 10% flexible; 80% monogamous
-        if(mt_rand(1, 10) === 1)
-            $this->poly = 1;
-        else
-            $this->poly = mt_rand(1, 9) === 1 ? 0 : -1;
 
         if(mt_rand(1, 5) > 1)
             $this->sexDrive = 1; // 80% sexual
@@ -1302,18 +1291,6 @@ class Pet
         return $this;
     }
 
-    public function getPoly(): ?bool
-    {
-        return $this->poly;
-    }
-
-    public function setPoly(bool $poly): self
-    {
-        $this->poly = $poly;
-
-        return $this;
-    }
-
     public function getSexDrive(): int
     {
         return $this->sexDrive;
@@ -1451,26 +1428,6 @@ class Pet
         if($this->dad) $parents[] = $this->dad;
 
         return $parents;
-    }
-
-    public function hasMonogamousRelationship(Pet $exceptOtherPet)
-    {
-        if($this->getPoly() === 1)
-            return false;
-
-        foreach($this->getPetRelationships() as $relationship)
-        {
-            if($relationship->getRelationship()->getId() === $exceptOtherPet->getId())
-                continue;
-
-            if($relationship->getCurrentRelationship() === RelationshipEnum::MATE || $relationship->getCurrentRelationship() === RelationshipEnum::FWB)
-            {
-                if($this->getPoly() === 0 && $relationship->getRelationship()->getPoly() === 0)
-                    return true;
-            }
-        }
-
-        return false;
     }
 
     /**
