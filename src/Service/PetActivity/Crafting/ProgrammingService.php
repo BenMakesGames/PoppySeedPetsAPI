@@ -133,6 +133,9 @@ class ProgrammingService
         if(array_key_exists('Sylvan Fishing Rod', $quantities) && array_key_exists('Laser Pointer', $quantities) && array_key_exists('Alien Tissue', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createAlienFishingRod', 10);
 
+        if(array_key_exists('Gold Triangle', $quantities) && array_key_exists('Seaweed', $quantities) && array_key_exists('Gravitational Waves', $quantities))
+            $possibilities[] = new ActivityCallback($this, 'createBermudaTriangle', 10);
+
         return $possibilities;
     }
 
@@ -846,6 +849,50 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to integrate Alien Tissue with a Sylvan Fishing Rod, but the different forms of life kept rejecting one another...', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createBermudaTriangle(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getPerception() + $pet->getScience());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+
+            if(mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('Gravitational Waves', $pet->getOwner(), LocationEnum::HOME, 1);
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Bermuda Triangle, but the Gravitational Waves dissipated :(', '');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Seaweed', $pet->getOwner(), LocationEnum::HOME, 1);
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Bermuda Triangle, but the Seaweed was shredded by the intense gravitational forces :(', '');
+            }
+
+            return $activityLog;
+        }
+        else if($roll >= 19)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->inventoryService->loseItem('Gold Triangle', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Seaweed', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Gravitational Waves', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ]);
+            $pet->increaseEsteem(5);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Bermuda Triangle out of a Gold Triangle!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 19)
+            ;
+            $this->inventoryService->petCollectsItem('Bermuda Triangle', $pet, $pet->getName() . ' scienced this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Bermuda Triangle, but the Gold Triangle kept getting bent by the gravitational forces, and ' . $pet->getName() . ' spent all their time bending it back into shape!', 'icons/activity-logs/confused');
         }
     }
 
