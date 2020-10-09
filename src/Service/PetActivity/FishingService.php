@@ -244,7 +244,7 @@ class FishingService
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing Under a Bridge, but all they got was an old can of food...', '');
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
 
-            $this->inventoryService->petCollectsItem('Canned Food', $pet, 'Fished out of a river under a bridge...', $activityLog);
+            $this->inventoryService->petCollectsItem('Canned Food', $pet, $pet->getName() . ' fished this out of a river under a bridge...', $activityLog);
 
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
         }
