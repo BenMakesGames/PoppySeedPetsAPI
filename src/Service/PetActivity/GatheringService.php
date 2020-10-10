@@ -200,9 +200,6 @@ class GatheringService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function foundBerryBush(Pet $pet): PetActivityLog
     {
         if(mt_rand(1, 8) >= 6)
@@ -239,9 +236,6 @@ class GatheringService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function foundHollowLog(Pet $pet): PetActivityLog
     {
         if(mt_rand(1, 4) === 1)
@@ -308,9 +302,6 @@ class GatheringService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function foundBirdNest(Pet $pet): PetActivityLog
     {
         if(mt_rand(1, 20 + $pet->getStealth() + $pet->getDexterity()) >= 10)
@@ -875,9 +866,6 @@ class GatheringService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function foundGypsumCave(Pet $pet): PetActivityLog
     {
         $eideticMemory = $pet->hasMerit(MeritEnum::EIDETIC_MEMORY);

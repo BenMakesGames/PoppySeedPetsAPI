@@ -187,7 +187,7 @@ class MagicBeanstalkService
         {
             if(mt_rand(1, 20 + max($pet->getStrength(), $pet->getDexterity()) + $pet->getBrawl()) >= 10)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they found a bird\'s nest, guarded by its mother. It seemed a suitable challenge for a member of High Impact, so ' . $pet->getName() . ' fought the bird, chased it off, and raided its nest.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they found a bird\'s nest, guarded by its mother. It seemed a suitable challenge for a member of High Impact, so ' . $pet->getName() . ' fought the bird, chased it off, and raided its nest.', 'guilds/high-impact');
 
                 $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
                 $this->inventoryService->petCollectsItem('Feathers', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
@@ -208,7 +208,7 @@ class MagicBeanstalkService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they found a bird\'s nest, guarded by its mother. It seemed a suitable challenge for a member of High Impact, so ' . $pet->getName() . ' fought the bird, but the bird fought back, and ' . $pet->getName() . ' was forced to climb back down as fast as they could...', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they found a bird\'s nest, guarded by its mother. It seemed a suitable challenge for a member of High Impact, so ' . $pet->getName() . ' fought the bird, but the bird fought back, and ' . $pet->getName() . ' was forced to climb back down as fast as they could...', 'guilds/high-impact');
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ]);
 
@@ -328,7 +328,7 @@ class MagicBeanstalkService
             $pet->increaseEsteem(mt_rand(4, 8));
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white pegasus\' nest. As a member of High Impact, they jumped at the challenge - literally! - and wrestled the mother pegasus as she flew! After a while, the pegasus, exhausted, was forced to land, and ' . $pet->getName() . ' made off with an Egg, some Fluff, and some White Feathers!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white pegasus\' nest. As a member of High Impact, they jumped at the challenge - literally! - and wrestled the mother pegasus as she flew! After a while, the pegasus, exhausted, was forced to land, and ' . $pet->getName() . ' made off with an Egg, some Fluff, and some White Feathers!', 'guilds/high-impact');
 
             $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
             $this->inventoryService->petCollectsItem('White Feathers', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
@@ -340,7 +340,7 @@ class MagicBeanstalkService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white pegasus\' nest. As a member of High Impact, they jumped at the challenge - literally! - and wrestled the mother pegasus as she flew! The pegasus dove down, through some trees, knocking ' . $pet->getName() . ' off with nothing to show for their efforts...', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' climbed your magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white pegasus\' nest. As a member of High Impact, they jumped at the challenge - literally! - and wrestled the mother pegasus as she flew! The pegasus dove down, through some trees, knocking ' . $pet->getName() . ' off with nothing to show for their efforts...', 'guilds/high-impact');
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
 

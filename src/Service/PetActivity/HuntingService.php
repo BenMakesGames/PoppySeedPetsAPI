@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Enum\EnumInvalidValueException;
+use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
@@ -599,46 +600,143 @@ class HuntingService
 
     private function huntedGhosts(Pet $pet): PetActivityLog
     {
-        $skill = 10 + $pet->getIntelligence() + $pet->getBrawl() + $pet->getUmbra();
+        if(mt_rand(1, 100) === 1)
+            $prize = ArrayFunctions::pick_one([ 'Rib', 'Stereotypical Bone ']);
+        else if(mt_rand(1, 100) === 1)
+            $prize = 'Little Strongbox';
+        else if(mt_rand(1, 5) === 1)
+            $prize = 'Iron Bar';
+        else if(mt_rand(1, 8) === 1)
+            $prize = 'Fluff';
+        else
+            $prize = 'Quintessence';
 
-        if(mt_rand(1, $skill) >= 15)
+        if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
         {
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+            $skill = 10 + $pet->getIntelligence() * 2 + $pet->getUmbra();
 
-            if(mt_rand(1, 100) === 1)
-                $prize = ArrayFunctions::pick_one([ 'Rib', 'Stereotypical Bone ']);
-            else if(mt_rand(1, 100) === 1)
-                $prize = 'Little Strongbox';
-            else if(mt_rand(1, 5) === 1)
-                $prize = 'Iron Bar';
-            else if(mt_rand(1, 8) === 1)
-                $prize = 'Fluff';
-            else
-                $prize = 'Quintessence';
+            if(mt_rand(1, $skill) >= 15)
+            {
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
 
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
-            $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt ' . $pet->getName() . ', but ' . $pet->getName() . ' was able to dispel it (and got its ' . $prize . ')!', 'items/resource/quintessence');
-            $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' collected this from the remains of a Pirate Ghost.', $activityLog);
+                $pet->getGuildMembership()->increaseReputation();
 
-            $pet
-                ->increaseSafety(3)
-                ->increaseEsteem(2)
-            ;
+                $prizeItem = $this->itemRepository->findOneByName($prize);
+
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
+                $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt ' . $pet->getName() . ', but ' . $pet->getName() . ' was able to calm the spirit! Thankful, the spirit gives ' . $pet->getName() . ' ' . $prizeItem->getNameWithArticle() . '.', 'guilds/light-and-shadow');
+                $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' collected this from the remains of a Pirate Ghost.', $activityLog);
+
+                $pet
+                    ->increaseSafety(2)
+                    ->increaseEsteem(3)
+                ;
+
+                return $activityLog;
+            }
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::HUNT, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went out hunting, and got haunted by a Pirate Ghost! After harassing ' . $pet->getName() . ' for a while, the ghost became bored, and left.', '');
-            $pet->increaseSafety(-3);
+            $skill = 10 + $pet->getIntelligence() + $pet->getBrawl() + $pet->getUmbra();
+
+            if(mt_rand(1, $skill) >= 15)
+            {
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
+                $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt ' . $pet->getName() . ', but ' . $pet->getName() . ' was able to dispel it (and got its ' . $prize . ')!', '');
+                $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' collected this from the remains of a Pirate Ghost.', $activityLog);
+
+                $pet
+                    ->increaseSafety(3)
+                    ->increaseEsteem(2)
+                ;
+
+                return $activityLog;
+            }
         }
+
+        $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::HUNT, false);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went out hunting, and got haunted by a Pirate Ghost! After harassing ' . $pet->getName() . ' for a while, the ghost became bored, and left.', '');
+        $pet->increaseSafety(-3);
 
         return $activityLog;
     }
 
     private function huntedPossessedTurkey(Pet $pet): PetActivityLog
     {
-        $skill = 10 + $pet->getIntelligence() + $pet->getBrawl() + $pet->getUmbra();
+        $loot = ArrayFunctions::pick_one([
+            'Quintessence', 'Black Feathers', 'Giant Turkey Leg'
+        ]);
+
+        if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
+        {
+            $skill = 10 + $pet->getIntelligence() * 2 + $pet->getUmbra();
+
+            if(mt_rand(1, $skill) >= 15)
+            {
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
+
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+
+                $pet->getGuildMembership()->increaseReputation();
+
+                $item = $this->itemRepository->findOneByName($loot);
+
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' encountered a Possessed Turkey! They were able to calm the creature, and set the spirit free. Grateful, the spirit conjured up ' . $item->getNameWithArticle() . ' for ' . $pet->getName() . '!', 'guilds/light-and-shadow');
+                $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' got this by freeing the spirit possessing a Possessed Turkey.', $activityLog);
+
+                $pet->increaseSafety(2);
+                $pet->increaseEsteem(3);
+
+                return $activityLog;
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' encountered a Possessed Turkey. They tried to calm it down, to set the spirit free, but was chased away by a flurry of kicks and pecks!', 'guilds/light-and-shadow');
+                $pet->increaseEsteem(-mt_rand(2, 3));
+                $pet->increaseSafety(-mt_rand(1, 3));
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+                return $activityLog;
+            }
+        }
+
+        if($pet->isInGuild(GuildEnum::THE_UNIVERSE_FORGETS))
+        {
+            $skill = 10 + $pet->getIntelligence() * 2 + $pet->getUmbra();
+
+            if(mt_rand(1, $skill) >= 15)
+            {
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
+
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+
+                $pet->getGuildMembership()->increaseReputation();
+
+                $item = $this->itemRepository->findOneByName($loot);
+
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' encountered a Possessed Turkey! They were able to subdue the creature, and banish the spirit forever. (And they got ' . $item->getNameWithArticle() . ' out of it!)', 'guilds/the-universe-forgets');
+                $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' got this by freeing the spirit possessing a Possessed Turkey.', $activityLog);
+
+                $pet->increaseSafety(3);
+                $pet->increaseEsteem(2);
+
+                return $activityLog;
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' encountered a Possessed Turkey. They tried to subdue it, to banish the spirit forever, but was chased away by a flurry of kicks and pecks!', 'guilds/the-universe-forgets');
+                $pet->increaseEsteem(-mt_rand(1, 3));
+                $pet->increaseSafety(-mt_rand(2, 3));
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+                return $activityLog;
+            }
+        }
+
+        $skill = 10 + $pet->getStrength() + $pet->getDexterity() + $pet->getBrawl();
 
         $pet->increaseFood(-1);
 
@@ -646,26 +744,24 @@ class HuntingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
 
-            $item = ArrayFunctions::pick_one([ 'Quintessence', 'Black Feathers', 'Giant Turkey Leg' ]);
+            $item = $this->itemRepository->findOneByName($loot);
 
-            $aOrSome = $item === 'Black Feathers' || $item === 'Quintessence' ? 'some' : 'a';
-
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to exorcise a Possessed Turkey! It worked, and ' . $pet->getName() . ' got ' . $aOrSome . ' ' . $item . ' for their trouble!', '');
-            $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' got this by exorcising a Possessed Turkey.', $activityLog);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' encountered a Possessed Turkey! They fought hard, took ' . $item->getNameWithArticle() . ', and drove the creature away!', '');
+            $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' got this by defeating a Possessed Turkey.', $activityLog);
             $pet->increaseSafety(3);
             $pet->increaseEsteem(2);
-        }
-        else
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to exorcise a Possessed Turkey, but was chased away by a flurry of kicks and pecks!', '');
-            $pet->increaseEsteem(-mt_rand(1, 3));
-            $pet->increaseSafety(-mt_rand(2, 4));
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+            return $activityLog;
         }
+
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, false);
+
+        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' encountered and fought a Possessed Turkey, but was chased away by a flurry of kicks and pecks!', '');
+        $pet->increaseEsteem(-mt_rand(1, 3));
+        $pet->increaseSafety(-mt_rand(2, 4));
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
 
         return $activityLog;
     }

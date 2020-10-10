@@ -100,7 +100,7 @@ class Protocol7Service
                 $activityLog = $this->exploreWalledGarden($pet);
                 break;
             case 20:
-                $activityLog = $this->foundCorruptSector($pet, $roll);
+                $activityLog = $this->foundCorruptSector($pet);
                 break;
             case 21:
                 if($pet->isInGuild(GuildEnum::CORRESPONDENCE))

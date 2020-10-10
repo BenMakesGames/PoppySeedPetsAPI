@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\GuildEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
@@ -205,6 +206,12 @@ class BurntForestService
     {
         $umbraRoll = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
         $brawlRoll = mt_rand(1, 20 + $pet->getBrawl() + $pet->getStrength() + $pet->getDexterity());
+        $exp = 1;
+
+        if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
+            $brawlRoll = 0;
+        else if($pet->isInGuild(GuildEnum::THE_UNIVERSE_FORGETS))
+            $umbraRoll = 0;
 
         $loot = ArrayFunctions::pick_one([
             'Crooked Stick',
@@ -218,10 +225,18 @@ class BurntForestService
             {
                 $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
 
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' found a piece of Charcoal, and convinced the spirit to eat that, instead. Grateful, the tree offered them ' . $loot . '.', '');
+                if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
+                {
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' realized that the spirit was just hungry, and found it a piece of Charcoal to eat, instead. Grateful, the tree offered them ' . $loot . '.', 'guilds/light-and-shadow');
+                    $pet->getGuildMembership()->increaseReputation();
+                    $exp = 2;
+                }
+                else
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' found a piece of Charcoal, and convinced the spirit to eat that, instead. Grateful, the tree offered them ' . $loot . '.', '');
+
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' was given this by a tree in the Burnt Forest, as thanks for saving it!', $activityLog);
                 $pet->increaseLove(mt_rand(2, 4));
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+                $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::UMBRA ]);
             }
             else
             {
@@ -237,10 +252,18 @@ class BurntForestService
             {
                 $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
 
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' was able to put the fire out; grateful, the tree offered them ' . $loot . '.', '');
+                if($pet->isInGuild(GuildEnum::THE_UNIVERSE_FORGETS))
+                {
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' immediately put the fire out so that it could no longer harm anyone; grateful, the tree offered them ' . $loot . '.', 'guilds/the-universe-forgets');
+                    $pet->getGuildMembership()->increaseReputation();
+                    $exp = 2;
+                }
+                else
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' was able to put the fire out; grateful, the tree offered them ' . $loot . '.', '');
+
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' was given this by a tree in the Burnt Forest, as thanks for saving it!', $activityLog);
                 $pet->increaseLove(mt_rand(2, 4));
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+                $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ]);
             }
             else
             {
@@ -263,15 +286,29 @@ class BurntForestService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a tear in the fabric of reality! They were able to stitch it back together, and got some Quintessence!', '');
-            $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this in the Burnt Forest while repairing a tear in the fabric of reality.', $activityLog);
+            if($pet->isInGuild(GuildEnum::TAPESTRIES))
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a tear in the fabric of reality! They were able to stitch it back together, and got some Quintessence!', 'guild/tapestries');
+                $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this in the Burnt Forest while repairing a tear in the fabric of reality.', $activityLog);
+                $pet->getGuildMembership()->increaseReputation();
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a tear in the fabric of reality! It was a little intimidating, but they managed to harvest some Quintessence!', '');
+                $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this in the Burnt Forest from tear in the fabric of reality.', $activityLog);
+            }
+
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
         }
         else
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::UMBRA, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a tear in the fabric of reality! They tried to repair it, but were worried about getting unraveled, themselves!', '');
+            if($pet->isInGuild(GuildEnum::TAPESTRIES))
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a tear in the fabric of reality! They tried to repair it, but were worried about getting unraveled, themselves!', '');
+            else
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and found a tear in the fabric of reality! They thought about harvesting some Quintessence, but were worried about getting unraveled, themselves!', '');
+
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
         }
 
