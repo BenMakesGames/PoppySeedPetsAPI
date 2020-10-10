@@ -503,7 +503,15 @@ class Protocol7Service
 
     private function foundCorruptSector(Pet $pet): PetActivityLog
     {
-        $check = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getPerception() + $pet->getScience());
+        if($pet->isInGuild(GuildEnum::TAPESTRIES))
+        {
+            $check = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getPerception() + max($pet->getUmbra(), $pet->getScience()));
+        }
+        else
+        {
+            $check = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getPerception() + $pet->getScience());
+        }
+
         $lucky = $pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 100) === 1;
 
         if($check < 20)
@@ -553,10 +561,20 @@ class Protocol7Service
                 'Browser Cookie'
             ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a corrupt sector, and managed to recover a ' . $otherLoot . ', and ' . $loot . ' from it!', '');
+            if($pet->isInGuild(GuildEnum::TAPESTRIES))
+            {
+                $pet->getGuildMembership()->increaseReputation();
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a corrupt sector in Project-E, but was able to repair it as they would repair the fabric of reality, and recover a ' . $otherLoot . ', and ' . $loot . ' from it!', 'guilds/tapestries');
+                $itemComment = $pet->getName() . ' recovered this by repairing a corrupt sector of Project-E!';
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a corrupt sector, and managed to recover a ' . $otherLoot . ', and ' . $loot . ' from it!', '');
+                $itemComment = $pet->getName() . ' recovered this from a corrupt sector of Project-E!';
+            }
 
-            $this->inventoryService->petCollectsItem($otherLoot, $pet, $pet->getName() . ' recovered this from a corrupt sector of Project-E!', $activityLog);
-            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' recovered this from a corrupt sector of Project-E!', $activityLog);
+            $this->inventoryService->petCollectsItem($otherLoot, $pet, $itemComment, $activityLog);
+            $this->inventoryService->petCollectsItem($loot, $pet, $itemComment, $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ]);
         }
