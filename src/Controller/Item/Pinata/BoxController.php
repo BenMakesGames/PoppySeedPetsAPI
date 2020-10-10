@@ -53,7 +53,8 @@ class BoxController extends PoppySeedPetsItemController
             'Merchant\'s Cap',
             'Wizarding Hat',
             'Gray Bow',
-            'Cool Sunglasses'
+            'Cool Sunglasses',
+            'Sombrero'
         ]));
 
         $stat = $userStatsRepository->incrementStat($user, 'Opened a ' . $box->getItem()->getName());
