@@ -69,6 +69,8 @@ Other good offerings include:
 
 * Hallucinogens can grant access to the Umbra, even to those untrained in cosmology. Toadstools are a well-known example, but many aren\'t aware that Royal Jelly also has this property.
 * A drink known as "Dreamwalker\'s Tea" - made from Ginger, Witch-hazel, and Rice Flower - pushes the drinker\'s sleeping mind to the Dreamscapes, areas of the Umbra which border dreams.
+  * Dreamwalker\'s Tea, combined with fruit pie, produces an elixir that causes its drinker to shrink in size!
+  * Dreamwalker\'s Tea, combined with plain sugar cookies, produces an elixir that causes its drinker to GROW in size!
 * Some food & drink are so imbued with magic, those that consume it may gain their first glimpse of the Umbra. Blood Wine - a fermented drink made from the blood of mythical creatures - is one such item.
 ');
     }

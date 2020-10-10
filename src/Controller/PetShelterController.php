@@ -133,7 +133,10 @@ class PetShelterController extends PoppySeedPetsController
             $meritRepository->getRandomAdoptedPetStartingMerit()
         );
 
-        $newPet->setFoodAndSafety(mt_rand(10, 12), -9);
+        $newPet
+            ->setFoodAndSafety(mt_rand(10, 12), -9)
+            ->setScale($petToAdopt->scale)
+        ;
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
             $newPet->setInDaycare(true);

@@ -130,9 +130,23 @@ class PregnancyService
             $this->meritRepository->getRandomStartingMerit()
         );
 
+        $smallestParent = min($pregnancy->getParent()->getScale(), $pregnancy->getOtherParent()->getScale());
+        $largestParent = max($pregnancy->getParent()->getScale(), $pregnancy->getOtherParent()->getScale());
+
+        $min = $smallestParent === 80 ? 80 : mt_rand(min($smallestParent, 80), max($smallestParent, 80));
+        $max = $largestParent === 120 ? 120 : mt_rand(min($largestParent, 120), max($largestParent, 120));
+
+        if($min === $max)
+            $babySize = $min;
+        else if($min < $max)
+            $babySize = mt_rand($min, $max);
+        else
+            $babySize = mt_rand($max, $min);
+
         $baby
             ->setMom($pregnancy->getParent())
             ->setDad($pregnancy->getOtherParent())
+            ->setScale($babySize)
         ;
 
         if($pregnancy->getAffection() > 0)

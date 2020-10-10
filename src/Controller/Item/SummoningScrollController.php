@@ -278,6 +278,8 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
             $pet = $petFactory->createRandomPetOfSpecies($user, ArrayFunctions::pick_one($allSpecies));
 
+            $pet->setScale(mt_rand(80, 120));
+
             if($pet->getSpecies()->getName() === 'Sentinel')
             {
                 $pet->setName(ArrayFunctions::pick_one(self::SENTINEL_NAMES));

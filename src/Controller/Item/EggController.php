@@ -86,6 +86,7 @@ class EggController extends PoppySeedPetsItemController
             ->increaseSafety(10)
             ->increaseEsteem(10)
             ->increaseFood(-8)
+            ->setScale(mt_rand(80, 120))
         ;
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
@@ -166,6 +167,7 @@ class EggController extends PoppySeedPetsItemController
             ->increaseSafety(10)
             ->increaseEsteem(10)
             ->increaseFood(-8)
+            ->setScale(mt_rand(80, 120))
         ;
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);

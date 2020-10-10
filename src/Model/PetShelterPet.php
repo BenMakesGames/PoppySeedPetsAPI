@@ -128,4 +128,10 @@ class PetShelterPet
      * @Groups({"petShelterPet"})
      */
     public $label;
+
+    /**
+     * @var int
+     * @Groups({"petShelterPet"})
+     */
+    public $scale;
 }

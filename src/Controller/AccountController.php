@@ -133,7 +133,10 @@ class AccountController extends PoppySeedPetsController
 
         $pet = $petFactory->createPet($user, $petName, $species, $petColorA, $petColorB, $favoriteFlavor, $startingMerit);
 
-        $pet->setFoodAndSafety(mt_rand(10, 12), -9);
+        $pet
+            ->setFoodAndSafety(mt_rand(10, 12), -9)
+            ->setScale(mt_rand(90, 110))
+        ;
 
         $inventoryService->receiveItem('Welcome Note', $user, null, 'This Welcome Note was waiting for ' . $user->getName() . ' in their house.', LocationEnum::HOME, true);
 

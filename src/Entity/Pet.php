@@ -342,6 +342,11 @@ class Pet
      */
     private $houseTime;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $scale = 100;
+
     public function __construct()
     {
         $this->birthDate = new \DateTimeImmutable();
@@ -1753,5 +1758,31 @@ class Pet
         }
 
         return $this;
+    }
+
+    public function getScale(): ?int
+    {
+        return $this->scale;
+    }
+
+    public function setScale(int $scale): self
+    {
+        $this->scale = $scale;
+
+        return $this;
+    }
+
+    /**
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember"})
+     * @SerializedName("scale")
+     */
+    public function getPerceivedScale(): int
+    {
+        if(!$this->getMom())
+            return $this->getScale();
+
+        $factor = min(14, (new \DateTimeImmutable())->diff($this->getBirthDate())->days) / 14 * 0.5 + 0.5;
+
+        return round($this->getScale() * $factor);
     }
 }

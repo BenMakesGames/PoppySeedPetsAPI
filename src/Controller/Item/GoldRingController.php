@@ -135,6 +135,7 @@ class GoldRingController extends PoppySeedPetsItemController
                 ->increaseSafety(10)
                 ->increaseEsteem(10)
                 ->increaseFood(-8)
+                ->setScale(mt_rand(80, 120))
             ;
 
             $message = '100 Gold Rings!!! That\'s one extra Hedgehog!';

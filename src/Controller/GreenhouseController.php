@@ -255,9 +255,11 @@ class GreenhouseController extends PoppySeedPetsController
 
             $tomate = $petFactory->createPet($user, $tomateName, $species, $colorA, $colorB, FlavorEnum::getRandomValue(), $meritRepository->getRandomStartingMerit());
 
-            $tomate->addMerit($meritRepository->findOneByName(MeritEnum::MOON_BOUND));
-
-            $tomate->setFoodAndSafety(mt_rand(10, 12), -9);
+            $tomate
+                ->addMerit($meritRepository->findOneByName(MeritEnum::MOON_BOUND))
+                ->setFoodAndSafety(mt_rand(10, 12), -9)
+                ->setScale(mt_rand(80, 120))
+            ;
 
             $em->remove($plant);
 

@@ -164,6 +164,7 @@ class AdoptionService
             $pet->colorA = $colorA;
             $pet->colorB = $colorB;
             $pet->id = mt_rand(100000, 999999) * 10 + $i;
+            $pet->scale = mt_rand(80, 120);
 
             $pets[] = $pet;
         }

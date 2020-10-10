@@ -245,7 +245,11 @@ class BugController extends PoppySeedPetsItemController
             FlavorEnum::getRandomValue(),
             $meritRepository->getRandomAdoptedPetStartingMerit()
         );
-        $newPet->setFoodAndSafety(mt_rand(10, 12), -9);
+
+        $newPet
+            ->setFoodAndSafety(mt_rand(10, 12), -9)
+            ->setScale(mt_rand(80, 120))
+        ;
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
 
