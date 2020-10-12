@@ -550,7 +550,9 @@ class ProgrammingService
             {
                 $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, false);
                 $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' started ' . $actionInterrupted . ', but an Infinity Imp popped up, and started to attack! During the fight, ' . $pet->getName() . ' exploited a divergence in the imp\'s construction, and unraveled it, receiving ' . $loot . '!', 'icons/activity-logs/confused');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' started ' . $actionInterrupted . ', but an Infinity Imp popped up, and started to attack! During the fight, ' . $pet->getName() . ' exploited a divergence in the imp\'s construction, and unraveled it, receiving ' . $loot . '!', 'icons/activity-logs/confused');
+                $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' received this by unraveling an Infinity Imp.', $activityLog);
+                return $activityLog;
             }
         }
         else
@@ -559,7 +561,9 @@ class ProgrammingService
             {
                 $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, false);
                 $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ]);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' started ' . $actionInterrupted . ', but an Infinity Imp popped up, and started to attack! ' . $pet->getName() . ' slew the creature outright, and claimed its ' . $loot . '!', 'icons/activity-logs/confused');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' started ' . $actionInterrupted . ', but an Infinity Imp popped up, and started to attack! ' . $pet->getName() . ' slew the creature outright, and claimed its ' . $loot . '!', 'icons/activity-logs/confused');
+                $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' received this by slaying an Infinity Imp.', $activityLog);
+                return $activityLog;
             }
         }
 
