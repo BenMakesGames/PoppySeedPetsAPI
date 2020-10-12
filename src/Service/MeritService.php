@@ -9,6 +9,20 @@ use App\Repository\MeritRepository;
 
 class MeritService
 {
+    public const AFFECTION_MERITS = [
+        MeritEnum::EIDETIC_MEMORY,
+        MeritEnum::BLACK_HOLE_TUM,
+        MeritEnum::LUCKY,
+        MeritEnum::MOON_BOUND,
+        MeritEnum::NATURAL_CHANNEL,
+        MeritEnum::NO_SHADOW_OR_REFLECTION,
+        MeritEnum::SOOTHING_VOICE,
+        MeritEnum::SPIRIT_COMPANION,
+        MeritEnum::PROTOCOL_7,
+        MeritEnum::INTROSPECTIVE,
+        MeritEnum::VOLAGAMY,
+    ];
+
     private $meritRepository;
 
     public function __construct(MeritRepository $meritRepository)

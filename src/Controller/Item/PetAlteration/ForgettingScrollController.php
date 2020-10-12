@@ -97,10 +97,10 @@ class ForgettingScrollController extends PoppySeedPetsItemController
 
         $em->remove($inventory);
 
-        $pet
-            ->removeMerit($merit)
-            ->decreaseAffectionRewardsClaimed()
-        ;
+        $pet->removeMerit($merit);
+
+        if(in_array($merit->getName(), MeritService::AFFECTION_MERITS))
+            $pet->decreaseAffectionRewardsClaimed();
 
         if($merit->getName() === MeritEnum::BEHATTED)
         {
