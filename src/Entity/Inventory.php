@@ -494,8 +494,8 @@ class Inventory
     public function canBeNibbled(): bool
     {
         return
-            $this->getItem()->getTool()->getIncreasesPooping() ||
-            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getIncreasesPooping())
+            $this->getItem()->getTool()->getCanBeNibbled() ||
+            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getCanBeNibbled())
         ;
     }
 

@@ -25,6 +25,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Model\FortuneCookie;
 use App\Model\PetChanges;
+use App\Model\PetChangesSummary;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
@@ -366,7 +367,17 @@ class PetService
             throw new \InvalidArgumentException('Pet does not have enough Time. (Ben did something horrible; please let him know.)');
 
         if($pet->getTool() && $pet->getTool()->canBeNibbled() && mt_rand(1, 10) === 1)
-            $this->responseService->createActivityLog($pet, $pet->getName() . ' nibbled on their ' . $this->toolBonusService->getNameWithBonus($pet->getTool()) . '.', '');
+        {
+            $changes = new PetChangesSummary();
+            $changes->food = '+';
+
+            $this->responseService->createActivityLog(
+                $pet,
+                $pet->getName() . ' nibbled on their ' . $this->toolBonusService->getNameWithBonus($pet->getTool()) . '.',
+                '',
+                $changes
+            );
+        }
         else
             $pet->increaseFood(-1);
 
