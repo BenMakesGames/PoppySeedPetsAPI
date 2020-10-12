@@ -31,6 +31,21 @@ class MeritService
             MeritEnum::EIDETIC_MEMORY,
             MeritEnum::MOON_BOUND,
             MeritEnum::NO_SHADOW_OR_REFLECTION,
+            MeritEnum::LUCKY,
+            MeritEnum::BURPS_MOTHS,
+            MeritEnum::DARKVISION,
+            MeritEnum::DREAMWALKER,
+            MeritEnum::GOURMAND,
+            MeritEnum::GREGARIOUS,
+            MeritEnum::HYPERCHROMATIC,
+            MeritEnum::LOLLIGOVORE,
+            MeritEnum::NAIVE,
+            MeritEnum::PREHENSILE_TONGUE,
+            MeritEnum::SHEDS,
+            MeritEnum::SPECTRAL,
+            MeritEnum::MIRRORED,
+            MeritEnum::BEHATTED,
+            MeritEnum::SPIRIT_COMPANION,
         ]));
 
         if(!$pet->getPregnancy() && $pet->hasMerit(MeritEnum::VOLAGAMY))

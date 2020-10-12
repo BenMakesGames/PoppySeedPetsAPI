@@ -3,6 +3,7 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
+use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
 use App\Repository\MeritRepository;
@@ -100,6 +101,31 @@ class ForgettingScrollController extends PoppySeedPetsItemController
             ->removeMerit($merit)
             ->decreaseAffectionRewardsClaimed()
         ;
+
+        if($merit->getName() === MeritEnum::BEHATTED)
+        {
+            if($pet->getHat())
+            {
+                $pet->getHat()
+                    ->setLocation(LocationEnum::HOME)
+                    ->setModifiedOn()
+                ;
+
+                $pet->setHat(null);
+
+                $responseService->addFlashMessage($pet->getName() . '\'s hat falls to the ground.');
+            }
+        }
+        else if($merit->getName() === MeritEnum::SPIRIT_COMPANION)
+        {
+            if($pet->getSpiritCompanion())
+            {
+                $responseService->addFlashMessage($pet->getSpiritCompanion()->getName() . ' fades away...');
+
+                $em->remove($pet->getSpiritCompanion());
+                $pet->setSpiritCompanion(null);
+            }
+        }
 
         $em->flush();
 
