@@ -50,6 +50,7 @@ use App\Service\PetActivity\Protocol7Service;
 use App\Service\PetActivity\TreasureMapService;
 use App\Service\PetActivity\UmbraService;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class PetService
 {
@@ -85,6 +86,7 @@ class PetService
     private $burntForestService;
     private $deepSeaService;
     private $petSummonedAwayService;
+    private $toolBonusService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -99,7 +101,7 @@ class PetService
         EasterEggHuntingService $easterEggHuntingService, HeartDimensionService $heartDimensionService,
         PetRelationshipRepository $petRelationshipRepository, GuildService $guildService, InventoryService $inventoryService,
         BurntForestService $burntForestService, DeepSeaService $deepSeaService,
-        PetSummonedAwayService $petSummonedAwayService
+        PetSummonedAwayService $petSummonedAwayService, ToolBonusService $toolBonusService
     )
     {
         $this->em = $em;
@@ -134,6 +136,7 @@ class PetService
         $this->burntForestService = $burntForestService;
         $this->deepSeaService = $deepSeaService;
         $this->petSummonedAwayService = $petSummonedAwayService;
+        $this->toolBonusService = $toolBonusService;
     }
 
     /**
@@ -362,7 +365,10 @@ class PetService
         if($pet->getHouseTime()->getActivityTime() < 60)
             throw new \InvalidArgumentException('Pet does not have enough Time. (Ben did something horrible; please let him know.)');
 
-        $pet->increaseFood(-1);
+        if($pet->getTool() && $pet->getTool()->canBeNibbled() && mt_rand(1, 10) === 1)
+            $this->responseService->createActivityLog($pet, $pet->getName() . ' nibbled on their ' . $this->toolBonusService->getNameWithBonus($pet->getTool()) . '.', '');
+        else
+            $pet->increaseFood(-1);
 
         if($pet->getJunk() > 0)
             $pet->increaseJunk(-1);
@@ -453,7 +459,7 @@ class PetService
             }
         }
 
-        if($pet->hasMerit(MeritEnum::BLACK_HOLE_TUM) && mt_rand(1, 180) === 1)
+        if($this->poop($pet))
         {
             $this->poopingService->poopDarkMatter($pet);
         }
@@ -560,7 +566,7 @@ class PetService
             $this->dreamingService->dream($pet);
             $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::ONEIRIC));
         }
-        else if($pet->hasMerit(MeritEnum::DREAMWALKER) && mt_rand(1, 200) === 1)
+        else if($this->dream($pet))
         {
             $this->dreamingService->dream($pet);
             return;
@@ -1391,5 +1397,27 @@ class PetService
             $desire += $pet->getTool()->getItem()->getTool()->getScience();
 
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
+    }
+
+    private function poop(Pet $pet): bool
+    {
+        if($pet->hasMerit(MeritEnum::BLACK_HOLE_TUM) && mt_rand(1, 180) === 1)
+            return true;
+
+        if($pet->getTool() && $pet->getTool()->increasesPooping() && mt_rand(1, 180) === 1)
+            return true;
+
+        return false;
+    }
+
+    private function dream(Pet $pet): bool
+    {
+        if($pet->hasMerit(MeritEnum::DREAMWALKER) && mt_rand(1, 200) === 1)
+            return true;
+
+        if($pet->getTool() && $pet->getTool()->isDreamcatcher() && mt_rand(1, 200) === 1)
+            return true;
+
+        return false;
     }
 }

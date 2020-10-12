@@ -164,6 +164,21 @@ class ItemTool
      */
     private $enchantment;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $canBeNibbled = false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $increasesPooping = false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $dreamcatcher = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -364,6 +379,9 @@ class ItemTool
                 $modifiers[] = ($value > 0 ? '+' : '') . $value . ' ' . $modifier;
         }
 
+        if($this->getIsRanged())
+            $modifiers[] = 'is only useful at a distance';
+
         if($this->getLeadsToAdventure())
         {
             if($this->getId() === 205) // aubergine commander
@@ -395,8 +413,14 @@ class ItemTool
         if($this->getPreventsBugs())
             $modifiers[] = 'prevents bugs from following the pet home';
 
-        if($this->getIsRanged())
-            $modifiers[] = 'is only useful at a distance';
+        if($this->getCanBeNibbled())
+            $modifiers[] = 'the pet will occasionally nibble on this item';
+
+        if($this->getIncreasesPooping())
+            $modifiers[] = 'the pet will occasionally... find Dark Matter';
+
+        if($this->getDreamcatcher())
+            $modifiers[] = 'the pet will occasionally have vivid dreams';
 
         return $modifiers;
     }
@@ -546,6 +570,42 @@ class ItemTool
         if ($enchantment->getEffects() !== $this) {
             $enchantment->setEffects($this);
         }
+
+        return $this;
+    }
+
+    public function getCanBeNibbled(): ?bool
+    {
+        return $this->canBeNibbled;
+    }
+
+    public function setCanBeNibbled(bool $canBeNibbled): self
+    {
+        $this->canBeNibbled = $canBeNibbled;
+
+        return $this;
+    }
+
+    public function getIncreasesPooping(): ?bool
+    {
+        return $this->increasesPooping;
+    }
+
+    public function setIncreasesPooping(bool $increasesPooping): self
+    {
+        $this->increasesPooping = $increasesPooping;
+
+        return $this;
+    }
+
+    public function getDreamcatcher(): ?bool
+    {
+        return $this->dreamcatcher;
+    }
+
+    public function setDreamcatcher(bool $dreamcatcher): self
+    {
+        $this->dreamcatcher = $dreamcatcher;
 
         return $this;
     }

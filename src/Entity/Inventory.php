@@ -482,4 +482,28 @@ class Inventory
             ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getFocusSkill() === $skill)
         ;
     }
+
+    public function increasesPooping(): bool
+    {
+        return
+            $this->getItem()->getTool()->getIncreasesPooping() ||
+            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getIncreasesPooping())
+        ;
+    }
+
+    public function canBeNibbled(): bool
+    {
+        return
+            $this->getItem()->getTool()->getIncreasesPooping() ||
+            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getIncreasesPooping())
+        ;
+    }
+
+    public function isDreamcatcher(): bool
+    {
+        return
+            $this->getItem()->getTool()->getDreamcatcher() ||
+            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getDreamcatcher())
+        ;
+    }
 }
