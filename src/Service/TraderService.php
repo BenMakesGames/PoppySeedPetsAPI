@@ -600,6 +600,11 @@ class TraderService
                 'That\'s no knock-off! Tell Samarzhoustia trades directly with the Eridanus Federation!'
             ),
             new TraderOffer(
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Moon Pearl'), 1) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Composter'), 1) ],
+                'That\'s no knock-off! Tell Samarzhoustia trades directly with the Eridanus Federation!'
+            ),
+            new TraderOffer(
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Painted Fishing Rod'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Paper Bag'), 1) ],
                 'I just can\'t believe humans are allowed to carry a rod without a permit.'

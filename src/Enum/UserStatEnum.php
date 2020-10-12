@@ -31,4 +31,5 @@ final class UserStatEnum
     const TRADED_WITH_THE_FLUFFMONGER = 'Fluff Traded to the Fluffmonger';
     const EGGS_HARVESTED_FROM_EGGPLANTS = 'Eggs Harvested from Eggplants';
     const ROTTEN_EGGPLANTS = 'Eggplants Which Were Horrible and Rotten';
+    const ITEMS_COMPOSTED = 'Items Composted';
 }

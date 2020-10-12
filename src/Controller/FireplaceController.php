@@ -390,12 +390,11 @@ class FireplaceController extends PoppySeedPetsController
 
         if(!is_array($itemIds)) $itemIds = [ $itemIds ];
 
-        /** @var Inventory[] $items */
-        $items = $inventoryRepository->findBy([
-            'id' => $itemIds,
-            'owner' => $user->getId(),
-            'location' => LocationEnum::HOME
-        ]);
+        $items = $inventoryRepository->findFuel($user, $itemIds);
+
+        $items = array_filter($items, function(Inventory $i) {
+            return $i->getItem()->getFuel() > 0;
+        });
 
         if(count($items) < count($itemIds))
             throw new UnprocessableEntityHttpException('Some of the fuel items selected could not be used. That shouldn\'t happen. Reload and try again, maybe?');

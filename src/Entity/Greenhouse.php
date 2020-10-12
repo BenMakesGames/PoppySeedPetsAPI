@@ -53,6 +53,17 @@ class Greenhouse
      */
     private $maxDarkPlants = 0;
 
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"myGreenhouse"})
+     */
+    private $hasComposter = false;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $composterFood = 0;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -126,6 +137,30 @@ class Greenhouse
     public function increaseMaxDarkPlants(int $amount): self
     {
         $this->maxDarkPlants += $amount;
+
+        return $this;
+    }
+
+    public function getHasComposter(): ?bool
+    {
+        return $this->hasComposter;
+    }
+
+    public function setHasComposter(bool $hasComposter): self
+    {
+        $this->hasComposter = $hasComposter;
+
+        return $this;
+    }
+
+    public function getComposterFood(): ?int
+    {
+        return $this->composterFood;
+    }
+
+    public function setComposterFood(int $composterFood): self
+    {
+        $this->composterFood = $composterFood;
 
         return $this;
     }

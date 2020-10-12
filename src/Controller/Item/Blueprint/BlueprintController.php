@@ -29,6 +29,49 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class BlueprintController extends PoppySeedPetsItemController
 {
     /**
+     * @Route("/installComposter/{inventory}", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function installComposter(
+        Inventory $inventory, ResponseService $responseService, PetRepository $petRepository, Request $request,
+        PetService $petService, EntityManagerInterface $em
+    )
+    {
+        $this->validateInventory($inventory, 'installComposter');
+
+        $user = $this->getUser();
+
+        if(!$user->getUnlockedGreenhouse())
+            return $responseService->error(400, [ 'You need a Greenhouse to install a Composter!' ]);
+
+        if($user->getGreenhouse()->getHasComposter())
+            return $responseService->error(200, [ 'Your Greenhouse already has a Composter!' ]);
+
+        $pet = $this->getPet($request, $petRepository);
+
+        $em->remove($inventory);
+
+        $user->getGreenhouse()->setHasComposter(true);
+
+        $flashMessage = 'You install the Composter with ' . $pet->getName() . '!';
+
+        $this->rewardHelper(
+            $petService, $responseService,
+            $pet,
+            null,
+            $flashMessage,
+            $pet->getName() . ' installed a Composter in the Greenhouse with ' . $user->getName() . '!'
+        );
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess(
+            null,
+            [ 'reloadInventory' => true, 'itemDeleted' => true ]
+        );
+    }
+
+    /**
      * @Route("/basementBlueprint/{inventory}", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -45,28 +88,26 @@ class BlueprintController extends PoppySeedPetsItemController
         {
             return $responseService->itemActionSuccess('You\'ve already got a Basement!');
         }
-        else
-        {
-            $pet = $this->getPet($request, $petRepository);
 
-            $user->setUnlockedBasement();
-            $em->remove($inventory);
+        $pet = $this->getPet($request, $petRepository);
 
-            $this->rewardHelper(
-                $petService, $responseService,
-                $pet,
-                PetSkillEnum::CRAFTS,
-                $pet->getName() . ' helps you build the Basement. Together, you\'re done in no time! (Video game logic!) ("Basement" has been added to the menu!)',
-                $pet->getName() . ' helped ' . $user->getName() . ' "build" a Basement!'
-            );
+        $user->setUnlockedBasement();
+        $em->remove($inventory);
 
-            $em->flush();
+        $this->rewardHelper(
+            $petService, $responseService,
+            $pet,
+            PetSkillEnum::CRAFTS,
+            $pet->getName() . ' helps you build the Basement. Together, you\'re done in no time! (Video game logic!) ("Basement" has been added to the menu!)',
+            $pet->getName() . ' helped ' . $user->getName() . ' "build" a Basement!'
+        );
 
-            return $responseService->itemActionSuccess(
-                null,
-                [ 'itemDeleted' => true ]
-            );
-        }
+        $em->flush();
+
+        return $responseService->itemActionSuccess(
+            null,
+            [ 'itemDeleted' => true ]
+        );
     }
 
     /**
@@ -95,7 +136,8 @@ class BlueprintController extends PoppySeedPetsItemController
         {
             throw new UnprocessableEntityHttpException('You\'ve already got a Beehive!');
         }
-        else if(!$inventoryRepository->userHasAnyOneOf($user, $magnifyingGlasses, [
+
+        if(!$inventoryRepository->userHasAnyOneOf($user, $magnifyingGlasses, [
             LocationEnum::HOME,
             LocationEnum::BASEMENT,
             LocationEnum::MANTLE,
@@ -104,28 +146,26 @@ class BlueprintController extends PoppySeedPetsItemController
         {
             throw new UnprocessableEntityHttpException('Goodness! It\'s so small! You\'ll need a magnifying glass of some kind...');
         }
-        else
-        {
-            $pet = $this->getPet($request, $petRepository);
 
-            $em->remove($inventory);
+        $pet = $this->getPet($request, $petRepository);
 
-            $user->setUnlockedBeehive();
+        $em->remove($inventory);
 
-            $beehiveService->createBeehive($user);
+        $user->setUnlockedBeehive();
 
-            $this->rewardHelper(
-                $petService, $responseService,
-                $pet,
-                PetSkillEnum::CRAFTS,
-                'The blueprint is _super_ tiny, but with the help of a magnifying glass, you\'re able to make it all out, and you and ' . $pet->getName() . ' put the thing together! ("Beehive" has been added to the menu!)',
-                $pet->getName() . ' put a Beehive together with ' . $user->getName() . '!'
-            );
+        $beehiveService->createBeehive($user);
 
-            $em->flush();
+        $this->rewardHelper(
+            $petService, $responseService,
+            $pet,
+            PetSkillEnum::CRAFTS,
+            'The blueprint is _super_ tiny, but with the help of a magnifying glass, you\'re able to make it all out, and you and ' . $pet->getName() . ' put the thing together! ("Beehive" has been added to the menu!)',
+            $pet->getName() . ' put a Beehive together with ' . $user->getName() . '!'
+        );
 
-            return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
-        }
+        $em->flush();
+
+        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -145,31 +185,29 @@ class BlueprintController extends PoppySeedPetsItemController
         {
             throw new UnprocessableEntityHttpException('You\'ve already claimed a plot in the Greenhouse.');
         }
-        else
-        {
-            $pet = $this->getPet($request, $petRepository);
 
-            $greenhouse = new Greenhouse();
+        $pet = $this->getPet($request, $petRepository);
 
-            $user
-                ->setUnlockedGreenhouse()
-                ->setGreenhouse($greenhouse)
-            ;
+        $greenhouse = new Greenhouse();
 
-            $this->rewardHelper(
-                $petService, $responseService,
-                $pet,
-                PetSkillEnum::CRAFTS,
-                'You and ' . $pet->getName() . ' clear out a space in the public Greenhouse! ("Greenhouse" has been added to the menu!)',
-                $pet->getName() . ' cleared out a space in the public Greenhouse with ' . $user->getName() . '!'
-            );
+        $user
+            ->setUnlockedGreenhouse()
+            ->setGreenhouse($greenhouse)
+        ;
 
-            $em->persist($greenhouse);
-            $em->remove($inventory);
-            $em->flush();
+        $this->rewardHelper(
+            $petService, $responseService,
+            $pet,
+            PetSkillEnum::CRAFTS,
+            'You and ' . $pet->getName() . ' clear out a space in the public Greenhouse! ("Greenhouse" has been added to the menu!)',
+            $pet->getName() . ' cleared out a space in the public Greenhouse with ' . $user->getName() . '!'
+        );
 
-            return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
-        }
+        $em->persist($greenhouse);
+        $em->remove($inventory);
+        $em->flush();
+
+        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -187,42 +225,41 @@ class BlueprintController extends PoppySeedPetsItemController
 
         if(!$user->getUnlockedGreenhouse())
             return $responseService->error(400, [ 'You need a Greenhouse to build a Bird Bath!' ]);
-        else if($user->getGreenhouse()->getHasBirdBath())
+
+        if($user->getGreenhouse()->getHasBirdBath())
             return $responseService->error(200, [ 'Your Greenhouse already has a Bird Bath!' ]);
-        else
-        {
-            $pet = $this->getPet($request, $petRepository);
 
-            $ironBar = $inventoryRepository->findOneToConsume($user, 'Iron Bar');
+        $pet = $this->getPet($request, $petRepository);
 
-            if(!$ironBar)
-                return $responseService->error(422, [ 'Hm... you\'re going to need an Iron Bar to make this...' ]);
+        $ironBar = $inventoryRepository->findOneToConsume($user, 'Iron Bar');
 
-            $em->remove($ironBar);
-            $em->remove($inventory);
+        if(!$ironBar)
+            return $responseService->error(422, [ 'Hm... you\'re going to need an Iron Bar to make this...' ]);
 
-            $user->getGreenhouse()->setHasBirdBath(true);
+        $em->remove($ironBar);
+        $em->remove($inventory);
 
-            $flashMessage = 'You build a Bird Bath with ' . $pet->getName() . '!';
+        $user->getGreenhouse()->setHasBirdBath(true);
 
-            if(strtolower($pet->getName()[0]) === 'b')
-                $flashMessage .= ' (How alliterative!)';
+        $flashMessage = 'You build a Bird Bath with ' . $pet->getName() . '!';
 
-            $this->rewardHelper(
-                $petService, $responseService,
-                $pet,
-                PetSkillEnum::CRAFTS,
-                $flashMessage,
-                $pet->getName() . ' built a Bird Bath in the Greenhouse with ' . $user->getName() . '!'
-            );
+        if(strtolower($pet->getName()[0]) === 'b')
+            $flashMessage .= ' (How alliterative!)';
 
-            $em->flush();
+        $this->rewardHelper(
+            $petService, $responseService,
+            $pet,
+            PetSkillEnum::CRAFTS,
+            $flashMessage,
+            $pet->getName() . ' built a Bird Bath in the Greenhouse with ' . $user->getName() . '!'
+        );
 
-            return $responseService->itemActionSuccess(
-                null,
-                [ 'reloadInventory' => true, 'itemDeleted' => true ]
-            );
-        }
+        $em->flush();
+
+        return $responseService->itemActionSuccess(
+            null,
+            [ 'reloadInventory' => true, 'itemDeleted' => true ]
+        );
     }
 
     private function getPet(Request $request, PetRepository $petRepository): Pet
@@ -236,11 +273,13 @@ class BlueprintController extends PoppySeedPetsItemController
         return $pet;
     }
 
-    private function rewardHelper(PetService $petService, ResponseService $responseService, Pet $pet, string $skill, string $flashMessage, string $logMessage)
+    private function rewardHelper(PetService $petService, ResponseService $responseService, Pet $pet, ?string $skill, string $flashMessage, string $logMessage)
     {
         $changes = new PetChanges($pet);
 
-        $pet->getSkills()->increaseStat($skill);
+        if($skill)
+            $pet->getSkills()->increaseStat($skill);
+
         $pet
             ->increaseLove(mt_rand(3, 6))
             ->increaseEsteem(mt_rand(2, 4))
@@ -250,9 +289,8 @@ class BlueprintController extends PoppySeedPetsItemController
 
         $responseService->addFlashMessage($flashMessage);
 
-        $responseService->createActivityLog($pet, $logMessage, '', $changes->compare($pet))
+        $responseService->createActivityLog($pet, $logMessage, 'ui/affection', $changes->compare($pet))
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
         ;
-
     }
 }

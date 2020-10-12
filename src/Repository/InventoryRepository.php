@@ -58,9 +58,12 @@ class InventoryRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findFertilizers(User $user)
+    /**
+     * @return Inventory[]
+     */
+    public function findFertilizers(User $user, ?array $inventoryIds = null)
     {
-        return $this->createQueryBuilder('i')
+        $qb = $this->createQueryBuilder('i')
             ->andWhere('i.owner=:owner')
             ->andWhere('i.location = :home')
             ->leftJoin('i.item', 'item')
@@ -68,14 +71,28 @@ class InventoryRepository extends ServiceEntityRepository
             ->addOrderBy('item.name', 'ASC')
             ->setParameter('owner', $user->getId())
             ->setParameter('home', LocationEnum::HOME)
+        ;
+
+        if($inventoryIds)
+        {
+            $qb
+                ->andWhere('i.id IN (:inventoryIds)')
+                ->setParameter('inventoryIds', $inventoryIds)
+            ;
+        }
+
+        return $qb
             ->getQuery()
             ->getResult()
         ;
     }
 
-    public function findFuel(User $user)
+    /**
+     * @return Inventory[]
+     */
+    public function findFuel(User $user, ?array $inventoryIds = null): array
     {
-        return $this->createQueryBuilder('i')
+        $qb = $this->createQueryBuilder('i')
             ->andWhere('i.owner=:owner')
             ->andWhere('i.location IN (:home)')
             ->leftJoin('i.item', 'item')
@@ -84,6 +101,17 @@ class InventoryRepository extends ServiceEntityRepository
             ->addOrderBy('item.name', 'ASC')
             ->setParameter('owner', $user->getId())
             ->setParameter('home', LocationEnum::HOME)
+        ;
+
+        if($inventoryIds)
+        {
+            $qb
+                ->andWhere('i.id IN (:inventoryIds)')
+                ->setParameter('inventoryIds', $inventoryIds)
+            ;
+        }
+
+        return $qb
             ->getQuery()
             ->getResult()
         ;

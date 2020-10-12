@@ -45,6 +45,12 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  */
 class GreenhouseController extends PoppySeedPetsController
 {
+    public const FORBIDDEN_COMPOST = [
+        'Small Bag of Fertilizer',
+        'Bag of Fertilizer',
+        'Large Bag of Fertilizer'
+    ];
+
     /**
      * @Route("", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
@@ -177,6 +183,93 @@ class GreenhouseController extends PoppySeedPetsController
         $em->flush();
 
         $responseService->addFlashMessage($message);
+
+        return $responseService->success();
+    }
+
+    /**
+     * @Route("/composter/feed", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function feedComposter(
+        ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
+        InventoryService $inventoryService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+    )
+    {
+        $user = $this->getUser();
+
+        if(!$user->getGreenhouse())
+            throw new AccessDeniedHttpException('You haven\'t purchased a Greenhouse plot yet!');
+
+        if(!$user->getGreenhouse()->getHasComposter())
+            throw new AccessDeniedHttpException('Your don\'t have a composter yet!');
+
+        if(!$request->request->has('food'))
+            throw new UnprocessableEntityHttpException('No items were selected as fuel???');
+
+        $itemIds = $request->request->get('food');
+
+        if(!is_array($itemIds)) $itemIds = [ $itemIds ];
+
+        $items = $inventoryRepository->findFertilizers($user, $itemIds);
+
+        $items = array_filter($items, function(Inventory $i)  {
+            return !in_array($i->getItem()->getName(), self::FORBIDDEN_COMPOST);
+        });
+
+        if(count($items) < count($itemIds))
+            throw new UnprocessableEntityHttpException('Some of the compost items selected could not be used. That shouldn\'t happen. Reload and try again, maybe?');
+
+        $totalFertilizer = $user->getGreenhouse()->getComposterFood();
+
+        foreach($items as $item)
+        {
+            $totalFertilizer += $item->getItem()->getFertilizer();
+            $em->remove($item);
+        }
+
+        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_COMPOSTED, count($items));
+
+        $largeBags = (int)($totalFertilizer / 20);
+
+        $totalFertilizer -= $largeBags * 20;
+
+        $mediumBags = (int)($totalFertilizer / 15);
+
+        $totalFertilizer -= $mediumBags * 15;
+
+        $smallBags = (int)($totalFertilizer / 10);
+
+        $totalFertilizer -= $smallBags * 10;
+
+        $user->getGreenhouse()->setComposterFood($totalFertilizer);
+
+        for($i = 0; $i < $largeBags; $i++)
+            $inventoryService->receiveItem('Large Bag of Fertilizer', $user, $user, $user->getName() . ' made this using their composter.', LocationEnum::HOME, false);
+
+        for($i = 0; $i < $mediumBags; $i++)
+            $inventoryService->receiveItem('Bag of Fertilizer', $user, $user, $user->getName() . ' made this using their composter.', LocationEnum::HOME, false);
+
+        for($i = 0; $i < $smallBags; $i++)
+            $inventoryService->receiveItem('Small Bag of Fertilizer', $user, $user, $user->getName() . ' made this using their composter.', LocationEnum::HOME, false);
+
+        $got = [];
+
+        if($largeBags > 0)
+            $got[] = $largeBags === 1 ? 'one Large Bag of Fertilizer' : ($largeBags . ' Large Bags of Fertilizer');
+
+        if($mediumBags > 0)
+            $got[] = $mediumBags === 1 ? 'one Bag of Fertilizer' : ($mediumBags . ' Bags of Fertilizer');
+
+        if($smallBags > 0)
+            $got[] = $smallBags === 1 ? 'one Small Bag of Fertilizer' : ($smallBags . ' Small Bags of Fertilizer');
+
+        $em->flush();
+
+        if(count($got) > 0)
+            $responseService->addFlashMessage('You got ' . ArrayFunctions::list_nice($got) . '!');
+        else
+            $responseService->addFlashMessage('That wasn\'t quite enough to make a bag of fertilizer... but it\'s progress!');
 
         return $responseService->success();
     }
