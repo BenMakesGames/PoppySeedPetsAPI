@@ -365,25 +365,25 @@ class RelationshipChangeService
             RelationshipEnum::MATE => 'date',
         ];
 
-        $r = mt_rand(1, 100);
-
         if($p1->getPet()->hasMerit(MeritEnum::NAIVE))
-            $chanceP1ChangesMind = 100;
-        else if($p1->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
+            $chanceP2ChangesMind = 0;
+
+        if($p1->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
             $chanceP1ChangesMind = ceil($chanceP1ChangesMind / 4);
 
         if($p2->getPet()->hasMerit(MeritEnum::NAIVE))
-        {
-            $chanceP2ChangesMind = 100;
+            $chanceP1ChangesMind = 0;
 
-            if($chanceP1ChangesMind === 100)
-            {
-                $chanceP1ChangesMind = 50;
-                $chanceP2ChangesMind = 50;
-            }
-        }
-        else if($p2->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
+        if($p2->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
             $chanceP2ChangesMind = ceil($chanceP2ChangesMind / 4);
+
+        if($chanceP1ChangesMind === 0 && $chanceP2ChangesMind === 0)
+        {
+            $chanceP1ChangesMind = 1;
+            $chanceP2ChangesMind = 1;
+        }
+
+        $r = mt_rand(1, $chanceP1ChangesMind + $chanceP2ChangesMind);
 
         if($r <= $chanceP1ChangesMind)
         {
@@ -395,7 +395,7 @@ class RelationshipChangeService
             if(mt_rand(1, 4) !== 1)
                 $p1->setRelationshipGoal($p2->getRelationshipGoal());
 
-            if($chanceP1ChangesMind === 100)
+            if($chanceP2ChangesMind === 0)
                 $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$originalGoal] . ', but ' . $p2->getPet()->getName() . ' asked to ' . $downgradeDescription[$p2->getCurrentRelationship()] . ', instead. ' . $p1->getPet()->getName() . ' agreed immediately!';
             else
                 $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$originalGoal] . ', but ' . $p2->getPet()->getName() . ' was upset, and asked to ' . $downgradeDescription[$p2->getCurrentRelationship()] . '. After talking for a while, ' . $p1->getPet()->getName() . ' agreed...';
@@ -418,7 +418,7 @@ class RelationshipChangeService
             if(mt_rand(1, 4) !== 1)
                 $p2->setRelationshipGoal($p1->getRelationshipGoal());
 
-            if($chanceP2ChangesMind === 100)
+            if($chanceP1ChangesMind === 0)
                 $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$p1->getRelationshipGoal()] . '. ' . $p2->getPet()->getName() . ' agreed immediately!';
             else
                 $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$p1->getRelationshipGoal()] . '. ' . $p2->getPet()->getName() . ' was upset, but after talking for a while said that it would be okay...';
@@ -491,30 +491,30 @@ class RelationshipChangeService
             RelationshipEnum::MATE => 'dating',
         ];
 
-        $r = mt_rand(1, 100);
-
         // naive pets always accept relationship changes
         if($p1->getPet()->hasMerit(MeritEnum::NAIVE))
-            $chanceP1ChangesMind = 100;
-        else if($p1->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
+            $chanceP2ChangesMind = 0;
+
+        if($p1->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
             $chanceP1ChangesMind = ceil($chanceP1ChangesMind / 4);
 
         if($p2->getPet()->hasMerit(MeritEnum::NAIVE))
-        {
-            $chanceP2ChangesMind = 100;
+            $chanceP1ChangesMind = 0;
 
-            if($chanceP1ChangesMind === 100)
-            {
-                $chanceP1ChangesMind = 50;
-                $chanceP2ChangesMind = 50;
-            }
-        }
-        else if($p2->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
+        if($p2->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
             $chanceP2ChangesMind = ceil($chanceP2ChangesMind / 4);
+
+        if($chanceP1ChangesMind === 0 && $chanceP2ChangesMind === 0)
+        {
+            $chanceP1ChangesMind = 1;
+            $chanceP2ChangesMind = 1;
+        }
+
+        $r = mt_rand(1, $chanceP1ChangesMind + $chanceP2ChangesMind);
 
         if($r <= $chanceP1ChangesMind)
         {
-            if($chanceP1ChangesMind === 100)
+            if($chanceP2ChangesMind === 0)
                 $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()] . '. ' . $p1->getPet()->getName() . ' immediately agreed to ' . $upgradeDescription[$p2->getRelationshipGoal()] . '!';
             else
                 $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()] . '. ' . $p1->getPet()->getName() . ' thought for a bit, and agreed to try ' . $descriptioning[$p2->getRelationshipGoal()] . '!';
@@ -537,7 +537,7 @@ class RelationshipChangeService
         }
         else if($r < $chanceP1ChangesMind + $chanceP2ChangesMind)
         {
-            if($chanceP2ChangesMind === 100)
+            if($chanceP1ChangesMind === 0)
                 $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . '. ' . $p2->getPet()->getName() . ' agreed immediately!';
             else
                 $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()] . '. ' . $p2->getPet()->getName() . ' thought for a bit, and agreed to try ' . $descriptioning[$p1->getRelationshipGoal()] . '!';
