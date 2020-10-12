@@ -110,7 +110,7 @@ class Inventory
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Enchantment")
-     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet"})
+     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle"})
      */
     private $enchantment;
 

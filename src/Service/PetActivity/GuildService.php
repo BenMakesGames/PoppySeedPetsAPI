@@ -299,7 +299,7 @@ class GuildService
         $message = ArrayFunctions::pick_one([
             $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
             $pet->getName() . ' practiced peering into the Umbra without having to actually go there.',
-            $pet->getName() . ' followed a ' . $member->getGuild()->getName() . ' through unfamiliar regions of the Umbra, looking for any unusual changes.'
+            $pet->getName() . ' went with a senior member of ' . $member->getGuild()->getName() . ' through unfamiliar regions of the Umbra, looking for any unusual changes.'
         ]);
 
         $member->increaseReputation();
@@ -321,7 +321,7 @@ class GuildService
         $message = ArrayFunctions::pick_one([
             $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
             $pet->getName() . ' participated in a ' . $member->getGuild()->getName() . ' race.',
-            $pet->getName() . ' followed a ' . $member->getGuild()->getName() . ' through unfamiliar regions of Project-E, to deliver a message.'
+            $pet->getName() . ' followed a senior member of ' . $member->getGuild()->getName() . ' through unfamiliar regions of Project-E, to deliver a message.'
         ]);
 
         $member->increaseReputation();
