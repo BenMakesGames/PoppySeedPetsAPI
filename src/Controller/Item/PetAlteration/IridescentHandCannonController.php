@@ -42,9 +42,6 @@ class IridescentHandCannonController extends PoppySeedPetsItemController
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException('There is no such pet.');
 
-        if($pet->hasMerit(MeritEnum::HYPERCHROMATIC))
-            $pet->removeMerit($meritRepository->findOneByName(MeritEnum::HYPERCHROMATIC));
-
         // make sure the new hue is some minimum distance away from the old hue:
         if($color === 'A')
             $oldColor = $pet->getColorA();
@@ -69,6 +66,16 @@ class IridescentHandCannonController extends PoppySeedPetsItemController
             $pet->setColorB($newColor);
         else
             throw new UnprocessableEntityHttpException('You forgot to choose which color to recolor!');
+
+        if($pet->hasMerit(MeritEnum::HYPERCHROMATIC))
+        {
+            $responseService->addFlashMessage($pet->getName() . ' has been chromatically altered! (It seems their Hyperchromaticism was blasted away by the cannon, as well!)');
+            $pet->removeMerit($meritRepository->findOneByName(MeritEnum::HYPERCHROMATIC));
+        }
+        else
+        {
+            $responseService->addFlashMessage($pet->getName() . ' has been chromatically altered!');
+        }
 
         $deleted = mt_rand(1, 10) === 1;
 
