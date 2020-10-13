@@ -223,12 +223,7 @@ class GreenhouseController extends PoppySeedPetsController
         $totalFertilizer = $user->getGreenhouse()->getComposterFood();
 
         foreach($items as $item)
-        {
             $totalFertilizer += $item->getItem()->getFertilizer();
-            $em->remove($item);
-        }
-
-        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_COMPOSTED, count($items));
 
         $largeBags = (int)($totalFertilizer / 20);
 
@@ -241,6 +236,24 @@ class GreenhouseController extends PoppySeedPetsController
         $smallBags = (int)($totalFertilizer / 10);
 
         $totalFertilizer -= $smallBags * 10;
+
+        $itemDelta = $largeBags + $mediumBags + $smallBags - count($items);
+
+        if($itemDelta > 0)
+        {
+            $itemsAtHome = $inventoryService->countTotalInventory($user, LocationEnum::HOME);
+
+            if($itemsAtHome > 100)
+                throw new UnprocessableEntityHttpException('That would leave you with more items at home than you started with, and you\'re already over 100!');
+
+            if($itemsAtHome + $itemDelta > 100)
+                throw new UnprocessableEntityHttpException('That would leave you with ' . ($itemsAtHome + $itemDelta) . ' items at home. (100 is the usual limit.)');
+        }
+
+        foreach($items as $item)
+            $em->remove($item);
+
+        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_COMPOSTED, count($items));
 
         $user->getGreenhouse()->setComposterFood($totalFertilizer);
 
