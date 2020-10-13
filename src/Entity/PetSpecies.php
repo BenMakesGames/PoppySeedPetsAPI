@@ -24,7 +24,7 @@ class PetSpecies
 
     /**
      * @ORM\Column(type="string", length=40, unique=true)
-     * @Groups({"petEncyclopedia", "petShelterPet"})
+     * @Groups({"myPet", "petEncyclopedia", "petShelterPet"})
      */
     private $name;
 
