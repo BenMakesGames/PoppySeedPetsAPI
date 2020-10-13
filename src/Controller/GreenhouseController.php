@@ -600,7 +600,8 @@ class GreenhouseController extends PoppySeedPetsController
         if($seed === null || $seed->getItem()->getPlant() === null)
             throw new NotFoundHttpException('There is no such seed. That\'s super-weird. Can you reload and try again?');
 
-        $lastOrdinal = (int)ArrayFunctions::max($user->getGreenhousePlants(), function(GreenhousePlant $gp) { return $gp->getOrdinal(); });
+        $largestOrdinal = ArrayFunctions::max($user->getGreenhousePlants(), function(GreenhousePlant $gp) { return $gp->getOrdinal(); });
+        $lastOrdinal = $largestOrdinal === null ? 1 : ($largestOrdinal->getOrdinal() + 1);
 
         $plantsOfSameType = $user->getGreenhousePlants()->filter(function(GreenhousePlant $plant) use($seed) {
             return $plant->getPlant()->getType() === $seed->getItem()->getPlant()->getType();
