@@ -52,6 +52,12 @@ class GreenhousePlant
      */
     private $previousGrowth = 0;
 
+    /**
+     * @ORM\Column(type="smallint")
+     * @Groups({"greenhousePlant"})
+     */
+    private $ordinal;
+
     public function __construct()
     {
         $this->lastInteraction = (new \DateTimeImmutable())->modify('-1 day');
@@ -201,5 +207,17 @@ class GreenhousePlant
     public function getPreviousGrowth(): int
     {
         return $this->previousGrowth;
+    }
+
+    public function getOrdinal(): ?int
+    {
+        return $this->ordinal;
+    }
+
+    public function setOrdinal(int $ordinal): self
+    {
+        $this->ordinal = $ordinal;
+
+        return $this;
     }
 }

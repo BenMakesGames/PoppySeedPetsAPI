@@ -531,12 +531,53 @@ class GreenhouseController extends PoppySeedPetsController
     }
 
     /**
+     * @Route("/updatePlantOrder", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function updatePlantOrder(
+        Request $request, ResponseService $responseService, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+        $greenhouse = $user->getGreenhouse();
+
+        if($greenhouse === null)
+            throw new AccessDeniedHttpException('You don\'t have a greenhouse!');
+
+        $plantIds = $request->request->get('order');
+
+        if(!is_array($plantIds))
+            throw new UnprocessableEntityHttpException('Must provide a list of plant ids, in the order you wish to save them in.');
+
+        $allPlants = $user->getGreenhousePlants();
+
+        $plantIds = array_filter($plantIds, function(int $i) use($allPlants) {
+            return ArrayFunctions::any($allPlants, function(GreenhousePlant $p) use($i) {
+                return $p->getId() === $i;
+            });
+        });
+
+        if(count($allPlants) !== count($plantIds))
+            throw new UnprocessableEntityHttpException('The list of plants must include the full list of your plants; no more; no less!');
+
+        foreach($allPlants as $plant)
+        {
+            $ordinal = array_search($plant->getId(), $plantIds) + 1;
+            $plant->setOrdinal($ordinal);
+        }
+
+        $em->flush();
+
+        return $responseService->success();
+    }
+
+    /**
      * @Route("/plantSeed", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function plantSeed(
         ResponseService $responseService, InventoryRepository $inventoryRepository, Request $request,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, GreenhousePlantRepository $greenhousePlantRepository
     )
     {
         $user = $this->getUser();
@@ -559,6 +600,8 @@ class GreenhouseController extends PoppySeedPetsController
         if($seed === null || $seed->getItem()->getPlant() === null)
             throw new NotFoundHttpException('There is no such seed. That\'s super-weird. Can you reload and try again?');
 
+        $lastOrdinal = (int)ArrayFunctions::max($user->getGreenhousePlants(), function(GreenhousePlant $gp) { return $gp->getOrdinal(); });
+
         $plantsOfSameType = $user->getGreenhousePlants()->filter(function(GreenhousePlant $plant) use($seed) {
             return $plant->getPlant()->getType() === $seed->getItem()->getPlant()->getType();
         });
@@ -577,6 +620,7 @@ class GreenhouseController extends PoppySeedPetsController
         $plant = (new GreenhousePlant())
             ->setOwner($user)
             ->setPlant($seed->getItem()->getPlant())
+            ->setOrdinal($lastOrdinal + 1)
         ;
 
         $em->persist($plant);
