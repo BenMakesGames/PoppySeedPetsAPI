@@ -81,7 +81,7 @@ class BeehiveController extends PoppySeedPetsController
      */
     public function feedItem(
         ResponseService $responseService, EntityManagerInterface $em, BeehiveService $beehiveService,
-        InventoryService $inventoryService
+        InventoryService $inventoryService, Request $request
     )
     {
         $user = $this->getUser();
@@ -94,7 +94,12 @@ class BeehiveController extends PoppySeedPetsController
         if($beehive->getFlowerPower() > 0)
             throw new UnprocessableEntityHttpException('The colony is still working on the last item you gave them.');
 
-        $itemToFeed = $beehive->getRequestedItem();
+        $alternate = $request->request->getBoolean('alternate');
+
+        $itemToFeed = $alternate
+            ? $beehive->getAlternateRequestedItem()
+            : $beehive->getRequestedItem()
+        ;
 
         if($inventoryService->loseItem($itemToFeed, $user, LocationEnum::HOME, 1) === 0)
             throw new UnprocessableEntityHttpException('You do not have ' . $itemToFeed->getNameWithArticle() . ' in your house.');

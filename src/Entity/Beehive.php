@@ -66,7 +66,7 @@ class Beehive
     private $interactionPower = 48;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Item")
+     * @ORM\ManyToOne(targetEntity=Item::class)
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"myBeehive"})
      * @var Item
@@ -78,6 +78,14 @@ class Beehive
      * @Groups({"myBeehive"})
      */
     private $specialization;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Item::class)
+     * @ORM\JoinColumn(nullable=false)
+     * @Groups({"myBeehive"})
+     * @var Item
+     */
+    private $alternateRequestedItem;
 
     public function getId(): ?int
     {
@@ -224,6 +232,18 @@ class Beehive
     public function setSpecialization(?string $specialization): self
     {
         $this->specialization = $specialization;
+
+        return $this;
+    }
+
+    public function getAlternateRequestedItem(): ?Item
+    {
+        return $this->alternateRequestedItem;
+    }
+
+    public function setAlternateRequestedItem(?Item $alternateRequestedItem): self
+    {
+        $this->alternateRequestedItem = $alternateRequestedItem;
 
         return $this;
     }

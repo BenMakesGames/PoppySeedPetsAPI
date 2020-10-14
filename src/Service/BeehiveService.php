@@ -27,6 +27,21 @@ class BeehiveService
         'Creamy Milk' => 12,
     ];
 
+    public const ALT_DESIRED_ITEMS = [
+        'Slice of Bread' => 8,
+        'Really Big Leaf' => 16,
+        'Corn' => 10,
+        'Meringue' => 12,
+        'Onion' => 8,
+        'Music Note' => 16,
+        'Sweet Roll' => 20,
+        'Chanterelle' => 8,
+        'Large Bag of Fertilizer' => 40,
+        'Sweet Beet' => 12,
+        'Smallish Pumpkin' => 24,
+        'Potato' => 10,
+    ];
+
     public function __construct(EntityManagerInterface $em, ItemRepository $itemRepository)
     {
         $this->em = $em;
@@ -41,6 +56,7 @@ class BeehiveService
         $beehive = (new Beehive())
             ->setQueenName(ArrayFunctions::pick_one(self::QUEEN_NAMES))
             ->setRequestedItem($this->itemRepository->findOneByName(array_rand(self::DESIRED_ITEMS)))
+            ->setAlternateRequestedItem($this->itemRepository->findOneByName(array_rand(self::ALT_DESIRED_ITEMS)))
         ;
 
         $this->em->persist($beehive);
@@ -57,15 +73,22 @@ class BeehiveService
 
     public function reRollRequest(Beehive $beehive)
     {
-        // get the current item
+        // get the current items
         $requestedItem = $beehive->getRequestedItem()->getName();
+        $altRequestedItem = $beehive->getAlternateRequestedItem()->getName();
 
         // remove the current item from the list of possibilities
         $possibleItems = self::DESIRED_ITEMS;
         unset($possibleItems[$requestedItem]);
 
+        $possibleAltItems = self::ALT_DESIRED_ITEMS;
+        unset($possibleAltItems[$altRequestedItem]);
+
         // pick a new requested item
-        $beehive->setRequestedItem($this->itemRepository->findOneByName(array_rand($possibleItems)));
+        $beehive
+            ->setRequestedItem($this->itemRepository->findOneByName(array_rand($possibleItems)))
+            ->setAlternateRequestedItem($this->itemRepository->findOneByName(array_rand($possibleAltItems)))
+        ;
     }
 
     // a couple of these are princesses; sorry about the non-semantic variable name:

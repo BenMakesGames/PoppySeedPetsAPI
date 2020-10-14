@@ -122,6 +122,9 @@ class Item
         return $this;
     }
 
+    /**
+     * @Groups({"myBeehive"})
+     */
     public function getNameWithArticle(): string
     {
         if($this->getGrammar() && $this->getGrammar()->getArticle())
