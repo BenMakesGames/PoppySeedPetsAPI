@@ -7,7 +7,9 @@ use App\Entity\Recipe;
 use App\Entity\RecipeAttempted;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
+use App\Functions\ArrayFunctions;
 use App\Model\ItemQuantity;
+use App\Model\PrepareRecipeResults;
 use App\Repository\InventoryRepository;
 use App\Repository\KnownRecipesRepository;
 use App\Repository\RecipeAttemptedRepository;
@@ -41,12 +43,10 @@ class CookingService
     }
 
     /**
-     * @param Inventory[] $inventory
+     * @param ItemQuantity[] $quantities
      */
-    public function findRecipeFromIngredients(array $inventory): ?Recipe
+    public function findRecipeFromQuantities(array $quantities): ?Recipe
     {
-        $quantities = $this->buildQuantitiesFromInventory($inventory);
-
         return $this->recipeRepository->findOneBy([
             'ingredients' => $this->inventoryService->serializeItemList($quantities)
         ]);
@@ -116,14 +116,44 @@ class CookingService
      * @param Inventory[] $inventory
      * @return Inventory[]
      */
-    public function prepareRecipe(User $user, array $inventory): ?array
+    public function prepareRecipe(User $user, array $inventory): ?PrepareRecipeResults
     {
-        $recipe = $this->findRecipeFromIngredients($inventory);
+        $quantities = $this->buildQuantitiesFromInventory($inventory);
 
+        if(count($quantities) === 0)
+            return null;
+
+        $recipe = $this->findRecipeFromQuantities($quantities);
+        $multiple = 1;
+
+        // if we didn't find a recipe, check if this is a repeated recipe
         if(!$recipe)
         {
-            $this->logBadRecipeAttempt($user, $inventory);
-            return null;
+            $smallestQuantity = ArrayFunctions::min($quantities, function(ItemQuantity $q) { return $q->quantity; })->quantity;
+
+            if(
+                $smallestQuantity === 1 ||
+                ArrayFunctions::any($quantities, function(ItemQuantity $q) use($smallestQuantity) {
+                    return $q->quantity % $smallestQuantity !== 0;
+                })
+            )
+            {
+                $this->logBadRecipeAttempt($user, $inventory);
+                return null;
+            }
+
+            foreach($quantities as $q)
+                $q->quantity /= $smallestQuantity;
+
+            $recipe = $this->findRecipeFromQuantities($quantities);
+
+            if(!$recipe)
+            {
+                $this->logBadRecipeAttempt($user, $inventory);
+                return null;
+            }
+
+            $multiple = $smallestQuantity;
         }
 
         foreach($inventory as $i)
@@ -133,9 +163,12 @@ class CookingService
 
         $makes = $this->inventoryService->deserializeItemList($recipe->getMakes());
 
+        foreach($makes as $m)
+            $m->quantity *= $multiple;
+
         $newInventory = $this->inventoryService->giveInventory($makes, $user, $user, $user->getName() . ' prepared this.', $locationOfFirstItem);
 
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING);
+        $this->userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING, $multiple);
 
         if($this->hasACookingBuddy($user))
         {
@@ -157,7 +190,12 @@ class CookingService
             }
         }
 
-        return $newInventory;
+        $results = new PrepareRecipeResults();
+        $results->inventory = $newInventory;
+        $results->quantities = $makes;
+        $results->recipe = $recipe;
+
+        return $results;
     }
 
     public function hasACookingBuddy(User $user): bool

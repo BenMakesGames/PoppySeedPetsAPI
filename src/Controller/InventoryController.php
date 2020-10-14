@@ -144,16 +144,34 @@ class InventoryController extends PoppySeedPetsController
             }
         }
 
-        $newInventory = $cookingService->prepareRecipe($user, $inventory);
+        $results = $cookingService->prepareRecipe($user, $inventory);
 
         // do this before checking if anything was made
         // because if NOTHING was made, a record in "RecipeAttempted" was made :P
         $em->flush();
 
-        if($newInventory === null)
+        if($results === null)
             throw new UnprocessableEntityHttpException('You can\'t make anything with those ingredients.');
 
-        return $responseService->success($newInventory, SerializationGroupEnum::MY_INVENTORY);
+        $qList = [];
+        $totalQuantity = 0;
+
+        foreach($results->quantities as $q)
+        {
+            $qList[$q->item->getName()] = $q->quantity;
+            $totalQuantity += $q->quantity;
+        }
+
+        if($totalQuantity < 4)
+            $exclaim = '.';
+        else if($totalQuantity < 10 || strpos($results->recipe->getIngredients(), ',') === false)
+            $exclaim = '!';
+        else
+            $exclaim = '! (' . ArrayFunctions::pick_one([ 'Dang!', 'Wow!', 'Incredible...', 'So cook! Very meal!', 'A veritable feast!', 'Such skill!' ]) . ')';
+
+        $responseService->addFlashMessage('You prepared ' . ArrayFunctions::list_nice_quantities($qList) . $exclaim);
+
+        return $responseService->success($results->inventory, SerializationGroupEnum::MY_INVENTORY);
     }
 
     /**
