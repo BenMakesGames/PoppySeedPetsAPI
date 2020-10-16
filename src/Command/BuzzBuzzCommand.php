@@ -30,7 +30,7 @@ class BuzzBuzzCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // population increase
         $this->em->getConnection()->executeQuery('
@@ -66,5 +66,7 @@ class BuzzBuzzCommand extends Command
             WHERE
                 interaction_power > 0
         ');
+
+        return Command::SUCCESS;
     }
 }

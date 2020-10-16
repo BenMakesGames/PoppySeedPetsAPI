@@ -30,7 +30,7 @@ class CalculateDailyMarketItemAveragesCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $startTime = microtime(true);
 
@@ -93,6 +93,8 @@ class CalculateDailyMarketItemAveragesCommand extends Command
         $this->logger->notice('Calculating market averages took ' . round($runTime, 3) . 's.');
 
         $output->writeln('Done!');
+
+        return Command::SUCCESS;
     }
 
     private function insert(array $sqlRows)

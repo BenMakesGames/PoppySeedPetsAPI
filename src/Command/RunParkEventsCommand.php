@@ -67,7 +67,7 @@ class RunParkEventsCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $startTime = microtime(true);
 
@@ -193,6 +193,8 @@ class RunParkEventsCommand extends Command
         {
             $this->logger->info('No park event to run. Took ' . round($runTime, 3) . 's.');
         }
+
+        return Command::SUCCESS;
     }
 
     private function playKinBall(): ?ParkEvent

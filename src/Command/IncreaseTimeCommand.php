@@ -30,7 +30,7 @@ class IncreaseTimeCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // pet logic...
         $this->em->getConnection()->executeQuery('
@@ -67,5 +67,7 @@ class IncreaseTimeCommand extends Command
             'DELETE FROM device_stats WHERE time<:oneMonthAgo',
             [ 'oneMonthAgo' => (new \DateTimeImmutable())->modify('-1 month')->format('Y-m-d') ]
         );
+
+        return Command::SUCCESS;
     }
 }

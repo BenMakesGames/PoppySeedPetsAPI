@@ -11,6 +11,7 @@ use App\Enum\FlavorEnum;
 use App\Enum\PetSkillEnum;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Question\Question;
 
@@ -36,7 +37,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
         ;
     }
 
-    protected function doCommand()
+    protected function doCommand(): int
     {
         if(strtolower($_SERVER['APP_ENV']) !== 'dev')
             throw new \Exception('Can only be run in dev environments.');
@@ -68,6 +69,8 @@ class UpsertItemCommand extends PoppySeedPetsCommand
         $this->recycleValue($item);
 
         $this->em->flush();
+
+        return Command::SUCCESS;
     }
 
     private function askName(string $prompt, Item $item, string $name)
