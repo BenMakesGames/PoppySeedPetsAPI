@@ -4,6 +4,7 @@ namespace App\Command;
 use App\Repository\UserRepository;
 use App\Service\JsonLogicParserService;
 use App\Service\PetGroupService;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 
 class GenerateBandNamesCommand extends PoppySeedPetsCommand
@@ -25,9 +26,11 @@ class GenerateBandNamesCommand extends PoppySeedPetsCommand
         ;
     }
 
-    protected function doCommand()
+    protected function doCommand(): int
     {
         for($x = 0; $x < 20; $x++)
             echo $this->petGroupService->generateBandName() . "\n";
+
+        return Command::SUCCESS;
     }
 }

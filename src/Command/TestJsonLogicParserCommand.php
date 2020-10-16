@@ -37,7 +37,7 @@ class TestJsonLogicParserCommand extends PoppySeedPetsCommand
         if(!$user)
         {
             $this->output->writeln('There is no user #' . $userId . '.');
-            return;
+            return Command::FAILURE;
         }
 
         $fileName = $this->input->getArgument('file');
@@ -45,7 +45,7 @@ class TestJsonLogicParserCommand extends PoppySeedPetsCommand
         if(!file_exists($fileName))
         {
             $this->output->writeln('File ' . $fileName . ' does not exist.');
-            return;
+            return Command::FAILURE;
         }
 
         $expression = file_get_contents($fileName);
@@ -57,7 +57,7 @@ class TestJsonLogicParserCommand extends PoppySeedPetsCommand
         catch(\InvalidArgumentException $e)
         {
             $this->output->writeln('Read file ' . $fileName . ', but could not parse its contents as JSON.');
-            return;
+            return Command::FAILURE;
         }
 
         var_dump($this->jsonLogicParserService->evaluate($data, $user));

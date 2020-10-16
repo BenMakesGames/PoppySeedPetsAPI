@@ -37,7 +37,7 @@ class DeleteDuplicateRelationshipsCommand extends Command
         if(count($results) === 0)
         {
             echo 'No duplicate relationships were found.';
-            return;
+            return Command::SUCCESS;
         }
 
         $deleting = 0;
