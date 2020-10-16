@@ -12,8 +12,10 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
+use App\Service\CalendarService;
 use App\Service\InventoryService;
 use App\Service\PetActivity\Crafting\Helpers\GoldSmithingService;
+use App\Service\PetActivity\Crafting\Helpers\HalloweenSmithingService;
 use App\Service\PetActivity\Crafting\Helpers\IronSmithingService;
 use App\Service\PetActivity\Crafting\Helpers\MeteoriteSmithingService;
 use App\Service\PetExperienceService;
@@ -29,11 +31,14 @@ class SmithingService
     private $goldSmithingService;
     private $ironSmithingService;
     private $meteoriteSmithingService;
+    private $halloweenSmithingService;
+    private $calendarService;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, GoldSmithingService $goldSmithingService,
-        IronSmithingService $ironSmithingService, MeteoriteSmithingService $meteoriteSmithingService
+        IronSmithingService $ironSmithingService, MeteoriteSmithingService $meteoriteSmithingService,
+        HalloweenSmithingService $halloweenSmithingService, CalendarService $calendarService
     )
     {
         $this->inventoryService = $inventoryService;
@@ -43,6 +48,8 @@ class SmithingService
         $this->goldSmithingService = $goldSmithingService;
         $this->ironSmithingService = $ironSmithingService;
         $this->meteoriteSmithingService = $meteoriteSmithingService;
+        $this->halloweenSmithingService = $halloweenSmithingService;
+        $this->calendarService = $calendarService;
     }
 
     public function getCraftingPossibilities(Pet $pet, array $quantities): array
@@ -209,6 +216,12 @@ class SmithingService
         {
             if(array_key_exists('Iron Bar', $quantities) && array_key_exists('Gold Bar', $quantities))
                 $possibilities[] = new ActivityCallback($this->meteoriteSmithingService, 'createIlumetsa', 10);
+        }
+
+        if($this->calendarService->isHalloweenCrafting())
+        {
+            if(array_key_exists('Small, Yellow Plastic Bucket', $quantities) || array_key_exists('Upside-down, Yellow Plastic Bucket', $quantities))
+                $possibilities[] = new ActivityCallback($this->halloweenSmithingService, 'createPumpkinBucket', 10);
         }
 
         return $possibilities;

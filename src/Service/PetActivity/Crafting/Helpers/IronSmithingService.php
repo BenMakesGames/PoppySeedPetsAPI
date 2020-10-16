@@ -118,9 +118,6 @@ class IronSmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createYellowScissors(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());

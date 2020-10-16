@@ -46,6 +46,11 @@ class CalendarService
         return abs((int)$fourthThursdayOfNovember->format('md') - $this->monthAndDay) <= 2;
     }
 
+    public function isHalloweenCrafting(): bool
+    {
+        return $this->monthAndDay >= 1017 && $this->monthAndDay <= 1031;
+    }
+
     public function isHalloween(): bool
     {
         return $this->monthAndDay >= 1029 && $this->monthAndDay <= 1031;
