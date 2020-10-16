@@ -28,7 +28,7 @@ class DeleteDuplicateRelationshipsCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $statement = $this->em->getConnection()->prepare('SELECT pet_id,relationship_id,COUNT(id) AS qty FROM `pet_relationship` GROUP BY CONCAT(pet_id, \':\', relationship_id) HAVING qty > 1');
         $statement->execute();
@@ -90,5 +90,7 @@ class DeleteDuplicateRelationshipsCommand extends Command
         echo 'Committing changes... ';
         $this->em->flush();
         echo 'done!' . "\n";
+
+        return Command::SUCCESS;
     }
 }

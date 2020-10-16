@@ -9,6 +9,7 @@ use App\Repository\ItemRepository;
 use App\Repository\RecipeRepository;
 use App\Service\InventoryService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\Question;
@@ -43,7 +44,7 @@ class ListRecipesCommand extends PoppySeedPetsCommand
         ;
     }
 
-    protected function doCommand()
+    protected function doCommand(): int
     {
         $searchName = trim($this->input->getOption('name'));
         $searchIngredients = trim($this->input->getOption('ingredients'));
@@ -79,6 +80,8 @@ class ListRecipesCommand extends PoppySeedPetsCommand
 
         foreach($recipes as $recipe)
             $this->showRecipe($recipe);
+
+        return Command::SUCCESS;
     }
 
     /**

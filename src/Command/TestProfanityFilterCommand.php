@@ -2,6 +2,7 @@
 namespace App\Command;
 
 use App\Service\ProfanityFilterService;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 
 class TestProfanityFilterCommand extends PoppySeedPetsCommand
@@ -24,7 +25,7 @@ class TestProfanityFilterCommand extends PoppySeedPetsCommand
         ;
     }
 
-    protected function doCommand()
+    protected function doCommand(): int
     {
         $phrase = $this->input->getArgument('phrase');
 
@@ -34,5 +35,7 @@ class TestProfanityFilterCommand extends PoppySeedPetsCommand
 
         echo $output . "\n";
         echo "(took " . round($end - $start, 4) . " seconds)\n";
+
+        return Command::SUCCESS;
     }
 }

@@ -15,15 +15,15 @@ abstract class PoppySeedPetsCommand extends Command
     /** @var OutputInterface */ protected $output;
     /** @var QuestionHelper */ protected $questionHelper;
 
-    abstract protected function doCommand();
+    abstract protected function doCommand(): int;
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->input = $input;
         $this->output = $output;
         $this->questionHelper = $this->getHelper('question');
 
-        $this->doCommand();
+        return $this->doCommand();
     }
 
     protected function confirm(string $prompt, bool $defaultValue): bool

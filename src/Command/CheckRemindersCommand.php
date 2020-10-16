@@ -30,7 +30,7 @@ class CheckRemindersCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $reminders = $this->reminderRepository->findReadyReminders();
 
@@ -76,5 +76,7 @@ class CheckRemindersCommand extends Command
             if($report->isSubscriptionExpired())
                 $this->em->remove($subscriptionsByEndpoint[$report->getEndpoint()]);
         }
+
+        return Command::SUCCESS;
     }
 }

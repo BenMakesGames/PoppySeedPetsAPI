@@ -11,6 +11,7 @@ use App\Functions\ArrayFunctions;
 use App\Repository\ItemRepository;
 use App\Repository\PlantRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 
 class UpsertPlantCommand extends PoppySeedPetsCommand
@@ -38,7 +39,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
         ;
     }
 
-    protected function doCommand()
+    protected function doCommand(): int
     {
         if(strtolower($_SERVER['APP_ENV']) !== 'dev')
             throw new \Exception('Can only be run in dev environments.');
@@ -127,6 +128,8 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
         while($choice !== 7);
 
         $this->em->flush();
+
+        return Command::SUCCESS;
     }
 
     private function editType(Plant $plant)

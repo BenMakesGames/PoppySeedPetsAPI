@@ -3,6 +3,7 @@ namespace App\Command;
 
 use App\Repository\UserRepository;
 use App\Service\JsonLogicParserService;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 
 class TestJsonLogicParserCommand extends PoppySeedPetsCommand
@@ -28,7 +29,7 @@ class TestJsonLogicParserCommand extends PoppySeedPetsCommand
         ;
     }
 
-    protected function doCommand()
+    protected function doCommand(): int
     {
         $userId = $this->input->getArgument('user');
         $user = $this->userRepository->find($userId);
@@ -60,5 +61,7 @@ class TestJsonLogicParserCommand extends PoppySeedPetsCommand
         }
 
         var_dump($this->jsonLogicParserService->evaluate($data, $user));
+
+        return Command::SUCCESS;
     }
 }

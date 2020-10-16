@@ -34,7 +34,7 @@ class ResetPassphraseCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $terminalCharacters = 'ABCDEFGHJKLMNPQRTUVWXY346789abdeghnq';
         $allCharacters = $terminalCharacters . '%&?-=#';
@@ -63,5 +63,7 @@ class ResetPassphraseCommand extends Command
         $output->writeln('');
         $output->writeln('   ' . $password);
         $output->writeln('');
+
+        return Command::SUCCESS;
     }
 }

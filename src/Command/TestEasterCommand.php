@@ -2,6 +2,7 @@
 namespace App\Command;
 
 use App\Service\CalendarService;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 
 class TestEasterCommand extends PoppySeedPetsCommand
@@ -24,7 +25,7 @@ class TestEasterCommand extends PoppySeedPetsCommand
         ;
     }
 
-    protected function doCommand()
+    protected function doCommand(): int
     {
         $dateString = $this->input->getArgument('date');
 
@@ -33,5 +34,7 @@ class TestEasterCommand extends PoppySeedPetsCommand
         $this->calendarService->setToday($dateToTest);
 
         echo $dateToTest->format('Y-m-d') . ' ' . ($this->calendarService->isEaster() ? 'IS Easter' : 'is NOT Easter') . "\n";
+
+        return Command::SUCCESS;
     }
 }

@@ -30,7 +30,7 @@ class DeviceStatsCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // 4 weeks
         $oldestDate = (new \DateTimeImmutable())->modify('-28 days');
@@ -79,6 +79,8 @@ class DeviceStatsCommand extends Command
             'browsers' => $browsers,
             'windowWidths' => $widths,
         ], JSON_PRETTY_PRINT);
+
+        return Command::SUCCESS;
     }
 
     private function getBrowser(string $userAgent): string

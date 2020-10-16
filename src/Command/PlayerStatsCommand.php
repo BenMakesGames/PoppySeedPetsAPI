@@ -3,6 +3,7 @@ namespace App\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
+use Symfony\Component\Console\Command\Command;
 
 class PlayerStatsCommand extends PoppySeedPetsCommand
 {
@@ -23,9 +24,9 @@ class PlayerStatsCommand extends PoppySeedPetsCommand
         ;
     }
 
-    protected function doCommand()
+    protected function doCommand(): int
     {
-        $now = new \DateTimeImmutable();;
+        $now = new \DateTimeImmutable();
 
         $activityQuery = $this->em->createQuery('SELECT COUNT(u.id) FROM \\App\\Entity\\User AS u WHERE u.lastActivity>=?0');
         $newUsersQuery = $this->em->createQuery('SELECT COUNT(u.id) FROM \\App\\Entity\\User AS u WHERE u.registeredOn>=?0');
@@ -47,6 +48,8 @@ class PlayerStatsCommand extends PoppySeedPetsCommand
         ];
 
         echo json_encode($data, JSON_PRETTY_PRINT);
+
+        return Command::SUCCESS;
     }
 
     private function getCount(Query $query, string $argument)

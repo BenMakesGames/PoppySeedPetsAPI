@@ -10,6 +10,7 @@ use App\Repository\ItemRepository;
 use App\Repository\RecipeRepository;
 use App\Service\InventoryService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Question\Question;
 
@@ -43,7 +44,7 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         ;
     }
 
-    protected function doCommand()
+    protected function doCommand(): int
     {
         if(strtolower($_SERVER['APP_ENV']) !== 'dev')
             throw new \Exception('Can only be run in dev environments.');
@@ -88,6 +89,8 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         $this->output->writeln('  Alcohol : ' . $makesFood->getAlcohol());
         $this->output->writeln('  Caffeine: ' . $makesFood->getCaffeine());
         $this->output->writeln('  Trippy  : ' . $makesFood->getPsychedelic());
+
+        return Command::SUCCESS;
     }
 
     private function askName(string $prompt, Recipe $recipe, string $name)

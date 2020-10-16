@@ -4,6 +4,7 @@ namespace App\Command;
 use App\Entity\ItemGrammar;
 use App\Repository\ItemGrammarRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 
 class UpdateArticlesCommand extends PoppySeedPetsCommand
@@ -28,7 +29,7 @@ class UpdateArticlesCommand extends PoppySeedPetsCommand
         ;
     }
 
-    protected function doCommand()
+    protected function doCommand(): int
     {
         $firstId = (int)$this->input->getArgument('start');
 
@@ -47,5 +48,7 @@ class UpdateArticlesCommand extends PoppySeedPetsCommand
             $grammar->setArticle($this->askString('Article: ', $grammar->getArticle()));
             $this->em->flush();
         }
+
+        return Command::SUCCESS;
     }
 }
