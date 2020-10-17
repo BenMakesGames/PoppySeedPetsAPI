@@ -498,7 +498,7 @@ class PetService
             }
         }
 
-        if(mt_rand(1, 2000) === 1)
+        if(mt_rand(1, 4000) === 1)
         {
             $activityLog = $this->petSummonedAwayService->adventure($pet);
 
