@@ -128,7 +128,7 @@ class GuildService
     /**
      * @throws EnumInvalidValueException
      */
-    public function doGuildActivity(Pet $pet): PetActivityLog
+    public function doGuildActivity(Pet $pet): ?PetActivityLog
     {
         if($pet->getGuildMembership()->getLevel() === 0)
         {
@@ -310,7 +310,7 @@ class GuildService
         return $this->responseService->createActivityLog($pet, $message, '');
     }
 
-    private function doCorrespondenceMission(Pet $pet): PetActivityLog
+    private function doCorrespondenceMission(Pet $pet): ?PetActivityLog
     {
         $member = $pet->getGuildMembership();
 
