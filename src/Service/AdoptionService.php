@@ -147,7 +147,12 @@ class AdoptionService
 
             $pet = new PetShelterPet();
 
-            if(mt_rand(1, 200) === 1)
+            if($this->calendarService->isHalloweenDay())
+            {
+                $pet->species = $this->petSpeciesRepository->findOneBy([ 'name' => 'Fog Elemental' ]);
+                $pet->label = 'spooky!';
+            }
+            else if(mt_rand(1, 200) === 1)
             {
                 $pet->species = ArrayFunctions::pick_one($this->petSpeciesRepository->findBy(['availableFromPetShelter' => false, 'availableFromBreeding' => true]));
                 $pet->label = ArrayFunctions::pick_one([

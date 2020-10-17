@@ -56,6 +56,11 @@ class CalendarService
         return $this->monthAndDay >= 1029 && $this->monthAndDay <= 1031;
     }
 
+    public function isHalloweenDay(): bool
+    {
+        return $this->monthAndDay === 1031;
+    }
+
     public function isPiDayOrWhiteDay(): bool
     {
         return $this->monthAndDay === 314;
