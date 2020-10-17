@@ -422,7 +422,7 @@ class SmithingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' started making a Crown Coral, but working with coral is tricky! They gave up after a while...', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' started making a Coral Trident, but working with coral is tricky! They gave up after a while...', 'icons/activity-logs/confused');
         }
     }
 
