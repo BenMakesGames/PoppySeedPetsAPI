@@ -8,22 +8,23 @@ php -r 'opcache_reset();'
 composer install --no-dev --optimize-autoloader
 
 # clear all caches
-php bin/console cache:clear --env=prod
-php bin/console doctrine:cache:clear-metadata
-php bin/console doctrine:cache:clear-query
-php bin/console doctrine:cache:clear-result
+sudo php bin/console cache:clear --env=prod
+sudo php bin/console doctrine:cache:clear-metadata
+sudo php bin/console doctrine:cache:clear-query
+sudo php bin/console doctrine:cache:clear-result
 
 # run migrations
 php bin/console doctrine:migrations:migrate --no-interaction
 
 # clear caches again, because sometimes things freak out the first time
-php bin/console cache:clear --env=prod
-php bin/console doctrine:cache:clear-metadata
-php bin/console doctrine:cache:clear-query
-php bin/console doctrine:cache:clear-result
-php bin/console cache:warmup --env=prod
+sudo php bin/console cache:clear --env=prod
+sudo php bin/console doctrine:cache:clear-metadata
+sudo php bin/console doctrine:cache:clear-query
+sudo php bin/console doctrine:cache:clear-result
+sudo php bin/console cache:warmup --env=prod
 
 sudo chmod 777 -R var/cache
 sudo chmod 777 -R var/log
+sudo chown ec2-user:apache -R var/cache
 
 chmod +x bin/deploy
