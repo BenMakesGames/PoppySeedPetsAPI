@@ -15,6 +15,7 @@ use App\Model\ItemQuantity;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
+use App\Service\PetActivity\Crafting\EventLanternService;
 use App\Service\PetActivity\Crafting\PlasticPrinterService;
 use App\Service\PetActivity\Crafting\SmithingService;
 use App\Service\PetActivity\Crafting\MagicBindingService;
@@ -32,12 +33,13 @@ class CraftingService
     private $plasticPrinterService;
     private $stickCraftingService;
     private $itemRepository;
+    private $eventLanternService;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService,
-        SmithingService $smithingService, MagicBindingService $magicBindingService,
-        PlasticPrinterService $plasticPrinterService, PetExperienceService $petExperienceService,
-        StickCraftingService $stickCraftingService, ItemRepository $itemRepository
+        ResponseService $responseService, InventoryService $inventoryService, SmithingService $smithingService,
+        MagicBindingService $magicBindingService, PlasticPrinterService $plasticPrinterService,
+        PetExperienceService $petExperienceService, StickCraftingService $stickCraftingService,
+        ItemRepository $itemRepository, EventLanternService $eventLanternService
     )
     {
         $this->responseService = $responseService;
@@ -48,6 +50,7 @@ class CraftingService
         $this->petExperienceService = $petExperienceService;
         $this->stickCraftingService = $stickCraftingService;
         $this->itemRepository = $itemRepository;
+        $this->eventLanternService = $eventLanternService;
     }
 
     /**
@@ -288,6 +291,7 @@ class CraftingService
             $possibilities[] = new ActivityCallback($this, 'createSunSunFlagFlagSon', 10);
 
         $possibilities = array_merge($possibilities, $this->magicBindingService->getCraftingPossibilities($pet, $quantities));
+        $possibilities = array_merge($possibilities, $this->eventLanternService->getCraftingPossibilities($pet, $quantities));
 
         return $possibilities;
     }

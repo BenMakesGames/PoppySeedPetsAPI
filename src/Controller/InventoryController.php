@@ -254,7 +254,7 @@ class InventoryController extends PoppySeedPetsController
         if(!$givingTree)
             throw new HttpException(500, 'The "Giving Tree" NPC does not exist in the database!');
 
-        $givingTreeHoliday = $calendarService->isValentines() || $calendarService->isPiDayOrWhiteDay();
+        $givingTreeHoliday = $calendarService->isValentines() || $calendarService->isWhiteDay();
 
         $totalRecycleValue = 0;
 

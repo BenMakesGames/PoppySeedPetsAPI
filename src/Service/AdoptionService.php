@@ -139,7 +139,7 @@ class AdoptionService
                 $colorA = ColorFunctions::tweakColor($basePet->getColorA());
                 $colorB = ColorFunctions::tweakColor($basePet->getColorB());
 
-                if($this->calendarService->isPiDayOrWhiteDay())
+                if($this->calendarService->isPiDay())
                     $name = ArrayFunctions::pick_one([ 'Pi',  'Pi', 'Pie', 'Pie', 'Pie', 'Pie', 'Pie', 'Cake' ]);
                 else
                     $name = ArrayFunctions::pick_one(PetShelterPet::PET_NAMES);
@@ -190,7 +190,7 @@ class AdoptionService
         if($this->calendarService->isEaster())
             return mt_rand(1, 2);
 
-        if($this->calendarService->isValentines() || $this->calendarService->isPiDayOrWhiteDay())
+        if($this->calendarService->isValentines() || $this->calendarService->isWhiteDay())
             return 2;
 
         // winter solstice, more or less
@@ -223,7 +223,7 @@ class AdoptionService
         if($this->calendarService->isValentines())
             return PetShelterPet::PET_VALENTINES_NAMES;
 
-        if($this->calendarService->isPiDayOrWhiteDay())
+        if($this->calendarService->isWhiteDay())
             return PetShelterPet::PET_WHITE_DAY_NAMES;
 
         // winter solstice, more or less
@@ -256,7 +256,7 @@ class AdoptionService
         if($this->calendarService->isValentines())
             return $this->getValentinesColors();
 
-        if($this->calendarService->isPiDayOrWhiteDay())
+        if($this->calendarService->isWhiteDay())
             return $this->getWhiteDayColors();
 
         // winter solstice, more or less

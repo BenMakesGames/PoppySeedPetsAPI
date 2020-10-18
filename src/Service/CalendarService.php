@@ -51,6 +51,19 @@ class CalendarService
         return $this->monthAndDay >= 1017 && $this->monthAndDay <= 1031;
     }
 
+    public function isSaintMartinsDayCrafting(): bool
+    {
+        return $this->monthAndDay >= 1101 && $this->monthAndDay <= 1111;
+    }
+
+    public function isPiDayCrafting(): bool
+    {
+        return
+            ($this->monthAndDay >= 313 && $this->monthAndDay <= 315) ||
+            ($this->monthAndDay >= 721 && $this->monthAndDay <= 723)
+        ;
+    }
+
     public function isHalloween(): bool
     {
         return $this->monthAndDay >= 1029 && $this->monthAndDay <= 1031;
@@ -61,7 +74,12 @@ class CalendarService
         return $this->monthAndDay === 1031;
     }
 
-    public function isPiDayOrWhiteDay(): bool
+    public function isPiDay(): bool
+    {
+        return $this->monthAndDay === 314 || $this->monthAndDay === 722;
+    }
+
+    public function isWhiteDay(): bool
     {
         return $this->monthAndDay === 314;
     }
