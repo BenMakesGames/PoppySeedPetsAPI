@@ -10,6 +10,7 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
 use App\Repository\ItemRepository;
+use App\Service\CalendarService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -20,16 +21,18 @@ class PlasticPrinterService
     private $responseService;
     private $petExperienceService;
     private $itemRepository;
+    private $calendarService;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        ItemRepository $itemRepository
+        ItemRepository $itemRepository, CalendarService $calendarService
     )
     {
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
         $this->itemRepository = $itemRepository;
+        $this->calendarService = $calendarService;
     }
 
     /**
@@ -42,9 +45,7 @@ class PlasticPrinterService
         if(array_key_exists('3D Printer', $quantities) && array_key_exists('Plastic', $quantities))
         {
             $possibilities[] = new ActivityCallback($this, 'createPlasticCraft', 10);
-
-            if(mt_rand(1, 3) === 1)
-                $possibilities[] = new ActivityCallback($this, 'createPlasticIdol', 10);
+            $possibilities[] = new ActivityCallback($this, 'createPlasticIdol', 4);
 
             if(array_key_exists('Iron Bar', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createCompass', 10);
@@ -215,13 +216,36 @@ class PlasticPrinterService
 
     public function createPlasticCraft(Pet $pet): PetActivityLog
     {
-        $item = $this->itemRepository->findOneByName(ArrayFunctions::pick_one([
+        $allPlasticItems = [
             'Small Plastic Bucket',
             'Plastic Shovel',
             'Egg Carton',
             'Ruler',
             'Plastic Boomerang',
-        ]));
+        ];
+
+        $beingHalloweeny = false;
+
+        if($this->calendarService->isHalloweenCrafting())
+        {
+            if(mt_rand(1, 2) === 1)
+            {
+                $item = 'Small Plastic Bucket';
+                $beingHalloweeny = true;
+            }
+            else
+            {
+                $allPlasticItemsExceptBucket = array_filter($allPlasticItems, function($item) {
+                    return $item !== 'Small Plastic Bucket';
+                });
+
+                $item = $this->itemRepository->findOneByName(ArrayFunctions::pick_one($allPlasticItemsExceptBucket));
+            }
+        }
+        else
+        {
+            $item = $this->itemRepository->findOneByName(ArrayFunctions::pick_one($allPlasticItems));
+        }
 
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts());
 
@@ -231,7 +255,11 @@ class PlasticPrinterService
 
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make ' . $item->getNameWithArticle() . ', but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
+
+            if($beingHalloweeny)
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' wants to make a Halloween-themed bucket, so tried to make ' . $item->getNameWithArticle() . ' as a base, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
+            else
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make ' . $item->getNameWithArticle() . ', but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
         }
         else if($roll >= 10)
         {
@@ -239,9 +267,20 @@ class PlasticPrinterService
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created ' . $item->getNameWithArticle() . '.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
-            ;
+
+            if($beingHalloweeny)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wants to make a Halloween-themed bucket, and created ' . $item->getNameWithArticle() . ' as a base.', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+                ;
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created ' . $item->getNameWithArticle() . '.', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+                ;
+            }
+
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from Plastic.', $activityLog);
             return $activityLog;
         }
