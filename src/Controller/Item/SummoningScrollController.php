@@ -266,7 +266,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
                 [ 'lastInteracted' => 'ASC' ]
             );
 
-            if($pet->getSpecies()->getName() === 'Sentinel')
+            if($pet && $pet->getSpecies()->getName() === 'Sentinel')
             {
                 $gotAReusedSentinel = true;
             }
