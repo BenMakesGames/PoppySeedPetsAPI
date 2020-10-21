@@ -230,7 +230,7 @@ class PlasticPrinterService
         {
             if(mt_rand(1, 2) === 1)
             {
-                $item = 'Small Plastic Bucket';
+                $item = $this->itemRepository->findOneByName('Small Plastic Bucket');
                 $beingHalloweeny = true;
             }
             else
