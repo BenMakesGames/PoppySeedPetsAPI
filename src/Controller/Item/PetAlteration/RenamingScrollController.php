@@ -58,6 +58,8 @@ class RenamingScrollController extends PoppySeedPetsItemController
             throw new UnprocessableEntityHttpException('Your pet\'s name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
         */
 
+        $responseService->createActivityLog($pet, "{$pet->getName()} has been renamed to {$petName}!", '');
+
         $em->remove($inventory);
 
         $pet->setName($petName);
