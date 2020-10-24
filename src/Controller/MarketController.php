@@ -157,8 +157,9 @@ class MarketController extends PoppySeedPetsController
 
         $qb = $inventoryRepository->createQueryBuilder('i')
             ->andWhere('i.owner!=:user')
-            ->andWhere('i.sellPrice=:price')
+            ->andWhere('i.sellPrice<=:price')
             ->andWhere('i.item=:item')
+            ->addOrderBy('i.sellPrice', 'ASC')
             ->addOrderBy('i.sellListDate', 'ASC')
             ->setParameter('user', $user->getId())
             ->setParameter('price', $price)
@@ -181,6 +182,7 @@ class MarketController extends PoppySeedPetsController
         $forSale = $qb->getQuery()->getResult();
 
         $itemToBuy = null;
+        $minPrice = null;
 
         foreach($forSale as $inventory)
         {
@@ -190,6 +192,11 @@ class MarketController extends PoppySeedPetsController
                 continue;
             else
             {
+                if($minPrice === null)
+                    $minPrice = $inventory->getSellPrice();
+                else if($inventory->getSellPrice() > $minPrice)
+                    continue;
+
                 $item->set(true)->expiresAfter(\DateInterval::createFromDateString('2 minutes'));
                 $cache->save($item);
                 $itemToBuy = $inventory;
@@ -198,7 +205,7 @@ class MarketController extends PoppySeedPetsController
         }
 
         if($itemToBuy === null)
-            throw new NotFoundHttpException('An item for that price could not be found on the market. Someone may have bought it up just for you did! Sorry :|');
+            throw new NotFoundHttpException('An item for that price could not be found on the market. Someone may have bought it up just for you did! Sorry :| Reload the page to get the latest prices available!');
 
         try
         {
