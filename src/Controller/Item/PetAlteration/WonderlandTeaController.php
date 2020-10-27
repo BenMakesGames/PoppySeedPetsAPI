@@ -32,7 +32,7 @@ class WonderlandTeaController extends PoppySeedPetsItemController
      */
     public function serveTinyTea(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, MeritRepository $meritRepository
+        PetRepository $petRepository
     )
     {
         $user = $this->getUser();
@@ -66,7 +66,7 @@ class WonderlandTeaController extends PoppySeedPetsItemController
      */
     public function serveTremendousTea(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, MeritRepository $meritRepository
+        PetRepository $petRepository
     )
     {
         $user = $this->getUser();
@@ -86,6 +86,37 @@ class WonderlandTeaController extends PoppySeedPetsItemController
             150,
             $pet->getScale() + mt_rand(8, 12)
         ));
+
+        $em->remove($inventory);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true, 'reloadPets' => true ]);
+    }
+
+    /**
+     * @Route("/totallyTea/{inventory}", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function serveTotallyTea(
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
+        PetRepository $petRepository
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'totallyTea');
+
+        $petId = $request->request->getInt('pet', 0);
+        $pet = $petRepository->find($petId);
+
+        if(!$pet || $pet->getOwner()->getId() !== $user->getId())
+            throw new NotFoundHttpException('There is no such pet.');
+
+        if($pet->getScale() === 100)
+            throw new UnprocessableEntityHttpException($pet->getName() . ' is already totally-normally sized.');
+
+        $pet->setScale(100);
 
         $em->remove($inventory);
 
