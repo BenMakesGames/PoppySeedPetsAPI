@@ -5,6 +5,7 @@ use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
+use App\Functions\DateFunctions;
 use App\Model\PetShelterPet;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
@@ -77,7 +78,8 @@ class AdoptionService
      */
     public function getDailyPets(User $user): array
     {
-        $now = (new \DateTimeImmutable())->format('Y-m-d');
+        $now = new \DateTimeImmutable();
+        $nowString = $now->format('Y-m-d');
 
         mt_srand($user->getDailySeed());
 
@@ -87,11 +89,12 @@ class AdoptionService
         $petCount = $this->petRepository->createQueryBuilder('p')
             ->select('COUNT(p.id)')
             ->andWhere('p.birthDate<:today')
-            ->setParameter('today', $now)
+            ->setParameter('today', $nowString)
             ->getQuery()
             ->getSingleScalarResult();
         ;
 
+        $isBlueMoon = DateFunctions::getFullMoonName($now) === 'Blue';
         $pets = [];
 
         $allSpecies = $this->petSpeciesRepository->findBy([ 'availableFromPetShelter' => true ]);
@@ -109,7 +112,7 @@ class AdoptionService
 
                 $name = ArrayFunctions::pick_one($this->getSeasonalNames());
             }
-            else if($i === $numPets - 1)
+            else if($i === $numPets - 1 && !$isBlueMoon)
             {
                 // RANDOM!
                 $h1 = mt_rand(0, 1000) / 1000.0;
@@ -127,17 +130,33 @@ class AdoptionService
             }
             else
             {
-                $basePet = $this->petRepository->createQueryBuilder('p')
-                    ->andWhere('p.birthDate<:today')
-                    ->setParameter('today', $now)
-                    ->setMaxResults(1)
-                    ->setFirstResult(mt_rand(0, $petCount - 1))
-                    ->getQuery()
-                    ->getSingleResult()
-                ;
+                if($isBlueMoon)
+                {
+                    $blueA = mt_rand(127, 255);
+                    $otherA = mt_rand(0, $blueA - 16);
 
-                $colorA = ColorFunctions::tweakColor($basePet->getColorA());
-                $colorB = ColorFunctions::tweakColor($basePet->getColorB());
+                    $blueB = mt_rand(127, 255);
+                    $otherB = mt_rand(0, $blueB - 16);
+
+                    $colorA = ColorFunctions::RGB2Hex($otherA, $otherA, $blueA);
+                    $colorB = ColorFunctions::RGB2Hex($otherB, $otherB, $blueB);
+
+                    $colorA = ColorFunctions::tweakColor($colorA);
+                    $colorB = ColorFunctions::tweakColor($colorB);
+                }
+                else
+                {
+                    $basePet = $this->petRepository->createQueryBuilder('p')
+                        ->andWhere('p.birthDate<:today')
+                        ->setParameter('today', $nowString)
+                        ->setMaxResults(1)
+                        ->setFirstResult(mt_rand(0, $petCount - 1))
+                        ->getQuery()
+                        ->getSingleResult();
+
+                    $colorA = ColorFunctions::tweakColor($basePet->getColorA());
+                    $colorB = ColorFunctions::tweakColor($basePet->getColorB());
+                }
 
                 if($this->calendarService->isPiDay())
                     $name = ArrayFunctions::pick_one([ 'Pi',  'Pi', 'Pie', 'Pie', 'Pie', 'Pie', 'Pie', 'Cake' ]);
