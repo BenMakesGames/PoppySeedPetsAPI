@@ -284,6 +284,8 @@ class TreasureMapService
 
     public function doFluffmongerTrade(Pet $pet): PetActivityLog
     {
+        $changes = new PetChanges($pet);
+
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
 
         if($this->inventoryService->loseItem('Fluff', $pet->getOwner(), LocationEnum::HOME, 1) === 1)
@@ -371,6 +373,8 @@ class TreasureMapService
             // didn't have fluff
             $this->inventoryService->unequipPet($pet);
         }
+
+        $activityLog->setChanges($changes->compare($pet));
 
         return $activityLog;
     }
