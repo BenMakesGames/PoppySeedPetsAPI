@@ -63,7 +63,11 @@ class HalloweenController extends PoppySeedPetsController
 
         if((new \DateTimeImmutable())->format('Y-m-d H:i:s') < $nextTrickOrTreater->getValue())
         {
-            return $responseService->success([ 'trickOrTreater' => null, 'nextTrickOrTreater' => $nextTrickOrTreater->getValue() ]);
+            return $responseService->success([
+                'trickOrTreater' => null,
+                'nextTrickOrTreater' => $nextTrickOrTreater->getValue(),
+                'totalCandyGiven' => $userQuestRepository->findOrCreate($user, 'Trick-or-Treaters Treated', 0)->getValue()
+            ]);
         }
 
         $trickOrTreater = $halloweenService->getTrickOrTreater($user);
