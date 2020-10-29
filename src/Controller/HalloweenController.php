@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\PetActivityLog;
+use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
@@ -97,7 +98,7 @@ class HalloweenController extends PoppySeedPetsController
 
         $candy = $inventoryRepository->find($request->request->getInt('candy'));
 
-        if(!$candy || $candy->getOwner()->getId() !== $user->getId())
+        if(!$candy || $candy->getOwner()->getId() !== $user->getId() || $candy->getLocation() !== LocationEnum::HOME)
             throw new NotFoundHttpException('The selected candy could not be found... reload and try again?');
 
         if(!$candy->getItem()->getFood())
@@ -124,6 +125,7 @@ class HalloweenController extends PoppySeedPetsController
 
         $candy
             ->setOwner($trickOrTreater->getOwner())
+            ->setSellPrice(null)
             ->addComment($trickOrTreater->getName() . ' received this trick-or-treating at ' . $user->getName() . '\'s house!')
             ->setModifiedOn()
         ;
