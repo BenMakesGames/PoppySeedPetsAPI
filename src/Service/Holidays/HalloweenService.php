@@ -61,7 +61,7 @@ class HalloweenService
         ;
     }
 
-    public function countCandyGiven(User $user, Pet $trickOrTreater): ?Inventory
+    public function countCandyGiven(User $user, Pet $trickOrTreater, bool $toGivingTree): ?Inventory
     {
         $treated = $this->userQuestRepository->findOrCreate($user, 'Trick-or-Treaters Treated', 0);
 
@@ -81,7 +81,12 @@ class HalloweenService
         }
 
         if($item)
-            return $this->inventoryService->receiveItem($item, $user, $trickOrTreater->getOwner(), $trickOrTreater->getName() . ' gave you this item after trick-or-treating. (Treats for everyone, I guess!)', LocationEnum::HOME);
+        {
+            if($toGivingTree)
+                return $this->inventoryService->receiveItem($item, $user, $user, $user->getName() . ' found this at the Giving Tree during Halloween!', LocationEnum::HOME);
+            else
+                return $this->inventoryService->receiveItem($item, $user, $trickOrTreater->getOwner(), $trickOrTreater->getName() . ' gave you this item after trick-or-treating. (Treats for everyone, I guess!)', LocationEnum::HOME);
+        }
         else
             return null;
     }
