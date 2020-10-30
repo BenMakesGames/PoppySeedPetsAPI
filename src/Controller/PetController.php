@@ -35,6 +35,7 @@ use App\Service\MeritService;
 use App\Service\PetActivityStatsService;
 use App\Service\PetRelationshipService;
 use App\Service\PetService;
+use App\Service\ProfanityFilterService;
 use App\Service\ResponseService;
 use App\Service\Typeahead\PetRelationshipTypeaheadService;
 use App\Service\Typeahead\PetTypeaheadService;
@@ -668,7 +669,8 @@ class PetController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function setCostume(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        ProfanityFilterService $profanityFilterService
     )
     {
         $user = $this->getUser();
@@ -680,6 +682,11 @@ class PetController extends PoppySeedPetsController
 
         if(\mb_strlen($costume) > 30)
             throw new UnprocessableEntityHttpException('Costume description cannot be longer than 30 characters.');
+
+        $costume = $profanityFilterService->filter($costume);
+
+        if(\mb_strlen($costume) > 30)
+            $costume = \mb_substr($costume, 0, 30);
 
         $pet->setCostume($costume);
 
