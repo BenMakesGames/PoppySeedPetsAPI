@@ -295,7 +295,7 @@ class AdoptionService
     public function getHalloweenColors(): array
     {
         // black and orange
-        return [ '333333', 'FF9999' ];
+        return [ '333333', 'FF9933' ];
     }
 
     public function getWinterSolsticeColors(): array
