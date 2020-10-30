@@ -202,6 +202,11 @@ class BookstoreService
                 $bookPrices['Milk: The Book'] = 30;
                 $bookPrices['Fried'] = 25;
             }
+
+            if($cookedSomething->getValue() >= 500)
+            {
+                $bookPrices['Ultimate Chef'] = 500;
+            }
         }
 
         if($user->getUnlockedFireplace())
