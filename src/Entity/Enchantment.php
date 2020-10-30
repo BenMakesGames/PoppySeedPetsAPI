@@ -33,7 +33,7 @@ class Enchantment
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\ItemTool", inversedBy="enchantment", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myInventory", "itemEncyclopedia"})
+     * @Groups({"myInventory", "itemEncyclopedia", "marketItem"})
      */
     private $effects;
 

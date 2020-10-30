@@ -123,7 +123,7 @@ class Item
     }
 
     /**
-     * @Groups({"myBeehive"})
+     * @Groups({"myBeehive", "itemEncyclopedia"})
      */
     public function getNameWithArticle(): string
     {
