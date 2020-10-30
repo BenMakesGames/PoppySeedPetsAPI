@@ -48,7 +48,7 @@ class BoxController extends PoppySeedPetsItemController
         $lockedToOwner = $box->getLockedToOwner();
 
         $hatItem = $itemRepository->findOneByName(ArrayFunctions::pick_one([
-            'Purple Violet',
+            'Masquerade Mask',
             'Wings',
             'Merchant\'s Cap',
             'Wizarding Hat',
@@ -68,6 +68,13 @@ class BoxController extends PoppySeedPetsItemController
         {
             $itemComment = 'Found inside ' . $box->getItem()->getNameWithArticle() . '.';
             $message = 'You open the hat box... ta-da! It\'s... ' . $hatItem->getNameWithArticle() . '? (Is that a hat?)';
+        }
+        else if($hatItem->getName() === 'Wings')
+        {
+            $itemComment = 'Found inside ' . $box->getItem()->getNameWithArticle() . '.';
+            $message = 'You open the hat box... ta-da! It\'s... two ' . $hatItem->getNameWithArticle() . '! (Which are each already two, so it\'s kinda\' like getting four, I guess?)';
+
+            $inventoryService->receiveItem($hatItem, $user, $box->getCreatedBy(), $itemComment, $location, $lockedToOwner);
         }
         else
         {

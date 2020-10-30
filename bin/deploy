@@ -21,7 +21,6 @@ sudo php bin/console cache:clear --env=prod
 sudo php bin/console doctrine:cache:clear-metadata
 sudo php bin/console doctrine:cache:clear-query
 sudo php bin/console doctrine:cache:clear-result
-sudo php bin/console cache:warmup --env=prod
 
 sudo chmod 777 -R var/cache
 sudo chmod 777 -R var/log
