@@ -22,8 +22,8 @@ sudo php bin/console doctrine:cache:clear-metadata
 sudo php bin/console doctrine:cache:clear-query
 sudo php bin/console doctrine:cache:clear-result
 
+sudo chown ec2-user:apache -R var/cache
 sudo chmod 777 -R var/cache
 sudo chmod 777 -R var/log
-sudo chown ec2-user:apache -R var/cache
 
 chmod +x bin/deploy
