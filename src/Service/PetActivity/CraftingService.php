@@ -1748,17 +1748,17 @@ class CraftingService
             $this->inventoryService->loseItem($dye, $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(3);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' painted ' . $makingItem->getNameWithArticle() . '.', 'items/' . $makingItem->getImage())
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' dyed ' . $makingItem->getNameWithArticle() . '.', 'items/' . $makingItem->getImage())
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
             ;
-            $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' painted this flag.', $activityLog);
+            $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' dyed this flag.', $activityLog);
             return $activityLog;
         }
         else
         {
             $this->petExperienceService->spendTime($pet, mt_rand(15, 45), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to paint a flag, but couldn\'t come up with a good design.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to dye a flag, but couldn\'t come up with a good design.', 'icons/activity-logs/confused');
         }
     }
 
