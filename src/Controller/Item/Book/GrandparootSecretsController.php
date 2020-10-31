@@ -54,11 +54,11 @@ Congratulations! You now have Aging Powder!
 
 ### Wine
 
-Ordinarily, the process of wine-making is a very time-consuming one. Fortunately, Aging Root makes it possible to quickly make Wine in your own home!
+Ordinarily, the process of wine-making is a very time-consuming one. Fortunately, Aging Powder makes it possible to quickly make Wine in your own home!
  
-Wine experts will tell you that Aging Root gives the wine a slight metallic taste; I\'ve never been able to taste it, myself, and it\'s certainly cheaper than buying a bottle at the grocery store!
+Wine experts will tell you that Aging Powder gives the wine a slight metallic taste; I\'ve never been able to taste it, myself, and it\'s certainly cheaper than buying a bottle at the grocery store!
 
-You can make a glass of wine by combining Aging Root with many fruits, and even some vegetables. Blackberry Wine is one of my favorites!
+You can make a glass of wine by combining Aging Powder with many fruits, and even some vegetables. Blackberry Wine is one of my favorites!
 
 You will get a small amount of foam around the edge of your glass; scoop that off, but don\'t throw it away! That\'s tartaric acid - dried, it\'s known as Cream of Tartar - very useful in baking!
 
@@ -76,7 +76,7 @@ Et voilà! Mushrooms!
 
 You can\'t get away from the fact that to make Yogurt, you need Yogurt, but you _can_ get away from the time requirement with the application of - you guessed it - Aging Powder!
 
-Take some Yogurt as a starter, and pour in some Creamy Milk. Apply Aging Root. It\'s as easy as that!
+Take some Yogurt as a starter, and pour in some Creamy Milk. Apply Aging Powder. It\'s as easy as that!
 
 ### Charcoal
 
@@ -101,13 +101,13 @@ Besides the Egg and Aging Powder, you will need:
 
 ### Kombucha
 
-I hadn\'t tried Kombucha until I started experimenting with Aging Root; it\'s a very refreshing drink, but ordinarily takes a few days to make.
+I hadn\'t tried Kombucha until I started experimenting with Aging Powder; it\'s a very refreshing drink, but ordinarily takes a few days to make.
 
 You know where this is going!
 
-If you already have Black Tea or Sweet Black Tea made, simply add Aging Root. (If the tea isn\'t sweetened, you\'ll need to add Sugar as well; Sugar is needed to get the fermenting process going!
+If you already have Black Tea or Sweet Black Tea made, simply add Aging Powder. (If the tea isn\'t sweetened, you\'ll need to add Sugar as well; Sugar is needed to get the fermenting process going!
 
-If you haven\'t made any tea yet, don\'t worry: Aging Powder will speed up the steeping process as well! Combine Tea Leaves, Sugar, and Aging Root, and let time do the rest... in just under a minute!
+If you haven\'t made any tea yet, don\'t worry: Aging Powder will speed up the steeping process as well! Combine Tea Leaves, Sugar, and Aging Powder, and let time do the rest... in just under a minute!
 
 ### Soy Sauce
 
