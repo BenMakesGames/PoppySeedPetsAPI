@@ -636,6 +636,19 @@ class UmbraService
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' stumbled upon a castle that was obviously home to vampires. They snuck around inside for a while, but couldn\'t find a good opportunity to steal anything.', 'icons/activity-logs/confused');
             }
         }
+        else if($pet->getTool() && $pet->getTool()->isGrayscaling())
+        {
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $loot = ArrayFunctions::pick_one([ 'Blood Wine', 'Linens and Things' ]);
+
+            $pet->increaseEsteem(2);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' stumbled upon a castle that was apparently home to vampires! Fortunately, the vampires mistook ' . $pet->getName() . '\'s monochromatic appearance as vampirism, and welcomed them as kin. ' . $pet->getName() . ' stole a few items while none of the vampires were looking, and fled the castle as soon as they could!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ;
+
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this from a vampire castle.', $activityLog);
+        }
         else
         {
             // don't realize; get in a fight

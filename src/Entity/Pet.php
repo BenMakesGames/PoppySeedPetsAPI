@@ -11,6 +11,7 @@ use App\Enum\PetPregnancyStyleEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\NumberFunctions;
 use App\Service\PetExperienceService;
@@ -562,6 +563,8 @@ class Pet
     {
         if($this->hasStatusEffect(StatusEffectEnum::EGGPLANT_CURSED))
             return '673192';
+        else if($this->getTool() && $this->getTool()->isGrayscaling())
+            return ColorFunctions::GrayscalifyHex($this->getColorA());
         else
             return $this->getColorA();
     }
@@ -574,6 +577,8 @@ class Pet
     {
         if($this->hasStatusEffect(StatusEffectEnum::EGGPLANT_CURSED))
             return '8b48c1';
+        else if($this->getTool() && $this->getTool()->isGrayscaling())
+            return ColorFunctions::GrayscalifyHex($this->getColorB());
         else
             return $this->getColorB();
     }

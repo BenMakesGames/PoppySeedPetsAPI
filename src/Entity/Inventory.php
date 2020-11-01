@@ -506,4 +506,12 @@ class Inventory
             ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getDreamcatcher())
         ;
     }
+
+    public function isGrayscaling(): bool
+    {
+        return
+            $this->getItem()->getTool()->getIsGrayscaling() ||
+            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getIsGrayscaling())
+        ;
+    }
 }

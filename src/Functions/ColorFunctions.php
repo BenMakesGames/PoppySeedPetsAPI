@@ -202,4 +202,19 @@ final class ColorFunctions
             ColorFunctions::HSL2Hex($h2, $s2, $l2)
         ];
     }
+
+    // not-perfect, but should be computationally fast!
+    public function GrayscalifyHex(string $hexColor)
+    {
+        $r = substr($hexColor, 0, 2);
+        $g = substr($hexColor, 2, 2);
+        $b = substr($hexColor, 4, 2);
+
+        if($g >= $r && $g >= $b)
+            return $g . $g . $g;
+        else if($r >= $g && $r >= $b)
+            return $r . $r . $r;
+        else
+            return $b . $b . $b;
+    }
 }

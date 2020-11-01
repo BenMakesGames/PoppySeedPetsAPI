@@ -179,6 +179,11 @@ class ItemTool
      */
     private $dreamcatcher = false;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isGrayscaling = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -422,6 +427,9 @@ class ItemTool
         if($this->getDreamcatcher())
             $modifiers[] = 'the pet will occasionally have vivid dreams';
 
+        if($this->getIsGrayscaling())
+            $modifiers[] = 'the pet will be in black & white';
+
         return $modifiers;
     }
 
@@ -606,6 +614,18 @@ class ItemTool
     public function setDreamcatcher(bool $dreamcatcher): self
     {
         $this->dreamcatcher = $dreamcatcher;
+
+        return $this;
+    }
+
+    public function getIsGrayscaling(): ?bool
+    {
+        return $this->isGrayscaling;
+    }
+
+    public function setIsGrayscaling(bool $isGrayscaling): self
+    {
+        $this->isGrayscaling = $isGrayscaling;
 
         return $this;
     }

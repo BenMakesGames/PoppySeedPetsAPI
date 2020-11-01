@@ -67,6 +67,9 @@ class MagicBindingService
 
         if(array_key_exists('Quintessence', $quantities))
         {
+            if(array_key_exists('Silver Bar', $quantities) && array_key_exists('Paint Stripper', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createAmbrotypicSolvent', 8);
+
             if(array_key_exists('Aubergine Scepter', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createAubergineCommander', 7);
 
@@ -1333,6 +1336,60 @@ class MagicBindingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
             ;
             $this->inventoryService->petCollectsItem('Gold Triskaidecta', $pet, $pet->getName() . ' enchanted this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createAmbrotypicSolvent(Pet $pet): PetActivityLog
+    {
+        $skillCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + ceil($pet->getScience() / 2));
+
+        if($skillCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::SCIENCE ]);
+
+            $lost = mt_rand(1, 3);
+
+            if($lost < 3)
+            {
+                $pet->increaseEsteem(-1);
+
+                $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to mix some Ambrotypic Solvent, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+            }
+            else
+            {
+                $pet->increaseEsteem(-3);
+
+                $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->inventoryService->loseItem('Paint Stripper', $pet->getOwner(), LocationEnum::HOME, 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to mix some Ambrotypic Solvent, but got the proportions wrong, ruining the Silver Bar AND the Paint Stripper! :(', '');
+            }
+        }
+        else if($skillCheck < 14)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::SCIENCE ]);
+
+            if(mt_rand(1, 2) === 1)
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to mix some Ambrotypic Solvent, but wasn\'t confident in their measurements of the ratios...', 'icons/activity-logs/confused');
+            else
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to mix some Ambrotypic Solvent, but wasn\'t confident about how to properly infuse the Quintessence...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Paint Stripper', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA, PetSkillEnum::SCIENCE ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' mixed some magic Ambrotypic Solvent!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+            ;
+
+            $this->inventoryService->petCollectsItem('Ambrotypic Solvent', $pet, $pet->getName() . ' mixed this.', $activityLog);
             return $activityLog;
         }
     }
