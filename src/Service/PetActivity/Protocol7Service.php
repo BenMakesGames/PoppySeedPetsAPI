@@ -429,14 +429,14 @@ class Protocol7Service
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
-            $loot = ArrayFunctions::pick_one($video['loot']);
+            $lootItem = $this->itemRepository->findOneByName(ArrayFunctions::pick_one($video['loot']));
 
             $pet->increaseEsteem(2);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' watched a video ' . $video['subject'] . ' in Project-E, and got a ' . $loot . ' out of it.', '')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' watched a video ' . $video['subject'] . ' in Project-E, and got ' . $lootItem->getNameWithArticle() . ' out of it.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
             ;
-            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' got this by watching a video ' . $video['subject'] . ' in Project-E.' , $activityLog);
+            $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' got this by watching a video ' . $video['subject'] . ' in Project-E.' , $activityLog);
 
             return $activityLog;
         }
