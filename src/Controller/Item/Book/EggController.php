@@ -101,6 +101,8 @@ Sugar.
 
 Season with cinnamon and nutmeg to taste. (But probably not Century Egg.)
 
+But if you\'re craving something alcoholic (and eggy - interesting choice), whip up some Zabaglione from Egg, Sugar, and any fruity Wine.
+
 Chapter 5. French Toast.
 
 \*hiiiiiisssss\*
