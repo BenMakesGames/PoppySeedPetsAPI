@@ -182,6 +182,18 @@ class AccountController extends PoppySeedPetsController
         if($user->getUnlockedMuseum() === null && $user->getRegisteredOn() <= (new \DateTimeImmutable())->modify('-3 days'))
             $user->setUnlockedMuseum();
 
+        $loginFromPath = parse_url($request->server->get('HTTP_REFERER'), PHP_URL_PATH);
+
+        if($loginFromPath === '/')
+        {
+            if($user->getUnreadNews() === 1)
+                $user->setUnreadNews(0);
+        }
+        else if($loginFromPath === '/news')
+        {
+            $user->setUnreadNews(0);
+        }
+
         $em->flush();
 
         $responseService->setSessionId($session->getSessionId());

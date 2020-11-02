@@ -244,6 +244,12 @@ class User implements UserInterface
      */
     private $unlockedTrader;
 
+    /**
+     * @ORM\Column(type="smallint")
+     * @Groups({"myAccount"})
+     */
+    private $unreadNews;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -877,6 +883,18 @@ class User implements UserInterface
     public function setUnlockedTrader(): self
     {
         $this->unlockedTrader = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getUnreadNews(): int
+    {
+        return $this->unreadNews;
+    }
+
+    public function setUnreadNews(int $unreadNews): self
+    {
+        $this->unreadNews = $unreadNews;
 
         return $this;
     }

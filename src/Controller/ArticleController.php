@@ -23,8 +23,16 @@ class ArticleController extends PoppySeedPetsController
      * @DoesNotRequireHouseHours()
      * @Route("/latest", methods={"GET"})
      */
-    public function getLatest(ResponseService $responseService, ArticleRepository $articleRepository)
+    public function getLatest(
+        ResponseService $responseService, ArticleRepository $articleRepository, EntityManagerInterface $em
+    )
     {
+        if($this->getUser() && $this->getUser()->getUnreadNews() === 1)
+        {
+            $this->getUser()->setUnreadNews(0);
+            $em->flush();
+        }
+
         return $responseService->success(
             $articleRepository->findOneBy([], [ 'createdOn' => 'DESC' ]),
             [ SerializationGroupEnum::ARTICLE ]
@@ -35,8 +43,17 @@ class ArticleController extends PoppySeedPetsController
      * @DoesNotRequireHouseHours()
      * @Route("", methods={"GET"})
      */
-    public function getAll(Request $request, ResponseService $responseService, ArticleFilterService $articleFilterService)
+    public function getAll(
+        Request $request, ResponseService $responseService, ArticleFilterService $articleFilterService,
+        EntityManagerInterface $em
+    )
     {
+        if($this->getUser() && $this->getUser()->getUnreadNews() > 0)
+        {
+            $this->getUser()->setUnreadNews(0);
+            $em->flush();
+        }
+
         return $responseService->success(
             $articleFilterService->getResults($request->query),
             [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::ARTICLE ]
