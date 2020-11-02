@@ -345,7 +345,16 @@ class PetService
             }
 
             if($ateAFortuneCookie)
-                $message .= ' ' . ArrayFunctions::pick_one(FortuneCookie::MESSAGES);
+            {
+                $message .= ' "' . ArrayFunctions::pick_one(FortuneCookie::MESSAGES) . '"';
+                if(mt_rand(1, 20) === 1 && $pet->getOwner()->getUnlockedGreenhouse())
+                {
+                    $message .= ' ... in bed!';
+
+                    if(mt_rand(1, 5) === 1)
+                        $message .= ' XD';
+                }
+            }
 
             return $this->responseService->createActivityLog($pet, $message, $icon, $petChanges->compare($pet));
         }
