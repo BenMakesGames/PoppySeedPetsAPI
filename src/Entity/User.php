@@ -248,7 +248,7 @@ class User implements UserInterface
      * @ORM\Column(type="smallint")
      * @Groups({"myAccount"})
      */
-    private $unreadNews;
+    private $unreadNews = 0;
 
     public function __construct()
     {
