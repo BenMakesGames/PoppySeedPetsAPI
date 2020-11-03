@@ -72,7 +72,7 @@ class BoxController extends PoppySeedPetsItemController
         else if($hatItem->getName() === 'Wings')
         {
             $itemComment = 'Found inside ' . $box->getItem()->getNameWithArticle() . '.';
-            $message = 'You open the hat box... ta-da! It\'s... two ' . $hatItem->getNameWithArticle() . '! (Which are each already two, so it\'s kinda\' like getting four, I guess?)';
+            $message = 'You open the hat box... ta-da! It\'s... two ' . $hatItem->getName() . '! (Which are each already two wings, so it\'s kinda\' like getting four, I guess?)';
 
             $inventoryService->receiveItem($hatItem, $user, $box->getCreatedBy(), $itemComment, $location, $lockedToOwner);
         }
