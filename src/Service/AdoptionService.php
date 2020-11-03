@@ -74,7 +74,7 @@ class AdoptionService
     }
 
     /**
-     * @return PetShelterPet[]
+     * @return {PetShelterPet[], string}
      */
     public function getDailyPets(User $user): array
     {
@@ -85,6 +85,11 @@ class AdoptionService
 
         $numPets = $this->getNumberOfPets($user);
         $numSeasonalPets = $this->numberOfSeasonalPets($numPets);
+
+        $dialog = $numPets > 10
+            ? "Oh, goodness! A bunch of pets appeared from the Portal today! It just seems to happen now and again; we're still not sure why...\n\n Anyway, if "
+            : "Hello! Here to adopt a new friend?\n\nIf "
+        ;
 
         $petCount = $this->petRepository->createQueryBuilder('p')
             ->select('COUNT(p.id)')
@@ -170,10 +175,17 @@ class AdoptionService
             {
                 $pet->species = $this->petSpeciesRepository->findOneBy([ 'name' => 'Fog Elemental' ]);
                 $pet->label = 'spooky!';
+                $dialog = "Uh... I don't know if this is a Halloween thing, or what, but... if you want a Fog Elemental, I guess it's your pick of the litter...\n\nAlthough I guess if ";
+            }
+            else if($this->calendarService->isNoombatDay())
+            {
+                $pet->species = $this->petSpeciesRepository->findOneBy([ 'name' => 'Noombat' ]);
+                $pet->label = 'noom!';
+                $dialog = "Agh! This happens every year at about this time! Noombats everywhere! I don't know if it's Noombat breeding season, or what, but please adopt one of these things! If you insist, though, and ";
             }
             else if(mt_rand(1, 200) === 1)
             {
-                $pet->species = ArrayFunctions::pick_one($this->petSpeciesRepository->findBy(['availableFromPetShelter' => false, 'availableFromBreeding' => true]));
+                $pet->species = ArrayFunctions::pick_one($this->petSpeciesRepository->findBy([ 'availableFromPetShelter' => false, 'availableFromBreeding' => true ]));
                 $pet->label = ArrayFunctions::pick_one([
                     'gasp!',
                     'oh my!',
@@ -193,7 +205,7 @@ class AdoptionService
             $pets[] = $pet;
         }
 
-        return $pets;
+        return [ $pets, $dialog ];
     }
 
     public function numberOfSeasonalPets(int $totalPets): int

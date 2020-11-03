@@ -24,6 +24,17 @@ class CalendarService
         $this->monthAndDay = (int)$this->today->format('md');
     }
 
+    public function isNoombatDay(): bool
+    {
+        // if it's not November, just get outta' here
+        if($this->monthAndDay < 1200 || $this->monthAndDay >= 1100)
+            return false;
+
+        $firstSaturdayOfNovember = (int)(new \DateTimeImmutable('first Saturday of this month'))->format('md');
+
+        return $this->monthAndDay === $firstSaturdayOfNovember;
+    }
+
     public function getMonthAndDay(): int
     {
         return $this->monthAndDay;
