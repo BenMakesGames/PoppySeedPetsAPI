@@ -108,7 +108,7 @@ class PetShelterController extends PoppySeedPetsController
         if(\mb_strlen($petName) < 1 || \mb_strlen($petName) > 30)
             throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
 
-        $pets = $adoptionService->getDailyPets($user);
+        [$pets, $dialog] = $adoptionService->getDailyPets($user);
 
         /** @var PetShelterPet $petToAdopt */
         $petToAdopt = ArrayFunctions::find_one($pets, function(PetShelterPet $p) use($id) { return $p->id === $id; });
