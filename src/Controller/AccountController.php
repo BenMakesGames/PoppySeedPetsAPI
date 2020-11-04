@@ -2,11 +2,6 @@
 namespace App\Controller;
 
 use App\Annotations\DoesNotRequireHouseHours;
-use App\Entity\Inventory;
-use App\Entity\PassphraseResetRequest;
-use App\Entity\Pet;
-use App\Entity\PetHouseTime;
-use App\Entity\PetSkills;
 use App\Entity\User;
 use App\Entity\UserNotificationPreferences;
 use App\Enum\FlavorEnum;
@@ -17,10 +12,10 @@ use App\Functions\ArrayFunctions;
 use App\Functions\StringFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\MeritRepository;
+use App\Repository\MuseumItemRepository;
 use App\Repository\PassphraseResetRequestRepository;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
-use App\Repository\UserNotificationPreferencesRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
@@ -40,9 +35,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
@@ -566,5 +559,29 @@ class AccountController extends PoppySeedPetsController
     public function getProfileMinimal(User $user, ResponseService $responseService)
     {
         return $responseService->success($user, [ SerializationGroupEnum::USER_PUBLIC_PROFILE ]);
+    }
+
+    /**
+     * @Route("/changeIcon", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function setIcon(
+        Request $request, MuseumItemRepository $museumItemRepository, ResponseService $responseService
+    )
+    {
+        $user = $this->getUser();
+        $itemId = $request->request->getInt('item');
+
+        $donated = $museumItemRepository->findOneBy([
+            'user' => $user->getId(),
+            'item' => $itemId
+        ]);
+
+        if(!$donated)
+            throw new NotFoundHttpException('You have not donated that item... YET! (I believe in you!)');
+
+        $user->setIcon('items/' . $donated->getItem()->getImage());
+
+        return $responseService->success();
     }
 }

@@ -87,6 +87,8 @@ class ArticleController extends PoppySeedPetsController
         $em->persist($article);
         $em->flush();
 
+        $em->createQuery('UPDATE App\\Entity\\User u SET u.unreadNews=u.unreadNews+1')->execute();
+
         return $responseService->success();
     }
 

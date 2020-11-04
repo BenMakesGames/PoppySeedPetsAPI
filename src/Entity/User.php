@@ -250,6 +250,12 @@ class User implements UserInterface
      */
     private $unreadNews = 0;
 
+    /**
+     * @ORM\Column(type="string", length=40, nullable=true)
+     * @Groups({"myAccount", "userPublicProfile", "petPublicProfile", "museum", "parkEvent"})
+     */
+    private $icon;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -895,6 +901,18 @@ class User implements UserInterface
     public function setUnreadNews(int $unreadNews): self
     {
         $this->unreadNews = $unreadNews;
+
+        return $this;
+    }
+
+    public function getIcon(): ?string
+    {
+        return $this->icon;
+    }
+
+    public function setIcon(?string $icon): self
+    {
+        $this->icon = $icon;
 
         return $this;
     }
