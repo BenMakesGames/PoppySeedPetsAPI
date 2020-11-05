@@ -23,7 +23,7 @@ class InventoryFilterService
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
             [
-                'itemName' => [ 'item.name' => 'asc' ], // first one is the default
+                'itemname' => [ 'item.name' => 'asc' ], // first one is the default
             ],
             [
                 'location' => [ $this, 'filterLocation' ],

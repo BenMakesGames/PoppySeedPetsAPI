@@ -20,8 +20,8 @@ class PetGroupFilterService
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
             [
-                'lastMetOn' => [ 'g.lastMetOn' => 'desc' ], // first one is the default
-                'createdOn' => [ 'g.createdOn' => 'desc' ],
+                'lastmeton' => [ 'g.lastMetOn' => 'desc' ], // first one is the default
+                'createdon' => [ 'g.createdOn' => 'desc' ],
                 'name' => [ 'g.name' => 'asc' ],
             ],
             [
