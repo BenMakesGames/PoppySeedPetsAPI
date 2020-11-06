@@ -232,7 +232,10 @@ class BookstoreService
             }
         }
 
-        if($user->getGreenhouse() && $user->getGreenhouse()->getMaxPlants() > 6)
+        if(
+            $user->getGreenhouse() &&
+            $user->getGreenhouse()->getMaxPlants() + $user->getGreenhouse()->getMaxWaterPlants() + $user->getGreenhouse()->getMaxDarkPlants() > 6
+        )
         {
             $bookPrices['Bird Bath Blueprint'] = 200;
         }
