@@ -23,6 +23,7 @@ use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\PetService;
 use App\Service\ResponseService;
+use App\Service\ToolBonusService;
 use App\Service\TransactionService;
 
 class HuntingService
@@ -36,12 +37,13 @@ class HuntingService
     private $userQuestRepository;
     private $petExperienceService;
     private $transactionService;
+    private $toolBonusService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         CalendarService $calendarService, MuseumItemRepository $museumItemRepository, ItemRepository $itemRepository,
         UserQuestRepository $userQuestRepository, PetExperienceService $petExperienceService,
-        TransactionService $transactionService
+        TransactionService $transactionService, ToolBonusService $toolBonusService
     )
     {
         $this->responseService = $responseService;
@@ -53,6 +55,7 @@ class HuntingService
         $this->userQuestRepository = $userQuestRepository;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
+        $this->toolBonusService = $toolBonusService;
     }
 
     public function adventure(Pet $pet)
@@ -501,13 +504,21 @@ class HuntingService
     {
         $skill = 10 + $pet->getStamina();
 
-        if(mt_rand(1, $skill) >= 7)
+        if($pet->getTool() && $pet->getTool()->rangedOnly())
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::HUNT, true);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' was able to defeat it from a distance thanks to their ' . $this->toolBonusService->getNameWithBonus($pet->getTool()) . '!', 'items/veggie/onion');
+            $this->inventoryService->petCollectsItem('Onion', $pet, 'The remains of an Onion Boy that ' . $pet->getName() . ' encountered.', $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ]);
+        }
+        else if(mt_rand(1, $skill) >= 7)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::HUNT, true);
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' powered through it.', 'items/veggie/onion');
             $this->inventoryService->petCollectsItem('Onion', $pet, 'The remains of an Onion Boy that ' . $pet->getName() . ' encountered.', $activityLog);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ]);
         }
         else
         {
@@ -637,9 +648,10 @@ class HuntingService
         }
         else
         {
-            $skill = 10 + $pet->getIntelligence() + $pet->getBrawl() + $pet->getUmbra();
+            $brawlSkill = 10 + $pet->getIntelligence() + $pet->getBrawl() + $pet->getUmbra();
+            $stealthSkill = 10 + $pet->getDexterity() + $pet->getStealth();
 
-            if(mt_rand(1, $skill) >= 15)
+            if(mt_rand(1, $brawlSkill) >= 15)
             {
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
 
@@ -651,6 +663,23 @@ class HuntingService
                     ->increaseSafety(3)
                     ->increaseEsteem(2)
                 ;
+
+                return $activityLog;
+            }
+            else if(mt_rand(1, $stealthSkill) >= 10)
+            {
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ]);
+
+                $hidSomehow = ArrayFunctions::pick_one([
+                    'ducked behind a boulder', 'ducked behind a tree',
+                    'dove into a bush', 'ducked behind a river bank',
+                    'jumped into a hollow log'
+                ]);
+
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
+                $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt ' . $pet->getName() . ', but ' . $pet->getName() . ' ' . $hidSomehow . ', eluding the ghost!', '');
+
+                $pet->increaseEsteem(2);
 
                 return $activityLog;
             }
