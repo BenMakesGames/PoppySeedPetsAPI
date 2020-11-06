@@ -105,6 +105,12 @@ class Item
      */
     private $grammar;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Spice::class)
+     * @Groups({"myInventory", "marketItem", "itemEncyclopedia"})
+     */
+    private $spice;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -342,6 +348,18 @@ class Item
         if ($grammar->getItem() !== $this) {
             $grammar->setItem($this);
         }
+
+        return $this;
+    }
+
+    public function getSpice(): ?Spice
+    {
+        return $this->spice;
+    }
+
+    public function setSpice(?Spice $spice): self
+    {
+        $this->spice = $spice;
 
         return $this;
     }

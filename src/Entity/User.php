@@ -251,7 +251,7 @@ class User implements UserInterface
     private $unreadNews = 0;
 
     /**
-     * @ORM\Column(type="string", length=40, nullable=true)
+     * @ORM\Column(type="string", length=60, nullable=true)
      * @Groups({"myAccount", "userPublicProfile", "petPublicProfile", "museum", "parkEvent"})
      */
     private $icon;
