@@ -329,6 +329,27 @@ class HuntingService
 
     private function huntedDoughGolem(Pet $pet): PetActivityLog
     {
+        $possibleLoot = [
+            'Wheat Flour', 'Oil', 'Butter', 'Yeast', 'Sugar'
+        ];
+
+        $stealth = mt_rand(1, 10 + $pet->getDexterity() + $pet->getStealth());
+
+        if($stealth > 15)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
+            $pet->increaseEsteem(1);
+
+            $loot = ArrayFunctions::pick_one($possibleLoot);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' snuck up on a sleeping Dough Golem, and harvested some of its ' . $loot . ' without it ever noticing!', '');
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this off the body of a sleeping Dough Golem.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH ]);
+
+            return $activityLog;
+        }
+
         $skill = 10 + $pet->getStrength() + $pet->getBrawl(false);
 
         $pet->increaseFood(-1);
@@ -338,9 +359,7 @@ class HuntingService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
             $pet->increaseEsteem(1);
 
-            $loot = ArrayFunctions::pick_one([
-                'Wheat Flour', 'Oil', 'Butter', 'Yeast', 'Sugar'
-            ]);
+            $loot = ArrayFunctions::pick_one($possibleLoot);
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' attacked a rampaging Dough Golem, defeated it, and harvested its ' . $loot . '.', '');
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' took this from the body of a defeated Dough Golem.', $activityLog);
