@@ -4,7 +4,6 @@ namespace App\Controller;
 use App\Annotations\DoesNotRequireHouseHours;
 use App\Service\HouseService;
 use App\Service\ResponseService;
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,7 +30,7 @@ class HouseController extends PoppySeedPetsController
             $houseService->run($user);
             $em->flush();
         }
-        catch(DBALException $e)
+        catch(\Doctrine\DBAL\Driver\PDO\Exception $e)
         {
             // hide serialization deadlocks from the end-user, in this case:
             if($e->getCode() === 1213)

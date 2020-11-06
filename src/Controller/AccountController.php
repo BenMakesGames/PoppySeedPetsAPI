@@ -22,7 +22,6 @@ use App\Repository\UserStatsRepository;
 use App\Service\Filter\UserFilterService;
 use App\Service\InventoryService;
 use App\Service\PassphraseResetService;
-use App\Service\PetExperienceService;
 use App\Service\PetFactory;
 use App\Service\ProfanityFilterService;
 use App\Service\ResponseService;
@@ -566,7 +565,8 @@ class AccountController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function setIcon(
-        Request $request, MuseumItemRepository $museumItemRepository, ResponseService $responseService
+        Request $request, MuseumItemRepository $museumItemRepository, ResponseService $responseService,
+        EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -581,6 +581,21 @@ class AccountController extends PoppySeedPetsController
             throw new NotFoundHttpException('You have not donated that item... YET! (I believe in you!)');
 
         $user->setIcon('items/' . $donated->getItem()->getImage());
+
+        $em->flush();
+
+        return $responseService->success();
+    }
+
+    /**
+     * @Route("/clearIcon", methods={"PATCH"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function clearIcon(ResponseService $responseService, EntityManagerInterface $em)
+    {
+        $user = $this->getUser();
+        $user->setIcon(null);
+        $em->flush();
 
         return $responseService->success();
     }
