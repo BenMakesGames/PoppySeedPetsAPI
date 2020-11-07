@@ -615,6 +615,10 @@ class GatheringService
             'Naner', 'Naner', 'Orange', 'Orange', 'Cocoa Beans', 'Cocoa Beans', 'Coffee Beans',
         ];
 
+        $extraLoot = [
+            'Nutmeg', 'Spicy Peps'
+        ];
+
         $loot = [];
 
         $roll = mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering());
@@ -632,7 +636,7 @@ class GatheringService
             }
 
             if($roll >= 24)
-                $loot[] = ArrayFunctions::pick_one($possibleLoot);
+                $loot[] = ArrayFunctions::pick_one($extraLoot);
 
             if($roll >= 30 && mt_rand(1, 20) === 1)
                 $loot[] = 'Silver Ore';

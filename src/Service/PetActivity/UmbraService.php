@@ -801,7 +801,7 @@ class UmbraService
         else
         {
             if(mt_rand(1, 20 + $pet->getPerception() + $pet->getUmbra() + $pet->getGathering()) >= 25)
-                $loot[] = ArrayFunctions::pick_one([ 'Eggplant', 'Grandparoot', 'Silica Grounds' ]);
+                $loot[] = ArrayFunctions::pick_one([ 'Nutmeg', 'Eggplant', 'Silica Grounds' ]);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ]);
 
