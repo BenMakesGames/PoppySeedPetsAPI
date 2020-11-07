@@ -124,6 +124,7 @@ class MarketController extends PoppySeedPetsController
 
         $itemId = $request->request->getInt('item', 0);
         $bonusId = $request->request->getInt('bonus', 0);
+        $spiceId = $request->request->getInt('spice', 0);
         $price = $request->request->getInt('sellPrice', 0);
 
         if($itemId === 0 || $price === 0)
@@ -176,6 +177,18 @@ class MarketController extends PoppySeedPetsController
         else
         {
             $qb = $qb->andWhere('i.enchantment IS NULL');
+        }
+
+        if($spiceId)
+        {
+            $qb = $qb
+                ->andWhere('i.spice=:spiceId')
+                ->setParameter('spiceId', $spiceId)
+            ;
+        }
+        else
+        {
+            $qb = $qb->andWhere('i.spice IS NULL');
         }
 
         /** @var Inventory[] $forSale */

@@ -406,7 +406,7 @@ class ItemFood
     }
 
     /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
+     * @Groups({"myInventory", "itemEncyclopedia", "marketItem"})
      */
     public function getModifiers(): array
     {

@@ -50,10 +50,12 @@ class MarketFilterService
             ->select('i AS inventory,item,enchantment,MIN(i.sellPrice) AS minSellPrice')
             ->leftJoin('i.item', 'item')
             ->leftJoin('i.enchantment', 'enchantment')
+            ->leftJoin('i.spice', 'spice')
             ->andWhere('i.sellPrice IS NOT NULL')
             ->andWhere('i.owner != :user')
             ->addGroupBy('item.name')
             ->addGroupBy('enchantment.name')
+            ->addGroupBy('spice.name')
             ->setParameter('user', $this->user->getId())
         ;
     }

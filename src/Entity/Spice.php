@@ -15,6 +15,7 @@ class Spice
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"marketItem"})
      */
     private $id;
 
