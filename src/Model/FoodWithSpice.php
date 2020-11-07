@@ -32,7 +32,7 @@ class FoodWithSpice
     public $oniony;
     public $chemically;
 
-    public function __construct(Item $item, Spice $spice)
+    public function __construct(Item $item, ?Spice $spice)
     {
         $food = $item->getFood();
 
