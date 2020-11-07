@@ -149,6 +149,11 @@ class ItemFood
      */
     private $isCandy;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Spice::class, mappedBy="effects", cascade={"persist", "remove"})
+     */
+    private $spice;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -415,7 +420,7 @@ class ItemFood
             $modifiers[] = 'small meal';
         else if($this->food > 0)
             $modifiers[] = 'snack';
-        else
+        else if($this->getSpice() === null)
             $modifiers[] = 'no food value';
 
         if($this->love > 2) $modifiers[] = 'delicious!';
@@ -521,7 +526,7 @@ class ItemFood
         return $this;
     }
 
-    public function getContainsTentacles(): ?bool
+    public function getContainsTentacles(): bool
     {
         return $this->containsTentacles;
     }
@@ -572,6 +577,23 @@ class ItemFood
     public function setIsCandy(): self
     {
         $this->isCandy = $this->love > $this->food - $this->junk / 2;
+
+        return $this;
+    }
+
+    public function getSpice(): ?Spice
+    {
+        return $this->spice;
+    }
+
+    public function setSpice(Spice $spice): self
+    {
+        $this->spice = $spice;
+
+        // set the owning side of the relation if necessary
+        if ($spice->getEffects() !== $this) {
+            $spice->setEffects($this);
+        }
 
         return $this;
     }

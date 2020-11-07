@@ -114,6 +114,12 @@ class Inventory
      */
     private $enchantment;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Spice::class)
+     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle"})
+     */
+    private $spice;
+
     public function __construct()
     {
         $this->createdOn = new \DateTimeImmutable();
@@ -513,5 +519,17 @@ class Inventory
             $this->getItem()->getTool()->getIsGrayscaling() ||
             ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getIsGrayscaling())
         ;
+    }
+
+    public function getSpice(): ?Spice
+    {
+        return $this->spice;
+    }
+
+    public function setSpice(?Spice $spice): self
+    {
+        $this->spice = $spice;
+
+        return $this;
     }
 }

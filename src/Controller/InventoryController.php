@@ -16,6 +16,7 @@ use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\CalendarService;
 use App\Service\CookingService;
+use App\Service\SpiceService;
 use App\Service\ToolBonusService;
 use App\Service\Filter\InventoryFilterService;
 use App\Service\InventoryService;
@@ -85,7 +86,7 @@ class InventoryController extends PoppySeedPetsController
     public function prepareRecipe(
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
         InventoryService $inventoryService, EntityManagerInterface $em, CookingService $cookingService,
-        ToolBonusService $enchantmentService
+        ToolBonusService $toolBonusService, SpiceService $spiceService
     )
     {
         $user = $this->getUser();
@@ -109,33 +110,62 @@ class InventoryController extends PoppySeedPetsController
 
         if(count($inventory) === 2)
         {
-            $tool = ArrayFunctions::find_one($inventory, function(Inventory $i) use($inventoryIds) { return $i->getId() === $inventoryIds[0]; });
-            $bonus = ArrayFunctions::find_one($inventory, function(Inventory $i) use($inventoryIds) { return $i->getId() === $inventoryIds[1]; });
+            /** @var Inventory $baseItem */
+            $baseItem = ArrayFunctions::find_one($inventory, function(Inventory $i) use($inventoryIds) { return $i->getId() === $inventoryIds[0]; });
+
+            /** @var Inventory $addOn */
+            $addOn = ArrayFunctions::find_one($inventory, function(Inventory $i) use($inventoryIds) { return $i->getId() === $inventoryIds[1]; });
 
             try
             {
+                // try enchanting
                 $enchanted = null;
 
-                if($tool->getItem()->getTool() && $bonus->getItem()->getEnchants())
+                if($baseItem->getItem()->getTool() && $addOn->getItem()->getEnchants())
                 {
-                    $enchantmentService->enchant($tool, $bonus);
-                    $enchanted = $tool;
+                    $toolBonusService->enchant($baseItem, $addOn);
+                    $enchanted = $baseItem;
                 }
-                else if($bonus->getItem()->getTool() && $tool->getItem()->getEnchants())
+                else if($addOn->getItem()->getTool() && $baseItem->getItem()->getEnchants())
                 {
-                    $enchantmentService->enchant($bonus, $tool);
-                    $enchanted = $bonus;
+                    $toolBonusService->enchant($addOn, $baseItem);
+                    $enchanted = $addOn;
                 }
 
                 if($enchanted)
                 {
-                    $newName = $enchantmentService->getNameWithBonus($enchanted);
+                    $newName = $toolBonusService->getNameWithBonus($enchanted);
 
                     $responseService->addFlashMessage('The ' . $enchanted->getItem()->getName() . ' is now ' . GrammarFunctions::indefiniteArticle($newName) . ' ' . $newName . '!');
 
                     $em->flush();
 
                     return $responseService->success($enchanted, SerializationGroupEnum::MY_INVENTORY);
+                }
+
+                // try spicing up
+                $spiced = null;
+
+                if($baseItem->getItem()->getFood() && $addOn->getItem()->getSpice())
+                {
+                    $spiceService->spiceUp($baseItem, $addOn);
+                    $spiced = $baseItem;
+                }
+                else if($addOn->getItem()->getFood() && $baseItem->getItem()->getSpice())
+                {
+                    $spiceService->spiceUp($addOn, $baseItem);
+                    $spiced = $addOn;
+                }
+
+                if($spiced)
+                {
+                    $newName = $spiceService->getNameWithSpice($spiced);
+
+                    $responseService->addFlashMessage('The ' . $spiced->getItem()->getName() . ' is now ' . GrammarFunctions::indefiniteArticle($newName) . ' ' . $newName . '!');
+
+                    $em->flush();
+
+                    return $responseService->success($spiced, SerializationGroupEnum::MY_INVENTORY);
                 }
             }
             catch(\InvalidArgumentException $exception)

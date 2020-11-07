@@ -19,7 +19,7 @@ class Spice
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity=ItemFood::class, cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=ItemFood::class, inversedBy="spice", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"myInventory", "marketItem", "itemEncyclopedia"})
      */
@@ -42,18 +42,6 @@ class Spice
         return $this->id;
     }
 
-    public function getEffects(): ?ItemFood
-    {
-        return $this->effects;
-    }
-
-    public function setEffects(ItemFood $effects): self
-    {
-        $this->effects = $effects;
-
-        return $this;
-    }
-
     public function getName(): ?string
     {
         return $this->name;
@@ -74,6 +62,18 @@ class Spice
     public function setIsSuffix(bool $isSuffix): self
     {
         $this->isSuffix = $isSuffix;
+
+        return $this;
+    }
+
+    public function getEffects(): ?ItemFood
+    {
+        return $this->effects;
+    }
+
+    public function setEffects(ItemFood $effects): self
+    {
+        $this->effects = $effects;
 
         return $this;
     }

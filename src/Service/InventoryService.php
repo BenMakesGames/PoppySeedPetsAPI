@@ -6,6 +6,7 @@ use App\Entity\Item;
 use App\Entity\ItemFood;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\Spice;
 use App\Entity\StatusEffect;
 use App\Entity\User;
 use App\Enum\EnumInvalidValueException;
@@ -15,6 +16,7 @@ use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Model\FoodWithSpice;
 use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
@@ -270,7 +272,7 @@ class InventoryService
 
         if($item->getFood() !== null && count($pet->getLunchboxItems()) === 0 && mt_rand(1, 20) < 10 - $pet->getFood())
         {
-            if($this->doEat($pet, $item, $activityLog))
+            if($this->doEat($pet, new FoodWithSpice($item, null), $activityLog))
                 return null;
         }
 
@@ -453,63 +455,56 @@ class InventoryService
      * @throws EnumInvalidValueException
      * @return bool
      */
-    public function doEat(Pet $pet, Item $item, ?PetActivityLog $activityLog): bool
+    public function doEat(Pet $pet, FoodWithSpice $food, ?PetActivityLog $activityLog): bool
     {
         // pets will not eat if their stomach is already full
         if($pet->getJunk() + $pet->getFood() >= $pet->getStomachSize())
             return false;
 
-        $food = $item->getFood();
-
-        if($pet->wantsSobriety() && ($food->getAlcohol() > 0 || $food->getCaffeine() > 0 || $food->getPsychedelic() > 0))
+        if($pet->wantsSobriety() && ($food->alcohol || $food->caffeine > 0 || $food->psychedelic > 0))
             return false;
 
-        $this->applyFoodEffects($pet, $item);
+        $this->applyFoodEffects($pet, $food);
 
         // consider favorite flavor:
         if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
             throw new EnumInvalidValueException(FlavorEnum::class, $pet->getFavoriteFlavor());
 
-        $randomFlavor = $item->getFood()->getRandomFlavor() > 0 ? FlavorEnum::getRandomValue() : null;
+        $randomFlavor = $food->randomFlavor > 0 ? FlavorEnum::getRandomValue() : null;
 
-        $esteemGain = $this->getFavoriteFlavorStrength($pet, $item, $randomFlavor) + $item->getFood()->getLove();
+        $esteemGain = $this->getFavoriteFlavorStrength($pet, $food, $randomFlavor) + $food->love;
 
         $pet->increaseEsteem($esteemGain);
 
         if($activityLog)
         {
             if($randomFlavor)
-                $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $item->getName() . '. (Ooh! ' . ucwords($randomFlavor) . '!');
+                $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $food->name . '. (Ooh! ' . ucwords($randomFlavor) . '!');
             else
-                $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $item->getName() . '.');
+                $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $food->name . '.');
         }
 
         return true;
     }
 
-    public function getFavoriteFlavorStrength(Pet $pet, Item $item, string $randomFlavor = null): int
+    public function getFavoriteFlavorStrength(Pet $pet, FoodWithSpice $food, string $randomFlavor = null): int
     {
-        if(!$item->getFood())
-            return 0;
-
-        $favoriteFlavorStrength = $item->getFood()->{'get' . $pet->getFavoriteFlavor()}();
+        $favoriteFlavorStrength = $food->{$pet->getFavoriteFlavor()};
 
         if($randomFlavor !== null && $randomFlavor === $pet->getFavoriteFlavor())
-            $favoriteFlavorStrength += $item->getFood()->getRandomFlavor();
+            $favoriteFlavorStrength += $food->randomFlavor;
 
-        if($pet->hasMerit(MeritEnum::LOLLIGOVORE) && $item->getFood()->getContainsTentacles())
-            $favoriteFlavorStrength += 2;
+        if($pet->hasMerit(MeritEnum::LOLLIGOVORE))
+            $favoriteFlavorStrength += $food->containsTentacles;
 
         return $favoriteFlavorStrength;
     }
 
-    public function applyFoodEffects(Pet $pet, Item $item)
+    public function applyFoodEffects(Pet $pet, FoodWithSpice $food)
     {
-        $food = $item->getFood();
+        $pet->increaseAlcohol($food->alcohol);
 
-        $pet->increaseAlcohol($food->getAlcohol());
-
-        $caffeine = $food->getCaffeine();
+        $caffeine = $food->caffeine;
 
         if($caffeine > 0)
         {
@@ -519,26 +514,25 @@ class InventoryService
         else if($caffeine < 0)
             $pet->increaseCaffeine($caffeine);
 
-        $pet->increasePsychedelic($food->getPsychedelic());
-        $pet->increaseFood($food->getFood());
-        $pet->increaseJunk($food->getJunk());
+        $pet->increasePsychedelic($food->psychedelic);
+        $pet->increaseFood($food->food);
+        $pet->increaseJunk($food->junk);
 
-        if($food->getGrantedStatusEffect() !== null && $food->getGrantedStatusEffectDuration() > 0)
+        foreach($food->grantedStatusEffects as $statusEffect)
         {
-            $this->applyStatusEffect($pet, $food->getGrantedStatusEffect(), $food->getGrantedStatusEffectDuration());
+            $this->applyStatusEffect($pet, $statusEffect['effect'], $statusEffect['duration']);
         }
 
-        if($food->getChanceForBonusItem() !== null && mt_rand(1, 1000) <= $food->getChanceForBonusItem())
+        if($food->chanceForBonusItem > 0 && mt_rand(1, 1000) <= $food->chanceForBonusItem)
         {
             $bonusItem = $this->getBonusItemForLuckyFood();
 
             $comment =
-                'While eating ' . $item->getName() . ', ' . $pet->getName() . ' happened to spot this! ' .
+                'While eating ' . $food->name . ', ' . $pet->getName() . ' happened to spot this! ' .
                 ArrayFunctions::pick_one([
                     '', '... Sure!', '... Why not?', 'As you do!', 'A happy coincidence!', 'Weird!',
                     'Inexplicable, but not unwelcome!', '(Where was it up until this point, I wonder??)',
                     'These things happen. Apparently.', '👍', 'Wild!', 'How\'s _that_ work?',
-                    '(I guess eating ' . $item->getName() . ' really _does_ bring good fortune! Who knew!)'
                 ])
             ;
 
@@ -546,25 +540,28 @@ class InventoryService
 
             $naniNani = ArrayFunctions::pick_one([ 'Convenient!', 'Where\'d that come from??', 'How serendipitous!', 'What are the odds!' ]);
 
-            $this->responseService->addFlashMessage('While eating the ' . $item->getName() . ', ' . $pet->getName() . ' spotted ' . $bonusItem->getNameWithArticle() . '! (' . $naniNani . ')');
+            $this->responseService->addFlashMessage('While eating the ' . $food->name . ', ' . $pet->getName() . ' spotted ' . $bonusItem->getNameWithArticle() . '! (' . $naniNani . ')');
         }
 
-        if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && mt_rand(1, 200) < $food->getFood() + $food->getJunk())
+        if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && mt_rand(1, 200) < $food->food + $food->junk)
         {
             $inventory = (new Inventory())
                 ->setItem($this->itemRepository->findOneByName('Moth'))
                 ->setLocation(LocationEnum::HOME)
                 ->setOwner($pet->getOwner())
                 ->setCreatedBy($pet->getOwner())
-                ->addComment('After eating ' . $item->getName() . ', ' . $pet->getName() . ' burped this up!')
+                ->addComment('After eating ' . $food->name . ', ' . $pet->getName() . ' burped this up!')
             ;
             $this->em->persist($inventory);
 
-            $this->responseService->addFlashMessage('After eating ' . $item->getName() . ', ' . $pet->getName() . ' burped up a Moth!');
+            $this->responseService->addFlashMessage('After eating ' . $food->name . ', ' . $pet->getName() . ' burped up a Moth!');
         }
 
-        if($food->getGrantedSkill() && $pet->getSkills()->getStat($food->getGrantedSkill()) < 1)
-            $pet->getSkills()->increaseStat($food->getGrantedSkill());
+        foreach($food->grantedSkills as $skill)
+        {
+            if($pet->getSkills()->getStat($skill) < 1)
+                $pet->getSkills()->increaseStat($skill);
+        }
     }
 
     public function getStatusEffectMaxDuration(string $status)

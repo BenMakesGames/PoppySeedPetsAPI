@@ -23,6 +23,7 @@ use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
+use App\Model\FoodWithSpice;
 use App\Model\FortuneCookie;
 use App\Model\PetChanges;
 use App\Model\PetChangesSummary;
@@ -255,14 +256,16 @@ class PetService
 
         $petChanges = new PetChanges($pet);
         $foodsEaten = [];
-        $favorites = [];
+        /** @var FoodWithSpice[] $favorites */ $favorites = [];
         $tooFull = [];
         $tooPoisonous = [];
         $ateAFortuneCookie = false;
 
         foreach($inventory as $i)
         {
-            $itemName = $i->getItem()->getName();
+            $food = new FoodWithSpice($i->getItem(), $i->getSpice());
+
+            $itemName = $food->name;
 
             if($pet->getJunk() + $pet->getFood() >= $pet->getStomachSize())
             {
@@ -270,25 +273,23 @@ class PetService
                 continue;
             }
 
-            $food = $i->getItem()->getFood();
-
-            if($pet->wantsSobriety() && ($food->getAlcohol() > 0 || $food->getCaffeine() > 0 || $food->getPsychedelic() > 0))
+            if($pet->wantsSobriety() && ($food->alcohol > 0 || $food->caffeine > 0 || $food->psychedelic > 0))
             {
                 $tooPoisonous[] = $itemName;
                 continue;
             }
 
-            $this->inventoryService->applyFoodEffects($pet, $i->getItem());
+            $this->inventoryService->applyFoodEffects($pet, $food);
 
             // consider favorite flavor:
             if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
                 throw new EnumInvalidValueException(FlavorEnum::class, $pet->getFavoriteFlavor());
 
-            $randomFlavor = $i->getItem()->getFood()->getRandomFlavor() > 0 ? FlavorEnum::getRandomValue() : null;
+            $randomFlavor = $food->randomFlavor > 0 ? FlavorEnum::getRandomValue() : null;
 
-            $favoriteFlavorStrength = $this->inventoryService->getFavoriteFlavorStrength($pet, $i->getItem(), $randomFlavor);
+            $favoriteFlavorStrength = $this->inventoryService->getFavoriteFlavorStrength($pet, $food, $randomFlavor);
 
-            $loveAndEsteemGain = $favoriteFlavorStrength + $food->getLove();
+            $loveAndEsteemGain = $favoriteFlavorStrength + $food->love;
 
             $pet
                 ->increaseLove($loveAndEsteemGain)
@@ -299,7 +300,7 @@ class PetService
             {
                 $this->gainAffection($pet, $favoriteFlavorStrength);
 
-                $favorites[] = $i->getItem();
+                $favorites[] = $food;
             }
 
             $this->em->remove($i);
@@ -341,7 +342,7 @@ class PetService
             if(count($favorites) > 0)
             {
                 $icon = 'ui/affection';
-                $message .= ' ' . $pet->getName() . ' really liked the ' . ArrayFunctions::pick_one($favorites)->getName() . '!';
+                $message .= ' ' . $pet->getName() . ' really liked the ' . ArrayFunctions::pick_one($favorites)->name . '!';
             }
 
             if($ateAFortuneCookie)
@@ -528,11 +529,14 @@ class PetService
 
             // sorted from most-delicious to least-delicious
             usort($sortedLunchboxItems, function(LunchboxItem $a, LunchboxItem $b) use($pet) {
-                $aValue = $this->inventoryService->getFavoriteFlavorStrength($pet, $a->getInventoryItem()->getItem()) + $a->getInventoryItem()->getItem()->getFood()->getLove();
-                $bValue = $this->inventoryService->getFavoriteFlavorStrength($pet, $b->getInventoryItem()->getItem()) + $a->getInventoryItem()->getItem()->getFood()->getLove();
+                $aFood = new FoodWithSpice($a->getInventoryItem()->getItem(), $a->getInventoryItem()->getSpice());
+                $bFood = new FoodWithSpice($b->getInventoryItem()->getItem(), $b->getInventoryItem()->getSpice());
+
+                $aValue = $this->inventoryService->getFavoriteFlavorStrength($pet, $aFood) + $aFood->love;
+                $bValue = $this->inventoryService->getFavoriteFlavorStrength($pet, $bFood) + $bFood->love;
 
                 if($aValue === $bValue)
-                    return $b->getInventoryItem()->getItem()->getFood()->getFood() <=> $a->getInventoryItem()->getItem()->getFood()->getFood();
+                    return $bFood->food <=> $aFood->food;
                 else
                     return $bValue <=> $aValue;
             });
@@ -545,11 +549,13 @@ class PetService
             {
                 $itemToEat = array_shift($sortedLunchboxItems);
 
-                $ateIt = $this->inventoryService->doEat($pet, $itemToEat->getInventoryItem()->getItem(), null);
+                $food = new FoodWithSpice($itemToEat->getInventoryItem()->getItem(), $itemToEat->getInventoryItem()->getSpice());
+
+                $ateIt = $this->inventoryService->doEat($pet, $food, null);
 
                 if($ateIt)
                 {
-                    $namesOfItemsEaten[] = $itemToEat->getInventoryItem()->getItem()->getName();
+                    $namesOfItemsEaten[] = $food->name;
 
                     $this->em->remove($itemToEat);
                     $this->em->remove($itemToEat->getInventoryItem());
@@ -557,7 +563,7 @@ class PetService
                     $itemsLeftInLunchbox--;
                 }
                 else
-                    $namesOfItemsSkipped[] = $itemToEat->getInventoryItem()->getItem()->getName();
+                    $namesOfItemsSkipped[] = $food->name;
             }
 
             if(count($namesOfItemsEaten) > 0)

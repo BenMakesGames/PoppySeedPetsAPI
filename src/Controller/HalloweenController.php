@@ -7,6 +7,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Model\FoodWithSpice;
 use App\Repository\InventoryRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
@@ -149,10 +150,9 @@ class HalloweenController extends PoppySeedPetsController
                 ->setModifiedOn()
             ;
 
-
             $logMessage = $trickOrTreater->getName() . ' went trick-or-treating at ' . $user->getName() . '\'s house, and received ' . $candy->getItem()->getNameWithArticle() . '!';
 
-            $favoriteFlavorStrength = $inventoryService->getFavoriteFlavorStrength($trickOrTreater, $candy->getItem());
+            $favoriteFlavorStrength = $inventoryService->getFavoriteFlavorStrength($trickOrTreater, new FoodWithSpice($candy->getItem(), null));
 
             if($favoriteFlavorStrength > 0)
                 $logMessage .= ' (' . ArrayFunctions::pick_one([ 'Just what they wanted!', 'Ah! The good stuff!', 'One of their favorites!' ]) . ')';
