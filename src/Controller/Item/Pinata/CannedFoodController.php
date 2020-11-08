@@ -5,6 +5,7 @@ use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
+use App\Service\RecyclingService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -21,7 +22,7 @@ class CannedFoodController extends PoppySeedPetsItemController
      */
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, RecyclingService $recyclingService
     )
     {
         $this->validateInventory($inventory, 'cannedFood/#/open');
@@ -39,7 +40,7 @@ class CannedFoodController extends PoppySeedPetsItemController
 
         $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' found this in a can. A Canned Food can.', $location, $lockedToOwner);
 
-        $user->increaseRecyclePoints(1);
+        $recyclingService->giveRecyclingPoints($user, 1);
 
         $em->remove($inventory);
 

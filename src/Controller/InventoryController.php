@@ -16,6 +16,7 @@ use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\CalendarService;
 use App\Service\CookingService;
+use App\Service\RecyclingService;
 use App\Service\SpiceService;
 use App\Service\ToolBonusService;
 use App\Service\Filter\InventoryFilterService;
@@ -93,6 +94,9 @@ class InventoryController extends PoppySeedPetsController
 
         $inventoryIds = $request->request->get('inventory');
         if(!\is_array($inventoryIds)) $inventoryIds = [ $inventoryIds ];
+
+        if(count($inventoryIds) > 100)
+            throw new UnprocessableEntityHttpException('Oh, goodness, please don\'t try to cook & combine more than 100 items at a time. Sorry.');
 
         $inventory = $inventoryRepository->findBy([
             'owner' => $user,
@@ -262,14 +266,16 @@ class InventoryController extends PoppySeedPetsController
      */
     public function throwAway(
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, UserRepository $userRepository,
-        CalendarService $calendarService
+        EntityManagerInterface $em, RecyclingService $recyclingService
     )
     {
         $user = $this->getUser();
 
         $inventoryIds = $request->request->get('inventory');
         if(!\is_array($inventoryIds)) $inventoryIds = [ $inventoryIds ];
+
+        if(count($inventoryIds) > 200)
+            throw new UnprocessableEntityHttpException('Oh, goodness, please don\'t try to recycle more than 200 items at a time. Sorry.');
 
         $inventory = $inventoryRepository->findBy([
             'owner' => $user,
@@ -279,49 +285,7 @@ class InventoryController extends PoppySeedPetsController
         if(count($inventory) !== count($inventoryIds))
             throw new UnprocessableEntityHttpException('Some of the items could not be found??');
 
-        $givingTree = $userRepository->findOneByEmail('giving-tree@poppyseedpets.com');
-
-        if(!$givingTree)
-            throw new HttpException(500, 'The "Giving Tree" NPC does not exist in the database!');
-
-        $givingTreeHoliday = $calendarService->isValentines() || $calendarService->isWhiteDay();
-
-        $totalRecycleValue = 0;
-
-        foreach($inventory as $i)
-        {
-            if($i->getItem()->hasUseAction('bug/#/putOutside'))
-            {
-                $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_PUT_OUTSIDE);
-                $em->remove($i);
-            }
-            else if((mt_rand(1, 10) === 1 || $givingTreeHoliday) && !$i->getLockedToOwner())
-            {
-                $i
-                    ->setOwner($givingTree)
-                    ->setLocation(LocationEnum::HOME)
-                    ->setSellPrice(null)
-                    ->addComment($user->getName() . ' recycled this item, and it found its way to The Giving Tree!')
-                ;
-
-                if($i->getHolder()) $i->getHolder()->setTool(null);
-                if($i->getWearer()) $i->getWearer()->setHat(null);
-            }
-            else
-                $em->remove($i);
-
-            $totalRecycleValue += $i->getItem()->getRecycleValue();
-        }
-
-        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_RECYCLED, count($inventory));
-
-        if($totalRecycleValue > 0)
-        {
-            $user->increaseRecyclePoints($totalRecycleValue);
-
-            if($user->getUnlockedRecycling() === null)
-                $user->setUnlockedRecycling();
-        }
+        $recyclingService->recycleInventory($inventory);
 
         $em->flush();
 
