@@ -73,8 +73,13 @@ class SmithingService
         if(array_key_exists('Silica Grounds', $quantities) && array_key_exists('Limestone', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createGlass', $weight);
 
-        if(array_key_exists('Glass', $quantities) && array_key_exists('Plastic', $quantities))
-            $possibilities[] = new ActivityCallback($this, 'createFiberglass', $weight);
+        if(array_key_exists('Glass', $quantities))
+        {
+            $possibilities[] = new ActivityCallback($this, 'createCrystalBall', $weight);
+
+            if(array_key_exists('Plastic', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createFiberglass', $weight);
+        }
 
         if(array_key_exists('Fiberglass', $quantities) && array_key_exists('String', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createFiberglassBow', 10);
@@ -586,9 +591,6 @@ class SmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createHourglass(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + max($pet->getStamina(), $pet->getDexterity()) + $pet->getCrafts() + $pet->getSmithing());
@@ -625,9 +627,6 @@ class SmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createMirror(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
@@ -663,9 +662,6 @@ class SmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createGlass(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
@@ -686,7 +682,16 @@ class SmithingService
             if(mt_rand(1, 3) === 1)
             {
                 $this->inventoryService->loseItem('Limestone', $pet->getOwner(), LocationEnum::HOME, 1);
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' melted Silica Grounds and Limestone into Glass.', 'items/mineral/silica-glass');
+
+                if(mt_rand(1, 3) === 1)
+                {
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' melted Silica Grounds and Limestone into TWO Glass!', 'items/mineral/silica-glass');
+                    $this->inventoryService->petCollectsItem('Glass', $pet, $pet->getName() . ' created this from Silica Grounds and Limestone.', $activityLog);
+                }
+                else
+                {
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' melted Silica Grounds and Limestone into Glass.', 'items/mineral/silica-glass');
+                }
             }
             else
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' melted Silica Grounds and Limestone into Glass. (There\'s plenty of Limestone left over, though!)', 'items/mineral/silica-glass');
@@ -709,9 +714,57 @@ class SmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
+    public function createCrystalBall(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 1)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+
+            $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $pet->increaseEsteem(-2);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Crystal Ball, but slipped and dropped it! :(', '');
+        }
+        else if($roll >= 20 && mt_rand(1, 3) === 1)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(mt_rand(2, 4));
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made TWO Crystal Balls out of Glass!', 'items/mineral/silica-glass-ball')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+            ;
+            $this->inventoryService->petCollectsItem('Crystal Ball', $pet, $pet->getName() . ' created this from Glass.', $activityLog);
+            $this->inventoryService->petCollectsItem('Crystal Ball', $pet, $pet->getName() . ' created this from Glass.', $activityLog);
+            return $activityLog;
+        }
+        else if($roll >= 12)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(1);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Crystal Ball out of Glass.', 'items/mineral/silica-glass-ball')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
+            ;
+            $this->inventoryService->petCollectsItem('Crystal Ball', $pet, $pet->getName() . ' created this from Glass.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Crystal Ball, but making a perfect sphere was proving difficult!', 'icons/activity-logs/confused');
+        }
+    }
+
     public function createFiberglass(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
@@ -730,6 +783,22 @@ class SmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Fiberglass, but got burned while trying! :(', 'icons/activity-logs/burn');
         }
+        else if($roll >= 25 && mt_rand(1, 3) === 1)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(mt_rand(3, 6));
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made TWO bundles of Fiberglass from Glass and Plastic!', 'items/resource/fiberglass')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 25)
+            ;
+            $this->inventoryService->petCollectsItem('Fiberglass', $pet, $pet->getName() . ' created this from Glass and Plastic.', $activityLog);
+            $this->inventoryService->petCollectsItem('Fiberglass', $pet, $pet->getName() . ' created this from Glass and Plastic.', $activityLog);
+            return $activityLog;
+        }
         else if($roll >= 15)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
@@ -739,7 +808,7 @@ class SmithingService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made Fiberglass from Glass and Plastic.', 'items/resource/fiberglass')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a bundle of Fiberglass from Glass and Plastic.', 'items/resource/fiberglass')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
             ;
             $this->inventoryService->petCollectsItem('Fiberglass', $pet, $pet->getName() . ' created this from Glass and Plastic.', $activityLog);
@@ -753,9 +822,6 @@ class SmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     public function createFiberglassBow(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
