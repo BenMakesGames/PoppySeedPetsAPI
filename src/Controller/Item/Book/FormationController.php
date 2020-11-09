@@ -54,7 +54,7 @@ Starting with whoever goes first, each player take turns performing the followin
 1. Flip over the card you played during your last turn so that it is face up.
 2. Check for casualties (described below).
 3. Draw a card from your deck, if one is available.
-4. Play a card from your hand, if available, face-down, adjacent to any other card.
+4. Play a card from your hand, if available, face-down, adjacent to any other card. Two cards may not occupy the same space.
 
 During each player\'s first turn that player will not perform steps 1 or 2.
 
@@ -80,7 +80,7 @@ For each card, check if it is killed:
 
 1. Determine the total value of all the orthogonally-adjacent enemy cards.
 2. Determine the total value of the card in question and all orthogonally-adjacent cards *of the same suit*.
-3. If the sum of the enemy cards is larger, then the card in question is killed.
+3. If the total of the enemy cards is larger, then the card in question is killed.
 
 The following rules also apply:
 
