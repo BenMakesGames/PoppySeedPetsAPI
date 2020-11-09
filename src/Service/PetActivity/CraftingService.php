@@ -680,14 +680,32 @@ class CraftingService
         }
         else if($roll >= $difficulty)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
             $this->inventoryService->loseItem('Fluff', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' spun some Fluff into ' . $making->getName() . '.', 'items/' . $making->getImage())
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $difficulty)
-            ;
+            if($roll >= $difficulty + 12)
+            {
+                $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::CRAFT, true);
+
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
+                $pet->increaseEsteem(3);
+
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' spun some Fluff into TWO ' . $making->getName() . '!', 'items/' . $making->getImage())
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $difficulty + 12)
+                ;
+
+                $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' spun this from Fluff.', $activityLog);
+            }
+            else
+            {
+                $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+                $pet->increaseEsteem(1);
+
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' spun some Fluff into ' . $making->getName() . '.', 'items/' . $making->getImage())
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $difficulty)
+                ;
+            }
 
             $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' spun this from Fluff.', $activityLog);
 
