@@ -35,9 +35,9 @@ class MoonPearlController extends PoppySeedPetsItemController
 
         $location = $inventory->getLocation();
 
-        $inventoryService->receiveItem('Silica Grounds', $user, $user, $user->getName() . ' the remains of a Moon Pearl.', $location);
-        $inventoryService->receiveItem('Moon Dust', $user, $user, $user->getName() . ' the remains of a Moon Pearl.', $location);
-        $inventoryService->receiveItem('Moon Dust', $user, $user, $user->getName() . ' the remains of a Moon Pearl.', $location);
+        $inventoryService->receiveItem('Silica Grounds', $user, $user, 'The remains of a Moon Pearl which was shattered by ' . $user->getName() . '.', $location);
+        $inventoryService->receiveItem('Moon Dust', $user, $user, 'The contents of a Moon Pearl which was shattered by ' . $user->getName() . '.', $location);
+        $inventoryService->receiveItem('Moon Dust', $user, $user, 'The contents of a Moon Pearl which was shattered by ' . $user->getName() . '.', $location);
 
         /** @var Pet $helper */
         $helper = ArrayFunctions::pick_one($petRepository->findBy([
