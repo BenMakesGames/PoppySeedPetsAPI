@@ -39,6 +39,10 @@ class MagicBindingService
      */
     public function getCraftingPossibilities(Pet $pet, array $quantities): array
     {
+        $hour = (int)((new \DateTimeImmutable())->format('G'));
+
+        $isNight = ($hour <= 6 || $hour > 18);
+
         $possibilities = [];
 
         if(array_key_exists('Mermaid Egg', $quantities))
@@ -79,6 +83,9 @@ class MagicBindingService
 
         if(array_key_exists('Quintessence', $quantities))
         {
+            if(array_key_exists('Crystal Ball', $quantities) && $isNight)
+                $possibilities[] = new ActivityCallback($this, 'createMoonPearl', 8);
+
             if(array_key_exists('Silver Bar', $quantities) && array_key_exists('Paint Stripper', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createAmbrotypicSolvent', 8);
 
@@ -1436,7 +1443,7 @@ class MagicBindingService
             $this->inventoryService->loseItem('Everice', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::UMBRA ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' bound some Everice to a Scythe, creating Frostbite!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' bound some Everice to an Invisible Shovel, creating Sleet!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 21)
             ;
 
@@ -1481,6 +1488,41 @@ class MagicBindingService
             ;
 
             $this->inventoryService->petCollectsItem('Frostbite', $pet, $pet->getName() . ' made this by binding Everice to a Scythe, and making a grip with wound String.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createMoonPearl(Pet $pet): PetActivityLog
+    {
+        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            $pet->increaseEsteem(-1);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bind a moonbeam to a Crystal Ball, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+        }
+        else if($umbraCheck < 10)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bind a moonbeam to a Crystal Ball, but kept missing the moonbeams!', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Crystal Ball', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' bound a moonbeam to a Crystal Ball, creating a Moon Pearl!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+            ;
+
+            $this->inventoryService->petCollectsItem('Moon Pearl', $pet, $pet->getName() . ' created this by binding a moonbeam to a Crystal Ball...', $activityLog);
             return $activityLog;
         }
     }

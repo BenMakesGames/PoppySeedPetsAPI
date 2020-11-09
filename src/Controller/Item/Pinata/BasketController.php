@@ -16,6 +16,49 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class BasketController extends PoppySeedPetsItemController
 {
     /**
+     * @Route("/fish/{inventory}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openBasketOfFish(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        EntityManagerInterface $em
+    )
+    {
+        $this->validateInventory($inventory, 'basket/fish/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
+
+        $user = $this->getUser();
+        $location = $inventory->getLocation();
+        $lockedToOwner = $inventory->getLockedToOwner();
+
+        $loot = [
+            'Fish',
+            'Fish',
+            ArrayFunctions::pick_one([ 'Fish', 'Seaweed', 'Algae', 'Sand Dollar' ]),
+            ArrayFunctions::pick_one([ 'Silica Grounds', 'Seaweed' ]),
+        ];
+
+        if(mt_rand(1, 10) === 1)
+        {
+            $loot[] = 'Secret Seashell';
+            $exclaim = '! (Ohh!)';
+        }
+        else
+            $exclaim = '.';
+
+        foreach($loot as $item)
+            $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a Basket of Fish.', $location, $lockedToOwner);
+
+        $inventoryService->receiveItem('Fabric Mâché Basket', $user, $user, $user->getName() . ' took everything out of a Basket of Fish; this is what was left.', $location, $lockedToOwner);
+
+        $em->remove($inventory);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess('You emptied the Basket of Fish, receiving ' . ArrayFunctions::list_nice($loot) . $exclaim . ' (And you keep the Fabric Mâché Basket as well, of course.)', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+    }
+
+    /**
      * @Route("/fruit/{inventory}/open", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */

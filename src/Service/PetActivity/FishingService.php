@@ -443,11 +443,9 @@ class FishingService
         {
             if(mt_rand(1, 2) === 1 && $pet->hasMerit(MeritEnum::SOOTHING_VOICE))
             {
-                $reward = mt_rand(1, 10) === 1 ? 'Secret Seashell' : 'Moon Pearl';
-
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Waterfall Basin. There, ' . $pet->getName() . '\'s humming caught the attention of a mermaid, who became fascinated by ' . $pet->getName() . '\'s Soothing Voice. After listening for a while, she gave ' . $pet->getName() . ' a ' . $reward . ', and left.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went fishing at a Waterfall Basin. There, ' . $pet->getName() . '\'s humming caught the attention of a mermaid, who became fascinated by ' . $pet->getName() . '\'s Soothing Voice. After listening for a while, she gave ' . $pet->getName() . ' a Basket of Fish, and left.', '');
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::MUSIC ]);
-                $this->inventoryService->petCollectsItem($reward, $pet, $pet->getName() . ' received this from a Waterfall Basin mermaid who was enchanted by ' . $pet->getName() . '\'s Soothing Voice.', $activityLog);
+                $this->inventoryService->petCollectsItem('Basket of Fish', $pet, $pet->getName() . ' received this from a Waterfall Basin mermaid who was enchanted by ' . $pet->getName() . '\'s Soothing Voice.', $activityLog);
 
                 $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::FISH, true);
             }
