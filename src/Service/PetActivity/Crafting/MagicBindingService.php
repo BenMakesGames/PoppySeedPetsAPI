@@ -65,6 +65,18 @@ class MagicBindingService
         if(array_key_exists('Armor', $quantities) && array_key_exists('Ruby Feather', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createRubyeye', 8);
 
+        if(array_key_exists('Everice', $quantities))
+        {
+            // frostbite sucks
+            $evericeWeight = $pet->getSafety() < 0 ? 1 : 8;
+
+            if(array_key_exists('Invisible Shovel', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createSleet', $evericeWeight);
+
+            if(array_key_exists('Scythe', $quantities) && array_key_exists('String', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createFrostbite', $evericeWeight);
+        }
+
         if(array_key_exists('Quintessence', $quantities))
         {
             if(array_key_exists('Silver Bar', $quantities) && array_key_exists('Paint Stripper', $quantities))
@@ -1390,6 +1402,85 @@ class MagicBindingService
             ;
 
             $this->inventoryService->petCollectsItem('Ambrotypic Solvent', $pet, $pet->getName() . ' mixed this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createSleet(Pet $pet): PetActivityLog
+    {
+        $skillCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getStamina());
+
+        if($skillCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            $pet->increaseEsteem(-1);
+
+            $this->inventoryService->loseItem('Everice', $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bind Everice to an Invisible Shovel, but uttered the wrong sounds during the ritual, and melted the Everice, instead! :(', '');
+        }
+        else if($skillCheck < 21)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+
+            $pet->increaseSafety(-1);
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bind Everice to an Invisible Shovel, but almost got frostbitten, and had to put it down for the time being...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Invisible Shovel', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Everice', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::UMBRA ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' bound some Everice to a Scythe, creating Frostbite!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 21)
+            ;
+
+            $this->inventoryService->petCollectsItem('Sleet', $pet, $pet->getName() . ' made this by binding Everice to an Invisible Shovel.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createFrostbite(Pet $pet): PetActivityLog
+    {
+        $skillCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getStamina());
+
+        if($skillCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            $pet->increaseEsteem(-1);
+
+            $this->inventoryService->loseItem('Everice', $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bind Everice to a Scythe, but uttered the wrong sounds during the ritual, and melted the Everice, instead! :(', '');
+        }
+        else if($skillCheck < 16)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            $pet->increaseSafety(-1);
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bind Everice to a Scythe, but almost got frostbitten, and had to put it down for the time being...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Everice', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Scythe', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' bound some Everice to a Scythe, creating Frostbite!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+            ;
+
+            $this->inventoryService->petCollectsItem('Frostbite', $pet, $pet->getName() . ' made this by binding Everice to a Scythe, and making a grip with wound String.', $activityLog);
             return $activityLog;
         }
     }
