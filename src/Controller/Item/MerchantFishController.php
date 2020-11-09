@@ -52,7 +52,7 @@ class MerchantFishController extends PoppySeedPetsItemController
             {
                 $loot = ArrayFunctions::pick_one([
                     'Tentacle',
-                    'Seaweed',
+                    ArrayFunctions::pick_one([ 'Spicy Spice', 'Nutmeg' ]),
                     'White Cloth',
                     'Secret Seashell'
                 ]);
