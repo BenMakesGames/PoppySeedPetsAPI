@@ -51,7 +51,7 @@ Place the Joker between the two players.
 
 Starting with whoever goes first, each player take turns performing the following steps, in order:
 
-1. Flip over the card you played last turn so that it is face up.
+1. Flip over the card you played during your last turn so that it is face up.
 2. Check for casualties (described below).
 3. Draw a card from your deck, if one is available.
 4. Play a card from your hand, if available, face-down, adjacent to any other card.
