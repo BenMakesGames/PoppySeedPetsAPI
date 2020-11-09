@@ -365,19 +365,18 @@ class RelationshipChangeService
             RelationshipEnum::MATE => 'date',
         ];
 
-        if($p1->getPet()->hasMerit(MeritEnum::NAIVE))
-            $chanceP2ChangesMind = 0;
-
-        if($p1->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
-            $chanceP1ChangesMind = ceil($chanceP1ChangesMind / 4);
-
+        // naive pets always accept relationship changes
         if($p2->getPet()->hasMerit(MeritEnum::NAIVE))
             $chanceP1ChangesMind = 0;
+        else if($p1->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
+            $chanceP1ChangesMind = ceil($chanceP1ChangesMind / 4);
 
-        if($p2->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
+        if($p1->getPet()->hasMerit(MeritEnum::NAIVE))
+            $chanceP2ChangesMind = 0;
+        else if($p2->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
             $chanceP2ChangesMind = ceil($chanceP2ChangesMind / 4);
 
-        if($chanceP1ChangesMind === 0 && $chanceP2ChangesMind === 0)
+        if($chanceP1ChangesMind < 1 && $chanceP2ChangesMind < 1)
         {
             $chanceP1ChangesMind = 1;
             $chanceP2ChangesMind = 1;
@@ -492,19 +491,17 @@ class RelationshipChangeService
         ];
 
         // naive pets always accept relationship changes
-        if($p1->getPet()->hasMerit(MeritEnum::NAIVE))
-            $chanceP2ChangesMind = 0;
-
-        if($p1->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
-            $chanceP1ChangesMind = ceil($chanceP1ChangesMind / 4);
-
         if($p2->getPet()->hasMerit(MeritEnum::NAIVE))
             $chanceP1ChangesMind = 0;
+        else if($p1->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
+            $chanceP1ChangesMind = ceil($chanceP1ChangesMind / 4);
 
-        if($p2->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
+        if($p1->getPet()->hasMerit(MeritEnum::NAIVE))
+            $chanceP2ChangesMind = 0;
+        else if($p2->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
             $chanceP2ChangesMind = ceil($chanceP2ChangesMind / 4);
 
-        if($chanceP1ChangesMind === 0 && $chanceP2ChangesMind === 0)
+        if($chanceP1ChangesMind < 1 && $chanceP2ChangesMind < 1)
         {
             $chanceP1ChangesMind = 1;
             $chanceP2ChangesMind = 1;
