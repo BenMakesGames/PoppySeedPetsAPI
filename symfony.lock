@@ -81,9 +81,6 @@
     "doctrine/persistence": {
         "version": "2.0.0"
     },
-    "doctrine/reflection": {
-        "version": "1.2.1"
-    },
     "doctrine/sql-formatter": {
         "version": "1.1.1"
     },
@@ -104,6 +101,9 @@
     },
     "guzzlehttp/psr7": {
         "version": "1.6.1"
+    },
+    "kamermans/guzzle-oauth2-subscriber": {
+        "version": "v1.0.7"
     },
     "laminas/laminas-zendframework-bridge": {
         "version": "1.1.1"

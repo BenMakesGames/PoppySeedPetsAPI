@@ -45,3 +45,8 @@ services:
             $apiConsumerSecret: '%env(TWITTER_API_CONSUMER_SECRET)%'
             $apiAccessToken: '%env(TWITTER_API_ACCESS_TOKEN)%'
             $apiAccessTokenSecret: '%env(TWITTER_API_ACCESS_SECRET)%'
+
+    App\Service\RedditService:
+        arguments:
+            $apiClientId: '%env(REDDIT_API_CLIENT_ID)%'
+            $apiClientSecret: '%env(REDDIT_API_CLIENT_SECRET)%'
