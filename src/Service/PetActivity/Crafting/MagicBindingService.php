@@ -119,6 +119,9 @@ class MagicBindingService
             if(array_key_exists('Mirror', $quantities) && array_key_exists('Crooked Stick', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createMagicMirror', 8);
 
+            if(array_key_exists('Dark Mirror', $quantities) && array_key_exists('Crooked Stick', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createPandemirrorum', 8);
+
             if(array_key_exists('Feathers', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createWings', 8);
 
@@ -987,6 +990,16 @@ class MagicBindingService
 
     public function createMagicMirror(Pet $pet): PetActivityLog
     {
+        return $this->createMirror($pet, 'Magic Mirror', 'Mirror');
+    }
+
+    public function createPandemirrorum(Pet $pet): PetActivityLog
+    {
+        return $this->createMirror($pet, 'Pandemirrorum', 'Dark Mirror');
+    }
+
+    public function createMirror(Pet $pet, string $makes, string $mirror): PetActivityLog
+    {
         $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
 
         if($umbraCheck <= 2)
@@ -998,24 +1011,24 @@ class MagicBindingService
             {
                 $pet->increaseEsteem(-1);
                 $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Mirror, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a ' . $mirror . ', but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
             }
             else
             {
                 $pet->increaseEsteem(-1);
                 $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Mirror, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a ' . $mirror . ', but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
             }
         }
         else if($umbraCheck < 16)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a Mirror, but couldn\'t figure out a good enchantment...', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to enchant a ' . $mirror . ', but couldn\'t figure out a good enchantment...', 'icons/activity-logs/confused');
         }
         else // success!
         {
-            $this->inventoryService->loseItem('Mirror', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem($mirror, $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
             $pet->increaseEsteem(2);
@@ -1027,12 +1040,12 @@ class MagicBindingService
 
             if(mt_rand(1, 4) === 1)
             {
-                [ $message, $extraItem, $extraItemMessage, $additionalTime, $usedMerit ] = $this->doMagicMirrorMaze($pet);
+                [ $message, $extraItem, $extraItemMessage, $additionalTime, $usedMerit ] = $this->doMagicMirrorMaze($pet, $makes);
                 $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
             }
             else
             {
-                $message = $pet->getName() . ' bound a Magic Mirror!';
+                $message = $pet->getName() . ' bound a ' . $makes . '!';
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
             }
 
@@ -1048,13 +1061,13 @@ class MagicBindingService
             if($extraItem)
                 $this->inventoryService->petCollectsItem($extraItem, $pet, $extraItemMessage, $activityLog);
 
-            $this->inventoryService->petCollectsItem('Magic Mirror', $pet, $pet->getName() . ' bound this.', $activityLog);
+            $this->inventoryService->petCollectsItem($makes, $pet, $pet->getName() . ' bound this.', $activityLog);
 
             return $activityLog;
         }
     }
 
-    private function doMagicMirrorMaze(Pet $pet): array
+    private function doMagicMirrorMaze(Pet $pet, string $makes): array
     {
         $loot = $this->itemRepository->findOneByName(ArrayFunctions::pick_one([
             'Alien Tissue', 'Apricot PB&J', 'Baking Powder', 'Blue Balloon', 'Candied Ginger', 'Chili Calamari',
@@ -1065,9 +1078,9 @@ class MagicBindingService
         if($pet->getClimbing() > 0)
         {
             return [
-                $pet->getName() . ' bound a Magic Mirror! As soon as they did so, they were sucked inside, and into a giant maze! They easily climbed their way out of the maze, and out of the mirror! On the way, they found ' . $loot->getNameWithArticle() . '.',
+                $pet->getName() . ' bound a ' . $makes . '! As soon as they did so, they were sucked inside, and into a giant maze! They easily climbed their way out of the maze, and out of the mirror! On the way, they found ' . $loot->getNameWithArticle() . '.',
                 $loot,
-                $pet->getName() . ' found this while climbing out of a maze inside a Magic Mirror!',
+                $pet->getName() . ' found this while climbing out of a maze inside a ' . $makes . '!',
                 5,
                 false
             ];
@@ -1075,9 +1088,9 @@ class MagicBindingService
         else if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
         {
             return [
-                $pet->getName() . ' bound a Magic Mirror! As soon as they did so, they were sucked inside, and into a giant maze! It turns out mazes are really easy if you have an Eidetic Memory! On the way, they found ' . $loot->getNameWithArticle() . ', and a path out of the mirror entirely!',
+                $pet->getName() . ' bound a ' . $makes . '! As soon as they did so, they were sucked inside, and into a giant maze! It turns out mazes are really easy if you have an Eidetic Memory! On the way, they found ' . $loot->getNameWithArticle() . ', and a path out of the mirror entirely!',
                 $loot,
-                $pet->getName() . ' found this while escaping a maze inside a Magic Mirror!',
+                $pet->getName() . ' found this while escaping a maze inside a ' . $makes . '!',
                 15,
                 true
             ];
@@ -1089,9 +1102,9 @@ class MagicBindingService
             if($roll >= 5)
             {
                 return [
-                    $pet->getName() . ' bound a Magic Mirror! As soon as they did so, they were sucked inside, and into a giant maze! It took a while, but they were able to find a path out of the maze, and back into the real world! On the way, they found ' . $loot->getNameWithArticle() . '.',
+                    $pet->getName() . ' bound a ' . $makes . '! As soon as they did so, they were sucked inside, and into a giant maze! It took a while, but they were able to find a path out of the maze, and back into the real world! On the way, they found ' . $loot->getNameWithArticle() . '.',
                     $loot,
-                    $pet->getName() . ' found this while escaping a maze inside a Magic Mirror!',
+                    $pet->getName() . ' found this while escaping a maze inside a ' . $makes . '!',
                     30,
                     false
                 ];
@@ -1099,7 +1112,7 @@ class MagicBindingService
             else
             {
                 return [
-                    $pet->getName() . ' bound a Magic Mirror! As soon as they did so, they were sucked inside, and into a giant maze! They got totally lost for a while; fortunately, they were eventually, and inexplicably, ejected from the mirror and back into the real world!',
+                    $pet->getName() . ' bound a ' . $makes . '! As soon as they did so, they were sucked inside, and into a giant maze! They got totally lost for a while; fortunately, they were eventually, and inexplicably, ejected from the mirror and back into the real world!',
                     null,
                     null,
                     30,

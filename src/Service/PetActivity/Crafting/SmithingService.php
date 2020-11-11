@@ -79,6 +79,9 @@ class SmithingService
 
             if(array_key_exists('Plastic', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createFiberglass', $weight);
+
+            if(array_key_exists('Silver Bar', $quantities) || array_key_exists('Dark Matter', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createMirror', $weight);
         }
 
         if(array_key_exists('Fiberglass', $quantities) && array_key_exists('String', $quantities))
@@ -145,8 +148,6 @@ class SmithingService
             {
                 if(array_key_exists('Silica Grounds', $quantities))
                     $possibilities[] = new ActivityCallback($this, 'createHourglass', $weight);
-                else
-                    $possibilities[] = new ActivityCallback($this, 'createMirror', $weight);
             }
 
             if(array_key_exists('Gold Key', $quantities) && array_key_exists('White Cloth', $quantities))
@@ -644,14 +645,26 @@ class SmithingService
         else if($roll >= 13)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, true);
-            $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $mirrorBacking = $this->inventoryService->loseOneOf([ 'Silver Bar', 'Dark Matter' ], $pet->getOwner(), LocationEnum::HOME);
             $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Mirror.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
-            ;
-            $this->inventoryService->petCollectsItem('Mirror', $pet, $pet->getName() . ' created this.', $activityLog);
+
+            if($mirrorBacking === 'Dark Matter')
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Dark Mirror.', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+                ;
+                $this->inventoryService->petCollectsItem('Dark Mirror', $pet, $pet->getName() . ' created this.', $activityLog);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Mirror.', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+                ;
+                $this->inventoryService->petCollectsItem('Mirror', $pet, $pet->getName() . ' created this.', $activityLog);
+            }
+
             return $activityLog;
         }
         else
