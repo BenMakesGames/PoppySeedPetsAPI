@@ -15,12 +15,13 @@ class RedditService
     public function __construct(string $apiClientId, string $apiClientSecret)
     {
         $reauthClient = new Client([
-            'base_uri' => 'http://www.reddit.com'
+            'base_uri' => 'https://www.reddit.com/api/v1/access_token'
         ]);
 
         $grant = new ClientCredentials($reauthClient, [
             'client_id' => $apiClientId,
             'client_secret' => $apiClientSecret,
+            'grant_type' => 'client_credentials',
         ]);
 
         $oauth2Middleware = new OAuth2Middleware($grant);
