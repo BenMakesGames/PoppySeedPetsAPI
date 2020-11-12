@@ -1071,7 +1071,7 @@ class HuntingService
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL, PetSkillEnum::NATURE ]);
 
             if($gobbleGobble !== null)
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Turkeydragon, but was able to defeat it, and claimed its head as a prize! (Dang! Brutal!)', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found the Turkeydragon, and defeated it, claiming its head as a prize! (Dang! Brutal!)', '');
             else
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Turkeydragon, but was able to defeat it.', '');
 
@@ -1099,7 +1099,10 @@ class HuntingService
 
                 $aSome = in_array($itemName, [ 'Scales', 'Feathers', 'Quintessence', 'Charcoal' ]) ? 'some' : 'a';
 
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Turkeydragon! ' . $pet->getName() . ' was able to claim ' . $aSome . ' ' . $itemName . ' before fleeing.', '');
+                if($gobbleGobble !== null)
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found the Turkeydragon, and attacked it! ' . $pet->getName() . ' was able to claim ' . $aSome . ' ' . $itemName . ' before being forced to flee...', '');
+                else
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Turkeydragon! ' . $pet->getName() . ' was able to claim ' . $aSome . ' ' . $itemName . ' before fleeing...', '');
 
                 $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' nabbed this from a Turkeydragon before running from it.', $activityLog);
             }
@@ -1107,7 +1110,11 @@ class HuntingService
             {
                 $pet->increaseSafety(-1);
                 $pet->increaseEsteem(-1);
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Turkeydragon, and forced to flee!', '');
+
+                if($gobbleGobble !== null)
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found the Turkeydragon, and attacked it, but was forced to flee!', '');
+                else
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Turkeydragon, and forced to flee!', '');
             }
         }
 
