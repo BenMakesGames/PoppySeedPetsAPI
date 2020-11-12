@@ -45,6 +45,20 @@ class CalendarService
         return $this->monthAndDay >= 621 && $this->monthAndDay <= 623;
     }
 
+    public function isThanksgivingMonsters(): bool
+    {
+        // if it's not November, just get outta' here
+        if($this->monthAndDay < 1100 || $this->monthAndDay >= 1200)
+            return false;
+
+        $fourthThursdayOfNovember = new \DateTimeImmutable('fourth Thursday of this month');
+
+        return
+            $this->monthAndDay >= (int)$fourthThursdayOfNovember->format('md') - 14 &&
+            $this->monthAndDay <= (int)$fourthThursdayOfNovember->format('md')
+        ;
+    }
+
     public function isThanksgiving(): bool
     {
         // if it's not November, just get outta' here
@@ -54,7 +68,7 @@ class CalendarService
         $fourthThursdayOfNovember = new \DateTimeImmutable('fourth Thursday of this month');
 
         // within 1 day of thanksgiving
-        return abs((int)$fourthThursdayOfNovember->format('md') - $this->monthAndDay) <= 2;
+        return abs((int)$fourthThursdayOfNovember->format('md') - $this->monthAndDay) <= 1;
     }
 
     public function isHalloweenCrafting(): bool

@@ -587,10 +587,16 @@ class PetService
             ;
         }
 
-        if($pet->hasStatusEffect(StatusEffectEnum::ONEIRIC) && mt_rand(1, 2) === 1)
+        if($pet->hasStatusEffect(StatusEffectEnum::GOBBLE_GOBBLE) && mt_rand(1, 2) === 1)
+        {
+            $this->huntingService->huntedTurkeyDragon($pet);
+            return;
+        }
+        else if($pet->hasStatusEffect(StatusEffectEnum::ONEIRIC) && mt_rand(1, 2) === 1)
         {
             $this->dreamingService->dream($pet);
             $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::ONEIRIC));
+            return;
         }
         else if($this->dream($pet))
         {

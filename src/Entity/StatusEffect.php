@@ -103,7 +103,7 @@ class StatusEffect
     public function spendTime(int $time): self
     {
         // these status effects don't go away unless/until something SPECIAL happens:
-        if($this->status === StatusEffectEnum::ONEIRIC)
+        if($this->status === StatusEffectEnum::ONEIRIC || $this->status === StatusEffectEnum::GOBBLE_GOBBLE)
             return $this;
 
         $this->timeRemaining -= $time;
