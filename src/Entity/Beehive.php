@@ -188,12 +188,12 @@ class Beehive
         return $this;
     }
 
-    public function getRequestedItem(): ?Item
+    public function getRequestedItem(): Item
     {
         return $this->requestedItem;
     }
 
-    public function setRequestedItem(?Item $requestedItem): self
+    public function setRequestedItem(Item $requestedItem): self
     {
         $this->requestedItem = $requestedItem;
 
@@ -236,12 +236,12 @@ class Beehive
         return $this;
     }
 
-    public function getAlternateRequestedItem(): ?Item
+    public function getAlternateRequestedItem(): Item
     {
         return $this->alternateRequestedItem;
     }
 
-    public function setAlternateRequestedItem(?Item $alternateRequestedItem): self
+    public function setAlternateRequestedItem(Item $alternateRequestedItem): self
     {
         $this->alternateRequestedItem = $alternateRequestedItem;
 
