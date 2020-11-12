@@ -44,7 +44,7 @@ class RedditService
             'auth' => [ $this->apiClientId, $this->apiClientSecret ]
         ]);
 
-        $responseData = \GuzzleHttp\json_decode($response->getBody()->getContents());
+        $responseData = \GuzzleHttp\json_decode($response->getBody()->getContents(), true);
 
         return $responseData['access_token'];
     }
