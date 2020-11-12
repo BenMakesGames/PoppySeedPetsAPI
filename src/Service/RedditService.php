@@ -33,7 +33,7 @@ class RedditService
         ]);
 
         $response = $client->post('api/v1/access_token', [
-            'data' => [
+            'form_params' => [
                 'grant_type' => 'password',
                 'username' => $this->username,
                 'password' => $this->password,
@@ -62,10 +62,11 @@ class RedditService
                 'Authorization' => 'bearer ' . $accessToken,
                 'User-Agent' => $this->getUserAgent(),
             ],
-            'json' => [
+            'form_params' => [
                 'sr' => 'poppyseedpets',
                 'title' => $article->getTitle(),
                 'text' => $article->getBody(),
+                'kind' => 'self',
             ]
         ]);
     }
