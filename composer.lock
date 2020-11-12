@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2451fe8a026bd262d8b650d0fc4129c3",
+    "content-hash": "7506acd7e3ed9dd80a303bebd880bd45",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -1743,47 +1743,6 @@
                 "url"
             ],
             "time": "2020-09-30T07:37:11+00:00"
-        },
-        {
-            "name": "kamermans/guzzle-oauth2-subscriber",
-            "version": "v1.0.7",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/kamermans/guzzle-oauth2-subscriber.git",
-                "reference": "f5b4f8ceab18bfeeb7933e5b86affbaa39d89482"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/kamermans/guzzle-oauth2-subscriber/zipball/f5b4f8ceab18bfeeb7933e5b86affbaa39d89482",
-                "reference": "f5b4f8ceab18bfeeb7933e5b86affbaa39d89482",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/guzzle": "~4.0|~5.0|~6.0|~7.0",
-                "php": ">=5.4.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "kamermans\\OAuth2\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Steve Kamerman",
-                    "email": "stevekamerman@gmail.com"
-                }
-            ],
-            "description": "OAuth 2.0 client for Guzzle 4, 5 and 6+",
-            "keywords": [
-                "Guzzle",
-                "oauth"
-            ],
-            "time": "2020-09-15T19:21:48+00:00"
         },
         {
             "name": "laminas/laminas-code",

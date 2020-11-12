@@ -9,7 +9,6 @@
         "ext-json": "*",
         "ext-pdo": "*",
         "abraham/twitteroauth": "^1.0",
-        "kamermans/guzzle-oauth2-subscriber": "^1.0",
         "lavary/crunz": "^2.0",
         "minishlink/web-push": "^5.2",
         "nelmio/cors-bundle": "^2.1",

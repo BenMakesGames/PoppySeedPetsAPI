@@ -50,3 +50,5 @@ services:
         arguments:
             $apiClientId: '%env(REDDIT_API_CLIENT_ID)%'
             $apiClientSecret: '%env(REDDIT_API_CLIENT_SECRET)%'
+            $username: '%env(REDDIT_API_USERNAME)%'
+            $password: '%env(REDDIT_API_PASSWORD)%'
