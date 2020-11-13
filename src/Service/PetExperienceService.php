@@ -98,7 +98,7 @@ class PetExperienceService
         }
 
         // tool modifiers (if any)
-        $socialEnergyModifier = $pet->getTool()->socialEnergyModifier();
+        $socialEnergyModifier = $pet->getTool() ? $pet->getTool()->socialEnergyModifier() : 0;
 
         // a small drift based on number of extra friends a pet can have; more friends = less energy cost
         $socialEnergyModifier -= $pet->getBonusMaximumFriends() * 5;
