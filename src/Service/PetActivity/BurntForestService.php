@@ -13,7 +13,6 @@ use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\expr;
 
 class BurntForestService
 {

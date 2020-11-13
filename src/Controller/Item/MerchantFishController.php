@@ -52,14 +52,15 @@ class MerchantFishController extends PoppySeedPetsItemController
             {
                 $loot = ArrayFunctions::pick_one([
                     'Tentacle',
-                    'Seaweed',
-                    'Sand Dollar',
+                    ArrayFunctions::pick_one([ 'Spicy Spice', 'Nutmeg' ]),
+                    'White Cloth',
                     'Secret Seashell'
                 ]);
 
-                $message = 'You return the Merchant Fish to the Nation-state of Tell Samarzhoustia, who give you ' . $loot . ' as thanks.';
+                $message = 'You return the Merchant Fish to the Nation-state of Tell Samarzhoustia, who give you ' . $loot . ' as thanks. Also, they let you keep the fish bowl.';
 
                 $inventoryService->receiveItem($loot, $user, $user, 'Received from Tell Samarzhoustia as thanks for a Merchant Fish.', $inventory->getLocation(), $inventory->getLockedToOwner());
+                $inventoryService->receiveItem('Crystal Ball', $user, $user, 'This Crystal Ball was once acting as a fish bowl for a Merchant Fish.', $inventory->getLocation(), $inventory->getLockedToOwner());
             }
             else
             {
@@ -70,7 +71,9 @@ class MerchantFishController extends PoppySeedPetsItemController
 
                 $em->persist($newTrades);
 
-                $message = 'You return the Merchant Fish to the Nation-state of Tell Samarzhoustia, who expand their trading offers as thanks.';
+                $message = 'You return the Merchant Fish to the Nation-state of Tell Samarzhoustia, who expand their trading offers as thanks. Also, they let you keep the fish bowl.';
+
+                $inventoryService->receiveItem('Crystal Ball', $user, $user, 'This Crystal Ball was once acting as a fish bowl for a Merchant Fish.', $inventory->getLocation(), $inventory->getLockedToOwner());
             }
 
             $storyStep = new StoryStep();
@@ -83,6 +86,8 @@ class MerchantFishController extends PoppySeedPetsItemController
             $storyStep->choices = [];
 
             $em->flush();
+
+            $responseService->addReloadInventory();
 
             return $responseService->success($storyStep, [ SerializationGroupEnum::STORY ]);
         }

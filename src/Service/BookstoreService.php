@@ -214,6 +214,11 @@ class BookstoreService
             $bookPrices['Melt'] = 25;
         }
 
+        if($user->getUnlockedHollowEarth())
+        {
+            $bookPrices['Formation'] = 15;
+        }
+
         if($itemsDonatedToMuseum)
         {
             if($itemsDonatedToMuseum->getValue() >= 100)

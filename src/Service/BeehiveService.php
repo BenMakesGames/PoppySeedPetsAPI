@@ -64,9 +64,20 @@ class BeehiveService
         $user->setBeehive($beehive);
     }
 
-    public function fedRequestedItem(Beehive $beehive)
+    public function fedRequestedItem(Beehive $beehive, bool $feedAlternate)
     {
-        $beehive->setFlowerPower(self::DESIRED_ITEMS[$beehive->getRequestedItem()->getName()]);
+        if($feedAlternate)
+        {
+            $item = $beehive->getAlternateRequestedItem();
+            $power = self::ALT_DESIRED_ITEMS[$item->getName()];
+        }
+        else
+        {
+            $item = $beehive->getRequestedItem();
+            $power = self::DESIRED_ITEMS[$item->getName()];
+        }
+
+        $beehive->setFlowerPower($power);
 
         $this->rerollRequest($beehive);
     }

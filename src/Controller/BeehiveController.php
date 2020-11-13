@@ -104,7 +104,7 @@ class BeehiveController extends PoppySeedPetsController
         if($inventoryService->loseItem($itemToFeed, $user, LocationEnum::HOME, 1) === 0)
             throw new UnprocessableEntityHttpException('You do not have ' . $itemToFeed->getNameWithArticle() . ' in your house.');
 
-        $beehiveService->fedRequestedItem($beehive);
+        $beehiveService->fedRequestedItem($beehive, $alternate);
         $beehive->setInteractionPower();
 
         $em->flush();

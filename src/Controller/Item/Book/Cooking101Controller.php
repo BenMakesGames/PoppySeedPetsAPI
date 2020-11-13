@@ -3,6 +3,7 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
+use App\Repository\RecipeRepository;
 use App\Service\ResponseService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -16,13 +17,17 @@ class Cooking101Controller extends PoppySeedPetsItemController
      * @Route("/{inventory}/read", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function read(Inventory $inventory, ResponseService $responseService)
+    public function read(
+        Inventory $inventory, ResponseService $responseService, RecipeRepository $recipeRepository
+    )
     {
         $this->validateInventory($inventory, 'cooking101/#/read');
 
+        $recipeCount = $recipeRepository->count([]);
+
         return $responseService->itemActionSuccess('# Cooking 101
 
-### Cooking Basics
+## Cooking Basics
 
 Your house comes with everything you need: stove, pots and pans, water, and basic spices.
 
@@ -31,7 +36,11 @@ To get started:
 2. Select the item or items you want to use
 3. Click "Cook & Combine" again!
 
-### Recipes
+There are ' . $recipeCount . ' recipes to discover, so feel free to experiment! Nothing bad will happen if you try to prepare a "wrong" recipe; the items will simply not be used.
+
+## Recipes
+
+Here are a few simple recipes to get you started:
 
 #### Matzah Bread
 
@@ -55,11 +64,9 @@ Sugar can be extracted from Sweet Beets by preparing Sweet Beet on its own.
 
 Prepare Milk on its own.
 
-### Learn More
+## Learn More
 
-Some item descriptions contain recipes. You may also find other books that contain more recipes.
-
-Feel free to experiment! Nothing bad will happen if you try to prepare a "wrong" recipe; the items will simply not be used.
+There are other cook books to find, but some item descriptions contain recipes, as well, and again: don\'t be afraid to experiment a little! 
 ');
     }
 }

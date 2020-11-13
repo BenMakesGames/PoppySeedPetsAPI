@@ -6,6 +6,7 @@ use App\Entity\Article;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\ArticleRepository;
 use App\Service\Filter\ArticleFilterService;
+use App\Service\RedditService;
 use App\Service\ResponseService;
 use App\Service\TwitterService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -133,6 +134,29 @@ class ArticleController extends PoppySeedPetsController
         try
         {
             $twitterService->postArticle($article);
+        }
+        catch(\Exception $e)
+        {
+            return $responseService->error(500, [ $e->getMessage() ]);
+        }
+
+        return $responseService->success();
+    }
+
+    /**
+     * @DoesNotRequireHouseHours()
+     * @Route("/{article}/reddit", methods={"POST"}, requirements={"article"="\d+"})
+     * @IsGranted("ROLE_ADMIN")
+     */
+    public function redditArticle(
+        Article $article, ResponseService $responseService, RedditService $redditService, Request $request
+    )
+    {
+        $this->adminIPsOnly($request);
+
+        try
+        {
+            $redditService->postArticle($article);
         }
         catch(\Exception $e)
         {

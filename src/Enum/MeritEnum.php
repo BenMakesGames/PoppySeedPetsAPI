@@ -21,6 +21,8 @@ final class MeritEnum
     // obtained through items
     public const BEHATTED = 'Behatted';
     public const MIRRORED = 'Mirrored'; // flips graphic
+    public const INVERTED = 'Inverted'; // inverts pet colors
+    public const VERY_INVERTED = 'Very Inverted'; // inverts pet & equipment colors
 
     // obtained through house time spent
     public const MIND_OVER_MATTER = 'Mind Over Matter';

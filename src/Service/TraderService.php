@@ -802,7 +802,7 @@ class TraderService
             $offers[] = new TraderOffer(
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Wings'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Benjamin Franklin'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Crystal Ball'), 1),
                     TraderOfferCostOrYield::createMoney(10)
                 ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Moon Pearl'), 1) ],

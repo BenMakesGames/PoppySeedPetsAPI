@@ -4,12 +4,12 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
-use App\Enum\EnumInvalidValueException;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
@@ -21,7 +21,6 @@ use App\Repository\UserStatsRepository;
 use App\Service\CalendarService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
-use App\Service\PetService;
 use App\Service\ResponseService;
 use App\Service\ToolBonusService;
 use App\Service\TransactionService;
@@ -64,7 +63,7 @@ class HuntingService
 
         $maxSkill = NumberFunctions::constrain($maxSkill, 1, 22);
 
-        $useThanksgivingPrey = $this->calendarService->isThanksgiving() && mt_rand(1, 2) === 1;
+        $useThanksgivingPrey = $this->calendarService->isThanksgivingMonsters() && mt_rand(1, 2) === 1;
         $usePassoverPrey = $this->calendarService->isEaster();
 
         $roll = mt_rand(1, $maxSkill);
@@ -394,7 +393,7 @@ class HuntingService
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
 
-            $item = ArrayFunctions::pick_one([ 'Talon', 'Feathers', 'Giant Turkey Leg' ]);
+            $item = ArrayFunctions::pick_one([ 'Talon', 'Feathers', 'Giant Turkey Leg', 'Smallish Pumpkin Spice' ]);
 
             $aOrSome = $item === 'Feathers' ? 'some' : 'a';
 
@@ -715,7 +714,7 @@ class HuntingService
     private function huntedPossessedTurkey(Pet $pet): PetActivityLog
     {
         $loot = ArrayFunctions::pick_one([
-            'Quintessence', 'Black Feathers', 'Giant Turkey Leg'
+            'Quintessence', 'Black Feathers', 'Giant Turkey Leg', 'Smallish Pumpkin Spice'
         ]);
 
         if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
@@ -1043,9 +1042,11 @@ class HuntingService
         return $activityLog;
     }
 
-    private function huntedTurkeyDragon(Pet $pet): PetActivityLog
+    public function huntedTurkeyDragon(Pet $pet): PetActivityLog
     {
         $skill = 10 + $pet->getDexterity() + $pet->getStamina() + $pet->getBrawl();
+
+        $gobbleGobble = $pet->getStatusEffect(StatusEffectEnum::GOBBLE_GOBBLE);
 
         $pet->increaseFood(-1);
 
@@ -1057,7 +1058,8 @@ class HuntingService
             'Feathers',
             'Talon',
             'Quintessence',
-            'Charcoal'
+            'Charcoal',
+            'Smallish Pumpkin Spice',
         ];
 
         if(mt_rand(1, $skill) >= 18)
@@ -1068,7 +1070,10 @@ class HuntingService
             $pet->increaseEsteem(2);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL, PetSkillEnum::NATURE ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Turkeydragon, but was able to defeat it.', '');
+            if($gobbleGobble !== null)
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found the Turkeydragon, and defeated it, claiming its head as a prize! (Dang! Brutal!)', '');
+            else
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Turkeydragon, but was able to defeat it.', '');
 
             $numItems = $getExtraItem ? 3 : 2;
 
@@ -1078,6 +1083,9 @@ class HuntingService
 
                 $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' got this from defeating a Turkeydragon.', $activityLog);
             }
+
+            if($gobbleGobble !== null)
+                $this->inventoryService->petCollectsItem('Turkey King', $pet, $pet->getName() . ' got this from defeating a Turkeydragon.', $activityLog);
         }
         else
         {
@@ -1091,7 +1099,10 @@ class HuntingService
 
                 $aSome = in_array($itemName, [ 'Scales', 'Feathers', 'Quintessence', 'Charcoal' ]) ? 'some' : 'a';
 
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Turkeydragon! ' . $pet->getName() . ' was able to claim ' . $aSome . ' ' . $itemName . ' before fleeing.', '');
+                if($gobbleGobble !== null)
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found the Turkeydragon, and attacked it! ' . $pet->getName() . ' was able to claim ' . $aSome . ' ' . $itemName . ' before being forced to flee...', '');
+                else
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Turkeydragon! ' . $pet->getName() . ' was able to claim ' . $aSome . ' ' . $itemName . ' before fleeing...', '');
 
                 $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' nabbed this from a Turkeydragon before running from it.', $activityLog);
             }
@@ -1099,9 +1110,16 @@ class HuntingService
             {
                 $pet->increaseSafety(-1);
                 $pet->increaseEsteem(-1);
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Turkeydragon, and forced to flee!', '');
+
+                if($gobbleGobble !== null)
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found the Turkeydragon, and attacked it, but was forced to flee!', '');
+                else
+                    $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Turkeydragon, and forced to flee!', '');
             }
         }
+
+        if($gobbleGobble !== null)
+            $pet->removeStatusEffect($gobbleGobble);
 
         return $activityLog;
     }
