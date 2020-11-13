@@ -30,11 +30,12 @@ class UmbraService
     private $enchantmentRepository;
     private $itemRepository;
     private $toolBonusService;
+    private $strangeUmbralEncounters;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, GuildService $guildService, EnchantmentRepository $enchantmentRepository,
-        ItemRepository $itemRepository, ToolBonusService $toolBonusService
+        ItemRepository $itemRepository, ToolBonusService $toolBonusService, StrangeUmbralEncounters $strangeUmbralEncounters
     )
     {
         $this->responseService = $responseService;
@@ -45,6 +46,7 @@ class UmbraService
         $this->enchantmentRepository = $enchantmentRepository;
         $this->itemRepository = $itemRepository;
         $this->toolBonusService = $toolBonusService;
+        $this->strangeUmbralEncounters = $strangeUmbralEncounters;
     }
 
     public function adventure(Pet $pet)
@@ -97,7 +99,7 @@ class UmbraService
                 $activityLog = $this->fishingAtRiver($pet);
                 break;
             case 16:
-                $activityLog = $this->strangeEncounter($pet);
+                $activityLog = $this->strangeUmbralEncounters->adventure($pet);
                 break;
             case 17:
                 $activityLog = $this->gatheringAtTheNoetala($pet);
@@ -448,32 +450,6 @@ class UmbraService
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; ' . $pet->getName() . ' made a hasty retreat.', '');
-        }
-    }
-
-    private function strangeEncounter(Pet $pet): PetActivityLog
-    {
-        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
-
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
-
-        // @TODO: add more possible encounters
-
-        // Agares (a spirit-duke)
-        if($pet->getTool() && !$pet->getTool()->getEnchantment())
-        {
-            $enchantment = $this->enchantmentRepository->findOneByName('of Agares');
-
-            $pet->getTool()
-                ->setEnchantment($enchantment)
-                ->addComment('This item was enchanted by an old man riding an alligator and holding a goshawk!')
-            ;
-
-            return $this->responseService->createActivityLog($pet, 'While exploring some ruins in the Umbra, ' . $pet->getName() . ' was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language ' . $pet->getName() . ' didn\'t know. ' . $pet->getName() . '\'s ' . $pet->getTool()->getItem()->getName() . ' began to glow, and the old man left...', '');
-        }
-        else
-        {
-            return $this->responseService->createActivityLog($pet, 'While exploring some ruins in the Umbra, ' . $pet->getName() . ' was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language ' . $pet->getName() . ' didn\'t know. Frustrated, the old man left.', '');
         }
     }
 

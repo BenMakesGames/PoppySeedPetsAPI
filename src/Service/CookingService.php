@@ -156,8 +156,17 @@ class CookingService
             $multiple = $smallestQuantity;
         }
 
+        $spices = [];
+
         foreach($inventory as $i)
+        {
+            if($i->getSpice())
+                $spices[] = $i->getSpice();
+
             $this->em->remove($i);
+        }
+
+        shuffle($spices);
 
         $locationOfFirstItem = $inventory[0]->getLocation();
 
@@ -167,6 +176,15 @@ class CookingService
             $m->quantity *= $multiple;
 
         $newInventory = $this->inventoryService->giveInventory($makes, $user, $user, $user->getName() . ' prepared this.', $locationOfFirstItem);
+
+        for($i = 0; $i < count($newInventory) && count($spices) > 0; $i++)
+        {
+            $spice = array_shift($spices);
+            $newInventory[$i]->setSpice($spice);
+
+            if(mt_rand(1, 3) === 1)
+                $spices[] = $spice;
+        }
 
         $this->userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING, $multiple);
 

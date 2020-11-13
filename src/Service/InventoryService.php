@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 
+use App\Entity\Enchantment;
 use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Entity\ItemFood;
@@ -15,13 +16,11 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\GrammarFunctions;
 use App\Model\FoodWithSpice;
 use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class InventoryService
 {
@@ -160,7 +159,7 @@ class InventoryService
      * @return Inventory[]
      * @throws EnumInvalidValueException
      */
-    public function giveInventory($quantities, User $owner, User $creator, string $comment, int $location)
+    public function giveInventory($quantities, User $owner, User $creator, string $comment, int $location): array
     {
         if(!is_array($quantities)) $quantities = [ $quantities ];
 
@@ -201,10 +200,7 @@ class InventoryService
         return $this->petCollectsItem(ArrayFunctions::pick_one($balloons), $pet, $message, $log);
     }
 
-    /**
-     * @param Item|string $item
-     */
-    public function petCollectsItem($item, Pet $pet, string $comment, ?PetActivityLog $activityLog): ?Inventory
+    public function petCollectsEnhancedItem($item, ?Enchantment $bonus, ?Spice $spice, Pet $pet, string $comment, ?PetActivityLog $activityLog): ?Inventory
     {
         $item = $this->getItemWithChanceForLuckyTransformation($item);
 
@@ -221,6 +217,8 @@ class InventoryService
                     ->setItem($pet->getTool()->getItem()->getTool()->getWhenGatherAlsoGather())
                     ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
                     ->setLocation(LocationEnum::HOME)
+                    ->setSpice($spice)
+                    ->setEnchantment($bonus)
                 ;
 
                 $this->em->persist($extraItem);
@@ -233,6 +231,8 @@ class InventoryService
                     ->setItem($item)
                     ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
                     ->setLocation(LocationEnum::HOME)
+                    ->setSpice($spice)
+                    ->setEnchantment($bonus)
                 ;
 
                 $this->em->persist($extraItem);
@@ -251,6 +251,8 @@ class InventoryService
                         ->setItem($pet->getTool()->getEnchantment()->getEffects()->getWhenGatherAlsoGather())
                         ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
                         ->setLocation(LocationEnum::HOME)
+                        ->setSpice($spice)
+                        ->setEnchantment($bonus)
                     ;
 
                     $this->em->persist($extraItem);
@@ -263,6 +265,8 @@ class InventoryService
                         ->setItem($item)
                         ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
                         ->setLocation(LocationEnum::HOME)
+                        ->setSpice($spice)
+                        ->setEnchantment($bonus)
                     ;
 
                     $this->em->persist($extraItem);
@@ -287,6 +291,14 @@ class InventoryService
         $this->em->persist($i);
 
         return $i;
+    }
+
+    /**
+     * @param Item|string $item
+     */
+    public function petCollectsItem($item, Pet $pet, string $comment, ?PetActivityLog $activityLog): ?Inventory
+    {
+        return $this->petCollectsEnhancedItem($item, null, null, $pet, $comment, $activityLog);
     }
 
     public function petAttractsRandomBug(Pet $pet, $bugName = null): ?Inventory

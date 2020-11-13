@@ -19,32 +19,8 @@ class SpiceRepository extends ServiceEntityRepository
         parent::__construct($registry, Spice::class);
     }
 
-    // /**
-    //  * @return Spice[] Returns an array of Spice objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findOneByName(string $name): ?Spice
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->findOneBy([ 'name' => $name ]);
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Spice
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
