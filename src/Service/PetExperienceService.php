@@ -97,18 +97,19 @@ class PetExperienceService
             $energy = mt_rand(ceil($energy * 8 / 10), ceil($energy * 12 / 10));
         }
 
-        // a small drift based on number of extra friends a pet can have
-        $energy = ceil($energy * (20 - $pet->getBonusMaximumFriends()) / 20);
+        // tool modifiers (if any)
+        $socialEnergyModifier = $pet->getTool()->socialEnergyModifier();
+
+        // a small drift based on number of extra friends a pet can have; more friends = less energy cost
+        $socialEnergyModifier -= $pet->getBonusMaximumFriends() * 5;
 
         // introverted pets spend more social energy; extroverted pets spend less
         if($pet->getExtroverted() < 0)
-        {
-            $energy = ceil($energy * 5 / 4);
-        }
+            $socialEnergyModifier += 20;
         else if($pet->getExtroverted() > 0)
-        {
-            $energy = ceil($energy * 3 / 4);
-        }
+            $socialEnergyModifier -= 20;
+
+        $energy = round($energy * (100 + $socialEnergyModifier) / 100);
 
         if($energy < 0)
             throw new \Exception('Somehow, the game tried to spend negative social energy. This is bad, and Ben should fix it.');

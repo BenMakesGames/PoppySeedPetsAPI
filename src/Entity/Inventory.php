@@ -521,6 +521,14 @@ class Inventory
         ;
     }
 
+    public function socialEnergyModifier(): int
+    {
+        return
+            $this->getItem()->getTool()->getSocialEnergyModifier() +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getSocialEnergyModifier() : 0)
+        ;
+    }
+
     public function getSpice(): ?Spice
     {
         return $this->spice;

@@ -184,6 +184,11 @@ class ItemTool
      */
     private $isGrayscaling = false;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $socialEnergyModifier = 0;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -430,7 +435,28 @@ class ItemTool
         if($this->getIsGrayscaling())
             $modifiers[] = 'the pet will be in black & white';
 
+        if($this->getSocialEnergyModifier() != 0)
+            $modifiers[] = 'the pet will hang out with others ' . $this->describeSocialEnergyModifier() . ' often';
+
         return $modifiers;
+    }
+
+    public function describeSocialEnergyModifier(): ?string
+    {
+        if($this->socialEnergyModifier < -30)
+            return 'WAY more';
+        else if($this->socialEnergyModifier < -15)
+            return 'more';
+        else if($this->socialEnergyModifier < 0)
+            return 'a little more';
+        else if($this->socialEnergyModifier > 30)
+            return 'WAY less';
+        else if($this->socialEnergyModifier > 15)
+            return 'less';
+        else if($this->socialEnergyModifier > 0)
+            return 'a little less';
+
+        return null;
     }
 
     public function getFocusSkill(): ?string
@@ -626,6 +652,18 @@ class ItemTool
     public function setIsGrayscaling(bool $isGrayscaling): self
     {
         $this->isGrayscaling = $isGrayscaling;
+
+        return $this;
+    }
+
+    public function getSocialEnergyModifier(): int
+    {
+        return $this->socialEnergyModifier;
+    }
+
+    public function setSocialEnergyModifier(int $socialEnergyModifier): self
+    {
+        $this->socialEnergyModifier = $socialEnergyModifier;
 
         return $this;
     }

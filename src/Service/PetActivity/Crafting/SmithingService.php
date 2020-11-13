@@ -729,6 +729,24 @@ class SmithingService
 
     public function createCrystalBall(Pet $pet): PetActivityLog
     {
+        $lucky = $pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 60) === 1;
+
+        if(mt_rand(1, 60) === 1 || $lucky)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $luckySuffix = $lucky ? ' Lucky~!' : '';
+
+            $pet->increaseEsteem(mt_rand(4, 8));
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make a Crystal Ball out of Glass, but happened to catch the light just right, and got a Rainbow, instead!' . $luckySuffix, 'items/mineral/silica-glass-ball')
+                ->addInterestingness($lucky ? PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT : PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ;
+            $this->inventoryService->petCollectsItem('Rainbow', $pet, $pet->getName() . ' created this on accident while trying to make a Crystal Ball!' . $luckySuffix, $activityLog);
+            return $activityLog;
+        }
+
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts() + $pet->getSmithing());
 
         if($roll <= 1)
