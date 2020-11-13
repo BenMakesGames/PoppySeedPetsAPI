@@ -15,6 +15,7 @@ use App\Functions\GrammarFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
+use App\Repository\SpiceRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -27,10 +28,11 @@ class GatheringService
     private $petExperienceService;
     private $transactionService;
     private $itemRepository;
+    private $spiceRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, ItemRepository $itemRepository
+        TransactionService $transactionService, ItemRepository $itemRepository, SpiceRepository $spiceRepository
     )
     {
         $this->responseService = $responseService;
@@ -38,6 +40,7 @@ class GatheringService
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
         $this->itemRepository = $itemRepository;
+        $this->spiceRepository = $spiceRepository;
     }
 
     public function adventure(Pet $pet)
@@ -941,43 +944,50 @@ class GatheringService
             'Naner', 'Naner', 'Mango', 'Mango', 'Cocoa Beans', 'Coffee Beans',
         ];
 
-        $loot = [];
+        $foodLoot = [];
+        $extraLoot = [];
 
         $roll = mt_rand(1, 20 + $pet->getPerception() + $pet->getNature() + $pet->getGathering());
 
         if($roll >= 16)
         {
-            $loot[] = ArrayFunctions::pick_one($possibleLoot);
+            $foodLoot[] = ArrayFunctions::pick_one($possibleLoot);
 
             if($roll >= 18)
             {
-                $loot[] = ArrayFunctions::pick_one($possibleLoot);
+                $foodLoot[] = ArrayFunctions::pick_one($possibleLoot);
 
                 if(mt_rand(1, 40) === 1)
-                    $loot[] = ArrayFunctions::pick_one([ 'Rib', 'Stereotypical Bone' ]);
+                    $extraLoot[] = ArrayFunctions::pick_one([ 'Rib', 'Stereotypical Bone' ]);
             }
 
             if($roll >= 24)
-                $loot[] = ArrayFunctions::pick_one($possibleLoot);
+                $foodLoot[] = ArrayFunctions::pick_one($possibleLoot);
 
             if($roll >= 30 && mt_rand(1, 10) === 1)
-                $loot[] = ArrayFunctions::pick_one([ 'Gold Ore', 'Gold Ore', 'Blackonite', 'Striped Microcline' ]);
+                $extraLoot[] = ArrayFunctions::pick_one([ 'Gold Ore', 'Gold Ore', 'Blackonite', 'Striped Microcline' ]);
         }
 
-        sort($loot);
+        $allLoot = $foodLoot + $extraLoot;
+        sort($allLoot);
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60) + count($loot) * 5, PetActivityStatEnum::GATHER, count($loot) > 0);
+        $this->petExperienceService->spendTime($pet, mt_rand(45, 60) + count($allLoot) * 5, PetActivityStatEnum::GATHER, count($allLoot) > 0);
 
-        if(count($loot) === 0)
+        if(count($allLoot) === 0)
         {
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored deep in the island\'s Micro-Jungle, but couldn\'t find anything.', 'icons/activity-logs/confused');
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored deep in the island\'s Micro-Jungle, and got ' . ArrayFunctions::list_nice($loot) . '.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored deep in the island\'s Micro-Jungle, and got ' . ArrayFunctions::list_nice($allLoot) . '.', '');
 
-            foreach($loot as $itemName)
+            $tropicalSpice = $this->spiceRepository->findOneByName('Tropical');
+
+            foreach($foodLoot as $itemName)
+                $this->inventoryService->petCollectsEnhancedItem($itemName, null, $tropicalSpice, $pet, $pet->getName() . ' found this deep in the island\'s Micro-Jungle.', $activityLog);
+
+            foreach($extraLoot as $itemName)
                 $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this deep in the island\'s Micro-Jungle.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, mt_rand(2, 3), [ PetSkillEnum::NATURE ]);
