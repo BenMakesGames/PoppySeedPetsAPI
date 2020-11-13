@@ -32,6 +32,7 @@ use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\BurntForestService;
+use App\Service\PetActivity\Crafting\NotReallyCraftsService;
 use App\Service\PetActivity\CraftingService;
 use App\Service\PetActivity\DeepSeaService;
 use App\Service\PetActivity\DreamingService;
@@ -88,6 +89,7 @@ class PetService
     private $deepSeaService;
     private $petSummonedAwayService;
     private $toolBonusService;
+    private $notReallyCraftsService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -101,7 +103,7 @@ class PetService
         PetExperienceService $petExperienceService, DreamingService $dreamingService, MagicBeanstalkService $beanStalkService,
         EasterEggHuntingService $easterEggHuntingService, HeartDimensionService $heartDimensionService,
         PetRelationshipRepository $petRelationshipRepository, GuildService $guildService, InventoryService $inventoryService,
-        BurntForestService $burntForestService, DeepSeaService $deepSeaService,
+        BurntForestService $burntForestService, DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService,
         PetSummonedAwayService $petSummonedAwayService, ToolBonusService $toolBonusService
     )
     {
@@ -138,6 +140,7 @@ class PetService
         $this->deepSeaService = $deepSeaService;
         $this->petSummonedAwayService = $petSummonedAwayService;
         $this->toolBonusService = $toolBonusService;
+        $this->notReallyCraftsService = $notReallyCraftsService;
     }
 
     /**
@@ -609,6 +612,7 @@ class PetService
 
         $craftingPossibilities = $this->craftingService->getCraftingPossibilities($pet, $quantities);
         $programmingPossibilities = $this->programmingService->getCraftingPossibilities($pet, $quantities);
+        $notCraftingPossibilities = $this->notReallyCraftsService->getCraftingPossibilities($pet, $quantities);
 
         $houseTooFull = mt_rand(1, 10) > $pet->getOwner()->getMaxInventory() - $itemsInHouse;
 
@@ -619,7 +623,7 @@ class PetService
             else
                 $description = 'The house is getting pretty full.';
 
-            if(count($craftingPossibilities) === 0 && count($programmingPossibilities) === 0)
+            if(count($craftingPossibilities) === 0 && count($programmingPossibilities) === 0 && count($notCraftingPossibilities) === 0)
             {
                 $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
 
@@ -631,6 +635,7 @@ class PetService
 
                 if(count($craftingPossibilities) > 0) $possibilities[] = [ $this->craftingService, $craftingPossibilities ];
                 if(count($programmingPossibilities) > 0) $possibilities[] = [ $this->programmingService, $programmingPossibilities ];
+                if(count($notCraftingPossibilities) > 0) $possibilities[] = [ $this->notReallyCraftsService, $notCraftingPossibilities ];
 
                 $do = ArrayFunctions::pick_one($possibilities);
 
@@ -703,6 +708,7 @@ class PetService
 
         if(count($craftingPossibilities) > 0) $petDesires['craft'] = $this->generateCraftingDesire($pet);
         if(count($programmingPossibilities) > 0) $petDesires['program'] = $this->generateProgrammingDesire($pet);
+        if(count($notCraftingPossibilities) > 0) $petDesires['notCrafting'] = $this->generateGatheringDesire($pet);
 
         $desire = $this->pickDesire($petDesires);
 
@@ -713,6 +719,7 @@ class PetService
             case 'gather': $this->gatheringService->adventure($pet); break;
             case 'craft': $this->craftingService->adventure($pet, $craftingPossibilities); break;
             case 'program': $this->programmingService->adventure($pet, $programmingPossibilities); break;
+            case 'notCrafting': $this->notReallyCraftsService->adventure($pet, $notCraftingPossibilities); break;
             case 'hack': $this->protocol7Service->adventure($pet); break;
             case 'umbra': $this->umbraService->adventure($pet); break;
             case 'beanStalk': $this->beanStalkService->adventure($pet); break;

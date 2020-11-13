@@ -468,6 +468,9 @@ class ItemFood
             }
         }
 
+        if($this->containsTentacles)
+            $modifiers[] = 'tentacle-y';
+
         if($this->randomFlavor > 0)
         {
             if($hasAnyFixedFlavor)

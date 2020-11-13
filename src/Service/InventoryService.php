@@ -276,7 +276,7 @@ class InventoryService
 
         if($item->getFood() !== null && count($pet->getLunchboxItems()) === 0 && mt_rand(1, 20) < 10 - $pet->getFood())
         {
-            if($this->doEat($pet, new FoodWithSpice($item, null), $activityLog))
+            if($this->doEat($pet, new FoodWithSpice($item, $spice), $activityLog))
                 return null;
         }
 
@@ -286,6 +286,8 @@ class InventoryService
             ->setItem($item)
             ->addComment($comment)
             ->setLocation(LocationEnum::HOME)
+            ->setSpice($spice)
+            ->setEnchantment($bonus)
         ;
 
         $this->em->persist($i);

@@ -10,6 +10,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
+use App\Model\PetChanges;
 use App\Repository\SpiceRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -31,6 +32,29 @@ class NotReallyCraftsService
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->spiceRepository = $spiceRepository;
+    }
+
+    /**
+     * @param ActivityCallback[] $possibilities
+     */
+    public function adventure(Pet $pet, array $possibilities): PetActivityLog
+    {
+        if(count($possibilities) === 0)
+            throw new \InvalidArgumentException('possibilities must contain at least one item.');
+
+        /** @var ActivityCallback $method */
+        $method = ArrayFunctions::pick_one($possibilities);
+
+        $activityLog = null;
+        $changes = new PetChanges($pet);
+
+        /** @var PetActivityLog $activityLog */
+        $activityLog = ($method->callable)($pet);
+
+        if($activityLog)
+            $activityLog->setChanges($changes->compare($pet));
+
+        return $activityLog;
     }
 
     public function getCraftingPossibilities(Pet $pet, array $quantities): array
@@ -70,14 +94,13 @@ class NotReallyCraftsService
             else
             {
                 $loot = ArrayFunctions::pick_one([
-                    'Rocky Moon',
-                    'Everice',
+                    /*'Everice',
                     'Silica Grounds',
                     'Iron Ore', 'Iron Ore',
                     'Silver Ore',
                     'Gold Ore',
                     'Dark Matter',
-                    'Glowing Six-sided Die',
+                    'Glowing Six-sided Die',*/
                     'String'
                 ]);
 
