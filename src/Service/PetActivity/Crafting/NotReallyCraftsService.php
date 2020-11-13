@@ -94,13 +94,13 @@ class NotReallyCraftsService
             else
             {
                 $loot = ArrayFunctions::pick_one([
-                    /*'Everice',
+                    'Everice',
                     'Silica Grounds',
                     'Iron Ore', 'Iron Ore',
                     'Silver Ore',
                     'Gold Ore',
                     'Dark Matter',
-                    'Glowing Six-sided Die',*/
+                    'Glowing Six-sided Die',
                     'String'
                 ]);
 
