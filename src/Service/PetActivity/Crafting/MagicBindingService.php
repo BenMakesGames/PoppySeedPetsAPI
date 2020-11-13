@@ -83,6 +83,9 @@ class MagicBindingService
 
         if(array_key_exists('Quintessence', $quantities))
         {
+            if(array_key_exists('Fishing Recorder', $quantities) && array_key_exists('Music Note', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createKokopelli', 8);
+
             if(array_key_exists('Crystal Ball', $quantities) && $isNight)
                 $possibilities[] = new ActivityCallback($this, 'createMoonPearl', 8);
 
@@ -1372,6 +1375,53 @@ class MagicBindingService
         }
     }
 
+    public function createKokopelli(Pet $pet): PetActivityLog
+    {
+        $skillCheck = mt_rand(1, 20 + ceil(($pet->getUmbra() + $pet->getMusic()) / 2) + $pet->getIntelligence() + $pet->getPerception());
+
+        if($skillCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::MUSIC ]);
+            $pet->increaseEsteem(-2);
+
+            $lost = mt_rand(1, 2);
+
+            if($lost === 1)
+            {
+                $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bind a Music Note to a Fishing Recorder, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Music Note', $pet->getOwner(), LocationEnum::HOME, 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bind a Music Note to a Fishing Recorder, but broke the note while trying to tune it :(', '');
+            }
+        }
+        else if($skillCheck < 22)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA, PetSkillEnum::MUSIC ]);
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bind a Music Note to a Fishing Recorder, but couldn\'t get the pitch right...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Music Note', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Fishing Recorder', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA, PetSkillEnum::SCIENCE ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' bound a Music Note to a Fishing Recorder, creating a Kokopelli!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+            ;
+
+            $this->inventoryService->petCollectsItem('Kokopelli', $pet, $pet->getName() . ' bound this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
     public function createAmbrotypicSolvent(Pet $pet): PetActivityLog
     {
         $skillCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + ceil($pet->getScience() / 2));
@@ -1379,7 +1429,7 @@ class MagicBindingService
         if($skillCheck <= 2)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::SCIENCE ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::MUSIC ]);
 
             $lost = mt_rand(1, 3);
 
