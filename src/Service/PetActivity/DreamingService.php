@@ -91,7 +91,7 @@ class DreamingService
             $possibleItems = array_merge($possibleItems, [
                 'Bungee Cord',
                 'Candle', 'Compass (the Math Kind)', 'Crooked Stick',
-                'Feathers', 'Fluff',
+                'Feathers', 'Fez', 'Fluff',
                 'Gold Triangle',
                 'Handicrafts Supply Box',
                 ArrayFunctions::pick_one([ 'Iron Key', 'Iron Key', 'Silver Key', 'Gold Key' ]),
