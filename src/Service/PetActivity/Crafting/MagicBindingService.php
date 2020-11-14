@@ -296,19 +296,34 @@ class MagicBindingService
         }
         else // success!
         {
-            $numberOfDice = mt_rand(3, 5);
-
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Blackonite', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem($numberOfDice);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a block of glowing dice from a chunk of Blackonite, then gently tapped it to break the dice apart. ' . $numberOfDice . ' were made!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
-            ;
 
-            for($x = 0; $x < $numberOfDice; $x++)
-                $this->inventoryService->petCollectsItem(ArrayFunctions::pick_one([ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die' ]), $pet, $pet->getName() . ' got this from a block of glowing dice that they made.', $activityLog);
+            if($umbraCheck >= 30 && mt_rand(1, 5) === 1)
+            {
+                $pet->increaseEsteem(6);
+
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Glowing Twenty-sided Die from a chunk of Blackonite!', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 30)
+                ;
+
+                $this->inventoryService->petCollectsItem('Glowing Twenty-sided Die', $pet, $pet->getName() . ' created this from a chunk of Blackonite!', $activityLog);
+            }
+            else
+            {
+                $numberOfDice = mt_rand(3, 5);
+
+                $pet->increaseEsteem($numberOfDice);
+
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a block of glowing dice from a chunk of Blackonite, then gently tapped it to break the dice apart. ' . $numberOfDice . ' were made!', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ;
+
+                for($x = 0; $x < $numberOfDice; $x++)
+                    $this->inventoryService->petCollectsItem(ArrayFunctions::pick_one([ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die' ]), $pet, $pet->getName() . ' got this from a block of glowing dice that they made.', $activityLog);
+            }
 
             return $activityLog;
         }

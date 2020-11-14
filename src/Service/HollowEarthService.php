@@ -26,7 +26,8 @@ class HollowEarthService
         'Dreidel' => 4,
         'Glowing Four-sided Die' => 4,
         'Glowing Six-sided Die' => 6,
-        'Glowing Eight-sided Die' => 8
+        'Glowing Eight-sided Die' => 8,
+        'Glowing Twenty-sided Die' => 20,
     ];
 
     public function __construct(

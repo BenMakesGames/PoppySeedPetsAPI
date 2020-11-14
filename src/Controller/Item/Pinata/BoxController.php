@@ -403,6 +403,9 @@ class BoxController extends PoppySeedPetsItemController
         // one of something else
         $newInventory[] = $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location, $inventory->getLockedToOwner());
 
+        if(mt_rand(1, 10) === 1)
+            $newInventory[] = $inventoryService->receiveItem('Glowing Twenty-sided Die', $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location, $inventory->getLockedToOwner());
+
         return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
     }
 
