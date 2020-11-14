@@ -57,11 +57,13 @@ class RecyclingService
             }
             else if((mt_rand(1, 10) === 1 || $givingTreeHoliday) && !$i->getLockedToOwner())
             {
+                $originalOwner = $i->getOwner();
+
                 $i
                     ->setOwner($givingTree)
                     ->setLocation(LocationEnum::HOME)
                     ->setSellPrice(null)
-                    ->addComment($i->getOwner()->getName() . ' recycled this item, and it found its way to The Giving Tree!')
+                    ->addComment($originalOwner->getName() . ' recycled this item, and it found its way to The Giving Tree!')
                 ;
 
                 if($i->getHolder()) $i->getHolder()->setTool(null);
