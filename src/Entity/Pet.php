@@ -8,13 +8,11 @@ use App\Enum\LoveLanguageEnum;
 use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
 use App\Enum\PetPregnancyStyleEnum;
-use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\NumberFunctions;
-use App\Service\PetExperienceService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -251,7 +249,7 @@ class Pet
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Merit")
-     * @Groups({"myPet", "petPublicProfile", "petGroupDetails", "parkEvent"})
+     * @Groups({"myPet", "petPublicProfile", "petGroupDetails", "parkEvent", "petFriend"})
      */
     private $merits;
 

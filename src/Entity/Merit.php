@@ -19,7 +19,7 @@ class Merit
 
     /**
      * @ORM\Column(type="string", length=30, unique=true)
-     * @Groups({"availableMerits", "myPet", "meritEncyclopedia", "petPublicProfile", "petGroupDetails", "parkEvent"})
+     * @Groups({"availableMerits", "myPet", "meritEncyclopedia", "petPublicProfile", "petGroupDetails", "parkEvent", "petFriend"})
      */
     private $name;
 
