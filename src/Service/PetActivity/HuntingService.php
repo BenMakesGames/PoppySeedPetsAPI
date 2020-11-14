@@ -522,7 +522,22 @@ class HuntingService
     {
         $skill = 10 + $pet->getStamina();
 
-        if($pet->getTool() && $pet->getTool()->rangedOnly())
+        if($pet->hasMerit(MeritEnum::GOURMAND) && mt_rand(1, 2) === 1)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::HUNT, true);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' didn\'t even flinch, and swallowed the Onionboy whole! (A true Gourmand!)', 'items/veggie/onion')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+            ;
+
+            $pet
+                ->increaseFood(mt_rand(4, 8))
+                ->increaseSafety(mt_rand(2, 4))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ]);
+        }
+        else if($pet->getTool() && $pet->getTool()->rangedOnly())
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::HUNT, true);
 
