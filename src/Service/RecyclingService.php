@@ -30,6 +30,9 @@ class RecyclingService
 
     public function giveRecyclingPoints(User $user, int $quantity)
     {
+        if($quantity == 0)
+            return;
+
         $user->increaseRecyclePoints($quantity);
 
         if($user->getUnlockedRecycling() === null)
