@@ -1152,7 +1152,27 @@ class HuntingService
             'Onion',
         ];
 
-        if(mt_rand(1, $skill) >= 19)
+        if($pet->hasMerit(MeritEnum::GOURMAND) && mt_rand(1, 4) === 1)
+        {
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ]);
+
+            $prize = $this->itemRepository->findOneByName(ArrayFunctions::pick_one($possibleLoot));
+
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went out hunting, and encountered an Egg Salad Monstrosity! After a grueling (and sticky) battle, ' . $pet->getName() . ' took a huge bite out of the monster, slaying it! (A true Gourmand!) Finally, they dug ' . $prize->getNameWithArticle() . ' out of the lumpy corpse, and brought it home.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+            ;
+
+            $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' collected this from the remains of an Egg Salad Monstrosity.', $activityLog);
+
+            $pet
+                ->increaseFood(mt_rand(4, 8))
+                ->increaseSafety(4)
+                ->increaseEsteem(3)
+            ;
+        }
+        else if(mt_rand(1, $skill) >= 19)
         {
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ]);
 
