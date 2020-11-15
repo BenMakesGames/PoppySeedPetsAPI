@@ -9,6 +9,7 @@ use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserStatsRepository;
+use App\Service\CookingService;
 use App\Service\Filter\KnownRecipesFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -74,7 +75,8 @@ class CookingBuddyController extends PoppySeedPetsController
      */
     public function prepareRecipeFromMemory(
         Inventory $cookingBuddy, KnownRecipes $knownRecipe, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository
+        InventoryService $inventoryService, InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository,
+        CookingService $cookingService
     )
     {
         $user = $this->getUser();
@@ -89,7 +91,7 @@ class CookingBuddyController extends PoppySeedPetsController
 
         $ingredients = $inventoryService->deserializeItemList($recipe->getIngredients());
 
-        $inventoryToDelete = [];
+        $inventoryToUse = [];
 
         foreach($ingredients as $ingredient)
         {
@@ -106,20 +108,15 @@ class CookingBuddyController extends PoppySeedPetsController
             if(count($inventory) !== $ingredient->quantity)
                 throw new UnprocessableEntityHttpException('You do not have enough ' . $ingredient->item->getName() . ' to make ' . $recipe->getName() . '.');
 
-            $inventoryToDelete = array_merge($inventoryToDelete, $inventory);
+            $inventoryToUse = array_merge($inventoryToUse, $inventory);
         }
 
-        foreach($inventoryToDelete as $i)
-            $em->remove($i);
-
-        $makes = $inventoryService->deserializeItemList($recipe->getMakes());
-
-        $newInventory = $inventoryService->giveInventory($makes, $user, $user, $user->getName() . ' prepared this.', $cookingBuddy->getLocation());
+        $results = $cookingService->prepareRecipe($user, $inventoryToUse);
 
         $userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING);
 
         $em->flush();
 
-        return $responseService->success($newInventory, SerializationGroupEnum::MY_INVENTORY);
+        return $responseService->success($results->inventory, SerializationGroupEnum::MY_INVENTORY);
     }
 }
