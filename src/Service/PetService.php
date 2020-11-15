@@ -577,8 +577,8 @@ class PetService
             }
             else
             {
-                if(count($namesOfItemsSkipped) > 0)
-                    $message = $pet->getName() . ' looked in their lunchbox for something to eat, but ' . ArrayFunctions::list_nice($namesOfItemsSkipped) . ' really isn\'t appealing right now.';
+                // none were eaten, but ew know the lunchbox has items in it, therefore items were skipped!
+                $message = $pet->getName() . ' looked in their lunchbox for something to eat, but ' . ArrayFunctions::list_nice($namesOfItemsSkipped) . ' really isn\'t appealing right now.';
             }
 
             if($itemsLeftInLunchbox === 0)
@@ -591,7 +591,9 @@ class PetService
 
         if($pet->hasStatusEffect(StatusEffectEnum::GOBBLE_GOBBLE) && mt_rand(1, 2) === 1)
         {
-            $this->huntingService->huntedTurkeyDragon($pet);
+            $changes = new PetChanges($pet);
+            $activityLog = $this->huntingService->huntedTurkeyDragon($pet);
+            $activityLog->setChanges($changes->compare($pet));
             return;
         }
         else if($pet->hasStatusEffect(StatusEffectEnum::ONEIRIC) && mt_rand(1, 2) === 1)
