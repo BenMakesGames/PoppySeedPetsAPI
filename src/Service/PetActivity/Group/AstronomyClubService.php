@@ -35,53 +35,42 @@ class AstronomyClubService
         $this->petRelationshipService = $petRelationshipService;
     }
 
-    private const PREFIX_LIST = [
-        'The First', 'The Last', 'The Second', 'The Final',
+    private const DICTIONARY = [
+        'prefix' => [
+            'The First', 'The Last', 'The Second', 'The Final'
+        ],
+        'suffix' => [
+            'Axiom', 'Law', 'Theory', 'Proposal', 'System', 'Model', 'Problem', 'Solution', 'Paradox', 'Thesis',
+            'Hypothesis', 'Survey',
+        ],
+        'adjective' => [
+            'Absolute', 'Alpha', 'Attracting', 'Beta', 'Big', 'Colliding', 'Copernican', 'Cosmic', 'Delta', 'Elementary', 'Expanding',
+            'Finite', 'Galilean', 'Gamma-ray', 'Gravitational', 'Heavy', 'Infinite', 'Large-scale', 'Local', 'Microwave', 'Omega',
+            'Plank', 'Quantized', 'Quantum', 'Radio', 'Really Big', 'Rotating', 'Small', 'Small-scale', 'Strongly-interacting',
+            'Theta', 'Timey-wimey', 'Universal', 'Vibrating', 'Weakly-interacting', 'X-ray',
+        ],
+        'color' => [
+            'Red', 'White', 'Black', 'Yellow', 'Dark', 'Light', 'Blue'
+        ],
+        'noun' => [
+            'Phenomenon', 'Sun', 'Star', 'Galaxy', 'Nebula', 'Nova', 'Sphere', 'Expanse', 'Void', 'Shift', 'Particle',
+            'Positron', 'Spin', 'String', 'Brane', 'Energy', 'Mass', 'Graviton', 'Field', 'Limit', 'Horizon', 'Plurality',
+            'Symmetry', 'Matter', 'Force', 'Parsec', 'Quark', 'Inflation',
+        ],
+        'nouns' => [
+            'Suns', 'Stars', 'Galaxies', 'Novas', 'Circles', 'Shifts', 'Particles', 'Metals', 'Strings', 'Branes',
+            'Masses', 'Gravitons', 'Fields', 'Symmetries', 'Forces', 'Quarks', 'Super-clusters',
+        ],
+        'number' => [
+            'Two', 'Three', 'Many', 'Multiple', '11', 'Infinite', 'Billions and Billions of', '42',
+        ]
     ];
 
-    private const SUFFIX_LIST = [
-        'Axiom', 'Law', 'Theory', 'Proposal', 'System', 'Model', 'Problem', 'Solution', 'Paradox', 'Thesis',
-        'Hypothesis', 'Survey',
-    ];
-
-    private const ADJECTIVE_LIST = [
-        'Absolute', 'Alpha', 'Attracting', 'Beta', 'Big', 'Colliding', 'Copernican', 'Cosmic', 'Delta', 'Elementary', 'Expanding',
-        'Finite', 'Galilean', 'Gamma-ray', 'Gravitational', 'Heavy', 'Infinite', 'Large-scale', 'Local', 'Microwave', 'Omega',
-        'Plank', 'Quantized', 'Quantum', 'Radio', 'Really Big', 'Rotating', 'Small', 'Small-scale', 'Strongly-interacting',
-        'Theta', 'Timey-wimey', 'Universal', 'Vibrating', 'Weakly-interacting', 'X-ray',
-    ];
-
-    private const COLOR_LIST = [
-        'Red', 'White', 'Black', 'Yellow', 'Dark', 'Light', 'Blue'
-    ];
-
-    private const SINGULAR_NOUN_LIST = [
-        'Phenomenon', 'Sun', 'Star', 'Galaxy', 'Nebula', 'Nova', 'Sphere', 'Expanse', 'Void', 'Shift', 'Particle',
-        'Positron', 'Spin', 'String', 'Brane', 'Energy', 'Mass', 'Graviton', 'Field', 'Limit', 'Horizon', 'Plurality',
-        'Symmetry', 'Matter', 'Force', 'Parsec', 'Quark', 'Inflation',
-    ];
-
-    private const PLURAL_NOUN_LIST = [
-        'Suns', 'Stars', 'Galaxies', 'Novas', 'Circles', 'Shifts', 'Particles', 'Metals', 'Strings', 'Branes',
-        'Masses', 'Gravitons', 'Fields', 'Symmetries', 'Forces', 'Quarks', 'Super-clusters',
-    ];
-
-    private const NUMBER_LIST = [
-        'Two', 'Three', 'Many', 'Multiple', '11', 'Infinite', 'Billions and Billions of', '42',
-    ];
-
-    public function generateGroupName(): string
+    private function getPatternParts(string $pattern): array
     {
-        $pattern = ArrayFunctions::pick_one([
-            '%prefix%/The %adjective%/%color% %noun% %suffix%',
-            '%prefix%/The %number% %adjective%? %nouns% %suffix%',
-            'The? %adjective% %color%? %noun%/%nouns%',
-            'The? %number% %adjective%/%color% %nouns%',
-            '%color%/%adjective% %nouns% and %color%/%adjective% %nouns%',
-        ]);
-
         $parts = explode(' ', $pattern);
         $newParts = [];
+
         foreach($parts as $part)
         {
             if($part[strlen($part) - 1] === '?')
@@ -95,25 +84,64 @@ class AstronomyClubService
             if(strpos($part, '/') !== false)
                 $part = ArrayFunctions::pick_one(explode('/', $part));
 
-            if($part === '%noun%')
-                $newParts[] = ArrayFunctions::pick_one(self::SINGULAR_NOUN_LIST);
-            else if($part === '%nouns%')
-                $newParts[] = ArrayFunctions::pick_one(self::PLURAL_NOUN_LIST);
-            else if($part === '%adjective%')
-                $newParts[] = ArrayFunctions::pick_one(self::ADJECTIVE_LIST);
-            else if($part === '%color%')
-                $newParts[] = ArrayFunctions::pick_one(self::COLOR_LIST);
-            else if($part === '%number%')
-                $newParts[] = ArrayFunctions::pick_one(self::NUMBER_LIST);
-            else if($part === '%suffix%')
-                $newParts[] = ArrayFunctions::pick_one(self::SUFFIX_LIST);
-            else if($part === '%prefix%')
-                $newParts[] = ArrayFunctions::pick_one(self::PREFIX_LIST);
-            else
-                $newParts[] = $part;
+            $newParts[] = $part;
         }
 
-        return str_replace(['_', ' ,'], [' ', ','], implode(' ', $newParts));
+        return $newParts;
+    }
+
+    public function generateGroupName(): string
+    {
+        $pattern = ArrayFunctions::pick_one([
+            '%prefix%/The %adjective%/%color% %noun% %suffix%',
+            '%prefix%/The %number% %adjective%? %nouns% %suffix%',
+            'The? %adjective% %color%? %noun%/%nouns%',
+            'The? %number% %adjective%/%color% %nouns%',
+            '%color%/%adjective% %nouns% and %color%/%adjective% %nouns%',
+        ]);
+
+        $parts = $this->getPatternParts($pattern);
+
+        return $this->generateNameFromParts($parts, self::DICTIONARY, 60);
+    }
+
+    private function generateNameFromParts(array $parts, $dictionary, $maxLength): string
+    {
+        while(true)
+        {
+            $newParts = [];
+            $chosenWords = [];
+
+            foreach($parts as $part)
+            {
+                if($part[0] === '%' && $part[strlen($part) - 1] === '%')
+                {
+                    $wordType = substr($part, 1, strlen($part) - 2);
+                    $chosenWord = ArrayFunctions::pick_one($dictionary[$wordType]);
+
+                    $chosenWords[$wordType] = $chosenWord;
+
+                    $newParts[] = $chosenWord;
+                }
+                else
+                    $newParts[] = $part;
+            }
+
+            $name = str_replace(['_', ' ,'], [' ', ','], implode(' ', $newParts));
+
+            if(strlen($name) <= $maxLength)
+                return $name;
+
+            $longestWord = ArrayFunctions::max($chosenWords, function($a) {
+                return strlen($a);
+            });
+
+            $longestWordType = array_search($longestWord, $chosenWords);
+
+            $dictionary[$longestWordType] = array_filter($dictionary[$longestWordType], function($word) use($longestWord) {
+                return strlen($word) < strlen($longestWord);
+            });
+        }
     }
 
     public function meet(PetGroup $group)
