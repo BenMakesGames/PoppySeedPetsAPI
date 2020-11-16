@@ -53,15 +53,15 @@ class RecyclingService
 
         foreach($inventory as $i)
         {
+            $originalOwner = $i->getOwner();
+
             if($i->getItem()->hasUseAction('bug/#/putOutside'))
             {
-                $this->userStatsRepository->incrementStat($i->getOwner(), UserStatEnum::BUGS_PUT_OUTSIDE);
+                $this->userStatsRepository->incrementStat($originalOwner, UserStatEnum::BUGS_PUT_OUTSIDE);
                 $this->em->remove($i);
             }
             else if((mt_rand(1, 10) === 1 || $givingTreeHoliday) && !$i->getLockedToOwner())
             {
-                $originalOwner = $i->getOwner();
-
                 $i
                     ->setOwner($givingTree)
                     ->setLocation(LocationEnum::HOME)
@@ -75,9 +75,9 @@ class RecyclingService
             else
                 $this->em->remove($i);
 
-            $this->giveRecyclingPoints($i->getOwner(), $i->getItem()->getRecycleValue());
+            $this->giveRecyclingPoints($originalOwner, $i->getItem()->getRecycleValue());
 
-            $this->userStatsRepository->incrementStat($i->getOwner(), UserStatEnum::ITEMS_RECYCLED);
+            $this->userStatsRepository->incrementStat($originalOwner, UserStatEnum::ITEMS_RECYCLED);
         }
     }
 }
