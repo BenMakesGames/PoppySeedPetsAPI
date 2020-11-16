@@ -16,6 +16,7 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\DateFunctions;
 use App\Model\FoodWithSpice;
 use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
@@ -186,18 +187,31 @@ class InventoryService
         return $inventory;
     }
 
-    public function petCollectsRandomBalloon(Pet $pet, string $message, ?PetActivityLog $log)
+    public function petCollectsRandomBalloon(Pet $pet, string $message, ?string $specificBalloon, ?PetActivityLog $log)
     {
-        $balloons = [
-            'Red Balloon',
-            'Orange Balloon',
-            'Yellow Balloon',
-            'Green Balloon',
-            'Blue Balloon',
-            'Purple Balloon',
-        ];
+        if($specificBalloon)
+        {
+            $balloon = $specificBalloon;
+            $locked = true;
+        }
+        else
+        {
+            $balloon = ArrayFunctions::pick_one([
+                'Red Balloon',
+                'Orange Balloon',
+                'Yellow Balloon',
+                'Green Balloon',
+                'Blue Balloon',
+                'Purple Balloon',
+            ]);
+            $locked = false;
+        }
 
-        return $this->petCollectsItem(ArrayFunctions::pick_one($balloons), $pet, $message, $log);
+        $item = $this->petCollectsItem($balloon, $pet, $message, $log);
+
+        $item->setLockedToOwner($locked);
+
+        return $item;
     }
 
     public function petCollectsEnhancedItem($item, ?Enchantment $bonus, ?Spice $spice, Pet $pet, string $comment, ?PetActivityLog $activityLog): ?Inventory

@@ -10,6 +10,7 @@ use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\DateFunctions;
 use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\TriDChessParticipant;
 use App\Model\PetChanges;
@@ -111,6 +112,18 @@ class RunParkEventsCommand extends Command
 
             $birthdayPresentsByUser = [];
 
+            $forceBalloon = null;
+
+            switch(DateFunctions::getFullMoonName($now))
+            {
+                case 'Wolf':
+                    $forceBalloon = '"Wolf" Balloon';
+                    break;
+                case 'Pink':
+                    $forceBalloon = 'Pink Balloon';
+                    break;
+            }
+
             foreach($parkEvent->getParticipants() as $pet)
             {
                 $pet
@@ -118,7 +131,7 @@ class RunParkEventsCommand extends Command
                     ->setParkEventType(null)
                 ;
 
-                if(mt_rand(1, 10) === 1)
+                if($forceBalloon || mt_rand(1, 10) === 1)
                 {
                     $changes = new PetChanges($pet);
 
@@ -132,7 +145,7 @@ class RunParkEventsCommand extends Command
                         ->increaseSafety(mt_rand(2, 4))
                     ;
 
-                    $balloon = $this->inventoryService->petCollectsRandomBalloon($pet, $pet->getName() . ' found this while participating in a ' . $parkEvent->getType() . ' event!', $log);
+                    $balloon = $this->inventoryService->petCollectsRandomBalloon($pet, $pet->getName() . ' found this while participating in a ' . $parkEvent->getType() . ' event!', $forceBalloon, $log);
 
                     $log
                         ->setEntry($pet->getName() . ' found a ' . $balloon->getItem()->getName() . ' while participating in a ' . $parkEvent->getType() . ' event!')

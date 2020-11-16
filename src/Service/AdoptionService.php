@@ -99,7 +99,9 @@ class AdoptionService
             ->getSingleScalarResult();
         ;
 
-        $isBlueMoon = DateFunctions::getFullMoonName($now) === 'Blue';
+        $fullMoonName = DateFunctions::getFullMoonName($now);
+        $isBlueMoon = $fullMoonName === 'Blue';
+        $isPinkMoon = $fullMoonName === 'Pink';
         $pets = [];
 
         $allSpecies = $this->petSpeciesRepository->findBy([ 'availableFromPetShelter' => true ]);
@@ -117,7 +119,7 @@ class AdoptionService
 
                 $name = ArrayFunctions::pick_one($this->getSeasonalNames());
             }
-            else if($i === $numPets - 1 && !$isBlueMoon)
+            else if($i === $numPets - 1 && !$isBlueMoon && !$isPinkMoon)
             {
                 // RANDOM!
                 $h1 = mt_rand(0, 1000) / 1000.0;
@@ -145,6 +147,20 @@ class AdoptionService
 
                     $colorA = ColorFunctions::RGB2Hex($otherA, $otherA, $blueA);
                     $colorB = ColorFunctions::RGB2Hex($otherB, $otherB, $blueB);
+
+                    $colorA = ColorFunctions::tweakColor($colorA);
+                    $colorB = ColorFunctions::tweakColor($colorB);
+                }
+                else if($isPinkMoon)
+                {
+                    $redA = mt_rand(224, 255);
+                    $otherA = mt_rand(128, $redA - 32);
+
+                    $redB = mt_rand(224, 255);
+                    $otherB = mt_rand(128, $redB - 32);
+
+                    $colorA = ColorFunctions::RGB2Hex($redA, $otherA, $otherA);
+                    $colorB = ColorFunctions::RGB2Hex($redB, $otherB, $otherB);
 
                     $colorA = ColorFunctions::tweakColor($colorA);
                     $colorB = ColorFunctions::tweakColor($colorB);
