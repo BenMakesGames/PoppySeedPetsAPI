@@ -51,7 +51,8 @@ class GreenhouseController extends PoppySeedPetsController
     public const FORBIDDEN_COMPOST = [
         'Small Bag of Fertilizer',
         'Bag of Fertilizer',
-        'Large Bag of Fertilizer'
+        'Large Bag of Fertilizer',
+        'Twilight Fertilizer'
     ];
 
     /**
@@ -199,17 +200,19 @@ class GreenhouseController extends PoppySeedPetsController
         foreach($items as $item)
             $totalFertilizer += $item->getItem()->getFertilizer();
 
-        $largeBags = (int)($totalFertilizer / 20);
+        $remainingFertilizer = $totalFertilizer;
 
-        $totalFertilizer -= $largeBags * 20;
+        $largeBags = (int)($remainingFertilizer / 20);
 
-        $mediumBags = (int)($totalFertilizer / 15);
+        $remainingFertilizer -= $largeBags * 20;
 
-        $totalFertilizer -= $mediumBags * 15;
+        $mediumBags = (int)($remainingFertilizer / 15);
 
-        $smallBags = (int)($totalFertilizer / 10);
+        $remainingFertilizer -= $mediumBags * 15;
 
-        $totalFertilizer -= $smallBags * 10;
+        $smallBags = (int)($remainingFertilizer / 10);
+
+        $remainingFertilizer -= $smallBags * 10;
 
         $itemDelta = $largeBags + $mediumBags + $smallBags - count($items);
 
@@ -230,13 +233,13 @@ class GreenhouseController extends PoppySeedPetsController
         $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_COMPOSTED, count($items));
 
         $user->getGreenhouse()
-            ->setComposterFood($totalFertilizer)
+            ->setComposterFood($remainingFertilizer)
             ->decreaseComposterBonusCountdown($totalFertilizer)
         ;
 
-        $bonusItem = null;
+        $bonusItemNames = [];
 
-        if($user->getGreenhouse()->getComposterBonusCountdown() <= 0)
+        while($user->getGreenhouse()->getComposterBonusCountdown() <= 0)
         {
             $user->getGreenhouse()->setComposterBonusCountdown();
 
@@ -249,6 +252,8 @@ class GreenhouseController extends PoppySeedPetsController
                 ArrayFunctions::pick_one([ 'Iron Ore', 'Iron Ore', 'Silver Ore', 'Gold Ore' ]),
                 'Paper Bag',
             ]));
+
+            $bonusItemNames[] = $bonusItem->getNameWithArticle();
 
             if($bonusItem->getName() === 'Paper Bag')
                 $theBonusItem = $inventoryService->receiveItem($bonusItem, $user, $user, $user->getName() . ' found this in their composter. (Its contents are PROBABLY safe to eat?)', LocationEnum::HOME, false);
@@ -281,17 +286,19 @@ class GreenhouseController extends PoppySeedPetsController
 
         $em->flush();
 
+        $thoseOrThat = count($bonusItemNames) === 1 ? 'that' : 'those';
+
         if(count($got) > 0)
         {
-            if($bonusItem)
-                $responseService->addFlashMessage('You got ' . ArrayFunctions::list_nice($got) . '! Also, ' . $bonusItem->getNameWithArticle() . ' fell out! (Where\'d that come from?)');
+            if(count($bonusItemNames) > 0)
+                $responseService->addFlashMessage('You got ' . ArrayFunctions::list_nice($got) . '! Also, ' . ArrayFunctions::list_nice($bonusItemNames) . ' fell out! (Where\'d ' . $thoseOrThat . ' come from?)');
             else
                 $responseService->addFlashMessage('You got ' . ArrayFunctions::list_nice($got) . '!');
         }
         else
         {
-            if($bonusItem)
-                $responseService->addFlashMessage('That wasn\'t quite enough to make a bag of fertilizer... but it\'s progress! Oh, and wait, what? ' . ucfirst($bonusItem->getNameWithArticle()) . ' fell out! (Where\'d that come from ?)');
+            if(count($bonusItemNames) > 0)
+                $responseService->addFlashMessage('That wasn\'t quite enough to make a bag of fertilizer... but it\'s progress! Oh, and wait, what? ' . ucfirst(ArrayFunctions::list_nice($bonusItemNames)) . ' fell out! (Where\'d ' . $thoseOrThat . ' come from ?)');
             else
                 $responseService->addFlashMessage('That wasn\'t quite enough to make a bag of fertilizer... but it\'s progress!');
         }

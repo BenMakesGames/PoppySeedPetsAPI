@@ -67,7 +67,7 @@ class Greenhouse
     /**
      * @ORM\Column(type="integer")
      */
-    private $composterBonusCountdown;
+    private $composterBonusCountdown = 0;
 
     public function __construct()
     {
@@ -182,7 +182,9 @@ class Greenhouse
 
     public function setComposterBonusCountdown(): self
     {
-        $this->composterBonusCountdown = mt_rand(3 * 20, 7 * 20);
+        if($this->composterBonusCountdown <= 0)
+            $this->composterBonusCountdown += mt_rand(3 * 20, 7 * 20);
+
         return $this;
     }
 
