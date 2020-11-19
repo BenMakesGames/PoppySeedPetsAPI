@@ -115,7 +115,7 @@ class DreamingService
             ],
             [
                 'While %wandering% %location1% in a dream, %dreamer% spotted %item%. They reached down and grabbed it, and when they looked up, they were %location2%.',
-                '%dreamer% found this in a %location2% in a dream.',
+                '%dreamer% found this in %location1% in a dream.',
             ],
             [
                 '%dreamer% dreamed they tripped over %item%, and tumbled into a pit %location1%. The %item% fell in, too, and %dreamer% grabbed it, and ate it.',
