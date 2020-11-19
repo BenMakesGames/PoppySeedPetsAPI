@@ -38,7 +38,9 @@ class CannedFoodController extends PoppySeedPetsItemController
             'Tomato Soup', '"Chicken" Noodle Soup', 'Minestrone',
         ]);
 
-        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' found this in a can. A Canned Food can.', $location, $lockedToOwner);
+        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' found this in a can. A Canned Food can.', $location, $lockedToOwner)
+            ->setSpice($inventory->getSpice())
+        ;
 
         $recyclingService->giveRecyclingPoints($user, 1);
 

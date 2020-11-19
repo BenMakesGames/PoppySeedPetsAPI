@@ -454,7 +454,11 @@ class BoxController extends PoppySeedPetsItemController
         $location = $inventory->getLocation();
 
         for($i = 0; $i < $beans; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Coffee Beans', 'Cocoa Beans', 'Beans' ]), $user, $user, $description, $location, $inventory->getLockedToOwner());
+        {
+            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Coffee Beans', 'Cocoa Beans', 'Beans']), $user, $user, $description, $location, $inventory->getLockedToOwner())
+                ->setSpice($inventory->getSpice())
+            ;
+        }
 
         return $this->countRemoveFlushAndRespond('You upturn the bag, finding', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
     }
@@ -481,7 +485,11 @@ class BoxController extends PoppySeedPetsItemController
         $location = $inventory->getLocation();
 
         for($i = 0; $i < $peppers; $i++)
-            $newInventory[] = $inventoryService->receiveItem('Spicy Peps', $user, $user, $description, $location, $inventory->getLockedToOwner());
+        {
+            $newInventory[] = $inventoryService->receiveItem('Spicy Peps', $user, $user, $description, $location, $inventory->getLockedToOwner())
+                ->setSpice($inventory->getSpice())
+            ;
+        }
 
         $userStatsRepository->incrementStat($user, 'Disassembled a ' . $inventory->getItem()->getName());
 
@@ -640,13 +648,20 @@ class BoxController extends PoppySeedPetsItemController
             $numRoaches = mt_rand(6, 8);
 
             for($i = 0; $i < $numRoaches; $i++)
-                $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $inventory->getLocation(), $inventory->getLockedToOwner());
+            {
+                $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $inventory->getLocation(), $inventory->getLockedToOwner())
+                    ->setSpice($inventory->getSpice())
+                ;
+            }
 
             $message = 'You open the bag... agh! It\'s swarming with roaches!!';
         }
         else
         {
-            $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $inventory->getLocation(), $inventory->getLockedToOwner());
+            $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $inventory->getLocation(), $inventory->getLockedToOwner())
+                ->setSpice($inventory->getSpice())
+            ;
+
             $message = 'You open the bag... ah! ' . $item . '!';
         }
 

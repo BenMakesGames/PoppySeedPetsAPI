@@ -51,8 +51,10 @@ class MerchantFishController extends PoppySeedPetsItemController
             if(count($lockedTradeGroups) === 0)
             {
                 $loot = ArrayFunctions::pick_one([
-                    'Tentacle',
+                    ArrayFunctions::pick_one([ 'Yellow Dye', 'Green Dye' ]),
                     ArrayFunctions::pick_one([ 'Spicy Spice', 'Nutmeg' ]),
+                    ArrayFunctions::pick_one([ 'Silver Bar', 'Gold Bar' ]),
+                    'Tentacle',
                     'White Cloth',
                     'Secret Seashell'
                 ]);

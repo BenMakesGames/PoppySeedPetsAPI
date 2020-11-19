@@ -22,11 +22,14 @@ use App\Functions\DateFunctions;
 use App\Model\ItemQuantity;
 use App\Repository\GreenhousePlantRepository;
 use App\Repository\InventoryRepository;
+use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
+use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
+use App\Service\GreenhouseService;
 use App\Service\InventoryService;
 use App\Service\PetActivity\GreenhouseAdventureService;
 use App\Service\PetFactory;
@@ -137,7 +140,7 @@ class GreenhouseController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function talkToBird(
-        ResponseService $responseService, EntityManagerInterface $em, InventoryService $inventoryService
+        ResponseService $responseService, EntityManagerInterface $em, GreenhouseService $greenhouseService
     )
     {
         $user = $this->getUser();
@@ -148,37 +151,7 @@ class GreenhouseController extends PoppySeedPetsController
         if(!$user->getGreenhouse()->getVisitingBird())
             throw new NotFoundHttpException('Hm... there\'s no bird here. Reload, maybe??');
 
-        switch($user->getGreenhouse()->getVisitingBird())
-        {
-            case BirdBathBirdEnum::OWL:
-                $scroll = ArrayFunctions::pick_one([
-                    'Behatting Scroll',
-                    'Behatting Scroll',
-                    'Behatting Scroll',
-                    'Renaming Scroll',
-                    'Renaming Scroll',
-                    'Forgetting Scroll',
-                ]);
-
-                $inventoryService->receiveItem($scroll, $user, $user, 'Left behind by a huge owl that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
-                $message = 'As you approach the owl, it tilts its head at you. You freeze, and stare at each other for a few seconds before the owl flies off, dropping some kind of scroll as it goes!';
-                break;
-
-            case BirdBathBirdEnum::RAVEN:
-                $inventoryService->receiveItem('Black Feathers', $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
-                $message = 'As you approach the raven, it turns to face you. You freeze, and stare at each other for a few seconds before the raven flies off in a flurry of Black Feathers!';
-                break;
-
-            case BirdBathBirdEnum::TOUCAN:
-                $inventoryService->receiveItem('Cereal Box', $user, $user, 'Left behind by a huge toucan that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
-                $message = 'As you approach the toucan, it turns to face you. You freeze, and stare at each other for a few seconds before the toucan flies off, leaving a Cereal Box behind.';
-                break;
-
-            default:
-                throw new \Exception('Ben has done something wrong, and not accounted for this type of bird!');
-        }
-
-        $user->getGreenhouse()->setVisitingBird(null);
+        $message = $greenhouseService->approachBird($user->getGreenhouse());
 
         $em->flush();
 
@@ -193,7 +166,8 @@ class GreenhouseController extends PoppySeedPetsController
      */
     public function feedComposter(
         ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
-        InventoryService $inventoryService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+        InventoryService $inventoryService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
+        ItemRepository $itemRepository, SpiceRepository $spiceRepository
     )
     {
         $user = $this->getUser();
@@ -255,7 +229,35 @@ class GreenhouseController extends PoppySeedPetsController
 
         $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_COMPOSTED, count($items));
 
-        $user->getGreenhouse()->setComposterFood($totalFertilizer);
+        $user->getGreenhouse()
+            ->setComposterFood($totalFertilizer)
+            ->decreaseComposterBonusCountdown($totalFertilizer)
+        ;
+
+        $bonusItem = null;
+
+        if($user->getGreenhouse()->getComposterBonusCountdown() <= 0)
+        {
+            $user->getGreenhouse()->setComposterBonusCountdown();
+
+            $bonusItem = $itemRepository->findOneByName(ArrayFunctions::pick_one([
+                ArrayFunctions::pick_one([ 'Grandparoot', 'Secret Seashell', 'Brown Bow' ]),
+                ArrayFunctions::pick_one([ 'Centipede', 'Stink Bug' ]),
+                'Twilight Fertilizer',
+                'Grandparoot',
+                'String',
+                ArrayFunctions::pick_one([ 'Iron Ore', 'Iron Ore', 'Silver Ore', 'Gold Ore' ]),
+                'Paper Bag',
+            ]));
+
+            if($bonusItem->getName() === 'Paper Bag')
+                $theBonusItem = $inventoryService->receiveItem($bonusItem, $user, $user, $user->getName() . ' found this in their composter. (Its contents are PROBABLY safe to eat?)', LocationEnum::HOME, false);
+            else
+                $theBonusItem = $inventoryService->receiveItem($bonusItem, $user, $user, $user->getName() . ' found this in their composter.', LocationEnum::HOME, false);
+
+            if($bonusItem->getName() === 'String' || $bonusItem->getName() === 'Grandparoot' || $bonusItem->getName() === 'Paper Bag')
+                $theBonusItem->setSpice($spiceRepository->findOneByName('Rancid'));
+        }
 
         for($i = 0; $i < $largeBags; $i++)
             $inventoryService->receiveItem('Large Bag of Fertilizer', $user, $user, $user->getName() . ' made this using their composter.', LocationEnum::HOME, false);
@@ -280,9 +282,19 @@ class GreenhouseController extends PoppySeedPetsController
         $em->flush();
 
         if(count($got) > 0)
-            $responseService->addFlashMessage('You got ' . ArrayFunctions::list_nice($got) . '!');
+        {
+            if($bonusItem)
+                $responseService->addFlashMessage('You got ' . ArrayFunctions::list_nice($got) . '! Also, ' . $bonusItem->getNameWithArticle() . ' fell out! (Where\'d that come from?)');
+            else
+                $responseService->addFlashMessage('You got ' . ArrayFunctions::list_nice($got) . '!');
+        }
         else
-            $responseService->addFlashMessage('That wasn\'t quite enough to make a bag of fertilizer... but it\'s progress!');
+        {
+            if($bonusItem)
+                $responseService->addFlashMessage('That wasn\'t quite enough to make a bag of fertilizer... but it\'s progress! Oh, and wait, what? ' . ucfirst($bonusItem->getNameWithArticle()) . ' fell out! (Where\'d that come from ?)');
+            else
+                $responseService->addFlashMessage('That wasn\'t quite enough to make a bag of fertilizer... but it\'s progress!');
+        }
 
         return $responseService->success();
     }
@@ -296,7 +308,7 @@ class GreenhouseController extends PoppySeedPetsController
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository, PetRepository $petRepository,
         PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository,
         UserQuestRepository $userQuestRepository, GreenhouseAdventureService $greenhouseAdventureService,
-        PetFactory $petFactory
+        PetFactory $petFactory, GreenhouseService $greenhouseService
     )
     {
         $user = $this->getUser();
@@ -335,11 +347,39 @@ class GreenhouseController extends PoppySeedPetsController
 
         $plant->clearGrowth();
 
-        if($plant->getPlant()->getName() === 'Tomato Plant' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON)
+        if($plant->getPlant()->getName() === 'Toadstool Troop' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::NEW_MOON)
         {
-            $message = 'You harvested-- WHOA, WAIT, WHAT?! It\'s a living tomato!?';
+            $species = $petSpeciesRepository->findOneBy([ 'name' => 'Mushroom' ]);
 
-            $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
+            $colorA = ColorFunctions::tweakColor(ArrayFunctions::pick_one([
+                'e32c2c', 'e5e5d6', 'dd8a09', 'a8443d'
+            ]));
+
+            $colorB = ColorFunctions::tweakColor(ArrayFunctions::pick_one([
+                'd7d38b', 'e5e5d6', '716363'
+            ]));
+
+            if(mt_rand(1, 4) === 1)
+            {
+                $temp = $colorA;
+                $colorA = $colorB;
+                $colorB = $temp;
+            }
+
+            $name = ArrayFunctions::pick_one([
+                'Cremini', 'Button', 'Portobello', 'Oyster', 'Porcini', 'Morel', 'Enoki', 'Shimeji',
+                'Shiitake', 'Maitake', 'Reishi', 'Puffball', 'Galerina', 'Gypsy', 'Milkcap', 'Bolete',
+                'Honey', 'Pinewood', 'Horse', 'Périgord', 'Tooth', 'Blewitt', 'Pom Pom', 'Ear', 'Jelly',
+                'Chestnut', 'Khumbhi', 'Helvella', 'Amanita'
+            ]);
+
+            $bonusMerit = $meritRepository->findOneByName(MeritEnum::DARKVISION);
+
+            $message = $greenhouseService->harvestPlantAsPet($plant, $species, $colorA, $colorB, $name, $bonusMerit);
+        }
+        else if($plant->getPlant()->getName() === 'Tomato Plant' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON)
+        {
+            $species = $petSpeciesRepository->findOneBy([ 'name' => 'Tomate' ]);
 
             $colorA = ColorFunctions::tweakColor(ArrayFunctions::pick_one([
                 'FF6622', 'FFCC22', '77FF22', 'FF2222', '7722FF'
@@ -349,7 +389,7 @@ class GreenhouseController extends PoppySeedPetsController
                 '007700', '009922', '00bb44'
             ]));
 
-            $tomateName = ArrayFunctions::pick_one([
+            $name = ArrayFunctions::pick_one([
                 'Alicante', 'Azoychka', 'Krim', 'Brandywine', 'Campari', 'Canario', 'Tomkin',
                 'Flamenco', 'Giulietta', 'Grandero', 'Trifele', 'Jubilee', 'Juliet', 'Kumato',
                 'Monterosa', 'Montserrat', 'Plum', 'Raf', 'Roma', 'Rutgers', 'Marzano', 'Cherry',
@@ -357,28 +397,9 @@ class GreenhouseController extends PoppySeedPetsController
                 'Pomidor', 'Utamatisi'
             ]);
 
-            $species = $petSpeciesRepository->findOneBy([ 'name' => 'Tomate' ]);
+            $bonusMerit = $meritRepository->findOneByName(MeritEnum::MOON_BOUND);
 
-            $tomate = $petFactory->createPet($user, $tomateName, $species, $colorA, $colorB, FlavorEnum::getRandomValue(), $meritRepository->getRandomStartingMerit());
-
-            $tomate
-                ->addMerit($meritRepository->findOneByName(MeritEnum::MOON_BOUND))
-                ->setFoodAndSafety(mt_rand(10, 12), -9)
-                ->setScale(mt_rand(80, 120))
-            ;
-
-            $em->remove($plant);
-
-            if($numberOfPetsAtHome >= $user->getMaxPets())
-            {
-                $message .= "\n\n" . 'Seeing no space in your house, the creature wanders off to Daycare.';
-                $tomate->setInDaycare(true);
-            }
-            else
-            {
-                $message .= "\n\n" . 'The creature wastes no time in setting up residence in your house.';
-                $tomate->setInDaycare(false);
-            }
+            $message = $greenhouseService->harvestPlantAsPet($plant, $species, $colorA, $colorB, $name, $bonusMerit);
         }
         else
         {

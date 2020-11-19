@@ -342,9 +342,6 @@ class GatheringService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
     private function foundBeach(Pet $pet): PetActivityLog
     {
         $loot = [];

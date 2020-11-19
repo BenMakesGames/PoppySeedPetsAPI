@@ -32,4 +32,5 @@ final class UserStatEnum
     const EGGS_HARVESTED_FROM_EGGPLANTS = 'Eggs Harvested from Eggplants';
     const ROTTEN_EGGPLANTS = 'Eggplants Which Were Horrible and Rotten';
     const ITEMS_COMPOSTED = 'Items Composted';
+    const LARGE_BIRDS_APPROACHED = 'Large Birds Approached in Greenhouse';
 }

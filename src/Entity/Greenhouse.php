@@ -64,6 +64,16 @@ class Greenhouse
      */
     private $composterFood = 0;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $composterBonusCountdown;
+
+    public function __construct()
+    {
+        $this->setComposterBonusCountdown();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -161,6 +171,24 @@ class Greenhouse
     public function setComposterFood(int $composterFood): self
     {
         $this->composterFood = $composterFood;
+
+        return $this;
+    }
+
+    public function getComposterBonusCountdown(): ?int
+    {
+        return $this->composterBonusCountdown;
+    }
+
+    public function setComposterBonusCountdown(): self
+    {
+        $this->composterBonusCountdown = mt_rand(3 * 20, 7 * 20);
+        return $this;
+    }
+
+    public function decreaseComposterBonusCountdown(int $amount): self
+    {
+        $this->composterBonusCountdown -= $amount;
 
         return $this;
     }

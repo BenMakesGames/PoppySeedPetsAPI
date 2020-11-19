@@ -251,8 +251,8 @@ class ScrollController extends PoppySeedPetsItemController
 
         if(mt_rand(1, 4) === 1) $items[] = 'Glass';
         if(mt_rand(1, 5) === 1) $items[] = 'Music Note';
-        if(mt_rand(1, 8) === 1) $items[] = 'Secret Seashell';
-        if(mt_rand(1, 10) === 1) $items[] = 'Mermaid Egg';
+        if(mt_rand(1, 8) === 1) $items[] = 'Mermaid Egg';
+        if(mt_rand(1, 10) === 1) $items[] = 'Secret Seashell';
         if(mt_rand(1, 15) === 1) $items[] = 'Iron Ore';
         if(mt_rand(1, 20) === 1) $items[] = 'Little Strongbox';
 
