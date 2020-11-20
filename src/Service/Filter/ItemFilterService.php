@@ -32,6 +32,7 @@ class ItemFilterService
                 'name' => [ $this, 'filterName' ],
                 'edible' => [ $this, 'filterEdible' ],
                 'candy' => [ $this, 'filterCandy' ],
+                'spice' => [ $this, 'filterSpice' ],
                 'foodFlavors' => [ $this, 'filterFoodFlavors' ],
                 'equipable' => [ $this, 'filterEquipable' ],
                 'equipStats' => [ $this, 'filterEquipStats' ],
@@ -126,6 +127,14 @@ class ItemFilterService
             $qb->andWhere('i.enchants IS NULL');
         else
             $qb->andWhere('i.enchants IS NOT NULL');
+    }
+
+    public function filterSpice(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('i.spice IS NULL');
+        else
+            $qb->andWhere('i.spice IS NOT NULL');
     }
 
     public function filterAHat(QueryBuilder $qb, $value)

@@ -33,6 +33,7 @@ class InventoryFilterService
                 'edible' => [ $this, 'filterEdible' ],
                 'candy' => [ $this, 'filterCandy' ],
                 'foodFlavors' => [ $this, 'filterFoodFlavors' ],
+                'spice' => [ $this, 'filterSpice' ],
                 'equipable' => [ $this, 'filterEquipable' ],
                 'equipStats' => [ $this, 'filterEquipStats' ],
                 'bonus' => [ $this, 'filterBonus' ],
@@ -140,6 +141,14 @@ class InventoryFilterService
             $qb->andWhere('item.enchants IS NULL');
         else
             $qb->andWhere('item.enchants IS NOT NULL');
+    }
+
+    public function filterSpice(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('item.spice IS NULL');
+        else
+            $qb->andWhere('item.spice IS NOT NULL');
     }
 
     public function filterEquipable(QueryBuilder $qb, $value)
