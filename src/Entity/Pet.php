@@ -949,7 +949,11 @@ class Pet
 
     public function getCrafts(): int
     {
-        return $this->getSkills()->getCrafts() + ($this->getTool() ? $this->getTool()->craftsBonus() : 0);
+        return
+            $this->getSkills()->getCrafts() +
+            ($this->getTool() ? $this->getTool()->craftsBonus() : 0) +
+            ($this->hasStatusEffect(StatusEffectEnum::SILK_INFUSED) ? 1 : 0)
+        ;
     }
 
     public function getUmbra(): int

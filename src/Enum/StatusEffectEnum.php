@@ -12,4 +12,5 @@ final class StatusEffectEnum
     public const EXTRA_EXTROVERTED = 'Extra Extroverted';
     public const EGGPLANT_CURSED = 'Eggplant-cursed';
     public const GOBBLE_GOBBLE = '*gobble gobble*';
+    public const SILK_INFUSED = 'Silk-infused';
 }

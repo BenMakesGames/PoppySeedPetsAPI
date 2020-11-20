@@ -66,9 +66,9 @@ class CraftingService
             $possibilities[] = new ActivityCallback($this, 'makeChocolateTool', 8);
         }
 
-        if(array_key_exists('Fluff', $quantities))
+        if(array_key_exists('Fluff', $quantities) || array_key_exists('Cobweb', $quantities))
         {
-            $possibilities[] = new ActivityCallback($this, 'spinFluff', 10);
+            $possibilities[] = new ActivityCallback($this, 'spinFluffOrCobweb', 10);
         }
 
         if(array_key_exists('White Cloth', $quantities))
@@ -661,7 +661,7 @@ class CraftingService
         }
     }
 
-    private function spinFluff(Pet $pet): PetActivityLog
+    private function spinFluffOrCobweb(Pet $pet): PetActivityLog
     {
         $making = $this->itemRepository->findOneByName(ArrayFunctions::pick_one([
             'String',
@@ -674,13 +674,13 @@ class CraftingService
         if($roll <= 2)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            $this->inventoryService->loseItem('Fluff', $pet->getOwner(), LocationEnum::HOME, 1);
+            $spunWhat = $this->inventoryService->loseOneOf([ 'Fluff', 'Cobweb' ], $pet->getOwner(), LocationEnum::HOME);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spin some Fluff into ' . $making->getName() . ', but messed it up; the Fluff was wasted :(', '');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spin some ' . $spunWhat . ' into ' . $making->getName() . ', but messed it up; the ' . $spunWhat . ' was wasted :(', '');
         }
         else if($roll >= $difficulty)
         {
-            $this->inventoryService->loseItem('Fluff', $pet->getOwner(), LocationEnum::HOME, 1);
+            $spunWhat = $this->inventoryService->loseOneOf([ 'Fluff', 'Cobweb' ], $pet->getOwner(), LocationEnum::HOME);
 
             if($roll >= $difficulty + 12)
             {
@@ -689,11 +689,11 @@ class CraftingService
                 $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
                 $pet->increaseEsteem(3);
 
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' spun some Fluff into TWO ' . $making->getName() . '!', 'items/' . $making->getImage())
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' spun some ' . $spunWhat . ' into TWO ' . $making->getName() . '!', 'items/' . $making->getImage())
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $difficulty + 12)
                 ;
 
-                $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' spun this from Fluff.', $activityLog);
+                $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' spun this from ' . $spunWhat . '.', $activityLog);
             }
             else
             {
@@ -702,12 +702,12 @@ class CraftingService
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
                 $pet->increaseEsteem(1);
 
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' spun some Fluff into ' . $making->getName() . '.', 'items/' . $making->getImage())
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' spun some ' . $spunWhat . ' into ' . $making->getName() . '.', 'items/' . $making->getImage())
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $difficulty)
                 ;
             }
 
-            $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' spun this from Fluff.', $activityLog);
+            $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' spun this from ' . $spunWhat . '.', $activityLog);
 
             return $activityLog;
         }
@@ -715,7 +715,7 @@ class CraftingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spin some Fluff into ' . $making->getName() . ', but couldn\'t figure it out.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spin some ' . $making->getName() . ', but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
 
