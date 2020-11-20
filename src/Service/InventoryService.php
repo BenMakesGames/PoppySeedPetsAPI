@@ -17,6 +17,7 @@ use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
+use App\Functions\GrammarFunctions;
 use App\Model\FoodWithSpice;
 use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
@@ -549,6 +550,21 @@ class InventoryService
         foreach($food->grantedStatusEffects as $statusEffect)
         {
             $this->applyStatusEffect($pet, $statusEffect['effect'], $statusEffect['duration']);
+        }
+
+        if(count($food->leftovers) > 0)
+        {
+            $leftoverNames = [];
+
+            foreach($food->leftovers as $leftoverItem)
+            {
+                $leftoverNames[] = $leftoverItem->getNameWithArticle();
+                $this->petCollectsItem($leftoverItem, $pet, $pet->getName() . ' ate ' . GrammarFunctions::indefiniteArticle($food->name) . ' ' . $food->name . '; this was left over.', null);
+            }
+
+            $wasOrWere = count($food->leftovers) === 1 ? 'was' : 'were';
+
+            $this->responseService->addFlashMessage('After ' . $pet->getName() . ' ate the ' . $food->name . ', ' . ArrayFunctions::list_nice($leftoverNames) . ' ' . $wasOrWere . ' left over.');
         }
 
         if($food->chanceForBonusItem > 0 && mt_rand(1, 1000) <= $food->chanceForBonusItem)

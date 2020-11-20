@@ -154,6 +154,11 @@ class ItemFood
      */
     private $spice;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Item::class)
+     */
+    private $leftovers;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -459,7 +464,9 @@ class ItemFood
         {
             if($this->$flavor > 0)
             {
-                if($this->$flavor > 2)
+                if($this->$flavor > 4)
+                    $modifiers[] = 'extremely ' . $flavor;
+                else if($this->$flavor > 2)
                     $modifiers[] = 'very ' . $flavor;
                 else
                     $modifiers[] = $flavor;
@@ -599,5 +606,26 @@ class ItemFood
         }
 
         return $this;
+    }
+
+    public function getLeftovers(): ?Item
+    {
+        return $this->leftovers;
+    }
+
+    public function setLeftovers(?Item $leftovers): self
+    {
+        $this->leftovers = $leftovers;
+
+        return $this;
+    }
+
+    /**
+     * @Groups({"myInventory", "itemEncyclopedia"})
+     * @SerializedName("leftovers")
+     */
+    public function getLeftoversName(): ?string
+    {
+        return $this->leftovers === null ? null : $this->getLeftovers()->getName();
     }
 }

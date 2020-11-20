@@ -232,7 +232,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
 
     private function addYieldItem(PlantYield $yield)
     {
-        $item = $this->askItem('Item');
+        $item = $this->askItem('Item', null);
         $percent = $this->askInt('% Chance', 100, function($n) { return $n > 0 && $n <= 100; });
 
         $yieldItem = (new PlantYieldItem())
@@ -247,7 +247,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
 
     private function editYieldItem(PlantYieldItem $yieldItem)
     {
-        $item = $this->askItem('Item');
+        $item = $this->askItem('Item', $yieldItem->getItem());
         $percent = $this->askInt('% Chance', $yieldItem->getPercentChance(), function($n) { return $n > 0 && $n <= 100; });
 
         $yieldItem

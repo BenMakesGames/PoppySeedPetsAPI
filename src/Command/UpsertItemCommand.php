@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Command\Traits\AskItemTrait;
 use App\Entity\Item;
 use App\Entity\ItemFood;
 use App\Entity\ItemGrammar;
@@ -17,6 +18,8 @@ use Symfony\Component\Console\Question\Question;
 
 class UpsertItemCommand extends PoppySeedPetsCommand
 {
+    use AskItemTrait;
+
     private $em;
     private $itemRepository;
 
@@ -156,6 +159,12 @@ class UpsertItemCommand extends PoppySeedPetsCommand
 
             foreach(FlavorEnum::getValues() as $flavor)
                 $food->{'set' . $flavor}($this->askInt(ucfirst($flavor) . ' hours', $food->{'get' . $flavor}()));
+
+            $food->setContainsTentacles($this->askBool('Contains tentacles?', $food->getContainsTentacles()));
+
+            $food->setLeftovers($this->askNullableItem('Leftovers', $food->getLeftovers()));
+
+            $food->setChanceForBonusItem($this->askNullableInt('Chance for bonus item', $food->getChanceForBonusItem()));
 
             $food->setIsCandy();
         }

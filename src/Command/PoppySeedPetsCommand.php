@@ -36,6 +36,27 @@ abstract class PoppySeedPetsCommand extends Command
         return $this->questionHelper->ask($this->input, $this->output, new ConfirmationQuestion($prompt, $defaultValue));
     }
 
+    protected function askNullableInt(string $prompt, ?int $defaultValue, callable $constraint = null): ?int
+    {
+        $question = new Question($prompt . ' (' . ($defaultValue === null ? '~' : $defaultValue) . ') ', $defaultValue);
+
+        $question->setValidator(function($answer) use($constraint) {
+            if($answer === '~') $answer = null;
+
+            if($answer !==  null && (int)$answer != $answer)
+                throw new \RuntimeException('Must be an integer, or null (~).');
+
+            $answerValue = $answer === null ? null : (int)$answer;
+
+            if($constraint && !$constraint($answerValue))
+                throw new \RuntimeException('Number is out of range.');
+
+            return $answerValue;
+        });
+
+        return $this->ask($question);
+    }
+
     protected function askInt(string $prompt, int $defaultValue, callable $constraint = null): int
     {
         $question = new Question($prompt . ' (' . $defaultValue . ') ', $defaultValue);

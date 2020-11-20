@@ -10,13 +10,40 @@ trait AskItemTrait
     /** @var ItemRepository */
     private $itemRepository;
 
-    private function askItem(string $prompt): ?Item
+    private function askItem(string $prompt, ?Item $defaultValue): Item
     {
-        $question = new Question($prompt . ' ', null);
+        if($defaultValue)
+            $question = new Question($prompt . ' (' . $defaultValue->getName() . ')', $defaultValue->getName());
+        else
+            $question = new Question($prompt, null);
+
         $question->setValidator(function($itemName) {
             $itemName = trim($itemName);
 
-            if($itemName === '') return null;
+            if($itemName === null || $itemName === '~')
+                throw new \RuntimeException('Must select an item.');
+
+            $item = $this->itemRepository->findOneBy([ 'name' => $itemName ]);
+            if($item === null)
+                throw new \RuntimeException('There is no Item called "' . $itemName . '".');
+
+            return $item;
+        });
+
+        return $this->ask($question);
+    }
+
+    private function askNullableItem(string $prompt, ?Item $defaultValue): ?Item
+    {
+        if($defaultValue)
+            $question = new Question($prompt . ' (' . $defaultValue->getName() . ')', $defaultValue->getName());
+        else
+            $question = new Question($prompt . ' (~)', null);
+
+        $question->setValidator(function($itemName) {
+            $itemName = trim($itemName);
+
+            if($itemName === '~') return null;
 
             $item = $this->itemRepository->findOneBy([ 'name' => $itemName ]);
             if($item === null)

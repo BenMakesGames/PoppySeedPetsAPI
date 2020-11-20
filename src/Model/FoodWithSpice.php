@@ -31,6 +31,7 @@ class FoodWithSpice
     public $fatty;
     public $oniony;
     public $chemically;
+    /** @var Item[] */ public $leftovers = [];
 
     public function __construct(Item $item, ?Spice $spice)
     {
@@ -60,6 +61,9 @@ class FoodWithSpice
                 'duration' => $food->getGrantedStatusEffectDuration()
             ];
         }
+
+        if($food->getLeftovers())
+            $this->leftovers[] = $food->getLeftovers();
 
         if($spice && $spice->getEffects())
         {
@@ -93,6 +97,9 @@ class FoodWithSpice
 
             foreach(FlavorEnum::getValues() as $flavor)
                 $this->{$flavor} += $effects->{'get' . $flavor}();
+
+            if($effects->getLeftovers())
+                $this->leftovers[] = $effects->getLeftovers();
         }
     }
 }

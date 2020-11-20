@@ -158,7 +158,7 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         {
             $itemQuantity = new ItemQuantity();
 
-            $itemQuantity->item = $this->askItem('Enter an Item name to add');
+            $itemQuantity->item = $this->askNullableItem('Enter an Item name to add', null);
             if($itemQuantity->item === null)
                 break;
 
