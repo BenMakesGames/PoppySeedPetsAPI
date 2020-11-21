@@ -3,13 +3,7 @@ namespace App\Controller;
 
 use App\Entity\GreenhousePlant;
 use App\Entity\Inventory;
-use App\Entity\Pet;
-use App\Entity\PetActivityLog;
-use App\Entity\PetHouseTime;
-use App\Entity\PetSkills;
 use App\Entity\PlantYieldItem;
-use App\Enum\BirdBathBirdEnum;
-use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\MoonPhaseEnum;
@@ -19,7 +13,7 @@ use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
-use App\Model\ItemQuantity;
+use App\Functions\GrammarFunctions;
 use App\Repository\GreenhousePlantRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
@@ -315,7 +309,7 @@ class GreenhouseController extends PoppySeedPetsController
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository, PetRepository $petRepository,
         PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository,
         UserQuestRepository $userQuestRepository, GreenhouseAdventureService $greenhouseAdventureService,
-        PetFactory $petFactory, GreenhouseService $greenhouseService
+        GreenhouseService $greenhouseService
     )
     {
         $user = $this->getUser();
@@ -425,8 +419,9 @@ class GreenhouseController extends PoppySeedPetsController
 
                     $lootItem = $loot->getItem();
                     $lootItemName = $lootItem->getName();
+                    $plantName = $plant->getPlant()->getName();
 
-                    $inventoryService->receiveItem($lootItem, $user, $user, $user->getName() . ' grew this in their greenhouse.', LocationEnum::HOME);
+                    $inventoryService->receiveItem($lootItem, $user, $user, $user->getName() . ' harvested this from ' . GrammarFunctions::indefiniteArticle($plantName) . ' ' . $plantName . '.', LocationEnum::HOME);
 
                     if(array_key_exists($lootItemName, $lootList))
                         $lootList[$lootItemName]++;
@@ -618,7 +613,7 @@ class GreenhouseController extends PoppySeedPetsController
      */
     public function plantSeed(
         ResponseService $responseService, InventoryRepository $inventoryRepository, Request $request,
-        EntityManagerInterface $em, GreenhousePlantRepository $greenhousePlantRepository
+        EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
