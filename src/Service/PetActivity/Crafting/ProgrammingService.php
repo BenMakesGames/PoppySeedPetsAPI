@@ -85,6 +85,9 @@ class ProgrammingService
 
         if(array_key_exists('Hash Table', $quantities))
         {
+            if(array_key_exists('Laser Pointer', $quantities) && array_key_exists('Bass Guitar', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createLaserGuitar', 10);
+
             if(array_key_exists('Finite State Machine', $quantities) && array_key_exists('String', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createCompiler', 10);
 
@@ -401,6 +404,40 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to bootstrap a Compiler, but only got so far.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createLaserGuitar(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + min($pet->getPerception(), $pet->getMusic()) + $pet->getScience());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+
+            $this->inventoryService->loseItem('Hash Table', $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to create a Laser Guitar, but accidentally caused a runaway hash collision, and lost their Hash Table :(', 'icons/activity-logs/null');
+        }
+        else if($roll >= 18)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::PROGRAM, true);
+            $this->inventoryService->loseItem('Hash Table', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Laser Pointer', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Bass Guitar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE, PetSkillEnum::MUSIC ]);
+            $pet->increaseEsteem(3);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a Laser Guitar!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+            ;
+            $this->inventoryService->petCollectsItem('Laser Guitar', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to create Laser Guitar, but only got so far.', 'icons/activity-logs/confused');
         }
     }
 
