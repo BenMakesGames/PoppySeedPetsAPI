@@ -30,7 +30,14 @@ class TakeApartController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $takeApartTable = [
-            'Glowing Russet Staff of Swiftness' => [ 'loot' => [ 'Hot Potato', 'Warm Potato', 'Potato' ], 'verbing' => 'de-potato-ing' ],
+            'Glowing Russet Staff of Swiftness' => [
+                'loot' => [ 'Hot Potato', 'Warm Potato', 'Potato' ],
+                'verbing' => 'de-potato-ing'
+            ],
+            'Water Strider' => [
+                'loot' => [ 'Hunting Spear', 'Cast Net' ],
+                'verbing' => 'dismantling'
+            ]
         ];
 
         if(!array_key_exists($inventory->getItem()->getName(), $takeApartTable))

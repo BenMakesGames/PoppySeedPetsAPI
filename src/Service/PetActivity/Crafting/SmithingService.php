@@ -103,7 +103,7 @@ class SmithingService
                 $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createSaucepan', 7);
             }
 
-            if(array_key_exists('Crooked Stick', $quantities) && array_key_exists('Iron Bar', $quantities))
+            if(array_key_exists('Crooked Stick', $quantities))
                 $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createScythe', 10);
 
             if(array_key_exists('String', $quantities))
@@ -117,6 +117,10 @@ class SmithingService
 
             if(array_key_exists('Toadstool', $quantities))
                 $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createMushketeer', $weight);
+
+            if(array_key_exists('Green Dye', $quantities) && array_key_exists('Bug-catcher\'s Net', $quantities))
+                $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createWaterStrider', 10);
+
         }
 
         if(array_key_exists('Yellow Scissors', $quantities) && array_key_exists('Green Scissors', $quantities) && array_key_exists('Quinacridone Magenta Dye', $quantities))

@@ -118,6 +118,67 @@ class IronSmithingService
         }
     }
 
+    public function createWaterStrider(Pet $pet): PetActivityLog
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts() + $pet->getSmithing());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            if(mt_rand(1, 3) === 1)
+            {
+                $this->inventoryService->loseItem('Bug-catcher\'s Net', $pet->getOwner(), LocationEnum::HOME, 1);
+                $pet->increaseSafety(-3);
+
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spiff up a Bug-catcher\'s Net, but ended up breaking it! :(', '');
+
+                $this->inventoryService->petCollectsItem('String', $pet, $pet->getName() . ' accidentally broke a Bug-catcher\'s Net; this is all that remains...', $activityLog);
+
+                return $activityLog;
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Green Dye', $pet->getOwner(), LocationEnum::HOME, 1);
+                $pet->increaseEsteem(-1);
+
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to paint a Bug-catcher\'s Net, but accidentally spilled the Green Dye all over the place! :(', '');
+            }
+        }
+        else if($roll >= 14)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Green Dye', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Bug-catcher\'s Net', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(1);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' turned a simple Bug-catcher\'s Net into a Water Strider.', 'items/tool/net/water-strider')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+            ;
+
+            $this->inventoryService->petCollectsItem('Water Strider', $pet, $pet->getName() . ' created this from a simple Bug-catcher\'s Net.', $activityLog);
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            if(mt_rand(1, 4) === 1)
+            {
+                $pet->increaseSafety(-mt_rand(1, 2));
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to sharpen an Iron Bar to top off a Bug-catcher\'s Net with, but nearly cut themselves in the process!', 'icons/activity-logs/confused');
+            }
+            else
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spiff up a Bug-catcher\'s Net, but wasn\'t happy with any of their ideas...', 'icons/activity-logs/confused');
+        }
+    }
+
     public function createYellowScissors(Pet $pet): PetActivityLog
     {
         $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
