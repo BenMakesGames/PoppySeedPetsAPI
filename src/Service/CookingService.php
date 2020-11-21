@@ -166,8 +166,6 @@ class CookingService
             $this->em->remove($i);
         }
 
-        shuffle($spices);
-
         $locationOfFirstItem = $inventory[0]->getLocation();
 
         $makes = $this->inventoryService->deserializeItemList($recipe->getMakes());
@@ -177,13 +175,28 @@ class CookingService
 
         $newInventory = $this->inventoryService->giveInventory($makes, $user, $user, $user->getName() . ' prepared this.', $locationOfFirstItem);
 
-        for($i = 0; $i < count($newInventory) && count($spices) > 0; $i++)
+        if(count($spices) > 0)
         {
-            $spice = array_shift($spices);
-            $newInventory[$i]->setSpice($spice);
+            // shuffle the spices
+            shuffle($spices);
 
-            if(mt_rand(1, 3) === 1)
-                $spices[] = $spice;
+            // then add ~1/3 duplicate spices, but always at the END of the initial list
+            $originalSpicesCount = count($spices);
+
+            for($i = 0; $i < $originalSpicesCount; $i++)
+            {
+                if(mt_rand(1, 3) === 1)
+                    $spices[] = $spices[$i];
+            }
+
+            // apply the spices to the new inventory in a random order
+            shuffle($newInventory);
+
+            for($i = 0; $i < count($newInventory) && count($spices) > 0; $i++)
+            {
+                $spice = array_shift($spices);
+                $newInventory[$i]->setSpice($spice);
+            }
         }
 
         $this->userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING, $multiple);
