@@ -146,7 +146,7 @@ class ScrollController extends PoppySeedPetsItemController
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $commonItems = [
-            'Flute', 'Fiberglass Flute', 'Music Note'
+            'Flute', 'Fiberglass Flute', 'Music Note', 'Gold Triangle'
         ];
 
         $rareItems = [
