@@ -18,7 +18,7 @@ use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\ToolBonusService;
+use App\Service\InventoryModifierService;
 use App\Service\TransactionService;
 
 class UmbraService
@@ -35,7 +35,7 @@ class UmbraService
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, GuildService $guildService, EnchantmentRepository $enchantmentRepository,
-        ItemRepository $itemRepository, ToolBonusService $toolBonusService, StrangeUmbralEncounters $strangeUmbralEncounters
+        ItemRepository $itemRepository, InventoryModifierService $toolBonusService, StrangeUmbralEncounters $strangeUmbralEncounters
     )
     {
         $this->responseService = $responseService;
@@ -682,7 +682,7 @@ class UmbraService
             $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::GATHER, true);
 
             if($pet->getTool() && $pet->getTool()->providesLight())
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wandered into a frozen quag deep in the Umbra. The light of their ' . $this->toolBonusService->getNameWithBonus($pet->getTool()) . ' caught on a cube of Everice, which ' . $pet->getName() . ' took!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wandered into a frozen quag deep in the Umbra. The light of their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . ' caught on a cube of Everice, which ' . $pet->getName() . ' took!', '');
             else
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wandered into a frozen quag deep in the Umbra, and happened to spot a cube of Everice!', '');
 

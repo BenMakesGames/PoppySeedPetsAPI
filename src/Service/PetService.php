@@ -104,7 +104,7 @@ class PetService
         EasterEggHuntingService $easterEggHuntingService, HeartDimensionService $heartDimensionService,
         PetRelationshipRepository $petRelationshipRepository, GuildService $guildService, InventoryService $inventoryService,
         BurntForestService $burntForestService, DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService,
-        PetSummonedAwayService $petSummonedAwayService, ToolBonusService $toolBonusService
+        PetSummonedAwayService $petSummonedAwayService, InventoryModifierService $toolBonusService
     )
     {
         $this->em = $em;
@@ -385,7 +385,7 @@ class PetService
 
             $this->responseService->createActivityLog(
                 $pet,
-                $pet->getName() . ' nibbled on their ' . $this->toolBonusService->getNameWithBonus($pet->getTool()) . '.',
+                $pet->getName() . ' nibbled on their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . '.',
                 '',
                 $changes
             );

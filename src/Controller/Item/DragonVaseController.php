@@ -12,7 +12,7 @@ use App\Repository\InventoryRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\ResponseService;
-use App\Service\ToolBonusService;
+use App\Service\InventoryModifierService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +32,7 @@ class DragonVaseController extends PoppySeedPetsItemController
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         UserQuestRepository $userQuestRepository, Request $request, InventoryRepository $inventoryRepository,
-        EnchantmentRepository $enchantmentRepository, ToolBonusService $toolBonusService,
+        EnchantmentRepository $enchantmentRepository, InventoryModifierService $toolBonusService,
         UserStatsRepository $userStatsRepository
     )
     {
@@ -88,14 +88,14 @@ class DragonVaseController extends PoppySeedPetsItemController
         $newBonus = $enchantmentRepository->findOneByName(ArrayFunctions::pick_one($possibleBonuses));
 
         $hadAnEnchantment = $dippedItem->getEnchantment() !== null;
-        $oldName = $toolBonusService->getNameWithBonus($dippedItem);
+        $oldName = $toolBonusService->getNameWithModifiers($dippedItem);
 
         $dippedItem
             ->setEnchantment($newBonus)
             ->addComment('This item gained "' . $newBonus->getName() . '" from a Dragon Vase.')
         ;
 
-        $newName = $toolBonusService->getNameWithBonus($dippedItem);
+        $newName = $toolBonusService->getNameWithModifiers($dippedItem);
 
         $em->flush();
 

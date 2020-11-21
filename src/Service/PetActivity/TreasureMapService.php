@@ -23,7 +23,7 @@ use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\ToolBonusService;
+use App\Service\InventoryModifierService;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -41,7 +41,7 @@ class TreasureMapService
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         EntityManagerInterface $em, PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
-        TraderService $traderService, ToolBonusService $toolBonusService
+        TraderService $traderService, InventoryModifierService $toolBonusService
     )
     {
         $this->responseService = $responseService;
@@ -210,7 +210,7 @@ class TreasureMapService
 
         $agk = ArrayFunctions::pick_one([ 'Agk!', 'Oh dang!', 'Noooo!', 'Quel dommage!', 'Welp!' ]);
 
-        $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, a weird, purple energy oozed out of their ' . $this->toolBonusService->getNameWithBonus($pet->getTool()) . ', and enveloped them! (' . $agk . ' It\'s the Eggplant Curse!)', '');
+        $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, a weird, purple energy oozed out of their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . ', and enveloped them! (' . $agk . ' It\'s the Eggplant Curse!)', '');
         $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::EGGPLANT_CURSED, mt_rand(24, 48) * 60);
 
         $pet

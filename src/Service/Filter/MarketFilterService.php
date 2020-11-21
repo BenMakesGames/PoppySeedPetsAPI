@@ -75,10 +75,14 @@ class MarketFilterService
         if(!in_array('enchantment', $qb->getAllAliases()))
             $qb->leftJoin('item.enchantment', 'enchantment');
 
+        if(!in_array('spice', $qb->getAllAliases()))
+            $qb->leftJoin('item.spice', 'spice');
+
         $qb
             ->andWhere($qb->expr()->orX(
                 'item.name LIKE :nameLike',
-                'enchantment.name LIKE :nameLike'
+                'enchantment.name LIKE :nameLike',
+                'spice.name LIKE :nameLike'
             ))
             ->setParameter('nameLike', '%' . $name . '%')
         ;

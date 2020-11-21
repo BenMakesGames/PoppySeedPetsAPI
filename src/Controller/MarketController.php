@@ -10,7 +10,7 @@ use App\Functions\ArrayFunctions;
 use App\Repository\DailyMarketItemAverageRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\UserStatsRepository;
-use App\Service\ToolBonusService;
+use App\Service\InventoryModifierService;
 use App\Service\Filter\MarketFilterService;
 use App\Service\Filter\TransactionFilterService;
 use App\Service\InventoryService;
@@ -117,7 +117,7 @@ class MarketController extends PoppySeedPetsController
     public function buy(
         Request $request, ResponseService $responseService, AdapterInterface $cache, EntityManagerInterface $em,
         UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
-        TransactionService $transactionService, MarketService $marketService, ToolBonusService $bonusService
+        TransactionService $transactionService, MarketService $marketService, InventoryModifierService $bonusService
     )
     {
         $user = $this->getUser();
@@ -222,11 +222,11 @@ class MarketController extends PoppySeedPetsController
 
         try
         {
-            $transactionService->getMoney($itemToBuy->getOwner(), $itemToBuy->getSellPrice(), 'Sold ' . $bonusService->getNameWithBonus($itemToBuy) . ' in the Market.');
+            $transactionService->getMoney($itemToBuy->getOwner(), $itemToBuy->getSellPrice(), 'Sold ' . $bonusService->getNameWithModifiers($itemToBuy) . ' in the Market.');
             $userStatsRepository->incrementStat($itemToBuy->getOwner(), UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $itemToBuy->getSellPrice());
             $userStatsRepository->incrementStat($itemToBuy->getOwner(), UserStatEnum::ITEMS_SOLD_IN_MARKET, 1);
 
-            $transactionService->spendMoney($user, $itemToBuy->getBuyPrice(), 'Bought ' . $bonusService->getNameWithBonus($itemToBuy) . ' in the Market.');
+            $transactionService->spendMoney($user, $itemToBuy->getBuyPrice(), 'Bought ' . $bonusService->getNameWithModifiers($itemToBuy) . ' in the Market.');
             $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_BOUGHT_IN_MARKET, 1);
 
             $marketService->logExchange($itemToBuy);
