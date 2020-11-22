@@ -4,9 +4,11 @@ namespace App\Service\ParkEvent;
 use App\Entity\ParkEvent;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\JoustingClashResult;
 use App\Model\ParkEvent\JoustingTeam;
@@ -147,6 +149,78 @@ class JoustingService implements ParkEventInterface
         $team2->randomizeRoles();
 
         $this->results .= '#### ' . $team1->getTeamName() . ' vs ' . $team2->getTeamName() . "\n";
+
+        $team1Relationship = $team1->rider->getRelationshipWith($team1->mount);
+        $team2Relationship = $team2->rider->getRelationshipWith($team2->mount);
+
+        $team1CurrentRelationship = $team1Relationship === null ? null : $team1Relationship->getCurrentRelationship();
+        $team2CurrentRelationship = $team2Relationship === null ? null : $team2Relationship->getCurrentRelationship();
+
+        $team1WontWorkTogether = $team1CurrentRelationship === RelationshipEnum::DISLIKE || $team1CurrentRelationship === RelationshipEnum::BROKE_UP;
+        $team2WontWorkTogether = $team2CurrentRelationship === RelationshipEnum::DISLIKE || $team2CurrentRelationship === RelationshipEnum::BROKE_UP;
+
+        // @TODO a chance that they "power through", and work together, anyway?
+
+        if($team1WontWorkTogether && $team2WontWorkTogether)
+        {
+            $winningTeam = mt_rand(1, 2);
+
+            $this->results .= $team1->rider->getName() . ' and ' . $team1->mount->getName() . ' refuse to work with one another! But the same is true for ' . $team2->rider->getName() . ' and ' . $team2->mount->getName() . '! There\'s nothing to do but flip a coin; ' . ($winningTeam === 1 ? $team1->getTeamName() : $team2->getTeamName()) . ' "wins"...' . "\n\n";
+
+            return $winningTeam;
+        }
+        else if($team1WontWorkTogether)
+        {
+            $this->results .= $team1->rider->getName() . ' and ' . $team1->mount->getName() . ' refuse to work with one another! ' . $team2->getTeamName() . ' wins by default!' . "\n\n";
+            return 2;
+        }
+        else if($team2WontWorkTogether)
+        {
+            $this->results .= $team2->rider->getName() . ' and ' . $team2->mount->getName() . ' refuse to work with one another! ' . $team1->getTeamName() . ' wins by default!' . "\n\n";
+            return 1;
+        }
+
+        $rivalries = [];
+
+        $riderRiderRelationship = $team1->rider->getRelationshipWith($team2->rider);
+        $riderMountRelationship = $team1->rider->getRelationshipWith($team2->mount);
+        $mountRiderRelationship = $team1->mount->getRelationshipWith($team2->rider);
+        $mountMountRelationship = $team1->mount->getRelationshipWith($team2->mount);
+
+        if($riderRiderRelationship && $riderRiderRelationship->getCurrentRelationship() === RelationshipEnum::FRIENDLY_RIVAL)
+            $rivalries[] = [ $team1->rider, $team2->rider ];
+
+        if($riderMountRelationship && $riderMountRelationship->getCurrentRelationship() === RelationshipEnum::FRIENDLY_RIVAL)
+            $rivalries[] = [ $team1->rider, $team2->mount ];
+
+        if($mountRiderRelationship && $mountRiderRelationship->getCurrentRelationship() === RelationshipEnum::FRIENDLY_RIVAL)
+            $rivalries[] = [ $team1->mount, $team2->rider ];
+
+        if($mountMountRelationship && $mountMountRelationship->getCurrentRelationship() === RelationshipEnum::FRIENDLY_RIVAL)
+            $rivalries[] = [ $team1->mount, $team2->mount ];
+
+        if(count($rivalries) > 0)
+        {
+            shuffle($rivalries);
+
+            foreach($rivalries as $rivalry)
+            {
+                $i = mt_rand(0, 1);
+
+                $reaction = ArrayFunctions::pick_one([
+                    'narrows their eyes at',
+                    'sticks out their ' . ($rivalry[$i]->hasMerit(MeritEnum::PREHENSILE_TONGUE) ? 'prehensile ' : '') . 'tongue at',
+                    'makes a face at',
+                    'taunts',
+                    'belittles',
+                    'spits ' . ($rivalry[$i]->hasMerit(MeritEnum::BURPS_MOTHS) ? 'a moth ' : '') . 'at',
+                ]);
+
+                $this->results .= $rivalry[$i]->getName() . ' ' . $reaction . ' their rival, ' . $rivalry[1 - $i]->getName() . "!\n";
+            }
+
+            $this->results .= "\n";
+        }
 
         $team1Points = 0;
         $team2Points = 0;
