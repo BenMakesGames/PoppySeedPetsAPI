@@ -290,6 +290,12 @@ class CraftingService
         if(array_key_exists('Sun-sun Flag', $quantities) && $quantities['Sun-sun Flag']->quantity >= 2)
             $possibilities[] = new ActivityCallback($this, 'createSunSunFlagFlagSon', 10);
 
+        if(array_key_exists('Moon Pearl', $quantities))
+        {
+            if(array_key_exists('Plastic Fishing Rod', $quantities) && array_key_exists('Talon', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createPaleFlail', 10);
+        }
+
         $possibilities = array_merge($possibilities, $this->magicBindingService->getCraftingPossibilities($pet, $quantities));
         $possibilities = array_merge($possibilities, $this->eventLanternService->getCraftingPossibilities($pet, $quantities));
 
@@ -1850,6 +1856,42 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, mt_rand(15, 45), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to combine two Sun-sun Flags, but couldn\'t figure it out...', 'icons/activity-logs/confused');
+        }
+
+        return $activityLog;
+    }
+
+    private function createPaleFlail(Pet $pet)
+    {
+        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+
+            $this->inventoryService->loseItem('Talon', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Pail Flail, but broke the Talon :(', '');
+        }
+        else if($roll >= 15)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Plastic Fishing Rod', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Moon Pearl', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Talon', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Pale Flail!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+            ;
+            $this->inventoryService->petCollectsItem('Pale Flail', $pet, $pet->getName() . ' made this.', $activityLog);
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to make a flail, but had trouble shaping the Plastic Fishing Rod.', 'icons/activity-logs/confused');
         }
 
         return $activityLog;
