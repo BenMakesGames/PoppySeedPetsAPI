@@ -131,7 +131,7 @@ class TriDChessService implements ParkEventInterface
     {
         $this->results .= $p1->pet->getName() . ' vs ' . $p2->pet->getName() . "\n";
 
-        $move = 0;
+        $move = 2;
         $playOrder = mt_rand(0, 1);
 
         // the internet claims that the average number of moves is 40.

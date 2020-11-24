@@ -221,6 +221,8 @@ class AdoptionService
             $pets[] = $pet;
         }
 
+        mt_srand();
+
         return [ $pets, $dialog ];
     }
 
