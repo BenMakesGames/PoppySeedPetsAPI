@@ -87,7 +87,7 @@ class CalendarService
         if($this->monthAndDay < 1125 || $this->monthAndDay >= 1203)
             return false;
 
-        $cyberMonday = (new \DateTimeImmutable('fourth Thursday of this month'));//->modify('+4 day');
+        $cyberMonday = (new \DateTimeImmutable('fourth Thursday of this month'))->modify('+4 day');
 
         return (int)$cyberMonday->format('md') == $this->monthAndDay;
     }
