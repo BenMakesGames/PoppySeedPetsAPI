@@ -35,24 +35,27 @@ class AdoptionService
 
         $itemsDonated = $this->userStatsRepository->getStatValue($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM);
 
-        $bonus = 0;
+        if($statValue <= 6)
+            $fee = 50;
+        else if($statValue <= 28)
+            $fee = 75;
+        else if($statValue <= 496)
+            $fee = 100;
+        else if($statValue <= 8128)
+            $fee = 50;
+        else
+            $fee = 20;
 
         if($itemsDonated >= 300)
-            $bonus += 5;
+            $fee -= 5;
 
         if($itemsDonated >= 600)
-            $bonus += 5;
+            $fee -= 5;
 
-        if($statValue <= 6)
-            return 50 - $bonus;
-        else if($statValue <= 28)
-            return 75 - $bonus;
-        else if($statValue <= 496)
-            return 100 - $bonus;
-        else if($statValue <= 8128)
-            return 50 - $bonus;
-        else
-            return 20 - $bonus;
+        if($this->calendarService->isBlackFriday())
+            $fee = ceil($fee / 2);
+
+        return $fee;
     }
 
     private function getNumberOfPets(User $user): int
@@ -233,6 +236,10 @@ class AdoptionService
         if($this->calendarService->isHalloween())
             return mt_rand(1, 2);
 
+        // PSP Thanksgiving overlaps Black Friday, but for pet adoption purposes, we want Black Friday to win out:
+        if($this->calendarService->isBlackFriday())
+            return ceil($totalPets / 2);
+
         if($this->calendarService->isThanksgiving())
             return mt_rand(1, 2);
 
@@ -262,6 +269,10 @@ class AdoptionService
 
         if($this->calendarService->isHalloween())
             return PetShelterPet::PET_HALLOWEEN_NAMES;
+
+        // PSP Thanksgiving overlaps Black Friday, but for pet adoption purposes, we want Black Friday to win out:
+        if($this->calendarService->isBlackFriday())
+            return PetShelterPet::PET_BLACK_FRIDAY_NAMES;
 
         if($this->calendarService->isThanksgiving())
             return PetShelterPet::PET_THANKSGIVING_NAMES;
@@ -295,6 +306,10 @@ class AdoptionService
 
         if($this->calendarService->isHalloween())
             return $this->getHalloweenColors();
+
+        // PSP Thanksgiving overlaps Black Friday, but for pet adoption purposes, we want Black Friday to win out:
+        if($this->calendarService->isBlackFriday())
+            return $this->getBlackFridayColors();
 
         if($this->calendarService->isThanksgiving())
             return $this->getThanksgivingColors();
@@ -341,6 +356,11 @@ class AdoptionService
     public function getHannukahColors(): array
     {
         return [ 'F8F8F8', '0066FF' ];
+    }
+
+    public function getBlackFridayColors(): array
+    {
+        return [ '000000', '333333', '330000', '003300', '000033' ];
     }
 
     public function getThanksgivingColors(): array

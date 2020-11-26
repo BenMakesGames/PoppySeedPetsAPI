@@ -69,8 +69,14 @@ class PetShelterPet
         'Blitzen', 'Rudolph', 'Olive', 'Spirit', 'Mint', 'Sol Invictus',
     ];
 
+    public const PET_BLACK_FRIDAY_NAMES = [
+        'Madness', 'Despair', 'Desperation', 'Depravity', 'Turpitude', 'Darkness', 'Terror', 'Recoil',
+        'Deals', '50% Off', 'Fragment', 'Vestige', 'Breakdown', 'Spoils',
+    ];
+
     public const PET_THANKSGIVING_NAMES = [
-        'Gobbles', 'Pumpkin', 'Cranberry', 'Turkey', 'Stuffing', 'Potato', 'Gravy',
+        'Gobbles', 'Pumpkin', 'Cranberry', 'Turkey', 'Stuffing', 'Mashed Potatoes', 'Gravy', 'Marshmallow',
+        'Light Meat', 'Dark Meat', 'Crispy Onion', 'Sweet Potato', 'Brown Sugar', 'Pecan Pie',
     ];
 
     public const PET_HANNUKAH_NAMES = [
