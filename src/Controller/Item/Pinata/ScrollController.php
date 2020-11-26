@@ -77,7 +77,7 @@ class ScrollController extends PoppySeedPetsItemController
             $location = $inventory->getLocation();
 
             for($i = 0; $i < $pectin; $i++)
-                $inventoryService->receiveItem('Pectin', $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
+                $inventoryService->receiveItem('Pectin', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
 
             $em->flush();
 
@@ -96,7 +96,7 @@ class ScrollController extends PoppySeedPetsItemController
             $location = $inventory->getLocation();
 
             for($i = 0; $i < $numItems; $i++)
-                $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
+                $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
 
             $em->flush();
 
@@ -117,7 +117,7 @@ class ScrollController extends PoppySeedPetsItemController
             $location = $inventory->getLocation();
 
             for($i = 0; $i < $numItems; $i++)
-                $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleItems), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
+                $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleItems), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
 
             $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
             sort($itemList);
@@ -156,9 +156,9 @@ class ScrollController extends PoppySeedPetsItemController
         $location = $inventory->getLocation();
 
         $newInventory = [
-            $inventoryService->receiveItem('Music Note', $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location),
-            $inventoryService->receiveItem(ArrayFunctions::pick_one($commonItems), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location),
-            $inventoryService->receiveItem(ArrayFunctions::pick_one($rareItems), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location),
+            $inventoryService->receiveItem('Music Note', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location),
+            $inventoryService->receiveItem(ArrayFunctions::pick_one($commonItems), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location),
+            $inventoryService->receiveItem(ArrayFunctions::pick_one($rareItems), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location),
         ];
 
         $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
@@ -211,7 +211,7 @@ class ScrollController extends PoppySeedPetsItemController
         $location = $inventory->getLocation();
 
         foreach($items as $item)
-            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
+            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
 
         $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
         sort($itemList);
@@ -262,7 +262,7 @@ class ScrollController extends PoppySeedPetsItemController
         sort($items);
 
         foreach($items as $item)
-            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
+            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
 
         $em->flush();
 
@@ -296,7 +296,7 @@ class ScrollController extends PoppySeedPetsItemController
         else
             $transactionService->getMoney($user, $moneys, 'Conjured by a Scroll of Minor Riches.');
 
-        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
+        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
 
         $em->flush();
 
@@ -330,7 +330,7 @@ class ScrollController extends PoppySeedPetsItemController
         else
             $transactionService->getMoney($user, $moneys, 'Conjured by a Scroll of Major Riches.');
 
-        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location);
+        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
 
         $em->flush();
 
