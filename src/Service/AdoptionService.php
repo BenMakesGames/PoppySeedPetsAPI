@@ -237,7 +237,7 @@ class AdoptionService
             return mt_rand(1, 2);
 
         // PSP Thanksgiving overlaps Black Friday, but for pet adoption purposes, we want Black Friday to win out:
-        if($this->calendarService->isBlackFriday())
+        if($this->calendarService->isBlackFriday() || $this->calendarService->isCyberMonday())
             return ceil($totalPets / 2);
 
         if($this->calendarService->isThanksgiving())
@@ -271,7 +271,7 @@ class AdoptionService
             return PetShelterPet::PET_HALLOWEEN_NAMES;
 
         // PSP Thanksgiving overlaps Black Friday, but for pet adoption purposes, we want Black Friday to win out:
-        if($this->calendarService->isBlackFriday())
+        if($this->calendarService->isBlackFriday() || $this->calendarService->isCyberMonday())
             return PetShelterPet::PET_BLACK_FRIDAY_NAMES;
 
         if($this->calendarService->isThanksgiving())
@@ -310,6 +310,9 @@ class AdoptionService
         // PSP Thanksgiving overlaps Black Friday, but for pet adoption purposes, we want Black Friday to win out:
         if($this->calendarService->isBlackFriday())
             return $this->getBlackFridayColors();
+
+        if($this->calendarService->isCyberMonday())
+            return $this->getCyberMondayColors();
 
         if($this->calendarService->isThanksgiving())
             return $this->getThanksgivingColors();
@@ -361,6 +364,11 @@ class AdoptionService
     public function getBlackFridayColors(): array
     {
         return [ '000000', '333333', '330000', '003300', '000033' ];
+    }
+
+    public function getCyberMondayColors(): array
+    {
+        return [ '000000', 'ff0000', '00ff00', '00ff00', '00ff00', '0000ff' ];
     }
 
     public function getThanksgivingColors(): array

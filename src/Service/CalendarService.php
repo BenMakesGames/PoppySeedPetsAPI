@@ -82,6 +82,17 @@ class CalendarService
         return (int)$blackFriday->format('md') == $this->monthAndDay;
     }
 
+    public function isCyberMonday(): bool
+    {
+        // if it's not November, just get outta' here
+        if($this->monthAndDay < 1125 || $this->monthAndDay >= 1203)
+            return false;
+
+        $cyberMonday = (new \DateTimeImmutable('fourth Thursday of this month'))->modify('+4 day');
+
+        return (int)$cyberMonday->format('md') == $this->monthAndDay;
+    }
+
     public function isHalloweenCrafting(): bool
     {
         return $this->monthAndDay >= 1017 && $this->monthAndDay <= 1031;
