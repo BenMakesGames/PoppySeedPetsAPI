@@ -74,6 +74,12 @@ class PetShelterPet
         'Deals', '50% Off', 'Fragment', 'Vestige', 'Breakdown', 'Spoils',
     ];
 
+    public const PET_CYBER_MONDAY_NAMES = [
+        'DLC', '50% Off', 'Meta Tag', 'Redirect', '302', 'robots.txt', 'Heatmap', 'Cookie', 'SEO', 'CPC',
+        'CTR', 'Demographic', 'Lead Magnet', 'Remarketing', 'CTA', 'Bounce Rate', 'Open Rate', 'CPA',
+        'Conversion Rate',
+    ];
+
     public const PET_THANKSGIVING_NAMES = [
         'Gobbles', 'Pumpkin', 'Cranberry', 'Turkey', 'Stuffing', 'Mashed Potatoes', 'Gravy', 'Marshmallow',
         'Light Meat', 'Dark Meat', 'Crispy Onion', 'Sweet Potato', 'Brown Sugar', 'Pecan Pie',

@@ -52,8 +52,8 @@ class AdoptionService
         if($itemsDonated >= 600)
             $fee -= 5;
 
-        if($this->calendarService->isBlackFriday())
-            $fee = ceil($fee / 2);
+        if($this->calendarService->isBlackFriday() || $this->calendarService->isCyberMonday())
+            $fee = ceil($fee / 10) * 5;
 
         return $fee;
     }
@@ -271,8 +271,11 @@ class AdoptionService
             return PetShelterPet::PET_HALLOWEEN_NAMES;
 
         // PSP Thanksgiving overlaps Black Friday, but for pet adoption purposes, we want Black Friday to win out:
-        if($this->calendarService->isBlackFriday() || $this->calendarService->isCyberMonday())
+        if($this->calendarService->isBlackFriday())
             return PetShelterPet::PET_BLACK_FRIDAY_NAMES;
+
+        if($this->calendarService->isCyberMonday())
+            return PetShelterPet::PET_CYBER_MONDAY_NAMES;
 
         if($this->calendarService->isThanksgiving())
             return PetShelterPet::PET_THANKSGIVING_NAMES;
@@ -368,7 +371,7 @@ class AdoptionService
 
     public function getCyberMondayColors(): array
     {
-        return [ '000000', 'ff0000', '00ff00', '00ff00', '00ff00', '0000ff' ];
+        return [ '000000', '005500', '00aa00', '00ff00' ];
     }
 
     public function getThanksgivingColors(): array
