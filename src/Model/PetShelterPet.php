@@ -71,11 +71,11 @@ class PetShelterPet
 
     public const PET_BLACK_FRIDAY_NAMES = [
         'Madness', 'Despair', 'Desperation', 'Depravity', 'Turpitude', 'Darkness', 'Terror', 'Recoil',
-        'Deals', '50% Off', 'Fragment', 'Vestige', 'Breakdown', 'Spoils',
+        'Deals', '50% Off', 'Bedlam', 'Chaos', 'Breakdown', 'Spoils',
     ];
 
     public const PET_CYBER_MONDAY_NAMES = [
-        'DLC', '50% Off', 'Meta Tag', 'Redirect', '302', 'robots.txt', 'Heatmap', 'Cookie', 'SEO', 'CPC',
+        'DLC', '50% Off', 'Meta Tag', 'Redirect', '302', 'robots.txt', 'Heatmap', 'Tracking Cookie', 'SEO', 'CPC',
         'CTR', 'Demographic', 'Lead Magnet', 'Remarketing', 'CTA', 'Bounce Rate', 'Open Rate', 'CPA',
         'Conversion Rate',
     ];
