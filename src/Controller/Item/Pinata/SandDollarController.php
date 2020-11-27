@@ -32,41 +32,64 @@ class SandDollarController extends PoppySeedPetsItemController
 
         $location = $inventory->getLocation();
 
-        $inventoryService->receiveItem('Silica Grounds', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location);
+        $inventoryService->receiveItem('Silica Grounds', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location)
+            ->setSpice($inventory->getSpice())
+        ;
 
         if(mt_rand(1, 10) === 1)
         {
-            $inventoryService->receiveItem('String', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location);
+            $inventoryService->receiveItem('String', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location)
+                ->setSpice($inventory->getSpice())
+            ;
+
             $message = 'You rummage around inside the Sand Dollar. There was 1 dollar - er, I mean, moneys - and also a bit of sand - er, I mean, Silica Grounds - and oh! What\'s this? Oh, it\'s a soggy bit of String. Well, it\'ll dry out.';
         }
         else if(mt_rand(1, 10) === 1)
         {
-            $inventoryService->receiveItem('Talon', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location);
+            $inventoryService->receiveItem('Talon', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location)
+                ->setSpice($inventory->getSpice())
+            ;
+
             $message = 'You rummage around inside the Sand Dollar. There was 1 dollar - er, I mean, moneys - and also a bit of sand - er, I mean, Silica Grounds - and hey: there\'s something else in here! It\'s a shark tooth, maybe? Or, like, a claw? Maybe a Talon? Let\'s go with Talon.';
         }
         else if(mt_rand(1, 20) === 1)
         {
-            $inventoryService->receiveItem('Mermaid Egg', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location);
+            $inventoryService->receiveItem('Mermaid Egg', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location)
+                ->setSpice($inventory->getSpice())
+            ;
+
             $message = 'You rummage around inside the Sand Dollar. There was 1 dollar - er, I mean, moneys - and also a bit of sand - er, I mean, Silica Grounds - and oh! There\'s something squishy! Ah! It\'s a Mermaid Egg!';
         }
         else if(mt_rand(1, 20) === 1)
         {
-            $inventoryService->receiveItem('Glowing Six-sided Die', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location);
+            $inventoryService->receiveItem('Glowing Six-sided Die', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location)
+                ->setSpice($inventory->getSpice())
+            ;
+
             $message = 'You rummage around inside the Sand Dollar. There was 1 dollar - er, I mean, moneys - and also a bit of sand - er, I mean, Silica Grounds - and hm, something... geometric? Ah: it\'s a die. And it\'s... glowing...';
         }
         else if(mt_rand(1, 20) === 1)
         {
-            $inventoryService->receiveItem('Plastic', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location);
+            $inventoryService->receiveItem('Plastic', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location)
+                ->setSpice($inventory->getSpice())
+            ;
+
             $message = 'You rummage around inside the Sand Dollar. There was 1 dollar - er, I mean, moneys - and also a bit of sand - er, I mean, Silica Grounds - and what? There\'s some... Plastic in here?? That\'s kind of sad :| Well... one less piece in the ocean, I guess...';
         }
         else if(mt_rand(1, 30) === 1)
         {
-            $inventoryService->receiveItem('Secret Seashell', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location);
+            $inventoryService->receiveItem('Secret Seashell', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location)
+                ->setSpice($inventory->getSpice())
+            ;
+
             $message = 'You rummage around inside the Sand Dollar. There was 1 dollar - er, I mean, moneys - and also a bit of sand - er, I mean, Silica Grounds - and oh! What\'s this? A Secret Seasheeeeeelllllll!';
         }
         else if(mt_rand(1, 40) === 1)
         {
-            $inventoryService->receiveItem('Cyan Bow', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location);
+            $inventoryService->receiveItem('Cyan Bow', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location)
+                ->setSpice($inventory->getSpice())
+            ;
+
             $message = 'You rummage around inside the Sand Dollar. There was 1 dollar - er, I mean, moneys - and also a bit of sand - er, I mean, Silica Grounds - and oh! What\'s this? Some kind of bright blue hair bow!';
         }
         else

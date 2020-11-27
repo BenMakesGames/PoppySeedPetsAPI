@@ -12,7 +12,9 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
 use App\Repository\ItemRepository;
+use App\Repository\SpiceRepository;
 use App\Service\InventoryService;
+use App\Service\PetActivity\Crafting\Helpers\EvericeMeltingService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 
@@ -22,16 +24,18 @@ class MagicBindingService
     private $responseService;
     private $petExperienceService;
     private $itemRepository;
+    private $evericeMeltingService;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        ItemRepository $itemRepository
+        ItemRepository $itemRepository, EvericeMeltingService $evericeMeltingService
     )
     {
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
         $this->itemRepository = $itemRepository;
+        $this->evericeMeltingService = $evericeMeltingService;
     }
 
     /**
@@ -1503,7 +1507,11 @@ class MagicBindingService
             $pet->increaseEsteem(-1);
 
             $this->inventoryService->loseItem('Everice', $pet->getOwner(), LocationEnum::HOME, 1);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bind Everice to an Invisible Shovel, but uttered the wrong sounds during the ritual, and melted the Everice, instead! :(', '');
+
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+
+            return $this->evericeMeltingService->doMeltEverice($pet, $pet->getName() . ' tried to bind Everice to an Invisible Shovel, but uttered the wrong sounds during the ritual, and melted the Everice, instead! (Dang! Powerful magics!)');
         }
         else if($skillCheck < 21)
         {
@@ -1541,8 +1549,7 @@ class MagicBindingService
 
             $pet->increaseEsteem(-1);
 
-            $this->inventoryService->loseItem('Everice', $pet->getOwner(), LocationEnum::HOME, 1);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bind Everice to a Scythe, but uttered the wrong sounds during the ritual, and melted the Everice, instead! :(', '');
+            return $this->evericeMeltingService->doMeltEverice($pet, $pet->getName() . ' tried to bind Everice to a Scythe, but uttered the wrong sounds during the ritual, and melted the Everice, instead! (Dang! Powerful magics!)');
         }
         else if($skillCheck < 16)
         {

@@ -12,8 +12,11 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
+use App\Repository\ItemRepository;
+use App\Repository\SpiceRepository;
 use App\Service\CalendarService;
 use App\Service\InventoryService;
+use App\Service\PetActivity\Crafting\Helpers\EvericeMeltingService;
 use App\Service\PetActivity\Crafting\Helpers\GoldSmithingService;
 use App\Service\PetActivity\Crafting\Helpers\HalloweenSmithingService;
 use App\Service\PetActivity\Crafting\Helpers\IronSmithingService;
@@ -33,12 +36,15 @@ class SmithingService
     private $meteoriteSmithingService;
     private $halloweenSmithingService;
     private $calendarService;
+    private $spiceRepository;
+    private $evericeMeltingService;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, GoldSmithingService $goldSmithingService,
         IronSmithingService $ironSmithingService, MeteoriteSmithingService $meteoriteSmithingService,
-        HalloweenSmithingService $halloweenSmithingService, CalendarService $calendarService
+        HalloweenSmithingService $halloweenSmithingService, CalendarService $calendarService,
+        SpiceRepository $spiceRepository, EvericeMeltingService $evericeMeltingService
     )
     {
         $this->inventoryService = $inventoryService;
@@ -50,6 +56,8 @@ class SmithingService
         $this->meteoriteSmithingService = $meteoriteSmithingService;
         $this->halloweenSmithingService = $halloweenSmithingService;
         $this->calendarService = $calendarService;
+        $this->spiceRepository = $spiceRepository;
+        $this->evericeMeltingService = $evericeMeltingService;
     }
 
     public function getCraftingPossibilities(Pet $pet, array $quantities): array
@@ -970,6 +978,13 @@ class SmithingService
             $this->inventoryService->petCollectsItem('Antipode', $pet, $pet->getName() . ' created this by hammering Everice and Firestone into an Iron Sword!', $activityLog);
             return $activityLog;
         }
+        else if($roll <= 3)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+
+            return $this->evericeMeltingService->doMeltEverice($pet, $pet->getName() . ' tried to make Antipode, but accidentally melted the Everice! (Whoa! That\'s not supposed to happen!)');
+        }
         else
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
@@ -1098,6 +1113,13 @@ class SmithingService
             ;
             $this->inventoryService->petCollectsItem('Wand of Ice', $pet, $pet->getName() . ' created this by hammering Everice into a Poker!', $activityLog);
             return $activityLog;
+        }
+        else if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+
+            return $this->evericeMeltingService->doMeltEverice($pet, $pet->getName() . ' tried to make a Wand of Ice, but accidentally shattered the Everice!');
         }
         else
         {
