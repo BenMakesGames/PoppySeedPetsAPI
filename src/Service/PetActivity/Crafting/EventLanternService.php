@@ -7,6 +7,7 @@ use App\Enum\LocationEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\ActivityCallback;
+use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
 use App\Service\CalendarService;
 use App\Service\InventoryService;
@@ -36,7 +37,7 @@ class EventLanternService
     /**
      * @return ActivityCallback[]
      */
-    public function getCraftingPossibilities(Pet $pet, array $quantities): array
+    public function getCraftingPossibilities(ComputedPetSkills $petWithSkills, array $quantities): array
     {
         $now = new \DateTimeImmutable();
         $possibilities = [];
@@ -65,29 +66,30 @@ class EventLanternService
         return $possibilities;
     }
 
-    public function createMoonlightLantern(Pet $pet): PetActivityLog
+    public function createMoonlightLantern(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->createLantern($pet, 'Moonlight Lantern');
+        return $this->createLantern($petWithSkills, 'Moonlight Lantern');
     }
 
-    public function createPiLantern(Pet $pet): PetActivityLog
+    public function createPiLantern(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->createLantern($pet, 'Pi Lantern');
+        return $this->createLantern($petWithSkills, 'Pi Lantern');
     }
 
-    public function createTreeLightLantern(Pet $pet): PetActivityLog
+    public function createTreeLightLantern(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->createLantern($pet, 'Treelight Lantern');
+        return $this->createLantern($petWithSkills, 'Treelight Lantern');
     }
 
-    public function createDapperSwanLantern(Pet $pet): PetActivityLog
+    public function createDapperSwanLantern(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->createLantern($pet, 'Dapper Swan Lantern');
+        return $this->createLantern($petWithSkills, 'Dapper Swan Lantern');
     }
 
-    private function createLantern(Pet $pet, string $lanternName): PetActivityLog
+    private function createLantern(ComputedPetSkills $petWithSkills, string $lanternName): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getDexterity() + $pet->getIntelligence() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {

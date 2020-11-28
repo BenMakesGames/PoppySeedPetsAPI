@@ -392,7 +392,7 @@ class Inventory
 
     public function brawlBonus($allowRanged = true): int
     {
-        if($allowRanged || $this->rangedOnly())
+        if(!$allowRanged && $this->rangedOnly())
             return 0;
 
         return

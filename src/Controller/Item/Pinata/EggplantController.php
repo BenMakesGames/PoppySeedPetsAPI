@@ -56,7 +56,7 @@ class EggplantController extends PoppySeedPetsItemController
             $inventoryService->receiveItem('Quinacridone Magenta Dye', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
             $message = 'You clean the Eggplant as carefully as you can, and harvest two Eggs. You also manage to extract a good amount of purplish dye from the thing! (Neat!)';
         }
-        else if($r === 6)
+        else //if($r === 6)
         {
             $eggs = 3;
             $message = 'You clean the Eggplant as carefully as you can, and successfully harvest three Eggs!';

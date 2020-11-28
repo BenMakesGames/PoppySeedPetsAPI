@@ -30,7 +30,7 @@ class NoteController extends PoppySeedPetsItemController
 
         $inventory
             ->changeItem($paper)
-            ->addComment($user->getName() . ' erased the message that had been written on this Paper.');
+            ->addComment($user->getName() . ' erased the message that had been written on this Paper.')
         ;
 
         $em->flush();

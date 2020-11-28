@@ -8,6 +8,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
@@ -42,8 +43,10 @@ class GenericAdventureService
         $this->itemRepository = $itemRepository;
     }
 
-    public function adventure(Pet $pet): PetActivityLog
+    public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::OTHER, null);
 
         if($pet->getHat() && $pet->getHat()->getItem()->getName() === 'Red')

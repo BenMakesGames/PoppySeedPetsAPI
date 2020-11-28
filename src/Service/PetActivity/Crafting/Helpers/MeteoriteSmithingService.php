@@ -8,6 +8,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -31,9 +32,10 @@ class MeteoriteSmithingService
         $this->itemRepository = $itemRepository;
     }
 
-    public function createIlumetsa(Pet $pet): PetActivityLog
+    public function createIlumetsa(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {

@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\ComputedPetSkills;
 use App\Repository\PetRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -50,7 +51,8 @@ class MoonPearlController extends PoppySeedPetsItemController
 
         if($helper)
         {
-            $skill = 20 + $helper->getUmbra() + $helper->getIntelligence() + $helper->getDexterity();
+            $helperWithSkills = $helper->getComputedSkills();
+            $skill = 20 + $helperWithSkills->getUmbra() + $helperWithSkills->getIntelligence() + $helperWithSkills->getDexterity();
 
             if(mt_rand(1, $skill) >= 16)
             {

@@ -47,7 +47,7 @@ class PetExperienceService
         if($exp < 0) return;
 
         $possibleStats = array_filter($stats, function($stat) use($pet) {
-            return ($pet->{'get' . $stat}() < 20);
+            return ($pet->getSkills()->{'get' . $stat}() < 20);
         });
 
         if(count($possibleStats) === 0) return;

@@ -8,6 +8,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -31,8 +32,10 @@ class HalloweenSmithingService
         $this->itemRepository = $itemRepository;
     }
 
-    public function createPumpkinBucket(Pet $pet): PetActivityLog
+    public function createPumpkinBucket(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         $buckets = [
             'Small, Yellow Plastic Bucket',
             'Upside-down, Yellow Plastic Bucket'
@@ -44,7 +47,7 @@ class HalloweenSmithingService
             'Unconvinced Pumpkin Bucket',
         ]));
 
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts() + $pet->getSmithing());
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 15)
         {

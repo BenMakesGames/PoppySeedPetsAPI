@@ -9,6 +9,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
+use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
 use App\Service\CalendarService;
 use App\Service\InventoryService;
@@ -38,7 +39,7 @@ class PlasticPrinterService
     /**
      * @return ActivityCallback[]
      */
-    public function getCraftingPossibilities(Pet $pet, array $quantities): array
+    public function getCraftingPossibilities(ComputedPetSkills $petWithSkills, array $quantities): array
     {
         $possibilities = [];
 
@@ -70,9 +71,10 @@ class PlasticPrinterService
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to print something out of Plastic, but the 3D Printer kept acting up.', 'icons/activity-logs/confused');
     }
 
-    public function createPlasticFishingRod(Pet $pet): PetActivityLog
+    public function createPlasticFishingRod(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + max($pet->getCrafts(), $pet->getNature()));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getNature()->getTotal()));
 
         if($roll <= 3)
         {
@@ -110,9 +112,10 @@ class PlasticPrinterService
         }
     }
 
-    public function createEvilFeatherDuster(Pet $pet): PetActivityLog
+    public function createEvilFeatherDuster(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 3)
         {
@@ -141,9 +144,10 @@ class PlasticPrinterService
         }
     }
 
-    public function createCompass(Pet $pet): PetActivityLog
+    public function createCompass(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 3)
         {
@@ -171,9 +175,10 @@ class PlasticPrinterService
         }
     }
 
-    public function createAlienLaser(Pet $pet): PetActivityLog
+    public function createAlienLaser(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 4)
         {
@@ -214,8 +219,10 @@ class PlasticPrinterService
         }
     }
 
-    public function createPlasticCraft(Pet $pet): PetActivityLog
+    public function createPlasticCraft(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         $allPlasticItems = [
             'Small Plastic Bucket',
             'Plastic Shovel',
@@ -247,7 +254,7 @@ class PlasticPrinterService
             $item = $this->itemRepository->findOneByName(ArrayFunctions::pick_one($allPlasticItems));
         }
 
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts());
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 3)
         {
@@ -290,9 +297,10 @@ class PlasticPrinterService
         }
     }
 
-    public function createPlasticIdol(Pet $pet): PetActivityLog
+    public function createPlasticIdol(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 3)
         {

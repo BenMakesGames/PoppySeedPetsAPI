@@ -24,7 +24,7 @@ class PublicProfileNormalizer implements NormalizerInterface
     /**
      * @param User $user
      */
-    public function normalize($user, $format = null, array $context = [])
+    public function normalize($user, string $format = null, array $context = [])
     {
         $data = $this->normalizer->normalize($user, $format, $context);
 
@@ -42,7 +42,7 @@ class PublicProfileNormalizer implements NormalizerInterface
         return $data;
     }
 
-    public function supportsNormalization($data, $format = null)
+    public function supportsNormalization($data, string $format = null)
     {
         return $data instanceof User;
     }

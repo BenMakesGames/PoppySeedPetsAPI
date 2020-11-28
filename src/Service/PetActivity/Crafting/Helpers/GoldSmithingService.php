@@ -8,6 +8,7 @@ use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Model\ComputedPetSkills;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -31,9 +32,10 @@ class GoldSmithingService
         $this->transactionService = $transactionService;
     }
 
-    public function createGoldTriangle(Pet $pet): PetActivityLog
+    public function createGoldTriangle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + max($pet->getCrafts(), $pet->getMusic()) + $pet->getSmithing());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getMusic()->getTotal()) + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -69,10 +71,11 @@ class GoldSmithingService
         }
     }
 
-    public function createAubergineScepter(Pet $pet): PetActivityLog
+    public function createAubergineScepter(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
-        $reRoll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $reRoll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -123,9 +126,10 @@ class GoldSmithingService
         }
     }
 
-    public function createMoonhammer(Pet $pet): PetActivityLog
+    public function createMoonhammer(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 3)
         {
@@ -159,9 +163,10 @@ class GoldSmithingService
         }
     }
 
-    public function createVicious(Pet $pet): PetActivityLog
+    public function createVicious(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -195,9 +200,10 @@ class GoldSmithingService
         }
     }
 
-    public function createKundravsStandard(Pet $pet): PetActivityLog
+    public function createKundravsStandard(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -233,12 +239,10 @@ class GoldSmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    public function createFungalClarinet(Pet $pet): PetActivityLog
+    public function createFungalClarinet(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -274,12 +278,10 @@ class GoldSmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    public function createCoreopsis(Pet $pet): PetActivityLog
+    public function createCoreopsis(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -316,13 +318,11 @@ class GoldSmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    public function createGoldKey(Pet $pet): PetActivityLog
+    public function createGoldKey(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
-        $reRoll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $reRoll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -375,13 +375,11 @@ class GoldSmithingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    public function createGoldTuningFork(Pet $pet): PetActivityLog
+    public function createGoldTuningFork(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
-        $reRoll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $reRoll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -427,15 +425,16 @@ class GoldSmithingService
         }
     }
 
-    public function createGoldTelescope(Pet $pet): PetActivityLog
+    public function createGoldTelescope(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 3)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
 
-            if(mt_rand(1, 20 + $pet->getDexterity() + $pet->getStamina()) >= 18)
+            if(mt_rand(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal()) >= 18)
             {
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
                 $pet->increaseEsteem(2);
@@ -478,9 +477,10 @@ class GoldSmithingService
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a telescope, but almost broke the glass, and gave up.', 'icons/activity-logs/confused');
         }
     }
-    public function createGoldCompass(Pet $pet): PetActivityLog
+    public function createGoldCompass(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 3)
         {
@@ -512,10 +512,11 @@ class GoldSmithingService
         }
     }
 
-    public function createGoldRod(Pet $pet): PetActivityLog
+    public function createGoldRod(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $smithingRoll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getStamina() + $pet->getCrafts() + $pet->getSmithing());
-        $printerRoll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $smithingRoll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $printerRoll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($printerRoll <= 3)
         {

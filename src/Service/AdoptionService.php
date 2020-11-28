@@ -99,7 +99,7 @@ class AdoptionService
             ->andWhere('p.birthDate<:today')
             ->setParameter('today', $nowString)
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getSingleScalarResult()
         ;
 
         $fullMoonName = DateFunctions::getFullMoonName($now);

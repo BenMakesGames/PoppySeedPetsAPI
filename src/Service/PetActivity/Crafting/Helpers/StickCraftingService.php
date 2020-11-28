@@ -9,6 +9,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -35,9 +36,10 @@ class StickCraftingService
         $this->itemRepository = $itemRepository;
     }
 
-    public function createCrookedFishingRod(Pet $pet): PetActivityLog
+    public function createCrookedFishingRod(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getNature()));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getNature()->getTotal()));
 
         if($roll <= 3)
         {
@@ -74,9 +76,10 @@ class StickCraftingService
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Crooked Fishing Rod, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
-    public function createSunflowerStick(Pet $pet): PetActivityLog
+    public function createSunflowerStick(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getNature()));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getNature()->getTotal()));
 
         if($roll <= 3)
         {
@@ -105,9 +108,10 @@ class StickCraftingService
         }
     }
 
-    public function createTorchOrFlag(Pet $pet): PetActivityLog
+    public function createTorchOrFlag(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         $making = $this->itemRepository->findOneByName(ArrayFunctions::pick_one([
             'Stereotypical Torch',
@@ -153,9 +157,10 @@ class StickCraftingService
     /**
      * @throws EnumInvalidValueException
      */
-    public function createHuntingSpear(Pet $pet): PetActivityLog
+    public function createHuntingSpear(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getSkills()->getBrawl()));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $pet->getSkills()->getBrawl()));
 
         if($roll <= 3)
         {
@@ -195,12 +200,10 @@ class StickCraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    public function createStrawBroom(Pet $pet): PetActivityLog
+    public function createStrawBroom(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
+        $pet = $petWithSkills->getPet();
+        $craftsCheck = mt_rand(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($craftsCheck <= 2)
         {
@@ -240,9 +243,10 @@ class StickCraftingService
         }
     }
 
-    public function createBugCatchersNet(Pet $pet): PetActivityLog
+    public function createBugCatchersNet(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $craftsCheck = mt_rand(1, 20 + max($pet->getCrafts(), $pet->getSkills()->getNature()) + $pet->getDexterity() + $pet->getIntelligence());
+        $pet = $petWithSkills->getPet();
+        $craftsCheck = mt_rand(1, 20 + max($petWithSkills->getCrafts()->getTotal(), $pet->getSkills()->getNature()) + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($craftsCheck <= 2)
         {
@@ -280,12 +284,10 @@ class StickCraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    public function createHarvestStaff(Pet $pet): PetActivityLog
+    public function createHarvestStaff(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
+        $pet = $petWithSkills->getPet();
+        $craftsCheck = mt_rand(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($craftsCheck <= 2)
         {
@@ -332,12 +334,10 @@ class StickCraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    public function createVeryLongSpear(Pet $pet): PetActivityLog
+    public function createVeryLongSpear(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getSkills()->getBrawl()));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $pet->getSkills()->getBrawl()));
 
         if($roll <= 3)
         {
@@ -375,12 +375,10 @@ class StickCraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    public function createRidiculouslyLongSpear(Pet $pet): PetActivityLog
+    public function createRidiculouslyLongSpear(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getSkills()->getBrawl()));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $pet->getSkills()->getBrawl()));
 
         if($roll <= 3)
         {
@@ -420,12 +418,10 @@ class StickCraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    public function createChampignon(Pet $pet): PetActivityLog
+    public function createChampignon(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $quintessenceHandling = mt_rand(1, 10 + $pet->getUmbra());
+        $pet = $petWithSkills->getPet();
+        $quintessenceHandling = mt_rand(1, 10 + $petWithSkills->getUmbra()->getTotal());
 
         if($quintessenceHandling <= 2)
         {
@@ -435,7 +431,7 @@ class StickCraftingService
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Champignon, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
         }
 
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 3)
         {
@@ -467,12 +463,10 @@ class StickCraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    public function createWoodenSword(Pet $pet): PetActivityLog
+    public function createWoodenSword(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getSkills()->getBrawl()));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $pet->getSkills()->getBrawl()));
 
         if($roll <= 3)
         {
@@ -516,18 +510,16 @@ class StickCraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    public function createRusticMagnifyingGlass(Pet $pet): PetActivityLog
+    public function createRusticMagnifyingGlass(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 3)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
 
-            if(mt_rand(1, 20 + $pet->getDexterity() + $pet->getStamina()) >= 18)
+            if(mt_rand(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal()) >= 18)
             {
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
                 $pet->increaseEsteem(2);
@@ -571,12 +563,11 @@ class StickCraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    public function createSweetBeat(Pet $pet): PetActivityLog
+    public function createSweetBeat(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+
         if($roll <= 2)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, false);

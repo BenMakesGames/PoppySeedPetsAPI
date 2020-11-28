@@ -10,6 +10,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
+use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
@@ -37,9 +38,10 @@ class DeepSeaService
         $this->userQuestRepository = $userQuestRepository;
     }
 
-    public function adventure(Pet $pet)
+    public function adventure(ComputedPetSkills $petWithSkills)
     {
-        $maxSkill = 10 + $pet->getIntelligence() + $pet->getScience() + $pet->getFishing() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2);
+        $pet = $petWithSkills->getPet();
+        $maxSkill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2);
 
         $maxSkill = NumberFunctions::constrain($maxSkill, 1, 18);
 
@@ -65,31 +67,31 @@ class DeepSeaService
                 break;
             case 7:
             case 8:
-                $activityLog = $this->foundSandOrSeaweed($pet);
+                $activityLog = $this->foundSandOrSeaweed($petWithSkills);
                 break;
             case 9:
             case 10:
-                $activityLog = $this->fishedJellyFish($pet);
+                $activityLog = $this->fishedJellyFish($petWithSkills);
                 break;
             case 11:
             case 12:
-                $activityLog = $this->exploredReef($pet);
+                $activityLog = $this->exploredReef($petWithSkills);
                 break;
             case 13:
-                $activityLog = $this->fishedHexactinellid($pet);
+                $activityLog = $this->fishedHexactinellid($petWithSkills);
                 break;
             case 14:
             case 15:
-                $activityLog = $this->fightGiantSquid($pet);
+                $activityLog = $this->fightGiantSquid($petWithSkills);
                 break;
             case 16:
                 $activityLog = $this->meetFriendlyWhale($pet);
                 break;
             case 17:
-                $activityLog = $this->findSubmarineVolcano($pet);
+                $activityLog = $this->findSubmarineVolcano($petWithSkills);
                 break;
             case 18:
-                $activityLog = $this->findSunkenShip($pet);
+                $activityLog = $this->findSunkenShip($petWithSkills);
                 break;
         }
 
@@ -124,9 +126,10 @@ class DeepSeaService
         return $activityLog;
     }
 
-    private function foundSandOrSeaweed(Pet $pet): PetActivityLog
+    private function foundSandOrSeaweed(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getFishing() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($roll >= 10)
         {
@@ -169,9 +172,10 @@ class DeepSeaService
         return $activityLog;
     }
 
-    private function fishedJellyFish(Pet $pet): PetActivityLog
+    private function fishedJellyFish(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getFishing() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($roll >= 12)
         {
@@ -197,9 +201,10 @@ class DeepSeaService
         return $activityLog;
     }
 
-    private function exploredReef(Pet $pet): PetActivityLog
+    private function exploredReef(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getFishing() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($roll >= 13)
         {
@@ -243,11 +248,12 @@ class DeepSeaService
         return $activityLog;
     }
 
-    private function fishedHexactinellid(Pet $pet): PetActivityLog
+    private function fishedHexactinellid(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getFishing() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
-        if(!$pet->canSeeInTheDark())
+        if(!$petWithSkills->getCanSeeInTheDark())
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::FISH, false);
 
@@ -281,11 +287,13 @@ class DeepSeaService
         return $activityLog;
     }
 
-    private function fightGiantSquid(Pet $pet)
+    private function fightGiantSquid(ComputedPetSkills $petWithSkills)
     {
+        $pet = $petWithSkills->getPet();
+
         $pet->increaseFood(-1);
 
-        $roll = mt_rand(1, 20 + max($pet->getStrength(), $pet->getDexterity()) + $pet->getBrawl() + $pet->getFishing() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $roll = mt_rand(1, 20 + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($roll >= 16)
         {
@@ -347,11 +355,12 @@ class DeepSeaService
         return $activityLog;
     }
 
-    private function findSubmarineVolcano(Pet $pet): PetActivityLog
+    private function findSubmarineVolcano(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getStrength() + $pet->getDexterity() + $pet->getBrawl() + $pet->getFishing() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
-        if(!$pet->canSeeInTheDark())
+        if(!$petWithSkills->getCanSeeInTheDark())
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::FISH, false);
 
@@ -382,9 +391,9 @@ class DeepSeaService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
         }
 
-        if(mt_rand(1, 10 + $pet->getStamina()) < 8)
+        if(mt_rand(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
         {
-            if($pet->hasProtectionFromHeat())
+            if($petWithSkills->getHasProtectionFromHeat())
             {
                 $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was hot, but their ' . $pet->getTool()->getItem()->getName() . ' protected them.')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
@@ -406,9 +415,10 @@ class DeepSeaService
         return $activityLog;
     }
 
-    private function findSunkenShip(Pet $pet): PetActivityLog
+    private function findSunkenShip(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getPerception() + $pet->getScience() + $pet->getFishing() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($roll >= 18)
         {
@@ -417,6 +427,7 @@ class DeepSeaService
             $lucky = $pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 50) === 1;
 
             $rareTreasure = null;
+            $andMore = '!';
 
             if($lucky || mt_rand(1, 100) === 1)
             {
@@ -445,10 +456,6 @@ class DeepSeaService
                 {
                     $loot[] = ArrayFunctions::pick_one(['Silver Bar', 'Gold Ring']);
                 }
-            }
-            else
-            {
-                $andMore = '!';
             }
 
             $loot = [

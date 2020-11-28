@@ -8,6 +8,7 @@ use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -154,9 +155,10 @@ class AstronomyClubService
 
         foreach($group->getMembers() as $pet)
         {
+            $petWithSkills = $pet->getComputedSkills();
             $petChanges[$pet->getId()] = new PetChanges($pet);
 
-            $roll = mt_rand(1, 10 + $pet->getScience());
+            $roll = mt_rand(1, 10 + $petWithSkills->getScience()->getTotal());
 
             $this->petExperienceService->gainExp($pet, max(1, floor($roll / 5)), [ PetSkillEnum::SCIENCE ]);
 

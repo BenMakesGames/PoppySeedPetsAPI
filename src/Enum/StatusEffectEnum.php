@@ -13,4 +13,5 @@ final class StatusEffectEnum
     public const EGGPLANT_CURSED = 'Eggplant-cursed';
     public const GOBBLE_GOBBLE = '*gobble gobble*';
     public const SILK_INFUSED = 'Silk-infused';
+    public const HEX_HEXED = 'Hex Hexed';
 }

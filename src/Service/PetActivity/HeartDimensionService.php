@@ -10,6 +10,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -47,8 +48,10 @@ class HeartDimensionService
         return $this->responseService->createActivityLog($pet, 'There being nothing more ' . $pet->getName() . ' can do in the Heart Dimension right now, they put the Heartstone down.', '');
     }
 
-    public function adventure(Pet $pet): PetActivityLog
+    public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         $changes = new PetChanges($pet);
 
         $adventure = $pet->getAffectionAdventures() + 1;
@@ -56,19 +59,19 @@ class HeartDimensionService
         switch($adventure)
         {
             case 1:
-                $activityLog = $this->fightAngrySpirit($pet);
+                $activityLog = $this->fightAngrySpirit($petWithSkills);
                 break;
             case 2:
-                $activityLog = $this->beInspired($pet);
+                $activityLog = $this->beInspired($petWithSkills);
                 break;
             case 3:
-                $activityLog = $this->defeatNightmare($pet);
+                $activityLog = $this->defeatNightmare($petWithSkills);
                 break;
             case 4:
-                $activityLog = $this->haveDivineVision($pet);
+                $activityLog = $this->haveDivineVision($petWithSkills);
                 break;
             case 5:
-                $activityLog = $this->defeatShadow($pet);
+                $activityLog = $this->defeatShadow($petWithSkills);
                 break;
             default:
                 throw new \Exception('Ben made a bad error! There is no Heart Dimension adventure that ' . $pet->getName() . ' can go on!');
@@ -91,8 +94,10 @@ class HeartDimensionService
         $this->inventoryService->unequipPet($pet);
     }
 
-    public function fightAngrySpirit(Pet $pet)
+    public function fightAngrySpirit(ComputedPetSkills $petWithSkills)
     {
+        $pet = $petWithSkills->getPet();
+
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
 
         if($pet->getFood() <= 4)
@@ -130,8 +135,10 @@ class HeartDimensionService
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' defeated a Demon of Turmoil in the Heart Dimension.', 'icons/activity-logs/heart-dimension');
     }
 
-    public function beInspired(Pet $pet)
+    public function beInspired(ComputedPetSkills $petWithSkills)
     {
+        $pet = $petWithSkills->getPet();
+
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
 
         if($pet->getFood() <= 4)
@@ -166,8 +173,10 @@ class HeartDimensionService
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' relaxed for a while in the Heart Dimension, and became Inspired.', 'icons/activity-logs/heart-dimension');
     }
 
-    public function defeatNightmare(Pet $pet)
+    public function defeatNightmare(ComputedPetSkills $petWithSkills)
     {
+        $pet = $petWithSkills->getPet();
+
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
 
         if($pet->getFood() <= 4)
@@ -198,8 +207,10 @@ class HeartDimensionService
         return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/heart-dimension');
     }
 
-    public function haveDivineVision(Pet $pet)
+    public function haveDivineVision(ComputedPetSkills $petWithSkills)
     {
+        $pet = $petWithSkills->getPet();
+
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
 
         $pet->incrementAffectionAdventures();
@@ -235,22 +246,24 @@ class HeartDimensionService
         return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/heart-dimension');
     }
 
-    public function defeatShadow(Pet $pet)
+    public function defeatShadow(ComputedPetSkills $petWithSkills)
     {
+        $pet = $petWithSkills->getPet();
+
         $stats = [
             [
                 'stat' => PetSkillEnum::CRAFTS,
-                'value' => $pet->getCrafts() + $pet->getDexterity(),
+                'value' => $petWithSkills->getCrafts() + $petWithSkills->getDexterity(),
                 'message' => 'The shadow drew a sword, but ' . $pet->getName() . ' patched up the mirror before the shadow could escape!',
             ],
             [
                 'stat' => PetSkillEnum::BRAWL,
-                'value' => $pet->getBrawl() + $pet->getStrength(),
+                'value' => $petWithSkills->getBrawl() + $petWithSkills->getStrength(),
                 'message' => 'The shadow drew a sword, and leaped out of the mirror! But ' . $pet->getName() . ' struck first, and the shadow dissipated!',
             ],
             [
                 'stat' => PetSkillEnum::MUSIC,
-                'value' => $pet->getMusic() + $pet->getIntelligence(),
+                'value' => $petWithSkills->getMusic() + $petWithSkills->getIntelligence(),
                 'message' => 'The shadow drew a sword, and leaped out of the mirror! But ' . $pet->getName() . ' sung a song of power, and the shadow dissipated!'
             ],
         ];

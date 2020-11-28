@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Model\ComputedPetSkills;
 use App\Repository\EnchantmentRepository;
 use App\Repository\SpiceRepository;
 use App\Service\InventoryService;
@@ -32,8 +33,10 @@ class StrangeUmbralEncounters
         $this->spiceRepository = $spiceRepository;
     }
 
-    public function adventure(Pet $pet): PetActivityLog
+    public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         switch(mt_rand(1, 2))
         {
             case 1:

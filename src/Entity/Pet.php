@@ -13,6 +13,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\NumberFunctions;
+use App\Model\ComputedPetSkills;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -114,7 +115,6 @@ class Pet
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\PetSkills", inversedBy="pet", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet"})
      */
     private $skills;
 
@@ -870,132 +870,6 @@ class Pet
         $this->tool = $tool;
 
         return $this;
-    }
-
-    public function getDexterity(): int
-    {
-        return
-            $this->getSkills()->getDexterity() +
-            ($this->hasMerit(MeritEnum::PREHENSILE_TONGUE) ? 1 : 0)
-        ;
-    }
-
-    public function getStrength(): int
-    {
-        return
-            $this->getSkills()->getStrength() +
-            ($this->hasMerit(MeritEnum::MOON_BOUND) ? DateFunctions::moonStrength(new \DateTimeImmutable()) : 0)
-        ;
-    }
-
-    public function getStamina(): int
-    {
-        return
-            $this->getSkills()->getStamina() +
-            ($this->hasMerit(MeritEnum::MOON_BOUND) ? DateFunctions::moonStrength(new \DateTimeImmutable()) : 0)
-        ;
-    }
-
-    public function getIntelligence(): int
-    {
-        return
-            $this->getSkills()->getIntelligence() +
-            ($this->hasStatusEffect(StatusEffectEnum::TIRED) ? -2 : 0) +
-            ($this->hasStatusEffect(StatusEffectEnum::CAFFEINATED) ? 2 : 0)
-        ;
-    }
-
-    public function getPerception(): int
-    {
-        return $this->getSkills()->getPerception();
-    }
-
-    public function canSeeInTheDark(): bool
-    {
-        return
-            $this->hasMerit(MeritEnum::DARKVISION) ||
-            ($this->getTool() && $this->getTool()->providesLight())
-        ;
-    }
-
-    public function hasProtectionFromHeat(): bool
-    {
-        return $this->getTool() ? $this->getTool()->protectsFromHeat() : false;
-    }
-
-    public function getNature(): int
-    {
-        return $this->getSkills()->getNature() + ($this->getTool() ? $this->getTool()->natureBonus() : 0);
-    }
-
-    public function getBrawl($allowRanged = true): int
-    {
-        return
-            $this->getSkills()->getBrawl() +
-            // the pet has a tool, and: either it's not ranged, or ranged weapons are allowed
-            ($this->getTool() ? $this->getTool()->brawlBonus($allowRanged) : 0)
-        ;
-    }
-
-    public function getStealth(): int
-    {
-        return
-            $this->getSkills()->getStealth() +
-            ($this->getTool() ? $this->getTool()->stealthBonus() : 0) +
-            ($this->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION) ? 1 : 0) +
-            ($this->hasMerit(MeritEnum::SPECTRAL) ? 1 : 0)
-        ;
-    }
-
-    public function getCrafts(): int
-    {
-        return
-            $this->getSkills()->getCrafts() +
-            ($this->getTool() ? $this->getTool()->craftsBonus() : 0) +
-            ($this->hasStatusEffect(StatusEffectEnum::SILK_INFUSED) ? 1 : 0)
-        ;
-    }
-
-    public function getUmbra(): int
-    {
-        return
-            $this->getSkills()->getUmbra() +
-            ($this->getTool() ? $this->getTool()->umbraBonus() : 0) +
-            ceil($this->getPsychedelic() * 5 / $this->getMaxPsychedelic())
-        ;
-    }
-
-    public function getFishing(): int
-    {
-        // no bonus for the casting no reflection merit; we grant that bonus elsewhere
-        return
-            ($this->getTool() ? $this->getTool()->fishingBonus() : 0)
-        ;
-    }
-
-    public function getMusic(): int
-    {
-        return $this->getSkills()->getMusic() + ($this->getTool() ? $this->getTool()->musicBonus() : 0);
-    }
-
-    public function getSmithing(): int
-    {
-        return $this->getTool() ? $this->getTool()->smithingBonus() : 0;
-    }
-
-    public function getGathering(): int
-    {
-        return $this->getTool() ? $this->getTool()->gatheringBonus() : 0;
-    }
-
-    public function getScience(): int
-    {
-        return $this->getSkills()->getScience() + ($this->getTool() ? $this->getTool()->scienceBonus() : 0);
-    }
-
-    public function getClimbing(): int
-    {
-        return $this->getTool() ? $this->getTool()->climbingBonus() : 0;
     }
 
     public function getFavoriteFlavor(): string
@@ -1791,5 +1665,14 @@ class Pet
         $factor = min(14, (new \DateTimeImmutable())->diff($this->getBirthDate())->days) / 14 * 0.5 + 0.5;
 
         return round($this->getScale() * $factor);
+    }
+
+    /**
+     * @Groups({"myPet"})
+     * @SerializedName("skills")
+     */
+    public function getComputedSkills(): ComputedPetSkills
+    {
+        return new ComputedPetSkills($this);
     }
 }

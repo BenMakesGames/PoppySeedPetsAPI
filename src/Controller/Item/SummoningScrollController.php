@@ -14,6 +14,7 @@ use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\GrammarFunctions;
+use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Model\PetShelterPet;
 use App\Model\SummoningScrollMonster;
@@ -98,9 +99,10 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
         foreach($petsAtHome as $pet)
         {
-            $totalSkill += $pet->getBrawl() + max($pet->getStrength(), $pet->getStamina()) + $pet->getDexterity();
+            $petWithSkills = $pet->getComputedSkills();
+            $totalSkill += $petWithSkills->getBrawl() + max($petWithSkills->getStrength(), $petWithSkills->getStamina()) + $petWithSkills->getDexterity();
 
-            if($pet->hasProtectionFromHeat())
+            if($petWithSkills->getHasProtectionFromHeat())
                 $totalSkill += 2;
             else
             {

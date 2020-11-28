@@ -11,6 +11,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
+use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -35,8 +36,10 @@ class ProgrammingService
     /**
      * @return ActivityCallback[]
      */
-    public function getCraftingPossibilities(Pet $pet, array $quantities): array
+    public function getCraftingPossibilities(ComputedPetSkills $petWithSkills, array $quantities): array
     {
+        $pet = $petWithSkills->getPet();
+
         $possibilities = [];
 
         if(array_key_exists('Macintosh', $quantities))
@@ -145,10 +148,12 @@ class ProgrammingService
     /**
      * @param ActivityCallback[] $possibilities
      */
-    public function adventure(Pet $pet, array $possibilities): PetActivityLog
+    public function adventure(ComputedPetSkills $petWithSkills, array $possibilities): PetActivityLog
     {
         if(count($possibilities) === 0)
             throw new \InvalidArgumentException('possibilities must contain at least one item.');
+
+        $pet = $petWithSkills->getPet();
 
         /** @var ActivityCallback $method */
         $method = ArrayFunctions::pick_one($possibilities);
@@ -157,7 +162,7 @@ class ProgrammingService
         $changes = new PetChanges($pet);
 
         /** @var PetActivityLog $activityLog */
-        $activityLog = ($method->callable)($pet);
+        $activityLog = ($method->callable)($petWithSkills);
 
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));
@@ -165,9 +170,10 @@ class ProgrammingService
         return $activityLog;
     }
 
-    private function createLaserPointer(Pet $pet): PetActivityLog
+    private function createLaserPointer(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getScience(), $pet->getCrafts()));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll <= 2)
         {
@@ -201,9 +207,10 @@ class ProgrammingService
         }
     }
 
-    private function createMetalDetector(Pet $pet): PetActivityLog
+    private function createMetalDetector(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getScience(), $pet->getCrafts()));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll <= 2)
         {
@@ -244,9 +251,10 @@ class ProgrammingService
         }
     }
 
-    private function createSeashellDetector(Pet $pet): PetActivityLog
+    private function createSeashellDetector(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         if($roll <= 2)
         {
@@ -292,9 +300,11 @@ class ProgrammingService
         }
     }
 
-    private function createStringFromPointer(Pet $pet): PetActivityLog
+    private function createStringFromPointer(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+
         if($roll <= 2)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
@@ -324,9 +334,11 @@ class ProgrammingService
         }
     }
 
-    private function createRegex(Pet $pet): PetActivityLog
+    private function createRegex(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+
         if($roll <= 2)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
@@ -364,9 +376,11 @@ class ProgrammingService
         }
     }
 
-    private function createCompiler(Pet $pet): PetActivityLog
+    private function createCompiler(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+
         if($roll <= 2)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
@@ -407,9 +421,10 @@ class ProgrammingService
         }
     }
 
-    private function createLaserGuitar(Pet $pet): PetActivityLog
+    private function createLaserGuitar(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + min($pet->getPerception(), $pet->getMusic()) + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + min($petWithSkills->getPerception()->getTotal(), $petWithSkills->getMusic()->getTotal()) + $petWithSkills->getScience()->getTotal());
 
         if($roll <= 2)
         {
@@ -441,9 +456,10 @@ class ProgrammingService
         }
     }
 
-    private function createRijndael(Pet $pet): PetActivityLog
+    private function createRijndael(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         if($roll >= 16)
         {
@@ -466,9 +482,10 @@ class ProgrammingService
         }
     }
 
-    private function createViswanathsConstant(Pet $pet): PetActivityLog
+    private function createViswanathsConstant(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         if($roll >= 16)
         {
@@ -496,9 +513,10 @@ class ProgrammingService
         }
     }
 
-    private function createResonatingBow(Pet $pet): PetActivityLog
+    private function createResonatingBow(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getMusic());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getMusic()->getTotal());
 
         if($roll >= 18)
         {
@@ -534,9 +552,11 @@ class ProgrammingService
         }
     }
 
-    private function createStrangeAttractor(Pet $pet): PetActivityLog
+    private function createStrangeAttractor(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+
         if($roll <= 2)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
@@ -571,10 +591,12 @@ class ProgrammingService
         }
     }
 
-    private function fightInfinityImp(Pet $pet, string $actionInterrupted): PetActivityLog
+    private function fightInfinityImp(ComputedPetSkills $petWithSkills, string $actionInterrupted): PetActivityLog
     {
-        $scienceRoll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
-        $brawlRoll = mt_rand(1, 20 + $pet->getDexterity() + $pet->getBrawl());
+        $pet = $petWithSkills->getPet();
+
+        $scienceRoll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+        $brawlRoll = mt_rand(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal());
 
         $loot = ArrayFunctions::pick_one([
             'Quintessence',
@@ -609,9 +631,11 @@ class ProgrammingService
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' started ' . $actionInterrupted . ', but an Infinity Imp popped up, and started to attack! ' . $pet->getName() . ' ran away until the imp finally gave up and returned to the strange dimension from whence it came.', 'icons/activity-logs/confused');
     }
 
-    private function createBruteForce(Pet $pet): PetActivityLog
+    private function createBruteForce(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+
         if($roll <= 2)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
@@ -641,9 +665,10 @@ class ProgrammingService
         }
     }
 
-    private function createL33tH4xx0r(Pet $pet): PetActivityLog
+    private function createL33tH4xx0r(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         if($roll <= 2)
         {
@@ -684,9 +709,11 @@ class ProgrammingService
         }
     }
 
-    private function createPhishingRod(Pet $pet): PetActivityLog
+    private function createPhishingRod(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+
         if($roll <= 2)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
@@ -718,9 +745,10 @@ class ProgrammingService
         }
     }
 
-    private function createDiffieHKey(Pet $pet): PetActivityLog
+    private function createDiffieHKey(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         if($roll <= 2)
         {
@@ -753,9 +781,10 @@ class ProgrammingService
         }
     }
 
-    private function createLightningSword(Pet $pet): PetActivityLog
+    private function createLightningSword(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts() + $pet->getSmithing());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -788,9 +817,10 @@ class ProgrammingService
         }
     }
 
-    private function createSentientBeetle(Pet $pet): PetActivityLog
+    private function createSentientBeetle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         if($roll <= 2)
         {
@@ -823,9 +853,10 @@ class ProgrammingService
         }
     }
 
-    private function createAlienGun(Pet $pet): PetActivityLog
+    private function createAlienGun(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + ceil(($pet->getScience() + $pet->getCrafts() + $pet->getUmbra()) / 2));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + ceil(($petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getUmbra()->getTotal()) / 2));
 
         if($roll <= 2)
         {
@@ -858,9 +889,10 @@ class ProgrammingService
         }
     }
 
-    private function createAlienFishingRod(Pet $pet): PetActivityLog
+    private function createAlienFishingRod(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + ceil(($pet->getScience() + $pet->getCrafts() + $pet->getUmbra()) / 2));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + ceil(($petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getUmbra()->getTotal()) / 2));
 
         if($roll <= 2)
         {
@@ -893,9 +925,10 @@ class ProgrammingService
         }
     }
 
-    private function createBermudaTriangle(Pet $pet): PetActivityLog
+    private function createBermudaTriangle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getPerception() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         if($roll <= 2)
         {
@@ -937,9 +970,10 @@ class ProgrammingService
         }
     }
 
-    private function createDNA(Pet $pet): PetActivityLog
+    private function createDNA(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         if($roll <= 2)
         {
@@ -972,9 +1006,10 @@ class ProgrammingService
         }
     }
 
-    private function hackMacintosh(Pet $pet): PetActivityLog
+    private function hackMacintosh(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         if($roll <= 2)
         {
@@ -1012,9 +1047,10 @@ class ProgrammingService
         }
     }
 
-    private function createGravitonGun(Pet $pet): PetActivityLog
+    private function createGravitonGun(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience() + $pet->getCrafts() + $pet->getSmithing());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll === 1)
         {

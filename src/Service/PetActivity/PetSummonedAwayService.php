@@ -7,6 +7,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
@@ -31,8 +32,10 @@ class PetSummonedAwayService
         $this->itemRepository = $itemRepository;
     }
 
-    public function adventure(Pet $pet): PetActivityLog
+    public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         /** @var PetActivityLog $activityLog */
         $activityLog = null;
         $changes = new PetChanges($pet);
@@ -44,16 +47,16 @@ class PetSummonedAwayService
         switch(mt_rand(1, 4))
         {
             case 1:
-                $activityLog = $this->doSummonedToFight($pet);
+                $activityLog = $this->doSummonedToFight($petWithSkills);
                 break;
             case 2:
-                $activityLog = $this->doSummonedToCleanAndHost($pet);
+                $activityLog = $this->doSummonedToCleanAndHost($petWithSkills);
                 break;
             case 3:
-                $activityLog = $this->doSummonedToAssistWithRitual($pet);
+                $activityLog = $this->doSummonedToAssistWithRitual($petWithSkills);
                 break;
             case 4:
-                $activityLog = $this->doSummonedToAssistWithGathering($pet);
+                $activityLog = $this->doSummonedToAssistWithGathering($petWithSkills);
                 break;
         }
 
@@ -68,8 +71,10 @@ class PetSummonedAwayService
         return $activityLog;
     }
 
-    private function doSummonedToFight(Pet $pet): PetActivityLog
+    private function doSummonedToFight(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them fight a monster they\'d never seen before';
 
         if(mt_rand(1, 3) === 1)
@@ -96,8 +101,10 @@ class PetSummonedAwayService
         return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned');
     }
 
-    private function doSummonedToCleanAndHost(Pet $pet): PetActivityLog
+    private function doSummonedToCleanAndHost(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         switch(mt_rand(1, 3))
         {
             case 1:
@@ -126,21 +133,12 @@ class PetSummonedAwayService
                 break;
         }
 
-        if($loot)
-        {
-            $lootItem = $this->itemRepository->findOneByName($loot);
-            $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them ' . $activity . '. Once the task was completed, ' . $pet->getName() . ' returned home, still holding ' . $lootItem->getNameWithArticle() . '!';
+        $lootItem = $this->itemRepository->findOneByName($loot);
+        $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them ' . $activity . '. Once the task was completed, ' . $pet->getName() . ' returned home, still holding ' . $lootItem->getNameWithArticle() . '!';
 
-            $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned');
+        $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned');
 
-            $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' was summoned by a wizard to ' . $activity . '; they returned home with this!', $activityLog);
-        }
-        else
-        {
-            $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them ' . $activity . '. Once the task was completed, ' . $pet->getName() . ' returned home!';
-
-            $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned');
-        }
+        $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' was summoned by a wizard to ' . $activity . '; they returned home with this!', $activityLog);
 
         if($skill !== null)
             $this->petExperienceService->gainExp($pet, mt_rand(1, 2), [ $skill ]);
@@ -149,8 +147,10 @@ class PetSummonedAwayService
 
     }
 
-    private function doSummonedToAssistWithRitual(Pet $pet): PetActivityLog
+    private function doSummonedToAssistWithRitual(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         switch(mt_rand(1, 7))
         {
             case 1:
@@ -192,8 +192,10 @@ class PetSummonedAwayService
         return $activityLog;
     }
 
-    private function doSummonedToAssistWithGathering(Pet $pet): PetActivityLog
+    private function doSummonedToAssistWithGathering(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         $location = null;
         $description = null;
         $skill = null;

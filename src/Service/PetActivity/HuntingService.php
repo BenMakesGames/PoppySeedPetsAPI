@@ -13,6 +13,7 @@ use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
+use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\MuseumItemRepository;
@@ -57,9 +58,10 @@ class HuntingService
         $this->toolBonusService = $toolBonusService;
     }
 
-    public function adventure(Pet $pet)
+    public function adventure(ComputedPetSkills $petWithSkills)
     {
-        $maxSkill = 10 + $pet->getStrength() + $pet->getBrawl() - $pet->getAlcohol() - $pet->getPsychedelic();
+        $pet = $petWithSkills->getPet();
+        $maxSkill = 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal() - $pet->getAlcohol() - $pet->getPsychedelic();
 
         $maxSkill = NumberFunctions::constrain($maxSkill, 1, 22);
 
@@ -75,74 +77,74 @@ class HuntingService
         {
             case 1:
             case 2:
-                $activityLog = $this->failedToHunt($pet);
+                $activityLog = $this->failedToHunt($petWithSkills);
                 break;
             case 3:
             case 4:
             case 5:
-                $activityLog = $this->huntedDustBunny($pet);
+                $activityLog = $this->huntedDustBunny($petWithSkills);
                 break;
             case 6:
-                $activityLog = $this->huntedPlasticBag($pet);
+                $activityLog = $this->huntedPlasticBag($petWithSkills);
                 break;
             case 7:
             case 8:
                 if($this->canRescueAnotherHouseFairy($pet->getOwner()))
                     $activityLog = $this->rescueHouseFairy($pet);
                 else if($useThanksgivingPrey)
-                    $activityLog = $this->huntedTurkey($pet);
+                    $activityLog = $this->huntedTurkey($petWithSkills);
                 else if($usePassoverPrey)
                     $activityLog = $this->noGoats($pet);
                 else
-                    $activityLog = $this->huntedGoat($pet);
+                    $activityLog = $this->huntedGoat($petWithSkills);
                 break;
             case 9:
-                $activityLog = $this->huntedDoughGolem($pet);
+                $activityLog = $this->huntedDoughGolem($petWithSkills);
                 break;
             case 10:
             case 11:
                 if($useThanksgivingPrey)
-                    $activityLog = $this->huntedTurkey($pet);
+                    $activityLog = $this->huntedTurkey($petWithSkills);
                 else
-                    $activityLog = $this->huntedLargeToad($pet);
+                    $activityLog = $this->huntedLargeToad($petWithSkills);
                 break;
             case 12:
-                $activityLog = $this->huntedScarecrow($pet);
+                $activityLog = $this->huntedScarecrow($petWithSkills);
                 break;
             case 13:
-                $activityLog = $this->huntedOnionBoy($pet);
+                $activityLog = $this->huntedOnionBoy($petWithSkills);
                 break;
             case 14:
             case 15:
-                $activityLog = $this->huntedThievingMagpie($pet);
+                $activityLog = $this->huntedThievingMagpie($petWithSkills);
                 break;
             case 16:
                 if($useThanksgivingPrey)
-                    $activityLog = $this->huntedPossessedTurkey($pet);
+                    $activityLog = $this->huntedPossessedTurkey($petWithSkills);
                 else
-                    $activityLog = $this->huntedGhosts($pet);
+                    $activityLog = $this->huntedGhosts($petWithSkills);
                 break;
             case 17:
             case 18:
                 if($useThanksgivingPrey)
-                    $activityLog = $this->huntedPossessedTurkey($pet);
+                    $activityLog = $this->huntedPossessedTurkey($petWithSkills);
                 else if($usePassoverPrey)
                     $activityLog = $this->noGoats($pet);
                 else
-                    $activityLog = $this->huntedSatyr($pet);
+                    $activityLog = $this->huntedSatyr($petWithSkills);
                 break;
             case 19:
             case 20:
-                $activityLog = $this->huntedPaperGolem($pet);
+                $activityLog = $this->huntedPaperGolem($petWithSkills);
                 break;
             case 21:
                 if($useThanksgivingPrey)
-                    $activityLog = $this->huntedTurkeyDragon($pet);
+                    $activityLog = $this->huntedTurkeyDragon($petWithSkills);
                 else
-                    $activityLog = $this->huntedLeshyDemon($pet);
+                    $activityLog = $this->huntedLeshyDemon($petWithSkills);
                 break;
             case 22:
-                $activityLog = $this->huntedEggSaladMonstrosity($pet);
+                $activityLog = $this->huntedEggSaladMonstrosity($petWithSkills);
                 break;
         }
 
@@ -198,8 +200,10 @@ class HuntingService
         return $activityLog;
     }
 
-    private function failedToHunt(Pet $pet): PetActivityLog
+    private function failedToHunt(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         if($pet->getOwner()->getGreenhouse() && $pet->getOwner()->getGreenhouse()->getHasBirdBath() && !$pet->getOwner()->getGreenhouse()->getVisitingBird())
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::HUNT, false);
@@ -224,9 +228,10 @@ class HuntingService
         }
     }
 
-    private function huntedDustBunny(Pet $pet): PetActivityLog
+    private function huntedDustBunny(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $skill = 10 + $pet->getDexterity() + $pet->getBrawl();
+        $pet = $petWithSkills->getPet();
+        $skill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal();
 
         $isRanged = $pet->getTool() && $pet->getTool()->getItem()->getTool()->getIsRanged() && $pet->getTool()->getItem()->getTool()->getBrawl() > 0;
 
@@ -255,9 +260,10 @@ class HuntingService
         return $activityLog;
     }
 
-    private function huntedPlasticBag(Pet $pet): PetActivityLog
+    private function huntedPlasticBag(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $skill = 10 + $pet->getDexterity() + $pet->getBrawl();
+        $pet = $petWithSkills->getPet();
+        $skill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal();
 
         $isRanged = $pet->getTool() && $pet->getTool()->getItem()->getTool()->getIsRanged() && $pet->getTool()->getItem()->getTool()->getBrawl() > 0;
 
@@ -286,9 +292,10 @@ class HuntingService
         return $activityLog;
     }
 
-    private function huntedGoat(Pet $pet): PetActivityLog
+    private function huntedGoat(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $skill = 10 + $pet->getStrength() + $pet->getBrawl(false);
+        $pet = $petWithSkills->getPet();
+        $skill = 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl(false)->getTotal();
 
         $pet->increaseFood(-1);
 
@@ -326,13 +333,15 @@ class HuntingService
         return $activityLog;
     }
 
-    private function huntedDoughGolem(Pet $pet): PetActivityLog
+    private function huntedDoughGolem(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         $possibleLoot = [
             'Wheat Flour', 'Oil', 'Butter', 'Yeast', 'Sugar'
         ];
 
-        $stealth = mt_rand(1, 10 + $pet->getDexterity() + $pet->getStealth());
+        $stealth = mt_rand(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal());
 
         if($stealth > 15)
         {
@@ -349,7 +358,7 @@ class HuntingService
             return $activityLog;
         }
 
-        $skill = 10 + $pet->getStrength() + $pet->getBrawl(false);
+        $skill = 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl(false)->getTotal();
 
         $pet->increaseFood(-1);
 
@@ -381,9 +390,10 @@ class HuntingService
         return $activityLog;
     }
 
-    private function huntedTurkey(Pet $pet): PetActivityLog
+    private function huntedTurkey(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $skill = 10 + $pet->getStrength() + $pet->getBrawl(false);
+        $pet = $petWithSkills->getPet();
+        $skill = 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl(false)->getTotal();
 
         $pet->increaseFood(-1);
 
@@ -412,9 +422,10 @@ class HuntingService
         return $activityLog;
     }
 
-    private function huntedLargeToad(Pet $pet): PetActivityLog
+    private function huntedLargeToad(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $skill = 10 + $pet->getStrength() + $pet->getBrawl(false);
+        $pet = $petWithSkills->getPet();
+        $skill = 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl(false)->getTotal();
 
         $pet->increaseFood(-1);
 
@@ -447,10 +458,12 @@ class HuntingService
         return $activityLog;
     }
 
-    private function huntedScarecrow(Pet $pet): PetActivityLog
+    private function huntedScarecrow(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $brawlRoll = mt_rand(1, 10 + $pet->getStrength() + $pet->getBrawl());
-        $stealthSkill = mt_rand(1, 10 + $pet->getDexterity() + $pet->getStealth());
+        $pet = $petWithSkills->getPet();
+
+        $brawlRoll = mt_rand(1, 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal());
+        $stealthSkill = mt_rand(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal());
 
         $pet->increaseFood(-1);
 
@@ -481,7 +494,7 @@ class HuntingService
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' beat up a Scarecrow, then took some of the Wheat it was defending.', '');
                 $this->inventoryService->petCollectsItem('Wheat', $pet, $pet->getName() . ' took this from a Wheat Farm, after beating up its Scarecrow.', $activityLog);
 
-                if(mt_rand(1, 10 + $pet->getPerception() + $pet->getNature()) >= 10)
+                if(mt_rand(1, 10 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal()) >= 10)
                 {
                     $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
                     $pet->increaseEsteem(1);
@@ -497,7 +510,7 @@ class HuntingService
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' beat up a Scarecrow, then took some of the Rice it was defending.', '');
                 $this->inventoryService->petCollectsItem('Rice', $pet, $pet->getName() . ' took this from a Rice Farm, after beating up its Scarecrow', $activityLog);
 
-                if(mt_rand(1, 10 + $pet->getPerception() + $pet->getNature()) >= 10)
+                if(mt_rand(1, 10 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal()) >= 10)
                 {
                     $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
                     $pet->increaseEsteem(1);
@@ -518,9 +531,10 @@ class HuntingService
         return $activityLog;
     }
 
-    private function huntedOnionBoy(Pet $pet): PetActivityLog
+    private function huntedOnionBoy(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $skill = 10 + $pet->getStamina();
+        $pet = $petWithSkills->getPet();
+        $skill = 10 + $petWithSkills->getStamina()->getTotal();
 
         if($pet->hasMerit(MeritEnum::GOURMAND) && mt_rand(1, 2) === 1)
         {
@@ -565,10 +579,11 @@ class HuntingService
         return $activityLog;
     }
 
-    private function huntedThievingMagpie(Pet $pet): PetActivityLog
+    private function huntedThievingMagpie(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $intSkill = 10 + $pet->getIntelligence();
-        $dexSkill = 10 + $pet->getDexterity() + $pet->getBrawl();
+        $pet = $petWithSkills->getPet();
+        $intSkill = 10 + $petWithSkills->getIntelligence()->getTotal();
+        $dexSkill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal();
 
         $isRanged = $pet->getTool() && $pet->getTool()->getItem()->getTool()->getIsRanged() && $pet->getTool()->getItem()->getTool()->getBrawl() > 0;
 
@@ -642,8 +657,10 @@ class HuntingService
         return $activityLog;
     }
 
-    private function huntedGhosts(Pet $pet): PetActivityLog
+    private function huntedGhosts(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         if(mt_rand(1, 100) === 1)
             $prize = ArrayFunctions::pick_one([ 'Rib', 'Stereotypical Bone ']);
         else if(mt_rand(1, 100) === 1)
@@ -657,7 +674,7 @@ class HuntingService
 
         if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
         {
-            $skill = 10 + $pet->getIntelligence() * 2 + $pet->getUmbra();
+            $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getUmbra()->getTotal();
 
             if(mt_rand(1, $skill) >= 15)
             {
@@ -681,8 +698,8 @@ class HuntingService
         }
         else
         {
-            $brawlSkill = 10 + $pet->getIntelligence() + $pet->getBrawl() + $pet->getUmbra();
-            $stealthSkill = 10 + $pet->getDexterity() + $pet->getStealth();
+            $brawlSkill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getUmbra()->getTotal();
+            $stealthSkill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal();
 
             if(mt_rand(1, $brawlSkill) >= 15)
             {
@@ -726,15 +743,17 @@ class HuntingService
         return $activityLog;
     }
 
-    private function huntedPossessedTurkey(Pet $pet): PetActivityLog
+    private function huntedPossessedTurkey(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         $loot = ArrayFunctions::pick_one([
             'Quintessence', 'Black Feathers', 'Giant Turkey Leg', 'Smallish Pumpkin Spice'
         ]);
 
         if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
         {
-            $skill = 10 + $pet->getIntelligence() * 2 + $pet->getUmbra();
+            $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getUmbra()->getTotal();
 
             if(mt_rand(1, $skill) >= 15)
             {
@@ -767,7 +786,7 @@ class HuntingService
 
         if($pet->isInGuild(GuildEnum::THE_UNIVERSE_FORGETS))
         {
-            $skill = 10 + $pet->getIntelligence() * 2 + $pet->getUmbra();
+            $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getUmbra()->getTotal();
 
             if(mt_rand(1, $skill) >= 15)
             {
@@ -798,7 +817,7 @@ class HuntingService
             }
         }
 
-        $skill = 10 + $pet->getStrength() + $pet->getDexterity() + $pet->getBrawl();
+        $skill = 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal();
 
         $pet->increaseFood(-1);
 
@@ -828,10 +847,12 @@ class HuntingService
         return $activityLog;
     }
 
-    private function huntedSatyr(Pet $pet): PetActivityLog
+    private function huntedSatyr(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $brawlRoll = mt_rand(1, 10 + $pet->getStrength() + $pet->getBrawl());
-        $musicSkill = mt_rand(1, 10 + $pet->getIntelligence() + $pet->getMusic());
+        $pet = $petWithSkills->getPet();
+
+        $brawlRoll = mt_rand(1, 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal());
+        $musicSkill = mt_rand(1, 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getMusic()->getTotal());
 
         $pet->increaseFood(-1);
 
@@ -929,10 +950,12 @@ class HuntingService
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' went out hunting, expecting to find some goats, but there don\'t seem to be any around today...', 'icons/activity-logs/confused');
     }
 
-    private function huntedPaperGolem(Pet $pet): PetActivityLog
+    private function huntedPaperGolem(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $brawlRoll = mt_rand(1, 10 + $pet->getDexterity() + $pet->getStamina() + max($pet->getCrafts(), $pet->getBrawl()));
-        $stealthRoll = mt_rand(1, 10 + $pet->getDexterity() + $pet->getStealth());
+        $pet = $petWithSkills->getPet();
+
+        $brawlRoll = mt_rand(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getBrawl()->getTotal()));
+        $stealthRoll = mt_rand(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal());
 
         $pet->increaseFood(-1);
 
@@ -1003,12 +1026,14 @@ class HuntingService
         return $activityLog;
     }
 
-    private function huntedLeshyDemon(Pet $pet): PetActivityLog
+    private function huntedLeshyDemon(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $skill = 10 + $pet->getDexterity() + $pet->getStamina() + max($pet->getCrafts(), $pet->getBrawl());
+        $pet = $petWithSkills->getPet();
+
+        $skill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getBrawl()->getTotal());
 
         $pet->increaseFood(-1);
-        $getExtraItem = mt_rand(1, 20 + $pet->getNature() + $pet->getPerception() + $pet->getGathering()) >= 15;
+        $getExtraItem = mt_rand(1, 20 + $petWithSkills->getNature()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15;
 
         if(mt_rand(1, $skill) >= 18)
         {
@@ -1057,15 +1082,17 @@ class HuntingService
         return $activityLog;
     }
 
-    public function huntedTurkeyDragon(Pet $pet): PetActivityLog
+    public function huntedTurkeyDragon(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $skill = 10 + $pet->getDexterity() + $pet->getStamina() + $pet->getBrawl();
+        $pet = $petWithSkills->getPet();
+
+        $skill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getBrawl()->getTotal();
 
         $gobbleGobble = $pet->getStatusEffect(StatusEffectEnum::GOBBLE_GOBBLE);
 
         $pet->increaseFood(-1);
 
-        $getExtraItem = mt_rand(1, 20 + $pet->getNature() + $pet->getPerception() + $pet->getGathering()) >= 15;
+        $getExtraItem = mt_rand(1, 20 + $petWithSkills->getNature()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15;
 
         $possibleItems = [
             'Giant Turkey Leg',
@@ -1139,9 +1166,11 @@ class HuntingService
         return $activityLog;
     }
 
-    private function huntedEggSaladMonstrosity(Pet $pet): PetActivityLog
+    private function huntedEggSaladMonstrosity(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $skill = 10 + $pet->getDexterity() + $pet->getStamina() + $pet->getBrawl();
+        $pet = $petWithSkills->getPet();
+
+        $skill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getBrawl()->getTotal();
 
         $pet->increaseFood(-1);
 

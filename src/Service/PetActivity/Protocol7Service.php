@@ -12,6 +12,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
+use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\GuildRepository;
 use App\Repository\ItemRepository;
@@ -43,9 +44,10 @@ class Protocol7Service
         $this->itemRepository = $itemRepository;
     }
 
-    public function adventure(Pet $pet)
+    public function adventure(ComputedPetSkills $petWithSkills)
     {
-        $maxSkill = 10 + $pet->getIntelligence() + $pet->getScience() - $pet->getAlcohol();
+        $pet = $petWithSkills->getPet();
+        $maxSkill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() - $pet->getAlcohol();
 
         $maxSkill = NumberFunctions::constrain($maxSkill, 1, 21);
 
@@ -63,7 +65,7 @@ class Protocol7Service
                 if(!$pet->getGuildMembership() && mt_rand(1, 5) === 1)
                     $activityLog = $this->guildService->joinGuildProjectE($pet);
                 else
-                    $activityLog = $this->foundNothing($pet, $roll);
+                    $activityLog = $this->foundNothing($petWithSkills, $roll);
                 break;
             case 5:
             case 6:
@@ -71,45 +73,45 @@ class Protocol7Service
                 if($pet->hasMerit(MeritEnum::BEHATTED) && mt_rand(1, 100) === 1)
                     $activityLog = $this->encounterAnnabellastasia($pet);
                 else
-                    $activityLog = $this->encounterGarbageCollector($pet);
+                    $activityLog = $this->encounterGarbageCollector($petWithSkills);
                 break;
             case 8:
             case 9:
             case 10:
-                $activityLog = $this->foundLayer02($pet);
+                $activityLog = $this->foundLayer02($petWithSkills);
                 break;
             case 11:
                 if($pet->isInGuild(GuildEnum::CORRESPONDENCE))
-                    $activityLog = $this->deliverMessagesForCorrespondence($pet);
+                    $activityLog = $this->deliverMessagesForCorrespondence($petWithSkills);
                 else
-                    $activityLog = $this->foundNothing($pet, $roll);
+                    $activityLog = $this->foundNothing($petWithSkills, $roll);
                 break;
             case 12:
             case 13:
-                $activityLog = $this->foundProtectedSector($pet);
+                $activityLog = $this->foundProtectedSector($petWithSkills);
                 break;
             case 14:
             case 15:
-                $activityLog = $this->watchOnlineVideo($pet);
+                $activityLog = $this->watchOnlineVideo($petWithSkills);
                 break;
             case 16:
             case 17:
-                $activityLog = $this->exploreInsecurePort($pet);
+                $activityLog = $this->exploreInsecurePort($petWithSkills);
                 break;
             case 18:
-                $activityLog = $this->repairShortedCircuit($pet);
+                $activityLog = $this->repairShortedCircuit($petWithSkills);
                 break;
             case 19:
-                $activityLog = $this->exploreWalledGarden($pet);
+                $activityLog = $this->exploreWalledGarden($petWithSkills);
                 break;
             case 20:
-                $activityLog = $this->foundCorruptSector($pet);
+                $activityLog = $this->foundCorruptSector($petWithSkills);
                 break;
             case 21:
                 if($pet->isInGuild(GuildEnum::CORRESPONDENCE))
-                    $activityLog = $this->deliverMessagesForCorrespondence($pet);
+                    $activityLog = $this->deliverMessagesForCorrespondence($petWithSkills);
                 else
-                    $activityLog = $this->foundNothing($pet, $roll);
+                    $activityLog = $this->foundNothing($petWithSkills, $roll);
                 break;
         }
 
@@ -120,12 +122,14 @@ class Protocol7Service
             $this->inventoryService->petAttractsRandomBug($pet, 'Beta Bug');
     }
 
-    private function foundNothing(Pet $pet, int $roll): PetActivityLog
+    private function foundNothing(ComputedPetSkills $petWithSkills, int $roll): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         if($pet->isInGuild(GuildEnum::DWARFCRAFT))
-            return $this->doDwarfcraftDigging($pet);
+            return $this->doDwarfcraftDigging($petWithSkills);
         else if($pet->isInGuild(GuildEnum::TIMES_ARROW))
-            return $this->doTimesArrow($pet);
+            return $this->doTimesArrow($petWithSkills);
 
         $exp = ceil($roll / 10);
 
@@ -138,9 +142,11 @@ class Protocol7Service
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, but got lost.', 'icons/activity-logs/confused');
     }
 
-    private function doTimesArrow(Pet $pet): PetActivityLog
+    private function doTimesArrow(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getPerception() + $pet->getIntelligence() + $pet->getScience() + $pet->getGathering());
+        $pet = $petWithSkills->getPet();
+
+        $roll = mt_rand(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
 
         if($roll >= 15)
         {
@@ -180,9 +186,11 @@ class Protocol7Service
         }
     }
 
-    private function doDwarfcraftDigging(Pet $pet): PetActivityLog
+    private function doDwarfcraftDigging(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 30 + $pet->getPerception() + $pet->getIntelligence() + $pet->getStamina() + $pet->getScience() + $pet->getGathering());
+        $pet = $petWithSkills->getPet();
+
+        $roll = mt_rand(1, 30 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
 
         if($roll < 10)
         {
@@ -239,10 +247,12 @@ class Protocol7Service
         return $activityLog;
     }
 
-    private function deliverMessagesForCorrespondence(Pet $pet): PetActivityLog
+    private function deliverMessagesForCorrespondence(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $effectiveScience = max(2, $pet->getScience());
-        $minMons = min($effectiveScience, $pet->getIntelligence());
+        $pet = $petWithSkills->getPet();
+
+        $effectiveScience = max(2, $petWithSkills->getScience()->getTotal());
+        $minMons = min($effectiveScience, $petWithSkills->getIntelligence()->getTotal());
 
         $moneys = mt_rand(1, $effectiveScience);
 
@@ -268,17 +278,19 @@ class Protocol7Service
         return $activityLog;
     }
 
-    private function encounterGarbageCollector(Pet $pet): PetActivityLog
+    private function encounterGarbageCollector(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         if($pet->isInGuild(GuildEnum::TIMES_ARROW))
         {
-            $roll = mt_rand(1, 20 + $pet->getIntelligence() * 2 + $pet->getScience());
+            $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getScience()->getTotal());
 
             if($pet->hasMerit(MeritEnum::SOOTHING_VOICE))
                 $roll += 2;
         }
         else
-            $roll = mt_rand(1, 20 + $pet->getDexterity() + $pet->getIntelligence() + $pet->getScience());
+            $roll = mt_rand(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         $success = $roll >= 10;
 
@@ -324,9 +336,11 @@ class Protocol7Service
         }
     }
 
-    private function foundLayer02(Pet $pet): PetActivityLog
+    private function foundLayer02(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         $monster = ArrayFunctions::pick_one([
             [
@@ -366,9 +380,11 @@ class Protocol7Service
         }
     }
 
-    private function foundProtectedSector(Pet $pet): PetActivityLog
+    private function foundProtectedSector(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         $monster = ArrayFunctions::pick_one([
             [
@@ -410,8 +426,10 @@ class Protocol7Service
         }
     }
 
-    private function watchOnlineVideo(Pet $pet): PetActivityLog
+    private function watchOnlineVideo(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         $video = ArrayFunctions::pick_one([
             [
                 'subject' => 'about fractals',
@@ -423,7 +441,7 @@ class Protocol7Service
             ]
         ]);
 
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         if($roll >= 16)
         {
@@ -449,9 +467,11 @@ class Protocol7Service
         }
     }
 
-    private function exploreInsecurePort(Pet $pet): PetActivityLog
+    private function exploreInsecurePort(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         $monster = ArrayFunctions::pick_one([
             [
@@ -489,9 +509,11 @@ class Protocol7Service
         }
     }
 
-    private function repairShortedCircuit(Pet $pet): PetActivityLog
+    private function repairShortedCircuit(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $check = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getScience());
+        $pet = $petWithSkills->getPet();
+
+        $check = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         if($check < 15)
         {
@@ -522,9 +544,9 @@ class Protocol7Service
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
         }
 
-        if(mt_rand(1, 10 + $pet->getStamina()) < 8)
+        if(mt_rand(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
         {
-            if($pet->hasProtectionFromHeat())
+            if($petWithSkills->getHasProtectionFromHeat())
             {
                 $activityLog->setEntry($activityLog->getEntry() . ' Their ' . $pet->getTool()->getItem()->getName() . ' protected them from the sudden burst of energy.')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
@@ -542,11 +564,13 @@ class Protocol7Service
         return $activityLog;
     }
 
-    private function exploreWalledGarden(Pet $pet): PetActivityLog
+    private function exploreWalledGarden(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $check = mt_rand(1, 20 + $pet->getIntelligence() + min($pet->getScience(), $pet->getStealth()) + $pet->getClimbing());
+        $pet = $petWithSkills->getPet();
 
-        if($pet->getClimbing() > 0)
+        $check = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + min($petWithSkills->getScience()->getTotal(), $petWithSkills->getStealth()->getTotal()) + $petWithSkills->getClimbingBonus());
+
+        if($petWithSkills->getClimbingBonus()->getTotal() > 0)
         {
             $toSneak = 'to climb';
             $snuck = 'climbed';
@@ -578,15 +602,17 @@ class Protocol7Service
         return $activityLog;
     }
 
-    private function foundCorruptSector(Pet $pet): PetActivityLog
+    private function foundCorruptSector(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         if($pet->isInGuild(GuildEnum::TAPESTRIES))
         {
-            $check = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getPerception() + max($pet->getUmbra(), $pet->getScience()));
+            $check = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + max($petWithSkills->getUmbra()->getTotal(), $petWithSkills->getScience()->getTotal()));
         }
         else
         {
-            $check = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getPerception() + $pet->getScience());
+            $check = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal());
         }
 
         $lucky = $pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 100) === 1;

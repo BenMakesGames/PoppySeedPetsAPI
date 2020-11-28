@@ -68,7 +68,7 @@ class PetFactory
             ->andWhere('p.birthDate<:today')
             ->setParameter('today', $now)
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getSingleScalarResult()
         ;
 
         $basePet = $this->petRepository->createQueryBuilder('p')

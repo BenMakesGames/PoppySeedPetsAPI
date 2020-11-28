@@ -10,6 +10,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -282,9 +283,10 @@ class BandService
 
         foreach($group->getMembers() as $pet)
         {
+            $petWithSkills = $pet->getComputedSkills();
             $petChanges[$pet->getId()] = new PetChanges($pet);
 
-            $roll = mt_rand(1, 10 + $pet->getMusic());
+            $roll = mt_rand(1, 10 + $petWithSkills->getMusic()->getTotal());
 
             if($pet->hasMerit(MeritEnum::SOOTHING_VOICE))
             {

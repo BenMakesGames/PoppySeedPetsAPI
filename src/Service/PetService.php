@@ -23,6 +23,7 @@ use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
+use App\Model\ComputedPetSkills;
 use App\Model\FoodWithSpice;
 use App\Model\FortuneCookie;
 use App\Model\PetChanges;
@@ -510,9 +511,11 @@ class PetService
             }
         }
 
+        $petWithSkills = $pet->getComputedSkills();
+
         if(mt_rand(1, 4000) === 1)
         {
-            $activityLog = $this->petSummonedAwayService->adventure($pet);
+            $activityLog = $this->petSummonedAwayService->adventure($petWithSkills);
 
             if($activityLog)
                 return;
@@ -592,7 +595,7 @@ class PetService
         if($pet->hasStatusEffect(StatusEffectEnum::GOBBLE_GOBBLE) && mt_rand(1, 2) === 1)
         {
             $changes = new PetChanges($pet);
-            $activityLog = $this->huntingService->huntedTurkeyDragon($pet);
+            $activityLog = $this->huntingService->huntedTurkeyDragon($petWithSkills);
             $activityLog->setChanges($changes->compare($pet));
             return;
         }
@@ -612,9 +615,9 @@ class PetService
 
         $quantities = $this->inventoryRepository->getInventoryQuantities($pet->getOwner(), LocationEnum::HOME, 'name');
 
-        $craftingPossibilities = $this->craftingService->getCraftingPossibilities($pet, $quantities);
-        $programmingPossibilities = $this->programmingService->getCraftingPossibilities($pet, $quantities);
-        $notCraftingPossibilities = $this->notReallyCraftsService->getCraftingPossibilities($pet, $quantities);
+        $craftingPossibilities = $this->craftingService->getCraftingPossibilities($petWithSkills, $quantities);
+        $programmingPossibilities = $this->programmingService->getCraftingPossibilities($petWithSkills, $quantities);
+        $notCraftingPossibilities = $this->notReallyCraftsService->getCraftingPossibilities($petWithSkills, $quantities);
 
         $houseTooFull = mt_rand(1, 10) > $pet->getOwner()->getMaxInventory() - $itemsInHouse;
 
@@ -642,7 +645,7 @@ class PetService
                 $do = ArrayFunctions::pick_one($possibilities);
 
                 /** @var PetActivityLog $activityLog */
-                $activityLog = $do[0]->adventure($pet, $do[1]);
+                $activityLog = $do[0]->adventure($petWithSkills, $do[1]);
                 $activityLog->setEntry($description . ' ' . $activityLog->getEntry());
             }
 
@@ -651,13 +654,13 @@ class PetService
 
         if(mt_rand(1, 50) === 1)
         {
-            $this->genericAdventureService->adventure($pet);
+            $this->genericAdventureService->adventure($petWithSkills);
             return;
         }
 
         if($pet->getTool())
         {
-            if($this->doTreasureMapAdventure($pet))
+            if($this->doTreasureMapAdventure($petWithSkills))
                 return;
         }
 
@@ -670,31 +673,31 @@ class PetService
 
         if(mt_rand(1, 4) === 1 && $this->calendarService->isEaster())
         {
-            $this->easterEggHuntingService->adventure($pet);
+            $this->easterEggHuntingService->adventure($petWithSkills);
             return;
         }
 
         if($pet->getGuildMembership() && mt_rand(1, 35) === 1)
         {
-            if($this->guildService->doGuildActivity($pet))
+            if($this->guildService->doGuildActivity($petWithSkills))
                 return;
         }
 
         $petDesires = [
-            'fish' => $this->generateFishingDesire($pet),
-            'hunt' => $this->generateMonsterHuntingDesire($pet),
-            'gather' => $this->generateGatheringDesire($pet),
-            'umbra' => $this->generateExploreUmbraDesire($pet),
+            'fish' => $this->generateFishingDesire($petWithSkills),
+            'hunt' => $this->generateMonsterHuntingDesire($petWithSkills),
+            'gather' => $this->generateGatheringDesire($petWithSkills),
+            'umbra' => $this->generateExploreUmbraDesire($petWithSkills),
         ];
 
         if($pet->hasMerit(MeritEnum::PROTOCOL_7))
-            $petDesires['hack'] = $this->generateHackingDesire($pet);
+            $petDesires['hack'] = $this->generateHackingDesire($petWithSkills);
 
         if($pet->getTool() && $pet->getTool()->getEnchantment() && $pet->getTool()->getEnchantment()->getName() === 'Burnt')
-            $petDesires['burntForest'] = $this->generateBurntForestDesire($pet);
+            $petDesires['burntForest'] = $this->generateBurntForestDesire($petWithSkills);
 
         if(array_key_exists('Submarine', $quantities))
-            $petDesires['submarine'] = $this->generateSubmarineDesire($pet);
+            $petDesires['submarine'] = $this->generateSubmarineDesire($petWithSkills);
 
         if($pet->getOwner()->getGreenhousePlants()->exists(function(int $key, GreenhousePlant $p) {
             return
@@ -705,45 +708,47 @@ class PetService
             ;
         }))
         {
-            $petDesires['beanStalk'] = $this->generateClimbingBeanStalkDesire($pet);
+            $petDesires['beanStalk'] = $this->generateClimbingBeanStalkDesire($petWithSkills);
         }
 
-        if(count($craftingPossibilities) > 0) $petDesires['craft'] = $this->generateCraftingDesire($pet);
-        if(count($programmingPossibilities) > 0) $petDesires['program'] = $this->generateProgrammingDesire($pet);
-        if(count($notCraftingPossibilities) > 0) $petDesires['notCrafting'] = $this->generateGatheringDesire($pet);
+        if(count($craftingPossibilities) > 0) $petDesires['craft'] = $this->generateCraftingDesire($petWithSkills);
+        if(count($programmingPossibilities) > 0) $petDesires['program'] = $this->generateProgrammingDesire($petWithSkills);
+        if(count($notCraftingPossibilities) > 0) $petDesires['notCrafting'] = $this->generateGatheringDesire($petWithSkills);
 
         $desire = $this->pickDesire($petDesires);
 
         switch($desire)
         {
-            case 'fish': $this->fishingService->adventure($pet); break;
-            case 'hunt': $this->huntingService->adventure($pet); break;
-            case 'gather': $this->gatheringService->adventure($pet); break;
-            case 'craft': $this->craftingService->adventure($pet, $craftingPossibilities); break;
-            case 'program': $this->programmingService->adventure($pet, $programmingPossibilities); break;
-            case 'notCrafting': $this->notReallyCraftsService->adventure($pet, $notCraftingPossibilities); break;
-            case 'hack': $this->protocol7Service->adventure($pet); break;
-            case 'umbra': $this->umbraService->adventure($pet); break;
-            case 'beanStalk': $this->beanStalkService->adventure($pet); break;
-            case 'burntForest': $this->burntForestService->adventure($pet); break;
-            case 'submarine': $this->deepSeaService->adventure($pet); break;
+            case 'fish': $this->fishingService->adventure($petWithSkills); break;
+            case 'hunt': $this->huntingService->adventure($petWithSkills); break;
+            case 'gather': $this->gatheringService->adventure($petWithSkills); break;
+            case 'craft': $this->craftingService->adventure($petWithSkills, $craftingPossibilities); break;
+            case 'program': $this->programmingService->adventure($petWithSkills, $programmingPossibilities); break;
+            case 'notCrafting': $this->notReallyCraftsService->adventure($petWithSkills, $notCraftingPossibilities); break;
+            case 'hack': $this->protocol7Service->adventure($petWithSkills); break;
+            case 'umbra': $this->umbraService->adventure($petWithSkills); break;
+            case 'beanStalk': $this->beanStalkService->adventure($petWithSkills); break;
+            case 'burntForest': $this->burntForestService->adventure($petWithSkills); break;
+            case 'submarine': $this->deepSeaService->adventure($petWithSkills); break;
             default: $this->doNothing($pet); break;
         }
     }
 
-    private function doTreasureMapAdventure(Pet $pet): bool
+    private function doTreasureMapadventure(ComputedPetSkills $petWithSkills): bool
     {
+        $pet = $petWithSkills->getPet();
+
         switch($pet->getTool()->getItem()->getName())
         {
             case 'Cetgueli\'s Treasure Map':
-                $this->treasureMapService->doCetguelisTreasureMap($pet);
+                $this->treasureMapService->doCetguelisTreasureMap($petWithSkills);
                 return true;
 
             case 'Silver Keyblade':
             case 'Gold Keyblade':
                 if($pet->getFood() > 0 && mt_rand(1, 10) === 1)
                 {
-                    $this->treasureMapService->doKeybladeTower($pet);
+                    $this->treasureMapService->doKeybladeTower($petWithSkills);
                     return true;
                 }
 
@@ -769,7 +774,7 @@ class PetService
                 if(mt_rand(1, 3) === 1)
                 {
                     if($this->heartDimensionService->canAdventure($pet))
-                        $this->heartDimensionService->adventure($pet);
+                        $this->heartDimensionService->adventure($petWithSkills);
                     else
                         $this->heartDimensionService->noAdventuresRemaining($pet);
 
@@ -1316,14 +1321,10 @@ class PetService
         return array_key_last($petDesires);
     }
 
-    public function calculateAgeInDays(Pet $pet)
+    public function generateFishingDesire(ComputedPetSkills $petWithSkills): int
     {
-        return (new \DateTimeImmutable())->diff($pet->getBirthDate())->days;
-    }
-
-    public function generateFishingDesire(Pet $pet): int
-    {
-        $desire = $pet->getDexterity() + $pet->getNature() + $pet->getFishing() + mt_rand(1, 4);
+        $pet = $petWithSkills->getPet();
+        $desire = $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
@@ -1332,9 +1333,10 @@ class PetService
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
     }
 
-    public function generateSubmarineDesire(Pet $pet): int
+    public function generateSubmarineDesire(ComputedPetSkills $petWithSkills): int
     {
-        $desire = $pet->getIntelligence() + $pet->getScience() + $pet->getFishing() + mt_rand(1, 4);
+        $pet = $petWithSkills->getPet();
+        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
@@ -1343,9 +1345,10 @@ class PetService
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
     }
 
-    public function generateMonsterHuntingDesire(Pet $pet): int
+    public function generateMonsterHuntingDesire(ComputedPetSkills $petWithSkills): int
     {
-        $desire = $pet->getStrength() + $pet->getBrawl() + mt_rand(1, 4);
+        $pet = $petWithSkills->getPet();
+        $desire = $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
@@ -1354,9 +1357,10 @@ class PetService
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
     }
 
-    public function generateCraftingDesire(Pet $pet): int
+    public function generateCraftingDesire(ComputedPetSkills $petWithSkills): int
     {
-        $desire = $pet->getIntelligence() + $pet->getCrafts() + mt_rand(1, 4);
+        $pet = $petWithSkills->getPet();
+        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getCrafts()->getTotal() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
@@ -1365,9 +1369,10 @@ class PetService
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
     }
 
-    public function generateExploreUmbraDesire(Pet $pet): int
+    public function generateExploreUmbraDesire(ComputedPetSkills $petWithSkills): int
     {
-        $desire = $pet->getStamina() + $pet->getIntelligence() + $pet->getUmbra() + mt_rand(1, 4);
+        $pet = $petWithSkills->getPet();
+        $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal() + mt_rand(1, 4);
 
         if($pet->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getUmbra();
@@ -1387,17 +1392,18 @@ class PetService
             return 0;
     }
 
-    public function generateBurntForestDesire(Pet $pet): int
+    public function generateBurntForestDesire(ComputedPetSkills $petWithSkills): int
     {
-        $umbraDesire = $this->generateExploreUmbraDesire($pet);
-        $brawlDesire = $this->generateMonsterHuntingDesire($pet);
+        $umbraDesire = $this->generateExploreUmbraDesire($petWithSkills);
+        $brawlDesire = $this->generateMonsterHuntingDesire($petWithSkills);
 
         return max($umbraDesire, $brawlDesire) * 3 / 4 + min($umbraDesire, $brawlDesire) / 4;
     }
 
-    public function generateGatheringDesire(Pet $pet): int
+    public function generateGatheringDesire(ComputedPetSkills $petWithSkills): int
     {
-        $desire = $pet->getPerception() + $pet->getNature() + $pet->getGathering() + mt_rand(1, 4);
+        $pet = $petWithSkills->getPet();
+        $desire = $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
@@ -1406,9 +1412,10 @@ class PetService
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
     }
 
-    public function generateClimbingBeanstalkDesire(Pet $pet): int
+    public function generateClimbingBeanstalkDesire(ComputedPetSkills $petWithSkills): int
     {
-        $desire = floor(($pet->getStrength() + $pet->getStamina()) * 1.5) + ceil($pet->getNature() / 2) + mt_rand(1, 4);
+        $pet = $petWithSkills->getPet();
+        $desire = floor(($petWithSkills->getStrength()->getTotal() + $petWithSkills->getStamina()->getTotal()) * 1.5) + ceil($petWithSkills->getNature()->getTotal() / 2) + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
@@ -1417,9 +1424,10 @@ class PetService
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
     }
 
-    public function generateHackingDesire(Pet $pet): int
+    public function generateHackingDesire(ComputedPetSkills $petWithSkills): int
     {
-        $desire = $pet->getIntelligence() + $pet->getScience() + mt_rand(1, 4);
+        $pet = $petWithSkills->getPet();
+        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())
@@ -1428,9 +1436,10 @@ class PetService
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
     }
 
-    public function generateProgrammingDesire(Pet $pet): int
+    public function generateProgrammingDesire(ComputedPetSkills $petWithSkills): int
     {
-        $desire = $pet->getIntelligence() + $pet->getScience() + mt_rand(1, 4);
+        $pet = $petWithSkills->getPet();
+        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool())

@@ -6,6 +6,7 @@ use App\Entity\PetActivityLog;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\NumberFunctions;
+use App\Model\ComputedPetSkills;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 
@@ -20,8 +21,9 @@ class InnerSanctumService
         $this->responseService = $responseService;
     }
 
-    public function doAdventure(Pet $pet): PetActivityLog
+    public function doAdventure(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
         $member = $pet->getGuildMembership();
 
         $activity = mt_rand(1, $member->getLevel());

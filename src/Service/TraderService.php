@@ -6,7 +6,6 @@ use App\Entity\TradesUnlocked;
 use App\Entity\User;
 use App\Enum\CostOrYieldTypeEnum;
 use App\Enum\LocationEnum;
-use App\Enum\TradeEnum;
 use App\Enum\TradeGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;

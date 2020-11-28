@@ -9,6 +9,7 @@ use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
+use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -29,9 +30,10 @@ class BurntForestService
         $this->inventoryService = $inventoryService;
     }
 
-    public function adventure(Pet $pet)
+    public function adventure(ComputedPetSkills $petWithSkills)
     {
-        $maxSkill = 10 + ($pet->getStrength() + $pet->getBrawl() + $pet->getIntelligence() + $pet->getUmbra()) / 2 - $pet->getAlcohol();
+        $pet = $petWithSkills->getPet();
+        $maxSkill = 10 + ($petWithSkills->getStrength() + $petWithSkills->getBrawl() + $petWithSkills->getIntelligence() + $petWithSkills->getUmbra()) / 2 - $pet->getAlcohol();
 
         $maxSkill = NumberFunctions::constrain($maxSkill, 1, 15);
 
@@ -45,40 +47,40 @@ class BurntForestService
             case 1:
             case 2:
             case 3:
-                $activityLog = $this->failToFindAnything($pet);
+                $activityLog = $this->failToFindAnything($petWithSkills);
                 break;
 
             case 4:
             case 5:
-                $activityLog = $this->findAWoundedFairy($pet);
+                $activityLog = $this->findAWoundedFairy($petWithSkills);
                 break;
 
             case 6:
-                $activityLog = $this->findABitOfCharcoal($pet);
+                $activityLog = $this->findABitOfCharcoal($petWithSkills);
                 break;
 
             case 7:
-                $activityLog = $this->findSquirmingMass($pet);
+                $activityLog = $this->findSquirmingMass($petWithSkills);
                 break;
 
             case 8:
             case 9:
-                $activityLog = $this->findBurningTree($pet);
+                $activityLog = $this->findBurningTree($petWithSkills);
                 break;
 
             case 10:
             case 11:
-                $activityLog = $this->findTearInTheTapestry($pet);
+                $activityLog = $this->findTearInTheTapestry($petWithSkills);
                 break;
 
             case 12:
             case 13:
-                $activityLog = $this->breakToolBonus($pet);
+                $activityLog = $this->breakToolBonus($petWithSkills);
                 break;
 
             case 14:
             case 15:
-                $activityLog = $this->findScalySquirmingMass($pet);
+                $activityLog = $this->findScalySquirmingMass($petWithSkills);
                 break;
         }
 
@@ -86,16 +88,20 @@ class BurntForestService
             $activityLog->setChanges($changes->compare($pet));
     }
 
-    private function failToFindAnything(Pet $pet): PetActivityLog
+    private function failToFindAnything(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::UMBRA, false);
 
         return $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, but all they found were ashes...', 'icons/activity-logs/confused');
     }
 
-    private function findABitOfCharcoal(Pet $pet): PetActivityLog
+    private function findABitOfCharcoal(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        if(mt_rand(1, 2000) < $pet->getPerception())
+        $pet = $petWithSkills->getPet();
+
+        if(mt_rand(1, 2000) < $petWithSkills->getPerception())
         {
             $loot = 'Striped Microcline';
             $pet->increaseEsteem(4);
@@ -124,9 +130,10 @@ class BurntForestService
         return $activityLog;
     }
 
-    private function findAWoundedFairy(Pet $pet): PetActivityLog
+    private function findAWoundedFairy(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getDexterity());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getUmbra() + $petWithSkills->getIntelligence() + $petWithSkills->getDexterity());
 
         if($roll >= 11)
         {
@@ -153,11 +160,12 @@ class BurntForestService
         return $activityLog;
     }
 
-    private function findSquirmingMass(Pet $pet): PetActivityLog
+    private function findSquirmingMass(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getBrawl() + $pet->getStrength() + $pet->getDexterity());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getBrawl() + $petWithSkills->getStrength() + $petWithSkills->getDexterity());
 
-        $resistsFire = $pet->hasProtectionFromHeat();
+        $resistsFire = $petWithSkills->getHasProtectionFromHeat();
 
         if($roll >= 12)
         {
@@ -165,7 +173,7 @@ class BurntForestService
 
             $loot = ArrayFunctions::pick_one([ 'Tentacle', 'Tentacle', 'Quintessence' ]);
 
-            if($resistsFire || mt_rand(1, 20 + $pet->getStamina()) >= 10)
+            if($resistsFire || mt_rand(1, 20 + $petWithSkills->getStamina()) >= 10)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and encountered a mass of flaming tentacles! They beat the tentacles back, and got a ' . $loot . '!', '');
             }
@@ -184,7 +192,7 @@ class BurntForestService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
 
-            if($resistsFire || mt_rand(1, 20 + $pet->getStamina()) >= 15)
+            if($resistsFire || mt_rand(1, 20 + $petWithSkills->getStamina()) >= 15)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and encountered a mass of flaming tentacles! They tried to fight, but were forced to flee...', '');
                 $pet->increaseSafety(-mt_rand(2, 4));
@@ -201,10 +209,11 @@ class BurntForestService
         return $activityLog;
     }
 
-    private function findBurningTree(Pet $pet): PetActivityLog
+    private function findBurningTree(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraRoll = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
-        $brawlRoll = mt_rand(1, 20 + $pet->getBrawl() + $pet->getStrength() + $pet->getDexterity());
+        $pet = $petWithSkills->getPet();
+        $umbraRoll = mt_rand(1, 20 + $petWithSkills->getUmbra() + $petWithSkills->getIntelligence() + $petWithSkills->getPerception());
+        $brawlRoll = mt_rand(1, 20 + $petWithSkills->getBrawl() + $petWithSkills->getStrength() + $petWithSkills->getDexterity());
         $exp = 1;
 
         if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
@@ -277,9 +286,10 @@ class BurntForestService
         return $activityLog;
     }
 
-    private function findTearInTheTapestry(Pet $pet): PetActivityLog
+    private function findTearInTheTapestry(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getDexterity());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getUmbra() + $petWithSkills->getIntelligence() + $petWithSkills->getDexterity());
 
         if($roll >= 13)
         {
@@ -329,11 +339,12 @@ class BurntForestService
         return $activityLog;
     }
 
-    private function findScalySquirmingMass(Pet $pet): PetActivityLog
+    private function findScalySquirmingMass(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getBrawl() + $pet->getStrength() + $pet->getDexterity());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getBrawl() + $petWithSkills->getStrength() + $petWithSkills->getDexterity());
 
-        $resistsFire = $pet->hasProtectionFromHeat();
+        $resistsFire = $petWithSkills->getHasProtectionFromHeat();
 
         if($roll >= 16)
         {
@@ -341,7 +352,7 @@ class BurntForestService
 
             $loot = ArrayFunctions::pick_one([ 'Dark Scales', 'Quinacridone Magenta Dye', 'Quintessence' ]);
 
-            if($resistsFire || mt_rand(1, 20 + $pet->getStamina()) >= 15)
+            if($resistsFire || mt_rand(1, 20 + $petWithSkills->getStamina()) >= 15)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They beat the tentacles back, and got a Tentacle, and ' . $loot . '!', '');
             }
@@ -362,7 +373,7 @@ class BurntForestService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
 
-            if($resistsFire || mt_rand(1, 20 + $pet->getStamina()) >= 20)
+            if($resistsFire || mt_rand(1, 20 + $petWithSkills->getStamina()->getTotal()) >= 20)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They tried to fight, but were forced to flee...', '');
                 $pet->increaseSafety(-mt_rand(2, 4));

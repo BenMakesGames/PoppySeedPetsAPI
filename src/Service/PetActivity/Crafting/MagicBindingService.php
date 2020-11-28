@@ -11,6 +11,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
+use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
 use App\Repository\SpiceRepository;
 use App\Service\InventoryService;
@@ -41,7 +42,7 @@ class MagicBindingService
     /**
      * @return ActivityCallback[]
      */
-    public function getCraftingPossibilities(Pet $pet, array $quantities): array
+    public function getCraftingPossibilities(ComputedPetSkills $petWithSkills, array $quantities): array
     {
         $hour = (int)((new \DateTimeImmutable())->format('G'));
 
@@ -76,7 +77,7 @@ class MagicBindingService
         if(array_key_exists('Everice', $quantities))
         {
             // frostbite sucks
-            $evericeWeight = $pet->getSafety() < 0 ? 1 : 8;
+            $evericeWeight = $petWithSkills->getPet()->getSafety() < 0 ? 1 : 8;
 
             if(array_key_exists('Invisible Shovel', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createSleet', $evericeWeight);
@@ -230,9 +231,10 @@ class MagicBindingService
         return $possibilities;
     }
 
-    public function createCrazyHotTorch(Pet $pet): PetActivityLog
+    public function createCrazyHotTorch(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck === 1)
         {
@@ -276,9 +278,10 @@ class MagicBindingService
         }
     }
 
-    public function createBunchOfDice(Pet $pet): PetActivityLog
+    public function createBunchOfDice(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -333,9 +336,10 @@ class MagicBindingService
         }
     }
 
-    public function mermaidEggToQuint(Pet $pet): PetActivityLog
+    public function mermaidEggToQuint(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getDexterity());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -365,9 +369,10 @@ class MagicBindingService
         }
     }
 
-    public function magicSmokeToQuint(Pet $pet): PetActivityLog
+    public function magicSmokeToQuint(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + floor(($pet->getUmbra() + $pet->getScience()) / 2) + $pet->getIntelligence() + $pet->getDexterity());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + floor(($petWithSkills->getUmbra()->getTotal() + $petWithSkills->getScience()->getTotal()) / 2) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -406,9 +411,10 @@ class MagicBindingService
         }
     }
 
-    public function createMagicHourglass(Pet $pet): PetActivityLog
+    public function createMagicHourglass(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -446,9 +452,10 @@ class MagicBindingService
     /**
      * note: THIS method should be private, but most methods here must be public!
      */
-    private function bindCeremonialTrident(Pet $pet, array $otherMaterials, string $makes): PetActivityLog
+    private function bindCeremonialTrident(ComputedPetSkills $petWithSkills, array $otherMaterials, string $makes): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -487,25 +494,26 @@ class MagicBindingService
         }
     }
 
-    public function createCeremonyOfShadows(Pet $pet): PetActivityLog
+    public function createCeremonyOfShadows(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->bindCeremonialTrident($pet, [ 'Blackonite' ], 'Ceremony of Shadows');
+        return $this->bindCeremonialTrident($petWithSkills, [ 'Blackonite' ], 'Ceremony of Shadows');
     }
 
-    public function createCeremonyOfFire(Pet $pet): PetActivityLog
+    public function createCeremonyOfFire(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->bindCeremonialTrident($pet, [ 'Firestone' ], 'Ceremony of Fire');
+        return $this->bindCeremonialTrident($petWithSkills, [ 'Firestone' ], 'Ceremony of Fire');
     }
 
-    public function createCeremonyOfSandAndSea(Pet $pet): PetActivityLog
+    public function createCeremonyOfSandAndSea(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->bindCeremonialTrident($pet, [ 'Seaweed', 'Sand Dollar' ], 'Ceremony of Sand and Sea');
+        return $this->bindCeremonialTrident($petWithSkills, [ 'Seaweed', 'Sand Dollar' ], 'Ceremony of Sand and Sea');
     }
 
-    public function createIridescentHandCannon(Pet $pet): PetActivityLog
+    public function createIridescentHandCannon(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
-        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
+        $craftsCheck = mt_rand(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($craftsCheck <= 2)
         {
@@ -555,10 +563,11 @@ class MagicBindingService
         }
     }
 
-    public function createWarpingWand(Pet $pet): PetActivityLog
+    public function createWarpingWand(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
-        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
+        $craftsCheck = mt_rand(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -601,9 +610,10 @@ class MagicBindingService
         }
     }
 
-    public function createInvisibleShovel(Pet $pet): PetActivityLog
+    public function createInvisibleShovel(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 3)
         {
@@ -635,10 +645,11 @@ class MagicBindingService
         }
     }
 
-    public function createSmilingWand(Pet $pet): PetActivityLog
+    public function createSmilingWand(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
-        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
+        $craftsCheck = mt_rand(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($craftsCheck <= 2)
         {
@@ -690,9 +701,10 @@ class MagicBindingService
         }
     }
 
-    public function createGizubisShovel(Pet $pet): PetActivityLog
+    public function createGizubisShovel(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -735,9 +747,10 @@ class MagicBindingService
 
     }
 
-    public function createNewMoon(Pet $pet): PetActivityLog
+    public function createNewMoon(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -779,9 +792,10 @@ class MagicBindingService
         }
     }
 
-    public function createNightAndDay(Pet $pet): PetActivityLog
+    public function createNightAndDay(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -824,9 +838,10 @@ class MagicBindingService
         }
     }
 
-    public function createDancingSword(Pet $pet): PetActivityLog
+    public function createDancingSword(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + max($pet->getPerception(), ceil($pet->getMusic() / 4)));
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getPerception()->getTotal(), ceil($petWithSkills->getMusic()->getTotal() / 4)));
 
         if($umbraCheck <= 2)
         {
@@ -877,9 +892,10 @@ class MagicBindingService
         }
     }
 
-    public function createLightningWand(Pet $pet): PetActivityLog
+    public function createLightningWand(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -915,9 +931,10 @@ class MagicBindingService
         }
     }
 
-    public function createBatmanIGuess(Pet $pet): PetActivityLog
+    public function createBatmanIGuess(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -962,9 +979,10 @@ class MagicBindingService
         }
     }
 
-    public function createWitchsBroom(Pet $pet): PetActivityLog
+    public function createWitchsBroom(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -1010,19 +1028,20 @@ class MagicBindingService
         }
     }
 
-    public function createMagicMirror(Pet $pet): PetActivityLog
+    public function createMagicMirror(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->createMirror($pet, 'Magic Mirror', 'Mirror');
+        return $this->createMirror($petWithSkills, 'Magic Mirror', 'Mirror');
     }
 
-    public function createPandemirrorum(Pet $pet): PetActivityLog
+    public function createPandemirrorum(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->createMirror($pet, 'Pandemirrorum', 'Dark Mirror');
+        return $this->createMirror($petWithSkills, 'Pandemirrorum', 'Dark Mirror');
     }
 
-    public function createMirror(Pet $pet, string $makes, string $mirror): PetActivityLog
+    public function createMirror(ComputedPetSkills $petWithSkills, string $makes, string $mirror): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -1062,7 +1081,7 @@ class MagicBindingService
 
             if(mt_rand(1, 4) === 1)
             {
-                [ $message, $extraItem, $extraItemMessage, $additionalTime, $usedMerit ] = $this->doMagicMirrorMaze($pet, $makes);
+                [ $message, $extraItem, $extraItemMessage, $additionalTime, $usedMerit ] = $this->doMagicMirrorMaze($petWithSkills, $makes);
                 $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
             }
             else
@@ -1089,15 +1108,17 @@ class MagicBindingService
         }
     }
 
-    private function doMagicMirrorMaze(Pet $pet, string $makes): array
+    private function doMagicMirrorMaze(ComputedPetSkills $petWithSkills, string $makes): array
     {
+        $pet = $petWithSkills->getPet();
+
         $loot = $this->itemRepository->findOneByName(ArrayFunctions::pick_one([
             'Alien Tissue', 'Apricot PB&J', 'Baking Powder', 'Blue Balloon', 'Candied Ginger', 'Chili Calamari',
             'Deed for Greenhouse Plot', 'Egg Carton', 'Feathers', 'Fortuneless Cookie', 'Glowing Six-sided Die',
             'Iron Ore', 'Limestone', 'Papadum', 'Password', 'Purple Gummies', 'Red Yogurt', 'Toadstool', 'Welcome Note',
         ]));
 
-        if($pet->getClimbing() > 0)
+        if($petWithSkills->getClimbingBonus()->getTotal() > 0)
         {
             return [
                 $pet->getName() . ' bound a ' . $makes . '! As soon as they did so, they were sucked inside, and into a giant maze! They easily climbed their way out of the maze, and out of the mirror! On the way, they found ' . $loot->getNameWithArticle() . '.',
@@ -1119,7 +1140,7 @@ class MagicBindingService
         }
         else
         {
-            $roll = mt_rand(1, 5 + $pet->getIntelligence() + $pet->getPerception());
+            $roll = mt_rand(1, 5 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
             if($roll >= 5)
             {
@@ -1144,9 +1165,10 @@ class MagicBindingService
         }
     }
 
-    public function createArmor(Pet $pet): PetActivityLog
+    public function createArmor(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -1179,9 +1201,10 @@ class MagicBindingService
         }
     }
 
-    public function createRubyeye(Pet $pet): PetActivityLog
+    public function createRubyeye(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck < 22)
         {
@@ -1204,9 +1227,10 @@ class MagicBindingService
         }
     }
 
-    public function createAstralTuningFork(Pet $pet): PetActivityLog
+    public function createAstralTuningFork(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -1250,9 +1274,10 @@ class MagicBindingService
         }
     }
 
-    public function createEnchantedCompass(Pet $pet): PetActivityLog
+    public function createEnchantedCompass(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -1288,9 +1313,10 @@ class MagicBindingService
         }
     }
 
-    public function createWhisperStone(Pet $pet): PetActivityLog
+    public function createWhisperStone(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -1322,9 +1348,10 @@ class MagicBindingService
         }
     }
 
-    public function createWings(Pet $pet): PetActivityLog
+    public function createWings(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -1356,9 +1383,10 @@ class MagicBindingService
         }
     }
 
-    public function createGoldTriskaidecta(Pet $pet): PetActivityLog
+    public function createGoldTriskaidecta(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -1394,9 +1422,10 @@ class MagicBindingService
         }
     }
 
-    public function createKokopelli(Pet $pet): PetActivityLog
+    public function createKokopelli(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $skillCheck = mt_rand(1, 20 + ceil(($pet->getUmbra() + $pet->getMusic()) / 2) + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $skillCheck = mt_rand(1, 20 + ceil(($petWithSkills->getUmbra()->getTotal() + $petWithSkills->getMusic()->getTotal()) / 2) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($skillCheck <= 2)
         {
@@ -1441,9 +1470,10 @@ class MagicBindingService
         }
     }
 
-    public function createAmbrotypicSolvent(Pet $pet): PetActivityLog
+    public function createAmbrotypicSolvent(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $skillCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + ceil($pet->getScience() / 2));
+        $pet = $petWithSkills->getPet();
+        $skillCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + ceil($petWithSkills->getScience()->getTotal() / 2));
 
         if($skillCheck <= 2)
         {
@@ -1495,9 +1525,10 @@ class MagicBindingService
         }
     }
 
-    public function createSleet(Pet $pet): PetActivityLog
+    public function createSleet(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $skillCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getStamina());
+        $pet = $petWithSkills->getPet();
+        $skillCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal());
 
         if($skillCheck <= 2)
         {
@@ -1538,9 +1569,10 @@ class MagicBindingService
         }
     }
 
-    public function createFrostbite(Pet $pet): PetActivityLog
+    public function createFrostbite(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $skillCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getStamina());
+        $pet = $petWithSkills->getPet();
+        $skillCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal());
 
         if($skillCheck <= 2)
         {
@@ -1577,9 +1609,10 @@ class MagicBindingService
         }
     }
 
-    public function createMoonPearl(Pet $pet): PetActivityLog
+    public function createMoonPearl(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -1612,9 +1645,10 @@ class MagicBindingService
         }
     }
 
-    public function createAubergineCommander(Pet $pet): PetActivityLog
+    public function createAubergineCommander(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -1652,9 +1686,10 @@ class MagicBindingService
         }
     }
 
-    public function enchantSiderealLeafSpear(Pet $pet): PetActivityLog
+    public function enchantSiderealLeafSpear(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -1691,10 +1726,11 @@ class MagicBindingService
         }
     }
 
-    public function createGenericScroll(Pet $pet, string $uniqueIngredient, string $scroll): PetActivityLog
+    public function createGenericScroll(ComputedPetSkills $petWithSkills, string $uniqueIngredient, string $scroll): PetActivityLog
     {
-        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $craftsCheck = mt_rand(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         $scrollItem = $this->itemRepository->findOneByName($scroll);
 
@@ -1740,45 +1776,46 @@ class MagicBindingService
         }
     }
 
-    public function createFruitScroll(Pet $pet): PetActivityLog
+    public function createFruitScroll(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->createGenericScroll($pet, 'Red', 'Scroll of Fruit');
+        return $this->createGenericScroll($petWithSkills, 'Red', 'Scroll of Fruit');
     }
 
-    public function createFarmerScroll(Pet $pet): PetActivityLog
+    public function createFarmerScroll(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->createGenericScroll($pet, 'Wheat Flower', 'Farmer\'s Scroll');
+        return $this->createGenericScroll($petWithSkills, 'Wheat Flower', 'Farmer\'s Scroll');
     }
 
-    public function createFlowerScroll(Pet $pet): PetActivityLog
+    public function createFlowerScroll(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->createGenericScroll($pet, 'Rice Flower', 'Scroll of Flowers');
+        return $this->createGenericScroll($petWithSkills, 'Rice Flower', 'Scroll of Flowers');
     }
 
-    public function createSeaScroll(Pet $pet): PetActivityLog
+    public function createSeaScroll(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->createGenericScroll($pet, 'Seaweed', 'Scroll of the Sea');
+        return $this->createGenericScroll($petWithSkills, 'Seaweed', 'Scroll of the Sea');
     }
 
-    public function createSilverScroll(Pet $pet): PetActivityLog
+    public function createSilverScroll(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->createGenericScroll($pet, 'Silver Bar', 'Minor Scroll of Riches');
+        return $this->createGenericScroll($petWithSkills, 'Silver Bar', 'Minor Scroll of Riches');
     }
 
-    public function createGoldScroll(Pet $pet): PetActivityLog
+    public function createGoldScroll(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->createGenericScroll($pet, 'Gold Bar', 'Major Scroll of Riches');
+        return $this->createGenericScroll($petWithSkills, 'Gold Bar', 'Major Scroll of Riches');
     }
 
-    public function createMusicScroll(Pet $pet): PetActivityLog
+    public function createMusicScroll(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->createGenericScroll($pet, 'Musical Scales', 'Scroll of Songs');
+        return $this->createGenericScroll($petWithSkills, 'Musical Scales', 'Scroll of Songs');
     }
 
-    public function createSummoningScroll(Pet $pet): PetActivityLog
+    public function createSummoningScroll(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $craftsCheck = mt_rand(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($craftsCheck <= 2)
         {
@@ -1824,10 +1861,11 @@ class MagicBindingService
         }
     }
 
-    public function createRussetStaff(Pet $pet): PetActivityLog
+    public function createRussetStaff(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $craftsCheck = mt_rand(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($craftsCheck <= 2)
         {
@@ -1869,9 +1907,10 @@ class MagicBindingService
         }
     }
 
-    public function createFlyingBindle(Pet $pet): PetActivityLog
+    public function createFlyingBindle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -1904,9 +1943,10 @@ class MagicBindingService
         }
     }
 
-    public function createFlyingGrapplingHook(Pet $pet): PetActivityLog
+    public function createFlyingGrapplingHook(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -1939,9 +1979,10 @@ class MagicBindingService
         }
     }
 
-    public function createPraxilla(Pet $pet): PetActivityLog
+    public function createPraxilla(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence());
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($umbraCheck <= 2)
         {

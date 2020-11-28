@@ -1,7 +1,6 @@
 <?php
 namespace App\Service\PetActivity;
 
-use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
@@ -11,6 +10,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
+use App\Model\ComputedPetSkills;
 use App\Model\ItemQuantity;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
@@ -57,7 +57,7 @@ class CraftingService
      * @param ItemQuantity[] $quantities
      * @return ActivityCallback[]
      */
-    public function getCraftingPossibilities(Pet $pet, array $quantities): array
+    public function getCraftingPossibilities(ComputedPetSkills $petWithSkills, array $quantities): array
     {
         $possibilities = [];
 
@@ -265,12 +265,12 @@ class CraftingService
         if(array_key_exists('Sun Flag', $quantities) && array_key_exists('Sunflower Stick', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createSunSunFlag', 10);
 
-        $possibilities = array_merge($possibilities, $this->smithingService->getCraftingPossibilities($pet, $quantities));
+        $possibilities = array_merge($possibilities, $this->smithingService->getCraftingPossibilities($petWithSkills, $quantities));
 
         if(array_key_exists('Plastic', $quantities))
         {
             if(array_key_exists('3D Printer', $quantities))
-                $possibilities = array_merge($possibilities, $this->plasticPrinterService->getCraftingPossibilities($pet, $quantities));
+                $possibilities = array_merge($possibilities, $this->plasticPrinterService->getCraftingPossibilities($petWithSkills, $quantities));
 
             if(array_key_exists('Smallish Pumpkin', $quantities) && array_key_exists('Crooked Stick', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createDrumpkin', 10);
@@ -279,7 +279,7 @@ class CraftingService
         if(array_key_exists('Rice Flour', $quantities) && array_key_exists('Potato', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createRicePaper', 10);
 
-        $repairWeight = ($pet->getSmithing() >= 3 || $pet->getCrafts() >= 5) ? 10 : 1;
+        $repairWeight = ($petWithSkills->getSmithingBonus()->getTotal() >= 3 || $petWithSkills->getCrafts()->getTotal() >= 5) ? 10 : 1;
 
         if(array_key_exists('Rusty Blunderbuss', $quantities))
             $possibilities[] = new ActivityCallback($this, 'repairRustyBlunderbuss', $repairWeight);
@@ -296,8 +296,8 @@ class CraftingService
                 $possibilities[] = new ActivityCallback($this, 'createPaleFlail', 10);
         }
 
-        $possibilities = array_merge($possibilities, $this->magicBindingService->getCraftingPossibilities($pet, $quantities));
-        $possibilities = array_merge($possibilities, $this->eventLanternService->getCraftingPossibilities($pet, $quantities));
+        $possibilities = array_merge($possibilities, $this->magicBindingService->getCraftingPossibilities($petWithSkills, $quantities));
+        $possibilities = array_merge($possibilities, $this->eventLanternService->getCraftingPossibilities($petWithSkills, $quantities));
 
         return $possibilities;
     }
@@ -305,7 +305,7 @@ class CraftingService
     /**
      * @param ActivityCallback[] $possibilities
      */
-    public function adventure(Pet $pet, array $possibilities): PetActivityLog
+    public function adventure(ComputedPetSkills $petWithSkills, array $possibilities): PetActivityLog
     {
         if(count($possibilities) === 0)
             throw new \InvalidArgumentException('possibilities must contain at least one item.');
@@ -314,20 +314,21 @@ class CraftingService
         $method = ArrayFunctions::pick_one($possibilities);
 
         $activityLog = null;
-        $changes = new PetChanges($pet);
+        $changes = new PetChanges($petWithSkills->getPet());
 
         /** @var PetActivityLog $activityLog */
-        $activityLog = ($method->callable)($pet);
+        $activityLog = ($method->callable)($petWithSkills);
 
         if($activityLog)
-            $activityLog->setChanges($changes->compare($pet));
+            $activityLog->setChanges($changes->compare($petWithSkills->getPet()));
 
         return $activityLog;
     }
 
-    public function createTorchFromBone(Pet $pet): PetActivityLog
+    public function createTorchFromBone(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence() + $petWithSkills->getDexterity() + $petWithSkills->getCrafts());
 
         if($roll <= 2)
         {
@@ -357,9 +358,10 @@ class CraftingService
         }
     }
 
-    public function createSimpleFiberglassItem(Pet $pet): PetActivityLog
+    public function createSimpleFiberglassItem(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         $item = ArrayFunctions::pick_one([ 'Fiberglass Flute' ]);
 
@@ -393,9 +395,11 @@ class CraftingService
         }
     }
 
-    private function createDecoratedFlute(Pet $pet): PetActivityLog
+    private function createDecoratedFlute(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+
         if($roll <= 2)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, false);
@@ -426,9 +430,10 @@ class CraftingService
         }
     }
 
-    private function createDrumpkin(Pet $pet): PetActivityLog
+    private function createDrumpkin(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts() + $pet->getSmithing());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {
@@ -469,9 +474,10 @@ class CraftingService
         }
     }
 
-    private function createRicePaper(Pet $pet): PetActivityLog
+    private function createRicePaper(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -519,9 +525,10 @@ class CraftingService
         }
     }
 
-    public function createDecoratedSpear(Pet $pet)
+    public function createDecoratedSpear(ComputedPetSkills $petWithSkills)
     {
-        $roll = mt_rand(1, 20 + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll >= 12)
         {
@@ -542,9 +549,10 @@ class CraftingService
         }
     }
 
-    public function createFishingRecorder(Pet $pet)
+    public function createFishingRecorder(ComputedPetSkills $petWithSkills)
     {
-        $roll = mt_rand(1, 20 + $pet->getDexterity() + $pet->getCrafts() + $pet->getMusic());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getMusic()->getTotal());
 
         if($roll >= 14)
         {
@@ -570,9 +578,10 @@ class CraftingService
         }
     }
 
-    private function createDoubleScythe(Pet $pet): PetActivityLog
+    private function createDoubleScythe(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 3)
         {
@@ -622,9 +631,10 @@ class CraftingService
         }
     }
 
-    private function createFarmersMultiTool(Pet $pet): PetActivityLog
+    private function createFarmersMultiTool(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 3)
         {
@@ -667,8 +677,10 @@ class CraftingService
         }
     }
 
-    private function spinFluffOrCobweb(Pet $pet): PetActivityLog
+    private function spinFluffOrCobweb(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         $making = $this->itemRepository->findOneByName(ArrayFunctions::pick_one([
             'String',
             'White Cloth'
@@ -676,7 +688,7 @@ class CraftingService
 
         $difficulty = $making->getName() === 'String' ? 10 : 13;
 
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
         if($roll <= 2)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
@@ -725,14 +737,16 @@ class CraftingService
         }
     }
 
-    private function makeChocolateTool(Pet $pet): PetActivityLog
+    private function makeChocolateTool(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         $making = $this->itemRepository->findOneByName(ArrayFunctions::pick_one([
             'Chocolate Sword',
             'Chocolate Hammer'
         ]));
 
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         $botchChance = $pet->getFood() <= 0 ? 2 : 1;
 
@@ -770,9 +784,10 @@ class CraftingService
         }
     }
 
-    private function createYellowDyeFromTeaLeaves(Pet $pet): PetActivityLog
+    private function createYellowDyeFromTeaLeaves(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getNature() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 5)
         {
@@ -812,9 +827,10 @@ class CraftingService
         }
     }
 
-    private function extractFromScales(Pet $pet): PetActivityLog
+    private function extractFromScales(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getNature() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getCrafts()->getTotal());
         $itemName = mt_rand(1, 2) === 1 ? 'Green Dye' : 'Glue';
 
         if($roll <= 5)
@@ -860,9 +876,10 @@ class CraftingService
     /**
      * @throws EnumInvalidValueException
      */
-    private function createFabricMache(Pet $pet): PetActivityLog
+    private function createFabricMache(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -916,9 +933,10 @@ class CraftingService
     /**
      * @throws EnumInvalidValueException
      */
-    private function createGoldTrifecta(Pet $pet): PetActivityLog
+    private function createGoldTrifecta(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -951,9 +969,10 @@ class CraftingService
         }
     }
 
-    private function createLSquare(Pet $pet): PetActivityLog
+    private function createLSquare(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -993,9 +1012,10 @@ class CraftingService
         }
     }
 
-    private function createAlienCookingBuddy(Pet $pet): PetActivityLog
+    private function createAlienCookingBuddy(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -1029,9 +1049,10 @@ class CraftingService
         }
     }
 
-    private function createBugBow(Pet $pet): PetActivityLog
+    private function createBugBow(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getNature(), $pet->getCrafts()));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getNature()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll <= 2)
         {
@@ -1064,9 +1085,10 @@ class CraftingService
         }
     }
 
-    private function createFiberglassPanFlute(Pet $pet): PetActivityLog
+    private function createFiberglassPanFlute(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getMusic(), $pet->getCrafts()));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getMusic()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll <= 2)
         {
@@ -1114,15 +1136,16 @@ class CraftingService
         }
     }
 
-    private function createGlassPendulum(Pet $pet): PetActivityLog
+    private function createGlassPendulum(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 3)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
 
-            if(mt_rand(1, 20 + $pet->getDexterity() + $pet->getStamina()) >= 18)
+            if(mt_rand(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal()) >= 18)
             {
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
                 $pet->increaseEsteem(2);
@@ -1167,9 +1190,10 @@ class CraftingService
         }
     }
 
-    private function createNanerBow(Pet $pet): PetActivityLog
+    private function createNanerBow(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -1212,9 +1236,10 @@ class CraftingService
         }
     }
 
-    private function createLeafSpear(Pet $pet): PetActivityLog
+    private function createLeafSpear(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getStrength() * 2 + $pet->getDexterity());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getStrength()->getTotal() * 2 + $petWithSkills->getDexterity()->getTotal());
 
         if($roll <= 3)
         {
@@ -1233,7 +1258,7 @@ class CraftingService
 
             $message = $pet->getName() . ' rolled up a Really Big Leaf, and tied it, creating a Leaf Spear!';
 
-            if(mt_rand(1, 5) > $pet->getStrength())
+            if(mt_rand(1, 5) > $petWithSkills->getStrength()->getTotal())
                 $message .= ' (It\'s harder than it looks!)';
 
             $activityLog = $this->responseService->createActivityLog($pet, $message, '')
@@ -1251,9 +1276,10 @@ class CraftingService
         }
     }
 
-    private function createBenjaminFranklin(Pet $pet): PetActivityLog
+    private function createBenjaminFranklin(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getScience()));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getScience()->getTotal()));
 
         if($roll <= 3)
         {
@@ -1294,9 +1320,10 @@ class CraftingService
         }
     }
 
-    private function createRibbelysComposite(Pet $pet): PetActivityLog
+    private function createRibbelysComposite(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 3)
         {
@@ -1336,9 +1363,10 @@ class CraftingService
         }
     }
 
-    private function createFeatheredHat(Pet $pet): PetActivityLog
+    private function createFeatheredHat(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -1370,9 +1398,10 @@ class CraftingService
         }
     }
 
-    private function createOrnatePanFlute(Pet $pet): PetActivityLog
+    private function createOrnatePanFlute(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getMusic()));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getMusic()->getTotal()));
 
         if($roll <= 3)
         {
@@ -1412,12 +1441,10 @@ class CraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    private function createSnakebite(Pet $pet): PetActivityLog
+    private function createSnakebite(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -1447,10 +1474,12 @@ class CraftingService
         }
     }
 
-    private function createVeilPiercer(Pet $pet): PetActivityLog
+    private function createVeilPiercer(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $umbraCheck = mt_rand(1, 20 + $pet->getUmbra() + $pet->getIntelligence());
-        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
+        $pet = $petWithSkills->getPet();
+
+        $umbraCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+        $craftsCheck = mt_rand(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($umbraCheck <= 3)
         {
@@ -1481,9 +1510,10 @@ class CraftingService
         }
     }
 
-    private function createNagatooth(Pet $pet): PetActivityLog
+    private function createNagatooth(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
+        $pet = $petWithSkills->getPet();
+        $craftsCheck = mt_rand(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($craftsCheck < 15)
         {
@@ -1506,9 +1536,10 @@ class CraftingService
         }
     }
 
-    private function createLassoscope(Pet $pet): PetActivityLog
+    private function createLassoscope(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getStrength() + $pet->getDexterity());
+        $pet = $petWithSkills->getPet();
+        $craftsCheck = mt_rand(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         if($craftsCheck <= 3)
         {
@@ -1557,8 +1588,10 @@ class CraftingService
         }
     }
 
-    private function createPaintedFishingRod(Pet $pet): PetActivityLog
+    private function createPaintedFishingRod(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         $this->petExperienceService->spendTime($pet, mt_rand(45, 90), PetActivityStatEnum::CRAFT, true);
         $this->inventoryService->loseItem('Crooked Fishing Rod', $pet->getOwner(), LocationEnum::HOME, 1);
         $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), LocationEnum::HOME, 1);
@@ -1570,8 +1603,10 @@ class CraftingService
         return $activityLog;
     }
 
-    private function createPaintedBoomerang(Pet $pet): PetActivityLog
+    private function createPaintedBoomerang(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         $this->petExperienceService->spendTime($pet, mt_rand(45, 90), PetActivityStatEnum::CRAFT, true);
         $this->inventoryService->loseItem('Plastic Boomerang', $pet->getOwner(), LocationEnum::HOME, 1);
         $this->inventoryService->loseItem('Quinacridone Magenta Dye', $pet->getOwner(), LocationEnum::HOME, 1);
@@ -1582,8 +1617,10 @@ class CraftingService
         return $activityLog;
     }
 
-    private function createGoldIdol(Pet $pet): PetActivityLog
+    private function createGoldIdol(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         $this->petExperienceService->spendTime($pet, mt_rand(45, 90), PetActivityStatEnum::CRAFT, true);
         $this->inventoryService->loseItem('Plastic Idol', $pet->getOwner(), LocationEnum::HOME, 1);
         $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), LocationEnum::HOME, 1);
@@ -1594,11 +1631,10 @@ class CraftingService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    private function createYellowBucket(Pet $pet): PetActivityLog
+    private function createYellowBucket(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         $this->petExperienceService->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::CRAFT, true);
         $this->inventoryService->loseItem('Small Plastic Bucket', $pet->getOwner(), LocationEnum::HOME, 1);
         $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), LocationEnum::HOME, 1);
@@ -1609,11 +1645,10 @@ class CraftingService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    private function createPaintedDumbbell(Pet $pet): PetActivityLog
+    private function createPaintedDumbbell(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+
         $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::CRAFT, true);
         $this->inventoryService->loseItem('Dumbbell', $pet->getOwner(), LocationEnum::HOME, 1);
         $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), LocationEnum::HOME, 1);
@@ -1630,12 +1665,10 @@ class CraftingService
         return $activityLog;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    private function repairRustyBlunderbuss(Pet $pet): PetActivityLog
+    private function repairRustyBlunderbuss(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getSmithing()));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getSmithingBonus()->getTotal()));
 
         if($roll === 1 && !$pet->hasMerit(MeritEnum::LUCKY))
         {
@@ -1665,12 +1698,10 @@ class CraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    private function repairRustyRapier(Pet $pet): PetActivityLog
+    private function repairRustyRapier(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getCrafts(), $pet->getSmithing()));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getSmithingBonus()->getTotal()));
 
         if($roll === 1 && !$pet->hasMerit(MeritEnum::LUCKY))
         {
@@ -1700,12 +1731,10 @@ class CraftingService
         }
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    private function createLaserGuidedSword(Pet $pet): PetActivityLog
+    private function createLaserGuidedSword(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + max($pet->getScience(), $pet->getCrafts()));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll <= 2)
         {
@@ -1740,21 +1769,22 @@ class CraftingService
         }
     }
 
-    private function createSunFlag(Pet $pet): PetActivityLog
+    private function createSunFlag(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->createFlag($pet, 'Yellow Dye', 'Sun Flag');
+        return $this->createFlag($petWithSkills, 'Yellow Dye', 'Sun Flag');
     }
 
-    private function createDragonFlag(Pet $pet): PetActivityLog
+    private function createDragonFlag(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        return $this->createFlag($pet, 'Green Dye', 'Dragon Flag');
+        return $this->createFlag($petWithSkills, 'Green Dye', 'Dragon Flag');
     }
 
-    private function createFlag(Pet $pet, string $dye, string $making)
+    private function createFlag(ComputedPetSkills $petWithSkills, string $dye, string $making)
     {
+        $pet = $petWithSkills->getPet();
         $makingItem = $this->itemRepository->findOneByName($making);
 
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -1786,9 +1816,10 @@ class CraftingService
         }
     }
 
-    private function createSunSunFlag(Pet $pet)
+    private function createSunSunFlag(ComputedPetSkills $petWithSkills)
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -1822,9 +1853,10 @@ class CraftingService
         return $activityLog;
     }
 
-    private function createSunSunFlagFlagSon(Pet $pet)
+    private function createSunSunFlagFlagSon(ComputedPetSkills $petWithSkills)
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -1861,9 +1893,10 @@ class CraftingService
         return $activityLog;
     }
 
-    private function createPaleFlail(Pet $pet)
+    private function createPaleFlail(ComputedPetSkills $petWithSkills)
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -1897,9 +1930,10 @@ class CraftingService
         return $activityLog;
     }
 
-    private function createBindle(Pet $pet)
+    private function createBindle(ComputedPetSkills $petWithSkills)
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getDexterity() + $pet->getCrafts());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -1933,9 +1967,10 @@ class CraftingService
         return $activityLog;
     }
 
-    public function createPeacockPlushy(Pet $pet): PetActivityLog
+    public function createPeacockPlushy(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $craftsCheck = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
+        $pet = $petWithSkills->getPet();
+        $craftsCheck = mt_rand(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($craftsCheck <= 2)
         {

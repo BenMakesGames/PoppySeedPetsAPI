@@ -6,6 +6,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\ComputedPetSkills;
 use Doctrine\ORM\EntityManagerInterface;
 
 class FriendlyRivalsService
@@ -22,31 +23,34 @@ class FriendlyRivalsService
      */
     public function hangOutPrivatelyAsFriendlyRivals(PetRelationship $p1, PetRelationship $p2): array
     {
+        $p1WithSkills = $p1->getPet()->getComputedSkills();
+        $p2WithSkills = $p2->getPet()->getComputedSkills();
+
         $p1Skills = [
-            'knowledge of the umbra' => $p1->getPet()->getUmbra(),
-            'raw strength' => $p1->getPet()->getStrength(),
-            'fighting prowess' => $p1->getPet()->getBrawl(),
-            'scientific knowledge' => $p1->getPet()->getScience(),
-            'crafting skill' => $p1->getPet()->getCrafts(),
-            'musical ability' => $p1->getPet()->getMusic(),
+            'knowledge of the umbra' => $p1WithSkills->getUmbra()->getTotal(),
+            'raw strength' => $p1WithSkills->getStrength()->getTotal(),
+            'fighting prowess' => $p1WithSkills->getBrawl()->getTotal(),
+            'scientific knowledge' => $p1WithSkills->getScience()->getTotal(),
+            'crafting skill' => $p1WithSkills->getCrafts()->getTotal(),
+            'musical ability' => $p1WithSkills->getMusic()->getTotal(),
         ];
 
         $p2Skills = [
-            'knowledge of the umbra' => $p2->getPet()->getUmbra(),
-            'raw strength' => $p2->getPet()->getStrength(),
-            'fighting prowess' => $p2->getPet()->getBrawl(),
-            'scientific knowledge' => $p2->getPet()->getScience(),
-            'crafting skill' => $p2->getPet()->getCrafts(),
-            'musical ability' => $p2->getPet()->getMusic(),
+            'knowledge of the umbra' => $p2WithSkills->getUmbra()->getTotal(),
+            'raw strength' => $p2WithSkills->getStrength()->getTotal(),
+            'fighting prowess' => $p2WithSkills->getBrawl()->getTotal(),
+            'scientific knowledge' => $p2WithSkills->getScience()->getTotal(),
+            'crafting skill' => $p2WithSkills->getCrafts()->getTotal(),
+            'musical ability' => $p2WithSkills->getMusic()->getTotal(),
         ];
 
         $combinedSkills = [
-            'knowledge of the umbra' => $p1->getPet()->getUmbra() + $p2->getPet()->getUmbra(),
-            'raw strength' => $p1->getPet()->getStrength() + $p2->getPet()->getStrength(),
-            'fighting prowess' => $p1->getPet()->getBrawl() + $p2->getPet()->getBrawl(),
-            'scientific knowledge' => $p1->getPet()->getScience() + $p2->getPet()->getScience(),
-            'crafting skill' => $p1->getPet()->getCrafts() + $p2->getPet()->getCrafts(),
-            'musical ability' => $p1->getPet()->getMusic() + $p2->getPet()->getMusic(),
+            'knowledge of the umbra' => $p1WithSkills->getUmbra()->getTotal() + $p2WithSkills->getUmbra()->getTotal(),
+            'raw strength' => $p1WithSkills->getStrength()->getTotal() + $p2WithSkills->getStrength()->getTotal(),
+            'fighting prowess' => $p1WithSkills->getBrawl()->getTotal() + $p2WithSkills->getBrawl()->getTotal(),
+            'scientific knowledge' => $p1WithSkills->getScience()->getTotal() + $p2WithSkills->getScience()->getTotal(),
+            'crafting skill' => $p1WithSkills->getCrafts()->getTotal() + $p2WithSkills->getCrafts()->getTotal(),
+            'musical ability' => $p1WithSkills->getMusic()->getTotal() + $p2WithSkills->getMusic()->getTotal(),
         ];
 
         arsort($combinedSkills);

@@ -10,6 +10,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetGroupTypeEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\PetRepository;
 use App\Service\PetActivity\Group\AstronomyClubService;
@@ -320,7 +321,12 @@ class PetGroupService
 
     public function createGroup(Pet $pet): ?PetGroup
     {
-        $availableFriends = $this->petRepository->findFriendsWithFewGroups($pet);
+        $petWithSkills = $pet->getComputedSkills();
+
+        /** @var ComputedPetSkills[] $availableFriends */
+        $availableFriends = array_map(function(Pet $pet) {
+            return $pet->getComputedSkills();
+        }, $this->petRepository->findFriendsWithFewGroups($pet));
 
         // the more groups you're in, the more friends you need to start another group
         // (reduces the chances of having duplicate-member groups)
@@ -332,13 +338,13 @@ class PetGroupService
                 'type' => PetGroupTypeEnum::BAND,
                 'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::BAND],
                 'icon' => 'groups/band',
-                'preference' => 5 + $pet->getMusic(),
+                'preference' => 5 + $petWithSkills->getMusic()->getTotal(),
             ],
             [
                 'type' => PetGroupTypeEnum::ASTRONOMY,
                 'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::ASTRONOMY],
                 'icon' => 'groups/astronomy',
-                'preference' => 5 + $pet->getScience(),
+                'preference' => 5 + $petWithSkills->getScience()->getTotal(),
             ]
         ];
 
@@ -357,13 +363,13 @@ class PetGroupService
         switch($type)
         {
             case PetGroupTypeEnum::BAND:
-                usort($availableFriends, function (Pet $a, Pet $b) {
+                usort($availableFriends, function (ComputedPetSkills $a, ComputedPetSkills $b) {
                     return $b->getMusic() <=> $a->getMusic();
                 });
                 break;
 
             case PetGroupTypeEnum::ASTRONOMY:
-                usort($availableFriends, function (Pet $a, Pet $b) {
+                usort($availableFriends, function (ComputedPetSkills $a, ComputedPetSkills $b) {
                     return $b->getScience() <=> $a->getScience();
                 });
                 break;
@@ -372,17 +378,19 @@ class PetGroupService
                 shuffle($availableFriends);
         }
 
+        /** @var ComputedPetSkills[] $friendsToInvite */
         $friendsToInvite = array_slice($availableFriends, 0, min(count($availableFriends), mt_rand(2, mt_rand(3, 4))));
-        $friendNames = array_map(function(Pet $p) { return $p->getName(); }, $friendsToInvite);
+        $friendNames = array_map(function(ComputedPetSkills $p) { return $p->getPet()->getName(); }, $friendsToInvite);
 
         foreach($friendsToInvite as $friend)
         {
-            $friend->addGroup($group);
+            $friendPet = $friend->getPet();
+            $friendPet->addGroup($group);
 
             $log = (new PetActivityLog())
                 ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
-                ->setPet($friend)
-                ->setEntry($friend->getName() . ' was invited to join ' . $pet->getName() . '\'s new ' . self::GROUP_TYPE_NAMES[$type] . ', ' . $group->getName() . '!')
+                ->setPet($friendPet)
+                ->setEntry($friendPet->getName() . ' was invited to join ' . $pet->getName() . '\'s new ' . self::GROUP_TYPE_NAMES[$type] . ', ' . $group->getName() . '!')
             ;
 
             $this->em->persist($log);

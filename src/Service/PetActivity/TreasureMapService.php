@@ -17,6 +17,7 @@ use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\NumberFunctions;
+use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
@@ -54,12 +55,13 @@ class TreasureMapService
         $this->toolBonusService = $toolBonusService;
     }
 
-    public function doCetguelisTreasureMap(Pet $pet)
+    public function doCetguelisTreasureMap(ComputedPetSkills $petWithSkills)
     {
+        $pet = $petWithSkills->getPet();
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        $followMapCheck = mt_rand(1, 10 + $pet->getPerception() + $pet->getSkills()->getNature() + $pet->getIntelligence());
+        $followMapCheck = mt_rand(1, 10 + $petWithSkills->getPerception()->getTotal() + $pet->getSkills()->getNature() + $petWithSkills->getIntelligence()->getTotal());
 
         if($followMapCheck < 15)
         {
@@ -123,11 +125,13 @@ class TreasureMapService
             $this->inventoryService->petAttractsRandomBug($pet);
     }
 
-    public function doKeybladeTower(Pet $pet)
+    public function doKeybladeTower(ComputedPetSkills $petWithSkills)
     {
+        $pet = $petWithSkills->getPet();
+
         $changes = new PetChanges($pet);
 
-        $skill = 2 * ($pet->getBrawl() * 2 + $pet->getStamina() * 2 + $pet->getDexterity() + $pet->getStrength() + $pet->getLevel());
+        $skill = 2 * ($petWithSkills->getBrawl()->getTotal() * 2 + $petWithSkills->getStamina()->getTotal() * 2 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() + $pet->getLevel());
 
         $floor = mt_rand(max(1, ceil($skill / 2)), 20 + $skill);
         $floor = NumberFunctions::constrain($floor, 1, 100);

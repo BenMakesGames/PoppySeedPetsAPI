@@ -319,6 +319,7 @@ class InventoryController extends PoppySeedPetsController
         if(count($inventoryIds) >= 200)
             throw new UnprocessableEntityHttpException('Oh, goodness, please don\'t try to move more than 200 items at a time. Sorry.');
 
+        /** @var Inventory[] $inventory */
         $inventory = $inventoryRepository->createQueryBuilder('i')
             ->andWhere('i.owner=:user')
             ->andWhere('i.id IN (:inventoryIds)')

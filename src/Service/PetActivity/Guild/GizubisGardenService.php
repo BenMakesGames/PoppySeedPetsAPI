@@ -9,6 +9,7 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\NumberFunctions;
+use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -32,26 +33,27 @@ class GizubisGardenService
         $this->itemRepository = $itemRepository;
     }
 
-    public function doAdventure(Pet $pet): PetActivityLog
+    public function doAdventure(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $member = $pet->getGuildMembership();
+        $member = $petWithSkills->getPet()->getGuildMembership();
 
         $activity = mt_rand(1, $member->getTitle() + 1);
         $activity = NumberFunctions::constrain($activity, 1, 3);
 
         switch($activity)
         {
-            case 1: return $this->doRandomSeedlingAdventure($pet);
-            case 2: return $this->doWaterTreeOfLife($pet);
-            case 3: return $this->doCook($pet);
+            case 1: return $this->doRandomSeedlingAdventure($petWithSkills);
+            case 2: return $this->doWaterTreeOfLife($petWithSkills);
+            case 3: return $this->doCook($petWithSkills);
 
             default:
                 throw new \Exception('Ben failed to code Gizubi\'s Garden activity #' . $activity . '! Agk!');
         }
     }
 
-    private function doRandomSeedlingAdventure(Pet $pet)
+    private function doRandomSeedlingadventure(ComputedPetSkills $petWithSkills)
     {
+        $pet = $petWithSkills->getPet();
         $member = $pet->getGuildMembership();
 
         switch(mt_rand(1, 3))
@@ -80,9 +82,10 @@ class GizubisGardenService
         return $this->responseService->createActivityLog($pet, $message, '');
     }
 
-    private function doWaterTreeOfLife(Pet $pet)
+    private function doWaterTreeOfLife(ComputedPetSkills $petWithSkills)
     {
-        $roll = mt_rand(1, 20 + $pet->getNature() + $pet->getDexterity() + $pet->getPerception());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getNature()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($roll === 1)
         {
@@ -115,9 +118,10 @@ class GizubisGardenService
         }
     }
 
-    private function doCook(Pet $pet)
+    private function doCook(ComputedPetSkills $petWithSkills)
     {
-        $roll = mt_rand(1, 20 + $pet->getCrafts() + $pet->getDexterity() + $pet->getIntelligence());
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if(mt_rand(1, 2) === 1)
         {

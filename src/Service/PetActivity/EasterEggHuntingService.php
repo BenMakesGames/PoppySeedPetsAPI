@@ -8,6 +8,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
+use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
@@ -32,9 +33,10 @@ class EasterEggHuntingService
         $this->userQuestRepository = $userQuestRepository;
     }
 
-    public function adventure(Pet $pet): PetActivityLog
+    public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $maxSkill = 10 + $pet->getPerception() + $pet->getNature() + $pet->getGathering() - $pet->getAlcohol() - $pet->getPsychedelic();
+        $pet = $petWithSkills->getPet();
+        $maxSkill = 10 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - $pet->getAlcohol() - $pet->getPsychedelic();
 
         $maxSkill = NumberFunctions::constrain($maxSkill, 1, 21);
 
@@ -48,45 +50,45 @@ class EasterEggHuntingService
             case 1:
             case 2:
             case 3:
-                $activityLog = $this->goSearching($pet, 'just outside the house', 0, 1, 0, 1);
+                $activityLog = $this->goSearching($petWithSkills, 'just outside the house', 0, 1, 0, 1);
                 break;
             case 4:
             case 5:
-                $activityLog = $this->goSearching($pet, 'on the bank of a small stream', 0, 2, 10, 1);
+                $activityLog = $this->goSearching($petWithSkills, 'on the bank of a small stream', 0, 2, 10, 1);
                 break;
             case 6:
             case 7:
             case 8:
-                $activityLog = $this->goSearching($pet, 'in an abandoned quarry', 0, 2, 20, 1);
+                $activityLog = $this->goSearching($petWithSkills, 'in an abandoned quarry', 0, 2, 20, 1);
                 break;
             case 9:
-                $activityLog = $this->goSearching($pet, 'near a waterfall basin', 0, 2, 10, 1);
+                $activityLog = $this->goSearching($petWithSkills, 'near a waterfall basin', 0, 2, 10, 1);
                 break;
             case 10:
-                $activityLog = $this->goSearching($pet, 'near the Plaza fountain', 0, 0, 10, 2);
+                $activityLog = $this->goSearching($petWithSkills, 'near the Plaza fountain', 0, 0, 10, 2);
                 break;
             case 11:
             case 12:
             case 13:
-                $activityLog = $this->goSearching($pet, 'at the beach', 1, 2, 20, 2);
+                $activityLog = $this->goSearching($petWithSkills, 'at the beach', 1, 2, 20, 2);
                 break;
             case 14:
-                $activityLog = $this->goSearching($pet, 'in an overgrown garden', 0, 4, 30, 2);
+                $activityLog = $this->goSearching($petWithSkills, 'in an overgrown garden', 0, 4, 30, 2);
                 break;
             case 15:
             case 16:
-                $activityLog = $this->goSearching($pet, 'in an iron mine', 0, 2, 50, 2, true);
+                $activityLog = $this->goSearching($petWithSkills, 'in an iron mine', 0, 2, 50, 2, true);
                 break;
             case 17:
             case 18:
-                $activityLog = $this->goSearching($pet, 'in the microjungle', 1, 3, 40, 2, false, true);
+                $activityLog = $this->goSearching($petWithSkills, 'in the microjungle', 1, 3, 40, 2, false, true);
                 break;
             case 19:
             case 20:
-                $activityLog = $this->goSearching($pet, 'around the volcano', 1, 5, 50, 3, false, true);
+                $activityLog = $this->goSearching($petWithSkills, 'around the volcano', 1, 5, 50, 3, false, true);
                 break;
             case 21:
-                $activityLog = $this->goSearching($pet, 'in an old mine', 1, 3, 60, 3, true);
+                $activityLog = $this->goSearching($petWithSkills, 'in an old mine', 1, 3, 60, 3, true);
                 break;
         }
 
@@ -99,14 +101,16 @@ class EasterEggHuntingService
         return $activityLog;
     }
 
-    private function goSearching(Pet $pet, string $where, int $minEggs, int $maxEggs, int $encounterChance, int $experience, bool $dark = false, bool $hot = false): PetActivityLog
+    private function goSearching(ComputedPetSkills $petWithSkills, string $where, int $minEggs, int $maxEggs, int $encounterChance, int $experience, bool $dark = false, bool $hot = false): PetActivityLog
     {
         if(mt_rand(1, 100) <= $encounterChance && date('l') !== 'Friday')
-            return $this->getAttacked($pet, $maxEggs);
+            return $this->getAttacked($petWithSkills, $maxEggs);
+
+        $pet = $petWithSkills->getPet();
 
         if($hot)
         {
-            if(!$pet->hasProtectionFromHeat() && mt_rand(1, 10) > $pet->getStamina())
+            if(!$petWithSkills->getHasProtectionFromHeat() && mt_rand(1, 10) > $petWithSkills->getStamina()->getTotal())
             {
                 $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, false);
 
@@ -119,7 +123,7 @@ class EasterEggHuntingService
 
         if($dark)
         {
-            if($pet->canSeeInTheDark())
+            if($petWithSkills->getCanSeeInTheDark())
             {
                 $numEggs = mt_rand($minEggs + 1, $maxEggs + mt_rand(1, 2));
 
@@ -169,8 +173,10 @@ class EasterEggHuntingService
         return $activityLog;
     }
 
-    private function getAttacked(Pet $pet, int $level)
+    private function getAttacked(ComputedPetSkills $petWithSkills, int $level)
     {
+        $pet = $petWithSkills->getPet();
+
         $difficulty = 10 + $level * 3;
 
         $gotBehattingScrollThisEaster = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Easter ' . date('Y') . ' Behatting Scroll', false);
@@ -190,7 +196,7 @@ class EasterEggHuntingService
             ]);
         }
 
-        $skillCheck = mt_rand(1, 20 + $pet->getStrength() + $pet->getDexterity() + $pet->getBrawl());
+        $skillCheck = mt_rand(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal());
 
         $adjective = ArrayFunctions::pick_one([
             'horrible', 'crazy', 'mutant', 'disturbing', 'frickin\' weird', 'bananas'

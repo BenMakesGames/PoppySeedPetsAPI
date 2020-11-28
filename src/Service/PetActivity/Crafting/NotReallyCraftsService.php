@@ -10,6 +10,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
+use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\SpiceRepository;
 use App\Service\InventoryService;
@@ -37,7 +38,7 @@ class NotReallyCraftsService
     /**
      * @param ActivityCallback[] $possibilities
      */
-    public function adventure(Pet $pet, array $possibilities): PetActivityLog
+    public function adventure(ComputedPetSkills $petWithSkills, array $possibilities): PetActivityLog
     {
         if(count($possibilities) === 0)
             throw new \InvalidArgumentException('possibilities must contain at least one item.');
@@ -46,10 +47,11 @@ class NotReallyCraftsService
         $method = ArrayFunctions::pick_one($possibilities);
 
         $activityLog = null;
+        $pet = $petWithSkills->getPet();
         $changes = new PetChanges($pet);
 
         /** @var PetActivityLog $activityLog */
-        $activityLog = ($method->callable)($pet);
+        $activityLog = ($method->callable)($petWithSkills);
 
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));
@@ -57,7 +59,7 @@ class NotReallyCraftsService
         return $activityLog;
     }
 
-    public function getCraftingPossibilities(Pet $pet, array $quantities): array
+    public function getCraftingPossibilities(ComputedPetSkills $petWithSkills, array $quantities): array
     {
         $possibilities = [];
 
@@ -67,9 +69,10 @@ class NotReallyCraftsService
         return $possibilities;
     }
 
-    private function siftThroughPlanetaryRing(Pet $pet): PetActivityLog
+    private function siftThroughPlanetaryRing(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = mt_rand(1, 20 + $pet->getIntelligence() + $pet->getPerception() + round($pet->getScience() * 2 / 3 + $pet->getNature() / 3));
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + round($petWithSkills->getScience()->getTotal() * 2 / 3 + $petWithSkills->getNature()->getTotal() / 3));
 
         if($roll <= 2)
         {

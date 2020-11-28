@@ -6,6 +6,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
+use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetService;
@@ -24,9 +25,11 @@ class GreenhouseAdventureService
         $this->inventoryService = $inventoryService;
     }
 
-    public function adventure(Pet $pet, GreenhousePlant $plant): PetActivityLog
+    public function adventure(ComputedPetSkills $petWithSkills, GreenhousePlant $plant): PetActivityLog
     {
-        $skill = 10 + $pet->getNature() + $pet->getDexterity();
+        $pet = $petWithSkills->getPet();
+
+        $skill = 10 + $petWithSkills->getNature() + $petWithSkills->getDexterity();
         $skill = NumberFunctions::constrain($skill, 10, 15);
 
         $roll = mt_rand(1, $skill);
