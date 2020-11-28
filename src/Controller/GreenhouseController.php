@@ -348,7 +348,36 @@ class GreenhouseController extends PoppySeedPetsController
 
         $plant->clearGrowth();
 
-        if($plant->getPlant()->getName() === 'Toadstool Troop' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::NEW_MOON)
+        if($plant->getPlant()->getName() === 'Barnacle Tree' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON)
+        {
+            $species = $petSpeciesRepository->findOneBy([ 'name' => 'Dapper Swan' ]);
+
+            $colorA = ColorFunctions::tweakColor(ArrayFunctions::pick_one([
+                'EEEEEE', 'EEDDCC', 'DDDDBB'
+            ]));
+
+            $colorB = ColorFunctions::tweakColor(ArrayFunctions::pick_one([
+                'bb0000', '33CCFF', '009900', 'CC9933', '333333'
+            ]));
+
+            if(mt_rand(1, 3) === 1)
+            {
+                $temp = $colorA;
+                $colorA = $colorB;
+                $colorB = $temp;
+            }
+
+            $name = ArrayFunctions::pick_one([
+                'Gosling', 'Goose', 'Honks', 'Clamshell', 'Mussel', 'Seafood', 'Nauplius', 'Mr. Beaks',
+                'Medli', 'Buff', 'Tuft', 'Tail-feather', 'Anser', 'Cygnus', 'Paisley', 'Bolo', 'Cravat',
+                'Ascot', 'Neckerchief'
+            ]);
+
+            $bonusMerit = $meritRepository->findOneByName(MeritEnum::MOON_BOUND);
+
+            $message = $greenhouseService->harvestPlantAsPet($plant, $species, $colorA, $colorB, $name, $bonusMerit);
+        }
+        else if($plant->getPlant()->getName() === 'Toadstool Troop' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::NEW_MOON)
         {
             $species = $petSpeciesRepository->findOneBy([ 'name' => 'Mushroom' ]);
 

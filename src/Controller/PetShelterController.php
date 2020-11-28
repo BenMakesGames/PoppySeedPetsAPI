@@ -39,7 +39,7 @@ class PetShelterController extends PoppySeedPetsController
      */
     public function getAvailablePets(
         AdoptionService $adoptionService, ResponseService $responseService, PetRepository $petRepository,
-        UserQuestRepository $userQuestRepository, StoryService $storyService
+        UserQuestRepository $userQuestRepository
     )
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');

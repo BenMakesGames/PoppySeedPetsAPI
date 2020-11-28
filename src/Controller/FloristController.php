@@ -36,8 +36,8 @@ class FloristController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function buyFlowerbomb(
-        UserRepository $userRepository, InventoryService $inventoryService, ResponseService $responseService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
+        InventoryService $inventoryService, ResponseService $responseService, UserStatsRepository $userStatsRepository,
+        EntityManagerInterface $em, TransactionService $transactionService
     )
     {
         $user = $this->getUser();

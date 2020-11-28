@@ -429,6 +429,23 @@ class DeepSeaService
                 else
                     $andMore = '; oh, and a ' . $rareTreasure . ', too!';
             }
+            else if($roll >= 28)
+            {
+                if(mt_rand(1, 100) === 1)
+                {
+                    $rareTreasure = ArrayFunctions::pick_one([ 'Species Transmigration Serum', 'Yellow Bow' ]);
+                    $andMore = '; oh, and a ' . $rareTreasure . ', too!';
+                }
+                else if(mt_rand(1, 10) === 1)
+                {
+                    $rareTreasure = 'Barnacles';
+                    $andMore = '; oh, and some Barnacles, too!';
+                }
+                else
+                {
+                    $loot[] = ArrayFunctions::pick_one(['Silver Bar', 'Gold Ring']);
+                }
+            }
             else
             {
                 $andMore = '!';
@@ -438,17 +455,6 @@ class DeepSeaService
                 ArrayFunctions::pick_one([ 'Gold Bar', 'Gold Bar', 'Silver Bar', 'Silver Bar', 'Merchant Fish' ]),
                 ArrayFunctions::pick_one([ 'Gold Bar', 'Silver Bar', 'Mermaid Egg', 'Scales', 'Fish', 'Seaweed', 'Captain\'s Log' ])
             ];
-
-            if($roll >= 28)
-            {
-                if(mt_rand(1, 200) === 1)
-                {
-                    $rareTreasure = ArrayFunctions::pick_one([ 'Species Transmigration Serum', 'Yellow Bow' ]);
-                    $andMore = '; oh, and a ' . $rareTreasure . ', too!';
-                }
-                else
-                    $loot[] = ArrayFunctions::pick_one([ 'Silver Bar', 'Gold Ring' ]);
-            }
 
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the ocean using the Submarine, and found a sunken ship! Inside was ' . ArrayFunctions::list_nice($loot) . $andMore, 'items/tool/submarine');
 
