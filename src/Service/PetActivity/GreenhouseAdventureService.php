@@ -29,7 +29,7 @@ class GreenhouseAdventureService
     {
         $pet = $petWithSkills->getPet();
 
-        $skill = 10 + $petWithSkills->getNature() + $petWithSkills->getDexterity();
+        $skill = 10 + $petWithSkills->getNature()->getTotal() + $petWithSkills->getDexterity()->getTotal();
         $skill = NumberFunctions::constrain($skill, 10, 15);
 
         $roll = mt_rand(1, $skill);

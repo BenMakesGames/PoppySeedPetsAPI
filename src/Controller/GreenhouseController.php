@@ -27,7 +27,6 @@ use App\Repository\UserStatsRepository;
 use App\Service\GreenhouseService;
 use App\Service\InventoryService;
 use App\Service\PetActivity\GreenhouseAdventureService;
-use App\Service\PetFactory;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
