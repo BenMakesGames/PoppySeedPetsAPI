@@ -75,7 +75,7 @@ class BurntForestService
 
             case 12:
             case 13:
-                $activityLog = $this->breakToolBonus($petWithSkills);
+                $activityLog = $this->breakToolBonus($pet);
                 break;
 
             case 14:
@@ -133,7 +133,7 @@ class BurntForestService
     private function findAWoundedFairy(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = mt_rand(1, 20 + $petWithSkills->getUmbra() + $petWithSkills->getIntelligence() + $petWithSkills->getDexterity());
+        $roll = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         if($roll >= 11)
         {
@@ -163,7 +163,7 @@ class BurntForestService
     private function findSquirmingMass(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = mt_rand(1, 20 + $petWithSkills->getBrawl() + $petWithSkills->getStrength() + $petWithSkills->getDexterity());
+        $roll = mt_rand(1, 20 + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         $resistsFire = $petWithSkills->getHasProtectionFromHeat()->getTotal() > 0;
 
@@ -212,8 +212,8 @@ class BurntForestService
     private function findBurningTree(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraRoll = mt_rand(1, 20 + $petWithSkills->getUmbra() + $petWithSkills->getIntelligence() + $petWithSkills->getPerception());
-        $brawlRoll = mt_rand(1, 20 + $petWithSkills->getBrawl() + $petWithSkills->getStrength() + $petWithSkills->getDexterity());
+        $umbraRoll = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
+        $brawlRoll = mt_rand(1, 20 + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
         $exp = 1;
 
         if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
@@ -289,7 +289,7 @@ class BurntForestService
     private function findTearInTheTapestry(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = mt_rand(1, 20 + $petWithSkills->getUmbra() + $petWithSkills->getIntelligence() + $petWithSkills->getDexterity());
+        $roll = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         if($roll >= 13)
         {
@@ -342,7 +342,7 @@ class BurntForestService
     private function findScalySquirmingMass(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = mt_rand(1, 20 + $petWithSkills->getBrawl() + $petWithSkills->getStrength() + $petWithSkills->getDexterity());
+        $roll = mt_rand(1, 20 + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         $resistsFire = $petWithSkills->getHasProtectionFromHeat()->getTotal() > 0;
 

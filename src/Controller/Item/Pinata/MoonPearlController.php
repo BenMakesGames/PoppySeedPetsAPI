@@ -52,7 +52,7 @@ class MoonPearlController extends PoppySeedPetsItemController
         if($helper)
         {
             $helperWithSkills = $helper->getComputedSkills();
-            $skill = 20 + $helperWithSkills->getUmbra() + $helperWithSkills->getIntelligence() + $helperWithSkills->getDexterity();
+            $skill = 20 + $helperWithSkills->getUmbra()->getTotal() + $helperWithSkills->getIntelligence()->getTotal() + $helperWithSkills->getDexterity()->getTotal();
 
             if(mt_rand(1, $skill) >= 16)
             {
