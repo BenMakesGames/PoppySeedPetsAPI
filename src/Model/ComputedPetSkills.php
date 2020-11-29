@@ -255,20 +255,24 @@ class ComputedPetSkills
     /**
      * @Groups({"myPet"})
      */
-    public function getCanSeeInTheDark(): bool
+    public function getCanSeeInTheDark(): TotalPetSkill
     {
-        return
-            $this->pet->hasMerit(MeritEnum::DARKVISION) ||
-            ($this->pet->getTool() && $this->pet->getTool()->providesLight())
-        ;
+        $skill = new TotalPetSkill();
+        $skill->tool = $this->pet->getTool() && $this->pet->getTool()->providesLight() ? 1 : 0;
+        $skill->merits = $this->pet->hasMerit(MeritEnum::DARKVISION) ? 1 : 0;
+
+        return $skill;
     }
 
     /**
      * @Groups({"myPet"})
      */
-    public function getHasProtectionFromHeat(): bool
+    public function getHasProtectionFromHeat(): TotalPetSkill
     {
-        return $this->pet->getTool() ? $this->pet->getTool()->protectsFromHeat() : false;
+        $skill = new TotalPetSkill();
+        $skill->tool = $this->pet->getTool() && $this->pet->getTool()->protectsFromHeat() ? 1 : 0;
+
+        return $skill;
     }
 
     // summary of misc effects
