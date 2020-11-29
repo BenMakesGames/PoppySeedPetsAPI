@@ -180,7 +180,7 @@ class CraftingService
         if(array_key_exists('String', $quantities))
         {
             if(array_key_exists('Naner', $quantities))
-                $possibilities[] = new ActivityCallback($this, 'createNanerBow', 10);
+                $possibilities[] = new ActivityCallback($this, 'createBownaner', 10);
 
             if(array_key_exists('Glass', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createGlassPendulum', 10);
@@ -194,6 +194,9 @@ class CraftingService
             if(array_key_exists('L-Square', $quantities) && array_key_exists('Green Dye', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createRibbelysComposite', 10);
         }
+
+        if(array_key_exists('Bownaner', $quantities) && array_key_exists('Carrot', $quantities))
+            $possibilities[] = new ActivityCallback($this, 'createEatYourFruitsAndVeggies', 10);
 
         if(array_key_exists('Feathers', $quantities))
         {
@@ -1190,10 +1193,10 @@ class CraftingService
         }
     }
 
-    private function createNanerBow(ComputedPetSkills $petWithSkills): PetActivityLog
+    private function createBownaner(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = mt_rand(1, 20 + $petWithSkills->getDexterity()->getTotal() * 2 + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
@@ -1222,7 +1225,7 @@ class CraftingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a makeshift bow... out of a Naner.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 11)
             ;
             $this->inventoryService->petCollectsItem('Bownaner', $pet, $pet->getName() . ' created this.', $activityLog);
             return $activityLog;
@@ -1230,9 +1233,55 @@ class CraftingService
         else
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-            $pet->increaseSafety(-1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Bownaner, but the String kept getting all tangled.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createEatYourFruitsAndVeggies(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getDexterity()->getTotal() * 2 + $petWithSkills->getCrafts()->getTotal());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+
+            if($pet->getFood() + $pet->getJunk() < 0)
+            {
+                $this->inventoryService->loseItem('Carrot', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+                $pet->increaseFood(2);
+                $pet->increaseJunk(-2);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make an Eat Your Fruits And Veggies, but was feeling hungry, so... they ate the Carrot.', '');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Bownaner', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make an Eat Your Fruits And Veggies, but broke the Bownaner\'s String...', 'icons/activity-logs/broke-string');
+                $this->inventoryService->petCollectsItem('Naner', $pet, $pet->getName() . ' accidentally broke a Bownaner. Now it\'s just this Naner.', $activityLog);
+                return $activityLog;
+            }
+        }
+        else if($roll >= 12)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Carrot', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Bownaner', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' loaded a Bownaner with a Carrot...', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
+            ;
+            $this->inventoryService->petCollectsItem('Eat Your Fruits And Veggies', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to load a Bownaner with a Carrot, but the String kept getting all tangled.', 'icons/activity-logs/confused');
         }
     }
 
