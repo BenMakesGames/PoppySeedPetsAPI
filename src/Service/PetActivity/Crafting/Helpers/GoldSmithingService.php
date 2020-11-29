@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
@@ -83,9 +84,19 @@ class GoldSmithingService
             $this->inventoryService->loseItem('Eggplant', $pet->getOwner(), LocationEnum::HOME, 1);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
             $pet->increaseSafety(-mt_rand(4, 8));
 
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make an Aubergine Scepter, but accidentally burnt the Eggplant. It smelled _awful_!', 'icons/activity-logs/broke-string');
+            if($pet->hasMerit(MeritEnum::GOURMAND))
+            {
+                $pet->increaseFood(mt_rand(4, 8));
+
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make an Aubergine Scepter, but accidentally burnt the Eggplant! ' . $pet->getName() . ', as a true gourmand, could not allow the Eggplant to go to waste, and ate it!', '');
+            }
+            else
+            {
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make an Aubergine Scepter, but accidentally burnt the Eggplant. It smelled _awful_!', '');
+            }
         }
         else if($reRoll >= 12)
         {

@@ -9,6 +9,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
@@ -503,7 +504,7 @@ class ProgrammingService
         else
         {
             if(mt_rand(1, 3) === 1)
-                return $this->fightInfinityImp($pet, 'started computing Viswanath\'s Constant');
+                return $this->fightInfinityImp($petWithSkills, 'started computing Viswanath\'s Constant');
             else
             {
                 $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, false);
@@ -581,7 +582,7 @@ class ProgrammingService
         else
         {
             if(mt_rand(1, 3) === 1)
-                return $this->fightInfinityImp($pet, 'computing a Strange Attractor');
+                return $this->fightInfinityImp($petWithSkills, 'computing a Strange Attractor');
             else
             {
                 $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
@@ -930,18 +931,31 @@ class ProgrammingService
         $pet = $petWithSkills->getPet();
         $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        if($roll <= 2)
+        if($roll <= 3)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::PROGRAM, false);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
 
-            if(mt_rand(1, 2) === 1)
+            $effect = mt_rand(1, 3);
+
+            if($effect === 1)
             {
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::UMBRA ]);
+
+                $pet->increaseSafety(-6);
+                $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Bermuda Triangle, but accidentally hexed themselves, instead! :(', '');
+            }
+            else if($effect === 2)
+            {
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+
                 $this->inventoryService->loseItem('Gravitational Waves', $pet->getOwner(), LocationEnum::HOME, 1);
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Bermuda Triangle, but the Gravitational Waves dissipated :(', '');
             }
             else
             {
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+
                 $this->inventoryService->loseItem('Seaweed', $pet->getOwner(), LocationEnum::HOME, 1);
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Bermuda Triangle, but the Seaweed was shredded by the intense gravitational forces :(', '');
             }

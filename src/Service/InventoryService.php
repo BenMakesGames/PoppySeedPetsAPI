@@ -614,6 +614,7 @@ class InventoryService
         {
             case StatusEffectEnum::CAFFEINATED: return 8 * 60;
             case StatusEffectEnum::EGGPLANT_CURSED: return 48 * 60;
+            case StatusEffectEnum::HEX_HEXED: return 6 * 60;
             default: return 24 * 60;
         }
     }

@@ -151,7 +151,7 @@ class ComputedPetSkills
         $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->craftsBonus() : 0;
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::HEX_HEXED) ? 6 - $this->pet->getSkills()->getCrafts() : 0) +
-            $this->pet->hasStatusEffect(StatusEffectEnum::SILK_INFUSED) ? 1 : 0
+            ($this->pet->hasStatusEffect(StatusEffectEnum::SILK_INFUSED) ? 1 : 0)
         ;
 
         return $skill;
