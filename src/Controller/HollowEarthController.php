@@ -243,7 +243,7 @@ class HollowEarthController extends PoppySeedPetsController
         $score = $action['baseRoll'];
 
         foreach($stats as $stat)
-            $score += $player->getChosenPet()->{'get' . $stat }();
+            $score += $player->getChosenPet()->getComputedSkills()->{'get' . $stat }();
 
         if(mt_rand(1, $score) >= $action['requiredRoll'])
         {
