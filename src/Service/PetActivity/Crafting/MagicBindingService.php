@@ -1,9 +1,7 @@
 <?php
 namespace App\Service\PetActivity\Crafting;
 
-use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -14,7 +12,6 @@ use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
-use App\Repository\SpiceRepository;
 use App\Service\InventoryService;
 use App\Service\PetActivity\Crafting\Helpers\EvericeMeltingService;
 use App\Service\PetExperienceService;
@@ -85,6 +82,9 @@ class MagicBindingService
 
             if(array_key_exists('Scythe', $quantities) && array_key_exists('String', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createFrostbite', $evericeWeight);
+
+            if(array_key_exists('Nonsenserang', $quantities) && array_key_exists('Quintessence', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createHexicle', $evericeWeight);
         }
 
         if(array_key_exists('Quintessence', $quantities))
@@ -1626,6 +1626,56 @@ class MagicBindingService
             ;
 
             $this->inventoryService->petCollectsItem('Frostbite', $pet, $pet->getName() . ' made this by binding Everice to a Scythe, and making a grip with wound String.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createHexicle(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $skillCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal());
+
+        if($skillCheck <= 3)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            if(mt_rand(1, 2) === 1)
+            {
+                $pet->increaseSafety(-6);
+                $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to transmute plastic into ice, but accidentally hexed themselves, instead! :(', '');
+            }
+            else
+            {
+                $pet->increaseEsteem(-1);
+
+                $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to transmute plastic into ice, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+            }
+        }
+        else if($skillCheck < 16)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            $pet->increaseSafety(-1);
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to transmute plastic into ice, but the plastic resisted...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Everice', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Nonsenserang', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' transmuted the plastic of a Nonsenserang into ice, creating a Hexicle!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+            ;
+
+            $this->inventoryService->petCollectsItem('Frostbite', $pet, $pet->getName() . ' made this transmuting its plastic into ice.', $activityLog);
             return $activityLog;
         }
     }
