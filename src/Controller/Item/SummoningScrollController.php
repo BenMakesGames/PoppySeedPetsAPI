@@ -100,9 +100,9 @@ class SummoningScrollController extends PoppySeedPetsItemController
         foreach($petsAtHome as $pet)
         {
             $petWithSkills = $pet->getComputedSkills();
-            $totalSkill += $petWithSkills->getBrawl() + max($petWithSkills->getStrength(), $petWithSkills->getStamina()) + $petWithSkills->getDexterity();
+            $totalSkill += $petWithSkills->getBrawl()->getTotal() + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getStamina()->getTotal()) + $petWithSkills->getDexterity()->getTotal();
 
-            if($petWithSkills->getHasProtectionFromHeat())
+            if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
                 $totalSkill += 2;
             else
             {

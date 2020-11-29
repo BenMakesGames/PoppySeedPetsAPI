@@ -241,7 +241,7 @@ class GatheringService
 
         if(mt_rand(1, 4) === 1)
         {
-            if(!$petWithSkills->getCanSeeInTheDark())
+            if($petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Hollow Log, but it was too dark inside to see anything.', '');
 
@@ -284,7 +284,7 @@ class GatheringService
             }
             else
             {
-                if($petWithSkills->getCanSeeInTheDark())
+                if($petWithSkills->getCanSeeInTheDark()->getTotal() > 0)
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Grandparoot inside a Hollow Log.', '');
                     $this->inventoryService->petCollectsItem('Grandparoot', $pet, $pet->getName() . ' found this growing inside a Hollow Log.', $activityLog);
@@ -507,7 +507,7 @@ class GatheringService
     {
         $pet = $petWithSkills->getPet();
 
-        if(mt_rand(1, 4) === 1 && !$petWithSkills->getCanSeeInTheDark())
+        if(mt_rand(1, 4) === 1 && $petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::GATHER, false);
@@ -674,7 +674,7 @@ class GatheringService
 
         if(mt_rand(1, 10 + $petWithSkills->getStamina()->getTotal()) < 6)
         {
-            if($petWithSkills->getHasProtectionFromHeat())
+            if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
             {
                 $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was hot, but their ' . $pet->getTool()->getItem()->getName() . ' protected them.')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
@@ -862,7 +862,7 @@ class GatheringService
 
         if(mt_rand(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
         {
-            if($petWithSkills->getHasProtectionFromHeat())
+            if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
             {
                 $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was hot, but their ' . $pet->getTool()->getItem()->getName() . ' protected them.')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
@@ -1009,7 +1009,7 @@ class GatheringService
 
         if(mt_rand(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
         {
-            if($petWithSkills->getHasProtectionFromHeat())
+            if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
             {
                 $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was hot, but their ' . $pet->getTool()->getItem()->getName() . ' protected them.')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)

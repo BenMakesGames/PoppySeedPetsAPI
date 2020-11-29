@@ -684,7 +684,7 @@ class UmbraService
     {
         $pet = $petWithSkills->getPet();
 
-        if(!$petWithSkills->getCanSeeInTheDark())
+        if($petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::UMBRA, false);

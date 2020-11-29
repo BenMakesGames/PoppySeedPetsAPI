@@ -546,7 +546,7 @@ class Protocol7Service
 
         if(mt_rand(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
         {
-            if($petWithSkills->getHasProtectionFromHeat())
+            if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
             {
                 $activityLog->setEntry($activityLog->getEntry() . ' Their ' . $pet->getTool()->getItem()->getName() . ' protected them from the sudden burst of energy.')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)

@@ -165,7 +165,7 @@ class BurntForestService
         $pet = $petWithSkills->getPet();
         $roll = mt_rand(1, 20 + $petWithSkills->getBrawl() + $petWithSkills->getStrength() + $petWithSkills->getDexterity());
 
-        $resistsFire = $petWithSkills->getHasProtectionFromHeat();
+        $resistsFire = $petWithSkills->getHasProtectionFromHeat()->getTotal() > 0;
 
         if($roll >= 12)
         {
@@ -344,7 +344,7 @@ class BurntForestService
         $pet = $petWithSkills->getPet();
         $roll = mt_rand(1, 20 + $petWithSkills->getBrawl() + $petWithSkills->getStrength() + $petWithSkills->getDexterity());
 
-        $resistsFire = $petWithSkills->getHasProtectionFromHeat();
+        $resistsFire = $petWithSkills->getHasProtectionFromHeat()->getTotal() > 0;
 
         if($roll >= 16)
         {

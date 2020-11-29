@@ -110,7 +110,7 @@ class EasterEggHuntingService
 
         if($hot)
         {
-            if(!$petWithSkills->getHasProtectionFromHeat() && mt_rand(1, 10) > $petWithSkills->getStamina()->getTotal())
+            if(!$petWithSkills->getHasProtectionFromHeat()->getTotal() > 0 && mt_rand(1, 10) > $petWithSkills->getStamina()->getTotal())
             {
                 $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, false);
 
@@ -123,7 +123,7 @@ class EasterEggHuntingService
 
         if($dark)
         {
-            if($petWithSkills->getCanSeeInTheDark())
+            if($petWithSkills->getCanSeeInTheDark()->getTotal() > 0)
             {
                 $numEggs = mt_rand($minEggs + 1, $maxEggs + mt_rand(1, 2));
 

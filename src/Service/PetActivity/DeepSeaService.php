@@ -253,7 +253,7 @@ class DeepSeaService
         $pet = $petWithSkills->getPet();
         $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
-        if(!$petWithSkills->getCanSeeInTheDark())
+        if($petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::FISH, false);
 
@@ -360,7 +360,7 @@ class DeepSeaService
         $pet = $petWithSkills->getPet();
         $roll = mt_rand(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
-        if(!$petWithSkills->getCanSeeInTheDark())
+        if($petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::FISH, false);
 
@@ -393,7 +393,7 @@ class DeepSeaService
 
         if(mt_rand(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
         {
-            if($petWithSkills->getHasProtectionFromHeat())
+            if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
             {
                 $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was hot, but their ' . $pet->getTool()->getItem()->getName() . ' protected them.')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
