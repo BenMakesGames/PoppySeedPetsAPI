@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\GreenhousePlant;
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\PlantYieldItem;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
@@ -479,7 +480,10 @@ class GreenhouseController extends PoppySeedPetsController
 
             if(count($petsAtHome) > 0)
             {
-                $greenhouseAdventureService->adventure(ArrayFunctions::pick_one($petsAtHome), $plant);
+                /** @var Pet $helper */
+                $helper = ArrayFunctions::pick_one($petsAtHome);
+
+                $greenhouseAdventureService->adventure($helper->getComputedSkills(), $plant);
             }
         }
 
