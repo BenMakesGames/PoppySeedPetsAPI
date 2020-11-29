@@ -1,5 +1,5 @@
 <?php
-namespace App\Entity;
+namespace App\Model;
 
 use Symfony\Component\Serializer\Annotation\Groups;
 

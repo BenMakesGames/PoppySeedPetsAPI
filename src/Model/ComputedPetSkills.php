@@ -2,7 +2,7 @@
 namespace App\Model;
 
 use App\Entity\Pet;
-use App\Entity\TotalPetSkill;
+use App\Model\TotalPetSkill;
 use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\DateFunctions;
