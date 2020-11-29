@@ -568,7 +568,7 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $check = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + min($petWithSkills->getScience()->getTotal(), $petWithSkills->getStealth()->getTotal()) + $petWithSkills->getClimbingBonus());
+        $check = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + min($petWithSkills->getScience()->getTotal(), $petWithSkills->getStealth()->getTotal()) + $petWithSkills->getClimbingBonus()->getTotal());
 
         if($petWithSkills->getClimbingBonus()->getTotal() > 0)
         {
