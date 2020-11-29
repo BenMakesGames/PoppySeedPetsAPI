@@ -37,6 +37,10 @@ class TakeApartController extends PoppySeedPetsItemController
             'Water Strider' => [
                 'loot' => [ 'Hunting Spear', 'Cast Net' ],
                 'verbing' => 'dismantling'
+            ],
+            'Lightning Axe' => [
+                'loot' => [ 'Searing Blade', 'Searing Blade', 'Iron Bar' ],
+                'verbing' => 'splitting',
             ]
         ];
 
@@ -47,7 +51,7 @@ class TakeApartController extends PoppySeedPetsItemController
 
         foreach($info['loot'] as $item)
         {
-            $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' received this by ' . $info['verbing'] . ' a ' . $inventory->getItem()->getName() . '.', $inventory->getLocation(), $inventory->getLockedToOwner());
+            $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' received this by ' . $info['verbing'] . ' ' . $inventory->getItem()->getNameWithArticle() . '.', $inventory->getLocation(), $inventory->getLockedToOwner());
         }
 
         $em->remove($inventory);
