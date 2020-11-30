@@ -662,13 +662,13 @@ class HuntingService
         $pet = $petWithSkills->getPet();
 
         if(mt_rand(1, 100) === 1)
-            $prize = ArrayFunctions::pick_one([ 'Rib', 'Stereotypical Bone ']);
-        else if(mt_rand(1, 100) === 1)
             $prize = 'Little Strongbox';
-        else if(mt_rand(1, 5) === 1)
-            $prize = 'Iron Bar';
+        else if(mt_rand(1, 50) === 1)
+            $prize = ArrayFunctions::pick_one([ 'Rib', 'Stereotypical Bone ']);
         else if(mt_rand(1, 8) === 1)
-            $prize = 'Fluff';
+            $prize = ArrayFunctions::pick_one([ 'Iron Bar', 'Silver Bar', 'White Cloth' ]);
+        else if(mt_rand(1, 4) === 1)
+            $prize = 'Ghost Pepper';
         else
             $prize = 'Quintessence';
 
