@@ -1675,7 +1675,7 @@ class MagicBindingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
             ;
 
-            $this->inventoryService->petCollectsItem('Frostbite', $pet, $pet->getName() . ' made this transmuting its plastic into ice.', $activityLog);
+            $this->inventoryService->petCollectsItem('Hexicle', $pet, $pet->getName() . ' made this transmuting its plastic into ice.', $activityLog);
             return $activityLog;
         }
     }
