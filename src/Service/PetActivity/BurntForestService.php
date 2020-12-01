@@ -101,7 +101,7 @@ class BurntForestService
     {
         $pet = $petWithSkills->getPet();
 
-        if(mt_rand(1, 2000) < $petWithSkills->getPerception())
+        if(mt_rand(1, 2000) < $petWithSkills->getPerception()->getTotal())
         {
             $loot = 'Striped Microcline';
             $pet->increaseEsteem(4);
