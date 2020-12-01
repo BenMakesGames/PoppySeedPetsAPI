@@ -5,6 +5,8 @@ use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Fireplace;
 use App\Entity\Inventory;
 use App\Enum\UserStatEnum;
+use App\Functions\ArrayFunctions;
+use App\Functions\ColorFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
@@ -135,7 +137,14 @@ class HouseFairyController extends PoppySeedPetsItemController
 
             $user->setUnlockedFireplace();
 
-            $fireplace = (new Fireplace())->setUser($user);
+            $stockingColors = ColorFunctions::generateRandomPetColors();
+
+            $fireplace = (new Fireplace())
+                ->setUser($user)
+                ->setStockingAppearance(ArrayFunctions::pick_one(Fireplace::STOCKING_APPEARANCES))
+                ->setStockingColorA($stockingColors[0])
+                ->setStockingColorB($stockingColors[1])
+            ;
 
             if($userStatsRepository->getStatValue($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM) >= 400)
                 $fireplace->setMantleSize(24);

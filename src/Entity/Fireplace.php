@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Functions\ArrayFunctions;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -15,6 +16,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Fireplace
 {
     public const MAX_HEAT = 3 * 24 * 60; // 3 days
+
+    public const STOCKING_APPEARANCES = [
+        'fluffed',
+        'tasseled'
+    ];
 
     /**
      * @ORM\Id()
@@ -76,6 +82,21 @@ class Fireplace
      * @Groups({"myFireplace"})
      */
     private $mantleSize = 12;
+
+    /**
+     * @ORM\Column(type="string", length=20)
+     */
+    private $stockingAppearance;
+
+    /**
+     * @ORM\Column(type="string", length=6)
+     */
+    private $stockingColorA;
+
+    /**
+     * @ORM\Column(type="string", length=6)
+     */
+    private $stockingColorB;
 
     public function getId(): ?int
     {
@@ -240,6 +261,18 @@ class Fireplace
             return null;
     }
 
+    /**
+     * @Groups({"myFireplace"})
+     */
+    public function getStocking()
+    {
+        return [
+            'appearance' => $this->getStockingAppearance(),
+            'colorA' => $this->getStockingColorA(),
+            'colorB' => $this->getStockingColorB()
+        ];
+    }
+
     public function getMantleSize(): int
     {
         return $this->mantleSize;
@@ -248,6 +281,42 @@ class Fireplace
     public function setMantleSize(int $mantleSize): self
     {
         $this->mantleSize = $mantleSize;
+
+        return $this;
+    }
+
+    public function getStockingAppearance(): ?string
+    {
+        return $this->stockingAppearance;
+    }
+
+    public function setStockingAppearance(string $stockingAppearance): self
+    {
+        $this->stockingAppearance = $stockingAppearance;
+
+        return $this;
+    }
+
+    public function getStockingColorA(): ?string
+    {
+        return $this->stockingColorA;
+    }
+
+    public function setStockingColorA(string $stockingColorA): self
+    {
+        $this->stockingColorA = $stockingColorA;
+
+        return $this;
+    }
+
+    public function getStockingColorB(): ?string
+    {
+        return $this->stockingColorB;
+    }
+
+    public function setStockingColorB(string $stockingColorB): self
+    {
+        $this->stockingColorB = $stockingColorB;
 
         return $this;
     }
