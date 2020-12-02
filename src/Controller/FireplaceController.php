@@ -13,6 +13,7 @@ use App\Functions\GrammarFunctions;
 use App\Functions\JewishCalendarFunctions;
 use App\Functions\StringFunctions;
 use App\Repository\InventoryRepository;
+use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\CalendarService;
 use App\Service\InventoryService;
@@ -244,7 +245,7 @@ class FireplaceController extends PoppySeedPetsController
      */
     public function lookInStocking(
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository
+        UserQuestRepository $userQuestRepository, ItemRepository $itemRepository
     )
     {
         $user = $this->getUser();
@@ -309,6 +310,8 @@ class FireplaceController extends PoppySeedPetsController
                 $item = ArrayFunctions::pick_one($randomRewards);
         }
 
+        $itemObject = $itemRepository->findOneByName($item);
+
         $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' found this in a stocking over their Fireplace on ' . $now->format('M j, Y') . '.', LocationEnum::HOME, true);
 
         $messages = [
@@ -320,7 +323,7 @@ class FireplaceController extends PoppySeedPetsController
         ];
 
         $responseService->addFlashMessage(
-            ArrayFunctions::pick_one($messages) . "\n\n" . $item . '!'
+            ArrayFunctions::pick_one($messages) . "\n\n" . ucfirst($itemObject->getNameWithArticle()) . '!'
         );
 
         $gotStockingPresent->setValue($now->format('Y-m-d'));
