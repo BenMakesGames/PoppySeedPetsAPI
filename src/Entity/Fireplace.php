@@ -19,7 +19,8 @@ class Fireplace
 
     public const STOCKING_APPEARANCES = [
         'fluffed',
-        'tasseled'
+        'tasseled',
+        'snowflaked'
     ];
 
     /**

@@ -541,6 +541,11 @@ class AccountController extends PoppySeedPetsController
             'pets' => $normalizer->normalize($pets, null, [ 'groups' => [ SerializationGroupEnum::USER_PUBLIC_PROFILE ] ]),
         ];
 
+        if((new \DateTimeImmutable())->format('m') == 12 && $user->getFireplace())
+        {
+            $data['stocking'] = $user->getFireplace()->getStocking();
+        }
+
         if($user->getUnlockedFireplace())
         {
             $mantle = $inventoryRepository->findBy(['owner' => $user, 'location' => LocationEnum::MANTLE]);
