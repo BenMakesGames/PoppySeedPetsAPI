@@ -459,9 +459,28 @@ class GreenhouseController extends PoppySeedPetsController
                 }
             }
 
-            $message = 'You harvested ' . ArrayFunctions::list_nice_quantities($lootList) . '!';
-        }
+            $harvestBonusMint =
+                $plant->getPlant()->getType() === 'earth' &&
+                $plant->getPlant()->getName() !== 'Mint Bush' &&
+                $user->getGreenhousePlants()->exists(function(int $key, GreenhousePlant $p) {
+                    return $p->getPlant()->getName() === 'Mint Bush' && $p->getIsAdult();
+                })
+            ;
 
+            if($harvestBonusMint)
+            {
+                $comment = mt_rand(1, 4) === 1
+                    ? $user->getName() . ' harvested this from ' . GrammarFunctions::indefiniteArticle($plantName) . ' ' . $plantName . '?! (Mint! It gets everywhere!)'
+                    : $user->getName() . ' harvested this from ' . GrammarFunctions::indefiniteArticle($plantName) . ' ' . $plantName . '...'
+                ;
+
+                $inventoryService->receiveItem('Mint', $user, $user, $comment, LocationEnum::HOME);
+
+                $message = 'You harvested ' . ArrayFunctions::list_nice_quantities($lootList) . '... and some Mint!';
+            }
+            else
+                $message = 'You harvested ' . ArrayFunctions::list_nice_quantities($lootList) . '!';
+        }
 
         $plantsHarvested = $userStatsRepository->incrementStat($user, UserStatEnum::HARVESTED_PLANT);
 
