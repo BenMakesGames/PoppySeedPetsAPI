@@ -1452,7 +1452,7 @@ class MagicBindingService
     public function createSpearmint(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $skillCheck = mt_rand(1, 20 + min($petWithSkills->getNature()->getTotal(), $petWithSkills->getUmbra()->getTotal()) + max($petWithSkills->getDexterity(), $petWithSkills->getPerception()->getTotal()) + $petWithSkills->getIntelligence()->getTotal());
+        $skillCheck = mt_rand(1, 20 + min($petWithSkills->getNature()->getTotal(), $petWithSkills->getUmbra()->getTotal()) + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getPerception()->getTotal()) + $petWithSkills->getIntelligence()->getTotal());
 
         if($skillCheck <= 2)
         {
