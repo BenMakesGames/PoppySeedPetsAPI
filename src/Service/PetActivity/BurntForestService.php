@@ -352,7 +352,7 @@ class BurntForestService
 
             $loot = ArrayFunctions::pick_one([ 'Dark Scales', 'Quinacridone Magenta Dye', 'Quintessence' ]);
 
-            if($resistsFire || mt_rand(1, 20 + $petWithSkills->getStamina()) >= 15)
+            if($resistsFire || mt_rand(1, 20 + $petWithSkills->getStamina()->getTotal()) >= 15)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They beat the tentacles back, and got a Tentacle, and ' . $loot . '!', '');
             }
