@@ -87,6 +87,9 @@ class MagicBindingService
                 $possibilities[] = new ActivityCallback($this, 'createHexicle', $evericeWeight);
         }
 
+        if(array_key_exists('Wand of Ice', $quantities) && array_key_exists('Mint', $quantities))
+            $possibilities[] = new ActivityCallback($this, 'createCoolMintScepter', 10);
+
         if(array_key_exists('Quintessence', $quantities))
         {
             if(array_key_exists('Leaf Spear', $quantities) && array_key_exists('Mint', $quantities))
@@ -1600,6 +1603,45 @@ class MagicBindingService
         }
     }
 
+    public function createCoolMintScepter(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $skillCheck = mt_rand(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() * 2);
+
+        if($skillCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            $pet->increaseEsteem(-1);
+
+            $this->inventoryService->loseItem('Mint', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to infuse a Wand of Ice with Mint, but just ended up totally destroying the Mint :(', '');
+        }
+        else if($skillCheck < 16)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to infuse a Wand of Ice with Mint, but it wasn\'t working...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Mint', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Wand of Ice', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' infused a Wand of Ice with Mint, creating a Cool Mint Scepter!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+            ;
+
+            $this->inventoryService->petCollectsItem('Cool Mint Scepter', $pet, $pet->getName() . ' made this by infusing a Wand of Ice with Mint.', $activityLog);
+            return $activityLog;
+        }
+    }
+
     public function createSleet(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
@@ -1611,11 +1653,6 @@ class MagicBindingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
             $pet->increaseEsteem(-1);
-
-            $this->inventoryService->loseItem('Everice', $pet->getOwner(), LocationEnum::HOME, 1);
-
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
 
             return $this->evericeMeltingService->doMeltEverice($pet, $pet->getName() . ' tried to bind Everice to an Invisible Shovel, but uttered the wrong sounds during the ritual, and melted the Everice, instead! (Dang! Powerful magics!)');
         }
