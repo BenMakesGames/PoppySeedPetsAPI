@@ -89,6 +89,9 @@ class MagicBindingService
 
         if(array_key_exists('Quintessence', $quantities))
         {
+            if(array_key_exists('Leaf Spear', $quantities) && array_key_exists('Mint', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createSpearmint', 8);
+
             if(array_key_exists('Fishing Recorder', $quantities) && array_key_exists('Music Note', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createKokopelli', 8);
 
@@ -1439,6 +1442,57 @@ class MagicBindingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
             ;
             $this->inventoryService->petCollectsItem('Gold Triskaidecta', $pet, $pet->getName() . ' enchanted this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createSpearmint(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $skillCheck = mt_rand(1, 20 + min($petWithSkills->getNature()->getTotal(), $petWithSkills->getUmbra()->getTotal()) + max($petWithSkills->getDexterity(), $petWithSkills->getPerception()->getTotal()) + $petWithSkills->getIntelligence()->getTotal());
+
+        if($skillCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::MUSIC ]);
+            $pet->increaseEsteem(-2);
+
+            if(mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bind Mint to a Leaf Spear, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Mint', $pet->getOwner(), LocationEnum::HOME, 1);
+                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to bind Mint to a Leaf Spear, but tore the Mint :(', '');
+            }
+        }
+        else if($skillCheck < 16)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA, PetSkillEnum::NATURE ]);
+
+            $message = mt_rand(1, 4) === 1
+                ? $pet->getName() . ' tried to bind Mint to a Leaf Spear, but couldn\'t handle THE FRESHNESS.'
+                : $pet->getName() . ' tried to bind Mint to a Leaf Spear, but couldn\'t figure it out...'
+            ;
+
+            return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Mint', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Leaf Spear', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA, PetSkillEnum::NATURE ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' bound Mint to a Leaf Spear, creating a Spearmint!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+            ;
+
+            $this->inventoryService->petCollectsItem('Spearmint', $pet, $pet->getName() . ' bound this.', $activityLog);
             return $activityLog;
         }
     }
