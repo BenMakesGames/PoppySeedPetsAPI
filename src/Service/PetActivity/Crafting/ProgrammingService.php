@@ -504,7 +504,7 @@ class ProgrammingService
         else
         {
             if(mt_rand(1, 3) === 1)
-                return $this->fightInfinityImp($petWithSkills, 'started computing Viswanath\'s Constant');
+                return $this->fightInfinityImp($petWithSkills, 'computing Viswanath\'s Constant');
             else
             {
                 $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROGRAM, false);

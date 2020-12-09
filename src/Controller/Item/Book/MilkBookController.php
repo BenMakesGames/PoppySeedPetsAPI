@@ -79,7 +79,7 @@ Whatever the circumstances that lead to your overabundance of milk, fret not! Th
 
 * Creamy Milk!
 * Plain Yogurt
-* Fruit (Blackberry or Blueberry)
+* Fruit (Mango, Blackberry, or Blueberry)
 
 Or, if you have Blackberry or Blueberry Yogurt, just add... Creamy Milk!
 

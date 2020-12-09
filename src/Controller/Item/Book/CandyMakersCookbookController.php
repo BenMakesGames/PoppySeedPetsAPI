@@ -70,13 +70,13 @@ Cook any of the following, on its own, to receive Pectin:
 
 Sweet Beets are _brimming_ with Sugar, just waiting to be extracted!
 
-1. Slice beats into 1/4" thick slices, and rinse.
+1. Slice beets into 1/4" thick slices, and rinse.
 2. Microwave until steaming.
 3. Shred in food processor, then transfer to a large pot.
 4. Cover with water, and simmer for about 45 minutes.
 5. Strain liquid, and place on a shallow baking dish.
 6. Bake at 250 until a sugar sludge remains.
-7. Take out of oven, transfer to cool baking sheet, and allow remaining water evaporate (be prepared to wait a day).
+7. Take out of oven, transfer to cool baking sheet, and allow remaining water to evaporate (be prepared to wait a day).
 
 Quick method:
 

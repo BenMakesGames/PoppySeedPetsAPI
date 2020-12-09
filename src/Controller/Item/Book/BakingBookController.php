@@ -135,7 +135,7 @@ A versatile bread! (If you make quesadillas, don\'t forget to Butter, or Oil, th
 
 #### Melon Pan
 
-A simple bread with a cracked, cookie crust. It\'s melon-like appearance gives it its name.
+A simple bread with a cracked, cookie crust. Its melon-like appearance gives it its name.
 
 * Baking Powder
 * Butter

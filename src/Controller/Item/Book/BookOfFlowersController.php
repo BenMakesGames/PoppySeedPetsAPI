@@ -141,7 +141,7 @@ Whoa.
 Okay, that\'s kinda\' bad-ass.
 
 ##### Black
-Death. HATRED... but also rejuvination? Quite a combo, but it doesn\'t _not_ make sense, I guess??
+Death. HATRED... but also rejuvenation? Quite a combo, but it doesn\'t _not_ make sense, I guess??
 
 ##### Pink
 Grace.

@@ -35,7 +35,7 @@ Chapter 1. A History of Eggs.
 
 Eggs are quite easy to come by in modern life, and it\'s easy to forget that, for the vast majority of human existence, all animal products had to be found, hunted, or stolen. Pigs were domesticated around 13,000 BC; sheep followed a couple thousand years later. In about 8,000 BC cattle were domesticated, and it\'s at about this time that it\'s believed pigeons were domesticated, but to serve as messengers rather than as food sources.
 
-It wasn\'t until 6,000-5,000 BC, accroding to fossil evidence, that chickens were domesticated, in ancient China.
+It wasn\'t until 6,000-5,000 BC, according to fossil evidence, that chickens were domesticated, in ancient China.
 
 This may feel like a very long time ago to you, but remember that humans have roamed the earth for at least 200,000 years, so it is for only about 5% of human history that have we enjoyed a relative abundance of eggs.
 
