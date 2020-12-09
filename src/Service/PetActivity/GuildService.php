@@ -331,7 +331,7 @@ class GuildService
             return null;
 
         $message = ArrayFunctions::pick_one([
-            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
+            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]) . ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
             $pet->getName() . ' participated in a ' . $member->getGuild()->getName() . ' race.',
             $pet->getName() . ' followed a senior member of ' . $member->getGuild()->getName() . ' through unfamiliar regions of Project-E, to deliver a message.'
         ]);

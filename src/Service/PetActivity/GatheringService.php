@@ -982,7 +982,7 @@ class GatheringService
                 $extraLoot[] = ArrayFunctions::pick_one([ 'Gold Ore', 'Gold Ore', 'Blackonite', 'Striped Microcline' ]);
         }
 
-        $allLoot = $foodLoot + $extraLoot;
+        $allLoot = array_merge($foodLoot, $extraLoot);
         sort($allLoot);
 
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60) + count($allLoot) * 5, PetActivityStatEnum::GATHER, count($allLoot) > 0);
