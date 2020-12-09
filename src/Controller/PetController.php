@@ -162,8 +162,11 @@ class PetController extends PoppySeedPetsController
             ->setLastInteracted(new \DateTimeImmutable())
         ;
 
-        if($user->getHollowEarthPlayer()->getChosenPet() !== null && $user->getHollowEarthPlayer()->getChosenPet()->getId() === $pet->getId())
-            $user->getHollowEarthPlayer()->setChosenPet(null);
+        if($user->getHollowEarthPlayer() && $user->getHollowEarthPlayer()->getChosenPet())
+        {
+            if($user->getHollowEarthPlayer()->getChosenPet()->getId() === $pet->getId())
+                $user->getHollowEarthPlayer()->setChosenPet(null);
+        }
 
         $activityLog = (new PetActivityLog())
             ->setPet($pet)
