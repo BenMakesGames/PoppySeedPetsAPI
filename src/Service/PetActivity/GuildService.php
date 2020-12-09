@@ -11,6 +11,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ComputedPetSkills;
+use App\Model\PetChanges;
 use App\Repository\GuildRepository;
 use App\Service\InventoryService;
 use App\Service\PetActivity\Guild\CorrespondenceService;
@@ -127,6 +128,17 @@ class GuildService
     }
 
     public function doGuildActivity(ComputedPetSkills $petWithSkills): ?PetActivityLog
+    {
+        $changes = new PetChanges($petWithSkills->getPet());
+
+        $activityLog = $this->pickGuildActivity($petWithSkills);
+
+        $activityLog->setChanges($changes->compare($petWithSkills->getPet()));
+
+        return $activityLog;
+    }
+
+    private function pickGuildActivity(ComputedPetSkills $petWithSkills): ?PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
