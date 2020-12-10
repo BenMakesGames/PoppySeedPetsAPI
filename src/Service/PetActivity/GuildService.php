@@ -133,7 +133,8 @@ class GuildService
 
         $activityLog = $this->pickGuildActivity($petWithSkills);
 
-        $activityLog->setChanges($changes->compare($petWithSkills->getPet()));
+        if($activityLog !== null)
+            $activityLog->setChanges($changes->compare($petWithSkills->getPet()));
 
         return $activityLog;
     }
