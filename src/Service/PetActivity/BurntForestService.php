@@ -192,7 +192,7 @@ class BurntForestService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
 
-            if($resistsFire || mt_rand(1, 20 + $petWithSkills->getStamina()) >= 15)
+            if($resistsFire || mt_rand(1, 20 + $petWithSkills->getStamina()->getTotal()) >= 15)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Burnt Forest, and encountered a mass of flaming tentacles! They tried to fight, but were forced to flee...', '');
                 $pet->increaseSafety(-mt_rand(2, 4));
