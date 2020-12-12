@@ -432,7 +432,9 @@ class DeepSeaService
             if($lucky || mt_rand(1, 100) === 1)
             {
                 $rareTreasure = ArrayFunctions::pick_one([
-                    'Little Strongbox', 'Blackonite'
+                    'Little Strongbox', 'Little Strongbox',
+                    'Jolliest Roger', 'Jolliest Roger',
+                    'Blackonite'
                 ]);
 
                 if($lucky)

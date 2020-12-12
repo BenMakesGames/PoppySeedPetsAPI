@@ -581,7 +581,19 @@ class Protocol7Service
             $snuck = 'snuck';
         }
 
-        if($check < 15)
+        if(mt_rand(1, 100) === 1)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' ' . $snuck . ' into a Walled Garden, but ran into a Pirate doing the same! ' . $pet->getName() . ' defeated the Pirate, stole its Jolliest Roger, and ran off before the Walled Garden\'s security system detected them! Yarr!', '');
+
+            $pet->increaseEsteem(mt_rand(4, 8));
+
+            $this->inventoryService->petCollectsItem('Jolliest Roger', $pet, $pet->getName() . ' fought off a Pirate in a Walled Garden within Project-E, and took this from it!', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE, PetSkillEnum::STEALTH, PetSkillEnum::BRAWL ]);
+        }
+        else if($check < 15)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
