@@ -263,6 +263,14 @@ class TraderService
             ),
             new TraderOffer(
                 [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Jolliest Roger'), 1),
+                    TraderOfferCostOrYield::createMoney(10),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Creamiest Roger'), 1) ],
+                'Well, it came out kind of funny. I think I liked the red better, myself, but hey: whatever floats your pirate boat!'
+            ),
+            new TraderOffer(
+                [
                     TraderOfferCostOrYield::createMoney(10),
                 ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Paint Stripper'), 1) ],
