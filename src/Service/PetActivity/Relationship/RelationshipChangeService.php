@@ -365,24 +365,35 @@ class RelationshipChangeService
             RelationshipEnum::MATE => 'date',
         ];
 
-        // naive pets always accept relationship changes
-        if($p2->getPet()->hasMerit(MeritEnum::NAIVE))
-            $chanceP1ChangesMind = 0;
-        else if($p1->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
-            $chanceP1ChangesMind = ceil($chanceP1ChangesMind / 4);
+        $p1IsNaive = $p1->getPet()->hasMerit(MeritEnum::NAIVE);
+        $p2IsNaive = $p2->getPet()->hasMerit(MeritEnum::NAIVE);
 
-        if($p1->getPet()->hasMerit(MeritEnum::NAIVE))
-            $chanceP2ChangesMind = 0;
-        else if($p2->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
-            $chanceP2ChangesMind = ceil($chanceP2ChangesMind / 4);
-
-        if($chanceP1ChangesMind < 1 && $chanceP2ChangesMind < 1)
+        if($p1IsNaive && $p2IsNaive)
         {
-            $chanceP1ChangesMind = 1;
-            $chanceP2ChangesMind = 1;
+            $chanceP1ChangesMind = 50;
+            $chanceP2ChangesMind = 50;
+        }
+        else
+        {
+            // naive pets always accept relationship changes
+            if($p2IsNaive)
+            {
+                $chanceP2ChangesMind = 100;
+                $chanceP1ChangesMind = 0;
+            }
+            else if($p1->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
+                $chanceP1ChangesMind = ceil($chanceP1ChangesMind / 4);
+
+            if($p1IsNaive)
+            {
+                $chanceP1ChangesMind = 100;
+                $chanceP2ChangesMind = 0;
+            }
+            else if($p2->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
+                $chanceP2ChangesMind = ceil($chanceP2ChangesMind / 4);
         }
 
-        $r = mt_rand(1, $chanceP1ChangesMind + $chanceP2ChangesMind);
+        $r = mt_rand(1, 100);
 
         if($r <= $chanceP1ChangesMind)
         {
@@ -394,7 +405,7 @@ class RelationshipChangeService
             if(mt_rand(1, 4) !== 1)
                 $p1->setRelationshipGoal($p2->getRelationshipGoal());
 
-            if($chanceP2ChangesMind === 0)
+            if($p1IsNaive)
                 $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$originalGoal] . ', but ' . $p2->getPet()->getName() . ' asked to ' . $downgradeDescription[$p2->getCurrentRelationship()] . ', instead. ' . $p1->getPet()->getName() . ' agreed immediately!';
             else
                 $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$originalGoal] . ', but ' . $p2->getPet()->getName() . ' was upset, and asked to ' . $downgradeDescription[$p2->getCurrentRelationship()] . '. After talking for a while, ' . $p1->getPet()->getName() . ' agreed...';
@@ -417,7 +428,7 @@ class RelationshipChangeService
             if(mt_rand(1, 4) !== 1)
                 $p2->setRelationshipGoal($p1->getRelationshipGoal());
 
-            if($chanceP1ChangesMind === 0)
+            if($p2IsNaive)
                 $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$p1->getRelationshipGoal()] . '. ' . $p2->getPet()->getName() . ' agreed immediately!';
             else
                 $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$p1->getRelationshipGoal()] . '. ' . $p2->getPet()->getName() . ' was upset, but after talking for a while said that it would be okay...';
