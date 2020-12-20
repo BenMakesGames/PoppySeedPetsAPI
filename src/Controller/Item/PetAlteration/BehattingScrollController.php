@@ -57,6 +57,12 @@ class BehattingScrollController extends PoppySeedPetsItemController
 
         $pet->addMerit($merit);
 
+        $adjective = ArrayFunctions::pick_one([
+            'awe-inspiring', 'incredible', 'breathtaking', 'amazing', 'fabulous'
+        ]);
+
+        $responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was granted the ' . $adjective . ' power to wear hats!', 'items/scroll/behatting');
+
         $em->flush();
 
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
