@@ -733,4 +733,44 @@ class GreenhouseController extends PoppySeedPetsController
 
         return $responseService->success();
     }
+
+    /**
+     * @Route("/beeNetting/deploy", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function deployBeeNetting(ResponseService $responseService)
+    {
+        $user = $this->getUser();
+        $greenhouse = $user->getGreenhouse();
+
+        if($greenhouse === null)
+            throw new AccessDeniedHttpException('You don\'t have a greenhouse!');
+
+        if(!$greenhouse->getCanUseBeeNetting())
+            throw new AccessDeniedHttpException('You haven\'t unlocked this feature, yet...');
+
+        $greenhouse->setHasBeeNetting(true);
+
+        return $responseService->success();
+    }
+
+    /**
+     * @Route("/beeNetting/putAway", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function putAwayBeeNetting(ResponseService $responseService)
+    {
+        $user = $this->getUser();
+        $greenhouse = $user->getGreenhouse();
+
+        if($greenhouse === null)
+            throw new AccessDeniedHttpException('You don\'t have a greenhouse!');
+
+        if(!$greenhouse->getCanUseBeeNetting())
+            throw new AccessDeniedHttpException('You haven\'t unlocked this feature, yet...');
+
+        $greenhouse->setHasBeeNetting(false);
+
+        return $responseService->success();
+    }
 }
