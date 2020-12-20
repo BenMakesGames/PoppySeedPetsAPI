@@ -687,9 +687,9 @@ class GatheringService
 
                 // why need to have unlocked the greenhouse? just testing that you've been playing for a while
                 if(mt_rand(1, 20) === 1 && $pet->getOwner()->getUnlockedGreenhouse() !== null)
-                    $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and I don\'t mean in a sexy way; ' . $pet->getName() . ' got a bit light-headed.');
+                    $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and I don\'t mean in a sexy way; %pet:' . $pet->getId() . '.name% got a bit light-headed.');
                 else
-                    $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and ' . $pet->getName() . ' got a bit light-headed.');
+                    $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and %pet:' . $pet->getId() . '.name% got a bit light-headed.');
             }
         }
 
@@ -875,9 +875,9 @@ class GatheringService
 
                 // why need to have unlocked the greenhouse? just testing that you've been playing for a while
                 if(mt_rand(1, 20) === 1 && $pet->getOwner()->getUnlockedGreenhouse() !== null)
-                    $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and I don\'t mean in a sexy way; ' . $pet->getName() . ' got a bit light-headed.');
+                    $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and I don\'t mean in a sexy way; %pet:' . $pet->getId() . '.name% got a bit light-headed.');
                 else
-                    $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and ' . $pet->getName() . ' got a bit light-headed.');
+                    $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and %pet:' . $pet->getId() . '.name% got a bit light-headed.');
             }
         }
 
@@ -1022,9 +1022,9 @@ class GatheringService
 
                 // why need to have unlocked the greenhouse? just testing that you've been playing for a while
                 if(mt_rand(1, 20) === 1 && $pet->getOwner()->getUnlockedGreenhouse() !== null)
-                    $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and I don\'t mean in a sexy way; ' . $pet->getName() . ' got a bit light-headed.');
+                    $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and I don\'t mean in a sexy way; %pet:' . $pet->getId() . '.name% got a bit light-headed.');
                 else
-                    $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and ' . $pet->getName() . ' got a bit light-headed.');
+                    $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and %pet:' . $pet->getId() . '.name% got a bit light-headed.');
             }
         }
 
