@@ -333,6 +333,8 @@ class InventoryService
 
         $this->em->persist($i);
 
+        $this->responseService->addReloadInventory();
+
         return $i;
     }
 
@@ -372,6 +374,8 @@ class InventoryService
             if(!$attractsBugs && $bugName === 'Spider')
                 $this->receiveItem('Cobweb', $pet->getOwner(), null, 'Cobwebs?! Some Spider must have made this...', $location);
         }
+
+        $this->responseService->addReloadInventory();
 
         return $inventory;
     }
@@ -422,6 +426,8 @@ class InventoryService
 
         $this->em->persist($i);
 
+        $this->responseService->addReloadInventory();
+
         return $i;
     }
 
@@ -450,6 +456,8 @@ class InventoryService
 
             $this->em->remove($i);
         }
+
+        $this->responseService->addReloadInventory();
 
         return count($inventory);
     }
