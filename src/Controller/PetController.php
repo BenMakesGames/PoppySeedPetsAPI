@@ -744,6 +744,8 @@ class PetController extends PoppySeedPetsController
             $pet->setIsFertile(true);
         }
 
+        $responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% took the "' . $merit->getName() . '" Merit at %user:' . $user->getId() . '.name%\'s suggestion.', 'ui/merit-icon');
+
         $em->flush();
 
         return $responseService->success($pet, SerializationGroupEnum::MY_PET);
@@ -775,6 +777,8 @@ class PetController extends PoppySeedPetsController
 
         $pet->getSkills()->increaseStat($skillName);
         $pet->increaseAffectionRewardsClaimed();
+
+        $responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% trained hard in ' . $skillName . ' at %user:' . $user->getId() . '.name%\'s suggestion.', 'ui/merit-icon');
 
         $em->flush();
 
