@@ -99,6 +99,8 @@ class ForgettingScrollController extends PoppySeedPetsItemController
 
         $pet->removeMerit($merit);
 
+        $responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% has forgotten the "' . $merit->getName() . '" Merit!', 'items/scroll/unlearning');
+
         if(in_array($merit->getName(), MeritService::AFFECTION_MERITS))
             $pet->decreaseAffectionRewardsClaimed();
 
@@ -165,6 +167,8 @@ class ForgettingScrollController extends PoppySeedPetsItemController
         $em->remove($inventory);
 
         $pet->getSkills()->decreaseStat($skill);
+
+        $responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% has forgotten some details about ' . ucfirst($skill) . '!', 'items/scroll/unlearning');
 
         $em->flush();
 
