@@ -105,7 +105,6 @@ class EncyclopediaController extends PoppySeedPetsController
     /**
      * @DoesNotRequireHouseHours()
      * @Route("/merit", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getMerits(
         ResponseService $responseService, MeritFilterService $meritFilterService, Request $request
