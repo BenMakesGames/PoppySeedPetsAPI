@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Inventory;
 use App\Entity\PetActivityLog;
 use App\Enum\BeehiveSpecializationEnum;
 use App\Enum\LocationEnum;
@@ -8,6 +9,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Repository\InventoryRepository;
+use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\BeehiveService;
 use App\Service\HollowEarthService;
@@ -185,7 +187,7 @@ class BeehiveController extends PoppySeedPetsController
      */
     public function harvest(
         ResponseService $responseService, EntityManagerInterface $em, BeehiveService $beehiveService,
-        InventoryService $inventoryService
+        InventoryService $inventoryService, SpiceRepository $spiceRepository
     )
     {
         $user = $this->getUser();
@@ -245,7 +247,15 @@ class BeehiveController extends PoppySeedPetsController
 
             $item = ArrayFunctions::pick_one($possibleItems);
 
-            $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' took this from their Beehive.', LocationEnum::HOME);
+            $newItem = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' took this from their Beehive.', LocationEnum::HOME);
+
+            if($newItem->getItem()->getName() === 'Crooked Stick' || $newItem->getItem()->getFood())
+            {
+                if(mt_rand(1, 20) === 1)
+                    $newItem->setSpice($spiceRepository->findOneByName('of Queens'));
+                else
+                    $newItem->setSpice($spiceRepository->findOneByName('Anthophilan'));
+            }
 
             $itemNames[] = $item;
         }

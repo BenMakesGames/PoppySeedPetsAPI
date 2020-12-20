@@ -53,7 +53,10 @@ class EggplantController extends PoppySeedPetsItemController
         else if($r === 5)
         {
             $eggs = 2;
-            $inventoryService->receiveItem('Quinacridone Magenta Dye', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
+
+            $newItem = $inventoryService->receiveItem('Quinacridone Magenta Dye', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
+            $newItem->setSpice($inventory->getSpice());
+
             $message = 'You clean the Eggplant as carefully as you can, and harvest two Eggs. You also manage to extract a good amount of purplish dye from the thing! (Neat!)';
         }
         else //if($r === 6)
@@ -65,7 +68,11 @@ class EggplantController extends PoppySeedPetsItemController
         if($eggs > 0)
         {
             for($i = 0; $i < $eggs; $i++)
-                $inventoryService->receiveItem('Egg', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
+            {
+                $newItem = $inventoryService->receiveItem('Egg', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
+
+                $newItem->setSpice($inventory->getSpice());
+            }
 
             $userStatsRepository->incrementStat($user, UserStatEnum::EGGS_HARVESTED_FROM_EGGPLANTS, $eggs);
         }

@@ -24,6 +24,7 @@ use App\Repository\PetSpeciesRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
+use App\Service\BeehiveService;
 use App\Service\GreenhouseService;
 use App\Service\InventoryService;
 use App\Service\PetActivity\GreenhouseAdventureService;
@@ -309,7 +310,7 @@ class GreenhouseController extends PoppySeedPetsController
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository, PetRepository $petRepository,
         PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository,
         UserQuestRepository $userQuestRepository, GreenhouseAdventureService $greenhouseAdventureService,
-        GreenhouseService $greenhouseService
+        GreenhouseService $greenhouseService, SpiceRepository $spiceRepository
     )
     {
         $user = $this->getUser();
@@ -433,6 +434,8 @@ class GreenhouseController extends PoppySeedPetsController
         }
         else
         {
+            $beeFlavorChance = $user->getBeehive() ? log($user->getBeehive()->getWorkers(), 2.511886) : 0;
+
             $lootList = [];
 
             foreach($plant->getPlant()->getPlantYields() as $yield)
@@ -450,7 +453,15 @@ class GreenhouseController extends PoppySeedPetsController
                     $lootItemName = $lootItem->getName();
                     $plantName = $plant->getPlant()->getName();
 
-                    $inventoryService->receiveItem($lootItem, $user, $user, $user->getName() . ' harvested this from ' . GrammarFunctions::indefiniteArticle($plantName) . ' ' . $plantName . '.', LocationEnum::HOME);
+                    $newItem = $inventoryService->receiveItem($lootItem, $user, $user, $user->getName() . ' harvested this from ' . GrammarFunctions::indefiniteArticle($plantName) . ' ' . $plantName . '.', LocationEnum::HOME);
+
+                    if(mt_rand(1, 10000) < $beeFlavorChance * 100)
+                    {
+                        if(mt_rand(1, 20) === 1)
+                            $newItem->setSpice($spiceRepository->findOneByName('of Queens'));
+                        else
+                            $newItem->setSpice($spiceRepository->findOneByName('Anthophilan'));
+                    }
 
                     if(array_key_exists($lootItemName, $lootList))
                         $lootList[$lootItemName]++;
