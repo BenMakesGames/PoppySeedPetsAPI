@@ -69,6 +69,18 @@ class Greenhouse
      */
     private $composterBonusCountdown = 0;
 
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"myGreenhouse"})
+     */
+    private $canUseBeeNetting = false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"myGreenhouse"})
+     */
+    private $hasBeeNetting = false;
+
     public function __construct()
     {
         $this->setComposterBonusCountdown();
@@ -191,6 +203,30 @@ class Greenhouse
     public function decreaseComposterBonusCountdown(int $amount): self
     {
         $this->composterBonusCountdown -= $amount;
+
+        return $this;
+    }
+
+    public function getCanUseBeeNetting(): ?bool
+    {
+        return $this->canUseBeeNetting;
+    }
+
+    public function setCanUseBeeNetting(bool $canUseBeeNetting): self
+    {
+        $this->canUseBeeNetting = $canUseBeeNetting;
+
+        return $this;
+    }
+
+    public function getHasBeeNetting(): ?bool
+    {
+        return $this->hasBeeNetting;
+    }
+
+    public function setHasBeeNetting(bool $hasBeeNetting): self
+    {
+        $this->hasBeeNetting = $hasBeeNetting;
 
         return $this;
     }

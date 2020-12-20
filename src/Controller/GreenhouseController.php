@@ -434,7 +434,10 @@ class GreenhouseController extends PoppySeedPetsController
         }
         else
         {
-            $beeFlavorChance = $user->getBeehive() ? log($user->getBeehive()->getWorkers(), 2.511886) : 0;
+            $beeFlavorChance = (!$user->getGreenhouse()->getHasBeeNetting() && $user->getBeehive())
+                ? log($user->getBeehive()->getWorkers(), 2.511886)
+                : 0
+            ;
 
             $lootList = [];
 
@@ -457,6 +460,8 @@ class GreenhouseController extends PoppySeedPetsController
 
                     if(mt_rand(1, 10000) < $beeFlavorChance * 100)
                     {
+                        $user->getGreenhouse()->setCanUseBeeNetting(true);
+
                         if(mt_rand(1, 20) === 1)
                             $newItem->setSpice($spiceRepository->findOneByName('of Queens'));
                         else
