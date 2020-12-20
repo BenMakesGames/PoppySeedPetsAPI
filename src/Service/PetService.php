@@ -656,7 +656,7 @@ class PetService
             return;
         }
 
-        if(true)//mt_rand(1, 50) === 1)
+        if(mt_rand(1, 50) === 1)
         {
             if($this->letterService->adventure($petWithSkills))
                 return;
