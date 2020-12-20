@@ -200,4 +200,47 @@ class PetRepository extends ServiceEntityRepository
 
         return array_map(function(PetRelationship $p) { return $p->getRelationship(); }, $relationshipsWithFewGroups);
     }
+
+    public function findRandomCourier(Pet $except): ?Pet
+    {
+        $oneMonthAgo = (new \DateTimeImmutable())->modify('-1 month');
+
+        $numberEligible = (int)$this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->join('p.owner', 'o')
+            ->join('p.guildMembership', 'm')
+            ->join('m.guild', 'g')
+            ->andWhere('o.lastActivity>=:oneMonthAgo')
+            ->andWhere('p.id!=:exceptPetId')
+            ->andWhere('g.name=:correspondence')
+            ->andWhere('m.level>10')
+            ->setParameter('oneMonthAgo', $oneMonthAgo)
+            ->setParameter('exceptPetId', $except->getId())
+            ->setParameter('correspondence', 'Correspondence')
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+
+        if($numberEligible === 0)
+            return null;
+
+        $petIndex = mt_rand(0, $numberEligible - 1);
+
+        return $this->createQueryBuilder('p')
+            ->join('p.owner', 'o')
+            ->join('p.guildMembership', 'm')
+            ->join('m.guild', 'g')
+            ->andWhere('o.lastActivity>=:oneMonthAgo')
+            ->andWhere('p.id!=:exceptPetId')
+            ->andWhere('g.name=:correspondence')
+            ->andWhere('m.level>10')
+            ->setParameter('oneMonthAgo', $oneMonthAgo)
+            ->setParameter('exceptPetId', $except->getId())
+            ->setParameter('correspondence', 'Correspondence')
+            ->setFirstResult($petIndex)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleResult()
+        ;
+    }
 }

@@ -50,4 +50,5 @@ final class SerializationGroupEnum
     public const ITEM_TYPEAHEAD = 'itemTypeahead';
     public const GUILD_ENCYCLOPEDIA= 'guildEncyclopedia';
     public const GUILD_MEMBER = 'guildMember';
+    public const MY_LETTERS = 'myLetters';
 }

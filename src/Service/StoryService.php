@@ -37,6 +37,7 @@ class StoryService
     private $jsonLogicParserService;
     private $userStatsRepository;
     private $responseService;
+    private $museumService;
 
     /** @var User */ private $user;
     /** @var UserQuest */ private $step;
@@ -50,7 +51,7 @@ class StoryService
         EntityManagerInterface $em, StoryRepository $storyRepository, StorySectionRepository $storySectionRepository,
         UserQuestRepository $userQuestRepository, InventoryService $inventoryService, ItemRepository $itemRepository,
         JsonLogicParserService $jsonLogicParserService, UserStatsRepository $userStatsRepository,
-        InventoryRepository $inventoryRepository, ResponseService $responseService
+        InventoryRepository $inventoryRepository, ResponseService $responseService, MuseumService $museumService
     )
     {
         $this->em = $em;
@@ -63,6 +64,7 @@ class StoryService
         $this->userStatsRepository = $userStatsRepository;
         $this->inventoryRepository = $inventoryRepository;
         $this->responseService = $responseService;
+        $this->museumService = $museumService;
     }
 
     /**
@@ -265,17 +267,7 @@ class StoryService
                 break;
 
             case StoryActionTypeEnum::DONATE_ITEM:
-                $museumItem = (new MuseumItem())
-                    ->setUser($this->user)
-                    ->setItem($this->itemRepository->findOneByName($action['item']))
-                    ->setCreatedBy(null)
-                    ->setComments([ $action['description'] ])
-                ;
-
-                $this->em->persist($museumItem);
-
-                $this->userStatsRepository->incrementStat($this->user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, 1);
-
+                $this->museumService->forceDonateItem($this->user, $action['item'], $action['description']);
                 break;
 
             case StoryActionTypeEnum::LOSE_ITEM:

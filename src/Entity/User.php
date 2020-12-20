@@ -256,6 +256,12 @@ class User implements UserInterface
      */
     private $icon;
 
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"myAccount"})
+     */
+    private $unlockedMailbox;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -913,6 +919,18 @@ class User implements UserInterface
     public function setIcon(?string $icon): self
     {
         $this->icon = $icon;
+
+        return $this;
+    }
+
+    public function getUnlockedMailbox(): ?\DateTimeImmutable
+    {
+        return $this->unlockedMailbox;
+    }
+
+    public function setUnlockedMailbox(): self
+    {
+        $this->unlockedMailbox = new \DateTimeImmutable();
 
         return $this;
     }

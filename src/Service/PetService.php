@@ -45,6 +45,7 @@ use App\Service\PetActivity\GivingTreeGatheringService;
 use App\Service\PetActivity\GuildService;
 use App\Service\PetActivity\HeartDimensionService;
 use App\Service\PetActivity\HuntingService;
+use App\Service\PetActivity\LetterService;
 use App\Service\PetActivity\MagicBeanstalkService;
 use App\Service\PetActivity\PetSummonedAwayService;
 use App\Service\PetActivity\PoopingService;
@@ -91,20 +92,22 @@ class PetService
     private $petSummonedAwayService;
     private $toolBonusService;
     private $notReallyCraftsService;
+    private $letterService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
-        PetRelationshipService $petRelationshipService, PetRepository $petRepository,
-        FishingService $fishingService, HuntingService $huntingService, GatheringService $gatheringService,
-        CraftingService $craftingService, UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
+        PetRelationshipService $petRelationshipService, PetRepository $petRepository, FishingService $fishingService,
+        HuntingService $huntingService, GatheringService $gatheringService, CraftingService $craftingService,
+        UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
         TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService,
         Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
         PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService,
-        PregnancyService $pregnancyService, PetActivityStatsService $petActivityStatsService, PetGroupService $petGroupService,
-        PetExperienceService $petExperienceService, DreamingService $dreamingService, MagicBeanstalkService $beanStalkService,
-        EasterEggHuntingService $easterEggHuntingService, HeartDimensionService $heartDimensionService,
-        PetRelationshipRepository $petRelationshipRepository, GuildService $guildService, InventoryService $inventoryService,
-        BurntForestService $burntForestService, DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService,
+        PregnancyService $pregnancyService, PetActivityStatsService $petActivityStatsService,
+        PetGroupService $petGroupService, PetExperienceService $petExperienceService, DreamingService $dreamingService,
+        MagicBeanstalkService $beanStalkService, EasterEggHuntingService $easterEggHuntingService,
+        HeartDimensionService $heartDimensionService, PetRelationshipRepository $petRelationshipRepository,
+        GuildService $guildService, InventoryService $inventoryService, BurntForestService $burntForestService,
+        DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService, LetterService $letterService,
         PetSummonedAwayService $petSummonedAwayService, InventoryModifierService $toolBonusService
     )
     {
@@ -142,6 +145,7 @@ class PetService
         $this->petSummonedAwayService = $petSummonedAwayService;
         $this->toolBonusService = $toolBonusService;
         $this->notReallyCraftsService = $notReallyCraftsService;
+        $this->letterService = $letterService;
     }
 
     /**
@@ -652,8 +656,11 @@ class PetService
             return;
         }
 
-        if(mt_rand(1, 50) === 1)
+        if(true)//mt_rand(1, 50) === 1)
         {
+            if($this->letterService->adventure($petWithSkills))
+                return;
+
             $this->genericAdventureService->adventure($petWithSkills);
             return;
         }

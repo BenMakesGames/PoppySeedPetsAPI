@@ -1,0 +1,35 @@
+<?php
+
+declare(strict_types=1);
+
+namespace DoctrineMigrations;
+
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
+
+/**
+ * Auto-generated Migration: Please modify to your needs!
+ */
+final class Version20201218061815 extends AbstractMigration
+{
+    public function getDescription() : string
+    {
+        return '';
+    }
+
+    public function up(Schema $schema) : void
+    {
+        // this up() migration is auto-generated, please modify it to your needs
+        $this->addSql('DROP INDEX series_idx ON letter');
+        $this->addSql('ALTER TABLE letter CHANGE series sender VARCHAR(40) NOT NULL');
+        $this->addSql('CREATE INDEX sender_idx ON letter (sender)');
+    }
+
+    public function down(Schema $schema) : void
+    {
+        // this down() migration is auto-generated, please modify it to your needs
+        $this->addSql('DROP INDEX sender_idx ON letter');
+        $this->addSql('ALTER TABLE letter CHANGE sender series VARCHAR(40) CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_unicode_ci`');
+        $this->addSql('CREATE INDEX series_idx ON letter (series)');
+    }
+}

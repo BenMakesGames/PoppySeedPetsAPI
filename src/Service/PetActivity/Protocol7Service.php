@@ -171,7 +171,7 @@ class Protocol7Service
                 [ 'an archive of ROMs from a forgotten computer system, and started trying to make sense of them', 'trying to make sense of old ROMs' ]
             ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, following some breadcrumbs left by other members of Time\'s Arrow. They reached ' . $locationAndAction . ', eventually piecing together ' . $item->getNameWithArticle() . '!', 'icons/activity-logs/confused');
+            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E, following some breadcrumbs left by other members of Time\'s Arrow. They reached ' . $locationAndAction . ', eventually piecing together ' . $item->getNameWithArticle() . '!', '');
 
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this while ' . $actioning . ' in Project-E.', $activityLog);
 
@@ -265,7 +265,7 @@ class Protocol7Service
 
         $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::PROTOCOL_7, true);
 
-        return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E. Correspondence had some message-delivery jobs, so ' . $pet->getName() . ' picked a couple up, earning ' . $moneys . '~~m~~ for their trouble.', 'icons/activity-logs/confused');
+        return $this->responseService->createActivityLog($pet, $pet->getName() . ' accessed Project-E. Correspondence had some message-delivery jobs, so ' . $pet->getName() . ' picked a couple up, earning ' . $moneys . '~~m~~ for their trouble.', '');
     }
 
     private function encounterAnnabellastasia(Pet $pet): PetActivityLog

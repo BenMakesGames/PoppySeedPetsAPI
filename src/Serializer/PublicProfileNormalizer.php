@@ -5,10 +5,10 @@ use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\UserFollowingRepository;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-class PublicProfileNormalizer implements NormalizerInterface
+class PublicProfileNormalizer implements ContextAwareNormalizerInterface
 {
     private $normalizer;
     private $userFollowingRepository;
@@ -42,7 +42,7 @@ class PublicProfileNormalizer implements NormalizerInterface
         return $data;
     }
 
-    public function supportsNormalization($data, string $format = null)
+    public function supportsNormalization($data, string $format = null, array $context = [])
     {
         return $data instanceof User;
     }
