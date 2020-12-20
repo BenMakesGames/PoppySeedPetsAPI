@@ -115,7 +115,7 @@ class EasterEggHuntingService
                 $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, false);
 
                 $pet->increaseSafety(-mt_rand(2, 4));
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' went looking for plastic eggs ' . $where . ', but it was way too hot; they couldn\'t find anything before they had to leave :(', '');
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went looking for plastic eggs ' . $where . ', but it was way too hot; they couldn\'t find anything before they had to leave :(', '');
             }
         }
 
@@ -207,7 +207,7 @@ class EasterEggHuntingService
             $pet->increaseEsteem($level);
             $this->petExperienceService->gainExp($pet, $level, [ PetSkillEnum::BRAWL ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by some kind of ' . $adjective . ', fish-rabbit hybrid thing, but was able to defeat it!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by some kind of ' . $adjective . ', fish-rabbit hybrid thing, but was able to defeat it!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $level * 3)
             ;
 
@@ -230,7 +230,7 @@ class EasterEggHuntingService
             $pet->increaseSafety(-$level);
             $this->petExperienceService->gainExp($pet, ceil($level / 2), [ PetSkillEnum::BRAWL ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by some kind of ' . $adjective . ', fish-rabbit hybrid thing! ' . $pet->getName() . ' couldn\'t land a single attack, and ran away!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by some kind of ' . $adjective . ', fish-rabbit hybrid thing! ' . $pet->getName() . ' couldn\'t land a single attack, and ran away!', '');
 
             return $activityLog;
         }

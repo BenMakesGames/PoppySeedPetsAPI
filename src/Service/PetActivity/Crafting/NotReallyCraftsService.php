@@ -79,7 +79,7 @@ class NotReallyCraftsService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, true);
             $this->inventoryService->loseItem('Planetary Ring', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' sifted through a Planetary Ring looking for goodies, but ended up scattering it to dust :(', '');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% sifted through a Planetary Ring looking for goodies, but ended up scattering it to dust :(', '');
         }
         else if($roll >= 16)
         {
@@ -118,7 +118,7 @@ class NotReallyCraftsService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
             $pet->increaseEsteem(3);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' sifted through a Planetary Ring, and found ' . $loot . $exclaim, '')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% sifted through a Planetary Ring, and found ' . $loot . $exclaim, '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
             ;
 
@@ -130,7 +130,7 @@ class NotReallyCraftsService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::GATHER, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' sifted through a Planetary Ring, looking for something interesting, but couldn\'t find anything.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% sifted through a Planetary Ring, looking for something interesting, but couldn\'t find anything.', 'icons/activity-logs/confused');
         }
     }
 

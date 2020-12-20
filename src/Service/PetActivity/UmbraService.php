@@ -133,7 +133,7 @@ class UmbraService
 
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
 
-        return $this->responseService->createActivityLog($pet, $pet->getName() . ' crossed into the Umbra, but the Storm was too harsh; ' . $pet->getName() . ' retreated before finding anything.', 'icons/activity-logs/confused');
+        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% crossed into the Umbra, but the Storm was too harsh; ' . $pet->getName() . ' retreated before finding anything.', 'icons/activity-logs/confused');
     }
 
     private function visitLibraryOfFire(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -148,7 +148,7 @@ class UmbraService
 
             if(mt_rand(1, 5) === 1)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Library of Fire\'s arboretum, and found the brick with your name on it!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Library of Fire\'s arboretum, and found the brick with your name on it!', '');
 
                 $pet
                     ->increaseEsteem(mt_rand(3, 6))
@@ -157,7 +157,7 @@ class UmbraService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the Library of Fire\'s arboretum.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Library of Fire\'s arboretum.', '');
 
                 $pet->increaseSafety(mt_rand(2, 4));
             }
@@ -181,7 +181,7 @@ class UmbraService
             else if($floor === 30)
                 $floor = 31;
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' visited the ' . GrammarFunctions::ordinalize($floor) . ' floor of the Library of Fire, and read a random book...', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the ' . GrammarFunctions::ordinalize($floor) . ' floor of the Library of Fire, and read a random book...', '');
 
             $this->petExperienceService->gainExp($pet, mt_rand(1, 2), PetSkillEnum::getValues());
             $pet->increaseSafety(mt_rand(2, 4));
@@ -204,17 +204,17 @@ class UmbraService
 
             if($reward === 1)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, 'In the Umbra, ' . $pet->getName() . ' found an outcropping of rocks where the full force of the Storm could not reach. Some Grandparoot was growing there; ' . $pet->getName() . ' took one.', 'items/veggie/grandparoot');
+                $activityLog = $this->responseService->createActivityLog($pet, 'In the Umbra, ' . '%pet:' . $pet->getId() . '.name% found an outcropping of rocks where the full force of the Storm could not reach. Some Grandparoot was growing there; ' . $pet->getName() . ' took one.', 'items/veggie/grandparoot');
                 $this->inventoryService->petCollectsItem('Grandparoot', $pet, $pet->getName() . ' pulled this up from between some rocks in the Umbra.', $activityLog);
             }
             else if($reward === 2)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, 'In the Umbra, ' . $pet->getName() . ' found an outcropping of rocks where the full force of the Storm could not reach. A dry bush once grew there; ' . $pet->getName() . ' took a Crooked Stick from its remains.', 'items/plant/stick-crooked');
+                $activityLog = $this->responseService->createActivityLog($pet, 'In the Umbra, ' . '%pet:' . $pet->getId() . '.name% found an outcropping of rocks where the full force of the Storm could not reach. A dry bush once grew there; ' . $pet->getName() . ' took a Crooked Stick from its remains.', 'items/plant/stick-crooked');
                 $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' took this from the remains of a dead bush in the Umbra.', $activityLog);
             }
             else // if($reward === 3)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, 'In the Umbra, ' . $pet->getName() . ' found an outcropping of rocks where the full force of the Storm could not reach. A small Blackberry bush was growing there; ' . $pet->getName() . ' took a few berries.', 'items/fruit/blackberries');
+                $activityLog = $this->responseService->createActivityLog($pet, 'In the Umbra, ' . '%pet:' . $pet->getId() . '.name% found an outcropping of rocks where the full force of the Storm could not reach. A small Blackberry bush was growing there; ' . $pet->getName() . ' took a few berries.', 'items/fruit/blackberries');
                 $this->inventoryService->petCollectsItem('Blackberries', $pet, $pet->getName() . ' harvested these exceptionally-dark Blackberries from a rock-sheltered berry bush in the Umbra.', $activityLog);
             }
 
@@ -227,7 +227,7 @@ class UmbraService
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
-            return $this->responseService->createActivityLog($pet, 'In the Umbra, ' . $pet->getName() . ' found an outcropping of rocks where the full force of the Storm could not reach. Some weeds were growing there, but nothing of value.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, 'In the Umbra, ' . '%pet:' . $pet->getId() . '.name% found an outcropping of rocks where the full force of the Storm could not reach. Some weeds were growing there, but nothing of value.', 'icons/activity-logs/confused');
         }
     }
 
@@ -266,13 +266,13 @@ class UmbraService
 
             if(mt_rand(1, 2) === 1)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. ' . $messageDetail . '; the spirit was very thankful, and insisted that ' . $pet->getName() . ' take ' . $rewards[$reward] . ' ' . $reward . '.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. ' . $messageDetail . '; the spirit was very thankful, and insisted that ' . $pet->getName() . ' take ' . $rewards[$reward] . ' ' . $reward . '.', '');
                 $this->inventoryService->petCollectsItem($reward, $pet, $pet->getName() . ' received this from a friendly spirit as thanks for helping it navigate the Umbra.', $activityLog);
                 $pet->increaseEsteem(1);
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. ' . $messageDetail . '; the spirit was very thankful, and wished ' . $pet->getName() . ' well.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. ' . $messageDetail . '; the spirit was very thankful, and wished ' . $pet->getName() . ' well.', '');
                 $pet->increaseEsteem(4);
             }
 
@@ -288,13 +288,13 @@ class UmbraService
 
             if(mt_rand(1, 2) === 1)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. ' . $pet->getName() . ' was able to point the way; the spirit was very thankful, and insisted that ' . $pet->getName() . ' take ' . $rewards[$reward] . ' ' . $reward . '.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. ' . $pet->getName() . ' was able to point the way; the spirit was very thankful, and insisted that ' . $pet->getName() . ' take ' . $rewards[$reward] . ' ' . $reward . '.', '');
                 $this->inventoryService->petCollectsItem($reward, $pet, $pet->getName() . ' received this from a friendly spirit as thanks for helping it navigate the Umbra.', $activityLog);
                 $pet->increaseEsteem(1);
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. ' . $pet->getName() . ' was able to point the way; the spirit was very thankful, and wished ' . $pet->getName() . ' well.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. ' . $pet->getName() . ' was able to point the way; the spirit was very thankful, and wished ' . $pet->getName() . ' well.', '');
                 $pet->increaseEsteem(4);
             }
 
@@ -308,12 +308,12 @@ class UmbraService
 
             if($hasRelevantSpirit)
             {
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. It asked for directions, but ' . $pet->getName() . ' and ' . $pet->getSpiritCompanion()->getName() . ' didn\'t know how to help.', 'icons/activity-logs/confused')
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. It asked for directions, but ' . $pet->getName() . ' and ' . $pet->getSpiritCompanion()->getName() . ' didn\'t know how to help.', 'icons/activity-logs/confused')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
                 ;
             }
             else
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' met a friendly spirit lost in the Umbra. It asked for directions, but ' . $pet->getName() . ' didn\'t know how to help.', 'icons/activity-logs/confused');
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. It asked for directions, but ' . $pet->getName() . ' didn\'t know how to help.', 'icons/activity-logs/confused');
         }
     }
 
@@ -326,7 +326,7 @@ class UmbraService
 
         if($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 80) === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a Little Strongbox! Lucky~!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a Little Strongbox! Lucky~!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
             ;
 
@@ -337,7 +337,7 @@ class UmbraService
 
         if(mt_rand(1, 100) === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a Little Strongbox, and took it!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a Little Strongbox, and took it!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
 
@@ -353,7 +353,7 @@ class UmbraService
 
         if($pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 50) === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a ' . $die . '! Lucky~!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a ' . $die . '! Lucky~!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
             ;
 
@@ -364,7 +364,7 @@ class UmbraService
 
         if(mt_rand(1, 80) === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a ' . $die . ', and took it!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a ' . $die . ', and took it!', '');
 
             $this->inventoryService->petCollectsItem($die, $pet, $pet->getName() . ' found this on the shores of a dark river in the Umbra.', $activityLog);
 
@@ -373,7 +373,7 @@ class UmbraService
 
         $this->transactionService->getMoney($pet->getOwner(), 2, $pet->getName() . ' found this on the shores of a dark river in the Umbra.');
 
-        return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted 2~~m~~. No one else was around, so...', 'icons/activity-logs/moneys');
+        return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted 2~~m~~. No one else was around, so...', 'icons/activity-logs/moneys');
     }
 
     private function fightEvilSpirit(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -411,7 +411,7 @@ class UmbraService
 
                 $prizeItem = $this->itemRepository->findOneByName($prize);
 
-                $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' endured its attacks long enough to calm it down! It eventually wandered away, dropping ' . $prizeItem->getNameWithArticle() . ' as it went...', 'guilds/light-and-shadow')
+                $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' endured its attacks long enough to calm it down! It eventually wandered away, dropping ' . $prizeItem->getNameWithArticle() . ' as it went...', 'guilds/light-and-shadow')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
                 ;
 
@@ -422,7 +422,7 @@ class UmbraService
             else
             {
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-                return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly. ' . $pet->getName() . ' tried to endure its attacks long enough to calm it down, but was eventually forced to retreat!', 'guilds/light-and-shadow');
+                return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly. ' . $pet->getName() . ' tried to endure its attacks long enough to calm it down, but was eventually forced to retreat!', 'guilds/light-and-shadow');
             }
         }
 
@@ -444,13 +444,13 @@ class UmbraService
             if($pet->isInGuild(GuildEnum::THE_UNIVERSE_FORGETS))
             {
                 $pet->getGuildMembership()->increaseReputation();
-                $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' ' . $defeated . ', and claimed its ' . $prize . '!', 'guilds/the-universe-forgets')
+                $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' ' . $defeated . ', and claimed its ' . $prize . '!', 'guilds/the-universe-forgets')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
                 ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' ' . $defeated . ', and claimed its ' . $prize . '!', '')
+                $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' ' . $defeated . ', and claimed its ' . $prize . '!', '')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
                 ;
             }
@@ -461,7 +461,7 @@ class UmbraService
         else
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
-            return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; ' . $pet->getName() . ' made a hasty retreat.', '');
+            return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; ' . $pet->getName() . ' made a hasty retreat.', '');
         }
     }
 
@@ -506,13 +506,13 @@ class UmbraService
 
             if($roll >= 18)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' decided to fish in a dark river. They caught ' . $fish . ', and harvested its ' . $prizes[0] . ' and ' . $prizes[1] . '.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% decided to fish in a dark river. They caught ' . $fish . ', and harvested its ' . $prizes[0] . ' and ' . $prizes[1] . '.', '');
                 $this->inventoryService->petCollectsItem($prizes[0], $pet, $pet->getName() . ' got this from fishing in the Umbra.', $activityLog);
                 $this->inventoryService->petCollectsItem($prizes[1], $pet, $pet->getName() . ' got this from fishing in the Umbra.', $activityLog);
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' decided to fish in a dark river. They caught ' . $fish . ', and harvested its ' . $prizes[0] . '.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% decided to fish in a dark river. They caught ' . $fish . ', and harvested its ' . $prizes[0] . '.', '');
                 $this->inventoryService->petCollectsItem($prizes[0], $pet, $pet->getName() . ' got this from fishing in the Umbra.', $activityLog);
             }
 
@@ -524,7 +524,7 @@ class UmbraService
         else
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' decided to fish in a dark river. Plenty of strange things swam by, but ' . $pet->getName() . ' didn\'t manage to catch any of them.', '');
+            return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% decided to fish in a dark river. Plenty of strange things swam by, but ' . $pet->getName() . ' didn\'t manage to catch any of them.', '');
         }
     }
 
@@ -550,7 +550,7 @@ class UmbraService
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
                 $pet->increaseEsteem(3);
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fell into a giant cocoon. While trying to find their way out, ' . $pet->getName() . ' was ambushed by one of Noetala\'s guard, but was able to defeat it!', '')
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% fell into a giant cocoon. While trying to find their way out, ' . $pet->getName() . ' was ambushed by one of Noetala\'s guard, but was able to defeat it!', '')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
                 ;
 
@@ -565,7 +565,7 @@ class UmbraService
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
                 $pet->increaseEsteem(-3);
                 $pet->increaseSafety(-mt_rand(4, 8));
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' fell into a giant cocoon. While trying to find their way out, ' . $pet->getName() . ' was ambushed by one of Noetala\'s guard, and was wounded and covered in Fluff before being able to escape!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% fell into a giant cocoon. While trying to find their way out, ' . $pet->getName() . ' was ambushed by one of Noetala\'s guard, and was wounded and covered in Fluff before being able to escape!', '');
                 $didWhat = 'was attacked by one of Noetala\'s guard, and covered in this';
             }
         }
@@ -579,7 +579,7 @@ class UmbraService
             if(mt_rand(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15)
                 $loot[] = 'Fluff';
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' stumbled upon Noetala\'s giant cocoon. They snuck around inside for a bit, and made off with ' . ArrayFunctions::list_nice($loot) . '.', '')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stumbled upon Noetala\'s giant cocoon. They snuck around inside for a bit, and made off with ' . ArrayFunctions::list_nice($loot) . '.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
             ;
 
@@ -617,7 +617,7 @@ class UmbraService
 
                 $pet->increaseEsteem(2);
 
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' stumbled upon a castle that was obviously home to vampires. They snuck around inside for a while, and made off with some ' . $loot . '.', '')
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was obviously home to vampires. They snuck around inside for a while, and made off with some ' . $loot . '.', '')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
                 ;
 
@@ -627,7 +627,7 @@ class UmbraService
             {
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ]);
 
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' stumbled upon a castle that was obviously home to vampires. They snuck around inside for a while, but couldn\'t find a good opportunity to steal anything.', 'icons/activity-logs/confused');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was obviously home to vampires. They snuck around inside for a while, but couldn\'t find a good opportunity to steal anything.', 'icons/activity-logs/confused');
             }
         }
         else if($pet->getTool() && $pet->getTool()->isGrayscaling())
@@ -637,7 +637,7 @@ class UmbraService
 
             $pet->increaseEsteem(2);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' stumbled upon a castle that was apparently home to vampires! Fortunately, the vampires mistook ' . $pet->getName() . '\'s monochromatic appearance as vampirism, and welcomed them as kin. ' . $pet->getName() . ' stole a few items while none of the vampires were looking, and fled the castle as soon as they could!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was apparently home to vampires! Fortunately, the vampires mistook ' . $pet->getName() . '\'s monochromatic appearance as vampirism, and welcomed them as kin. ' . $pet->getName() . ' stole a few items while none of the vampires were looking, and fled the castle as soon as they could!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
 
@@ -658,7 +658,7 @@ class UmbraService
                     ->increaseSafety(2)
                 ;
 
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' stumbled upon a castle. While exploring it, a vampire attacked them! ' . $pet->getName() . ' was able to drive them away, however, and even nab ' . $loot . '!', '')
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle. While exploring it, a vampire attacked them! ' . $pet->getName() . ' was able to drive them away, however, and even nab ' . $loot . '!', '')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
                 ;
 
@@ -673,7 +673,7 @@ class UmbraService
                     ->increaseSafety(-2)
                 ;
 
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' stumbled upon a castle. While exploring it, a vampire attacked them! ' . $pet->getName() . ', caught completely by surprise, was forced to flee...', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle. While exploring it, a vampire attacked them! ' . $pet->getName() . ', caught completely by surprise, was forced to flee...', '');
             }
         }
 
@@ -688,7 +688,7 @@ class UmbraService
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::UMBRA, false);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wandered into a deep, dark part of the Umbra, but they didn\'t have a light, so turned back...', '')
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a deep, dark part of the Umbra, but they didn\'t have a light, so turned back...', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
         }
@@ -702,9 +702,9 @@ class UmbraService
             $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::GATHER, true);
 
             if($pet->getTool() && $pet->getTool()->providesLight())
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wandered into a frozen quag deep in the Umbra. The light of their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . ' caught on a cube of Everice, which ' . $pet->getName() . ' took!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra. The light of their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . ' caught on a cube of Everice, which ' . $pet->getName() . ' took!', '');
             else
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' wandered into a frozen quag deep in the Umbra, and happened to spot a cube of Everice!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra, and happened to spot a cube of Everice!', '');
 
             $this->inventoryService->petCollectsItem('Everice', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
         }
@@ -712,7 +712,7 @@ class UmbraService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::GATHER, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' crept through a frozen quag deep in the Umbra, but all they found was a Crooked Stick.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% crept through a frozen quag deep in the Umbra, but all they found was a Crooked Stick.', '');
             $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
         }
 
@@ -743,7 +743,7 @@ class UmbraService
                 ->increaseEsteem(3)
                 ->increaseSafety(3)
             ;
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered an Abandondero! It whipped out a laser gun, but ' . $pet->getName() . ' ' . $defeated . ', defeated it, and claimed its ' . $prize . '!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered an Abandondero! It whipped out a laser gun, but ' . $pet->getName() . ' ' . $defeated . ', defeated it, and claimed its ' . $prize . '!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
             ;
             $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' defeated an Abandondero, and took this.', $activityLog);
@@ -753,7 +753,7 @@ class UmbraService
         {
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
             $pet->increaseSafety(-4);
-            return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $pet->getName() . ' encountered an Abandondero! It whipped out a laser gun, and took a few shots at ' . $pet->getName() . ', who made a hasty retreat.', '');
+            return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered an Abandondero! It whipped out a laser gun, and took a few shots at ' . $pet->getName() . ', who made a hasty retreat.', '');
         }
     }
 
@@ -780,7 +780,7 @@ class UmbraService
 
                 $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
                 $pet->increaseEsteem(mt_rand(1, 2));
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Cursed Garden, but while looking for food, was attacked by an Angry Spirit. ' . $pet->getName() . ' defeated the Angry Spirit, and took its ' . ArrayFunctions::list_nice($loot) . '.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a Cursed Garden, but while looking for food, was attacked by an Angry Spirit. ' . $pet->getName() . ' defeated the Angry Spirit, and took its ' . ArrayFunctions::list_nice($loot) . '.', '');
                 $didWhat = 'defeated an Angry Spirit in the Umbra, and got this';
             }
             else
@@ -792,7 +792,7 @@ class UmbraService
                     ->increaseEsteem(-2)
                     ->increaseSafety(-4)
                 ;
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Cursed Garden, but, while looking for food, was attacked and routed by an Angry Spirit.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a Cursed Garden, but, while looking for food, was attacked and routed by an Angry Spirit.', '');
 
                 return $activityLog;
             }
@@ -804,7 +804,7 @@ class UmbraService
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' found a Cursed Garden, and harvested ' . ArrayFunctions::list_nice($loot) . '.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a Cursed Garden, and harvested ' . ArrayFunctions::list_nice($loot) . '.', '');
 
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, true);
         }

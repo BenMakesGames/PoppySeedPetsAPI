@@ -206,7 +206,7 @@ class PetService
         else
             throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
 
-        $this->responseService->createActivityLog($pet, 'You pet ' . $pet->getName(). '.', 'ui/affection', $changes->compare($pet));
+        $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% pet ' . '%pet:' . $pet->getId() . '.name%'. '.', 'ui/affection', $changes->compare($pet));
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PETTED_A_PET);
     }
 
@@ -242,7 +242,7 @@ class PetService
         else
             throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
 
-        $this->responseService->createActivityLog($pet, 'You praised ' . $pet->getName(). '.', 'ui/affection', $changes->compare($pet));
+        $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% praised ' . '%pet:' . $pet->getId() . '.name%'. '.', 'ui/affection', $changes->compare($pet));
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PRAISED_A_PET);
     }
 
@@ -369,9 +369,9 @@ class PetService
         else
         {
             if(count($tooPoisonous) > 0)
-                return $this->responseService->createActivityLog($pet, 'You tried to feed ' . $pet->getName() . ', but ' . ArrayFunctions::pick_one($tooPoisonous) . ' really isn\'t appealing right now.', '');
+                return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but ' . ArrayFunctions::pick_one($tooPoisonous) . ' really isn\'t appealing right now.', '');
             else
-                return $this->responseService->createActivityLog($pet, 'You tried to feed ' . $pet->getName() . ', but they\'re too full to eat anymore.', '');
+                return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but they\'re too full to eat anymore.', '');
         }
     }
 
@@ -483,7 +483,7 @@ class PetService
 
                 $this->petExperienceService->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::OTHER, null);
 
-                $this->responseService->createActivityLog($pet, $pet->getName() . ' threw up :(', '', $changes->compare($pet));
+                $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% threw up :(', '', $changes->compare($pet));
 
                 return;
             }
@@ -1314,7 +1314,7 @@ class PetService
     private function doNothing(Pet $pet)
     {
         $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::OTHER, null);
-        $this->responseService->createActivityLog($pet, $pet->getName() . ' hung around the house.', '');
+        $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% hung around the house.', '');
     }
 
     private function pickDesire(array $petDesires)

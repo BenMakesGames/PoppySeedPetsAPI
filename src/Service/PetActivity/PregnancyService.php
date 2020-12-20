@@ -178,14 +178,14 @@ class PregnancyService
             $baby->setInDaycare(true);
             $pet->setInDaycare(true);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '! (There wasn\'t enough room at Home, so the birth took place at the Pet Shelter.)', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '! (There wasn\'t enough room at Home, so the birth took place at the Pet Shelter.)', '');
         }
         else
         {
             if($increasedPetLimit)
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '! (Congrats on your first pet birth! The maximum amount of pets you can have at home has been permanently increased by one!)', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '! (Congrats on your first pet birth! The maximum amount of pets you can have at home has been permanently increased by one!)', '');
             else
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '!', '');
         }
 
         $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::GAVE_BIRTH);

@@ -106,7 +106,7 @@ class DeepSeaService
     {
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
 
-        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to get the Submarine started, but forgot one of the steps, causing the whole thing to freak out and shut down :|', 'icons/activity-logs/confused');
+        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to get the Submarine started, but forgot one of the steps, causing the whole thing to freak out and shut down :|', 'icons/activity-logs/confused');
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
 
@@ -117,7 +117,7 @@ class DeepSeaService
     {
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, true);
 
-        $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' took the Submarine out to sea, but didn\'t really get anywhere... some Algae got stuck to the hull, though, so there\'s that!', 'items/tool/submarine');
+        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% took the Submarine out to sea, but didn\'t really get anywhere... some Algae got stuck to the hull, though, so there\'s that!', 'items/tool/submarine');
 
         $this->inventoryService->petCollectsItem('Algae', $pet, $pet->getName() . ' cleaned this off the Submarine.', $activityLog);
 
@@ -137,7 +137,7 @@ class DeepSeaService
 
             if(mt_rand(1, 100) === 1)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the shelf sea using the Submarine, and found a Dino Skull!', 'items/tool/submarine');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine, and found a Dino Skull!', 'items/tool/submarine');
 
                 $this->inventoryService->petCollectsItem('Dino Skull', $pet, $pet->getName() . ' found this while exploring the shelf sea using the Submarine!', $activityLog);
 
@@ -151,7 +151,7 @@ class DeepSeaService
                     'Seaweed', 'Silica Grounds', 'Fish', 'Scales'
                 ]);
 
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the shelf sea using the Submarine. All they found was ' . $loot . '...', 'items/tool/submarine');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine. All they found was ' . $loot . '...', 'items/tool/submarine');
 
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while exploring the shelf sea using the Submarine.', $activityLog);
 
@@ -162,7 +162,7 @@ class DeepSeaService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the shelf sea using the Submarine. (Pretty!)', 'items/tool/submarine');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine. (Pretty!)', 'items/tool/submarine');
 
             $pet->increaseEsteem(mt_rand(2, 4));
 
@@ -181,7 +181,7 @@ class DeepSeaService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, true);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the shelf sea using the Submarine. They caught a jellyfish while they were out there. (Yum! Jellyfish Jelly!)', 'items/tool/submarine');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine. They caught a jellyfish while they were out there. (Yum! Jellyfish Jelly!)', 'items/tool/submarine');
 
             $this->inventoryService->petCollectsItem('Jellyfish Jelly', $pet, $pet->getName() . ' found this while exploring the shelf sea using the Submarine.', $activityLog);
 
@@ -191,7 +191,7 @@ class DeepSeaService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the shelf sea using the Submarine. A smack of jellyfish swam by; ' . $pet->getName() . ' watched in wonder...', 'items/tool/submarine');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine. A smack of jellyfish swam by; ' . $pet->getName() . ' watched in wonder...', 'items/tool/submarine');
 
             $pet->increaseEsteem(mt_rand(2, 4));
 
@@ -230,7 +230,7 @@ class DeepSeaService
                 $period = '.';
             }
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored a coral reef using the Submarine, and found ' . $loot . $period, 'items/tool/submarine');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored a coral reef using the Submarine, and found ' . $loot . $period, 'items/tool/submarine');
 
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while exploring a reef using the Submarine' . $period, $activityLog);
 
@@ -240,7 +240,7 @@ class DeepSeaService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' started exploring a coral reef using the Submarine, but was chased off by some sharks...', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started exploring a coral reef using the Submarine, but was chased off by some sharks...', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
         }
@@ -257,16 +257,16 @@ class DeepSeaService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::FISH, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the deep sea using the Submarine, but it was too dark to see anything...', 'icons/activity-logs/confused');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine, but it was too dark to see anything...', 'icons/activity-logs/confused');
         }
         else if($roll >= 14)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, true);
 
             if(mt_rand(1, 10) === 1)
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' used the Submarine and found a hexactinellid deep in the ocean... and took some of its Glass. (Rude?!)', 'items/tool/submarine');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% used the Submarine and found a hexactinellid deep in the ocean... and took some of its Glass. (Rude?!)', 'items/tool/submarine');
             else
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' used the Submarine and found a hexactinellid deep in the ocean... and took some of its Glass.', 'items/tool/submarine');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% used the Submarine and found a hexactinellid deep in the ocean... and took some of its Glass.', 'items/tool/submarine');
 
             $this->inventoryService->petCollectsItem('Glass', $pet, $pet->getName() . ' took this from a hexactinellid while exploring the depths of the ocean using the Submarine.', $activityLog);
 
@@ -279,7 +279,7 @@ class DeepSeaService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the deep sea using the Submarine, but didn\'t find anything...', 'icons/activity-logs/confused');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine, but didn\'t find anything...', 'icons/activity-logs/confused');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
         }
@@ -303,12 +303,12 @@ class DeepSeaService
 
             if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Giant Squid while exploring the deep sea! As a member of High Impact, they immediately stepped up to the challenge, fought the squid, and stole a few Tentacles before it swam away!', 'items/tool/submarine');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Giant Squid while exploring the deep sea! As a member of High Impact, they immediately stepped up to the challenge, fought the squid, and stole a few Tentacles before it swam away!', 'items/tool/submarine');
                 $roll += 5; // guaranteed to get at least 1 more tentacle
                 $pet->getGuildMembership()->increaseReputation();
             }
             else
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Giant Squid while exploring the deep sea! They got out of the Submarine and fought it off, stealing a couple Tentacles!', 'items/tool/submarine');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Giant Squid while exploring the deep sea! They got out of the Submarine and fought it off, stealing a couple Tentacles!', 'items/tool/submarine');
 
             $pet->increaseEsteem(mt_rand(2, 4));
 
@@ -326,7 +326,7 @@ class DeepSeaService
 
             $pet->increaseSafety(-mt_rand(2, 4));
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Giant Squid while exploring the deep sea! As a member of High Impact, they immediately stepped up to the challenge, but the squid attacked viciously, and ' . $pet->getName() . ' was forced to retreat...', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Giant Squid while exploring the deep sea! As a member of High Impact, they immediately stepped up to the challenge, but the squid attacked viciously, and ' . $pet->getName() . ' was forced to retreat...', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
         }
@@ -334,7 +334,7 @@ class DeepSeaService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' was attacked by a Giant Squid while exploring the deep sea! They got away as quickly as they could!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Giant Squid while exploring the deep sea! They got away as quickly as they could!', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
         }
@@ -346,7 +346,7 @@ class DeepSeaService
     {
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, true);
 
-        $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the deep sea, ' . $pet->getName() . ' watched a pod of whales go by! ' . $pet->getName() . ' swam and sang along with them for a while...', 'items/tool/submarine');
+        $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the deep sea, ' . '%pet:' . $pet->getId() . '.name% watched a pod of whales go by! ' . $pet->getName() . ' swam and sang along with them for a while...', 'items/tool/submarine');
 
         $pet->increaseLove(mt_rand(2, 4));
 
@@ -364,7 +364,7 @@ class DeepSeaService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::FISH, false);
 
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the deep sea using the Submarine, but it was too dark to see anything...', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine, but it was too dark to see anything...', 'icons/activity-logs/confused');
         }
 
         if($roll >= 17)
@@ -376,7 +376,7 @@ class DeepSeaService
                 ArrayFunctions::pick_one([ 'Scales', 'Silica Grounds', 'Rock' ]),
             ];
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the deep sea using the Submarine, and found a submarine volcano! They looked around for a little while and scooped up some ' . ArrayFunctions::list_nice($loot) . ' before surfacing.', 'items/tool/submarine');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine, and found a submarine volcano! They looked around for a little while and scooped up some ' . ArrayFunctions::list_nice($loot) . ' before surfacing.', 'items/tool/submarine');
 
             foreach($loot as $itemName)
                 $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this near a submarine volcano using their Submarine.', $activityLog);
@@ -387,7 +387,7 @@ class DeepSeaService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the deep sea using the Submarine, and found a submarine volcano! They had to resurface before they could collect anything, though.', 'icons/activity-logs/confused');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine, and found a submarine volcano! They had to resurface before they could collect anything, though.', 'icons/activity-logs/confused');
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
         }
 
@@ -465,7 +465,7 @@ class DeepSeaService
                 ArrayFunctions::pick_one([ 'Gold Bar', 'Silver Bar', 'Mermaid Egg', 'Scales', 'Fish', 'Seaweed', 'Captain\'s Log' ])
             ];
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' explored the ocean using the Submarine, and found a sunken ship! Inside was ' . ArrayFunctions::list_nice($loot) . $andMore, 'items/tool/submarine');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the ocean using the Submarine, and found a sunken ship! Inside was ' . ArrayFunctions::list_nice($loot) . $andMore, 'items/tool/submarine');
 
             foreach($loot as $itemName)
                 $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in a sunken ship while exploring the ocean using the Submarine.', $activityLog);
@@ -484,7 +484,7 @@ class DeepSeaService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' started exploring a coral reef using the Submarine, but was chased off by some sharks...', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started exploring a coral reef using the Submarine, but was chased off by some sharks...', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
         }

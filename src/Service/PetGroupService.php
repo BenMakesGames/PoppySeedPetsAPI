@@ -398,7 +398,7 @@ class PetGroupService
 
         $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
 
-        $this->responseService->createActivityLog($pet, $pet->getName() . ' started a new ' . $groupType['description'] . ' with ' . ArrayFunctions::list_nice($friendNames) . '.', $groupType['icon']);
+        $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started a new ' . $groupType['description'] . ' with ' . ArrayFunctions::list_nice($friendNames) . '.', $groupType['icon']);
 
         return $group;
     }

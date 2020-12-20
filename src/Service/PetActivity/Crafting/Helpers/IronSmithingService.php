@@ -43,7 +43,7 @@ class IronSmithingService
             $pet->increaseEsteem(-1);
             $pet->increaseSafety(-mt_rand(2, 24));
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge an Iron Key, but got burned while trying! :(', 'icons/activity-logs/burn');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge an Iron Key, but got burned while trying! :(', 'icons/activity-logs/burn');
         }
         else if($roll >= 12)
         {
@@ -53,9 +53,9 @@ class IronSmithingService
             $keys = mt_rand(1, 5) === 1 ? 2 : 1;
 
             if($keys === 2)
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' forged *two* Iron Keys from an Iron Bar!', 'items/key/iron');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged *two* Iron Keys from an Iron Bar!', 'items/key/iron');
             else
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' forged an Iron Key from an Iron Bar.', 'items/key/iron');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged an Iron Key from an Iron Bar.', 'items/key/iron');
 
             $this->inventoryService->petCollectsItem('Iron Key', $pet, $pet->getName() . ' forged this from an Iron Bar.', $activityLog);
 
@@ -71,7 +71,7 @@ class IronSmithingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge an Iron Key from an Iron Bar, but couldn\'t get the shape right.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge an Iron Key from an Iron Bar, but couldn\'t get the shape right.', 'icons/activity-logs/confused');
         }
     }
 
@@ -95,14 +95,14 @@ class IronSmithingService
             $pet->increaseEsteem(-1);
             $pet->increaseSafety(-mt_rand(2, 24));
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge ' . $making['description'] . ', but got burned while trying! :(', 'icons/activity-logs/burn');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $making['description'] . ', but got burned while trying! :(', 'icons/activity-logs/burn');
         }
         else if($roll >= $making['difficulty'])
         {
             $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
             $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' forged ' . $making['description'] . ' from an Iron Bar.', $making['image']);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged ' . $making['description'] . ' from an Iron Bar.', $making['image']);
 
             $this->inventoryService->petCollectsItem($making['item'], $pet, $pet->getName() . ' forged this from an Iron Bar.', $activityLog);
 
@@ -115,7 +115,7 @@ class IronSmithingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to forge ' . $making['description'] . ' from an Iron Bar, but couldn\'t get the shape right.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $making['description'] . ' from an Iron Bar, but couldn\'t get the shape right.', 'icons/activity-logs/confused');
         }
     }
 
@@ -134,7 +134,7 @@ class IronSmithingService
                 $this->inventoryService->loseItem('Bug-catcher\'s Net', $pet->getOwner(), LocationEnum::HOME, 1);
                 $pet->increaseSafety(-3);
 
-                $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spiff up a Bug-catcher\'s Net, but ended up breaking it! :(', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to spiff up a Bug-catcher\'s Net, but ended up breaking it! :(', '');
 
                 $this->inventoryService->petCollectsItem('String', $pet, $pet->getName() . ' accidentally broke a Bug-catcher\'s Net; this is all that remains...', $activityLog);
 
@@ -145,7 +145,7 @@ class IronSmithingService
                 $this->inventoryService->loseItem('Green Dye', $pet->getOwner(), LocationEnum::HOME, 1);
                 $pet->increaseEsteem(-1);
 
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to paint a Bug-catcher\'s Net, but accidentally spilled the Green Dye all over the place! :(', '');
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to paint a Bug-catcher\'s Net, but accidentally spilled the Green Dye all over the place! :(', '');
             }
         }
         else if($roll >= 14)
@@ -158,7 +158,7 @@ class IronSmithingService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' turned a simple Bug-catcher\'s Net into a Water Strider.', 'items/tool/net/water-strider')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% turned a simple Bug-catcher\'s Net into a Water Strider.', 'items/tool/net/water-strider')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
             ;
 
@@ -174,10 +174,10 @@ class IronSmithingService
             if(mt_rand(1, 4) === 1)
             {
                 $pet->increaseSafety(-mt_rand(1, 2));
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to sharpen an Iron Bar to top off a Bug-catcher\'s Net with, but nearly cut themselves in the process!', 'icons/activity-logs/confused');
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to sharpen an Iron Bar to top off a Bug-catcher\'s Net with, but nearly cut themselves in the process!', 'icons/activity-logs/confused');
             }
             else
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to spiff up a Bug-catcher\'s Net, but wasn\'t happy with any of their ideas...', 'icons/activity-logs/confused');
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to spiff up a Bug-catcher\'s Net, but wasn\'t happy with any of their ideas...', 'icons/activity-logs/confused');
         }
     }
 
@@ -196,12 +196,12 @@ class IronSmithingService
             {
                 $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
                 $pet->increaseSafety(-1);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Yellow Scissors, but burnt the Plastic! :(', '');
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make Yellow Scissors, but burnt the Plastic! :(', '');
             }
             else
             {
                 $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), LocationEnum::HOME, 1);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Yellow Scissors, but accidentally spilled the Yellow Dye all over the place! :(', '');
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make Yellow Scissors, but accidentally spilled the Yellow Dye all over the place! :(', '');
             }
         }
         else if($roll >= 13)
@@ -214,7 +214,7 @@ class IronSmithingService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made Yellow Scissors.', 'items/tool/scissors/yellow')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made Yellow Scissors.', 'items/tool/scissors/yellow')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
             ;
 
@@ -229,7 +229,7 @@ class IronSmithingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make scissors, but getting the handle shape right is apparently frickin\' impossible >:(', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make scissors, but getting the handle shape right is apparently frickin\' impossible >:(', 'icons/activity-logs/confused');
         }
     }
 
@@ -248,12 +248,12 @@ class IronSmithingService
             {
                 $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
                 $pet->increaseSafety(-1);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Green Scissors, but burnt the Plastic! :(', '');
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make Green Scissors, but burnt the Plastic! :(', '');
             }
             else
             {
                 $this->inventoryService->loseItem('Green Dye', $pet->getOwner(), LocationEnum::HOME, 1);
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make Green Scissors, but accidentally spilled the Green Dye all over the place! :(', '');
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make Green Scissors, but accidentally spilled the Green Dye all over the place! :(', '');
             }
         }
         else if($roll >= 13)
@@ -266,7 +266,7 @@ class IronSmithingService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made Green Scissors.', 'items/tool/scissors/green')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made Green Scissors.', 'items/tool/scissors/green')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
             ;
 
@@ -281,7 +281,7 @@ class IronSmithingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make scissors, but getting the handle shape right is apparently frickin\' impossible >:(', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make scissors, but getting the handle shape right is apparently frickin\' impossible >:(', 'icons/activity-logs/confused');
         }
     }
 
@@ -302,7 +302,7 @@ class IronSmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Saucepan, but burnt the Plastic! :(', '');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Saucepan, but burnt the Plastic! :(', '');
         }
         else if($roll >= 10)
         {
@@ -314,7 +314,7 @@ class IronSmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Saucepan.', 'items/tool/saucepan')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Saucepan.', 'items/tool/saucepan')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
             ;
             $this->inventoryService->petCollectsItem('Saucepan', $pet, $pet->getName() . ' created this.', $activityLog);
@@ -324,7 +324,7 @@ class IronSmithingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Saucepan, but couldn\'t figure out the purpose of the thing...', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Saucepan, but couldn\'t figure out the purpose of the thing...', 'icons/activity-logs/confused');
         }
     }
 
@@ -344,7 +344,7 @@ class IronSmithingService
 
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make ' . $item->getNameWithArticle() . ', but broke the Crooked Stick! :(', 'icons/activity-logs/broke-stick');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make ' . $item->getNameWithArticle() . ', but broke the Crooked Stick! :(', 'icons/activity-logs/broke-stick');
         }
         else if($roll >= 13)
         {
@@ -355,7 +355,7 @@ class IronSmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made ' . $item->getNameWithArticle() . ' from a Crooked Stick, and Iron Bar.', 'items/' . $item->getImage())
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made ' . $item->getNameWithArticle() . ' from a Crooked Stick, and Iron Bar.', 'items/' . $item->getImage())
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
             ;
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from a Crooked Stick, and Iron Bar.', $activityLog);
@@ -365,7 +365,7 @@ class IronSmithingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make ' . $item->getNameWithArticle() . ', but couldn\'t figure it out.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make ' . $item->getNameWithArticle() . ', but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
 
@@ -382,7 +382,7 @@ class IronSmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-1);
 
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Grappling Hook, but burnt the String :(', 'icons/activity-logs/broke-string');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Grappling Hook, but burnt the String :(', 'icons/activity-logs/broke-string');
         }
         else if($roll >= 15)
         {
@@ -393,7 +393,7 @@ class IronSmithingService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Grappling Hook from Iron Bar, and String.', 'items/tool/grappling-hook')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Grappling Hook from Iron Bar, and String.', 'items/tool/grappling-hook')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
             ;
             $this->inventoryService->petCollectsItem('Grappling Hook', $pet, $pet->getName() . ' created this from Iron Bar, and String.', $activityLog);
@@ -404,7 +404,7 @@ class IronSmithingService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Grappling Hook, but couldn\'t figure it out.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Grappling Hook, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
 
@@ -416,7 +416,7 @@ class IronSmithingService
         if($petWithSkills->getStrength()->getTotal() < 3)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to make a Heavy Hammer, but they aren\'t strong enough... (The Dark Matter is WAY too heavy!)', '');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make a Heavy Hammer, but they aren\'t strong enough... (The Dark Matter is WAY too heavy!)', '');
         }
         else if($roll <= 3)
         {
@@ -428,13 +428,13 @@ class IronSmithingService
                 ->increaseEsteem(-mt_rand(1, 2))
             ;
 
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Heavy Hammer, but dropped an Iron Bar on their toes!', '');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Heavy Hammer, but dropped an Iron Bar on their toes!', '');
         }
         else if($roll <= 17)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a Heavy Hammer, but the Dark Matter was being especially difficult to work with! >:(', '');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Heavy Hammer, but the Dark Matter was being especially difficult to work with! >:(', '');
         }
         else
         {
@@ -445,7 +445,7 @@ class IronSmithingService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(3);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Heavy Hammer from an Iron Bar and some Dark Matter!', 'items/tool/hammer/heavy')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Heavy Hammer from an Iron Bar and some Dark Matter!', 'items/tool/hammer/heavy')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
             ;
             $this->inventoryService->petCollectsItem('Heavy Hammer', $pet, $pet->getName() . ' created this from an Iron Bar and some Dark Matter!', $activityLog);
@@ -465,7 +465,7 @@ class IronSmithingService
             $pet->increaseEsteem(-1);
             $pet->increaseSafety(-mt_rand(2, 24));
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make an iron shield, but got burned while trying! :(', 'icons/activity-logs/burn');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an iron shield, but got burned while trying! :(', 'icons/activity-logs/burn');
         }
         else if($roll >= 15)
         {
@@ -476,7 +476,7 @@ class IronSmithingService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Mirror Shield!', 'items/tool/shield/mirror')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Mirror Shield!', 'items/tool/shield/mirror')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
             ;
             $this->inventoryService->petCollectsItem('Mirror Shield', $pet, $pet->getName() . ' created this from Iron Bar, and a Mirror.', $activityLog);
@@ -487,7 +487,7 @@ class IronSmithingService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to make an iron shield, but couldn\'t come up with a good design...', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make an iron shield, but couldn\'t come up with a good design...', 'icons/activity-logs/confused');
         }
     }
 
@@ -501,7 +501,7 @@ class IronSmithingService
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
             $this->inventoryService->loseItem('Toadstool', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a sword using a Toadstool, but ruined the Toadstool! :(', '');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a sword using a Toadstool, but ruined the Toadstool! :(', '');
         }
         else if($roll >= 15)
         {
@@ -512,7 +512,7 @@ class IronSmithingService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' made a Mushketeer!', 'items/tool/sword/mushroom')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Mushketeer!', 'items/tool/sword/mushroom')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
             ;
             $this->inventoryService->petCollectsItem('Mushketeer', $pet, $pet->getName() . ' created this from Iron Bar, and a Toadstool.', $activityLog);
@@ -523,7 +523,7 @@ class IronSmithingService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' wanted to make a sword using a Toadstool, but couldn\'t figure it out...', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make a sword using a Toadstool, but couldn\'t figure it out...', 'icons/activity-logs/confused');
         }
     }
 

@@ -48,7 +48,7 @@ class MeteoriteSmithingService
             $pet->increaseEsteem(-1);
             $pet->increaseSafety(-mt_rand(2, 24));
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' started to make something with a chunk of Meteorite, but burnt the ' . $lostItem . '! :(', 'icons/activity-logs/burn');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make something with a chunk of Meteorite, but burnt the ' . $lostItem . '! :(', 'icons/activity-logs/burn');
         }
         else if($roll >= 25)
         {
@@ -57,7 +57,7 @@ class MeteoriteSmithingService
             $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Meteorite', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' forged Ilumetsa from gold, iron, and a chunk of Meteorite.', 'items/tool/hammer/red')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged Ilumetsa from gold, iron, and a chunk of Meteorite.', 'items/tool/hammer/red')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 25)
             ;
 
@@ -72,7 +72,7 @@ class MeteoriteSmithingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make something with a chunk of Meteorite, but it was being super-difficult to work with!', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make something with a chunk of Meteorite, but it was being super-difficult to work with!', 'icons/activity-logs/confused');
         }
     }
 }

@@ -24,7 +24,7 @@ class PoopingService
     {
         $this->inventoryService->receiveItem($pet->getSpecies()->getSheds(), $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' shed this.', LocationEnum::HOME);
 
-        $this->responseService->createActivityLog($pet, $pet->getName() . ' shed some ' . $pet->getSpecies()->getSheds()->getName() . '.', '')
+        $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% shed some ' . $pet->getSpecies()->getSheds()->getName() . '.', '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
         ;
     }
@@ -45,7 +45,7 @@ class PoopingService
             $this->inventoryService->receiveItem('Dark Matter', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' pooped this.', LocationEnum::HOME);
         }
 
-        $this->responseService->createActivityLog($pet, $pet->getName() . ', um, _created_ some Dark Matter.', 'items/element/dark-matter')
+        $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%, um, _created_ some Dark Matter.', 'items/element/dark-matter')
             ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
         ;
     }

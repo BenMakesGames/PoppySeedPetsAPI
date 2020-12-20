@@ -91,7 +91,7 @@ class GizubisGardenService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::GATHER, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' went to water the Tree of Life for Gizubi\'s Garden, but tripped and spilled the sacred water!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to water the Tree of Life for Gizubi\'s Garden, but tripped and spilled the sacred water!', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $pet->increaseEsteem(-mt_rand(2, 4));
@@ -106,7 +106,7 @@ class GizubisGardenService
 
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, true);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
-            $activityLog = $this->responseService->createActivityLog($pet, 'While watering the Tree of Life for Gizubi\'s Garden, ' . $pet->getName() . ' found ' . $loot->getNameWithArticle() . '.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, 'While watering the Tree of Life for Gizubi\'s Garden, ' . '%pet:' . $pet->getId() . '.name% found ' . $loot->getNameWithArticle() . '.', '');
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while watering the Tree of Life for Gizubi\'s Garden.', $activityLog);
             return $activityLog;
         }
@@ -114,7 +114,7 @@ class GizubisGardenService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::GATHER, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' watered the Tree of Life for Gizubi\'s Garden.', '');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% watered the Tree of Life for Gizubi\'s Garden.', '');
         }
     }
 
@@ -153,7 +153,7 @@ class GizubisGardenService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to help ' . $cook . ' for a feast for Gizubi\'s Garden, but ' . $howRuined . ' the ' . $loot . '! :(', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to help ' . $cook . ' for a feast for Gizubi\'s Garden, but ' . $howRuined . ' the ' . $loot . '! :(', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-mt_rand(2, 4));
@@ -164,7 +164,7 @@ class GizubisGardenService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' helped ' . $cook . ' for a feast for Gizubi\'s Garden. They made ' . $loot . '; everyone liked it, and there was enough left over that ' . $pet->getName() . ' got to take some home!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% helped ' . $cook . ' for a feast for Gizubi\'s Garden. They made ' . $loot . '; everyone liked it, and there was enough left over that ' . $pet->getName() . ' got to take some home!', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(mt_rand(2, 4));
@@ -177,7 +177,7 @@ class GizubisGardenService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' helped ' . $cook . ' for a feast for Gizubi\'s Garden. They made ' . $loot . '; everyone liked it!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% helped ' . $cook . ' for a feast for Gizubi\'s Garden. They made ' . $loot . '; everyone liked it!', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(mt_rand(2, 4));

@@ -59,7 +59,7 @@ class HalloweenSmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' applied heat to ' . $itemUsedItem->getNameWithArticle() . ', and shaped it into ' . $makes->getNameWithArticle() . '!', 'items/' . $makes->getImage())
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% applied heat to ' . $itemUsedItem->getNameWithArticle() . ', and shaped it into ' . $makes->getNameWithArticle() . '!', 'items/' . $makes->getImage())
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
 
@@ -71,7 +71,7 @@ class HalloweenSmithingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to shape a bucket into ' . $makes->getNameWithArticle() . ', but couldn\'t get the heat just right.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to shape a bucket into ' . $makes->getNameWithArticle() . ', but couldn\'t get the heat just right.', 'icons/activity-logs/confused');
         }
     }
 }

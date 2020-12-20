@@ -53,7 +53,7 @@ class GenericAdventureService
         {
             $pet->getHat()->changeItem($this->itemRepository->findOneByName('William, Shush'));
 
-            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, some random dude jumped out of nowhere and shot an arrow in ' . $pet->getName() . '\'s Red!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, some random dude jumped out of nowhere and shot an arrow in ' . $pet->getName() . '\'s Red!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
 
@@ -100,7 +100,7 @@ class GenericAdventureService
         {
             $rescuedAFairy->setValue((new \DateTimeImmutable())->format('Y-m-d H:i:s'));
 
-            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, they saw a raccoon carrying a House Fairy in its mouth. The raccoon stared at ' . $pet->getName() . ' for a moment, then dropped the House Fairy and scurried away.', '')
+            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a raccoon carrying a House Fairy in its mouth. The raccoon stared at ' . $pet->getName() . ' for a moment, then dropped the House Fairy and scurried away.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
             ;
             $inventory = $this->inventoryService->petCollectsItem('House Fairy', $pet, 'A startled raccoon dropped this while ' . $pet->getName() . ' was out.', $activityLog);
@@ -120,7 +120,7 @@ class GenericAdventureService
 
             $pet->getOwner()->getGreenhouse()->setVisitingBird($bird);
 
-            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, they saw a huge ' . $bird . ' swoop into the Greenhouse and land on the Bird Bath!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a huge ' . $bird . ' swoop into the Greenhouse and land on the Bird Bath!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
 
@@ -192,22 +192,22 @@ class GenericAdventureService
         $event = mt_rand(1, 4);
         if($event === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, they spotted a bunch of ants carrying ' . $describeReward . '! ' . $pet->getName() . ' took the ' . $reward[1] . ', brushed the ants off, and returned home.', 'items/bug/ant-conga');
+            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they spotted a bunch of ants carrying ' . $describeReward . '! ' . $pet->getName() . ' took the ' . $reward[1] . ', brushed the ants off, and returned home.', 'items/bug/ant-conga');
             $comment = $pet->getName() . ' stole this from some ants.';
         }
         else if($event === 2)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, they saw ' . $describeReward . ' floating downstream on a log! ' . $pet->getName() . ' caught up to the log, and took the ' . $reward[1] . '.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw ' . $describeReward . ' floating downstream on a log! ' . $pet->getName() . ' caught up to the log, and took the ' . $reward[1] . '.', '');
             $comment = $pet->getName() . ' found this floating on a log.';
         }
         else if($event === 3)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, they saw ' . $describeReward . ' poking out of a bag near a dumpster! ' . $pet->getName() . ' took the ' . $reward[1] . ', and returned home.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw ' . $describeReward . ' poking out of a bag near a dumpster! ' . $pet->getName() . ' took the ' . $reward[1] . ', and returned home.', '');
             $comment = $pet->getName() . ' found this near a dumpster.';
         }
         else //if($event === 4)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . $pet->getName() . ' was thinking about what to do, they saw a raccoon carrying ' . $describeReward . ' in its mouth. The raccoon stared at ' . $pet->getName() . ' for a moment, then dropped the ' . $reward[1] . ' and scurried away.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a raccoon carrying ' . $describeReward . ' in its mouth. The raccoon stared at ' . $pet->getName() . ' for a moment, then dropped the ' . $reward[1] . ' and scurried away.', '');
             $comment = 'A startled raccoon dropped this while ' . $pet->getName() . ' was out.';
         }
 

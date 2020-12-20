@@ -72,7 +72,7 @@ class GivingTreeGatheringService
 
                 $pet->getGuildMembership()->increaseReputation();
 
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' visited The Giving Tree, and picked up several items that other players had discarded. In honor of Gizubi\'s Tree of Life, they also took a few minutes to water the Giving Tree.', 'icons/activity-logs/giving-tree')
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited The Giving Tree, and picked up several items that other players had discarded. In honor of Gizubi\'s Tree of Life, they also took a few minutes to water the Giving Tree.', 'icons/activity-logs/giving-tree')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ;
             }
@@ -80,7 +80,7 @@ class GivingTreeGatheringService
             {
                 $this->petExperienceService->spendTime($pet, mt_rand(10, 20), PetActivityStatEnum::OTHER, null);
 
-                return $this->responseService->createActivityLog($pet, $pet->getName() . ' visited The Giving Tree, and picked up several items that other players had discarded.', 'icons/activity-logs/giving-tree')
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited The Giving Tree, and picked up several items that other players had discarded.', 'icons/activity-logs/giving-tree')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ;
             }

@@ -150,11 +150,11 @@ class PetRelationshipService
         {
             $whatASurprise = mt_rand(1, 10) === 1 ? 'Quelle surprise!' : 'What a surprise!';
 
-            $this->responseService->createActivityLog($pet, $pet->getName() . ' and ' . $otherPet->getName() . ' are living together, now! ' . $whatASurprise, 'icons/activity-logs/friend')
+            $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% and %pet:' . $otherPet->getId() . '.name% are living together, now! ' . $whatASurprise, 'icons/activity-logs/friend')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
             ;
 
-            $this->responseService->createActivityLog($otherPet, $otherPet->getName() . ' and ' . $pet->getName() . ' are living together, now! ' . $whatASurprise, 'icons/activity-logs/friend')
+            $this->responseService->createActivityLog($otherPet, '%pet:' . $otherPet->getId() . '.name% and %pet:' . $pet->getId() . '.name% are living together, now! ' . $whatASurprise, 'icons/activity-logs/friend')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
             ;
         }
@@ -259,7 +259,7 @@ class PetRelationshipService
 
         $this->em->persist($petRelationship);
 
-        $meetDescription = str_replace([ '%p1%', '%p2%'], [ $pet->getName(), $otherPet->getName() ], $metActivityLogTemplate);
+        $meetDescription = str_replace([ '%p1%', '%p2%'], [ '%pet:' . $pet->getId() . '.name%', '%pet:' . $otherPet->getId() . '.name%' ], $metActivityLogTemplate);
 
         if($petRelationship->getCurrentRelationship() === RelationshipEnum::DISLIKE)
             $activityLog = $this->responseService->createActivityLog($pet, $meetDescription . ' They didn\'t really get along, though...', 'icons/activity-logs/enemy');
@@ -286,7 +286,7 @@ class PetRelationshipService
 
         $this->em->persist($otherPetRelationship);
 
-        $meetDescription = str_replace([ '%p1%', '%p2%'], [ $otherPet->getName(), $pet->getName() ], $metActivityLogTemplate);
+        $meetDescription = str_replace([ '%p1%', '%p2%'], [ '%pet:' . $otherPet->getId() . '.name%', '%pet:' . $pet->getId() . '.name%' ], $metActivityLogTemplate);
 
         if($petRelationship->getCurrentRelationship() === RelationshipEnum::DISLIKE)
             $otherActivityPet = $this->responseService->createActivityLog($otherPet, $meetDescription . ' They didn\'t really get along, though...', 'icons/activity-logs/enemy');

@@ -97,13 +97,13 @@ class EventLanternService
             $this->inventoryService->loseItem('Paper', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a seasonal lantern, but accidentally tore the Paper :(', '');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a seasonal lantern, but accidentally tore the Paper :(', '');
         }
         else if($roll < 15)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, $pet->getName() . ' tried to make a seasonal lantern, but couldn\'t come up with a fitting design...', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a seasonal lantern, but couldn\'t come up with a fitting design...', 'icons/activity-logs/confused');
         }
         else // success!
         {
@@ -113,7 +113,7 @@ class EventLanternService
             $this->inventoryService->loseOneOf([ 'Jar of Fireflies', 'Candle' ], $pet->getOwner(), LocationEnum::HOME);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $pet->getName() . ' created a ' . $lanternName . ' out of a Crooked Fishing Rod!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a ' . $lanternName . ' out of a Crooked Fishing Rod!', '');
 
             $this->inventoryService->petCollectsItem($lanternName, $pet, $pet->getName() . ' created this.', $activityLog);
 
