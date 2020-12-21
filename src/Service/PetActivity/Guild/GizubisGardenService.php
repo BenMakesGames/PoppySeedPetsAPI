@@ -59,15 +59,15 @@ class GizubisGardenService
         switch(mt_rand(1, 3))
         {
             case 1:
-                $message = $pet->getName() . ' helped one of their seniors tend to ' . $member->getGuild()->getName() . ' gardens.';
+                $message = '%pet:' . $pet->getId() . '.name% helped one of their seniors tend to ' . $member->getGuild()->getName() . ' gardens.';
                 $skill = PetSkillEnum::NATURE;
                 break;
             case 2:
-                $message = $pet->getName() . ' assisted one of ' . $member->getGuild()->getName() . '\'s chefs for a feast.';
+                $message = '%pet:' . $pet->getId() . '.name% assisted one of ' . $member->getGuild()->getName() . '\'s chefs for a feast.';
                 $skill = PetSkillEnum::CRAFTS;
                 break;
             case 3:
-                $message = $pet->getName() . ' participated in an impromptu ' . $member->getGuild()->getName() . ' jam session.';
+                $message = '%pet:' . $pet->getId() . '.name% participated in an impromptu ' . $member->getGuild()->getName() . ' jam session.';
                 $skill = PetSkillEnum::MUSIC;
                 break;
             default:

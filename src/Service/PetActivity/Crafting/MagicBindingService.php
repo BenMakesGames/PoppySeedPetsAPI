@@ -250,7 +250,7 @@ class MagicBindingService
             $this->inventoryService->loseItem('Stereotypical Torch', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(-1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Stereotypical Torch, but mishandled the Quintessence. The torch flared up, and ' . $pet->getName() . ' dropped the torch, breaking it :( Some Charcoal was left over, at least...', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Stereotypical Torch, but mishandled the Quintessence. The torch flared up, and %pet:' . $pet->getId() . '.name% dropped the torch, breaking it :( Some Charcoal was left over, at least...', '');
             $this->inventoryService->petCollectsItem('Charcoal', $pet, $pet->getName() . ' accidentally created this while trying to enchant a Stereotypical Torch.', $activityLog);
             return $activityLog;
         }
@@ -360,7 +360,7 @@ class MagicBindingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to extract Quintessence from a Mermaid Egg, but almost screwed it all up. ' . $pet->getName() . ' decided to take a break from it for a bit...', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to extract Quintessence from a Mermaid Egg, but almost screwed it all up. %pet:' . $pet->getId() . '.name% decided to take a break from it for a bit...', 'icons/activity-logs/confused');
         }
         else // success!
         {
@@ -402,7 +402,7 @@ class MagicBindingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::SCIENCE ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to extract Quintessence from Magic Smoke, but almost screwed it all up. ' . $pet->getName() . ' decided to take a break from it for a bit...', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to extract Quintessence from Magic Smoke, but almost screwed it all up. %pet:' . $pet->getId() . '.name% decided to take a break from it for a bit...', 'icons/activity-logs/confused');
         }
         else // success!
         {

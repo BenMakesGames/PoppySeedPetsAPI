@@ -233,7 +233,7 @@ class BandService
 
             $activityLog = (new PetActivityLog())
                 ->setPet($pet)
-                ->setEntry($group->getName() . ' received some fan mail! ' . $pet->getName() . ' was ' . $feels)
+                ->setEntry($group->getName() . ' received some fan mail! %pet:' . $pet->getId() . '.name% was ' . $feels)
                 ->setIcon('items/music/note')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))
@@ -259,7 +259,7 @@ class BandService
 
             $activityLog = (new PetActivityLog())
                 ->setPet($pet)
-                ->setEntry($pet->getName() . ' got royalties from ' . $group->getName() . ' sales!')
+                ->setEntry('%pet:' . $pet->getId() . '.name% got royalties from ' . $group->getName() . ' sales!')
                 ->setIcon('items/music/note')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))

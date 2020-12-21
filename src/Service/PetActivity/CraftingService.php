@@ -452,7 +452,7 @@ class CraftingService
             {
                 $this->inventoryService->loseItem('Smallish Pumpkin', $pet->getOwner(), LocationEnum::HOME, 1);
                 $pet->increaseFood(5);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Drumpkin, but broke the Smallish Pumpkin :( Not wanting to waste it, ' . $pet->getName() . ' ate the remains...)', '');
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Drumpkin, but broke the Smallish Pumpkin :( Not wanting to waste it, %pet:' . $pet->getId() . '.name% ate the remains...)', '');
             }
         }
         else if($roll >= 15)
@@ -496,7 +496,7 @@ class CraftingService
             {
                 $this->inventoryService->loseItem('Potato', $pet->getOwner(), LocationEnum::HOME, 1);
                 $pet->increaseFood(4);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make Paper, but messed up the Potato :( (Not wanting to waste it, ' . $pet->getName() . ' ate the remains...)', '');
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make Paper, but messed up the Potato :( (Not wanting to waste it, %pet:' . $pet->getId() . '.name% ate the remains...)', '');
             }
         }
         else if($roll >= 15)

@@ -91,7 +91,7 @@ class GoldSmithingService
             {
                 $pet->increaseFood(mt_rand(4, 8));
 
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an Aubergine Scepter, but accidentally burnt the Eggplant! ' . $pet->getName() . ', as a true gourmand, could not allow the Eggplant to go to waste, and ate it!', '');
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an Aubergine Scepter, but accidentally burnt the Eggplant! %pet:' . $pet->getId() . '.name%, as a true gourmand, could not allow the Eggplant to go to waste, and ate it!', '');
             }
             else
             {

@@ -72,7 +72,7 @@ class TreasureMapService
 
             if(mt_rand(1, 3) === 1)
             {
-                $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' put the treasure map down.');
+                $activityLog->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% put the treasure map down.');
                 $this->inventoryService->unequipPet($pet);
             }
         }
@@ -243,12 +243,12 @@ class TreasureMapService
 
         if($pet->getSpiritCompanion() && $pet->getSpiritCompanion()->getStar() === SpiritCompanionStarEnum::SAGITTARIUS)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% and ' . $pet->getSpiritCompanion()->getName() . ' made you ' . $food . ' with their ' . $pet->getTool()->getItem()->getName() . '. You all pretend to eat it together. It\'s very good.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% and ' . $pet->getSpiritCompanion()->getName() . ' made %user:' . $pet->getOwner()->getId() . '.name% ' . $food . ' with their ' . $pet->getTool()->getItem()->getName() . '. %user:' . $pet->getOwner()->getIcon() . '.Name% pretended to eat it with them. It was very good.', '');
             $pet->increaseLove(6);
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made you ' . $food . ' with their ' . $pet->getTool()->getItem()->getName() . '. You and ' . $pet->getName() . ' pretend to eat it together. It\'s very good.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made %user:' . $pet->getOwner()->getId() . '.name% ' . $food . ' with their ' . $pet->getTool()->getItem()->getName() . '. %user:' . $pet->getOwner()->getIcon() . '.Name% and %pet:' . $pet->getId() . '.name% pretended to eat it together. It was very good.', '');
             $pet->increaseLove(4);
         }
 

@@ -122,7 +122,7 @@ class GuildService
 
         $this->em->persist($membership);
 
-        return $this->responseService->createActivityLog($pet, $message . ' After chatting with a member of ' . $guildName . ' for a while, ' . $pet->getName() . ' decided to join!', '')
+        return $this->responseService->createActivityLog($pet, $message . ' After chatting with a member of ' . $guildName . ' for a while, %pet:' . $pet->getId() . '.name% decided to join!', '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
         ;
     }
@@ -173,17 +173,17 @@ class GuildService
         switch($member->getReputation())
         {
             case 0:
-                $message = $pet->getName() . ' was introduced to some of the more-important important NPCs in ' . $member->getGuild()->getName() . '.';
+                $message = '%pet:' . $pet->getId() . '.name% was introduced to some of the more-important important NPCs in ' . $member->getGuild()->getName() . '.';
                 break;
             case 1:
-                $message = $pet->getName() . ' visited ' . $member->getGuild()->getName() . ', and received a guild-issued ' . $member->getGuild()->getStarterTool()->getName() . '.';
+                $message = '%pet:' . $pet->getId() . '.name% visited ' . $member->getGuild()->getName() . ', and received a guild-issued ' . $member->getGuild()->getStarterTool()->getName() . '.';
                 $this->inventoryService->petCollectsItem($member->getGuild()->getStarterTool(), $pet, $pet->getName() . ' was given this by their guild, ' . $member->getGuild()->getName() . '.', null);
                 break;
             case 2:
-                $message = $pet->getName() . ' explored the ' . $member->getGuild()->getName() . ' guild house for a while.';
+                $message = '%pet:' . $pet->getId() . '.name% explored the ' . $member->getGuild()->getName() . ' guild house for a while.';
                 break;
             default:
-                throw new \Exception('Ben forgot to code stuff for a ' . $member->getRank() . ' in ' . $member->getGuild()->getName() . ' to do! (Way to go, _Ben_!)');
+                throw new \Exception('Ben forgot to code stuff for a ' . $member->getRank() . ' in ' . $member->getGuild()->getName() . ' to do! (Way to go, _Ben!_)');
         }
 
         $member->increaseReputation();
@@ -198,9 +198,9 @@ class GuildService
         $member = $pet->getGuildMembership();
 
         $message = ArrayFunctions::pick_one([
-            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
-            $pet->getName() . ' practiced using one of ' . $member->getGuild()->getName() . '\'s Timescrawlers. (Supervised, of course!)',
-            $pet->getName() . ' shadowed a ' . $member->getGuild()->getName() . ' senior for a little bit, to watch them work.'
+            '%pet:' . $pet->getId() . '.name% ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
+            '%pet:' . $pet->getId() . '.name% practiced using one of ' . $member->getGuild()->getName() . '\'s Timescrawlers. (Supervised, of course!)',
+            '%pet:' . $pet->getId() . '.name% shadowed a ' . $member->getGuild()->getName() . ' senior for a little bit, to watch them work.'
         ]);
 
         $member->increaseReputation();

@@ -221,7 +221,10 @@ class BeehiveController extends PoppySeedPetsController
             $beehive->setMiscProgress(0);
 
             $possibleItems = [
-                'Fluff', 'Talon', 'Yellow Dye', 'Crooked Stick', 'Glue', 'Sugar', 'Antenna', 'Jar of Fireflies',
+                'Fluff', 'Talon', 'Yellow Dye', 'Crooked Stick', 'Glue', 'Sugar', 'Antenna',
+                ArrayFunctions::pick_one([
+                    'Jar of Fireflies', 'Sugar', 'Crooked Stick'
+                ])
             ];
 
             switch($beehive->getSpecialization())

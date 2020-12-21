@@ -265,13 +265,13 @@ class Protocol7Service
 
         $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::PROTOCOL_7, true);
 
-        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E. Correspondence had some message-delivery jobs, so ' . $pet->getName() . ' picked a couple up, earning ' . $moneys . '~~m~~ for their trouble.', '');
+        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E. Correspondence had some message-delivery jobs, so %pet:' . $pet->getId() . '.name% picked a couple up, earning ' . $moneys . '~~m~~ for their trouble.', '');
     }
 
     private function encounterAnnabellastasia(Pet $pet): PetActivityLog
     {
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
-        $activityLog = $this->responseService->createActivityLog($pet, 'In Project-E, ' . '%pet:' . $pet->getId() . '.name% ran into a girl named Annabellastasia, who handed ' . $pet->getName() . ' a Black Bow.', 'items/hat/bow-black')
+        $activityLog = $this->responseService->createActivityLog($pet, 'In Project-E, ' . '%pet:' . $pet->getId() . '.name% ran into a girl named Annabellastasia, who handed %pet:' . $pet->getId() . '.name% a Black Bow.', 'items/hat/bow-black')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
         ;
         $this->inventoryService->petCollectsItem('Black Bow', $pet, $pet->getName() . ' received this from a girl named Annabellastasia in Project-E.', $activityLog);
@@ -306,9 +306,9 @@ class Protocol7Service
                 $pet->getGuildMembership()->increaseReputation();
 
                 if($pet->hasMerit(MeritEnum::SOOTHING_VOICE) && mt_rand(1, 3) === 1)
-                    $logMessage = $pet->getName() . ' met with a Garbage Collector in Project-E. Happy to help a member of Time\'s Arrow - especially one with such a Soothing Voice! - it handed over a Pointer.';
+                    $logMessage = '%pet:' . $pet->getId() . '.name% met with a Garbage Collector in Project-E. Happy to help a member of Time\'s Arrow - especially one with such a Soothing Voice! - it handed over a Pointer.';
                 else
-                    $logMessage = $pet->getName() . ' met with a Garbage Collector in Project-E. Happy to help a member of Time\'s Arrow, it handed over a Pointer.';
+                    $logMessage = '%pet:' . $pet->getId() . '.name% met with a Garbage Collector in Project-E. Happy to help a member of Time\'s Arrow, it handed over a Pointer.';
 
                 $activityLog = $this->responseService->createActivityLog($pet, $logMessage, 'items/resource/digital/pointer')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
@@ -526,7 +526,7 @@ class Protocol7Service
         {
             $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::PROTOCOL_7, true);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%\'s line was suddenly shorted while they were exploring Project-E. ' . $pet->getName() . ' managed to capture some Lightning in a Bottle before being forcefully disconnected!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%\'s line was suddenly shorted while they were exploring Project-E. %pet:' . $pet->getId() . '.name% managed to capture some Lightning in a Bottle before being forcefully disconnected!', '');
 
             $this->inventoryService->petCollectsItem('Lightning in a Bottle', $pet, $pet->getName() . ' captured this on a shorted line of Project-E!', $activityLog);
 
@@ -536,7 +536,7 @@ class Protocol7Service
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%\'s line was suddenly shorted while they were exploring Project-E. ' . $pet->getName() . ' managed to grab a couple Pointers before being forcefully disconnected.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%\'s line was suddenly shorted while they were exploring Project-E. %pet:' . $pet->getId() . '.name% managed to grab a couple Pointers before being forcefully disconnected.', '');
 
             $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' captured this on a shorted line of Project-E!', $activityLog);
             $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' captured this on a shorted line of Project-E!', $activityLog);
@@ -557,7 +557,7 @@ class Protocol7Service
                 $pet->increaseFood(-1);
                 $pet->increaseSafety(-mt_rand(2, 3));
 
-                $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' was unprotected from the sudden burst of energy, and received a minor singe.');
+                $activityLog->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% was unprotected from the sudden burst of energy, and received a minor singe.');
             }
         }
 

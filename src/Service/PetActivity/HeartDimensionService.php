@@ -90,7 +90,7 @@ class HeartDimensionService
 
     private function unequipHeartstone(Pet $pet, PetActivityLog $activityLog)
     {
-        $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' put the Heartstone down.');
+        $activityLog->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% put the Heartstone down.');
         $this->inventoryService->unequipPet($pet);
     }
 
