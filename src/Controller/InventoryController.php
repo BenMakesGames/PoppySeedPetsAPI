@@ -140,6 +140,8 @@ class InventoryController extends PoppySeedPetsController
 
                     $em->flush();
 
+                    $responseService->setReloadInventory();
+
                     return $responseService->success($enchanted, SerializationGroupEnum::MY_INVENTORY);
                 }
 
@@ -164,6 +166,8 @@ class InventoryController extends PoppySeedPetsController
                     $responseService->addFlashMessage('The ' . $spiced->getItem()->getName() . ' is now ' . GrammarFunctions::indefiniteArticle($newName) . ' ' . $newName . '!');
 
                     $em->flush();
+
+                    $responseService->setReloadInventory();
 
                     return $responseService->success($spiced, SerializationGroupEnum::MY_INVENTORY);
                 }

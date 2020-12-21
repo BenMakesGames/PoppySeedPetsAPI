@@ -427,7 +427,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        $responseService->addReloadInventory();
+        $responseService->setReloadInventory();
 
         return $responseService->itemActionSuccess($messagePrefix . ' ' . ArrayFunctions::list_nice($itemList) . '.', [ 'itemDeleted' => true ]);
     }
@@ -670,8 +670,6 @@ class BoxController extends PoppySeedPetsItemController
         $em->remove($inventory);
 
         $em->flush();
-
-        $responseService->addReloadInventory();
 
         return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }

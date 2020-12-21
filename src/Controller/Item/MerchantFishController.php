@@ -44,7 +44,7 @@ class MerchantFishController extends PoppySeedPetsItemController
         {
             $em->remove($inventory);
 
-            $responseService->addReloadInventory();
+            $responseService->setReloadInventory();
 
             $lockedTradeGroups = $traderService->getLockedTradeGroups($user);
 
@@ -89,7 +89,7 @@ class MerchantFishController extends PoppySeedPetsItemController
 
             $em->flush();
 
-            $responseService->addReloadInventory();
+            $responseService->setReloadInventory();
 
             return $responseService->success($storyStep, [ SerializationGroupEnum::STORY ]);
         }

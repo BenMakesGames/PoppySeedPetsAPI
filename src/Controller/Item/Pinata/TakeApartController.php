@@ -57,8 +57,6 @@ class TakeApartController extends PoppySeedPetsItemController
         $em->remove($inventory);
         $em->flush();
 
-        $responseService->addReloadInventory();
-
         return $responseService->itemActionSuccess(ucfirst($info['verbing']) . ' the ' . $inventory->getItem()->getName() . ' yielded ' . ArrayFunctions::list_nice($info['loot']) . '!', [ 'itemDeleted' => true ]);
     }
 }

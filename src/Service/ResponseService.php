@@ -164,14 +164,26 @@ class ResponseService
         return $log;
     }
 
-    public function addReloadPets()
+    public function setReloadPets($reload = true)
     {
-        $this->reloadPets = true;
+        $this->reloadPets = $reload;
+        return $this;
     }
 
-    public function addReloadInventory()
+    public function getReloadPets(): bool
     {
-        $this->reloadInventory = true;
+        return $this->reloadPets;
+    }
+
+    public function setReloadInventory($reload = true)
+    {
+        $this->reloadInventory = $reload;
+        return $this;
+    }
+
+    public function getReloadInventory(): bool
+    {
+        return $this->reloadInventory;
     }
 
     public function addFlashMessage(string $message)

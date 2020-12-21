@@ -1440,7 +1440,7 @@ class PetController extends PoppySeedPetsController
                 ->increaseAffectionLevel(1)
             ;
             $inventoryService->receiveItem('Heartstone', $user, $user, $user->getName() . ' received this from ' . $pet->getName() . ' for knowing their favorite flavor: ' . $pet->getFavoriteFlavor() . '!', LocationEnum::HOME);
-            $responseService->addReloadInventory();
+            $responseService->setReloadInventory();
             $responseService->addFlashMessage('A Heartstone materializes in front of ' . $pet->getName() . '\'s body, and floats into your hands!');
             $data = $pet;
         }

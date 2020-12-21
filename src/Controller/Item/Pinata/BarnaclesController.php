@@ -50,7 +50,7 @@ class BarnaclesController extends PoppySeedPetsItemController
         $em->remove($inventory);
         $em->flush();
 
-        $responseService->addReloadInventory();
+        $responseService->setReloadInventory();
 
         return $responseService->itemActionSuccess('You pry open the Barnacles, finding ' . ArrayFunctions::list_nice($loot) . '.', [ 'itemDeleted' => true ]);
     }

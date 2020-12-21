@@ -253,7 +253,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
             ->addComment($addedComment)
         ;
 
-        $responseService->addReloadInventory();
+        $responseService->setReloadInventory();
 
         $em->flush();
 

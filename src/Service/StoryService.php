@@ -262,7 +262,6 @@ class StoryService
                 $description = str_replace([ '%user.name%' ], [ $this->user->getName() ], $action['description']);
 
                 $this->inventoryService->receiveItem($action['item'], $this->user, null, $description, LocationEnum::HOME, $lockedToOwner);
-                $this->responseService->addReloadInventory();
 
                 break;
 
@@ -272,7 +271,6 @@ class StoryService
 
             case StoryActionTypeEnum::LOSE_ITEM:
                 $this->inventoryService->loseItem($action['item'], $this->user, [ LocationEnum::HOME, LocationEnum::BASEMENT ]);
-                $this->responseService->addReloadInventory();
                 break;
 
             case StoryActionTypeEnum::LOSE_CALLING_INVENTORY:
@@ -281,7 +279,7 @@ class StoryService
                 else
                     throw new \InvalidArgumentException('Ben made a boo-boo: no calling inventory was set.');
 
-                $this->responseService->addReloadInventory();
+                $this->responseService->setReloadInventory();
 
                 break;
 

@@ -43,8 +43,6 @@ class LinensController extends PoppySeedPetsItemController
         $em->remove($inventory);
         $em->flush();
 
-        $responseService->addReloadInventory();
-
         return $responseService->itemActionSuccess('You rummaged around in the pile, and pulled out ' . $numberOfCloth . ' pieces of good Cloth.', [ 'itemDeleted' => true ]);
     }
 
@@ -74,7 +72,7 @@ class LinensController extends PoppySeedPetsItemController
         $em->remove($inventory);
         $em->flush();
 
-        $responseService->addReloadInventory();
+        $responseService->setReloadInventory();
 
         return $responseService->itemActionSuccess($trader->getName() . ' thanks you for the new clothes, and changes into them immediately.', [ 'itemDeleted' => true ]);
     }

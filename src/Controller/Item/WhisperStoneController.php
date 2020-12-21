@@ -114,7 +114,7 @@ class WhisperStoneController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        $responseService->addReloadInventory();
+        $responseService->setReloadInventory();
 
         return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }

@@ -383,7 +383,7 @@ class PetService
         if($pet->getHouseTime()->getActivityTime() < 60)
             throw new \InvalidArgumentException('Pet does not have enough Time. (Ben did something horrible; please let him know.)');
 
-        $this->responseService->addReloadPets();
+        $this->responseService->setReloadPets();
 
         if($pet->getTool() && $pet->getTool()->canBeNibbled() && mt_rand(1, 10) === 1)
         {
@@ -492,13 +492,11 @@ class PetService
         if($this->poop($pet))
         {
             $this->poopingService->poopDarkMatter($pet);
-            $this->responseService->addReloadInventory();
         }
 
         if($pet->hasMerit(MeritEnum::SHEDS) && mt_rand(1, 180) === 1)
         {
             $this->poopingService->shed($pet);
-            $this->responseService->addReloadInventory();
         }
 
         if($pet->hasMerit(MeritEnum::HYPERCHROMATIC))
@@ -581,7 +579,7 @@ class PetService
 
             if(count($namesOfItemsEaten) > 0)
             {
-                $this->responseService->addReloadInventory();
+                $this->responseService->setReloadInventory();
 
                 $message = $pet->getName() . ' ate ' . ArrayFunctions::list_nice($namesOfItemsEaten) . ' out of their lunchbox.';
 
