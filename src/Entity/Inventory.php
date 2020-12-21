@@ -536,7 +536,7 @@ class Inventory
 
     public function setSpice(?Spice $spice): self
     {
-        if($this->getItem()->getSpice())
+        if($spice && $this->getItem()->getSpice())
             return $this;
 
         $this->spice = $spice;
