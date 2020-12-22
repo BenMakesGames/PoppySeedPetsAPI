@@ -80,14 +80,9 @@ class GenericAdventureService
                 case MeritEnum::NOTHING_TO_FEAR: $pet->increaseSafety(72); break;
             }
 
-            $activityLog = (new PetActivityLog())
-                ->setPet($pet)
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%, having become a grandparent, has been thinking about their life up until this point, and adopted a new philosophy: ' . $newMerit . '!', '', $changes->compare($pet))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
-                ->setEntry('%pet:' . $pet->getId() . '.name%, having become a grandparent, has been thinking about their life up until this point, and adopted a new philosophy: ' . $newMerit . '!')
-                ->setChanges($changes->compare($pet))
             ;
-
-            return $activityLog;
         }
 
         $level = $pet->getLevel();
@@ -119,11 +114,9 @@ class GenericAdventureService
 
             $pet->getOwner()->getGreenhouse()->setVisitingBird($bird);
 
-            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a huge ' . $bird . ' swoop into the Greenhouse and land on the Bird Bath!', '')
+            return $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a huge ' . $bird . ' swoop into the Greenhouse and land on the Bird Bath!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
-
-            return $activityLog;
         }
 
         if($level >= 10 && mt_rand(1, 130) === 1)
