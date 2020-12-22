@@ -23,6 +23,18 @@ class UserLetterRepository extends ServiceEntityRepository
         parent::__construct($registry, UserLetter::class);
     }
 
+    public function getNumberUnread(User $user)
+    {
+        return (int)$this->createQueryBuilder('ul')
+            ->select('COUNT(ul.id)')
+            ->andWhere('ul.user=:userId')
+            ->andWhere('ul.isRead=0')
+            ->setParameter('userId', $user->getId())
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+    }
+
     public function getNumberOfLettersFromSender(User $user, string $sender)
     {
         if(!LetterSenderEnum::isAValue($sender))
