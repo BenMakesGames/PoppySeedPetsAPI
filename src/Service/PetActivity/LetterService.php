@@ -59,7 +59,33 @@ class LetterService
         $log = $this->doKatica($petWithSkills);
         if($log) return $log;
 
+        $log = $this->doHyssop($petWithSkills);
+        if($log) return $log;
+
         return null;
+    }
+
+    private function doHyssop(ComputedPetSkills $petWithSkills): ?PetActivityLog
+    {
+        $owner = $petWithSkills->getPet()->getOwner();
+
+        $canReceiveLettersFromFairies = $this->userQuestRepository->findOneBy([
+            'user' => $owner->getId(),
+            'name' => 'Can Receive Letters from Fairies',
+        ]);
+
+        if(!$canReceiveLettersFromFairies)
+            return null;
+
+        $hyssopLettersDelivered = $this->userQuestRepository->findOneBy([
+            'user' => $owner->getId(),
+            'name' => 'Hyssop Letters Delivered'
+        ]);
+
+        if($hyssopLettersDelivered && $hyssopLettersDelivered->getValue() >= $canReceiveLettersFromFairies->getValue())
+            return null;
+
+        return $this->doDeliverLetter($petWithSkills, LetterSenderEnum::HYSSOP, 4);
     }
 
     private function doKatica(ComputedPetSkills $petWithSkills): ?PetActivityLog

@@ -338,7 +338,8 @@ class FireplaceController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function claimRewards(
-        InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em
+        InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
+        UserQuestRepository $userQuestRepository
     )
     {
         $user = $this->getUser();
@@ -380,7 +381,16 @@ class FireplaceController extends PoppySeedPetsController
         {
             $itemName = $possibleRewards[mt_rand(0, mt_rand(7, 7 + $rewardLevelBonus))];
 
-            if($itemName === 'Burnt Log')
+            if($itemName === 'House Fairy')
+            {
+                $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Oh! Hello!)', LocationEnum::HOME);
+
+                // triggers Hyssop letter #3
+                $oldValue = $userQuestRepository->findOrCreate($user, 'Can Receive Letters from Fairies', 0);
+                if($oldValue->getValue() === 2)
+                    $oldValue->setValue(3);
+            }
+            else if($itemName === 'Burnt Log')
                 $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Nothing surprising there.)', LocationEnum::HOME);
             else if($itemName === 'Poker')
                 $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Oops! How\'d that get left in there!)', LocationEnum::HOME);

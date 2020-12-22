@@ -11,6 +11,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -20,14 +21,17 @@ class BurntForestService
     private $petExperienceService;
     private $responseService;
     private $inventoryService;
+    private $userQuestRepository;
 
     public function __construct(
-        PetExperienceService $petExperienceService, ResponseService $responseService, InventoryService $inventoryService
+        PetExperienceService $petExperienceService, ResponseService $responseService, InventoryService $inventoryService,
+        UserQuestRepository $userQuestRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
+        $this->userQuestRepository = $userQuestRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -147,6 +151,9 @@ class BurntForestService
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(mt_rand(1, 2));
+
+            // triggers Hyssop letter #1
+            $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Can Receive Letters from Fairies', 1);
         }
         else
         {
@@ -245,6 +252,11 @@ class BurntForestService
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' was given this by a tree in the Burnt Forest, as thanks for saving it!', $activityLog);
                 $pet->increaseLove(mt_rand(2, 4));
                 $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::UMBRA ]);
+
+                // triggers Hyssop letter #2
+                $oldValue = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Can Receive Letters from Fairies', 0);
+                if($oldValue->getValue() === 1)
+                    $oldValue->setValue(2);
             }
             else
             {
