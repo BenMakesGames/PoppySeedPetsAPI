@@ -5,6 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\KnownRecipes;
 use App\Entity\Recipe;
 use App\Entity\RecipeAttempted;
+use App\Entity\Spice;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
@@ -156,6 +157,7 @@ class CookingService
             $multiple = $smallestQuantity;
         }
 
+        /** @var Spice[] $spices */
         $spices = [];
 
         foreach($inventory as $i)
@@ -185,7 +187,7 @@ class CookingService
 
             for($i = 0; $i < $originalSpicesCount; $i++)
             {
-                if(mt_rand(1, 3) === 1)
+                if(mt_rand(1, 3) === 1 && !$spices[$i]->getEffects()->getBringsLuck())
                     $spices[] = $spices[$i];
             }
 
