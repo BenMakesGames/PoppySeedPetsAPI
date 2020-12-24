@@ -206,9 +206,6 @@ class InventoryController extends PoppySeedPetsController
 
         $responseService->addFlashMessage('You prepared ' . ArrayFunctions::list_nice_quantities($qList) . $exclaim);
 
-        if($results->location !== LocationEnum::HOME)
-            $responseService->setReloadInventory(true);
-
         return $responseService->success($results->inventory, SerializationGroupEnum::MY_INVENTORY);
     }
 
