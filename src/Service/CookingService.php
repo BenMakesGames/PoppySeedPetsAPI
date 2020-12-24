@@ -227,6 +227,7 @@ class CookingService
         $results->inventory = $newInventory;
         $results->quantities = $makes;
         $results->recipe = $recipe;
+        $results->location = $locationOfFirstItem;
 
         return $results;
     }

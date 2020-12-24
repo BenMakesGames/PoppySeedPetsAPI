@@ -22,6 +22,7 @@ use App\Service\Filter\InventoryFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Location;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -204,6 +205,9 @@ class InventoryController extends PoppySeedPetsController
             $exclaim = '! (' . ArrayFunctions::pick_one([ 'Dang!', 'Wow!', 'Incredible...', 'So cook! Very meal!', 'A veritable feast!', 'Such skill!' ]) . ')';
 
         $responseService->addFlashMessage('You prepared ' . ArrayFunctions::list_nice_quantities($qList) . $exclaim);
+
+        if($results->location !== LocationEnum::HOME)
+            $responseService->setReloadInventory(true);
 
         return $responseService->success($results->inventory, SerializationGroupEnum::MY_INVENTORY);
     }

@@ -14,4 +14,7 @@ class PrepareRecipeResults
 
     /** @var Recipe */
     public $recipe;
+
+    /** @var int */
+    public $location;
 }

@@ -1039,7 +1039,7 @@ class CraftingService
                 ->increaseEsteem(4)
                 ->increaseSafety(2)
             ;
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% cracked themselves up by created a Cooking "Alien".', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% cracked themselves up by creating a Cooking "Alien".', '');
             $this->inventoryService->petCollectsItem('Cooking "Alien"', $pet, $pet->getName() . ' created by gluing some Antennae on a Cooking Buddy.', $activityLog);
 
             return $activityLog;
