@@ -8,4 +8,5 @@ class LetterSenderEnum
     public const SHARUMINYINKA = 'Sharuminyinka';
     public const KATICA = 'Katica';
     public const HYSSOP = 'Hyssop';
+    public const MIA = 'Mia';
 }

@@ -53,6 +53,9 @@ class LetterService
 
     public function adventure(ComputedPetSkills $petWithSkills): ?PetActivityLog
     {
+        $log = $this->doAnniversary($petWithSkills);
+        if($log) return $log;
+
         $log = $this->doSharuminyinka($petWithSkills);
         if($log) return $log;
 
@@ -63,6 +66,36 @@ class LetterService
         if($log) return $log;
 
         return null;
+    }
+
+    private function doAnniversary(ComputedPetSkills $petWithSkills): ?PetActivityLog
+    {
+        $owner = $petWithSkills->getPet()->getOwner();
+
+        $accountAgeInYears = (new \DateTimeImmutable())->diff($owner->getRegisteredOn())->y;
+
+        if($accountAgeInYears === 0)
+            return null;
+
+        $anniversaryLettersDelivered = $this->userQuestRepository->findOneBy([
+            'user' => $owner->getId(),
+            'name' => 'Anniversary Letters Delivered'
+        ]);
+
+        $lettersDelivered = $anniversaryLettersDelivered ? $anniversaryLettersDelivered->getValue() : 0;
+
+        if($lettersDelivered >= $accountAgeInYears)
+            return null;
+
+        $response = $this->doDeliverLetter($petWithSkills, LetterSenderEnum::MIA, 1);
+
+        if(!$response)
+            return null;
+
+        if($response->letter->getLetter()->getAttachment())
+            $this->museumService->forceDonateItem($owner, $response->letter->getLetter()->getAttachment(), $response->letter->getLetter()->getSender() . ' donated this to the Museum on your behalf.');
+
+        return $response->activityLog;
     }
 
     private function doHyssop(ComputedPetSkills $petWithSkills): ?PetActivityLog
@@ -85,7 +118,9 @@ class LetterService
         if($hyssopLettersDelivered && $hyssopLettersDelivered->getValue() >= $canReceiveLettersFromFairies->getValue())
             return null;
 
-        return $this->doDeliverLetter($petWithSkills, LetterSenderEnum::HYSSOP, 4);
+        $response = $this->doDeliverLetter($petWithSkills, LetterSenderEnum::HYSSOP, 4);
+
+        return $response ? $response->activityLog : null;
     }
 
     private function doKatica(ComputedPetSkills $petWithSkills): ?PetActivityLog
@@ -94,7 +129,9 @@ class LetterService
 
         if($owner->getBeehive() && $owner->getBeehive()->getWorkers() >= 5000)
         {
-            return $this->doDeliverLetter($petWithSkills, LetterSenderEnum::KATICA, 19);
+            $response = $this->doDeliverLetter($petWithSkills, LetterSenderEnum::KATICA, 19);
+
+            return $response ? $response->activityLog : null;
         }
 
         return null;
@@ -115,14 +152,16 @@ class LetterService
 
             if($sharuminyinkaQuestStep->getLastUpdated() < $thirtyDaysAgo)
             {
-                return $this->doDeliverLetter($petWithSkills, LetterSenderEnum::SHARUMINYINKA, 14);
+                $response = $this->doDeliverLetter($petWithSkills, LetterSenderEnum::SHARUMINYINKA, 14);
+
+                return $response ? $response->activityLog : null;
             }
         }
 
         return null;
     }
 
-    private function doDeliverLetter(ComputedPetSkills $petWithSkills, string $sender, int $minDaysBetweenDelivery): ?PetActivityLog
+    private function doDeliverLetter(ComputedPetSkills $petWithSkills, string $sender, int $minDaysBetweenDelivery): ?LetterResponse
     {
         $pet = $petWithSkills->getPet();
         $owner = $pet->getOwner();
@@ -210,14 +249,18 @@ class LetterService
 
         $letterDescription = '%pet:' . $pet->getId() . '.name% was delivered this letter by a courier: ' . $descriptionForPet;
 
-        $this->giveNextLetter($owner, $sender, $letterDescription);
+        $letter = $this->giveNextLetter($owner, $sender, $letterDescription);
 
         $lettersDelivered->setValue($lettersDelivered->getValue() + 1);
 
-        return $activityLog;
+        $response = new LetterResponse();
+        $response->letter = $letter;
+        $response->activityLog = $activityLog;
+
+        return $response;
     }
 
-    private function giveNextLetter(User $user, string $sender, string $comment)
+    private function giveNextLetter(User $user, string $sender, string $comment): UserLetter
     {
         $existingLetters = $this->userLetterRepository->getNumberOfLettersFromSender($user, $sender);
 
@@ -247,4 +290,10 @@ class LetterService
 
         return $newLetter;
     }
+}
+
+class LetterResponse
+{
+    /** @var UserLetter */ public $letter;
+    /** @var PetActivityLog */ public $activityLog;
 }
