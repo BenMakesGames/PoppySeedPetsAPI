@@ -311,6 +311,14 @@ class Item
             return 1;
     }
 
+    /**
+     * @Groups({"myInventory", "itemEncyclopedia"})
+     */
+    public function getIsFertilizer(): bool
+    {
+        return $this->getFertilizer() > 0;
+    }
+
     public function getRecycleValue(): int
     {
         return $this->recycleValue;
