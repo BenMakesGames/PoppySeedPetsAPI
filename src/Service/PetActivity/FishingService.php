@@ -539,11 +539,17 @@ class FishingService
         if($nothingBiting !== null) return $nothingBiting;
 
         $foundRice = mt_rand(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15;
+        $foundNonLa = $foundRice && (mt_rand(1, 35) === 1);
 
         if(mt_rand(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getFishingBonus()->getTotal()) >= 10)
         {
             if($foundRice)
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Flooded Paddy Field, caught a Crawfish, and picked some Rice!', 'items/tool/fishing-rod/crooked');
+            {
+                if($foundNonLa)
+                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Flooded Paddy Field, caught a Crawfish, picked some Rice, and found a Nón Lá!', 'items/tool/fishing-rod/crooked');
+                else
+                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Flooded Paddy Field, caught a Crawfish, and picked some Rice!', 'items/tool/fishing-rod/crooked');
+            }
             else
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Flooded Paddy Field, and caught a Crawfish.', 'items/tool/fishing-rod/crooked');
 
@@ -569,8 +575,11 @@ class FishingService
 
         if($foundRice)
         {
+            if($foundNonLa)
+                $this->inventoryService->petCollectsItem('Nón Lá', $pet, $pet->getName() . ' found this at a Flooded Paddy Field while fishing.', $activityLog);
+
             $this->inventoryService->petCollectsItem('Rice', $pet, $pet->getName() . ' found this at a Flooded Paddy Field while fishing.', $activityLog);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+            $this->petExperienceService->gainExp($pet, $foundNonLa ? 2 : 1, [ PetSkillEnum::NATURE ]);
         }
 
         return $activityLog;
