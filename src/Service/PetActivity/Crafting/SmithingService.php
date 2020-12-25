@@ -232,8 +232,14 @@ class SmithingService
         if(array_key_exists('Antipode', $quantities) && array_key_exists('Lightning Sword', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createTrinityBlade', 10);
 
-        if(array_key_exists('Poker', $quantities) && array_key_exists('Everice', $quantities))
-            $possibilities[] = new ActivityCallback($this, 'createWandOfIce', 10);
+        if(array_key_exists('Everice', $quantities))
+        {
+            if(array_key_exists('Poker', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createWandOfIce', 10);
+
+            if(array_key_exists('Crooked Fishing Rod', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createIceFishing', 10);
+        }
 
         if(array_key_exists('Meteorite', $quantities))
         {
@@ -921,6 +927,41 @@ class SmithingService
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Wand of Ice, but the Everice was being uncooperative :|', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createIceFishing(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($roll >= 14)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Crooked Fishing Rod', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Everice', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% smithed Ice Fishing!', 'items/tool/wand/ice')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 19)
+            ;
+            $this->inventoryService->petCollectsItem('Ice Fishing', $pet, $pet->getName() . ' created this by hammering Everice into a Crooked Fishing Rod!', $activityLog);
+            return $activityLog;
+        }
+        else if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            return $this->evericeMeltingService->doMeltEverice($pet, $pet->getName() . ' tried to make Ice Fishing, but accidentally shattered the Everice!');
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make Ice Fishing, but the Everice was being uncooperative :|', 'icons/activity-logs/confused');
         }
     }
 
