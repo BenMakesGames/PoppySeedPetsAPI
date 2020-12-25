@@ -429,6 +429,9 @@ class GatheringService
         $loot = [];
         $didWhat = 'harvested this from an Overgrown Garden';
 
+        if(mt_rand(1, 100) === 1 && $pet->hasMerit(MeritEnum::BEHATTED))
+            $loot[] = 'Orange Bow';
+
         if(mt_rand(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) < 10)
         {
             $pet->increaseFood(-1);
@@ -444,9 +447,6 @@ class GatheringService
 
                 if(mt_rand(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15)
                     $loot[] = 'Talon';
-
-                if(mt_rand(1, 100) === 1 && $pet->hasMerit(MeritEnum::BEHATTED))
-                    $loot[] = 'Orange Bow';
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::NATURE ]);
                 $pet->increaseEsteem(mt_rand(1, 2));

@@ -249,7 +249,7 @@ class Pet
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Merit")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petGroupDetails", "parkEvent", "petFriend"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petGroupDetails", "parkEvent", "petFriend", "hollowEarth"})
      */
     private $merits;
 
