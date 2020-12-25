@@ -19,7 +19,8 @@ class ReversableController extends PoppySeedPetsItemController
         'Small Plastic Bucket' => 'Upside-down Plastic Bucket',
         'Shiny Pail' => 'Upside-down Shiny Pail',
         'Small, Yellow Plastic Bucket' => 'Upside-down, Yellow Plastic Bucket',
-        'Saucepan' => 'Upside-down Saucepan'
+        'Saucepan' => 'Upside-down Saucepan',
+        'Silver Colander' => 'Upside-down Silver Colander',
     ];
 
     /**
