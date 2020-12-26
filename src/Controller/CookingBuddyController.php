@@ -54,13 +54,29 @@ class CookingBuddyController extends PoppySeedPetsController
 
             $ingredients = $inventoryService->deserializeItemList($knownRecipe->getRecipe()->getIngredients());
             $makes = $inventoryService->deserializeItemList($knownRecipe->getRecipe()->getMakes());
+            $hasAllIngredients = true;
+
+            $ingredients = array_map(function(ItemQuantity $itemQuantity) use($quantities, &$hasAllIngredients) {
+                $itemName = $itemQuantity->item->getName();
+                $available = array_key_exists($itemName, $quantities) ? $quantities[$itemName]->quantity : 0;
+                $hasAllIngredients = $hasAllIngredients && $available >= $itemQuantity->quantity;
+
+                return [
+                    'item' => [
+                        'name' => $itemName,
+                        'image' => $itemQuantity->item->getImage(),
+                    ],
+                    'quantity' => $itemQuantity->quantity,
+                    'available' => $available
+                ];
+            }, $ingredients);
 
             $recipes[] = [
                 'id' => $knownRecipe->getId(),
                 'name' => $knownRecipe->getRecipe()->getName(),
                 'ingredients' => $ingredients,
                 'makes' => $makes,
-                'canPrepare' => $inventoryService->hasRequiredItems($ingredients, $quantities)
+                'canPrepare' => $hasAllIngredients,
             ];
         }
 
