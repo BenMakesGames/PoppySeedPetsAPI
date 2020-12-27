@@ -186,10 +186,9 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
                 $index++;
             }
 
-            $totalPercent = array_reduce(
+            $totalPercent = ArrayFunctions::sum(
                 $yield->getItems()->toArray(),
-                function(int $carry, PlantYieldItem $item) { return $carry + $item->getPercentChance(); },
-                0
+                function(PlantYieldItem $item) { return $item->getPercentChance(); }
             );
 
             $this->output->writeln($index . '. Add a new item');

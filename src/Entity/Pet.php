@@ -823,6 +823,14 @@ class Pet
         return $this->getLastInteracted() < (new \DateTimeImmutable())->modify('-4 hours');
     }
 
+    /**
+     * @Groups({"myPet"})
+     */
+    public function getCanParticipateInParkEvents(): bool
+    {
+        return $this->getLastInteracted() > (new \DateTimeImmutable())->modify('-48 hours');
+    }
+
     public function getSkills(): ?PetSkills
     {
         return $this->skills;

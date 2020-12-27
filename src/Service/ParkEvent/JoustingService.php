@@ -363,12 +363,17 @@ class JoustingService implements ParkEventInterface
 
     private function awardExp()
     {
-        $skillTotal = 0;
+        $affectionTotal = 0;
 
         foreach($this->participants as $participant)
-            $skillTotal += $this->getPetSkill($participant->rider) + $this->getPetSkill($participant->mount);
+            $affectionTotal += $participant->rider->getAffectionLevel() + $participant->mount->getAffectionLevel();
 
-        $firstPlaceMoneys = ceil(mt_rand(23, 27) / 8 * sqrt($skillTotal * $this->round / 8) / 2);
+        $affectionAverage = $affectionTotal / (count($this->participants) * 2);
+
+        $firstPlaceMoneys = 2 * count($this->participants) + mt_rand(-4, 4); // base prize
+        $firstPlaceMoneys += ceil($affectionAverage); // affection bonus
+        $firstPlaceMoneys = ceil($firstPlaceMoneys / 2); // divide by two, because two pets share the prize
+
         $secondPlaceMoneys = ceil($firstPlaceMoneys * 3 / 4);
 
         $this->results .= '**' . $this->winners[0]->getTeamName() . ' wins the tournament, and ' . $firstPlaceMoneys . '~~m~~!**' . "<br>\n";
@@ -387,7 +392,7 @@ class JoustingService implements ParkEventInterface
     {
         $changes = new PetChanges($pet);
 
-        $exp = ceil($this->getPetSkill($pet) / 12);
+        $exp = 1;
 
         if($team->wins === $this->round)
         {

@@ -124,6 +124,20 @@ final class ArrayFunctions
         return $list;
     }
 
+    public static function sum(array $values, callable $getter)
+    {
+        return array_reduce(
+            $values,
+            function($carry, $value) use($getter) { return $carry + $getter($value); },
+            0
+        );
+    }
+
+    public static function average(array $values, callable $getter)
+    {
+        return ArrayFunctions::sum($values, $getter) / count($values);
+    }
+
     public static function max(iterable $values, callable $getter)
     {
         $max = null;

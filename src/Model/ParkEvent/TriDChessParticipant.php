@@ -20,10 +20,10 @@ class TriDChessParticipant
 
     public static function getSkill(Pet $pet)
     {
-        $skill = 1 + $pet->getSkills()->getIntelligence() * 3 + $pet->getSkills()->getPerception() * 1;
+        $skill = 1 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getScience();
 
         if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
-            $skill += ceil($pet->getSkills()->getIntelligence() / 4);
+            $skill += 2;
 
         return $skill;
     }

@@ -126,10 +126,7 @@ class RunParkEventsCommand extends Command
 
             foreach($parkEvent->getParticipants() as $pet)
             {
-                $pet
-                    ->setLastParkEvent()
-                    ->setParkEventType(null)
-                ;
+                $pet->setLastParkEvent();
 
                 if($forceBalloon || mt_rand(1, 10) === 1)
                 {

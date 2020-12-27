@@ -221,19 +221,18 @@ class TriDChessService implements ParkEventInterface
 
     private function awardExp()
     {
-        $skillTotal = 0;
+        $affectionAverage = ArrayFunctions::average($this->participants, function(TriDChessParticipant $p) { return $p->pet->getAffectionLevel(); });
 
-        foreach($this->participants as $participant)
-            $skillTotal += $participant->skill;
+        $firstPlaceMoneys = 2 * count($this->participants) + mt_rand(-4, 4); // base prize
+        $firstPlaceMoneys += ceil($affectionAverage); // affection bonus
 
-        $firstPlaceMoneys = ceil(mt_rand(23, 27) / 8 * sqrt($skillTotal * $this->round / 8));
         $secondPlaceMoneys = ceil($firstPlaceMoneys * 3 / 4);
 
         $this->results .= '**' . $this->winners[0]->pet->getName() . ' wins the tournament, and ' . $firstPlaceMoneys . '~~m~~!**' . "<br>\n";
 
         foreach($this->participants as $participant)
         {
-            $expGain = ceil($participant->skill / 12);
+            $expGain = 1;
 
             $state = new PetChanges($participant->pet);
 

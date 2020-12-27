@@ -170,31 +170,34 @@ class KinBallService implements ParkEventInterface
 
     private function awardExp()
     {
-        $skillTotal = 0;
+        $affectionTotal = 0;
 
         foreach($this->teams as $teamIndex=>$team)
         {
             foreach($team->pets as $participant)
-                $skillTotal += $participant->skill;
+                $affectionTotal += $participant->pet->getAffectionLevel();
         }
 
-        $skillAverage = ceil($skillTotal / 12);
-
         $winningTeamIndex = $this->getGameWinningTeam();
+
+        $firstPlaceMoneys = 2 * 12 + mt_rand(-4, 4); // * 12, because there are 12 players
+        $firstPlaceMoneys += ceil($affectionTotal / 12); // affection bonus
+        $firstPlaceMoneys += floor($firstPlaceMoneys * 3 / 4); // usually there's a second-place prize; not in Kin-Ball!
+        $firstPlaceMoneys = ceil($firstPlaceMoneys / 4); // the prize is shared by all four members of the team
 
         foreach($this->teams as $teamIndex=>$team)
         {
             foreach($team->pets as $participant)
             {
-                $expGain = ceil($participant->skill / 12);
+                $expGain = 1;
 
                 $state = new PetChanges($participant->pet);
 
                 if($winningTeamIndex === $teamIndex)
                 {
                     $expGain++;
-                    $this->transactionService->getMoney($participant->pet->getOwner(), $skillAverage, $participant->pet->getName() . ' earned this in a game of Kin-Ball!');
-                    $activityLogEntry = $participant->pet->getName() . ' played a game of Kin-Ball, and was on the winning team! They received ' . $skillAverage . '~~m~~!';
+                    $this->transactionService->getMoney($participant->pet->getOwner(), $firstPlaceMoneys, $participant->pet->getName() . ' earned this in a game of Kin-Ball!');
+                    $activityLogEntry = $participant->pet->getName() . ' played a game of Kin-Ball, and was on the winning team! They received ' . $firstPlaceMoneys . '~~m~~!';
                 }
                 else
                     $activityLogEntry = $participant->pet->getName() . ' played a game of Kin-Ball. ' . $participant->pet->getName() . ' wasn\'t on the winning team, but it was still a good game!';
@@ -221,7 +224,7 @@ class KinBallService implements ParkEventInterface
             }
         }
 
-        $this->results .= 'Members of the winning team each receive ' . $skillAverage . ' ~~m~~:' . "\n";
+        $this->results .= 'Members of the winning team each receive ' . $firstPlaceMoneys . ' ~~m~~:' . "\n";
         foreach($this->teams[$winningTeamIndex]->pets as $participant)
             $this->results .= '* ' . $participant->pet->getName() . "\n";
     }

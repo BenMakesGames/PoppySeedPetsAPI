@@ -85,10 +85,12 @@ class PetRepository extends ServiceEntityRepository
             ->andWhere('p.parkEventType=:eventType')
             ->andWhere('(p.lastParkEvent<:today OR p.lastParkEvent IS NULL)')
             ->andWhere('p.inDaycare=0')
+            ->andWhere('p.lastInteracted>=:twoDaysAgo')
             ->orderBy('p.parkEventOrder', 'ASC')
             ->setMaxResults($number)
             ->setParameter('eventType', $eventType)
             ->setParameter('today', $today->format('Y-m-d'))
+            ->setParameter('twoDaysAgo', $today->modify('-48 hours')->format('Y-m-d H:i:s'))
             ->getQuery()
             ->getResult()
         ;
