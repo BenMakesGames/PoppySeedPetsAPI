@@ -261,9 +261,9 @@ class FireplaceController extends PoppySeedPetsController
             throw new AccessDeniedHttpException('There\'s nothing else in the stocking. Maybe tomorrow?');
 
         $randomRewards = [
-            'Mint', 'Chocolate Bar', 'Charcoal', 'Blackberry Wine', 'Cheese', 'Cooking Buddy',
-            'Fruit Basket', 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die',
-            'House Fairy', 'Fluff', 'Paper Bag', 'Plastic Idol', 'Renaming Scroll', 'Secret Seashell',
+            'Mint', 'Chocolate Bar', 'Charcoal', 'Cheese', 'Crystal Ball', 'Fruit Basket',
+            'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die', 'Wings',
+            'Fluff', 'Paper Bag', 'Plastic Idol', 'Quintessence', 'Secret Seashell', 'Rock'
         ];
 
         $rewards = [
