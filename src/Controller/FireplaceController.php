@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Dragon;
 use App\Entity\Fireplace;
 use App\Entity\Inventory;
 use App\Entity\Item;
@@ -12,6 +13,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\JewishCalendarFunctions;
 use App\Functions\StringFunctions;
+use App\Repository\DragonRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
@@ -35,7 +37,7 @@ class FireplaceController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getFireplace(
-        InventoryRepository $inventoryRepository, ResponseService $responseService
+        InventoryRepository $inventoryRepository, ResponseService $responseService, DragonRepository $dragonRepository
     )
     {
         $user = $this->getUser();
@@ -48,10 +50,13 @@ class FireplaceController extends PoppySeedPetsController
             'location' => LocationEnum::MANTLE
         ]);
 
+        $dragon = $dragonRepository->findWhelp($user);
+
         return $responseService->success(
             [
                 'mantle' => $mantle,
                 'fireplace' => $user->getFireplace(),
+                'whelp' => $dragon
             ],
             [
                 SerializationGroupEnum::MY_INVENTORY,
@@ -120,15 +125,14 @@ class FireplaceController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getWhelpFood(
-        InventoryRepository $inventoryRepository, ResponseService $responseService
+        InventoryRepository $inventoryRepository, ResponseService $responseService, DragonRepository $dragonRepository
     )
     {
         $user = $this->getUser();
 
-        if(!$user->getUnlockedFireplace() || !$user->getFireplace())
-            throw new AccessDeniedHttpException('You haven\'t got a Fireplace, yet!');
+        $whelp = $dragonRepository->findWhelp($user);
 
-        if($user->getFireplace()->getWhelpName() === null)
+        if(!$whelp)
             throw new AccessDeniedHttpException('You haven\'t got a Dragon Whelp, yet!');
 
         $food = $inventoryRepository->createQueryBuilder('i')
@@ -151,16 +155,14 @@ class FireplaceController extends PoppySeedPetsController
      */
     public function feedWhelp(
         Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
-        InventoryService $inventoryService, EntityManagerInterface $em
+        InventoryService $inventoryService, EntityManagerInterface $em, DragonRepository $dragonRepository
     )
     {
         $user = $this->getUser();
-        $fireplace = $user->getFireplace();
 
-        if(!$user->getUnlockedFireplace() || !$fireplace)
-            throw new AccessDeniedHttpException('You haven\'t got a Fireplace, yet!');
+        $whelp = $dragonRepository->findWhelp($user);
 
-        if($fireplace->getWhelpName() === null)
+        if(!$whelp)
             throw new AccessDeniedHttpException('You haven\'t got a Dragon Whelp, yet!');
 
         if(!$request->request->has('food'))
@@ -194,11 +196,11 @@ class FireplaceController extends PoppySeedPetsController
         {
             $em->remove($item);
 
-            $fireplace->increaseWhelpFood($item->getItem()->getFood()->getFood() + $item->getItem()->getFood()->getSpicy() * 2);
+            $whelp->increaseFood($item->getItem()->getFood()->getFood() + $item->getItem()->getFood()->getSpicy() * 2);
 
-            while($fireplace->getWhelpFood() >= 35)
+            while($whelp->getFood() >= Dragon::FOOD_REQUIRED_FOR_A_MEAL)
             {
-                $fireplace->increaseWhelpFood(-35);
+                $whelp->decreaseFood();
 
                 $r = mt_rand(1, 100);
 
@@ -220,9 +222,9 @@ class FireplaceController extends PoppySeedPetsController
             sort($loot);
 
             foreach($loot as $item)
-                $inventoryService->receiveItem($item, $user, $user, $fireplace->getWhelpName() . ' spit this up.', LocationEnum::HOME);
+                $inventoryService->receiveItem($item, $user, $user, $whelp->getName() . ' spit this up.', LocationEnum::HOME);
 
-            $responseService->addFlashMessage($fireplace->getWhelpName() . ' spit up ' . ArrayFunctions::list_nice($loot) . '.');
+            $responseService->addFlashMessage($whelp->getName() . ' spit up ' . ArrayFunctions::list_nice($loot) . '.');
         }
         else
         {
@@ -230,13 +232,22 @@ class FireplaceController extends PoppySeedPetsController
                 'happily', 'happily', 'happily', 'excitedly', 'blithely'
             ]);
 
-            $responseService->addFlashMessage($fireplace->getWhelpName() . ' ' . $adverb . ' devoured your offering.');
+            $responseService->addFlashMessage($whelp->getName() . ' ' . $adverb . ' devoured your offering.');
         }
 
+        if($whelp->getGrowth() >= 35 * 20)
+        {
+            $whelp->setIsAdult(true);
+            $user->setUnlockedDragonDen();
+            $responseService->addFlashMessage($whelp->getName() . ' is a whelp no longer! They leave your fireplace and establish a den nearby!');
+        }
 
         $em->flush();
 
-        return $responseService->success();
+        if($whelp->getIsAdult())
+            return $responseService->success();
+        else
+            return $responseService->success($whelp, SerializationGroupEnum::MY_FIREPLACE);
     }
 
     /**

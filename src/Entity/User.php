@@ -262,6 +262,12 @@ class User implements UserInterface
      */
     private $unlockedMailbox;
 
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"myAccount"})
+     */
+    private $unlockedDragonDen;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -931,6 +937,18 @@ class User implements UserInterface
     public function setUnlockedMailbox(): self
     {
         $this->unlockedMailbox = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getUnlockedDragonDen(): ?\DateTimeImmutable
+    {
+        return $this->unlockedDragonDen;
+    }
+
+    public function setUnlockedDragonDen(): self
+    {
+        $this->unlockedDragonDen = new \DateTimeImmutable();
 
         return $this;
     }

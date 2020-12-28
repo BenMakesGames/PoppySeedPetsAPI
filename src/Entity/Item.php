@@ -23,7 +23,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=45, unique=true)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "fireplaceMantle", "fireplaceFuel", "myBeehive", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "fireplaceMantle", "fireplaceFuel", "myBeehive", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure"})
      */
     private $name;
 
@@ -35,7 +35,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "myBeehive", "petGroupDetails", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "myBeehive", "petGroupDetails", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure"})
      */
     private $image;
 
@@ -110,6 +110,12 @@ class Item
      * @Groups({"myInventory", "marketItem", "itemEncyclopedia"})
      */
     private $spice;
+
+    /**
+     * @ORM\OneToOne(targetEntity=ItemTreasure::class, mappedBy="item", cascade={"persist", "remove"})
+     * @Groups({"dragonTreasure"})
+     */
+    private $treasure;
 
     public function getId(): ?int
     {
@@ -368,6 +374,23 @@ class Item
     public function setSpice(?Spice $spice): self
     {
         $this->spice = $spice;
+
+        return $this;
+    }
+
+    public function getTreasure(): ?ItemTreasure
+    {
+        return $this->treasure;
+    }
+
+    public function setTreasure(ItemTreasure $treasure): self
+    {
+        $this->treasure = $treasure;
+
+        // set the owning side of the relation if necessary
+        if ($treasure->getItem() !== $this) {
+            $treasure->setItem($this);
+        }
 
         return $this;
     }

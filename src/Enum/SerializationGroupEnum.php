@@ -51,4 +51,6 @@ final class SerializationGroupEnum
     public const GUILD_ENCYCLOPEDIA= 'guildEncyclopedia';
     public const GUILD_MEMBER = 'guildMember';
     public const MY_LETTERS = 'myLetters';
+    public const MY_DRAGON = 'myDragon';
+    public const DRAGON_TREASURE = 'dragonTreasure';
 }

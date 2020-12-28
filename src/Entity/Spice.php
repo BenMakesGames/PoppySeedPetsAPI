@@ -28,13 +28,13 @@ class Spice
 
     /**
      * @ORM\Column(type="string", length=20)
-     * @Groups({"myInventory", "marketItem", "itemEncyclopedia", "myPet"})
+     * @Groups({"myInventory", "marketItem", "itemEncyclopedia", "myPet", "dragonTreasure"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"myInventory", "marketItem", "itemEncyclopedia", "myPet"})
+     * @Groups({"myInventory", "marketItem", "itemEncyclopedia", "myPet", "dragonTreasure"})
      */
     private $isSuffix;
 

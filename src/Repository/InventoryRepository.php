@@ -24,6 +24,22 @@ class InventoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Inventory::class);
     }
 
+    /**
+     * @return Inventory[]
+     */
+    public function findTreasures(User $user): array
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.owner=:user')
+            ->andWhere('i.location=:home')
+            ->andWhere('i.treasure IS NOT NULL')
+            ->setParameter('user', $user->getId())
+            ->setParameter('home', LocationEnum::HOME)
+            ->getQuery()
+            ->execute()
+        ;
+    }
+
     public function findOneToConsume(User $owner, string $itemName): ?Inventory
     {
         return $this->createQueryBuilder('i')
