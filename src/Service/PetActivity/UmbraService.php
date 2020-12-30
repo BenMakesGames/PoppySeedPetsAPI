@@ -14,6 +14,7 @@ use App\Functions\GrammarFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Repository\DragonRepository;
 use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
@@ -32,11 +33,13 @@ class UmbraService
     private $itemRepository;
     private $toolBonusService;
     private $strangeUmbralEncounters;
+    private $dragonRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, GuildService $guildService, EnchantmentRepository $enchantmentRepository,
-        ItemRepository $itemRepository, InventoryModifierService $toolBonusService, StrangeUmbralEncounters $strangeUmbralEncounters
+        ItemRepository $itemRepository, InventoryModifierService $toolBonusService, StrangeUmbralEncounters $strangeUmbralEncounters,
+        DragonRepository $dragonRepository
     )
     {
         $this->responseService = $responseService;
@@ -48,6 +51,7 @@ class UmbraService
         $this->itemRepository = $itemRepository;
         $this->toolBonusService = $toolBonusService;
         $this->strangeUmbralEncounters = $strangeUmbralEncounters;
+        $this->dragonRepository = $dragonRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -87,7 +91,9 @@ class UmbraService
                 break;
 
             case 12:
-                if($pet->getOwner()->getFireplace() && $pet->getOwner()->getFireplace()->getWhelpName())
+                $dragon = $this->dragonRepository->findOneBy([ 'owner' => $pet->getOwner() ]);
+
+                if($dragon)
                     $activityLog = $this->visitLibraryOfFire($petWithSkills);
                 else
                     $activityLog = $this->foundNothing($pet, $roll);
