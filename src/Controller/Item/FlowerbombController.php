@@ -51,9 +51,16 @@ class FlowerbombController extends PoppySeedPetsItemController
         }
 
         if($numberOfTosses === 0)
-            $possibleFlowers = [ 'Narcissus' ];
+        {
+            $possibleFlowers = ['Narcissus'];
+            $percentChanceToExplode = 10;
+        }
+        else
+        {
+            $percentChanceToExplode = 20;
+        }
 
-        if(mt_rand(1, 5) === 1)
+        if(mt_rand(1, 100) <= $percentChanceToExplode)
         {
             for($i = 0; $i < 10 + $numberOfTosses; $i++)
             {

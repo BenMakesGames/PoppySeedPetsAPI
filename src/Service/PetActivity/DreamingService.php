@@ -159,14 +159,14 @@ class DreamingService
             ]
         ]);
 
-        $locationIndicies = array_rand(self::LOCATIONS, 2);
+        $locations = ArrayFunctions::pick_some(self::LOCATIONS, 2);
 
         $replacements = [
             '%item%' => $itemName,
             '%item_with_article%' => $item->getNameWithArticle(),
             '%dreamer%' => $pet->getName(),
-            '%location1%' => self::LOCATIONS[$locationIndicies[0]],
-            '%location2%' => self::LOCATIONS[$locationIndicies[1]],
+            '%location1%' => $locations[0],
+            '%location2%' => $locations[1],
             '%wandering%' => ArrayFunctions::pick_one(self::WANDERING_WORDS),
             '%species%' => ArrayFunctions::pick_one($this->petSpeciesRepository->findAll())->getName(),
             '%adverb%' => ArrayFunctions::pick_one([ 'hesitantly', 'eagerly', 'grumpily', 'apathetically' ]),

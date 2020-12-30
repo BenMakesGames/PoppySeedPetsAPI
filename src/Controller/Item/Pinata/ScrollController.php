@@ -336,4 +336,49 @@ class ScrollController extends PoppySeedPetsItemController
 
         return $responseService->itemActionSuccess('You read the scroll, producing ' . $moneys . '~~m~~, and ' . $item . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
+
+    /**
+     * @Route("/resources/{inventory}/invoke", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function readResourcesScroll(
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
+        ResponseService $responseService
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'scroll/resources/#/invoke');
+
+        $numberOfItems = [
+            'Tiny Scroll of Resources' => 1,
+            'Scroll of Resources' => 3
+        ][$inventory->getItem()->getName()];
+
+        $possibleItems = [
+            'Liquid-hot Magma',
+            'Plastic', 'Crooked Stick', 'Fluff', 'Pointer',
+            'Iron Ore', ArrayFunctions::pick_one([ 'Silver Ore', 'Silver Ore', 'Gold Ore' ]),
+            'Scales', 'Yellow Dye', 'Feathers', 'Talon', 'Paper',
+            'Glass', 'Gypsum'
+        ];
+
+        $location = $inventory->getLocation();
+        $locked = $inventory->getLockedToOwner();
+
+        $em->remove($inventory);
+
+        $listOfItems = [];
+
+        for($i = 0; $i < $numberOfItems; $i++)
+        {
+            $item = ArrayFunctions::pick_one($possibleItems);
+            $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
+            $listOfItems[] = $item;
+        }
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess('You read the scroll, producing ' . ArrayFunctions::list_nice($listOfItems) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+    }
 }

@@ -66,7 +66,7 @@ class CTFService implements ParkEventInterface
             ->setType(ParkEventTypeEnum::CTF)
         ;
 
-        $colors = array_rand([
+        $colors = ArrayFunctions::pick_some([
             'red', 'blue', 'green', 'gold', 'purple', 'white', 'black'
         ], 2);
 

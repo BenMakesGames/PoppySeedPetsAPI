@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Functions\ArrayFunctions;
 use App\Repository\DragonRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -16,6 +17,29 @@ class Dragon
     public const FOOD_REQUIRED_TO_GROW = 35 * 20;
 
     // as an adult:
+    public const APPEARANCE_IMAGES = [ 1, 2, 3, 4 ];
+    public const GREETINGS_AND_THANKS = [
+        [
+            'greeting' => 'Hello, friend.',
+            'thanks' => 'Thank you, friend.',
+        ],
+        [
+            'greeting' => 'Always good to see you.',
+            'thanks' => 'A dragon never forgets acts of generosity.',
+        ],
+        [
+            'greeting' => 'Ah. You came.',
+            'thanks' => 'It shines. Beautiful.',
+        ],
+        [
+            'greeting' => 'What brings you to my den today?',
+            'thanks' => 'Ah. A fine addition to my hoard.',
+        ],
+        [
+            'greeting' => 'I was expecting you.',
+            'thanks' => 'A fair exchange.',
+        ],
+    ];
 
     /**
      * @ORM\Id
@@ -67,19 +91,42 @@ class Dragon
      * @ORM\Column(type="integer")
      * @Groups({"myDragon"})
      */
-    private $silver;
+    private $silver = 0;
 
     /**
      * @ORM\Column(type="integer")
      * @Groups({"myDragon"})
      */
-    private $gold;
+    private $gold = 0;
 
     /**
      * @ORM\Column(type="integer")
      * @Groups({"myDragon"})
      */
-    private $gems;
+    private $gems = 0;
+
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     * @Groups({"myDragon"})
+     */
+    private $greetings = [];
+
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     * @Groups({"myDragon"})
+     */
+    private $thanks = [];
+
+    /**
+     * @ORM\Column(type="smallint")
+     * @Groups({"myDragon"})
+     */
+    private $appearance;
+
+    public function __construct()
+    {
+        $this->appearance = ArrayFunctions::pick_one(self::APPEARANCE_IMAGES);
+    }
 
     public function getId(): ?int
     {
@@ -184,9 +231,9 @@ class Dragon
         return $this->silver;
     }
 
-    public function setSilver(int $silver): self
+    public function increaseSilver(int $silver): self
     {
-        $this->silver = $silver;
+        $this->silver += $silver;
 
         return $this;
     }
@@ -196,9 +243,9 @@ class Dragon
         return $this->gold;
     }
 
-    public function setGold(int $gold): self
+    public function increaseGold(int $gold): self
     {
-        $this->gold = $gold;
+        $this->gold += $gold;
 
         return $this;
     }
@@ -208,9 +255,45 @@ class Dragon
         return $this->gems;
     }
 
-    public function setGems(int $gems): self
+    public function increaseGems(int $gems): self
     {
-        $this->gems = $gems;
+        $this->gems += $gems;
+
+        return $this;
+    }
+
+    public function getGreetings(): ?array
+    {
+        return $this->greetings;
+    }
+
+    public function setGreetings(?array $greetings): self
+    {
+        $this->greetings = $greetings;
+
+        return $this;
+    }
+
+    public function getThanks(): ?array
+    {
+        return $this->thanks;
+    }
+
+    public function setThanks(?array $thanks): self
+    {
+        $this->thanks = $thanks;
+
+        return $this;
+    }
+
+    public function getAppearance(): ?int
+    {
+        return $this->appearance;
+    }
+
+    public function setAppearance(int $appearance): self
+    {
+        $this->appearance = $appearance;
 
         return $this;
     }

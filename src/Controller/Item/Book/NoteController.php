@@ -98,9 +98,11 @@ Here\'s some basic notes on how to take care of your new pet:
     {
         $this->validateInventory($inventory, 'note/spiritPolymorphPotion/#/read');
 
-        return $responseService->itemActionSuccess('* Witch-hazel
+        return $responseService->itemActionSuccess('* Striped Microcline
+* Witch-hazel
 * Carrot
-* Striped Microcline
+
+Warning: if you don\'t have a Carrot handy, you can also use a Large Radish - just make sure not to use Spicy Peps, or you\'ll create a substance that\'s very toxic to spirits! 
 ');
     }
 

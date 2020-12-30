@@ -8,6 +8,7 @@ use App\Functions\ColorFunctions;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
+use App\Service\PetColorChangingService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +28,8 @@ class IridescentHandCannonController extends PoppySeedPetsItemController
      */
     public function fireHandCannon(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, ItemRepository $itemRepository, MeritRepository $meritRepository
+        PetRepository $petRepository, ItemRepository $itemRepository, MeritRepository $meritRepository,
+        PetColorChangingService $petColorChangingService
     )
     {
         $user = $this->getUser();
@@ -51,17 +53,7 @@ class IridescentHandCannonController extends PoppySeedPetsItemController
         else
             $oldColor = $pet->getColorB();
 
-        $oldRGB = ColorFunctions::Hex2RGB($oldColor);
-        $oldHSL = ColorFunctions::RGB2HSL($oldRGB['r'], $oldRGB['g'], $oldRGB['b']);
-
-        $h = $oldHSL['h'] + mt_rand(200, 800) / 1000.0;
-        if($h > 1) $h -= 1;
-
-        // now pick a random saturation and luminosity within that:
-        $s = mt_rand(mt_rand(0, 500), 1000) / 1000.0;
-        $l = mt_rand(mt_rand(0, 500), mt_rand(750, 1000)) / 1000.0;
-
-        $newColor = ColorFunctions::HSL2Hex($h, $s, $l);
+        $newColor = $petColorChangingService->RandomizeColorDistinctFromPreviousColor($oldColor);
 
         if($color === 'A')
             $pet->setColorA($newColor);

@@ -19,12 +19,6 @@ class ItemTreasure
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity=Item::class, inversedBy="treasure", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $item;
-
-    /**
      * @ORM\Column(type="integer")
      * @Groups({"dragonTreasure"})
      */
@@ -45,18 +39,6 @@ class ItemTreasure
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getItem(): ?Item
-    {
-        return $this->item;
-    }
-
-    public function setItem(Item $item): self
-    {
-        $this->item = $item;
-
-        return $this;
     }
 
     public function getSilver(): ?int

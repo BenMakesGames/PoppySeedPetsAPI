@@ -242,7 +242,7 @@ class MagicBeanstalkService
         $numBugs = mt_rand(2, 5);
 
         for($i = 0; $i < $numBugs; $i++)
-            $this->inventoryService->petCollectsItem('Stink Bug', $pet, 'A swarm of these flew past ' . $pet->getName() . ' while they were climbing %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk. I guess this one hitched a ride back down.', $activityLog);
+            $this->inventoryService->petCollectsItem('Stink Bug', $pet, 'A swarm of these flew past ' . $pet->getName() . ' while they were climbing ' . $pet->getOwner()->getName() . '\'s magic bean-stalk. I guess this one hitched a ride back down.', $activityLog);
 
         $pet->increaseSafety(-mt_rand(2, 8));
 

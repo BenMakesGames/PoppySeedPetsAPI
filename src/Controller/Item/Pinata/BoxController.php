@@ -268,6 +268,7 @@ class BoxController extends PoppySeedPetsItemController
         $newInventory = [];
 
         $location = $inventory->getLocation();
+        $spice = $inventory->getSpice();
 
         $freeBasicRecipes = $userQuestRepository->findOrCreate($user, 'Got free Basic Recipes', false);
         if(!$freeBasicRecipes->getValue())
@@ -287,6 +288,14 @@ class BoxController extends PoppySeedPetsItemController
         if(mt_rand(1, 4) === 1)
             $newInventory[] = $inventoryService->receiveItem('Cobbler Recipe', $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location, $inventory->getLockedToOwner());
 
+        if($spice)
+        {
+            shuffle($newInventory);
+
+            for($i = 0; $i < count($newInventory) / 3; $i++)
+                $newInventory[$i]->setSpice($spice);
+        }
+
         return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
     }
 
@@ -305,9 +314,11 @@ class BoxController extends PoppySeedPetsItemController
         $this->validateInventory($inventory, 'box/fruits-n-veggies/#/open');
         $this->validateHouseSpace($inventory, $inventoryService);
 
+        /** @var Inventory[] $newInventory */
         $newInventory = [];
 
         $location = $inventory->getLocation();
+        $spice = $inventory->getSpice();
 
         $freeBasicRecipes = $userQuestRepository->findOrCreate($user, 'Got free Basic Recipes', false);
         if(!$freeBasicRecipes->getValue())
@@ -324,6 +335,14 @@ class BoxController extends PoppySeedPetsItemController
 
         for($i = 0; $i < 4; $i++)
             $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Carrot', 'Onion', 'Celery', 'Carrot', 'Sweet Beet' ]), $user, $user, $user->getName() . ' got this from a ' . $inventory->getItem()->getName() . '.', $location, $inventory->getLockedToOwner());
+
+        if($spice)
+        {
+            shuffle($newInventory);
+
+            for($i = 0; $i < count($newInventory) / 3; $i++)
+                $newInventory[$i]->setSpice($spice);
+        }
 
         return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
     }

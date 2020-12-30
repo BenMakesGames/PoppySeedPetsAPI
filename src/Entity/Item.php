@@ -112,7 +112,7 @@ class Item
     private $spice;
 
     /**
-     * @ORM\OneToOne(targetEntity=ItemTreasure::class, mappedBy="item", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=ItemTreasure::class, cascade={"persist", "remove"})
      * @Groups({"dragonTreasure"})
      */
     private $treasure;
@@ -386,11 +386,6 @@ class Item
     public function setTreasure(ItemTreasure $treasure): self
     {
         $this->treasure = $treasure;
-
-        // set the owning side of the relation if necessary
-        if ($treasure->getItem() !== $this) {
-            $treasure->setItem($this);
-        }
 
         return $this;
     }

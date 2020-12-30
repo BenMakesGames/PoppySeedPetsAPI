@@ -2,9 +2,11 @@
 namespace App\Controller\Item\Blueprint;
 
 use App\Controller\Item\PoppySeedPetsItemController;
+use App\Entity\Dragon;
 use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
+use App\Repository\DragonRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -63,15 +65,16 @@ The Library of Fire is always open. We look forward to seeing you!');
      */
     public function meltSeal(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, DragonRepository $dragonRepository
     )
     {
         $this->validateInventory($inventory, 'letterFromTheLibraryOfFire/#/meltSeal');
 
         $user = $this->getUser();
         $fireplace = $user->getFireplace();
+        $dragon = $dragonRepository->findOneBy([ 'owner' => $user ]);
 
-        if($fireplace && $fireplace->getWhelpName() === null)
+        if($fireplace && !$dragon)
         {
             $colors = [
                 ColorFunctions::HSL2Hex(0, 0.52, 0.5),
@@ -85,8 +88,9 @@ The Library of Fire is always open. We look forward to seeing you!');
                 $colors[1] = $temp;
             }
 
-            $fireplace
-                ->setWhelpName(ArrayFunctions::pick_one([
+            $dragon = (new Dragon())
+                ->setOwner($user)
+                ->setName(ArrayFunctions::pick_one([
                     'Tanin', 'Draak', 'Dragua', 'Zenido', 'Vishap', 'Herensuge', 'Ghuṛi Biśēṣa',
                     'Chinjoka', 'Qiú', 'Lohikäärme', 'Drak\'oni', 'Ḍrēgana', 'Naga', 'Ajagar',
                     'Zaj', 'Sárkány', 'Dreki', 'Ryū', 'Aydahar', 'Neak', 'Yong', 'Zîha',
@@ -94,9 +98,11 @@ The Library of Fire is always open. We look forward to seeing you!');
                     'Tarako', 'Dhiragoni', 'Makarā', 'Masduulaagii', 'Joka', 'Aƶdaho', 'Ṭirākaṉ',
                     'Mạngkr', 'Ejderha', 'Ajdaho', 'Inamba',
                 ]))
-                ->setWhelpColorA(ColorFunctions::tweakColor($colors[0]))
-                ->setWhelpColorB(ColorFunctions::tweakColor($colors[1]))
+                ->setColorA(ColorFunctions::tweakColor($colors[0]))
+                ->setColorB(ColorFunctions::tweakColor($colors[1]))
             ;
+
+            $em->persist($dragon);
 
             $message = 'A small dragon appears on the hearth of your fireplace! (Also, the letter dissolves into Paper and Quintessence, but, like, whoa, who even cares about that? Small dragon! SMALL DRAGON!)';
         }

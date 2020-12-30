@@ -30,14 +30,36 @@ class InventoryRepository extends ServiceEntityRepository
     public function findTreasures(User $user): array
     {
         return $this->createQueryBuilder('i')
+            ->leftJoin('i.item', 'item')
+            ->leftJoin('item.treasure', 'treasure')
             ->andWhere('i.owner=:user')
             ->andWhere('i.location=:home')
-            ->andWhere('i.treasure IS NOT NULL')
+            ->andWhere('item.treasure IS NOT NULL')
             ->setParameter('user', $user->getId())
             ->setParameter('home', LocationEnum::HOME)
             ->getQuery()
             ->execute()
         ;
+    }
+
+    /**
+     * @return Inventory[]
+     */
+    public function findTreasuresById(User $user, array $inventoryIds): array
+    {
+        return $this->createQueryBuilder('i')
+            ->leftJoin('i.item', 'item')
+            ->leftJoin('item.treasure', 'treasure')
+            ->andWhere('i.id IN (:inventoryIds)')
+            ->andWhere('i.owner=:user')
+            ->andWhere('i.location=:home')
+            ->andWhere('item.treasure IS NOT NULL')
+            ->setParameter('inventoryIds', $inventoryIds)
+            ->setParameter('user', $user->getId())
+            ->setParameter('home', LocationEnum::HOME)
+            ->getQuery()
+            ->execute()
+            ;
     }
 
     public function findOneToConsume(User $owner, string $itemName): ?Inventory

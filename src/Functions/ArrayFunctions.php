@@ -79,6 +79,16 @@ final class ArrayFunctions
         return $array[array_rand($array)];
     }
 
+    public static function pick_some(array $array, int $count): array
+    {
+        if(count($array) < $count) throw new \InvalidArgumentException('$count is greater than size of $array!');
+
+        return array_map(
+            function($key) use($array) { return $array[$key]; },
+            array_rand($array, $count)
+        );
+    }
+
     public static function list_nice_quantities(array $quantities, string $separator = ', ', string $lastSeparator = ', and ')
     {
         $list = [];
