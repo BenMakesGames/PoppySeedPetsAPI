@@ -3,16 +3,20 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
+use App\Enum\MeritEnum;
+use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\PetChanges;
 use App\Repository\ItemRepository;
+use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
+use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -28,7 +32,8 @@ class WandOfWonderController extends PoppySeedPetsItemController
     public function pointWandOfWonder(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
         EntityManagerInterface $em, InventoryService $inventoryService, PetRepository $petRepository,
-        TransactionService $transactionService, Request $request, ItemRepository $itemRepository
+        TransactionService $transactionService, ItemRepository $itemRepository, MeritRepository $meritRepository,
+        PetExperienceService $petExperienceService
     )
     {
         $this->validateInventory($inventory, 'wandOfWonder/#/point');
@@ -60,6 +65,8 @@ class WandOfWonderController extends PoppySeedPetsItemController
             'pb&j',
             'inspiring',
             'redUmbrella',
+            'lightningInABottle',
+            'wondrousStat',
         ];
 
         if($user->getGreenhouse() && !$expandedGreenhouseWithWand->getValue())
@@ -198,11 +205,66 @@ class WandOfWonderController extends PoppySeedPetsItemController
                 $itemActionDescription = 'The wand straightens a bit, and, with a pop, an umbrella appears from one end!';
                 break;
 
+            case 'lightningInABottle':
+                if($randomPet)
+                {
+                    $itemActionDescription = 'A burst of lightning nearly strikes ' . $randomPet->getName() . ', missing by less than a meter! After the dust clears, you see a bottle of lightning sitting where the lightning struck.';
+
+                    $changes = new PetChanges($randomPet);
+
+                    $randomPet->increaseSafety(-mt_rand(4, 8));
+                    $petExperienceService->gainExp($randomPet, 1, [ PetSkillEnum::BRAWL ]);
+
+                    $responseService->createActivityLog($randomPet, '%pet:' . $randomPet->getId() . '.name% barely dodged a blast of lightning from a Wand of Wonder!', '', $changes->compare($randomPet));
+                }
+                else
+                {
+                    $itemActionDescription = 'A burst of lightning nearly strikes you, missing by less than a meter! After the dust clears, you see a bottle of lightning sitting where the lightning struck.';
+                }
+                $inventoryService->receiveItem('Lightning in a Bottle', $user, $user, 'This was created by a Wand of Wonder!', $location);
+                break;
+
+            case 'wondrousStat':
+                if($randomPet)
+                {
+                    $randomMerit = ArrayFunctions::pick_one([
+                        MeritEnum::WONDROUS_STRENGTH,
+                        MeritEnum::WONDROUS_STAMINA,
+                        MeritEnum::WONDROUS_DEXTERITY,
+                        MeritEnum::WONDROUS_PERCEPTION,
+                        MeritEnum::WONDROUS_INTELLIGENCE,
+                    ]);
+
+                    $merit = $meritRepository->findOneByName($randomMerit);
+
+                    if($randomPet->hasMerit($randomMerit))
+                    {
+                        $leaves = ArrayFunctions::pick_one([
+                            'melts away',
+                            'evaporates',
+                            'dissipates',
+                            'vanishes'
+                        ]);
+
+                        $itemActionDescription = 'The wand bulges slightly... ' . $randomPet->getName() . '\'s ' . $randomMerit . ' ' . $leaves . '!';
+                        $randomPet->removeMerit($merit);
+                    }
+                    else
+                    {
+                        $randomPet->addMerit($merit);
+                        $itemActionDescription = 'The wand bulges slightly... ' . $randomPet->getName() . ' has been blessed with ' . $randomMerit . '!';
+                    }
+                }
+                else
+                {
+                    $itemActionDescription = 'The wand bulges slightly, but quickly returns to its normal size. (Perhaps it would have been more effective with a pet around?)';
+                }
+                break;
         }
 
         $itemActionDescription .= "\n\n";
 
-        $remains = mt_rand(1, 4);
+        $transformsInto = null;
 
         if($effect === 'redUmbrella')
         {
@@ -222,31 +284,39 @@ class WandOfWonderController extends PoppySeedPetsItemController
             ]);
             $addedComment = 'This was once a Wand of Wonder... (it\'s _probably_ safe to eat??)';
         }
-        else if($remains === 1)
+        else if(mt_rand(1, 2) === 1) // 50/50 chance of breaking
         {
-            $itemActionDescription .= 'Then, the wand snaps in two and crumbles to dust! (Well, actually, it crumbles to Silica Grounds.)';
-            $transformsInto = 'Silica Grounds';
-            $addedComment = 'These Silica Grounds were once a Wand of Wonder. Now they\'re just Silica Grounds. (Sorry, I guess that was a little redundant...)';
-        }
-        else if($remains === 2)
-        {
-            $itemActionDescription .= 'Then, the wand burst into flames, and is reduced to Charcoal!';
-            $transformsInto = 'Charcoal';
-            $addedComment = 'The charred remains of a Wand of Wonder :|';
-        }
-        else // $remains 3 || 4
-        {
-            $itemActionDescription .= 'You feel the last bits of magic drain from the wand. It\'s now nothing more than a common, Crooked Stick...';
-            $transformsInto = 'Crooked Stick';
-            $addedComment = 'The mundane remains of a Wand of Wonder...';
+            $remains = mt_rand(1, 4);
+
+            if($remains === 1)
+            {
+                $itemActionDescription .= 'Then, the wand snaps in two and crumbles to dust! (Well, actually, it crumbles to Silica Grounds.)';
+                $transformsInto = 'Silica Grounds';
+                $addedComment = 'These Silica Grounds were once a Wand of Wonder. Now they\'re just Silica Grounds. (Sorry, I guess that was a little redundant...)';
+            }
+            else if($remains === 2)
+            {
+                $itemActionDescription .= 'Then, the wand burst into flames, and is reduced to Charcoal!';
+                $transformsInto = 'Charcoal';
+                $addedComment = 'The charred remains of a Wand of Wonder :|';
+            }
+            else // $remains 3 || 4
+            {
+                $itemActionDescription .= 'You feel the last bits of magic drain from the wand. It\'s now nothing more than a common, Crooked Stick...';
+                $transformsInto = 'Crooked Stick';
+                $addedComment = 'The mundane remains of a Wand of Wonder...';
+            }
         }
 
-        $inventory
-            ->changeItem($itemRepository->findOneByName($transformsInto))
-            ->addComment($addedComment)
-        ;
+        if($transformsInto)
+        {
+            $inventory
+                ->changeItem($itemRepository->findOneByName($transformsInto))
+                ->addComment($addedComment)
+            ;
 
-        $responseService->setReloadInventory();
+            $responseService->setReloadInventory();
+        }
 
         $em->flush();
 

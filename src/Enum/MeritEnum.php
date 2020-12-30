@@ -23,6 +23,11 @@ final class MeritEnum
     public const MIRRORED = 'Mirrored'; // flips graphic
     public const INVERTED = 'Inverted'; // inverts pet colors
     public const VERY_INVERTED = 'Very Inverted'; // inverts pet & equipment colors
+    public const WONDROUS_STRENGTH = 'Wondrous Strength';
+    public const WONDROUS_STAMINA = 'Wondrous Stamina';
+    public const WONDROUS_DEXTERITY = 'Wondrous Dexterity';
+    public const WONDROUS_PERCEPTION = 'Wondrous Perception';
+    public const WONDROUS_INTELLIGENCE = 'Wondrous Intelligence';
 
     // obtained through house time spent
     public const MIND_OVER_MATTER = 'Mind Over Matter';
