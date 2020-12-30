@@ -12,6 +12,7 @@ use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Service\InventoryService;
+use App\Service\PetColorService;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -69,7 +70,7 @@ class GoldRingController extends PoppySeedPetsItemController
     public function collect100(
         Inventory $inventory, EntityManagerInterface $em, InventoryService $inventoryService, ResponseService $responseService,
         PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository, PetRepository $petRepository,
-        PetFactory $petFactory
+        PetFactory $petFactory, PetColorService $petColorService
     )
     {
         $this->validateInventory($inventory, 'goldRing/#/collect100');
@@ -121,7 +122,7 @@ class GoldRingController extends PoppySeedPetsItemController
                 'Runner', 'Jumps', 'Spins', 'Miles',
             ]);
 
-            $petColors = ColorFunctions::generateRandomPetColors();
+            $petColors = $petColorService->generateRandomPetColors();
 
             $newPet = $petFactory->createPet(
                 $user, $hedgehogName, $hedgehog,

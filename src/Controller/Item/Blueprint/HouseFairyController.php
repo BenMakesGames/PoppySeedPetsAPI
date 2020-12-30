@@ -10,6 +10,7 @@ use App\Functions\ColorFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
+use App\Service\PetColorService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -111,7 +112,8 @@ class HouseFairyController extends PoppySeedPetsItemController
      */
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository
+        InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository,
+        PetColorService $petColorService
     )
     {
         $this->validateInventory($inventory, 'fairy/#/buildFireplace');
@@ -137,7 +139,7 @@ class HouseFairyController extends PoppySeedPetsItemController
 
             $user->setUnlockedFireplace();
 
-            $stockingColors = ColorFunctions::generateRandomPetColors();
+            $stockingColors = $petColorService->generateRandomPetColors();
 
             $fireplace = (new Fireplace())
                 ->setUser($user)

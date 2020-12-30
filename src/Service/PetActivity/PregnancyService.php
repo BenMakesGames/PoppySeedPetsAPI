@@ -24,6 +24,7 @@ use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\PetColorService;
 use App\Service\PetExperienceService;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
@@ -41,12 +42,14 @@ class PregnancyService
     private $userStatsRepository;
     private $meritRepository;
     private $petFactory;
+    private $petColorService;
 
     public function __construct(
         EntityManagerInterface $em, InventoryService $inventoryService, PetRepository $petRepository,
         ResponseService $responseService, PetExperienceService $petExperienceService,
         UserQuestRepository $userQuestRepository, PetSpeciesRepository $petSpeciesRepository,
-        UserStatsRepository $userStatsRepository, MeritRepository $meritRepository, PetFactory $petFactory
+        UserStatsRepository $userStatsRepository, MeritRepository $meritRepository, PetFactory $petFactory,
+        PetColorService $petColorService
     )
     {
         $this->em = $em;
@@ -59,6 +62,7 @@ class PregnancyService
         $this->userStatsRepository = $userStatsRepository;
         $this->meritRepository = $meritRepository;
         $this->petFactory = $petFactory;
+        $this->petColorService = $petColorService;
     }
 
     public function getPregnant(Pet $pet1, Pet $pet2)
@@ -81,8 +85,8 @@ class PregnancyService
         else
             $species = $this->getRandomBreedingSpecies();
 
-        $colorA = $this->generateColor($mother->getColorA(), $father->getColorA());
-        $colorB = $this->generateColor($mother->getColorB(), $father->getColorB());
+        $colorA = $this->petColorService->generateColorFromParentColors($mother->getColorA(), $father->getColorA());
+        $colorB = $this->petColorService->generateColorFromParentColors($mother->getColorB(), $father->getColorB());
 
         // 20% of the time, swap colorA and colorB around
         if(mt_rand(1, 5) === 1)
@@ -211,33 +215,6 @@ class PregnancyService
         if($pet->getDad()) $pet->getDad()->setIsGrandparent(true);
 
         $this->userStatsRepository->incrementStat($user, UserStatEnum::PETS_BIRTHED);
-    }
-
-    private function generateColor(string $color1, string $color2): string
-    {
-        if(mt_rand(1, 5) === 1)
-        {
-            return ColorFunctions::HSL2Hex(mt_rand(0, 100) / 100, mt_rand(0, 100) / 100, mt_rand(0, 100) / 100);
-        }
-        else
-        {
-            // pick a color somewhere between color1 and color2, tending to prefer a 50/50 mix
-            $skew = mt_rand(mt_rand(0, 50), mt_rand(50, 100));
-
-            $rgb1 = ColorFunctions::Hex2RGB($color1);
-            $rgb2 = ColorFunctions::Hex2RGB($color2);
-
-            $r = (int)(($rgb1['r'] * $skew + $rgb2['r'] * (100 - $skew)) / 100);
-            $g = (int)(($rgb1['g'] * $skew + $rgb2['g'] * (100 - $skew)) / 100);
-            $b = (int)(($rgb1['b'] * $skew + $rgb2['b'] * (100 - $skew)) / 100);
-
-            // jiggle the final values a little:
-            $r = NumberFunctions::constrain($r + mt_rand(-6, 6), 0, 255);
-            $g = NumberFunctions::constrain($g + mt_rand(-6, 6), 0, 255);
-            $b = NumberFunctions::constrain($b + mt_rand(-6, 6), 0, 255);
-
-            return ColorFunctions::RGB2Hex($r, $g, $b);
-        }
     }
 
     private const CANONICALIZED_FORBIDDEN_COMBINED_NAMES = [

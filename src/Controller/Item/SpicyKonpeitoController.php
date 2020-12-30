@@ -6,7 +6,7 @@ use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Repository\DragonRepository;
-use App\Service\PetColorChangingService;
+use App\Service\PetColorService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -24,7 +24,7 @@ class SpicyKonpeitoController extends PoppySeedPetsItemController
      */
     public function feedToDragon(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        DragonRepository $dragonRepository, PetColorChangingService $petColorChangingService
+        DragonRepository $dragonRepository, PetColorService $petColorChangingService
     )
     {
         $user = $this->getUser();
@@ -44,8 +44,8 @@ class SpicyKonpeitoController extends PoppySeedPetsItemController
 
         $em->remove($inventory);
 
-        $newColorA = $petColorChangingService->RandomizeColorDistinctFromPreviousColor($dragon->getColorA());
-        $newColorB = $petColorChangingService->RandomizeColorDistinctFromPreviousColor($dragon->getColorB());
+        $newColorA = $petColorChangingService->randomizeColorDistinctFromPreviousColor($dragon->getColorA());
+        $newColorB = $petColorChangingService->randomizeColorDistinctFromPreviousColor($dragon->getColorB());
 
         $dragon
             ->setColorA($newColorA)

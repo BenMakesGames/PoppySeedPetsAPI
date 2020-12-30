@@ -14,6 +14,7 @@ use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
+use App\Service\PetColorService;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,7 +34,7 @@ class EggController extends PoppySeedPetsItemController
     public function hatchWeirdBlueEgg(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
         EntityManagerInterface $em, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository,
-        MeritRepository $meritRepository, PetFactory $petFactory
+        MeritRepository $meritRepository, PetFactory $petFactory, PetColorService $petColorService
     )
     {
         $this->validateInventory($inventory, 'egg/weird-blue/#/hatch');
@@ -97,7 +98,7 @@ class EggController extends PoppySeedPetsItemController
             $message .= "\n\nBut, you know, your house is full, so into the daycare it goes, I guess!";
         }
 
-        $this->recolorPet($newPet);
+        $petColorService->recolorPet($newPet);
 
         $em->flush();
 
@@ -110,7 +111,7 @@ class EggController extends PoppySeedPetsItemController
     public function openMetalBox(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
         EntityManagerInterface $em, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository,
-        MeritRepository $meritRepository, PetFactory $petFactory
+        MeritRepository $meritRepository, PetFactory $petFactory, PetColorService $petColorService
     )
     {
         $this->validateInventory($inventory, 'egg/metalBox/#/open');
@@ -147,7 +148,7 @@ class EggController extends PoppySeedPetsItemController
             $user, '', $grabber, '', '', FlavorEnum::getRandomValue(), $meritRepository->getRandomStartingMerit()
         );
 
-        $this->recolorPet($newPet, 0.2);
+        $petColorService->recolorPet($newPet, 0.2);
 
         $robotName = 'Metal ' . $user->getName() . ' ' . ArrayFunctions::pick_one([
             '2.0',
@@ -181,15 +182,5 @@ class EggController extends PoppySeedPetsItemController
         $em->flush();
 
         return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true, 'reloadPets' => true ]);
-    }
-
-    private function recolorPet(Pet $pet, $maxSaturation = 1)
-    {
-        $colors = ColorFunctions::generateRandomPetColors($maxSaturation);
-
-        $pet
-            ->setColorA($colors[0])
-            ->setColorB($colors[1])
-        ;
     }
 }

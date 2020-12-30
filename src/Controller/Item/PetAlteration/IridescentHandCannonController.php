@@ -8,7 +8,7 @@ use App\Functions\ColorFunctions;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
-use App\Service\PetColorChangingService;
+use App\Service\PetColorService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +29,7 @@ class IridescentHandCannonController extends PoppySeedPetsItemController
     public function fireHandCannon(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository, ItemRepository $itemRepository, MeritRepository $meritRepository,
-        PetColorChangingService $petColorChangingService
+        PetColorService $petColorChangingService
     )
     {
         $user = $this->getUser();
@@ -53,7 +53,7 @@ class IridescentHandCannonController extends PoppySeedPetsItemController
         else
             $oldColor = $pet->getColorB();
 
-        $newColor = $petColorChangingService->RandomizeColorDistinctFromPreviousColor($oldColor);
+        $newColor = $petColorChangingService->randomizeColorDistinctFromPreviousColor($oldColor);
 
         if($color === 'A')
             $pet->setColorA($newColor);

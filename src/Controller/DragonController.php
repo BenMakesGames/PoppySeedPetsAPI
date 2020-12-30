@@ -52,8 +52,8 @@ class DragonController extends PoppySeedPetsController
 
     // currently sums to 75
     private const GEM_GOODIES = [
-        [ 'weight' => 20, 'item' => 'Scroll of Resources' ],
-        [ 'weight' => 10, 'item' => 'Liquid-hot Magma' ], // 13%
+        [ 'weight' => 20, 'item' => 'Scroll of Resources' ], // 26.6%
+        [ 'weight' => 10, 'item' => 'Liquid-hot Magma' ], // 13.3%
         [ 'weight' => 10, 'item' => 'Firestone' ],
         [ 'weight' => 10, 'item' => 'Lightning in a Bottle' ],
         // ^ 2/3 chance of being one of those

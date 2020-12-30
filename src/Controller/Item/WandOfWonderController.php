@@ -3,23 +3,16 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Entity\User;
-use App\Enum\LocationEnum;
-use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\ColorFunctions;
 use App\Repository\ItemRepository;
-use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
-use App\Service\PetService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -258,33 +251,5 @@ class WandOfWonderController extends PoppySeedPetsItemController
         $em->flush();
 
         return $responseService->itemActionSuccess($itemActionDescription);
-    }
-
-    private function pickRandomPetAtLocation(PetRepository $petRepository, string $location, User $user): ?Pet
-    {
-        $pet = null;
-
-        if($location === LocationEnum::HOME)
-        {
-            $pets = $petRepository->findBy([
-                'owner' => $user->getId(),
-                'inDaycare' => false
-            ]);
-
-            if(count($pets) > 0)
-                $pet = ArrayFunctions::pick_one($pets);
-        }
-
-        return $pet;
-    }
-
-    private function recolorPet(Pet $pet)
-    {
-        $colors = ColorFunctions::generateRandomPetColors();
-
-        $pet
-            ->setColorA($colors[0])
-            ->setColorB($colors[1])
-        ;
     }
 }
