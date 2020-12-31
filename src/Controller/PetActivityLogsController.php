@@ -1,0 +1,32 @@
+<?php
+namespace App\Controller;
+
+use App\Enum\SerializationGroupEnum;
+use App\Service\Filter\PetActivityLogsFilterService;
+use App\Service\ResponseService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+
+/**
+ * @Route("/petActivityLogs")
+ */
+class PetActivityLogsController extends PoppySeedPetsController
+{
+    /**
+     * @Route("", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function history(
+        Request $request, ResponseService $responseService, PetActivityLogsFilterService $petActivityLogsFilterService
+    )
+    {
+        $user = $this->getUser();
+
+        $petActivityLogsFilterService->addRequiredFilter('user', $user->getId());
+
+        $logs = $petActivityLogsFilterService->getResults($request->query);
+
+        return $responseService->success($logs, [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::PET_ACTIVITY_LOGS_AND_PUBLIC_PET ]);
+    }
+}

@@ -392,7 +392,7 @@ class PetService
 
             $this->responseService->createActivityLog(
                 $pet,
-                $pet->getName() . ' nibbled on their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . '.',
+                '%pet:' . $pet->getId() . '.name% nibbled on their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . '.',
                 '',
                 $changes
             );
@@ -581,7 +581,7 @@ class PetService
             {
                 $this->responseService->setReloadInventory();
 
-                $message = $pet->getName() . ' ate ' . ArrayFunctions::list_nice($namesOfItemsEaten) . ' out of their lunchbox.';
+                $message = '%pet:' . $pet->getId() . '.name% ate ' . ArrayFunctions::list_nice($namesOfItemsEaten) . ' out of their lunchbox.';
 
                 if(count($namesOfItemsSkipped) > 0)
                     $message .= ' (' . ArrayFunctions::list_nice($namesOfItemsSkipped) . ' really isn\'t appealing right now, though.)';
@@ -589,7 +589,7 @@ class PetService
             else
             {
                 // none were eaten, but ew know the lunchbox has items in it, therefore items were skipped!
-                $message = $pet->getName() . ' looked in their lunchbox for something to eat, but ' . ArrayFunctions::list_nice($namesOfItemsSkipped) . ' really isn\'t appealing right now.';
+                $message = '%pet:' . $pet->getId() . '.name% looked in their lunchbox for something to eat, but ' . ArrayFunctions::list_nice($namesOfItemsSkipped) . ' really isn\'t appealing right now.';
             }
 
             if($itemsLeftInLunchbox === 0)
@@ -632,15 +632,15 @@ class PetService
         if($houseTooFull)
         {
             if($itemsInHouse >= $pet->getOwner()->getMaxInventory())
-                $description = 'The house is crazy-full.';
+                $description = '%user:' . $pet->getOwner()->getId() . '.Name\'s% house is crazy-full.';
             else
-                $description = 'The house is getting pretty full.';
+                $description = '%user:' . $pet->getOwner()->getId() . '.Name\'s% house is getting pretty full.';
 
             if(count($craftingPossibilities) === 0 && count($programmingPossibilities) === 0 && count($notCraftingPossibilities) === 0)
             {
                 $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
 
-                $this->responseService->createActivityLog($pet, $description . ' ' . $pet->getName() . ' wanted to make something, but couldn\'t find any materials to work with.', 'icons/activity-logs/house-too-full');
+                $this->responseService->createActivityLog($pet, $description . ' %pet:' . $pet->getId() . '.name% wanted to make something, but couldn\'t find any materials to work with.', 'icons/activity-logs/house-too-full');
             }
             else
             {
@@ -1005,12 +1005,12 @@ class PetService
                     if(mt_rand(1, 3) === 1)
                     {
                         $teachingStat = PetSkillEnum::BRAWL;
-                        $message = $pet->getName() . ' practiced hunting with ' . $companion->getName() . '!';
+                        $message = '%pet:' . $pet->getId() . '.name% practiced hunting with ' . $companion->getName() . '!';
                     }
                     else
                     {
                         // hanging-out
-                        $message = $pet->getName() . ' taught ' . $companion->getName() . ' more about the physical world.';
+                        $message = '%pet:' . $pet->getId() . '.name% taught ' . $companion->getName() . ' more about the physical world.';
                     }
                     break;
 
@@ -1019,14 +1019,14 @@ class PetService
                     if(mt_rand(1, 3) === 1)
                     {
                         $teachingStat = PetSkillEnum::STEALTH;
-                        $message = $companion->getName() . ' showed ' . $pet->getName() . ' how to take advantage of their surroundings to hide their presence.';
+                        $message = $companion->getName() . ' showed %pet:' . $pet->getId() . '.name% how to take advantage of their surroundings to hide their presence.';
                     }
                     else
                     {
                         if(mt_rand(1, 4) === 1)
-                            $message = $pet->getName() . ' listened to ' . $companion->getName() . ' for a little while. They had many, strange secrets to tell, but none really seemed that useful.';
+                            $message = '%pet:' . $pet->getId() . '.name% listened to ' . $companion->getName() . ' for a little while. They had many, strange secrets to tell, but none really seemed that useful.';
                         else
-                            $message = $pet->getName() . ' listened to ' . $companion->getName() . ' for a little while.';
+                            $message = '%pet:' . $pet->getId() . '.name% listened to ' . $companion->getName() . ' for a little while.';
                     }
                     break;
 
@@ -1035,16 +1035,16 @@ class PetService
                     if(mt_rand(1, 3) === 1)
                     {
                         $teachingStat = PetSkillEnum::UMBRA;
-                        $message = $pet->getName() . ' listened to ' . $companion->getName() . '\'s stories about the various lands of the near and far Umbra...';
+                        $message = '%pet:' . $pet->getId() . '.name% listened to ' . $companion->getName() . '\'s stories about the various lands of the near and far Umbra...';
                     }
                     else
                     {
-                        $message = $companion->getName() . ' told a ' . ArrayFunctions::pick_one($adjectives) . ' story they made just for ' . $pet->getName() . '!';
+                        $message = $companion->getName() . ' told a ' . ArrayFunctions::pick_one($adjectives) . ' story they made just for %pet:' . $pet->getId() . '.name%!';
                     }
                     break;
 
                 case SpiritCompanionStarEnum::GEMINI:
-                    $message = $pet->getName() . ' played ' . ArrayFunctions::pick_one([
+                    $message = '%pet:' . $pet->getId() . '.name% played ' . ArrayFunctions::pick_one([
                         'hide-and-go-seek tag',
                         'hacky sack',
                         'soccer',
@@ -1055,7 +1055,7 @@ class PetService
 
                 case SpiritCompanionStarEnum::HYDRA:
                     // scary monster; depicted as basically a friendly guard dog
-                    $message = $pet->getName() . ' played catch with ' . $companion->getName() . '!';
+                    $message = '%pet:' . $pet->getId() . '.name% played catch with ' . $companion->getName() . '!';
                     break;
 
                 case SpiritCompanionStarEnum::SAGITTARIUS:
@@ -1064,12 +1064,12 @@ class PetService
                     {
                         // teaches music
                         $teachingStat = PetSkillEnum::MUSIC;
-                        $message = $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'played music', 'danced', 'sang' ]) . ' with ' . $companion->getName() . '!';
+                        $message = '%pet:' . $pet->getId() . '.name% ' . ArrayFunctions::pick_one([ 'played music', 'danced', 'sang' ]) . ' with ' . $companion->getName() . '!';
                     }
                     else
                     {
                         // hanging-out
-                        $message = $pet->getName() . ' went riding with ' . $companion->getName() . ' for a while!';
+                        $message = '%pet:' . $pet->getId() . '.name% went riding with ' . $companion->getName() . ' for a while!';
                     }
                     break;
 
@@ -1106,13 +1106,13 @@ class PetService
                         ->increaseSafety(mt_rand(6, 10))
                         ->increaseLove(mt_rand(2, 4))
                     ;
-                    $message = $pet->getName() . ' was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' told a ' . ArrayFunctions::pick_one($adjectives) . ' story about victory in combat, and swore to protect ' . $pet->getName() . '!';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' told a ' . ArrayFunctions::pick_one($adjectives) . ' story about victory in combat, and swore to protect %pet:' . $pet->getId() . '.name%!';
                     break;
                 case SpiritCompanionStarEnum::CASSIOPEIA:
                     $pet
                         ->increaseSafety(mt_rand(2, 4))
                     ;
-                    $message = $pet->getName() . ' was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' whispered odd prophecies, then stared at ' . $pet->getName() . ' expectantly. (It\'s the thought that counts...)';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' whispered odd prophecies, then stared at %pet:' . $pet->getId() . '.name% expectantly. (It\'s the thought that counts...)';
                     break;
                 case SpiritCompanionStarEnum::GEMINI:
                     $pet
@@ -1120,21 +1120,21 @@ class PetService
                         ->increaseLove(mt_rand(2, 4))
                         ->increaseEsteem(mt_rand(2, 4))
                     ;
-                    $message = $pet->getName() . ' was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' smiled, and split into multiple copies of itself, each defending ' . $pet->getName() . ' from another angle. They all turned to ' . $pet->getName() . ' and gave a sincere thumbs up before recombining.';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' smiled, and split into multiple copies of itself, each defending %pet:' . $pet->getId() . '.name% from another angle. They all turned to %pet:' . $pet->getId() . '.name% and gave a sincere thumbs up before recombining.';
                     break;
                 case SpiritCompanionStarEnum::SAGITTARIUS:
                     $pet
                         ->increaseSafety(mt_rand(2, 4))
                         ->increaseLove(mt_rand(2, 4))
                     ;
-                    $message = $pet->getName() . ' was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' tried to distract ' . $pet->getName() . ' with ' . ArrayFunctions::pick_one($adjectives) . ' stories about lavish parties. It kind of worked...';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' tried to distract %pet:' . $pet->getId() . '.name% with ' . ArrayFunctions::pick_one($adjectives) . ' stories about lavish parties. It kind of worked...';
                     break;
                 case SpiritCompanionStarEnum::HYDRA:
                     $pet
                         ->increaseSafety(mt_rand(4, 8))
                         ->increaseLove(mt_rand(4, 8))
                     ;
-                    $message = $pet->getName() . ' was feeling nervous, so talked to ' . $companion->getName() . '. Sensing ' . $pet->getName() . '\'s unease, ' . $companion->getName() . ' looked around for potential threats, and roared menacingly.';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. Sensing %pet:' . $pet->getId() . '.name%\'s unease, ' . $companion->getName() . ' looked around for potential threats, and roared menacingly.';
                     break;
                 default:
                     throw new \Exception('Unknown Spirit Companion Star "' . $companion->getStar() . '"');
@@ -1150,21 +1150,21 @@ class PetService
                         ->increaseSafety(mt_rand(2, 4))
                         ->increaseLove(mt_rand(2, 4))
                     ;
-                    $message = $pet->getName() . ' was feeling lonely, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' rambled some ' . ArrayFunctions::pick_one($adjectives) . ' story about victory in combat... (It\'s the thought that counts...)';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' rambled some ' . ArrayFunctions::pick_one($adjectives) . ' story about victory in combat... (It\'s the thought that counts...)';
                     break;
                 case SpiritCompanionStarEnum::CASSIOPEIA:
                     $pet
                         ->increaseSafety(mt_rand(2, 4))
                         ->increaseLove(mt_rand(2, 4))
                     ;
-                    $message = $pet->getName() . ' was feeling lonely, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' whispered odd prophecies, then stared at ' . $pet->getName() . ' expectantly. (It\'s the thought that counts...)';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' whispered odd prophecies, then stared at %pet:' . $pet->getId() . '.name% expectantly. (It\'s the thought that counts...)';
                     break;
                 case SpiritCompanionStarEnum::GEMINI:
                     $pet
                         ->increaseSafety(mt_rand(4, 8))
                         ->increaseLove(mt_rand(4, 8))
                     ;
-                    $message = $pet->getName() . ' was feeling lonely, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' smiled, and split into multiple copies of itself, and they all played games together!';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' smiled, and split into multiple copies of itself, and they all played games together!';
                     break;
                 case SpiritCompanionStarEnum::SAGITTARIUS:
                     $pet
@@ -1172,14 +1172,14 @@ class PetService
                         ->increaseLove(mt_rand(4, 8))
                         ->increaseEsteem(mt_rand(2, 4))
                     ;
-                    $message = $pet->getName() . ' was feeling lonely, so talked to ' . $companion->getName() . '. The two hosted a party for themselves; ' . $pet->getName() . ' had a lot of fun.';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. The two hosted a party for themselves; %pet:' . $pet->getId() . '.name% had a lot of fun.';
                     break;
                 case SpiritCompanionStarEnum::HYDRA:
                     $pet
                         ->increaseSafety(mt_rand(4, 8))
                         ->increaseLove(mt_rand(4, 8))
                     ;
-                    $message = $pet->getName() . ' was feeling lonely, so talked to ' . $companion->getName() . '. Sensing ' . $pet->getName() . '\'s unease, ' . $companion->getName() . ' settled into ' . $pet->getName() . '\'s lap.';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. Sensing %pet:' . $pet->getId() . '.name%\'s unease, ' . $companion->getName() . ' settled into %pet:' . $pet->getId() . '.name%\'s lap.';
                     break;
                 default:
                     throw new \Exception('Unknown Spirit Companion Star "' . $companion->getStar() . '"');
@@ -1196,19 +1196,19 @@ class PetService
                         ->increaseLove(mt_rand(2, 4))
                         ->increaseEsteem(mt_rand(2, 4))
                     ;
-                    $message = $pet->getName() . ' was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' listened patiently; in the end, ' . $pet->getName() . ' felt a little better.';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' listened patiently; in the end, %pet:' . $pet->getId() . '.name% felt a little better.';
                     break;
                 case SpiritCompanionStarEnum::CASSIOPEIA:
                     $pet
                         ->increaseEsteem(mt_rand(4, 8))
                     ;
-                    $message = $pet->getName() . ' was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' whispered odd prophecies, then stared at ' . $pet->getName() . ' expectantly. Somehow, that actually helped!';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' whispered odd prophecies, then stared at %pet:' . $pet->getId() . '.name% expectantly. Somehow, that actually helped!';
                     break;
                 case SpiritCompanionStarEnum::GEMINI:
                     $pet
                         ->increaseLove(mt_rand(2, 4))
                     ;
-                    $message = $pet->getName() . ' was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' tried to entertain ' . $pet->getName() . ' by splitting into copies and dancing around, but it didn\'t really help...';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' tried to entertain %pet:' . $pet->getId() . '.name% by splitting into copies and dancing around, but it didn\'t really help...';
                     break;
                 case SpiritCompanionStarEnum::SAGITTARIUS:
                     $pet
@@ -1216,7 +1216,7 @@ class PetService
                         ->increaseLove(mt_rand(2, 4))
                         ->increaseEsteem(mt_rand(4, 8))
                     ;
-                    $message = $pet->getName() . ' was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' empathized completely, having been in similar situations themselves. It was really nice to hear!';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' empathized completely, having been in similar situations themselves. It was really nice to hear!';
                     break;
                 case SpiritCompanionStarEnum::HYDRA:
                     $pet
@@ -1224,7 +1224,7 @@ class PetService
                         ->increaseLove(mt_rand(2, 4))
                         ->increaseEsteem(mt_rand(4, 8))
                     ;
-                    $message = $pet->getName() . ' was feeling down, so talked to ' . $companion->getName() . '. Sensing ' . $pet->getName() . '\'s unease, ' . $companion->getName() . ' settled into ' . $pet->getName() . '\'s lap.';
+                    $message = $pet->getName() . ' was feeling down, so talked to ' . $companion->getName() . '. Sensing %pet:' . $pet->getId() . '.name%\'s unease, ' . $companion->getName() . ' settled into %pet:' . $pet->getId() . '.name%\'s lap.';
                     break;
                 default:
                     throw new \Exception('Unknown Spirit Companion Star "' . $companion->getStar() . '"');

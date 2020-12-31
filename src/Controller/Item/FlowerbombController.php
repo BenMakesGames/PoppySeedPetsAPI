@@ -78,7 +78,7 @@ class FlowerbombController extends PoppySeedPetsItemController
             $target = $userRepository->findOneRecentlyActive($user);
 
             if($target === null)
-                return $responseService->itemActionSuccess('Hm... there\'s no one to toss it, to! (I guess no one\'s been playing Poppy Seed Pets...)');
+                return $responseService->itemActionSuccess('Hm... there\'s no one to toss it to! (I guess no one\'s been playing Poppy Seed Pets...)');
 
             $inventory
                 ->setOwner($target)

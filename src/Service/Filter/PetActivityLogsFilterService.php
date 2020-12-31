@@ -26,10 +26,12 @@ class PetActivityLogsFilterService
             self::PAGE_SIZE,
             [
                 'id' => [ 'l.id' => 'desc' ], // first one is the default
+                'interestingness' => [ 'l.interestingness' => 'desc' ],
             ],
             [
                 'pet' => [ $this, 'filterPet' ],
                 'date' => [ $this, 'filterDate' ],
+                'user' => [ $this, 'filterUser' ],
             ]
         );
     }
@@ -62,5 +64,18 @@ class PetActivityLogsFilterService
             ->andWhere('l.pet = :pet')
             ->setParameter('pet', $value)
         ;
+    }
+
+    public function filterUser(QueryBuilder $qb, $value)
+    {
+        if(!in_array('pet', $qb->getAllAliases()))
+            $qb->leftJoin('l.pet', 'pet');
+
+        if(is_array($value))
+            $qb->andWhere('pet.owner IN (:userId)');
+        else
+            $qb->andWhere('pet.owner=:userId');
+
+        $qb->setParameter('userId', $value);
     }
 }

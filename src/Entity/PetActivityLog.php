@@ -25,36 +25,37 @@ class PetActivityLog
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Pet")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"petActivityLogAndPublicPet"})
      */
     private $pet;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"petActivityLogs"})
+     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
     private $entry;
 
     /**
      * @ORM\Column(type="datetime_immutable")
-     * @Groups({"petActivityLogs"})
+     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
     private $createdOn;
 
     /**
      * @ORM\Column(type="object", nullable=true)
-     * @Groups({"petActivityLogs"})
+     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
     private $changes;
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"petActivityLogs"})
+     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
     private $icon = '';
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"petActivityLogs"})
+     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
     private $interestingness = 0;
 
@@ -65,6 +66,7 @@ class PetActivityLog
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Item")
+     * @Groups({"petActivityLogAndPublicPet"})
      */
     private $equippedItem;
 

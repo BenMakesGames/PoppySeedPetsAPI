@@ -7,49 +7,49 @@ class PetChangesSummary
 {
     /**
      * @var string|null
-     * @Groups({"petActivityLogs"})
+     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
     public $food;
 
     /**
      * @var string|null
-     * @Groups({"petActivityLogs"})
+     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
     public $safety;
 
     /**
      * @var int
-     * @Groups({"petActivityLogs"})
+     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
     public $love;
 
     /**
      * @var string|null
-     * @Groups({"petActivityLogs"})
+     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
     public $esteem;
 
     /**
      * @var string|null
-     * @Groups({"petActivityLogs"})
+     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
     public $exp;
 
     /**
      * @var string|null
-     * @Groups({"petActivityLogs"})
+     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
     public $level;
 
     /**
      * @var string|null
-     * @Groups({"petActivityLogs"})
+     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
     public $affection;
 
     /**
      * @var string|null
-     * @Groups({"petActivityLogs"})
+     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
     public $affectionLevel;
 
