@@ -67,6 +67,8 @@ class WandOfWonderController extends PoppySeedPetsItemController
             'redUmbrella',
             'lightningInABottle',
             'wondrousStat',
+            'tentacleAttack',
+            'grantInvisibility',
         ];
 
         if($user->getGreenhouse() && !$expandedGreenhouseWithWand->getValue())
@@ -197,6 +199,8 @@ class WandOfWonderController extends PoppySeedPetsItemController
                     }
 
                     $itemActionDescription = 'The Wand of Wonder gave a very inspiring speech. ' . ArrayFunctions::list_nice($petNames) . ' listened, enraptured.';
+
+                    $responseService->setReloadPets();
                 }
 
                 break;
@@ -258,6 +262,42 @@ class WandOfWonderController extends PoppySeedPetsItemController
                 else
                 {
                     $itemActionDescription = 'The wand bulges slightly, but quickly returns to its normal size. (Perhaps it would have been more effective with a pet around?)';
+                }
+                break;
+
+            case 'tentacleAttack':
+                if($randomPet)
+                {
+                    $itemActionDescription = 'A large tentacle bursts through the window and tries to slap the wand out of your hand, but ' . $randomPet->getName() . ' jumps in to defend you, tearing into the tentacle, which *poof*s into a bunch of smaller (and, thankfully, lifeless) Tentacles!';
+
+                    $changes = new PetChanges($randomPet);
+
+                    $petExperienceService->gainExp($randomPet, 2, [ PetSkillEnum::BRAWL ]);
+                    $randomPet->increaseEsteem(mt_rand(4, 8));
+
+                    $responseService->createActivityLog($randomPet, '%pet:' . $randomPet->getId() . '.name% defeated a giant tentacle that attacked %user:' . $user->getId() . '.name%.', '', $changes->compare($randomPet));
+
+                    $responseService->setReloadPets();
+
+                    for($i = 0; $i < 3; $i++)
+                        $inventoryService->receiveItem('Tentacle', $user, $user, 'A way-larger tentacle tried to attack you, but ' . $randomPet->getName() . ' defended you, and... then somehow the large tentacle went *poof*, and this smaller Tentacle was left behind, along with a couple others? I dunno, man. It was weird.', $location);
+                }
+                else
+                {
+                    $itemActionDescription = 'A large tentacle bursts through the window and slaps the wand out of your hand! (If only a pet had been around!)';
+                }
+                break;
+
+            case 'grantInvisibility':
+                if($randomPet)
+                {
+                    $itemActionDescription = 'The wand squeaks like a balloon slowly losing air. When it finally finishes, you realize ' . $randomPet->getName() . ' has turned invisible!';
+                    $responseService->setReloadPets();
+                    $inventoryService->applyStatusEffect($randomPet, StatusEffectEnum::INVISIBLE, 6 * 60);
+                }
+                else
+                {
+                    $itemActionDescription = 'The wand seems to look around the room for a moment, as if looking for something (perhaps a pet?)';
                 }
                 break;
         }

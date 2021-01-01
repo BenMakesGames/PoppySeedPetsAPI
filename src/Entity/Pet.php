@@ -559,7 +559,9 @@ class Pet
      */
     public function getPerceivedColorA(): string
     {
-        if($this->hasStatusEffect(StatusEffectEnum::EGGPLANT_CURSED))
+        if($this->hasStatusEffect(StatusEffectEnum::INVISIBLE))
+            return '';
+        else if($this->hasStatusEffect(StatusEffectEnum::EGGPLANT_CURSED))
             return '673192';
         else if($this->getTool() && $this->getTool()->isGrayscaling())
             return ColorFunctions::GrayscalifyHex($this->getColorA());
@@ -573,7 +575,9 @@ class Pet
      */
     public function getPerceivedColorB(): string
     {
-        if($this->hasStatusEffect(StatusEffectEnum::EGGPLANT_CURSED))
+        if($this->hasStatusEffect(StatusEffectEnum::INVISIBLE))
+            return '';
+        else if($this->hasStatusEffect(StatusEffectEnum::EGGPLANT_CURSED))
             return '8b48c1';
         else if($this->getTool() && $this->getTool()->isGrayscaling())
             return ColorFunctions::GrayscalifyHex($this->getColorB());

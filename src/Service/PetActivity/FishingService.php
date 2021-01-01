@@ -7,6 +7,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
@@ -153,13 +154,16 @@ class FishingService
 
     private function creditLackOfReflection(PetActivityLog $activityLog)
     {
-        if($activityLog->getPet()->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION) && mt_rand(1, 4) === 1)
+        $hasNoReflection = $activityLog->getPet()->hasStatusEffect(StatusEffectEnum::INVISIBLE) || $activityLog->getPet()->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION);
+
+        if($hasNoReflection && mt_rand(1, 4) === 1)
             $activityLog->setEntry($activityLog->getEntry() . ' (Having no reflection is pretty useful!)');
     }
 
     private function nothingBiting(Pet $pet, int $percentChance, string $atLocationName): ?PetActivityLog
     {
-        if($pet->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION)) $percentChance /= 2;
+        if($pet->hasStatusEffect(StatusEffectEnum::INVISIBLE) || $pet->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION))
+            $percentChance /= 2;
 
         if(mt_rand(1, 100) <= $percentChance)
         {

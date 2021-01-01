@@ -137,16 +137,24 @@ class ComputedPetSkills
      */
     public function getStealth(): TotalPetSkill
     {
+        $hasNoShadowOrReflection = $this->pet->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION);
+
         $skill = new TotalPetSkill();
         $skill->base = $this->pet->getSkills()->getStealth();
         $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->stealthBonus() : 0;
         $skill->merits =
-            ($this->pet->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION) ? 1 : 0) +
+            ($hasNoShadowOrReflection ? 1 : 0) +
             ($this->pet->hasMerit(MeritEnum::SPECTRAL) ? 1 : 0)
         ;
+
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::HEX_HEXED) ? 6 - $this->pet->getSkills()->getStealth() : 0)
         ;
+
+        if($this->pet->hasStatusEffect(StatusEffectEnum::INVISIBLE))
+        {
+            $skill->statusEffects += ($hasNoShadowOrReflection ? 9 : 10);
+        }
 
         return $skill;
     }

@@ -654,9 +654,22 @@ class MagicBindingService
             $this->inventoryService->loseItem('Moon Pearl', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(5);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made an Invisible Shovel by binding the power of the moon to a Plastic Shovel!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
-            ;
+
+            if($umbraCheck >= 28)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made an Invisible Shovel by binding the power of the moon to a Plastic Shovel! Oh: and there\'s a little Invisibility Juice left over!', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 28)
+                ;
+
+                $this->inventoryService->petCollectsItem('Invisibility Juice', $pet, $pet->getName() . ' got this as a byproduct when binding an Invisible Shovel!', $activityLog);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made an Invisible Shovel by binding the power of the moon to a Plastic Shovel!', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ;
+            }
+
             $this->inventoryService->petCollectsItem('Invisible Shovel', $pet, $pet->getName() . ' made this by binding a Moon Pearl to Plastic Shovel!', $activityLog);
             return $activityLog;
         }
@@ -1672,9 +1685,20 @@ class MagicBindingService
             $this->inventoryService->loseItem('Everice', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::UMBRA ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Everice to an Invisible Shovel, creating Sleet!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 21)
-            ;
+            if($skillCheck >= 26)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Everice to an Invisible Shovel, creating Sleet! Oh: and there\'s a little Invisibility Juice left over!', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 26)
+                ;
+
+                $this->inventoryService->petCollectsItem('Invisibility Juice', $pet, $pet->getName() . ' got this as a byproduct when binding Sleet!', $activityLog);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Everice to an Invisible Shovel, creating Sleet!', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 21)
+                ;
+            }
 
             $this->inventoryService->petCollectsItem('Sleet', $pet, $pet->getName() . ' made this by binding Everice to an Invisible Shovel.', $activityLog);
             return $activityLog;

@@ -14,4 +14,5 @@ final class StatusEffectEnum
     public const GOBBLE_GOBBLE = '*gobble gobble*';
     public const SILK_INFUSED = 'Silk-infused';
     public const HEX_HEXED = 'Hex Hexed';
+    public const INVISIBLE = 'Invisible';
 }
