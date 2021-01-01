@@ -175,4 +175,12 @@ class PetActivityLog
 
         return $this;
     }
+
+    /**
+     * @Groups({"petActivityLogs"})
+     */
+    public function getIsPetActivity(): bool
+    {
+        return $this->pet !== null;
+    }
 }
