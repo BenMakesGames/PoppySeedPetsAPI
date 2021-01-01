@@ -12,6 +12,7 @@ use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\KinBallTeam;
 use App\Model\PetChanges;
+use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
 use App\Service\PetService;
@@ -44,16 +45,18 @@ class KinBallService implements ParkEventInterface
     private $petRelationshipService;
     private $petExperienceService;
     private $transactionService;
+    private $inventoryService;
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService
+        TransactionService $transactionService, InventoryService $inventoryService
     )
     {
         $this->em = $em;
         $this->petRelationshipService = $petRelationshipService;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
+        $this->inventoryService = $inventoryService;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -180,7 +183,7 @@ class KinBallService implements ParkEventInterface
 
         $winningTeamIndex = $this->getGameWinningTeam();
 
-        $firstPlaceMoneys = 2 * 12 + mt_rand(-4, 4); // * 12, because there are 12 players
+        $firstPlaceMoneys = 2 * 12 - mt_rand(0, 8); // * 12, because there are 12 players
         $firstPlaceMoneys += ceil($affectionTotal / 12); // affection bonus
         $firstPlaceMoneys += floor($firstPlaceMoneys * 3 / 4); // usually there's a second-place prize; not in Kin-Ball!
         $firstPlaceMoneys = ceil($firstPlaceMoneys / 4); // the prize is shared by all four members of the team
@@ -196,7 +199,9 @@ class KinBallService implements ParkEventInterface
                 if($winningTeamIndex === $teamIndex)
                 {
                     $expGain++;
-                    $this->transactionService->getMoney($participant->pet->getOwner(), $firstPlaceMoneys, $participant->pet->getName() . ' earned this in a game of Kin-Ball!');
+                    $comment = $participant->pet->getName() . ' earned this in a game of Kin-Ball!';
+                    $this->transactionService->getMoney($participant->pet->getOwner(), $firstPlaceMoneys, $comment);
+                    $this->inventoryService->petCollectsItem('Kin-Ball Gold Trophy', $participant->pet, $comment, null);
                     $activityLogEntry = $participant->pet->getName() . ' played a game of Kin-Ball, and was on the winning team! They received ' . $firstPlaceMoneys . '~~m~~!';
                 }
                 else

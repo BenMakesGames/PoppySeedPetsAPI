@@ -13,6 +13,7 @@ use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\JoustingClashResult;
 use App\Model\ParkEvent\JoustingTeam;
 use App\Model\PetChanges;
+use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
 use App\Service\TransactionService;
@@ -37,16 +38,18 @@ class JoustingService implements ParkEventInterface
     private $em;
     private $petRelationshipService;
     private $transactionService;
+    private $inventoryService;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService,
-        TransactionService $transactionService
+        TransactionService $transactionService, InventoryService $inventoryService
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->em = $em;
         $this->petRelationshipService = $petRelationshipService;
         $this->transactionService = $transactionService;
+        $this->inventoryService = $inventoryService;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -370,7 +373,7 @@ class JoustingService implements ParkEventInterface
 
         $affectionAverage = $affectionTotal / (count($this->participants) * 2);
 
-        $firstPlaceMoneys = 2 * count($this->participants) + mt_rand(-4, 4); // base prize
+        $firstPlaceMoneys = 2 * count($this->participants) - mt_rand(0, 8); // base prize
         $firstPlaceMoneys += ceil($affectionAverage); // affection bonus
         $firstPlaceMoneys = ceil($firstPlaceMoneys / 2); // divide by two, because two pets share the prize
 
@@ -398,7 +401,9 @@ class JoustingService implements ParkEventInterface
         {
             $exp++;
 
-            $this->transactionService->getMoney($pet->getOwner(), $firstPlaceMoneys, $pet->getName() . ' earned this by getting 1st place in a Jousting tournament with ' . $teamMate->getName() . '!');
+            $comment = $pet->getName() . ' earned this by getting 1st place in a Jousting tournament with ' . $teamMate->getName() . '!';
+            $this->transactionService->getMoney($pet->getOwner(), $firstPlaceMoneys, $comment);
+            $this->inventoryService->petCollectsItem('Jousting Gold Trophy', $pet, $comment, null);
 
             $log = $pet->getName() . ' played in a Jousting tournament with ' . $teamMate->getName() . ', and won! The whole thing!';
         }
@@ -415,7 +420,9 @@ class JoustingService implements ParkEventInterface
         {
             $exp++;
 
-            $this->transactionService->getMoney($pet->getOwner(), $secondPlaceMoneys, $pet->getName() . ' earned this by getting 2nd place in a Jousting tournament with ' . $teamMate->getName() . '!');
+            $comment = $pet->getName() . ' earned this by getting 2nd place in a Jousting tournament with ' . $teamMate->getName() . '!';
+            $this->transactionService->getMoney($pet->getOwner(), $secondPlaceMoneys, $comment);
+            $this->inventoryService->petCollectsItem('Jousting Silver Trophy', $pet, $comment, null);
         }
 
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ]);

@@ -12,6 +12,7 @@ use App\Enum\SpiritCompanionStarEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\TriDChessParticipant;
 use App\Model\PetChanges;
+use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
 use App\Service\TransactionService;
@@ -40,16 +41,18 @@ class TriDChessService implements ParkEventInterface
     private $em;
     private $petRelationshipService;
     private $transactionService;
+    private $inventoryService;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService,
-        TransactionService $transactionService
+        TransactionService $transactionService, InventoryService $inventoryService
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->em = $em;
         $this->petRelationshipService = $petRelationshipService;
         $this->transactionService = $transactionService;
+        $this->inventoryService = $inventoryService;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -223,7 +226,7 @@ class TriDChessService implements ParkEventInterface
     {
         $affectionAverage = ArrayFunctions::average($this->participants, function(TriDChessParticipant $p) { return $p->pet->getAffectionLevel(); });
 
-        $firstPlaceMoneys = 2 * count($this->participants) + mt_rand(-4, 4); // base prize
+        $firstPlaceMoneys = 2 * count($this->participants) - mt_rand(0, 8); // base prize
         $firstPlaceMoneys += ceil($affectionAverage); // affection bonus
 
         $secondPlaceMoneys = ceil($firstPlaceMoneys * 3 / 4);
@@ -241,7 +244,11 @@ class TriDChessService implements ParkEventInterface
             if($wins === $this->round)
             {
                 $expGain++;
-                $this->transactionService->getMoney($participant->pet->getOwner(), $firstPlaceMoneys, $participant->pet->getName() . ' earned this by getting 1st place in a Tri-D Chess tournament!');
+
+                $comment = $participant->pet->getName() . ' earned this by getting 1st place in a Tri-D Chess tournament!';
+                $this->transactionService->getMoney($participant->pet->getOwner(), $firstPlaceMoneys, $comment);
+                $this->inventoryService->petCollectsItem('Tri-D Chess Gold Trophy', $participant->pet, $comment, null);
+
                 $activityLogEntry = $participant->pet->getName() . ' played in a Tri-D chess tournament, and won! The whole thing!';
             }
             else if($wins === 0)
@@ -252,7 +259,11 @@ class TriDChessService implements ParkEventInterface
             if($wins === $this->round - 1)
             {
                 $expGain++;
-                $this->transactionService->getMoney($participant->pet->getOwner(), $secondPlaceMoneys, $participant->pet->getName() . ' earned this by getting 2nd place in a Tri-D Chess tournament!');
+
+                $comment = $participant->pet->getName() . ' earned this by getting 2nd place in a Tri-D Chess tournament!';
+                $this->transactionService->getMoney($participant->pet->getOwner(), $secondPlaceMoneys, $comment);
+                $this->inventoryService->petCollectsItem('Tri-D Chess Silver Trophy', $participant->pet, $comment, null);
+
                 $this->results .= $participant->pet->getName() . ' got 2nd place, and ' . $secondPlaceMoneys . '~~m~~!';
             }
 
