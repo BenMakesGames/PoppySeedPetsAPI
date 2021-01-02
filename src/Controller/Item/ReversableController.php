@@ -65,6 +65,6 @@ class ReversableController extends PoppySeedPetsItemController
 
         $responseService->setReloadInventory();
 
-        return $responseService->itemActionSuccess($message);
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 }
