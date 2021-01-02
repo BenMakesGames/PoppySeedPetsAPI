@@ -163,7 +163,7 @@ class MuseumController extends PoppySeedPetsController
             ->andWhere('s.stat = :statName')
             ->addOrderBy('s.value', 'DESC')
             ->addOrderBy('s.lastTime', 'ASC')
-            ->setParameter('statName', 'Items Donated to Museum')
+            ->setParameter('statName', UserStatEnum::ITEMS_DONATED_TO_MUSEUM)
         ;
 
         $paginator = new Paginator($qb);

@@ -413,6 +413,7 @@ class PetController extends PoppySeedPetsController
 
         $inventory
             ->setLocation(LocationEnum::LUNCHBOX)
+            ->setSellPrice(null)
         ;
 
         $lunchboxItem = (new LunchboxItem())

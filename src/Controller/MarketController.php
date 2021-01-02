@@ -231,21 +231,7 @@ class MarketController extends PoppySeedPetsController
 
             $marketService->logExchange($itemToBuy);
 
-            $itemToBuy
-                ->setOwner($user)
-                ->setSellPrice(null)
-                ->setLocation($placeItemsIn)
-                ->setModifiedOn()
-            ;
-
-            if($itemToBuy->getLunchboxItem())
-                $em->remove($itemToBuy->getLunchboxItem());
-
-            if($itemToBuy->getHolder())
-                $itemToBuy->getHolder()->setTool(null);
-
-            if($itemToBuy->getWearer())
-                $itemToBuy->getWearer()->setHat(null);
+            $marketService->transferItemToPlayer($itemToBuy, $user, $placeItemsIn);
 
             $em->flush();
         }

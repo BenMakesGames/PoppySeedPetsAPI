@@ -54,4 +54,5 @@ final class SerializationGroupEnum
     public const MY_LETTERS = 'myLetters';
     public const MY_DRAGON = 'myDragon';
     public const DRAGON_TREASURE = 'dragonTreasure';
+    public const MY_MARKET_BIDS = 'myBids';
 }

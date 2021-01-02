@@ -50,4 +50,24 @@ class MarketService
 
         return $log;
     }
+
+    public function transferItemToPlayer(Inventory $item, User $newOwner, int $location)
+    {
+        $item
+            ->setOwner($newOwner)
+            ->setSellPrice(null)
+            ->setLocation($location)
+            ->setModifiedOn()
+        ;
+
+        if($item->getLunchboxItem())
+            $this->em->remove($item->getLunchboxItem());
+
+        if($item->getHolder())
+            $item->getHolder()->setTool(null);
+
+        if($item->getWearer())
+            $item->getWearer()->setHat(null);
+
+    }
 }

@@ -11,16 +11,19 @@ use App\Functions\GrammarFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\KnownRecipesRepository;
+use App\Repository\MarketBidRepository;
 use App\Repository\RecipeRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\CalendarService;
 use App\Service\CookingService;
+use App\Service\MarketService;
 use App\Service\RecyclingService;
 use App\Service\InventoryModifierService;
 use App\Service\Filter\InventoryFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use phpDocumentor\Reflection\Location;
 use Symfony\Component\HttpFoundation\Request;
@@ -232,7 +235,9 @@ class InventoryController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function setSellPrice(
-        Inventory $inventory, ResponseService $responseService, Request $request, EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, Request $request, EntityManagerInterface $em,
+        MarketBidRepository $marketBidRepository, TransactionService $transactionService, MarketService $marketService,
+        InventoryModifierService $inventoryModifierService, InventoryService $inventoryService
     )
     {
         $user = $this->getUser();
@@ -246,6 +251,12 @@ class InventoryController extends PoppySeedPetsController
         if($inventory->getLockedToOwner())
             throw new UnprocessableEntityHttpException('This item is locked to your account. It cannot be sold, traded, etc.');
 
+        if($inventory->getHolder() || $inventory->getWearer())
+            throw new UnprocessableEntityHttpException('This item is being held or worn by a pet!');
+
+        if($inventory->getLunchboxItem())
+            throw new UnprocessableEntityHttpException('This item is in a pet\'s lunchbox!');
+
         $price = $request->request->getInt('price', 0);
 
         if($price > $user->getMaxSellPrice())
@@ -254,7 +265,29 @@ class InventoryController extends PoppySeedPetsController
         if($price <= 0)
             $inventory->setSellPrice(null);
         else
+        {
             $inventory->setSellPrice($price);
+
+            $highestBid = $marketBidRepository->findHighestBidForItem($inventory, Inventory::calculateBuyPrice($price));
+
+            if($highestBid)
+            {
+                $marketService->logExchange($inventory);
+
+                $transactionService->getMoney($user, $price, 'Sold ' . $inventoryModifierService->getNameWithModifiers($inventory) . ' in the Market.');
+
+                $itemsInBuyersHouse = $inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::HOME);
+
+                $marketService->transferItemToPlayer($inventory, $highestBid->getUser(), LocationEnum::HOME);
+
+                $responseService->setReloadInventory();
+
+                if($highestBid->getQuantity() > 1)
+                    $highestBid->setQuantity($highestBid->getQuantity() - 1);
+                else
+                    $em->remove($highestBid);
+            }
+        }
 
         $em->flush();
 

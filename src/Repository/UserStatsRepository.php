@@ -61,9 +61,22 @@ class UserStatsRepository extends ServiceEntityRepository
     {
         $stat = $this->findOrCreate($user, $name);
 
+        $oldValue = $stat->getValue();
+
         $stat->increaseValue($change);
 
-        if($name === UserStatEnum::ITEMS_DONATED_TO_MUSEUM)
+        if($name === UserStatEnum::ITEMS_BOUGHT_IN_MARKET)
+        {
+            if($oldValue < 50 && $stat->getValue() >= 50)
+                $user->increaseMaxMarketBids(5);
+
+        }
+        else if($name === UserStatEnum::ITEMS_SOLD_IN_MARKET)
+        {
+            if($oldValue < 50 && $stat->getValue() >= 50)
+                $user->increaseMaxMarketBids(5);
+        }
+        else if($name === UserStatEnum::ITEMS_DONATED_TO_MUSEUM)
         {
             if($user->getUnlockedBookstore() === null)
             {
@@ -71,10 +84,12 @@ class UserStatsRepository extends ServiceEntityRepository
                     $user->setUnlockedBookstore();
             }
 
-            if($user->getFireplace() && $user->getFireplace()->getMantleSize() === 12)
+            if($oldValue < 400 && $stat->getValue() >= 400)
             {
-                if($stat->getValue() >= 400)
+                if($user->getFireplace())
                     $user->getFireplace()->setMantleSize(24);
+
+                $user->increaseMaxMarketBids(10);
             }
         }
 

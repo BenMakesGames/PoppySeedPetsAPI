@@ -123,6 +123,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"myAccount"})
      */
     private $maxSellPrice = 10;
 
@@ -267,6 +268,12 @@ class User implements UserInterface
      * @Groups({"myAccount"})
      */
     private $unlockedDragonDen;
+
+    /**
+     * @ORM\Column(type="smallint")
+     * @Groups({"myAccount"})
+     */
+    private $maxMarketBids = 5;
 
     public function __construct()
     {
@@ -949,6 +956,18 @@ class User implements UserInterface
     public function setUnlockedDragonDen(): self
     {
         $this->unlockedDragonDen = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getMaxMarketBids(): int
+    {
+        return $this->maxMarketBids;
+    }
+
+    public function increaseMaxMarketBids(int $amount): self
+    {
+        $this->maxMarketBids += $amount;
 
         return $this;
     }

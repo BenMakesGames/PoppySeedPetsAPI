@@ -23,7 +23,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=45, unique=true)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "fireplaceMantle", "fireplaceFuel", "myBeehive", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "fireplaceMantle", "fireplaceFuel", "myBeehive", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids"})
      */
     private $name;
 
@@ -35,7 +35,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "myBeehive", "petGroupDetails", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "myBeehive", "petGroupDetails", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids"})
      */
     private $image;
 
