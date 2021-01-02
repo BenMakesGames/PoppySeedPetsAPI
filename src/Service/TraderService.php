@@ -140,12 +140,12 @@ class TraderService
 
     public function getOffers(User $user): array
     {
-        $offers = [
-            [
-                'title' => date('l'),
-                'trades' => $this->getHolidayOffers($user)
-            ]
+        $dailyOffers = [
+            'title' => date('l'),
+            'trades' => $this->getHolidayOffers($user)
         ];
+
+        $offers = [];
 
         $tradeGroups = $this->getUnlockedTradeGroups($user);
 
@@ -198,12 +198,27 @@ class TraderService
                 'trades' => $trades
             ];
         }
+
+        usort($offers, function($a, $b) {
+            return $a['title'] <=> $b['title'];
+        });
+
+        array_unshift($offers, $dailyOffers);
+
         return $offers;
     }
 
     private function getBleachOffers(): array
     {
         return [
+            new TraderOffer(
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Filthy Cloth'), 1),
+                    TraderOfferCostOrYield::createMoney(5)
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('White Cloth'), 1) ],
+                'There you go! Good as new!'
+            ),
             new TraderOffer(
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Dragon Flag'), 1),
@@ -600,7 +615,7 @@ class TraderService
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Quinacridone Magenta Dye'), 1),
                 ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fairy Swarm'), 1) ],
-                'Quinacridone Magenta is pretty valuable stuff. Even King Nebuludwigula XIII has but a few robes dyed that color.'
+                'Quinacridone Magenta is pretty valuable stuff. Naturally, King Nebuludwigula XIII has a few robes dyed that color.'
             )
         ];
     }
@@ -624,6 +639,11 @@ class TraderService
                 'I just can\'t believe humans are allowed to carry a rod without a permit.'
             ),
             new TraderOffer(
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Ice Fishing'), 1) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Paper Bag'), 2) ],
+                'I just can\'t believe humans are allowed to carry a rod without a permit.'
+            ),
+            new TraderOffer(
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Limestone'), 2),
                 ],
@@ -636,13 +656,22 @@ class TraderService
             ),
 
             new TraderOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Glass'), 1 ) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Crystal Ball'), 1 ) ],
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Sweet Beet'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Tomato'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Vinegar'), 1),
                 ],
-                'There\'s a lot of Silica Grounds in Tell Samarzhoustia, of course, but turning them into Glass is an expensive process.'
+                'There\'s a lot of Silica Grounds in Tell Samarzhoustia, of course, but turning them into something beautiful is an expensive process.'
+            ),
+            new TraderOffer(
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fiberglass'), 1 ) ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Corn'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Onion'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Spicy Peps'), 1),
+                ],
+                'There\'s a lot of Silica Grounds in Tell Samarzhoustia, of course, but turning them into something beautiful is an expensive process.'
             ),
 
             new TraderOffer(
@@ -724,7 +753,8 @@ class TraderService
 
             new TraderOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Planetary Ring'), 3),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Planetary Ring'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gravitational Waves'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Everice'), 1),
                 ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Icy Moon'), 1) ],

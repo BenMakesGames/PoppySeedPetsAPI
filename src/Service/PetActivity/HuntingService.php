@@ -666,7 +666,7 @@ class HuntingService
         else if(mt_rand(1, 50) === 1)
             $prize = ArrayFunctions::pick_one([ 'Rib', 'Stereotypical Bone ']);
         else if(mt_rand(1, 8) === 1)
-            $prize = ArrayFunctions::pick_one([ 'Iron Bar', 'Silver Bar', 'White Cloth' ]);
+            $prize = ArrayFunctions::pick_one([ 'Iron Bar', 'Silver Bar', 'Filthy Cloth' ]);
         else if(mt_rand(1, 4) === 1)
             $prize = 'Ghost Pepper';
         else

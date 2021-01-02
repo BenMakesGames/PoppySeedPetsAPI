@@ -35,7 +35,9 @@ class LinensController extends PoppySeedPetsItemController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $numberOfCloth = mt_rand(2, 3);
+        $numberOfCloth = mt_rand(1, 2);
+
+        $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'White Cloth', 'Filthy Cloth' ]), $user, $user, $user->getName() . ' found this in a pile of Linens and Things.', $location, $lockedToOwner);
 
         for($i = 0; $i < $numberOfCloth; $i++)
             $inventoryService->receiveItem('White Cloth', $user, $user, $user->getName() . ' found this in a pile of Linens and Things.', $location, $lockedToOwner);
