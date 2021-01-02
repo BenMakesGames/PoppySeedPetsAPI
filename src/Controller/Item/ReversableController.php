@@ -63,6 +63,8 @@ class ReversableController extends PoppySeedPetsItemController
             'You caaaaaarefully turn the ' . $oldItemName . ' over, then caaaaaarefully put it down...' . "\n\n" . 'Okay... okay, yeah! It worked!' . "\n\n" . 'You successfully made ' . $newItem->getNameWithArticle() . '!',
         ]);
 
-        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true, 'reloadPets' => $reloadPets ]);
+        $responseService->setReloadInventory();
+
+        return $responseService->itemActionSuccess($message);
     }
 }
