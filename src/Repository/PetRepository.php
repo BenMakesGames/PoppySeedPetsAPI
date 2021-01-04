@@ -215,7 +215,7 @@ class PetRepository extends ServiceEntityRepository
             ->andWhere('o.lastActivity>=:oneMonthAgo')
             ->andWhere('p.id!=:exceptPetId')
             ->andWhere('g.name=:correspondence')
-            ->andWhere('m.level>10')
+            ->andWhere('m.level>=10')
             ->setParameter('oneMonthAgo', $oneMonthAgo)
             ->setParameter('exceptPetId', $except->getId())
             ->setParameter('correspondence', 'Correspondence')
