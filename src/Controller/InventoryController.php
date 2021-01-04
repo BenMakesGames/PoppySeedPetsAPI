@@ -276,9 +276,29 @@ class InventoryController extends PoppySeedPetsController
 
                 $transactionService->getMoney($user, $price, 'Sold ' . $inventoryModifierService->getNameWithModifiers($inventory) . ' in the Market.');
 
-                $itemsInBuyersHouse = $inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::HOME);
+                $targetLocation = LocationEnum::HOME;
 
-                $marketService->transferItemToPlayer($inventory, $highestBid->getUser(), LocationEnum::HOME);
+                if($highestBid->getTargetLocation() === LocationEnum::BASEMENT)
+                {
+                    $itemsInBuyersBasement = $inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::BASEMENT);
+
+                    if($itemsInBuyersBasement < 10000)
+                        $targetLocation = LocationEnum::BASEMENT;
+                }
+                else // assume home as fallback/default
+                {
+                    $itemsInBuyersHome = $inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::HOME);
+
+                    if($itemsInBuyersHome >= 100)
+                    {
+                        $itemsInBuyersBasement = $inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::BASEMENT);
+
+                        if($itemsInBuyersBasement < 10000)
+                            $targetLocation = LocationEnum::BASEMENT;
+                    }
+                }
+
+                $marketService->transferItemToPlayer($inventory, $highestBid->getUser(), $targetLocation);
 
                 $responseService->setReloadInventory();
 
