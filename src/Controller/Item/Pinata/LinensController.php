@@ -35,17 +35,21 @@ class LinensController extends PoppySeedPetsItemController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $numberOfCloth = mt_rand(1, 2);
+        $baseNumberOfCloth = mt_rand(1, 2);
+        $hasBadCloth = mt_rand(1, 2) === 1;
 
-        $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'White Cloth', 'Filthy Cloth' ]), $user, $user, $user->getName() . ' found this in a pile of Linens and Things.', $location, $lockedToOwner);
+        $inventoryService->receiveItem($hasBadCloth ? 'Filthy Cloth' : 'White Cloth', $user, $user, $user->getName() . ' found this in a pile of Linens and Things.', $location, $lockedToOwner);
 
-        for($i = 0; $i < $numberOfCloth; $i++)
+        for($i = 0; $i < $baseNumberOfCloth; $i++)
             $inventoryService->receiveItem('White Cloth', $user, $user, $user->getName() . ' found this in a pile of Linens and Things.', $location, $lockedToOwner);
 
         $em->remove($inventory);
         $em->flush();
 
-        return $responseService->itemActionSuccess('You rummaged around in the pile, and pulled out ' . $numberOfCloth . ' pieces of good Cloth.', [ 'itemDeleted' => true ]);
+        if($hasBadCloth)
+            return $responseService->itemActionSuccess('You rummaged around in the pile, and pulled out ' . $baseNumberOfCloth . ' ' . ($baseNumberOfCloth === 1 ? 'piece' : 'pieces') . ' of good cloth... and 1 piece of BAD cloth...', [ 'itemDeleted' => true ]);
+        else
+            return $responseService->itemActionSuccess('You rummaged around in the pile, and pulled out ' . ($baseNumberOfCloth + 1) . ' pieces of good cloth...', [ 'itemDeleted' => true ]);
     }
 
     /**
