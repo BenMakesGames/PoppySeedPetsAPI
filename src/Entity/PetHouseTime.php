@@ -31,7 +31,7 @@ class PetHouseTime
     /**
      * @ORM\Column(type="integer")
      */
-    private $activityTime = 60;
+    private $activityTime = 59;
 
     /**
      * @ORM\Column(type="integer")
