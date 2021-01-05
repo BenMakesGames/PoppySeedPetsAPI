@@ -26,6 +26,7 @@ class RiceBookController extends PoppySeedPetsItemController
 
 * Nigiri
 * Onigiri
+* Plain Fried Rice
 * Rice Flour
 * Rice Vinegar
 * Simple Sushi
@@ -47,6 +48,19 @@ Try adding a filling, such as Fish, or Melowatern.
 
 * Rice
 * Seaweed
+
+#### Plain Fried Rice
+
+* Rice
+* Oil
+* Soy Sauce
+* Onion
+* Egg
+
+Try these simple variants:
+* Add Tentacle for Tentacle Fried Rice
+* Add Tofu for Tofu Fried Rice
+* Add Carrot and Celery for Vegetable Fried Rice
 
 #### Rice Vinegar
 An important ingredient when making sushi!

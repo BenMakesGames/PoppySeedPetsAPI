@@ -38,6 +38,15 @@ class ArtOfTofuController extends PoppySeedPetsItemController
 * Tofu
 * Oil (or Butter)
 * Soy Sauce
+
+#### Tofu Fried Rice
+
+* Tofu
+* Rice
+* Oil
+* Soy Sauce
+* Onion (or Mirepoix!)
+* Egg
 ');
     }
 }
