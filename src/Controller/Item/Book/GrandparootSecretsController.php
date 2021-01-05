@@ -62,6 +62,12 @@ You can make a glass of wine by combining Aging Powder with many fruits, and eve
 
 You will get a small amount of foam around the edge of your glass; scoop that off, but don\'t throw it away! That\'s tartaric acid - dried, it\'s known as Cream of Tartar - very useful in baking!
 
+### Ginger Beer
+
+Age Ginger root and Sugar with Aging Powder for instant Ginger Beer!
+
+(As a side-note, you _can_ age Sugar by itself, but that\'s less tasty!)
+
 ### Mushrooms
 
 You can easily grow a variety of mushrooms on wood with the help of Aging Powder!
