@@ -243,12 +243,12 @@ class TreasureMapService
 
         if($pet->getSpiritCompanion() && $pet->getSpiritCompanion()->getStar() === SpiritCompanionStarEnum::SAGITTARIUS)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% and ' . $pet->getSpiritCompanion()->getName() . ' made %user:' . $pet->getOwner()->getId() . '.name% ' . $food . ' with their ' . $pet->getTool()->getItem()->getName() . '. %user:' . $pet->getOwner()->getIcon() . '.Name% pretended to eat it with them. It was very good.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% and ' . $pet->getSpiritCompanion()->getName() . ' made %user:' . $pet->getOwner()->getId() . '.name% ' . $food . ' with their ' . $pet->getTool()->getItem()->getName() . '. %user:' . $pet->getOwner()->getId() . '.Name% pretended to eat it with them. It was very good.', '');
             $pet->increaseLove(6);
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made %user:' . $pet->getOwner()->getId() . '.name% ' . $food . ' with their ' . $pet->getTool()->getItem()->getName() . '. %user:' . $pet->getOwner()->getIcon() . '.Name% and %pet:' . $pet->getId() . '.name% pretended to eat it together. It was very good.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made %user:' . $pet->getOwner()->getId() . '.name% ' . $food . ' with their ' . $pet->getTool()->getItem()->getName() . '. %user:' . $pet->getOwner()->getId() . '.Name% and %pet:' . $pet->getId() . '.name% pretended to eat it together. It was very good.', '');
             $pet->increaseLove(4);
         }
 
