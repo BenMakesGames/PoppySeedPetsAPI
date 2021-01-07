@@ -3,6 +3,7 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
+use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
@@ -15,6 +16,7 @@ use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
+use App\Service\PetService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,7 +36,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
         EntityManagerInterface $em, InventoryService $inventoryService, PetRepository $petRepository,
         TransactionService $transactionService, ItemRepository $itemRepository, MeritRepository $meritRepository,
-        PetExperienceService $petExperienceService, SpiceRepository $spiceRepository
+        PetExperienceService $petExperienceService, SpiceRepository $spiceRepository, PetService $petService
     )
     {
         $this->validateInventory($inventory, 'wandOfWonder/#/point');
@@ -75,6 +77,12 @@ class WandOfWonderController extends PoppySeedPetsItemController
             'maxSize',
             'minSize',
             'metals',
+            'wallOfMixedNutBrittle',
+            'intoxication',
+            'bubblegum',
+            'oilUp',
+            'giveRandomTool',
+            'antiGrav',
         ];
 
         if($user->getGreenhouse() && !$expandedGreenhouseWithWand->getValue())
@@ -422,6 +430,156 @@ class WandOfWonderController extends PoppySeedPetsItemController
                     $inventoryService->receiveItem($itemName, $user, $user, 'This was created by ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
 
                 $itemActionDescription = 'The wand turns into a tightly-bound scroll as a small pile of treasure collects around your feet!';
+
+                break;
+
+            case 'wallOfMixedNutBrittle':
+                if($randomPet)
+                {
+                    $itemActionDescription = 'A wall of Mixed Nut Brittle appears between you and ' . $randomPet->getName() . '! You work together breaking it down into manageable pieces (and occasionally taking a bite...)';
+
+                    $numPieces = mt_rand(4, 5);
+
+                    for($i = 0; $i < $numPieces; $i++)
+                        $inventoryService->receiveItem('Mixed Nut Brittle', $user, $user, 'Summoned by ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
+
+                    $changes = new PetChanges($randomPet);
+
+                    $petService->gainAffection($randomPet, 1);
+                    $randomPet->increaseFood(5);
+
+                    $responseService->createActivityLog($randomPet, '', '', $changes->compare($randomPet));
+                }
+                else
+                {
+                    $itemActionDescription = 'A wall of Mixed Nut Brittle appears before you! You spend some time tearing it down into manageable pieces (a little help would have been nice!)';
+
+                    $numPieces = mt_rand(3, 4);
+
+                    for($i = 0; $i < $numPieces; $i++)
+                        $inventoryService->receiveItem('Mixed Nut Brittle', $user, $user, 'Summoned by ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
+                }
+
+                break;
+
+            case 'intoxication':
+                $wandBroke = false;
+
+                if($randomPet)
+                {
+                    if($randomPet->getPregnancy())
+                    {
+                        if($randomPet->hasStatusEffect(StatusEffectEnum::TIRED))
+                            $itemActionDescription = $randomPet->getName() . ' is suddenly looking even more tired!';
+                        else
+                            $itemActionDescription = $randomPet->getName() . ' is suddenly looking tired...';
+
+                        $inventoryService->applyStatusEffect($randomPet, StatusEffectEnum::TIRED, 4 * 60);
+                    }
+                    else
+                    {
+                        if($randomPet->getAlcohol() > 0)
+                            $itemActionDescription = $randomPet->getName() . ' appears to have become... even more intoxicated!';
+                        else
+                            $itemActionDescription = $randomPet->getName() . ' appears to have become... intoxicated.';
+
+                        $randomPet->increaseAlcohol(mt_rand(4, 8));
+                    }
+                }
+                else
+                {
+                    $itemActionDescription = 'You feel woozy.';
+                }
+
+                break;
+
+            case 'bubblegum':
+                if($randomPet)
+                {
+                    $inventoryService->applyStatusEffect($randomPet, StatusEffectEnum::BUBBLEGUMD, 60);
+
+                    $itemActionDescription = 'Thick strands of bubblegum suddenly grow out of ' . $randomPet->getName() . '\'s extremities! (Gross!)';
+                    $responseService->setReloadPets();
+                }
+                else
+                {
+                    $itemActionDescription = 'The wand bulges slightly, but quickly returns to its normal size. (Perhaps it would have been more effective with a pet around?)';
+                }
+
+                break;
+
+            case 'oilUp':
+                if($randomPet)
+                {
+                    $inventoryService->applyStatusEffect($randomPet, StatusEffectEnum::OIL_COVERED, 60);
+
+                    $itemActionDescription = 'Oil sprays out of the wand, covering ' . $randomPet->getName() . '!';
+                    $responseService->setReloadPets();
+                }
+                else
+                {
+                    $itemActionDescription = 'The wand bulges slightly, but quickly returns to its normal size. (Perhaps it would have been more effective with a pet around?)';
+                }
+
+                break;
+
+            case 'giveRandomTool':
+
+                $item = $itemRepository->findOneByName(ArrayFunctions::pick_one([
+                    'Giant Turkey Leg',
+                    '"Gold" Idol',
+                    'Aubergine Scepter',
+                    'Heartstone',
+                    'Fluff Heart',
+                    'Chocolate-covered Naner with Nuts',
+                    'Magic Bean Milk',
+                    'Egg',
+                    'Ant Queen',
+                    'Welcome Note'
+                ]));
+
+                $newInventory = $inventoryService->receiveItem($item, $user, $user, 'Created by ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
+
+                if($randomPet)
+                {
+                    if($randomPet->getTool())
+                    {
+                        $itemActionDescription = $randomPet->getName() . ' drops their ' . $randomPet->getTool()->getItem()->getName() . '; ' . $item->getNameWithArticle() . ' appears in its place!';
+
+                        $inventoryService->unequipPet($randomPet);
+                    }
+                    else
+                        $itemActionDescription = $randomPet->getName() . ' dons ' . $item->getNameWithArticle() . '!';
+
+                    $randomPet->setTool($newInventory);
+
+                    // move it to the wardrobe
+                    $newInventory->setLocation(LocationEnum::WARDROBE);
+                }
+                else
+                {
+                    $itemActionDescription = 'You accidentally drop the wand; you reach to grab it, but instead grab ' . $item->getNameWithArticle() . '!';
+
+                    if(!$wandBroke)
+                        $itemActionDescription .= ' The wand clatters on the ground.';
+                }
+
+                break;
+
+            case 'antiGrav':
+                if($randomPet)
+                {
+                    $inventoryService->applyStatusEffect($randomPet, StatusEffectEnum::ANTI_GRAVD, mt_rand(12, 24) * 60);
+
+                    $itemActionDescription = $randomPet->getName() . ' turns upside down, and begins to float. Fortunately, they stop after just a couple inches... but they\'re still upside down!';
+                    $responseService->setReloadPets();
+                }
+                else
+                {
+                    $itemActionDescription = 'The wand bulges slightly, but quickly returns to its normal size. (Perhaps it would have been more effective with a pet around?)';
+                }
+
+                break;
         }
 
         $itemActionDescription .= "\n\n";

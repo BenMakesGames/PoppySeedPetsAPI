@@ -600,6 +600,18 @@ class PetService
             ;
         }
 
+        if($pet->hasStatusEffect(StatusEffectEnum::OIL_COVERED))
+        {
+            if($this->cleanUpStatusEffect($pet, StatusEffectEnum::OIL_COVERED, 'Oil'))
+                return;
+        }
+
+        if($pet->hasStatusEffect(StatusEffectEnum::BUBBLEGUMD))
+        {
+            if($this->cleanUpStatusEffect($pet, StatusEffectEnum::OIL_COVERED, 'Bubblegum'))
+                return;
+        }
+
         if($pet->hasStatusEffect(StatusEffectEnum::GOBBLE_GOBBLE) && mt_rand(1, 2) === 1)
         {
             $changes = new PetChanges($pet);
@@ -607,13 +619,15 @@ class PetService
             $activityLog->setChanges($changes->compare($pet));
             return;
         }
-        else if($pet->hasStatusEffect(StatusEffectEnum::ONEIRIC) && mt_rand(1, 2) === 1)
+
+        if($pet->hasStatusEffect(StatusEffectEnum::ONEIRIC) && mt_rand(1, 2) === 1)
         {
             $this->dreamingService->dream($pet);
             $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::ONEIRIC));
             return;
         }
-        else if($this->dream($pet))
+
+        if($this->dream($pet))
         {
             $this->dreamingService->dream($pet);
             return;
@@ -1338,7 +1352,7 @@ class PetService
         $desire = $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
-        if($pet->getTool())
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getFishing();
 
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
@@ -1350,7 +1364,7 @@ class PetService
         $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
-        if($pet->getTool())
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getScience() + $pet->getTool()->getItem()->getTool()->getFishing();
 
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
@@ -1362,7 +1376,7 @@ class PetService
         $desire = $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
-        if($pet->getTool())
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getBrawl();
 
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
@@ -1374,7 +1388,7 @@ class PetService
         $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getCrafts()->getTotal() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
-        if($pet->getTool())
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getCrafts();
 
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
@@ -1385,7 +1399,7 @@ class PetService
         $pet = $petWithSkills->getPet();
         $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal() + mt_rand(1, 4);
 
-        if($pet->getTool())
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getUmbra();
 
         if($pet->hasMerit(MeritEnum::NATURAL_CHANNEL))
@@ -1417,7 +1431,7 @@ class PetService
         $desire = $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
-        if($pet->getTool())
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getGathering();
 
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
@@ -1429,7 +1443,7 @@ class PetService
         $desire = floor(($petWithSkills->getStrength()->getTotal() + $petWithSkills->getStamina()->getTotal()) * 1.5) + ceil($petWithSkills->getNature()->getTotal() / 2) + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
-        if($pet->getTool())
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getNature();
 
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
@@ -1441,7 +1455,7 @@ class PetService
         $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
-        if($pet->getTool())
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getScience();
 
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
@@ -1453,7 +1467,7 @@ class PetService
         $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + mt_rand(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
-        if($pet->getTool())
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getScience();
 
         return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
@@ -1479,5 +1493,38 @@ class PetService
             return true;
 
         return false;
+    }
+
+    private function cleanUpStatusEffect(Pet $pet, string $statusEffect, string $itemOnBody): bool
+    {
+        $changes = new PetChanges($pet);
+
+        $pet->removeStatusEffect($pet->getStatusEffect($statusEffect));
+
+        if($pet->hasMerit(MeritEnum::GOURMAND))
+        {
+            $pet
+                ->increaseFood(mt_rand(3, 6))
+                ->increaseEsteem(mt_rand(2, 4))
+            ;
+
+            $this->petExperienceService->spendTime($pet, 5, PetActivityStatEnum::OTHER, null);
+
+            $this->responseService->createActivityLog($pet, '%pet:'. $pet->getId() . '.name% eats the ' . $itemOnBody . ' off their body in no time flat!', '', $changes->compare($pet));
+            return false;
+        }
+        else
+        {
+            $pet->increaseEsteem(mt_rand(2, 4));
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:'. $pet->getId() . '.name% spends some time cleaning the ' . $itemOnBody . ' off their body...', '');
+
+            $this->inventoryService->petCollectsItem($itemOnBody, $pet, $pet->getName() . ' cleaned this off their body...', $activityLog);
+
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
+
+            $activityLog->setChanges($changes->compare($pet));
+
+            return true;
+        }
     }
 }

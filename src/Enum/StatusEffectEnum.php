@@ -15,4 +15,7 @@ final class StatusEffectEnum
     public const SILK_INFUSED = 'Silk-infused';
     public const HEX_HEXED = 'Hex Hexed';
     public const INVISIBLE = 'Invisible';
+    public const ANTI_GRAVD = 'Anti-grav\'d';
+    public const OIL_COVERED = 'Oil-covered';
+    public const BUBBLEGUMD = 'Bubblegum\'d';
 }
