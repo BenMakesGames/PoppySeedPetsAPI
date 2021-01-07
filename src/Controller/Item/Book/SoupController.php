@@ -61,6 +61,12 @@ This strange recipe was invented by an AI. Despite being created by something wi
 * Pumpkin
 * Beans
 
+#### Matzah Ball Soup
+
+* Matzah Bread
+* Egg
+* Mirepoix (Celery + Onion + Carrot)
+
 #### Minestrone
 
 * Oil (or Butter)
