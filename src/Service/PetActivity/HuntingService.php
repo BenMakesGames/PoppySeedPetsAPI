@@ -233,7 +233,7 @@ class HuntingService
         $pet = $petWithSkills->getPet();
         $skill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal();
 
-        $isRanged = $pet->getTool()->rangedOnly() && $pet->getTool()->brawlBonus() > 0;
+        $isRanged = $pet->getTool() && $pet->getTool()->rangedOnly() && $pet->getTool()->brawlBonus() > 0;
 
         $defeated = $isRanged ? 'shot down' : 'pounced on';
         $chased = $isRanged ? 'shot at' : 'chased';
@@ -265,7 +265,7 @@ class HuntingService
         $pet = $petWithSkills->getPet();
         $skill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal();
 
-        $isRanged = $pet->getTool()->rangedOnly() && $pet->getTool()->brawlBonus() > 0;
+        $isRanged = $pet->getTool() && $pet->getTool()->rangedOnly() && $pet->getTool()->brawlBonus() > 0;
 
         $defeated = $isRanged ? 'shot down' : 'pounced on';
         $chased = $isRanged ? 'shot at' : 'chased';
@@ -585,7 +585,7 @@ class HuntingService
         $intSkill = 10 + $petWithSkills->getIntelligence()->getTotal();
         $dexSkill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal();
 
-        $isRanged = $pet->getTool()->rangedOnly() && $pet->getTool()->brawlBonus() > 0;
+        $isRanged = $pet->getTool() && $pet->getTool()->rangedOnly() && $pet->getTool()->brawlBonus() > 0;
 
         if(mt_rand(1, $intSkill) <= 2 && $pet->getOwner()->getMoneys() >= 2)
         {

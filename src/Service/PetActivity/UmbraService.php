@@ -439,7 +439,7 @@ class UmbraService
 
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, $roll >= $success);
 
-        $isRanged = $pet->getTool()->rangedOnly() && $pet->getTool()->brawlBonus() > 0;
+        $isRanged = $pet->getTool() && $pet->getTool()->rangedOnly() && $pet->getTool()->brawlBonus() > 0;
 
         $defeated = $isRanged ? 'shot it down' : 'beat it back';
 
@@ -734,7 +734,7 @@ class UmbraService
 
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, $roll >= 20);
 
-        $isRanged = $pet->getTool()->rangedOnly() && $pet->getTool()->brawlBonus() > 0;
+        $isRanged = $pet->getTool() && $pet->getTool()->rangedOnly() && $pet->getTool()->brawlBonus() > 0;
 
         $defeated = $isRanged ? 'drew their ' . $pet->getTool()->getItem()->getName() . ' faster' : 'pounced on it before it could fire';
 
