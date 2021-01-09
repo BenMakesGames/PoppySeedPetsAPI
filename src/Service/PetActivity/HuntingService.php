@@ -341,9 +341,28 @@ class HuntingService
             'Wheat Flour', 'Oil', 'Butter', 'Yeast', 'Sugar'
         ];
 
+        $possibleLootSansOil = [
+            'Wheat Flour', 'Butter', 'Yeast', 'Sugar'
+        ];
+
         $stealth = mt_rand(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal());
 
-        if($stealth > 15)
+        if($stealth > 25)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
+            $pet->increaseEsteem(mt_rand(2, 4));
+
+            $loot = ArrayFunctions::pick_one($possibleLootSansOil);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% snuck up on a sleeping Deep-fried Dough Golem, and harvested some of its ' . $loot . ', and Oil, without it ever noticing!', '');
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this off the body of a sleeping Deep-fried Dough Golem.', $activityLog);
+            $this->inventoryService->petCollectsItem('Oil', $pet, $pet->getName() . ' stole this off the body of a sleeping Deep-fried Dough Golem.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH ]);
+
+            return $activityLog;
+        }
+        else if($stealth > 15)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
             $pet->increaseEsteem(1);
@@ -358,11 +377,37 @@ class HuntingService
             return $activityLog;
         }
 
-        $skill = 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl(false)->getTotal();
+        $skillCheck = mt_rand(1, 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl(false)->getTotal());
 
         $pet->increaseFood(-1);
 
-        if(mt_rand(1, $skill) >= 7)
+        if($skillCheck >= 17)
+        {
+            $dodgeCheck = mt_rand(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl(false)->getTotal());
+
+            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
+            $loot = ArrayFunctions::pick_one($possibleLootSansOil);
+
+            if($dodgeCheck >= 15)
+            {
+                $pet->increaseEsteem(mt_rand(2, 4));
+
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% attacked a rampaging Deep-fried Dough Golem, defeated it, and harvested its ' . $loot . '.', '');
+                $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' took this from the body of a defeated Deep-fried Dough Golem.', $activityLog);
+                $this->inventoryService->petCollectsItem('Oil', $pet, $pet->getName() . ' took this from the body of a defeated Deep-fried Dough Golem.', $activityLog);
+
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ]);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% attacked a rampaging Deep-fried Dough Golem. It was gross and oil, and %pet:' . $pet->getId() . '.%name got Oil all over themselves, but in the end they defeated the creature, and harvested its ' . $loot . '.', '');
+                $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' took this from the body of a defeated Deep-fried Dough Golem.', $activityLog);
+                $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::OIL_COVERED, 1);
+
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
+            }
+        }
+        else if($skillCheck >= 7)
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
             $pet->increaseEsteem(1);
@@ -371,6 +416,8 @@ class HuntingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% attacked a rampaging Dough Golem, defeated it, and harvested its ' . $loot . '.', '');
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' took this from the body of a defeated Dough Golem.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
         }
         else
         {
@@ -383,9 +430,9 @@ class HuntingService
             }
             else
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% attacked a Dough Golem, but it was really sticky. ' . $pet->getName() . '\'s attacks were useless, and they were forced to retreat.', '');
-        }
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+        }
 
         return $activityLog;
     }
