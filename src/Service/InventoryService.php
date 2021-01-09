@@ -257,12 +257,11 @@ class InventoryService
                 $extraItem = (new Inventory())
                     ->setOwner($pet->getOwner())
                     ->setCreatedBy($pet->getOwner())
-                    ->setItem($pet->getTool()->getItem()->getTool()->getWhenGatherAlsoGather())
+                    ->setItem($toolTool->getWhenGatherAlsoGather())
                     ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
                     ->setLocation(LocationEnum::HOME)
                     ->setSpice($spice)
-                    ->setEnchantment($bonus)
-                ;
+                    ->setEnchantment($bonus);
 
                 $this->em->persist($extraItem);
             }
@@ -275,45 +274,44 @@ class InventoryService
                     ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
                     ->setLocation(LocationEnum::HOME)
                     ->setSpice($spice)
+                    ->setEnchantment($bonus);
+
+                $this->em->persist($extraItem);
+            }
+        }
+
+        // bonus gather from equipment enchantment effects
+        if($pet->getTool() && $pet->getTool()->getEnchantment())
+        {
+            $bonusEffects = $pet->getTool()->getEnchantment()->getEffects();
+
+            if($bonusEffects->getWhenGather() && $item->getName() === $bonusEffects->getWhenGather()->getName())
+            {
+                $extraItem = (new Inventory())
+                    ->setOwner($pet->getOwner())
+                    ->setCreatedBy($pet->getOwner())
+                    ->setItem($pet->getTool()->getEnchantment()->getEffects()->getWhenGatherAlsoGather())
+                    ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
+                    ->setLocation(LocationEnum::HOME)
+                    ->setSpice($spice)
                     ->setEnchantment($bonus)
                 ;
 
                 $this->em->persist($extraItem);
             }
-
-            // bonus gather from equipment enchantment effects
-            if($pet->getTool()->getEnchantment())
+            else if($bonusEffects->getAttractsBugs() && $item->getName() === 'Weird Beetle')
             {
-                $bonusEffects = $pet->getTool()->getEnchantment()->getEffects();
+                $extraItem = (new Inventory())
+                    ->setOwner($pet->getOwner())
+                    ->setCreatedBy($pet->getOwner())
+                    ->setItem($item)
+                    ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
+                    ->setLocation(LocationEnum::HOME)
+                    ->setSpice($spice)
+                    ->setEnchantment($bonus)
+                ;
 
-                if($bonusEffects->getWhenGather() && $item->getName() === $bonusEffects->getWhenGather()->getName())
-                {
-                    $extraItem = (new Inventory())
-                        ->setOwner($pet->getOwner())
-                        ->setCreatedBy($pet->getOwner())
-                        ->setItem($pet->getTool()->getEnchantment()->getEffects()->getWhenGatherAlsoGather())
-                        ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
-                        ->setLocation(LocationEnum::HOME)
-                        ->setSpice($spice)
-                        ->setEnchantment($bonus)
-                    ;
-
-                    $this->em->persist($extraItem);
-                }
-                else if($bonusEffects->getAttractsBugs() && $item->getName() === 'Weird Beetle')
-                {
-                    $extraItem = (new Inventory())
-                        ->setOwner($pet->getOwner())
-                        ->setCreatedBy($pet->getOwner())
-                        ->setItem($item)
-                        ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
-                        ->setLocation(LocationEnum::HOME)
-                        ->setSpice($spice)
-                        ->setEnchantment($bonus)
-                    ;
-
-                    $this->em->persist($extraItem);
-                }
+                $this->em->persist($extraItem);
             }
         }
 

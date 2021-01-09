@@ -385,7 +385,7 @@ class GatheringService
 
             $loot[] = ArrayFunctions::pick_one($possibleLoot);
 
-            if($pet->getTool() && $pet->getTool()->getItem()->getTool()->getFishing() > 0)
+            if($pet->getTool() && $pet->getTool()->fishingBonus() > 0)
                 $loot[] = 'Fish';
             else if(mt_rand(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal()) >= 15)
                 $loot[] = ArrayFunctions::pick_one($possibleLoot);
