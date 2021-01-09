@@ -9,6 +9,7 @@ use App\Enum\GuildEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -251,15 +252,55 @@ class GuildService
     {
         $member = $pet->getGuildMembership();
 
-        $message = ArrayFunctions::pick_one([
-            $pet->getName() . ' ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
-            $pet->getName() . ' joined a ' . $member->getGuild()->getName() . ' session of group meditation.',
-            $pet->getName() . ' had a minor philosophical debate with a senior ' . $member->getGuild()->getName() . ' member.'
-        ]);
+        if(mt_rand(1, 3) === 1)
+        {
+            $message = '%pet:' . $pet->getId() . '.name% joined a ' . $member->getGuild()->getName() . ' session of group meditation.';
+
+            $availableEffects = [];
+
+            $inspired = $pet->getStatusEffect(StatusEffectEnum::INSPIRED);
+
+            if(!$inspired || $inspired->getTimeRemaining() < 20 * 60)
+                $availableEffects[] = [ 'effect' => StatusEffectEnum::INSPIRED, 'duration' => 8 * 60 ];
+
+            if(!$pet->hasStatusEffect(StatusEffectEnum::ONEIRIC))
+                $availableEffects[] = [ 'effect' => StatusEffectEnum::ONEIRIC, 'duration' => 1 ];
+
+            if($pet->hasStatusEffect(StatusEffectEnum::TIRED))
+                $availableEffects[] = [ 'effect' => StatusEffectEnum::TIRED, 'removeIt' => true ];
+
+            if(count($availableEffects) > 0)
+            {
+                $effectToGive = ArrayFunctions::pick_one($availableEffects);
+
+                if(array_key_exists('removeIt', $effectToGive))
+                {
+                    $message .= ' %pet:' . $pet->getId() . '.name%\'s ' . $effectToGive['effect'] . '-ness was washed away!';
+                    $pet->removeStatusEffect($pet->getStatusEffect($effectToGive['effect']));
+                }
+                else
+                {
+                    $message .= ' %pet:' . $pet->getId() . '.name% started feeling ' . $effectToGive['effect'] . '!';
+                    $this->inventoryService->applyStatusEffect($pet, $effectToGive['effect'], $effectToGive['duration']);
+                }
+            }
+            else
+            {
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::getRandomValue() ]);
+            }
+        }
+        else
+        {
+            $message = ArrayFunctions::pick_one([
+                '%pet:' . $pet->getId() . '.name% ' . ArrayFunctions::pick_one([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
+                '%pet:' . $pet->getId() . '.name% had a minor philosophical debate with a senior ' . $member->getGuild()->getName() . ' member.'
+            ]);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::getRandomValue() ]);
+        }
 
         $member->increaseReputation();
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::getRandomValue() ]);
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $this->responseService->createActivityLog($pet, $message, '');

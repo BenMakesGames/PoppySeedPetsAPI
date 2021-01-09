@@ -247,7 +247,7 @@ class InventoryService
     {
         $item = $this->getItemWithChanceForLuckyTransformation($item);
 
-        if($pet->getTool())
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
         {
             $toolTool = $pet->getTool()->getItem()->getTool();
 
