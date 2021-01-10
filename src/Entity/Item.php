@@ -101,7 +101,7 @@ class Item
     private $enchants;
 
     /**
-     * @ORM\OneToOne(targetEntity=ItemGrammar::class, mappedBy="item", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=ItemGrammar::class, mappedBy="item", cascade={"persist", "remove"}, fetch="EAGER")
      */
     private $grammar;
 

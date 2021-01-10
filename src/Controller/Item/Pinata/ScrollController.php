@@ -296,7 +296,7 @@ class ScrollController extends PoppySeedPetsItemController
         else
             $transactionService->getMoney($user, $moneys, 'Conjured by a Scroll of Minor Riches.');
 
-        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
+        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 
         $em->flush();
 
@@ -330,7 +330,7 @@ class ScrollController extends PoppySeedPetsItemController
         else
             $transactionService->getMoney($user, $moneys, 'Conjured by a Scroll of Major Riches.');
 
-        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
+        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 
         $em->flush();
 

@@ -17,6 +17,7 @@ class AdoptionService
     private $petSpeciesRepository;
     private $calendarService;
     private $userStatsRepository;
+    private $chineseCalendarInfo;
 
     public function __construct(
         PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository, CalendarService $calendarService,
@@ -27,6 +28,8 @@ class AdoptionService
         $this->petSpeciesRepository = $petSpeciesRepository;
         $this->calendarService = $calendarService;
         $this->userStatsRepository = $userStatsRepository;
+
+        $this->chineseCalendarInfo = $calendarService->getChineseCalendarInfo();
     }
 
     public function getAdoptionFee(User $user): int
@@ -113,14 +116,14 @@ class AdoptionService
         {
             if($i < $numSeasonalPets)
             {
-                $colors = $this->getSeasonalColors();
+                list($colorA, $colorB) = ArrayFunctions::pick_some($this->getSeasonalColors(), 2);
 
-                shuffle($colors);
+                $seasonalNames = $this->getSeasonalNames();
 
-                $colorA = ColorFunctions::tweakColor($colors[0]);
-                $colorB = ColorFunctions::tweakColor($colors[1]);
-
-                $name = ArrayFunctions::pick_one($this->getSeasonalNames());
+                if(count($seasonalNames) === $numSeasonalPets)
+                    $name = $seasonalNames[$i];
+                else
+                    $name = ArrayFunctions::pick_one($seasonalNames);
             }
             else if($i === $numPets - 1 && !$isBlueMoon && !$isPinkMoon)
             {
@@ -260,6 +263,9 @@ class AdoptionService
         if($this->calendarService->isHannukah())
             return mt_rand(1, 2);
 
+        if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)
+            return 2;
+
         return 0;
     }
 
@@ -300,6 +306,9 @@ class AdoptionService
         if($this->calendarService->isHannukah())
             return PetShelterPet::PET_HANNUKAH_NAMES;
 
+        if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)
+            return PetShelterPet::PET_CHINESE_ZODIAC_NAMES[$this->chineseCalendarInfo->animal];
+
         throw new \InvalidArgumentException('Today is not a day for seasonal colors.');
     }
 
@@ -339,6 +348,9 @@ class AdoptionService
 
         if($this->calendarService->isHannukah())
             return $this->getHannukahColors();
+
+        if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)
+            return $this->getChineseNewYearColors();
 
         throw new \InvalidArgumentException('Today is not a day for seasonal colors.');
     }
@@ -392,5 +404,10 @@ class AdoptionService
     public function getWhiteDayColors(): array
     {
         return [ 'FFFFFF', 'EEEEEE' ];
+    }
+
+    public function getChineseNewYearColors(): array
+    {
+        return [ 'CC232A', 'F5AC27', 'FFD84B', 'F2888B', 'A3262A', 'CC9902' ];
     }
 }

@@ -4,11 +4,13 @@ namespace App\Controller;
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\DragonRepository;
 use App\Repository\EnchantmentRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\SpiceRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -110,7 +112,8 @@ class DragonController extends PoppySeedPetsController
     public function giveTreasure(
         ResponseService $responseService, DragonRepository $dragonRepository, InventoryRepository $inventoryRepository,
         Request $request, EntityManagerInterface $em, InventoryService $inventoryService,
-        EnchantmentRepository $enchantmentRepository, SpiceRepository $spiceRepository
+        EnchantmentRepository $enchantmentRepository, SpiceRepository $spiceRepository,
+        UserStatsRepository $userStatsRepository
     )
     {
         $user = $this->getUser();
@@ -138,6 +141,8 @@ class DragonController extends PoppySeedPetsController
 
         foreach($items as $item)
             $em->remove($item);
+
+        $userStatsRepository->incrementStat($user, UserStatEnum::TREASURES_GIVEN_TO_DRAGON_HOARD, count($items));
 
         $goodies = [];
 

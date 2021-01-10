@@ -19,6 +19,7 @@ use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
+use App\Service\CalendarService;
 use App\Service\Filter\UserFilterService;
 use App\Service\InventoryService;
 use App\Service\PassphraseResetService;
@@ -359,54 +360,6 @@ class AccountController extends PoppySeedPetsController
         $em->flush();
 
         return $responseService->success($newInventory, SerializationGroupEnum::MY_INVENTORY);
-    }
-
-    /**
-     * @Route("/collectHolidayBox", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function collectHolidayBox(
-        InventoryService $inventoryService, EntityManagerInterface $em, ResponseService $responseService,
-        UserQuestRepository $userQuestRepository
-    )
-    {
-        $now = new \DateTimeImmutable();
-
-        $user = $this->getUser();
-
-        $month = (int)$now->format('m');
-        $day = (int)$now->format('d');
-
-        if($month === 7 && $day >= 3 && $day <= 5)
-        {
-            $gotBox = $userQuestRepository->findOrCreate($user, '4th of July, ' . $now->format('Y'), false);
-
-            if($gotBox->getValue())
-                throw new UnprocessableEntityHttpException('You already received the 4th of July Box this year.');
-
-            $gotBox->setValue(true);
-
-            $inventoryService->receiveItem('4th of July Box', $user, $user, 'Received on the ' . $now->format('jS') . ' of July, ' . $now->format('Y'), LocationEnum::HOME, true);
-        }
-        else if(($month === 12 && $day === 31) || ($month === 1 && $day <= 2))
-        {
-            $year = $month === 12 ? ((int)$now->format('Y') + 1) : (int)$now->format('Y');
-
-            $gotBox = $userQuestRepository->findOrCreate($user, 'New Year, ' . $year, false);
-
-            if($gotBox->getValue())
-                throw new UnprocessableEntityHttpException('You already received the New Year Box this year.');
-
-            $gotBox->setValue(true);
-
-            $inventoryService->receiveItem('New Year Box', $user, $user, 'Received on the ' . $now->format('jS') . ' of ' . $now->format('F') . ', ' . $now->format('Y'), LocationEnum::HOME, true);
-        }
-        else
-            throw new AccessDeniedHttpException('No holiday box is available right now...');
-
-        $em->flush();
-
-        return $responseService->success();
     }
 
     /**

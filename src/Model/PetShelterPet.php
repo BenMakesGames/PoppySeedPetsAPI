@@ -105,6 +105,21 @@ class PetShelterPet
         'Marshmallow', 'Trắng', 'Cake', 'Cookie', 'Doki-doki', 'Lace',
     ];
 
+    public const PET_CHINESE_ZODIAC_NAMES = [
+        '鼠' => [ 'Rat', 'Shǔ' ],
+        '牛' => [ 'Ox', 'Niú' ],
+        '虎' => [ 'Tiger', 'Hǔ' ],
+        '兔' => [ 'Rabbit', 'Tù' ],
+        '龙' => [ 'Dragon', 'Lóng' ],
+        '蛇' => [ 'Snake', 'Shé' ],
+        '马' => [ 'Horse', 'Mǎ' ],
+        '羊' => [ 'Goat', 'Yáng' ],
+        '猴' => [ 'Monkey', 'Hóu' ],
+        '鸡' => [ 'Rooster', 'Jī' ],
+        '狗' => [ 'Dog', 'Gǒu' ],
+        '猪' => [ 'Pig', 'Zhū' ],
+    ];
+
     /**
      * @var int
      * @Groups({"petShelterPet"})

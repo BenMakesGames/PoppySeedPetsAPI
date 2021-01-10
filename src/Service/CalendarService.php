@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Functions\JewishCalendarFunctions;
+use App\Model\ChineseCalendarInfo;
 use App\Service\Holidays\HalloweenService;
 
 class CalendarService
@@ -140,10 +141,27 @@ class CalendarService
         return $this->monthAndDay === 229;
     }
 
+    public function getChineseCalendarInfo(): ChineseCalendarInfo
+    {
+        $info = (new \Overtrue\ChineseCalendar\Calendar())
+            ->solar($this->today->format('Y'), $this->today->format('m'), $this->today->format('d'))
+        ;
+
+        $result = new ChineseCalendarInfo();
+
+        $result->year = (int)$info['lunar_year'];
+        $result->month = (int)$info['lunar_month'];
+        $result->day = (int)$info['lunar_day'];
+        $result->animal = $info['animal'];
+        $result->isLeapYear = $info['is_leap'];
+
+        return $result;
+    }
+
     public function isHannukah(): bool
     {
         $jdCurrent = gregoriantojd($this->today->format('m'), $this->today->format('d'), $this->today->format('Y'));
-        list($jewishYear, $jewishMonth, $jewishDay) = JewishCalendarFunctions::getJewishDate($this->today);
+        [$jewishYear, $jewishMonth, $jewishDay] = JewishCalendarFunctions::getJewishDate($this->today);
 
         $hanukkahStart = jewishtojd(JewishCalendarFunctions::KISLEV, 25, $jewishYear);
         $hanukkahNo = (int)($jdCurrent - $hanukkahStart + 1);

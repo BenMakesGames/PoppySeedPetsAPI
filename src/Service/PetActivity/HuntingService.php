@@ -400,7 +400,7 @@ class HuntingService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% attacked a rampaging Deep-fried Dough Golem. It was gross and oil, and %pet:' . $pet->getId() . '.%name got Oil all over themselves, but in the end they defeated the creature, and harvested its ' . $loot . '.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% attacked a rampaging Deep-fried Dough Golem. It was gross and oily, and %pet:' . $pet->getId() . '.name% got Oil all over themselves, but in the end they defeated the creature, and harvested its ' . $loot . '.', '');
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' took this from the body of a defeated Deep-fried Dough Golem.', $activityLog);
                 $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::OIL_COVERED, 1);
 

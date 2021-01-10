@@ -33,4 +33,5 @@ final class UserStatEnum
     const ROTTEN_EGGPLANTS = 'Eggplants Which Were Horrible and Rotten';
     const ITEMS_COMPOSTED = 'Items Composted';
     const LARGE_BIRDS_APPROACHED = 'Large Birds Approached in Greenhouse';
+    const TREASURES_GIVEN_TO_DRAGON_HOARD = 'Treasures Given to Dragon';
 }
