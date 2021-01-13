@@ -426,7 +426,7 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        $this->food = NumberFunctions::constrain(
+        $this->food = NumberFunctions::clamp(
             $this->food + $amount,
             -16,                                            // minimum
             $this->getStomachSize() - max(0, $this->junk)   // maximum
@@ -452,7 +452,7 @@ class Pet
 
         if($amount === 0) return $this;
 
-        $this->safety = NumberFunctions::constrain($this->safety + $amount, $this->getMinSafety(), $this->getMaxSafety());
+        $this->safety = NumberFunctions::clamp($this->safety + $amount, $this->getMinSafety(), $this->getMaxSafety());
 
         return $this;
     }
@@ -485,7 +485,7 @@ class Pet
 
         if($amount === 0) return $this;
 
-        $this->love = NumberFunctions::constrain($this->love + $amount, $this->getMinLove(), $this->getMaxLove());
+        $this->love = NumberFunctions::clamp($this->love + $amount, $this->getMinLove(), $this->getMaxLove());
 
         return $this;
     }
@@ -519,7 +519,7 @@ class Pet
 
         if($amount === 0) return $this;
 
-        $this->esteem = NumberFunctions::constrain($this->esteem + $amount, $this->getMinEsteem(), $this->getMaxEsteem());
+        $this->esteem = NumberFunctions::clamp($this->esteem + $amount, $this->getMinEsteem(), $this->getMaxEsteem());
 
         return $this;
     }
@@ -618,7 +618,7 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        $this->junk = NumberFunctions::constrain($this->junk + $amount, 0, $this->getStomachSize() - max(0, $this->food));
+        $this->junk = NumberFunctions::clamp($this->junk + $amount, 0, $this->getStomachSize() - max(0, $this->food));
 
         return $this;
     }
@@ -632,7 +632,7 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        $this->alcohol = NumberFunctions::constrain($this->alcohol + $amount, 0, 16);
+        $this->alcohol = NumberFunctions::clamp($this->alcohol + $amount, 0, 16);
 
         return $this;
     }
@@ -641,7 +641,7 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        $this->caffeine = NumberFunctions::constrain($this->caffeine + $amount, 0, 16);
+        $this->caffeine = NumberFunctions::clamp($this->caffeine + $amount, 0, 16);
 
         return $this;
     }
@@ -650,7 +650,7 @@ class Pet
     {
         if($amount === 0) return $this;
 
-        $this->psychedelic = NumberFunctions::constrain($this->psychedelic + $amount, 0, $this->getMaxPsychedelic());
+        $this->psychedelic = NumberFunctions::clamp($this->psychedelic + $amount, 0, $this->getMaxPsychedelic());
 
         return $this;
     }
@@ -1099,7 +1099,7 @@ class Pet
 
     public function increasePoison(int $poison): self
     {
-        $this->poison = NumberFunctions::constrain($this->poison + $poison, 0, 24);
+        $this->poison = NumberFunctions::clamp($this->poison + $poison, 0, 24);
 
         return $this;
     }

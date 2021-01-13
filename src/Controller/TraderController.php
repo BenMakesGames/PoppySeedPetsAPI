@@ -76,7 +76,7 @@ class TraderController extends PoppySeedPetsController
             throw new NotFoundHttpException('There is no such exchange available.');
 
         if(!$traderService->userCanMakeExchange($user, $exchange))
-            throw new UnprocessableEntityHttpException('You don\'t have the items needed to make this exchange.');
+            throw new UnprocessableEntityHttpException('The items you need to make this exchange could not be found in your house.');
 
         $traderService->makeExchange($user, $exchange);
 

@@ -49,7 +49,7 @@ class Protocol7Service
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() - $pet->getAlcohol();
 
-        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 21);
+        $maxSkill = NumberFunctions::clamp($maxSkill, 1, 21);
 
         $roll = mt_rand(1, $maxSkill);
 

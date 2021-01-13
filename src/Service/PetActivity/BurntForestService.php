@@ -39,7 +39,7 @@ class BurntForestService
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + ($petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal()) / 2 - $pet->getAlcohol();
 
-        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 15);
+        $maxSkill = NumberFunctions::clamp($maxSkill, 1, 15);
 
         $roll = mt_rand(1, $maxSkill);
 

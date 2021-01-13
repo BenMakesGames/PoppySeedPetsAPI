@@ -59,7 +59,7 @@ class UmbraService
         $pet = $petWithSkills->getPet();
         $skill = 10 + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal(); // psychedelics bonus is built into getUmbra()
 
-        $skill = NumberFunctions::constrain($skill, 1, 22);
+        $skill = NumberFunctions::clamp($skill, 1, 22);
 
         $roll = mt_rand(1, $skill);
 

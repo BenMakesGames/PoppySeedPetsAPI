@@ -27,7 +27,7 @@ class TapestriesService
         $member = $pet->getGuildMembership();
 
         $activity = mt_rand(1, $member->getLevel());
-        $activity = NumberFunctions::constrain($activity, 1, 4);
+        $activity = NumberFunctions::clamp($activity, 1, 4);
 
         switch($activity)
         {

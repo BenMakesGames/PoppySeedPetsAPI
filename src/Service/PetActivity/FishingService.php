@@ -43,7 +43,7 @@ class FishingService
         $pet = $petWithSkills->getPet();
         $maxSkill = 5 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2);
 
-        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 21);
+        $maxSkill = NumberFunctions::clamp($maxSkill, 1, 21);
 
         $roll = mt_rand(1, $maxSkill);
 

@@ -63,7 +63,7 @@ class HuntingService
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal() - $pet->getAlcohol() - $pet->getPsychedelic();
 
-        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 22);
+        $maxSkill = NumberFunctions::clamp($maxSkill, 1, 22);
 
         $useThanksgivingPrey = $this->calendarService->isThanksgivingMonsters() && mt_rand(1, 2) === 1;
         $usePassoverPrey = $this->calendarService->isEaster();
@@ -733,7 +733,7 @@ class HuntingService
 
                 $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::HUNT, true);
                 $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt ' . '%pet:' . $pet->getId() . '.name%, but ' . $pet->getName() . ' was able to calm the spirit! Thankful, the spirit gives ' . $pet->getName() . ' ' . $prizeItem->getNameWithArticle() . '.', 'guilds/light-and-shadow');
-                $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' collected this from the remains of a Pirate Ghost.', $activityLog);
+                $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' received this from a grateful Pirate Ghost.', $activityLog);
 
                 $pet
                     ->increaseSafety(2)

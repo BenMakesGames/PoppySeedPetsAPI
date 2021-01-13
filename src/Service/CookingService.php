@@ -9,6 +9,7 @@ use App\Entity\Spice;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\NumberFunctions;
 use App\Model\ItemQuantity;
 use App\Model\PrepareRecipeResults;
 use App\Repository\InventoryRepository;
@@ -132,29 +133,48 @@ class CookingService
         {
             $smallestQuantity = ArrayFunctions::min($quantities, function(ItemQuantity $q) { return $q->quantity; })->quantity;
 
-            if(
-                $smallestQuantity === 1 ||
-                ArrayFunctions::any($quantities, function(ItemQuantity $q) use($smallestQuantity) {
-                    return $q->quantity % $smallestQuantity !== 0;
-                })
-            )
+            if($smallestQuantity === 1)
             {
                 $this->logBadRecipeAttempt($user, $inventory);
                 return null;
             }
 
-            foreach($quantities as $q)
-                $q->quantity /= $smallestQuantity;
+            $divisors = NumberFunctions::findDivisors($smallestQuantity);
+            sort($divisors);
+            array_shift($divisors); // we don't want the "1" batch size (which is now at the beginning of the array, thanks to the previous sort(...))
 
-            $recipe = $this->findRecipeFromQuantities($quantities);
+            $foundAny = false;
 
-            if(!$recipe)
+            foreach($divisors as $batchSize)
+            {
+                // if we cannot evenly divide all of the ingredient quantities by this batch size, then it's not a
+                // valid batch size; try the next one!
+                if(
+                    ArrayFunctions::any($quantities, function(ItemQuantity $q) use($batchSize) {
+                        return $q->quantity % $batchSize !== 0;
+                    })
+                )
+                {
+                    continue;
+                }
+
+                $batchQuantities = ItemQuantity::divide($quantities, $batchSize);
+
+                $recipe = $this->findRecipeFromQuantities($batchQuantities);
+
+                if($recipe)
+                {
+                    $multiple = $batchSize;
+                    $foundAny = true;
+                    break;
+                }
+            }
+
+            if(!$foundAny)
             {
                 $this->logBadRecipeAttempt($user, $inventory);
                 return null;
             }
-
-            $multiple = $smallestQuantity;
         }
 
         /** @var Spice[] $spices */

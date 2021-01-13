@@ -43,7 +43,7 @@ class DeepSeaService
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2);
 
-        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 18);
+        $maxSkill = NumberFunctions::clamp($maxSkill, 1, 18);
 
         $roll = mt_rand(1, $maxSkill);
 

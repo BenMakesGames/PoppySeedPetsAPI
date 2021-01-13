@@ -35,7 +35,7 @@ class MagicBeanstalkService
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + floor(($petWithSkills->getStrength()->getTotal() + $petWithSkills->getStamina()->getTotal()) * 1.5) + ceil($petWithSkills->getNature()->getTotal() / 2) + $petWithSkills->getClimbingBonus()->getTotal() - $pet->getAlcohol() * 2;
 
-        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 21);
+        $maxSkill = NumberFunctions::clamp($maxSkill, 1, 21);
 
         $roll = mt_rand(1, $maxSkill);
 

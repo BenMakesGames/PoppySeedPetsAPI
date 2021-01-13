@@ -134,7 +134,7 @@ class TreasureMapService
         $skill = 2 * ($petWithSkills->getBrawl()->getTotal() * 2 + $petWithSkills->getStamina()->getTotal() * 2 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() + $pet->getLevel());
 
         $floor = mt_rand(max(1, ceil($skill / 2)), 20 + $skill);
-        $floor = NumberFunctions::constrain($floor, 1, 100);
+        $floor = NumberFunctions::clamp($floor, 1, 100);
 
         $keybladeName = $pet->getTool()->getItem()->getName();
 

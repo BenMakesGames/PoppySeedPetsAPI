@@ -103,7 +103,7 @@ class PetHouseTime
 
     public function spendSocialEnergy(int $amount): self
     {
-        $this->socialEnergy = NumberFunctions::constrain(
+        $this->socialEnergy = NumberFunctions::clamp(
             $this->socialEnergy - $amount,
             -PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT,
             PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 5

@@ -49,7 +49,7 @@ class GatheringService
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - $pet->getAlcohol() - $pet->getPsychedelic();
 
-        $maxSkill = NumberFunctions::constrain($maxSkill, 1, 23);
+        $maxSkill = NumberFunctions::clamp($maxSkill, 1, 23);
 
         $roll = mt_rand(1, $maxSkill);
 

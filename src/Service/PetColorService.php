@@ -61,9 +61,9 @@ class PetColorService
             $b = (int)(($rgb1['b'] * $skew + $rgb2['b'] * (255 - $skew)) / 255);
 
             // jiggle the final values a little:
-            $r = NumberFunctions::constrain($r + mt_rand(-6, 6), 0, 255);
-            $g = NumberFunctions::constrain($g + mt_rand(-6, 6), 0, 255);
-            $b = NumberFunctions::constrain($b + mt_rand(-6, 6), 0, 255);
+            $r = NumberFunctions::clamp($r + mt_rand(-6, 6), 0, 255);
+            $g = NumberFunctions::clamp($g + mt_rand(-6, 6), 0, 255);
+            $b = NumberFunctions::clamp($b + mt_rand(-6, 6), 0, 255);
 
             return ColorFunctions::RGB2Hex($r, $g, $b);
         }

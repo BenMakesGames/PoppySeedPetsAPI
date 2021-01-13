@@ -11,6 +11,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\GrammarFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\GuildRepository;
@@ -254,7 +255,8 @@ class GuildService
 
         if(mt_rand(1, 3) === 1)
         {
-            $message = '%pet:' . $pet->getId() . '.name% joined a ' . $member->getGuild()->getName() . ' session of group meditation.';
+            $guildNameArticle = GrammarFunctions::indefiniteArticle($member->getGuild()->getName());
+            $message = '%pet:' . $pet->getId() . '.name% joined ' . $guildNameArticle . ' ' . $member->getGuild()->getName() . ' session of group meditation.';
 
             $availableEffects = [];
 
@@ -284,10 +286,8 @@ class GuildService
                     $this->inventoryService->applyStatusEffect($pet, $effectToGive['effect'], $effectToGive['duration']);
                 }
             }
-            else
-            {
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::getRandomValue() ]);
-            }
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::getRandomValue() ]);
         }
         else
         {
