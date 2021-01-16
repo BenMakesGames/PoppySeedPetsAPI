@@ -786,7 +786,8 @@ class BoxController extends PoppySeedPetsItemController
             $inventoryService->receiveItem('Yellow Firework', $user, $user, $comment, $location, $lockedToOwner),
             $inventoryService->receiveItem('Orange', $user, $user, $comment, $location, $lockedToOwner),
             $inventoryService->receiveItem('Zongzi', $user, $user, $comment, $location, $lockedToOwner),
-            $inventoryService->receiveItem('Gold Bar', $user, $user, $comment, $location, $lockedToOwner),
+            $inventoryService->receiveItem('Gold Dragon Ingot', $user, $user, $comment, $location, $lockedToOwner),
+            $inventoryService->receiveItem('Gold Dragon Ingot', $user, $user, $comment, $location, $lockedToOwner),
         ];
 
         return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
