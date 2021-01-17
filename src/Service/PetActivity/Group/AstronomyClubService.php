@@ -208,8 +208,8 @@ class AstronomyClubService
             }
             else if($reward < 45) // 5%
             {
-                $item = 'Moon Pearl';
-                $description = 'Moon Pearls';
+                $item = 'Space Junk';
+                $description = 'some Space Junk';
             }
             else if($reward < 50) // 5%
             {
