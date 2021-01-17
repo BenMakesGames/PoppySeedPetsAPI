@@ -95,6 +95,9 @@ class CraftingService
         if(array_key_exists('Tea Leaves', $quantities))
         {
             $possibilities[] = new ActivityCallback($this, 'createYellowDyeFromTeaLeaves', 10);
+
+            if(array_key_exists('Trowel', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createTeaTrowel', 10);
         }
 
         if(array_key_exists('Scales', $quantities))
@@ -203,8 +206,14 @@ class CraftingService
             if(array_key_exists('Hunting Spear', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createDecoratedSpear', 10);
 
-            if(array_key_exists('Fiberglass Pan Flute', $quantities) && array_key_exists('Yellow Dye', $quantities))
-                $possibilities[] = new ActivityCallback($this, 'createOrnatePanFlute', 10);
+            if(array_key_exists('Yellow Dye', $quantities))
+            {
+                if(array_key_exists('Fiberglass Pan Flute', $quantities))
+                    $possibilities[] = new ActivityCallback($this, 'createOrnatePanFlute', 10);
+
+                if(array_key_exists('Tea Trowel', $quantities))
+                    $possibilities[] = new ActivityCallback($this, 'createOwlTrowel', 10);
+            }
         }
 
         if(array_key_exists('White Feathers', $quantities) && array_key_exists('Leaf Spear', $quantities))
@@ -358,6 +367,73 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, mt_rand(15, 45), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Stereotypical Torch, but couldn\'t figure it out.', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createTeaTrowel(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+
+        if($roll >= 12)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Tea Leaves', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Trowel', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Tea Trowel.', '');
+            $this->inventoryService->petCollectsItem('Tea Trowel', $pet, $pet->getName() . ' made this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(15, 45), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Tea Trowel... or was it a Tea Towel? It\'s all very confusing.', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createOwlTrowel(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::CRAFT, false);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-1);
+
+            if(mt_rand(1, 2) === 1)
+            {
+                $this->inventoryService->loseItem('Feathers', $pet->getOwner(), LocationEnum::HOME, 1);
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an Owl Trowel, but accidentally tore the Feathers to shreds :(', '');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), LocationEnum::HOME, 1);
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an Owl Trowel, but accidentally spilled the Yellow Dye :(', '');
+            }
+        }
+        else if($roll >= 16)
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(30, 45), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Tea Trowel', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Feathers', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(mt_rand(2, 4));
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created an Owl Trowel.', '');
+            $this->inventoryService->petCollectsItem('Owl Trowel', $pet, $pet->getName() . ' made this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, mt_rand(15, 45), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an Owl Trowel, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
     }
 

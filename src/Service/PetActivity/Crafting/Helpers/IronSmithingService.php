@@ -352,13 +352,28 @@ class IronSmithingService
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(1);
+            if($roll >= 23)
+            {
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
+                $pet->increaseEsteem(mt_rand(3, 6));
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made ' . $item->getNameWithArticle() . ' from a Crooked Stick, and Iron Bar.', 'items/' . $item->getImage())
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
-            ;
-            $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from a Crooked Stick, and Iron Bar.', $activityLog);
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made ' . $item->getNameWithArticle() . ' from a Crooked Stick, and Iron Bar... with enough left over to make a small Trowel, as well!', 'items/' . $item->getImage())
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 23)
+                ;
+                $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from a Crooked Stick, and Iron Bar.', $activityLog);
+                $this->inventoryService->petCollectsItem('Trowel', $pet, $pet->getName() . ' created this with the leftovers from making ' . $item->getNameWithArticle() . '.', $activityLog);
+            }
+            else
+            {
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+                $pet->increaseEsteem(1);
+
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made ' . $item->getNameWithArticle() . ' from a Crooked Stick, and Iron Bar.', 'items/' . $item->getImage())
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+                ;
+                $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from a Crooked Stick, and Iron Bar.', $activityLog);
+            }
+
             return $activityLog;
         }
         else
