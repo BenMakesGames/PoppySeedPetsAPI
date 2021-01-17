@@ -173,7 +173,7 @@ class LoveService
         if($this->isTooCloselyRelatedForSex($p1, $p2))
             return 0;
 
-        $totalDrive = $p1->getComputedSkills()->getSexDrive() + $p2->getComputedSkills()->getSexDrive();
+        $totalDrive = $p1->getComputedSkills()->getSexDrive()->getTotal() + $p2->getComputedSkills()->getSexDrive()->getTotal();
 
         switch($relationshipType)
         {

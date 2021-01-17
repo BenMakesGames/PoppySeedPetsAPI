@@ -184,7 +184,7 @@ class PetRelationshipService
         }
         else
         {
-            $totalSexDrive = $pet->getComputedSkills()->getSexDrive() + $otherPet->getComputedSkills()->getSexDrive();
+            $totalSexDrive = $pet->getComputedSkills()->getSexDrive()->getTotal() + $otherPet->getComputedSkills()->getSexDrive()->getTotal();
             $r = mt_rand(1, 100);
 
             if($r <= $totalSexDrive)
