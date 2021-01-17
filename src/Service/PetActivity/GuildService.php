@@ -93,8 +93,9 @@ class GuildService
         );
     }
 
-    public function joinGuildUmbra(Pet $pet): PetActivityLog
+    public function joinGuildUmbra(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
         $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
 
         return $this->joinGuild(
@@ -103,7 +104,7 @@ class GuildService
                 GuildEnum::LIGHT_AND_SHADOW => $pet->getSkills()->getPerception() + $pet->getSkills()->getUmbra() + $pet->getSkills()->getIntelligence() + mt_rand(0, 10),
                 GuildEnum::TAPESTRIES => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + ($pet->getSkills()->getUmbra() + $pet->getSkills()->getCrafts()) / 2 + mt_rand(0, 10),
                 GuildEnum::INNER_SANCTUM => $pet->getSkills()->getIntelligence() * 2 + $pet->getSkills()->getPerception() + mt_rand(0, 10),
-                GuildEnum::GIZUBIS_GARDEN => ($pet->getExtroverted() + $pet->getSexDrive()) * 3 + $pet->getSkills()->getNature() / 2 + mt_rand(0, 10),
+                GuildEnum::GIZUBIS_GARDEN => ($pet->getExtroverted() + $petWithSkills->getSexDrive()) * 3 + $pet->getSkills()->getNature() / 2 + mt_rand(0, 10),
                 GuildEnum::THE_UNIVERSE_FORGETS => $pet->getSkills()->getPerception() + $pet->getSkills()->getIntelligence() + ((1 - $pet->getExtroverted()) * 2 + 1 + $pet->getSkills()->getUmbra()) / 2 + mt_rand(0, 10),
                 GuildEnum::CORRESPONDENCE => $pet->getSkills()->getStamina() + $pet->getSkills()->getStrength() + ($pet->getSkills()->getUmbra() + $pet->getSkills()->getStealth() + $pet->getSkills()->getScience()) / 3 + mt_rand(0, 10),
             ],

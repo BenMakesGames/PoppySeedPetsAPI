@@ -173,7 +173,7 @@ class LoveService
         if($this->isTooCloselyRelatedForSex($p1, $p2))
             return 0;
 
-        $totalDrive = $p1->getSexDrive() + $p2->getSexDrive();
+        $totalDrive = $p1->getComputedSkills()->getSexDrive() + $p2->getComputedSkills()->getSexDrive();
 
         switch($relationshipType)
         {
@@ -181,7 +181,9 @@ class LoveService
                 return max(0, $totalDrive + 1);
 
             case RelationshipEnum::FWB:
-                if($totalDrive <= -2)
+                if($totalDrive <= -3)
+                    return 5;
+                if($totalDrive === -2)
                     return 10;
                 else if($totalDrive === -1)
                     return 20;
@@ -189,11 +191,15 @@ class LoveService
                     return 30;
                 else if($totalDrive === 1)
                     return 55;
-                else //if($totalDrive >= 2)
+                else if($totalDrive === 2)
                     return 80;
+                else //if($totalDrive >= 3)
+                    return 95;
 
             case RelationshipEnum::MATE:
-                if($totalDrive <= -2)
+                if($totalDrive <= -3)
+                    return 1;
+                if($totalDrive === -2)
                     return 5;
                 else if($totalDrive === -1)
                     return 10;
@@ -201,8 +207,10 @@ class LoveService
                     return 20;
                 else if($totalDrive === 1)
                     return 40;
-                else //if($totalDrive >= 2)
+                else if($totalDrive === 2)
                     return 60;
+                else //if($totalDrive >= 3)
+                    return 80;
 
             default:
                 return 0;

@@ -366,6 +366,14 @@ class Inventory
         ;
     }
 
+    public function sexDriveBonus(): int
+    {
+        return
+            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getSexDrive() : 0) +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getSexDrive() : 0)
+        ;
+    }
+
     public function natureBonus(): int
     {
         return

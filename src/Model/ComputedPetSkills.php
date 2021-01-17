@@ -293,5 +293,12 @@ class ComputedPetSkills
         return $skill;
     }
 
-    // summary of misc effects
+    public function getSexDrive(): TotalPetSkill
+    {
+        $skill = new TotalPetSkill();
+        $skill->base = $this->pet->getSexDrive();
+        $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->sexDriveBonus() : 0;
+
+        return $skill;
+    }
 }

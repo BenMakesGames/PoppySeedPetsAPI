@@ -189,6 +189,11 @@ class ItemTool
      */
     private $socialEnergyModifier = 0;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $sexDrive = 0;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -438,6 +443,11 @@ class ItemTool
         if($this->getSocialEnergyModifier() != 0)
             $modifiers[] = 'the pet will hang out with others ' . $this->describeSocialEnergyModifier() . ' often';
 
+        if($this->getSexDrive() > 0)
+            $modifiers[] = 'the pet will "have fun ;)" with partners more often';
+        else if($this->getSexDrive() < 0)
+            $modifiers[] = 'the pet will "have fun ;)" with partners less often';
+
         return $modifiers;
     }
 
@@ -664,6 +674,18 @@ class ItemTool
     public function setSocialEnergyModifier(int $socialEnergyModifier): self
     {
         $this->socialEnergyModifier = $socialEnergyModifier;
+
+        return $this;
+    }
+
+    public function getSexDrive(): ?int
+    {
+        return $this->sexDrive;
+    }
+
+    public function setSexDrive(int $sexDrive): self
+    {
+        $this->sexDrive = $sexDrive;
 
         return $this;
     }

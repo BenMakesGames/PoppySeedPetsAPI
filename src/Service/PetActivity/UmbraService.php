@@ -172,7 +172,7 @@ class UmbraService
         }
         else if(mt_rand(1, 3) === 1 && $pet->getGuildMembership() === null)
         {
-            $activityLog = $this->guildService->joinGuildUmbra($pet);
+            $activityLog = $this->guildService->joinGuildUmbra($petWithSkills);
         }
         else
         {

@@ -184,10 +184,10 @@ class PetRelationshipService
         }
         else
         {
-
+            $totalSexDrive = $pet->getComputedSkills()->getSexDrive() + $otherPet->getComputedSkills()->getSexDrive();
             $r = mt_rand(1, 100);
 
-            if($r <= $pet->getSexDrive() + $otherPet->getSexDrive())
+            if($r <= $totalSexDrive)
             {
                 $initialRelationship = RelationshipEnum::FWB;
                 $possibleRelationships = [
@@ -215,7 +215,7 @@ class PetRelationshipService
                     RelationshipEnum::MATE
                 ];
 
-                if($pet->getSexDrive() + $otherPet->getSexDrive() >= 1)
+                if($totalSexDrive >= 1)
                     $possibleRelationships[] = RelationshipEnum::FWB;
 
             }
@@ -238,7 +238,7 @@ class PetRelationshipService
                     RelationshipEnum::MATE,
                 ];
 
-                if($pet->getSexDrive() + $otherPet->getSexDrive() >= 1)
+                if($totalSexDrive >= 1)
                     $possibleRelationships[] = RelationshipEnum::FWB;
             }
         }
