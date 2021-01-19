@@ -43,4 +43,19 @@ class CoinSmithingService
 
         return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ' from a Silver Bar, but spilled some of the silver, and almost burned themselves! They used the leftovers to make ' . $moneys . '~~m~~ worth of silver coins, instead.', 'icons/activity-logs/moneys');
     }
+
+    public function makeGoldCoins(ComputedPetSkills $petWithSkills, Item $triedToMake)
+    {
+        $pet = $petWithSkills->getPet();
+
+        $this->petExperienceService->spendTime($pet, mt_rand(75, 90), PetActivityStatEnum::SMITH, true);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+        $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+
+        $moneys = mt_rand(20, 30);
+        $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' tried to forge ' . $triedToMake->getNameWithArticle() . ', but couldn\'t get the shape right, so just made gold coins, instead.');
+        $pet->increaseFood(-1);
+
+        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ' from a Gold Bar, but spilled some of the gold, and almost burned themselves! They used the leftovers to make ' . $moneys . '~~m~~ worth of gold coins, instead.', 'icons/activity-logs/moneys');
+    }
 }

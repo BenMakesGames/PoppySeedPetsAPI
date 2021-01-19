@@ -22,10 +22,12 @@ class TwuWuvCraftingService
     private $transactionService;
     private $itemRepository;
     private $coinSmithingService;
+    private $silverSmithingService;
 
     public function __construct(
         PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        TransactionService $transactionService, ItemRepository $itemRepository, CoinSmithingService $coinSmithingService
+        TransactionService $transactionService, ItemRepository $itemRepository, CoinSmithingService $coinSmithingService,
+        SilverSmithingService $silverSmithingService
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -34,6 +36,7 @@ class TwuWuvCraftingService
         $this->transactionService = $transactionService;
         $this->itemRepository = $itemRepository;
         $this->coinSmithingService = $coinSmithingService;
+        $this->silverSmithingService = $silverSmithingService;
     }
 
     public function createCupid(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -45,10 +48,10 @@ class TwuWuvCraftingService
 
         if($roll <= 2)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
-
             if(mt_rand(1, 2) === 1)
             {
+                $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+
                 $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
                 $this->petExperienceService->gainExp($pet, 1, [PetSkillEnum::CRAFTS]);
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge Cupid, but broke the String :(', 'icons/activity-logs/broke-string');
@@ -58,17 +61,9 @@ class TwuWuvCraftingService
                 $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
                 if($roll >= 12)
-                {
                     return $this->coinSmithingService->makeSilverCoins($petWithSkills, $makingItem);
-                }
                 else
-                {
-                    $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-                    $pet->increaseEsteem(-1);
-                    $pet->increaseSafety(-mt_rand(2, 12));
-                    $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                    return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge Cupid, but they spilled the silver and burned themselves! :(', 'icons/activity-logs/burn');
-                }
+                    return $this->silverSmithingService->spillSilver($petWithSkills, $makingItem);
             }
         }
         else if($roll >= 16)

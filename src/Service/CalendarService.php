@@ -169,6 +169,11 @@ class CalendarService
         return $hanukkahNo >= 1 && $hanukkahNo <= 8;
     }
 
+    public function isValentinesOrAdjacent(): bool
+    {
+        return $this->monthAndDay >= 213 && $this->monthAndDay <= 215;
+    }
+
     public function isValentines(): bool
     {
         return $this->monthAndDay === 214;

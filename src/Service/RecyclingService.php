@@ -39,6 +39,20 @@ class RecyclingService
             $user->setUnlockedRecycling();
     }
 
+    private function recycledItemShouldGoToGivingTree(bool $givingTreeHoliday, Inventory $i)
+    {
+        if($i->getLockedToOwner())
+            return false;
+
+        if(mt_rand(1, 10) === 1)
+            return true;
+
+        if($givingTreeHoliday && $i->getItem()->getFood() && $i->getItem()->getFood()->getIsCandy())
+            return true;
+
+        return false;
+    }
+
     /**
      * @param Inventory[] $inventory
      */
@@ -60,7 +74,7 @@ class RecyclingService
                 $this->userStatsRepository->incrementStat($originalOwner, UserStatEnum::BUGS_PUT_OUTSIDE);
                 $this->em->remove($i);
             }
-            else if((mt_rand(1, 10) === 1 || $givingTreeHoliday) && !$i->getLockedToOwner())
+            else if($this->recycledItemShouldGoToGivingTree($givingTreeHoliday, $i))
             {
                 $i
                     ->setOwner($givingTree)

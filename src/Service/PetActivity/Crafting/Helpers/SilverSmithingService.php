@@ -1,6 +1,7 @@
 <?php
 namespace App\Service\PetActivity\Crafting\Helpers;
 
+use App\Entity\Item;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -36,6 +37,19 @@ class SilverSmithingService
         $this->coinSmithingService = $coinSmithingService;
     }
 
+    public function spillSilver(ComputedPetSkills $petWithSkills, Item $triedToMake): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+        $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+        $pet->increaseEsteem(-1);
+        $pet->increaseSafety(-mt_rand(2, 12));
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ', but they spilled the silver and burned themselves! :(', 'icons/activity-logs/burn');
+    }
+
     public function createSilverKey(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
@@ -48,18 +62,9 @@ class SilverSmithingService
             $reRoll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
             if($reRoll >= 12)
-            {
                 return $this->coinSmithingService->makeSilverCoins($petWithSkills, $silverKey);
-            }
             else
-            {
-                $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
-                $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-                $pet->increaseEsteem(-1);
-                $pet->increaseSafety(-mt_rand(2, 12));
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge a Silver Key, but got burned while trying! :(', 'icons/activity-logs/burn');
-            }
+                return $this->spillSilver($petWithSkills, $silverKey);
         }
         else if($roll >= 12)
         {
@@ -108,18 +113,9 @@ class SilverSmithingService
             $reRoll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
             if($reRoll >= 12)
-            {
                 return $this->coinSmithingService->makeSilverCoins($petWithSkills, $makingItem);
-            }
             else
-            {
-                $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
-                $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-                $pet->increaseEsteem(-1);
-                $pet->increaseSafety(-mt_rand(2, 12));
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $makingItem->getNameWithArticle() . ', but got burned while trying! :(', 'icons/activity-logs/burn');
-            }
+                return $this->spillSilver($petWithSkills, $makingItem);
         }
         else if($roll >= $making['difficulty'])
         {
@@ -195,7 +191,7 @@ class SilverSmithingService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to improve a "Rustic" Magnifying Glass, but burnt it. All that\'s left now is the Glass...', '');
 
             $this->inventoryService->loseItem('"Rustic" Magnifying Glass', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->petCollectsItem('Glass', $pet, $pet->getName() . ' burnt a "Rustic" Magnifying Glass; this is all that remained.', $activityLog);
+            $this->inventoryService->petCollectsItem('Glass', $pet, $pet->getName() . ' burned a "Rustic" Magnifying Glass; this is all that remained.', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-2);
 
@@ -227,17 +223,16 @@ class SilverSmithingService
         $pet = $petWithSkills->getPet();
         $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
+        $makingItem = $this->itemRepository->findOneByName('Sylvan Fishing Rod');
+
         if($roll <= 2)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $reRoll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Sylvan Fishing Rod, but ruined the silver :|', '');
-
-            $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(-2);
-
-            return $activityLog;
+            if($reRoll >= 12)
+                return $this->coinSmithingService->makeSilverCoins($petWithSkills, $makingItem);
+            else
+                return $this->spillSilver($petWithSkills, $makingItem);
         }
         else if($roll >= 16)
         {
@@ -249,7 +244,7 @@ class SilverSmithingService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% machined some silver components onto a Leaf Spear, making it a Sylvan Fishing Rod!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
             ;
-            $this->inventoryService->petCollectsItem('Sylvan Fishing Rod', $pet, $pet->getName() . ' created this.', $activityLog);
+            $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' created this.', $activityLog);
             return $activityLog;
         }
         else
@@ -339,16 +334,16 @@ class SilverSmithingService
         $pet = $petWithSkills->getPet();
         $roll = mt_rand(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
+        $makingItem = $this->itemRepository->findOneByName('Lightning Axe');
+
         if($roll <= 2)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $reRoll = mt_rand(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-            $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(-2);
-            $pet->increaseSafety(-4);
-
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge a Lightning Axe, but spilled the molten silver and burned themselves! :(', 'icons/activity-logs/burn');
+            if($reRoll >= 12)
+                return $this->coinSmithingService->makeSilverCoins($petWithSkills, $makingItem);
+            else
+                return $this->spillSilver($petWithSkills, $makingItem);
         }
         else if($roll >= 22)
         {

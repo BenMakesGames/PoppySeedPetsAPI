@@ -31,6 +31,7 @@ use App\Model\PetChangesSummary;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
+use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\BurntForestService;
 use App\Service\PetActivity\Crafting\NotReallyCraftsService;
@@ -55,6 +56,7 @@ use App\Service\PetActivity\Protocol7Service;
 use App\Service\PetActivity\TreasureMapService;
 use App\Service\PetActivity\UmbraService;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Location;
 
 class PetService
 {
@@ -93,6 +95,7 @@ class PetService
     private $toolBonusService;
     private $notReallyCraftsService;
     private $letterService;
+    private $userQuestRepository;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -108,7 +111,8 @@ class PetService
         HeartDimensionService $heartDimensionService, PetRelationshipRepository $petRelationshipRepository,
         GuildService $guildService, InventoryService $inventoryService, BurntForestService $burntForestService,
         DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService, LetterService $letterService,
-        PetSummonedAwayService $petSummonedAwayService, InventoryModifierService $toolBonusService
+        PetSummonedAwayService $petSummonedAwayService, InventoryModifierService $toolBonusService,
+        UserQuestRepository $userQuestRepository
     )
     {
         $this->em = $em;
@@ -146,6 +150,7 @@ class PetService
         $this->toolBonusService = $toolBonusService;
         $this->notReallyCraftsService = $notReallyCraftsService;
         $this->letterService = $letterService;
+        $this->userQuestRepository = $userQuestRepository;
     }
 
     /**
@@ -172,6 +177,28 @@ class PetService
         // if a pet's affection level increased, and you haven't unlocked the park, now you get the park!
         if($pet->getAffectionLevel() > $previousAffectionLevel && $pet->getOwner()->getUnlockedPark() === null)
             $pet->getOwner()->setUnlockedPark();
+
+        if($this->calendarService->isValentinesOrAdjacent())
+            $this->maybeGivePlayerTwuWuv($pet);
+    }
+
+    private function maybeGivePlayerTwuWuv(Pet $pet): bool
+    {
+        $alreadyReceived = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Valentines ' . date('Y-m-d'), false);
+
+        if($alreadyReceived->getValue())
+            return false;
+
+        $this->inventoryService->receiveItem('Twu Wuv', $pet->getOwner(), $pet->getOwner(), $pet->getOwner()->getName() . ' received this from ' . $pet->getName() . ' for Valentine\'s Day!', LocationEnum::HOME, true);
+        $this->inventoryService->receiveItem('Twu Wuv', $pet->getOwner(), $pet->getOwner(), $pet->getOwner()->getName() . ' received this from ' . $pet->getName() . ' for Valentine\'s Day!', LocationEnum::HOME, true);
+
+        $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave Twu Wuv to %user:' . $pet->getOwner()->getId() . '.Name% for Valentine\'s Day! (Two of them! Two Twu Wuvs!)', 'items/resource/twu-wuv')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
+        ;
+
+        $alreadyReceived->setValue(true);
+
+        return true;
     }
 
     public function doPet(Pet $pet)

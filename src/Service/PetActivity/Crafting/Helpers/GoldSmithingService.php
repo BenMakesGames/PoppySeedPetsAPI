@@ -1,6 +1,7 @@
 <?php
 namespace App\Service\PetActivity\Crafting\Helpers;
 
+use App\Entity\Item;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
@@ -10,6 +11,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\ComputedPetSkills;
+use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -21,16 +23,33 @@ class GoldSmithingService
     private $inventoryService;
     private $responseService;
     private $transactionService;
+    private $coinSmithingService;
+    private $itemRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        TransactionService $transactionService
+        TransactionService $transactionService, CoinSmithingService $coinSmithingService, ItemRepository $itemRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->transactionService = $transactionService;
+        $this->coinSmithingService = $coinSmithingService;
+        $this->itemRepository = $itemRepository;
+    }
+
+    public function spillGold(ComputedPetSkills $petWithSkills, Item $triedToMake): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+        $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+        $pet->increaseEsteem(-1);
+        $pet->increaseSafety(-mt_rand(2, 8));
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ', but they spilled the gold and burned themselves! :(', 'icons/activity-logs/burn');
     }
 
     public function createGoldTriangle(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -76,39 +95,41 @@ class GoldSmithingService
     {
         $pet = $petWithSkills->getPet();
         $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
-        $reRoll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        $makingItem = $this->itemRepository->findOneByName('Aubergine Scepter');
 
         if($roll <= 2)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
-            $this->inventoryService->loseItem('Eggplant', $pet->getOwner(), LocationEnum::HOME, 1);
-
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-
-            $pet->increaseSafety(-mt_rand(4, 8));
-
-            if($pet->hasMerit(MeritEnum::GOURMAND))
+            if(mt_rand(1, 2) === 1)
             {
-                $pet->increaseFood(mt_rand(4, 8));
+                $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
 
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an Aubergine Scepter, but accidentally burnt the Eggplant! %pet:' . $pet->getId() . '.name%, as a true gourmand, could not allow the Eggplant to go to waste, and ate it!', '');
+                $this->inventoryService->loseItem('Eggplant', $pet->getOwner(), LocationEnum::HOME, 1);
+
+                $this->petExperienceService->gainExp($pet, 1, [PetSkillEnum::CRAFTS]);
+
+                $pet->increaseSafety(-mt_rand(4, 8));
+
+                if($pet->hasMerit(MeritEnum::GOURMAND))
+                {
+                    $pet->increaseFood(mt_rand(4, 8));
+
+                    return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an Aubergine Scepter, but accidentally burnt the Eggplant! %pet:' . $pet->getId() . '.name%, as a true gourmand, could not allow the Eggplant to go to waste, and ate it!', '');
+                }
+                else
+                {
+                    return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an Aubergine Scepter, but accidentally burned the Eggplant. It smelled _awful_!', '');
+                }
             }
             else
             {
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an Aubergine Scepter, but accidentally burnt the Eggplant. It smelled _awful_!', '');
+                $reRoll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+                if($reRoll >= 12)
+                    return $this->coinSmithingService->makeGoldCoins($petWithSkills, $makingItem);
+                else
+                    return $this->spillGold($petWithSkills, $makingItem);
             }
-        }
-        else if($reRoll >= 12)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(75, 90), PetActivityStatEnum::SMITH, true);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-
-            $moneys = mt_rand(20, 30);
-            $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' tried to forge a gold scepter, but couldn\'t get the shape right, so just made gold coins, instead.');
-            $pet->increaseFood(-1);
-
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge a scepter from a Gold Bar, but couldn\'t get the shape right, so just made ' . $moneys . ' Moneys worth of gold coins, instead.', 'icons/activity-logs/moneys');
         }
         else if($roll >= 12)
         {
@@ -122,7 +143,7 @@ class GoldSmithingService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made an Aubergine Scepter.', 'items/tool/wand/aubergine-scepter')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
             ;
-            $this->inventoryService->petCollectsItem('Aubergine Scepter', $pet, $pet->getName() . ' created... _this_.', $activityLog);
+            $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' created... _this_.', $activityLog);
             return $activityLog;
         }
         else
@@ -333,16 +354,17 @@ class GoldSmithingService
     {
         $pet = $petWithSkills->getPet();
         $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
-        $reRoll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        $makingItem = $this->itemRepository->findOneByName('Gold Key');
 
         if($roll <= 2)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
-            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-            $pet->increaseEsteem(-1);
-            $pet->increaseSafety(-mt_rand(2, 8));
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge a Gold Key, but got burned while trying! :(', 'icons/activity-logs/burn');
+            $reRoll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+            if($reRoll >= 12)
+                return $this->coinSmithingService->makeGoldCoins($petWithSkills, $makingItem);
+            else
+                return $this->spillGold($petWithSkills, $makingItem);
         }
         else if($roll >= 12)
         {
@@ -356,27 +378,15 @@ class GoldSmithingService
             else
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged a Gold Key from a Gold Bar.', 'items/key/gold');
 
-            $this->inventoryService->petCollectsItem('Gold Key', $pet, $pet->getName() . ' forged this from a Gold Bar.', $activityLog);
+            $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' forged this from a Gold Bar.', $activityLog);
 
             if($keys === 2)
-                $this->inventoryService->petCollectsItem('Gold Key', $pet, $pet->getName() . ' forged this from a Gold Bar.', $activityLog);
+                $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' forged this from a Gold Bar.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, $keys, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem($keys === 1 ? 1 : 10);
 
             return $activityLog;
-        }
-        else if($reRoll >= 12)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(75, 90), PetActivityStatEnum::SMITH, true);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-
-            $moneys = mt_rand(20, 30);
-            $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' tried to forge a Gold Key, but couldn\'t get the shape right, so just made gold coins, instead.');
-            $pet->increaseFood(-1);
-
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge a Gold Key from a Gold Bar, but couldn\'t get the shape right, so just made ' . $moneys . ' Moneys worth of gold coins, instead.', 'icons/activity-logs/moneys');
         }
         else
         {
@@ -390,16 +400,17 @@ class GoldSmithingService
     {
         $pet = $petWithSkills->getPet();
         $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
-        $reRoll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        $makingItem = $this->itemRepository->findOneByName('Gold Tuning Fork');
 
         if($roll <= 2)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
-            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-            $pet->increaseEsteem(-1);
-            $pet->increaseSafety(-mt_rand(2, 8));
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge a Gold Tuning Fork, but got burned while trying! :(', 'icons/activity-logs/burn');
+            $reRoll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+            if($reRoll >= 12)
+                return $this->coinSmithingService->makeGoldCoins($petWithSkills, $makingItem);
+            else
+                return $this->spillGold($petWithSkills, $makingItem);
         }
         else if($roll >= 13)
         {
@@ -408,25 +419,12 @@ class GoldSmithingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged a Gold Tuning Fork from a Gold Bar.', '');
 
-            $this->inventoryService->petCollectsItem('Gold Tuning Fork', $pet, $pet->getName() . ' forged this from a Gold Bar.', $activityLog);
+            $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' forged this from a Gold Bar.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
 
             return $activityLog;
-        }
-        else if($reRoll >= 12)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(75, 90), PetActivityStatEnum::SMITH, true);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-
-            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-
-            $moneys = mt_rand(20, 30);
-            $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' tried to forge a Gold Turning Fork, but couldn\'t get the shape right, so just made gold coins, instead.');
-            $pet->increaseFood(-1);
-
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge a Gold Tuning Fork from a Gold Bar, but couldn\'t get the shape right, so just made ' . $moneys . ' Moneys worth of gold coins, instead.', 'icons/activity-logs/moneys');
         }
         else
         {
