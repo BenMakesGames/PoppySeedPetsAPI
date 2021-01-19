@@ -21,10 +21,11 @@ class SilverSmithingService
     private $responseService;
     private $itemRepository;
     private $transactionService;
+    private $coinSmithingService;
 
     public function __construct(
         PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        ItemRepository $itemRepository, TransactionService $transactionService
+        ItemRepository $itemRepository, TransactionService $transactionService, CoinSmithingService $coinSmithingService
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -32,22 +33,33 @@ class SilverSmithingService
         $this->responseService = $responseService;
         $this->itemRepository = $itemRepository;
         $this->transactionService = $transactionService;
+        $this->coinSmithingService = $coinSmithingService;
     }
 
     public function createSilverKey(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
-        $reRoll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        $silverKey = $this->itemRepository->findOneByName('Silver Key');
 
         if($roll <= 2)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
-            $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-            $pet->increaseEsteem(-1);
-            $pet->increaseSafety(-mt_rand(2, 12));
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge a Silver Key, but got burned while trying! :(', 'icons/activity-logs/burn');
+            $reRoll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+            if($reRoll >= 12)
+            {
+                return $this->coinSmithingService->makeSilverCoins($petWithSkills, $silverKey);
+            }
+            else
+            {
+                $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+                $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+                $pet->increaseEsteem(-1);
+                $pet->increaseSafety(-mt_rand(2, 12));
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge a Silver Key, but got burned while trying! :(', 'icons/activity-logs/burn');
+            }
         }
         else if($roll >= 12)
         {
@@ -61,27 +73,15 @@ class SilverSmithingService
             else
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged a Silver Key from a Silver Bar.', 'items/key/silver');
 
-            $this->inventoryService->petCollectsItem('Silver Key', $pet, $pet->getName() . ' forged this from a Silver Bar.', $activityLog);
+            $this->inventoryService->petCollectsItem($silverKey, $pet, $pet->getName() . ' forged this from a Silver Bar.', $activityLog);
 
             if($keys === 2)
-                $this->inventoryService->petCollectsItem('Silver Key', $pet, $pet->getName() . ' forged this from a Silver Bar.', $activityLog);
+                $this->inventoryService->petCollectsItem($silverKey, $pet, $pet->getName() . ' forged this from a Silver Bar.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, $keys, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem($keys === 1 ? 1 : 6);
 
             return $activityLog;
-        }
-        else if($reRoll >= 12)
-        {
-            $this->petExperienceService->spendTime($pet, mt_rand(75, 90), PetActivityStatEnum::SMITH, true);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-
-            $moneys = mt_rand(10, 20);
-            $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' tried to forge a Silver Key, but couldn\'t get the shape right, so just made silver coins, instead.');
-            $pet->increaseFood(-1);
-
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge a Silver Key from a Silver Bar, but couldn\'t get the shape right, so just made ' . $moneys . ' Moneys worth of silver coins, instead.', 'icons/activity-logs/moneys');
         }
         else
         {
@@ -96,30 +96,41 @@ class SilverSmithingService
         $pet = $petWithSkills->getPet();
 
         $making = ArrayFunctions::pick_one([
-            [ 'item' => 'Silver Colander', 'description' => 'a Silver Colander', 'image' => 'items/tool/colander', 'difficulty' => 13, 'experience' => 1 ],
+            [ 'item' => 'Silver Colander', 'image' => 'items/tool/colander', 'difficulty' => 13, 'experience' => 1 ],
         ]);
+
+        $makingItem = $this->itemRepository->findOneByName($making['item']);
 
         $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll <= 2)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
-            $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-            $pet->increaseEsteem(-1);
-            $pet->increaseSafety(-mt_rand(2, 12));
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $making['description'] . ', but got burned while trying! :(', 'icons/activity-logs/burn');
+            $reRoll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+            if($reRoll >= 12)
+            {
+                return $this->coinSmithingService->makeSilverCoins($petWithSkills, $makingItem);
+            }
+            else
+            {
+                $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+                $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+                $pet->increaseEsteem(-1);
+                $pet->increaseSafety(-mt_rand(2, 12));
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $makingItem->getNameWithArticle() . ', but got burned while trying! :(', 'icons/activity-logs/burn');
+            }
         }
         else if($roll >= $making['difficulty'])
         {
             $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::SMITH, true);
             $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged ' . $making['description'] . ' from a Silver Bar.', $making['image'])
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged ' . $makingItem->getNameWithArticle() . ' from a Silver Bar.', $making['image'])
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $making['difficulty'])
             ;
 
-            $this->inventoryService->petCollectsItem($making['item'], $pet, $pet->getName() . ' forged this from a Silver Bar.', $activityLog);
+            $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' forged this from a Silver Bar.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, $making['experience'], [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(1);
@@ -130,7 +141,7 @@ class SilverSmithingService
         {
             $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $making['description'] . ' from a Silver Bar, but couldn\'t get the shape right.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $makingItem->getNameWithArticle() . ' from a Silver Bar, but couldn\'t get the shape right.', 'icons/activity-logs/confused');
         }
     }
 

@@ -20,6 +20,7 @@ use App\Service\PetActivity\Crafting\Helpers\HalloweenSmithingService;
 use App\Service\PetActivity\Crafting\Helpers\IronSmithingService;
 use App\Service\PetActivity\Crafting\Helpers\MeteoriteSmithingService;
 use App\Service\PetActivity\Crafting\Helpers\SilverSmithingService;
+use App\Service\PetActivity\Crafting\Helpers\TwuWuvCraftingService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 
@@ -36,13 +37,15 @@ class SmithingService
     private $spiceRepository;
     private $evericeMeltingService;
     private $silverSmithingService;
+    private $twuWuvCraftingService;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
         GoldSmithingService $goldSmithingService, SilverSmithingService $silverSmithingService,
         IronSmithingService $ironSmithingService, MeteoriteSmithingService $meteoriteSmithingService,
         HalloweenSmithingService $halloweenSmithingService, CalendarService $calendarService,
-        SpiceRepository $spiceRepository, EvericeMeltingService $evericeMeltingService
+        SpiceRepository $spiceRepository, EvericeMeltingService $evericeMeltingService,
+        TwuWuvCraftingService $twuWuvCraftingService
     )
     {
         $this->inventoryService = $inventoryService;
@@ -56,6 +59,7 @@ class SmithingService
         $this->spiceRepository = $spiceRepository;
         $this->evericeMeltingService = $evericeMeltingService;
         $this->silverSmithingService = $silverSmithingService;
+        $this->twuWuvCraftingService = $twuWuvCraftingService;
     }
 
     public function getCraftingPossibilities(ComputedPetSkills $petWithSkills, array $quantities): array
@@ -64,6 +68,12 @@ class SmithingService
         $weight = ($pet->getSafety() > 0 || $pet->isInGuild(GuildEnum::DWARFCRAFT)) ? 10 : 1;
 
         $possibilities = [];
+
+        if(array_key_exists('Twu Wuv', $quantities))
+        {
+            if(array_key_exists('String', $quantities) && array_key_exists('Silver Bar', $quantities))
+                $possibilities[] = new ActivityCallback($this->twuWuvCraftingService, 'createCupid', 15);
+        }
 
         if(array_key_exists('Charcoal', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createCoke', $weight);

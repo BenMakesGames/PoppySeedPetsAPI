@@ -16,6 +16,7 @@ use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetActivity\Crafting\EventLanternService;
+use App\Service\PetActivity\Crafting\Helpers\TwuWuvCraftingService;
 use App\Service\PetActivity\Crafting\PlasticPrinterService;
 use App\Service\PetActivity\Crafting\SmithingService;
 use App\Service\PetActivity\Crafting\MagicBindingService;
@@ -34,12 +35,13 @@ class CraftingService
     private $stickCraftingService;
     private $itemRepository;
     private $eventLanternService;
+    private $twuWuvCraftingService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, SmithingService $smithingService,
         MagicBindingService $magicBindingService, PlasticPrinterService $plasticPrinterService,
         PetExperienceService $petExperienceService, StickCraftingService $stickCraftingService,
-        ItemRepository $itemRepository, EventLanternService $eventLanternService
+        ItemRepository $itemRepository, EventLanternService $eventLanternService, TwuWuvCraftingService $twuWuvCraftingService
     )
     {
         $this->responseService = $responseService;
@@ -51,6 +53,7 @@ class CraftingService
         $this->stickCraftingService = $stickCraftingService;
         $this->itemRepository = $itemRepository;
         $this->eventLanternService = $eventLanternService;
+        $this->twuWuvCraftingService = $twuWuvCraftingService;
     }
 
     /**
