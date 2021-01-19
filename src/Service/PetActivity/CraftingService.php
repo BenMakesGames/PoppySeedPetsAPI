@@ -64,6 +64,11 @@ class CraftingService
     {
         $possibilities = [];
 
+        if(array_key_exists('Twu Wuv', $quantities))
+        {
+            $possibilities[] = new ActivityCallback($this->twuWuvCraftingService, 'createWedBawwoon', 15);
+        }
+
         if(array_key_exists('Chocolate Bar', $quantities))
         {
             $possibilities[] = new ActivityCallback($this, 'makeChocolateTool', 8);
