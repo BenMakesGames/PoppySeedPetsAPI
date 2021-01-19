@@ -393,7 +393,7 @@ class PetService
             $this->responseService->createActivityLog(
                 $pet,
                 '%pet:' . $pet->getId() . '.name% nibbled on their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . '.',
-                '',
+                'icons/activity-logs/just-the-fork',
                 $changes
             );
         }

@@ -18,6 +18,8 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class AstronomyClubService
 {
+    public const ACTIVITY_ICON = 'groups/astronomy';
+
     private $petExperienceService;
     private $em;
     private $inventoryService;
@@ -242,7 +244,7 @@ class AstronomyClubService
                     $activityLog = (new PetActivityLog())
                         ->setPet($member)
                         ->setEntry($this->formatMessage($messageTemplate, $member, $group, $description))
-                        ->setIcon('')
+                        ->setIcon(self::ACTIVITY_ICON)
                         ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                         ->setChanges($petChanges[$member->getId()]->compare($member))
                     ;
@@ -259,7 +261,7 @@ class AstronomyClubService
                     $activityLog = (new PetActivityLog())
                         ->setPet($member)
                         ->setEntry($group->getName() . ' surveyed a portion of the sky, but didn\'t find anything interesting there...')
-                        ->setIcon('')
+                        ->setIcon(self::ACTIVITY_ICON)
                         ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM)
                         ->setChanges($petChanges[$member->getId()]->compare($member))
                     ;
@@ -280,7 +282,7 @@ class AstronomyClubService
                 $activityLog = (new PetActivityLog())
                     ->setPet($member)
                     ->setEntry($member->getName() . ' explored the cosmos with ' . $group->getName() . '.')
-                    ->setIcon('')
+                    ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
                 ;

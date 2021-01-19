@@ -21,6 +21,8 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class BandService
 {
+    public const ACTIVITY_ICON = 'groups/band';
+
     private $em;
     private $petRelationshipService;
     private $inventoryService;
@@ -234,7 +236,7 @@ class BandService
             $activityLog = (new PetActivityLog())
                 ->setPet($pet)
                 ->setEntry($group->getName() . ' received some fan mail! %pet:' . $pet->getId() . '.name% was ' . $feels)
-                ->setIcon('items/music/note')
+                ->setIcon(self::ACTIVITY_ICON)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))
             ;
@@ -260,7 +262,7 @@ class BandService
             $activityLog = (new PetActivityLog())
                 ->setPet($pet)
                 ->setEntry('%pet:' . $pet->getId() . '.name% got royalties from ' . $group->getName() . ' sales!')
-                ->setIcon('items/music/note')
+                ->setIcon(self::ACTIVITY_ICON)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))
             ;
@@ -334,7 +336,7 @@ class BandService
                 $activityLog = (new PetActivityLog())
                     ->setPet($member)
                     ->setEntry($group->getName() . (mt_rand(1, 5) === 1 ? ' finally' : '') . ' released a new ' . $item . '!')
-                    ->setIcon('items/music/note')
+                    ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
                 ;
@@ -363,7 +365,7 @@ class BandService
                 $activityLog = (new PetActivityLog())
                     ->setPet($member)
                     ->setEntry($member->getName() . ' jammed with ' . $group->getName() . '. ' . self::BAND_ACTIVITY_SENTIMENT_MESSAGES[$sentiment])
-                    ->setIcon('items/music/note')
+                    ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
                 ;
