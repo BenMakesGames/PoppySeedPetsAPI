@@ -194,31 +194,22 @@ class MarketController extends PoppySeedPetsController
         /** @var Inventory[] $forSale */
         $forSale = $qb->getQuery()->getResult();
 
-        $itemToBuy = null;
-        $minPrice = null;
-
-        foreach($forSale as $inventory)
-        {
+        $forSale = array_filter($forSale, function(Inventory $inventory) use($cache) {
             $item = $cache->getItem('Trading Inventory #' . $inventory->getId());
 
-            if($item->isHit())
-                continue;
-            else
-            {
-                if($minPrice === null)
-                    $minPrice = $inventory->getSellPrice();
-                else if($inventory->getSellPrice() > $minPrice)
-                    continue;
+            return !$item->isHit();
+        });
 
-                $item->set(true)->expiresAfter(\DateInterval::createFromDateString('2 minutes'));
-                $cache->save($item);
-                $itemToBuy = $inventory;
-                break;
-            }
-        }
-
-        if($itemToBuy === null)
+        if(count($forSale) === 0)
             throw new NotFoundHttpException('An item for that price could not be found on the market. Someone may have bought it up just for you did! Sorry :| Reload the page to get the latest prices available!');
+
+        $itemToBuy = ArrayFunctions::min($forSale, function(Inventory $inventory) {
+            return $inventory->getSellPrice();
+        });
+
+        $item = $cache->getItem('Trading Inventory #' . $itemToBuy->getId());
+        $item->set(true)->expiresAfter(\DateInterval::createFromDateString('1 minute'));
+        $cache->save($item);
 
         try
         {

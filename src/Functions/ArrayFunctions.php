@@ -148,6 +148,9 @@ final class ArrayFunctions
         return ArrayFunctions::sum($values, $getter) / count($values);
     }
 
+    /**
+     * Return one of the items from the array of $values which has the LARGEST value, as returned by the $getter
+     */
     public static function max(iterable $values, callable $getter)
     {
         $max = null;
@@ -167,22 +170,25 @@ final class ArrayFunctions
         return $max;
     }
 
+    /**
+     * Return one of the items from the array of $values which has the SMALLEST value, as returned by the $getter
+     */
     public static function min(iterable $values, callable $getter)
     {
-        $max = null;
-        $maxValue = null;
+        $min = null;
+        $minValue = null;
 
         foreach($values as $value)
         {
             $currentValue = $getter($value);
 
-            if($max === null || $currentValue < $maxValue)
+            if($min === null || $currentValue < $minValue)
             {
-                $max = $value;
-                $maxValue = $currentValue;
+                $min = $value;
+                $minValue = $currentValue;
             }
         }
 
-        return $max;
+        return $min;
     }
 }
