@@ -20,6 +20,7 @@ use App\Repository\UserQuestRepository;
 use App\Service\CalendarService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -155,7 +156,8 @@ class FireplaceController extends PoppySeedPetsController
      */
     public function feedWhelp(
         Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
-        InventoryService $inventoryService, EntityManagerInterface $em, DragonRepository $dragonRepository
+        InventoryService $inventoryService, EntityManagerInterface $em, DragonRepository $dragonRepository,
+        Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -202,7 +204,7 @@ class FireplaceController extends PoppySeedPetsController
             {
                 $whelp->decreaseFood();
 
-                $r = mt_rand(1, 100);
+                $r = $squirrel3->rngNextInt(1, 100);
 
                 if($r === 1)
                     $loot[] = 'Firestone';          // 1%
@@ -237,7 +239,7 @@ class FireplaceController extends PoppySeedPetsController
 
         if($whelp->getGrowth() >= 35 * 20)
         {
-            $greetingsAndThanks = ArrayFunctions::pick_some(Dragon::GREETINGS_AND_THANKS, 2);
+            $greetingsAndThanks = $squirrel3->rngNextSubsetFromArray(Dragon::GREETINGS_AND_THANKS, 2);
 
             $whelp
                 ->setIsAdult(true)

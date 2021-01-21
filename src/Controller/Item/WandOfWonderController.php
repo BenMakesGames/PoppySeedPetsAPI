@@ -18,6 +18,7 @@ use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\PetService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,7 +37,8 @@ class WandOfWonderController extends PoppySeedPetsItemController
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
         EntityManagerInterface $em, InventoryService $inventoryService, PetRepository $petRepository,
         TransactionService $transactionService, ItemRepository $itemRepository, MeritRepository $meritRepository,
-        PetExperienceService $petExperienceService, SpiceRepository $spiceRepository, PetService $petService
+        PetExperienceService $petExperienceService, SpiceRepository $spiceRepository, PetService $petService,
+        Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'wandOfWonder/#/point');
@@ -52,7 +54,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
         ]);
 
         /** @var Pet|null $randomPet */
-        $randomPet = ArrayFunctions::pick_one($petsAtHome);
+        $randomPet = $squirrel3->rngNextFromArray($petsAtHome);
 
         $expandedGreenhouseWithWand = $userQuestRepository->findOrCreate($user, 'Expanded Greenhouse With Wand of Wonder', false);
 
@@ -88,15 +90,15 @@ class WandOfWonderController extends PoppySeedPetsItemController
         if($user->getGreenhouse() && !$expandedGreenhouseWithWand->getValue())
             $possibleEffects[] = 'expandGreenhouse';
 
-        $effect = ArrayFunctions::pick_one($possibleEffects);
+        $effect = $squirrel3->rngNextFromArray($possibleEffects);
 
-        $wandBroke = mt_rand(1, 2) === 1;
+        $wandBroke = $squirrel3->rngNextInt(1, 2) === 1;
 
         switch($effect)
         {
             case 'song':
-                $wandBroke = $wandBroke || (mt_rand(1, 2) === 1);
-                $notes = mt_rand(6, 10);
+                $wandBroke = $wandBroke || ($squirrel3->rngNextInt(1, 2) === 1);
+                $notes = $squirrel3->rngNextInt(6, 10);
 
                 if($randomPet)
                 {
@@ -117,8 +119,8 @@ class WandOfWonderController extends PoppySeedPetsItemController
                 break;
 
             case 'featherStorm':
-                $wandBroke = $wandBroke || (mt_rand(1, 2) === 1);
-                $feathers = mt_rand(8, 12);
+                $wandBroke = $wandBroke || ($squirrel3->rngNextInt(1, 2) === 1);
+                $feathers = $squirrel3->rngNextInt(8, 12);
 
                 if($randomPet)
                     $itemActionDescription = 'Hundreds of Feathers stream from the wand, filling the room. You never knew Feathers could be so loud! Moments later they begin to escape through crevices in the wall, but not before you and ' . $randomPet->getName() . ' grab a few!';
@@ -153,8 +155,8 @@ class WandOfWonderController extends PoppySeedPetsItemController
                 break;
 
             case 'yellowDye':
-                $wandBroke = $wandBroke || (mt_rand(1, 2) === 1);
-                $dye = mt_rand(4, mt_rand(6, 10));
+                $wandBroke = $wandBroke || ($squirrel3->rngNextInt(1, 2) === 1);
+                $dye = $squirrel3->rngNextInt(4, $squirrel3->rngNextInt(6, 10));
                 $itemActionDescription = "Is that-- oh god! The wand is peeing!?\n\nWait, no... it's... Yellow Dye??!\n\nYou find some small jars to catch the stuff; in the end, you get " . $dye . " Yellow Dye.";
 
                 for($x = 0; $x < $dye; $x++)
@@ -163,19 +165,19 @@ class WandOfWonderController extends PoppySeedPetsItemController
                 break;
 
             case 'wine':
-                $wandBroke = $wandBroke || (mt_rand(1, 2) === 1);
-                $wine = mt_rand(5, 10);
+                $wandBroke = $wandBroke || ($squirrel3->rngNextInt(1, 2) === 1);
+                $wine = $squirrel3->rngNextInt(5, 10);
                 $wines = [ 'Blackberry Wine', 'Blackberry Wine', 'Blueberry Wine', 'Blueberry Wine', 'Red Wine', 'Red Wine', 'Blood Wine' ];
 
                 $itemActionDescription = "The wand shakes slightly, then begins pouring out wines of various colors! You grab some glasses, and catch as much as you can...";
 
                 for($x = 0; $x < $wine; $x++)
-                    $inventoryService->receiveItem(ArrayFunctions::pick_one($wines), $user, $user, $user->getName() . ' caught this wine pouring out of a Wand of Wonder.', $location, $lockedToOwner);
+                    $inventoryService->receiveItem($squirrel3->rngNextFromArray($wines), $user, $user, $user->getName() . ' caught this wine pouring out of a Wand of Wonder.', $location, $lockedToOwner);
 
                 break;
 
             case 'secretSeashell':
-                $wandBroke = $wandBroke || (mt_rand(1, 2) === 1);
+                $wandBroke = $wandBroke || ($squirrel3->rngNextInt(1, 2) === 1);
                 if($randomPet)
                 {
                     $itemActionDescription = 'For a moment, you hear the sound of the ocean. ' . $randomPet->getName() . ' leans in to listen, and a Secret Seashell drops off of their head!';
@@ -192,7 +194,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
             case 'pb&j':
                 $itemActionDescription = 'The wand turns into a PB&J, causing you to drop it. Upon impacting the floor, nuts and fruit spill everywhere!';
 
-                $numItems = mt_rand(4, 6);
+                $numItems = $squirrel3->rngNextInt(4, 6);
 
                 $pbjItems = [
                     'Mixed Nuts', 'Mixed Nuts', 'Mixed Nuts', 'Mixed Nuts', 'Mixed Nuts', 'Sugar', 'Sugar',
@@ -200,10 +202,10 @@ class WandOfWonderController extends PoppySeedPetsItemController
                 ];
 
                 $inventoryService->receiveItem('Mixed Nuts', $user, $user, 'This spilled out of a Wand of Wonder after it turned into a PB&J!', $location, $lockedToOwner);
-                $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Red', 'Orange', 'Naner' ]), $user, $user, 'This spilled out of a Wand of Wonder after it turned into a PB&J!', $location, $lockedToOwner);
+                $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Red', 'Orange', 'Naner' ]), $user, $user, 'This spilled out of a Wand of Wonder after it turned into a PB&J!', $location, $lockedToOwner);
 
                 for($x = 0; $x < $numItems; $x++)
-                    $inventoryService->receiveItem(ArrayFunctions::pick_one($pbjItems), $user, $user, 'This spilled out of a Wand of Wonder after it turned into a PB&J!', $location, $lockedToOwner);
+                    $inventoryService->receiveItem($squirrel3->rngNextFromArray($pbjItems), $user, $user, 'This spilled out of a Wand of Wonder after it turned into a PB&J!', $location, $lockedToOwner);
 
                 break;
 
@@ -240,7 +242,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
 
                     $changes = new PetChanges($randomPet);
 
-                    $randomPet->increaseSafety(-mt_rand(4, 8));
+                    $randomPet->increaseSafety(-$squirrel3->rngNextInt(4, 8));
                     $petExperienceService->gainExp($randomPet, 1, [ PetSkillEnum::BRAWL ]);
 
                     $responseService->createActivityLog($randomPet, '%pet:' . $randomPet->getId() . '.name% barely dodged a blast of lightning from a Wand of Wonder!', '', $changes->compare($randomPet));
@@ -255,7 +257,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
             case 'wondrousStat':
                 if($randomPet)
                 {
-                    $randomMerit = ArrayFunctions::pick_one([
+                    $randomMerit = $squirrel3->rngNextFromArray([
                         MeritEnum::WONDROUS_STRENGTH,
                         MeritEnum::WONDROUS_STAMINA,
                         MeritEnum::WONDROUS_DEXTERITY,
@@ -267,7 +269,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
 
                     if($randomPet->hasMerit($randomMerit))
                     {
-                        $leaves = ArrayFunctions::pick_one([
+                        $leaves = $squirrel3->rngNextFromArray([
                             'melts away',
                             'evaporates',
                             'dissipates',
@@ -297,7 +299,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
                     $changes = new PetChanges($randomPet);
 
                     $petExperienceService->gainExp($randomPet, 2, [ PetSkillEnum::BRAWL ]);
-                    $randomPet->increaseEsteem(mt_rand(4, 8));
+                    $randomPet->increaseEsteem($squirrel3->rngNextInt(4, 8));
 
                     $responseService->createActivityLog($randomPet, '%pet:' . $randomPet->getId() . '.name% defeated a giant tentacle that attacked %user:' . $user->getId() . '.name%.', '', $changes->compare($randomPet));
 
@@ -331,16 +333,16 @@ class WandOfWonderController extends PoppySeedPetsItemController
                 // five random spices
                 // TODO: is this efficient? it looks gross.
                 $spices = [
-                    $spiceRepository->findBy([], [], 1, mt_rand(0, $numSpicesAvailable - 1))[0],
-                    $spiceRepository->findBy([], [], 1, mt_rand(0, $numSpicesAvailable - 1))[0],
-                    $spiceRepository->findBy([], [], 1, mt_rand(0, $numSpicesAvailable - 1))[0],
-                    $spiceRepository->findBy([], [], 1, mt_rand(0, $numSpicesAvailable - 1))[0],
-                    $spiceRepository->findBy([], [], 1, mt_rand(0, $numSpicesAvailable - 1))[0],
+                    $spiceRepository->findBy([], [], 1, $squirrel3->rngNextInt(0, $numSpicesAvailable - 1))[0],
+                    $spiceRepository->findBy([], [], 1, $squirrel3->rngNextInt(0, $numSpicesAvailable - 1))[0],
+                    $spiceRepository->findBy([], [], 1, $squirrel3->rngNextInt(0, $numSpicesAvailable - 1))[0],
+                    $spiceRepository->findBy([], [], 1, $squirrel3->rngNextInt(0, $numSpicesAvailable - 1))[0],
+                    $spiceRepository->findBy([], [], 1, $squirrel3->rngNextInt(0, $numSpicesAvailable - 1))[0],
                 ];
 
                 foreach($spices as $spice)
                 {
-                    $newItem = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Fish', 'Fish', 'Fermented Fish' ]), $user, $user, 'This was produced by ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
+                    $newItem = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Fish', 'Fish', 'Fermented Fish' ]), $user, $user, 'This was produced by ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
                     $newItem->setSpice($spice);
                 }
 
@@ -405,7 +407,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
                 break;
 
             case 'metals':
-                $loot = ArrayFunctions::pick_some([
+                $loot = $squirrel3->rngNextSubsetFromArray([
                     'Iron Bar',
                     'Iron Bar',
                     'Iron Key',
@@ -424,7 +426,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
                     'Gold Key',
                     'Gold Triangle',
                     'Gold Tuning Fork'
-                ], mt_rand(4, 5));
+                ], $squirrel3->rngNextInt(4, 5));
 
                 foreach($loot as $itemName)
                     $inventoryService->receiveItem($itemName, $user, $user, 'This was created by ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
@@ -438,7 +440,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
                 {
                     $itemActionDescription = 'A wall of Mixed Nut Brittle appears between you and ' . $randomPet->getName() . '! You work together breaking it down into manageable pieces (and occasionally taking a bite...)';
 
-                    $numPieces = mt_rand(4, 5);
+                    $numPieces = $squirrel3->rngNextInt(4, 5);
 
                     for($i = 0; $i < $numPieces; $i++)
                         $inventoryService->receiveItem('Mixed Nut Brittle', $user, $user, 'Summoned by ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
@@ -454,7 +456,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
                 {
                     $itemActionDescription = 'A wall of Mixed Nut Brittle appears before you! You spend some time tearing it down into manageable pieces (a little help would have been nice!)';
 
-                    $numPieces = mt_rand(3, 4);
+                    $numPieces = $squirrel3->rngNextInt(3, 4);
 
                     for($i = 0; $i < $numPieces; $i++)
                         $inventoryService->receiveItem('Mixed Nut Brittle', $user, $user, 'Summoned by ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
@@ -483,7 +485,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
                         else
                             $itemActionDescription = $randomPet->getName() . ' appears to have become... intoxicated.';
 
-                        $randomPet->increaseAlcohol(mt_rand(4, 8));
+                        $randomPet->increaseAlcohol($squirrel3->rngNextInt(4, 8));
                     }
                 }
                 else
@@ -525,7 +527,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
 
             case 'giveRandomTool':
 
-                $item = $itemRepository->findOneByName(ArrayFunctions::pick_one([
+                $item = $itemRepository->findOneByName($squirrel3->rngNextFromArray([
                     'Giant Turkey Leg',
                     '"Gold" Idol',
                     'Aubergine Scepter',
@@ -569,7 +571,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
             case 'antiGrav':
                 if($randomPet)
                 {
-                    $inventoryService->applyStatusEffect($randomPet, StatusEffectEnum::ANTI_GRAVD, mt_rand(12, 24) * 60);
+                    $inventoryService->applyStatusEffect($randomPet, StatusEffectEnum::ANTI_GRAVD, $squirrel3->rngNextInt(12, 24) * 60);
 
                     $itemActionDescription = $randomPet->getName() . ' turns upside down, and begins to float. Fortunately, they stop after just a couple inches... but they\'re still upside down!';
                     $responseService->setReloadPets();
@@ -598,7 +600,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
         }
         else if($effect === 'pb&j')
         {
-            $transformsInto = ArrayFunctions::pick_one([
+            $transformsInto = $squirrel3->rngNextFromArray([
                 'Apricot PB&J',
                 'Blackberry PB&J',
                 'Blueberry PB&J',
@@ -611,7 +613,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
         }
         else if($wandBroke)
         {
-            $remains = mt_rand(1, 4);
+            $remains = $squirrel3->rngNextInt(1, 4);
 
             if($remains === 1)
             {

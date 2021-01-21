@@ -7,17 +7,22 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 
 // yep. this game has a class called "PoopingService". you're welcome.
 class PoopingService
 {
     private $inventoryService;
     private $responseService;
+    private $squirrel3;
 
-    public function __construct(InventoryService $inventoryService, ResponseService $responseService)
+    public function __construct(
+        InventoryService $inventoryService, ResponseService $responseService, Squirrel3 $squirrel3
+    )
     {
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function shed(Pet $pet)
@@ -31,7 +36,7 @@ class PoopingService
 
     public function poopDarkMatter(Pet $pet)
     {
-        if(mt_rand(1, 20) === 1)
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
         {
             $this->inventoryService->receiveItem('Dark Matter', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' ' . ArrayFunctions::pick_one([
                 'pooped this. Yay?',

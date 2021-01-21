@@ -9,6 +9,7 @@ use App\Model\ComputedPetSkills;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\TransactionService;
 
 class CoinSmithingService
@@ -17,9 +18,10 @@ class CoinSmithingService
     private $inventoryService;
     private $transactionService;
     private $responseService;
+    private $squirrel3;
 
     public function __construct(
-        PetExperienceService $petExperienceService, InventoryService $inventoryService,
+        PetExperienceService $petExperienceService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         TransactionService $transactionService, ResponseService $responseService
     )
     {
@@ -27,17 +29,18 @@ class CoinSmithingService
         $this->inventoryService = $inventoryService;
         $this->transactionService = $transactionService;
         $this->responseService = $responseService;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function makeSilverCoins(ComputedPetSkills $petWithSkills, Item $triedToMake)
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, mt_rand(75, 90), PetActivityStatEnum::SMITH, true);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(75, 90), PetActivityStatEnum::SMITH, true);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
         $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
 
-        $moneys = mt_rand(10, 20);
+        $moneys = $this->squirrel3->rngNextInt(10, 20);
         $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' made some silver coins after failing to forge ' . $triedToMake->getNameWithArticle() . '.');
         $pet->increaseFood(-1);
 
@@ -48,11 +51,11 @@ class CoinSmithingService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, mt_rand(75, 90), PetActivityStatEnum::SMITH, true);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(75, 90), PetActivityStatEnum::SMITH, true);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
         $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
 
-        $moneys = mt_rand(20, 30);
+        $moneys = $this->squirrel3->rngNextInt(20, 30);
         $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' tried to forge ' . $triedToMake->getNameWithArticle() . ', but couldn\'t get the shape right, so just made gold coins, instead.');
         $pet->increaseFood(-1);
 

@@ -20,10 +20,11 @@ class HouseService
     private $inventoryService;
     private $cache;
     private $em;
+    private $squirrel3;
 
     public function __construct(
         PetService $petService, PetRepository $petRepository, AdapterInterface $cache, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository, InventoryService $inventoryService
+        UserQuestRepository $userQuestRepository, InventoryService $inventoryService, Squirrel3 $squirrel3
     )
     {
         $this->petService = $petService;
@@ -32,6 +33,7 @@ class HouseService
         $this->inventoryService = $inventoryService;
         $this->cache = $cache;
         $this->em = $em;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function needsToBeRun(User $user)
@@ -93,7 +95,7 @@ class HouseService
 
         while(count($petsWithTime) > 0)
         {
-            shuffle($petsWithTime);
+            $this->squirrel3->rngNextShuffle($petsWithTime);
 
             $petsWithTime = $this->processPets($petsWithTime);
         }

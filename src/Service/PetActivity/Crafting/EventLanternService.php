@@ -13,6 +13,7 @@ use App\Service\CalendarService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 
 class EventLanternService
 {
@@ -21,10 +22,11 @@ class EventLanternService
     private $petExperienceService;
     private $itemRepository;
     private $calendarService;
+    private $squirrel3;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        ItemRepository $itemRepository, CalendarService $calendarService
+        ItemRepository $itemRepository, CalendarService $calendarService, Squirrel3 $squirrel3
     )
     {
         $this->inventoryService = $inventoryService;
@@ -32,6 +34,7 @@ class EventLanternService
         $this->petExperienceService = $petExperienceService;
         $this->itemRepository = $itemRepository;
         $this->calendarService = $calendarService;
+        $this->squirrel3 = $squirrel3;
     }
 
     /**
@@ -89,11 +92,11 @@ class EventLanternService
     private function createLantern(ComputedPetSkills $petWithSkills, string $lanternName): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = mt_rand(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->inventoryService->loseItem('Paper', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-1);
@@ -101,13 +104,13 @@ class EventLanternService
         }
         else if($roll < 15)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a seasonal lantern, but couldn\'t come up with a fitting design...', 'icons/activity-logs/confused');
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
             $this->inventoryService->loseItem('Crooked Fishing Rod', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Paper', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseOneOf([ 'Jar of Fireflies', 'Candle' ], $pet->getOwner(), LocationEnum::HOME);

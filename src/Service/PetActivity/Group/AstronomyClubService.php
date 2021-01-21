@@ -4,16 +4,15 @@ namespace App\Service\PetActivity\Group;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetGroup;
-use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
-use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class AstronomyClubService
@@ -25,10 +24,11 @@ class AstronomyClubService
     private $inventoryService;
     private $responseService;
     private $petRelationshipService;
+    private $squirrel3;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
-        ResponseService $responseService, PetRelationshipService $petRelationshipService
+        ResponseService $responseService, PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -36,6 +36,7 @@ class AstronomyClubService
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->petRelationshipService = $petRelationshipService;
+        $this->squirrel3 = $squirrel3;
     }
 
     private const DICTIONARY = [
@@ -78,14 +79,14 @@ class AstronomyClubService
         {
             if($part[strlen($part) - 1] === '?')
             {
-                if(mt_rand(1, 2) === 1)
+                if($this->squirrel3->rngNextInt(1, 2) === 1)
                     $part = substr($part, 0, strlen($part) - 1);
                 else
                     continue;
             }
 
             if(strpos($part, '/') !== false)
-                $part = ArrayFunctions::pick_one(explode('/', $part));
+                $part = $this->squirrel3->rngNextFromArray(explode('/', $part));
 
             $newParts[] = $part;
         }
@@ -95,7 +96,7 @@ class AstronomyClubService
 
     public function generateGroupName(): string
     {
-        $pattern = ArrayFunctions::pick_one([
+        $pattern = $this->squirrel3->rngNextFromArray([
             '%prefix%/The %adjective%/%color% %noun% %suffix%',
             '%prefix%/The %number% %adjective%? %nouns% %suffix%',
             'The? %adjective% %color%? %noun%/%nouns%',
@@ -120,7 +121,7 @@ class AstronomyClubService
                 if($part[0] === '%' && $part[strlen($part) - 1] === '%')
                 {
                     $wordType = substr($part, 1, strlen($part) - 2);
-                    $chosenWord = ArrayFunctions::pick_one($dictionary[$wordType]);
+                    $chosenWord = $this->squirrel3->rngNextFromArray($dictionary[$wordType]);
 
                     $chosenWords[$wordType] = $chosenWord;
 
@@ -152,7 +153,7 @@ class AstronomyClubService
         $groupSize = count($group->getMembers());
 
         $skill = 0;
-        $progress = mt_rand(20, 35 + $groupSize * 2);
+        $progress = $this->squirrel3->rngNextInt(20, 35 + $groupSize * 2);
         /** @var PetChanges[] $petChanges */ $petChanges = [];
 
         foreach($group->getMembers() as $pet)
@@ -160,7 +161,7 @@ class AstronomyClubService
             $petWithSkills = $pet->getComputedSkills();
             $petChanges[$pet->getId()] = new PetChanges($pet);
 
-            $roll = mt_rand(1, 10 + $petWithSkills->getScience()->getTotal());
+            $roll = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getScience()->getTotal());
 
             $this->petExperienceService->gainExp($pet, max(1, floor($roll / 5)), [ PetSkillEnum::SCIENCE ]);
 
@@ -175,7 +176,7 @@ class AstronomyClubService
         if($group->getProgress() >= 100)
         {
             // we're expecting a very-maximum of 30 * 5 = 150. this will be exceptionally unlikely, however
-            $reward = mt_rand(0, $group->getSkillRollTotal());
+            $reward = $this->squirrel3->rngNextInt(0, $group->getSkillRollTotal());
 
             $group
                 ->clearProgress()
@@ -189,7 +190,7 @@ class AstronomyClubService
                 $item = 'Silica Grounds';
                 $description = 'a cloud of space dust';
 
-                if(mt_rand(1, 20) === 1)
+                if($this->squirrel3->rngNextInt(1, 20) === 1)
                     $description .= '-- I mean, Silica Grounds';
             }
             else if($reward < 20) // 10%
@@ -239,7 +240,7 @@ class AstronomyClubService
             {
                 if($item !== null)
                 {
-                    $member->increaseEsteem(mt_rand(3, 6));
+                    $member->increaseEsteem($this->squirrel3->rngNextInt(3, 6));
 
                     $activityLog = (new PetActivityLog())
                         ->setPet($member)
@@ -253,10 +254,10 @@ class AstronomyClubService
                 }
                 else
                 {
-                    if(mt_rand(1, 3) === 1)
-                        $member->increaseLove(mt_rand(2, 4));
+                    if($this->squirrel3->rngNextInt(1, 3) === 1)
+                        $member->increaseLove($this->squirrel3->rngNextInt(2, 4));
                     else
-                        $member->increaseEsteem(mt_rand(2, 4));
+                        $member->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
 
                     $activityLog = (new PetActivityLog())
                         ->setPet($member)
@@ -274,10 +275,10 @@ class AstronomyClubService
         {
             foreach($group->getMembers() as $member)
             {
-                if(mt_rand(1, 3) === 1)
-                    $member->increaseLove(mt_rand(2, 4));
+                if($this->squirrel3->rngNextInt(1, 3) === 1)
+                    $member->increaseLove($this->squirrel3->rngNextInt(2, 4));
                 else
-                    $member->increaseEsteem(mt_rand(2, 4));
+                    $member->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
 
                 $activityLog = (new PetActivityLog())
                     ->setPet($member)

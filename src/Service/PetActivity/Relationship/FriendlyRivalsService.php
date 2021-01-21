@@ -7,15 +7,18 @@ use App\Entity\PetRelationship;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ComputedPetSkills;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class FriendlyRivalsService
 {
     private $em;
+    private $squirrel3;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, Squirrel3 $squirrel3)
     {
         $this->em = $em;
+        $this->squirrel3 = $squirrel3;
     }
 
     /**
@@ -57,7 +60,7 @@ class FriendlyRivalsService
         $combinedSkills = array_splice($combinedSkills, 0, 3, true);
 
         // the pets may not compete, if they actually have different goals
-        if ($p1->getRelationshipGoal() !== RelationshipEnum::FRIENDLY_RIVAL && mt_rand(1, 3) === 1)
+        if ($p1->getRelationshipGoal() !== RelationshipEnum::FRIENDLY_RIVAL && $this->squirrel3->rngNextInt(1, 3) === 1)
         {
             if ($p2->getRelationshipGoal() !== RelationshipEnum::FRIENDLY_RIVAL)
                 $message = $p1->getPet()->getName() . ' and ' . $p2->getPet()->getName() . ' met to brag about their ' . array_key_first($combinedSkills) . ', but realized that neither were really feeling up to it, so called the contest off.';
@@ -70,7 +73,7 @@ class FriendlyRivalsService
             return $this->createLogs($p1->getPet(), $p2->getPet(), $message);
         }
 
-        if ($p2->getRelationshipGoal() !== RelationshipEnum::FRIENDLY_RIVAL && mt_rand(1, 3) === 1)
+        if ($p2->getRelationshipGoal() !== RelationshipEnum::FRIENDLY_RIVAL && $this->squirrel3->rngNextInt(1, 3) === 1)
         {
             if ($p1->getRelationshipGoal() !== RelationshipEnum::FRIENDLY_RIVAL)
                 $message = $p1->getPet()->getName() . ' and ' . $p2->getPet()->getName() . ' met to brag about their ' . array_key_first($combinedSkills) . ', but realized that neither were really feeling up to it, so called the contest off.';
@@ -87,18 +90,18 @@ class FriendlyRivalsService
 
         foreach ($combinedSkills as $description => $skill)
         {
-            if (mt_rand(1, 2) === 1)
+            if ($this->squirrel3->rngNextInt(1, 2) === 1)
             {
                 $message = $p1->getPet()->getName() . ' and ' . $p2->getPet()->getName() . ' met to brag about their ' . $description . '. ';
 
-                $p1Roll = mt_rand(1, max(2, $p1Skills[$description] + 2));
-                $p2Roll = mt_rand(1, max(2, $p2Skills[$description] + 2));
+                $p1Roll = $this->squirrel3->rngNextInt(1, max(2, $p1Skills[$description] + 2));
+                $p2Roll = $this->squirrel3->rngNextInt(1, max(2, $p2Skills[$description] + 2));
 
                 if ($p1Roll > ceil($p2Roll * 1.25))
                 {
                     $message .= $p1->getPet()->getName() . ' was clearly the more accomplished of the two! ';
 
-                    $message .= ArrayFunctions::pick_one([
+                    $message .= $this->squirrel3->rngNextFromArray([
                         '(Not that ' . $p2->getPet()->getName() . ' would ever admit it!)',
                         $p2->getPet()->getName() . ' swore revenge!',
                         $p2->getPet()->getName() . ' conceded defeat... _this time!_',
@@ -109,7 +112,7 @@ class FriendlyRivalsService
                 {
                     $message .= $p2->getPet()->getName() . ' was clearly the more accomplished of the two! ';
 
-                    $message .= ArrayFunctions::pick_one([
+                    $message .= $this->squirrel3->rngNextFromArray([
                         '(Not that ' . $p1->getPet()->getName() . ' would ever admit it!)',
                         $p1->getPet()->getName() . ' swore revenge!',
                         $p1->getPet()->getName() . ' conceded defeat... _this time!_',
@@ -118,7 +121,7 @@ class FriendlyRivalsService
                 }
                 else
                 {
-                    $message .= ArrayFunctions::pick_one([
+                    $message .= $this->squirrel3->rngNextFromArray([
                         'Each claimed to be better than the other, and vowed to prove it during their next encounter!',
                         'They argued for a while about how best to test their skills, but couldn\'t come to an agreement. (Next time!)',
                         'They mocked each other\'s accomplishments, and eventually called the whole thing off without deciding on a victor.',

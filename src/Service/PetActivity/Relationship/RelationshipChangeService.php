@@ -8,14 +8,17 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
+use App\Service\Squirrel3;
 
 class RelationshipChangeService
 {
     private $loveService;
+    private $squirrel3;
 
-    public function __construct(LoveService $loveService)
+    public function __construct(LoveService $loveService, Squirrel3 $squirrel3)
     {
         $this->loveService = $loveService;
+        $this->squirrel3 = $squirrel3;
     }
 
     /**
@@ -93,7 +96,7 @@ class RelationshipChangeService
             {
                 $p1
                     ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(ArrayFunctions::pick_one([
+                    ->setRelationshipGoal($this->squirrel3->rngNextFromArray([
                         RelationshipEnum::FRIENDLY_RIVAL, RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE
                     ]))
                 ;
@@ -108,7 +111,7 @@ class RelationshipChangeService
                 $p1->setCurrentRelationship(RelationshipEnum::FRIEND);
                 $p2->setCurrentRelationship(RelationshipEnum::FRIEND);
 
-                if(mt_rand(1, 3) === 1)
+                if($this->squirrel3->rngNextInt(1, 3) === 1)
                     $mostly = ' (Well, mostly!)';
                 else
                     $mostly = '';
@@ -141,13 +144,13 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelyFromFriendsToBFFs($p1, $p2);
 
             case RelationshipEnum::FWB:
-                if(mt_rand(1, 4) === 1)
+                if($this->squirrel3->rngNextInt(1, 4) === 1)
                     return $this->hangOutPrivatelyFromFriendsToBFFs($p1, $p2);
                 else
                     return $this->hangOutPrivatelyFromFriendsToFWBs($p1, $p2);
 
             case RelationshipEnum::MATE:
-                if(mt_rand(1, 4) === 1)
+                if($this->squirrel3->rngNextInt(1, 4) === 1)
                     return $this->hangOutPrivatelyFromFriendsToMates($p1, $p2);
                 else
                     return $this->hangOutPrivatelyFromFriendsToBFFs($p1, $p2);
@@ -278,7 +281,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingMatesWithCompleteRejection($p1, $p2);
 
             case RelationshipEnum::FRIEND:
-                if(mt_rand(1, 4) === 1)
+                if($this->squirrel3->rngNextInt(1, 4) === 1)
                     return $this->hangOutPrivatelyFromFriendsToBFFs($p1, $p2);
                 else
                     return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 25, 45);
@@ -393,7 +396,7 @@ class RelationshipChangeService
                 $chanceP2ChangesMind = ceil($chanceP2ChangesMind / 4);
         }
 
-        $r = mt_rand(1, 100);
+        $r = $this->squirrel3->rngNextInt(1, 100);
 
         if($r <= $chanceP1ChangesMind)
         {
@@ -402,7 +405,7 @@ class RelationshipChangeService
             $p1->setCurrentRelationship($p2->getRelationshipGoal());
             $p2->setCurrentRelationship($p2->getRelationshipGoal());
 
-            if(mt_rand(1, 4) !== 1)
+            if($this->squirrel3->rngNextInt(1, 4) !== 1)
                 $p1->setRelationshipGoal($p2->getRelationshipGoal());
 
             if($p1IsNaive)
@@ -425,7 +428,7 @@ class RelationshipChangeService
             $p1->setCurrentRelationship($p1->getRelationshipGoal());
             $p2->setCurrentRelationship($p1->getRelationshipGoal());
 
-            if(mt_rand(1, 4) !== 1)
+            if($this->squirrel3->rngNextInt(1, 4) !== 1)
                 $p2->setRelationshipGoal($p1->getRelationshipGoal());
 
             if($p2IsNaive)
@@ -518,7 +521,7 @@ class RelationshipChangeService
             $chanceP2ChangesMind = 1;
         }
 
-        $r = mt_rand(1, $chanceP1ChangesMind + $chanceP2ChangesMind);
+        $r = $this->squirrel3->rngNextInt(1, $chanceP1ChangesMind + $chanceP2ChangesMind);
 
         if($r <= $chanceP1ChangesMind)
         {
@@ -540,7 +543,7 @@ class RelationshipChangeService
             $p1->setCurrentRelationship($p2->getRelationshipGoal());
             $p2->setCurrentRelationship($p2->getRelationshipGoal());
 
-            if(mt_rand(1, 3) !== 1)
+            if($this->squirrel3->rngNextInt(1, 3) !== 1)
                 $p1->setRelationshipGoal($p2->getRelationshipGoal());
         }
         else if($r < $chanceP1ChangesMind + $chanceP2ChangesMind)
@@ -563,7 +566,7 @@ class RelationshipChangeService
             $p1->setCurrentRelationship($p1->getRelationshipGoal());
             $p2->setCurrentRelationship($p1->getRelationshipGoal());
 
-            if(mt_rand(1, 3) !== 1)
+            if($this->squirrel3->rngNextInt(1, 3) !== 1)
                 $p2->setRelationshipGoal($p1->getRelationshipGoal());
         }
         else // break up
@@ -611,8 +614,8 @@ class RelationshipChangeService
                 $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and no longer wants to be friends! ' . $p2->getPet()->getName() . ' thought they had a really good friendship going... :(')->setIcon('icons/activity-logs/breakup');
 
                 $p2->getPet()
-                    ->increaseLove(-mt_rand(12, 18))
-                    ->increaseEsteem(-mt_rand(8, 12))
+                    ->increaseLove(-$this->squirrel3->rngNextInt(12, 18))
+                    ->increaseEsteem(-$this->squirrel3->rngNextInt(8, 12))
                 ;
 
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
@@ -632,8 +635,8 @@ class RelationshipChangeService
                 $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and no longer wants to be friends! ' . $p2->getPet()->getName() . ' thought they had a really good friendship going, and had been hoping they might be something more :\'(')->setIcon('icons/activity-logs/breakup');
 
                 $p2->getPet()
-                    ->increaseLove(-mt_rand(16, 24))
-                    ->increaseEsteem(-mt_rand(12, 16))
+                    ->increaseLove(-$this->squirrel3->rngNextInt(16, 24))
+                    ->increaseEsteem(-$this->squirrel3->rngNextInt(12, 16))
                 ;
 
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
@@ -893,8 +896,8 @@ class RelationshipChangeService
                 $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and no longer wants to be BFFs, or even friends at all! To be honest, ' . $p2->getPet()->getName() . ' felt the whole BFF thing was a bit much, anyway >:(');
 
                 $p2->getPet()
-                    ->increaseLove(-mt_rand(4, 8))
-                    ->increaseEsteem(-mt_rand(1, 4))
+                    ->increaseLove(-$this->squirrel3->rngNextInt(4, 8))
+                    ->increaseEsteem(-$this->squirrel3->rngNextInt(1, 4))
                 ;
 
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
@@ -910,8 +913,8 @@ class RelationshipChangeService
                 $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and no longer wants to be BFFs, or even friends at all! ' . $p2->getPet()->getName() . ' thought they had a really good friendship going... :(')->setIcon('icons/activity-logs/breakup');
 
                 $p2->getPet()
-                    ->increaseLove(-mt_rand(12, 18))
-                    ->increaseEsteem(-mt_rand(8, 12))
+                    ->increaseLove(-$this->squirrel3->rngNextInt(12, 18))
+                    ->increaseEsteem(-$this->squirrel3->rngNextInt(8, 12))
                 ;
 
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
@@ -926,8 +929,8 @@ class RelationshipChangeService
                 $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and no longer wants to be BFFs, or friends at all! ' . $p2->getPet()->getName() . ' thought they had a really good friendship going, and had been hoping they might be something more :\'(');
 
                 $p2->getPet()
-                    ->increaseLove(-mt_rand(16, 24))
-                    ->increaseEsteem(-mt_rand(12, 16))
+                    ->increaseLove(-$this->squirrel3->rngNextInt(16, 24))
+                    ->increaseEsteem(-$this->squirrel3->rngNextInt(12, 16))
                 ;
 
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
@@ -955,7 +958,7 @@ class RelationshipChangeService
         switch($p1->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                if(mt_rand(1, 4) === 1)
+                if($this->squirrel3->rngNextInt(1, 4) === 1)
                     return $this->hangOutPrivatelyFromFWBsToFriends($p1, $p2);
                 else
                     return $this->hangOutPrivatelyFromFWBsToDisliked($p1, $p2);
@@ -1208,7 +1211,7 @@ class RelationshipChangeService
 
             case RelationshipEnum::FWB:
                 // negotiate for a less-involved relationship
-                $p2->setRelationshipGoal(ArrayFunctions::pick_one([ RelationshipEnum::BFF, RelationshipEnum::FRIEND, RelationshipEnum::FRIEND ]));
+                $p2->setRelationshipGoal($this->squirrel3->rngNextFromArray([ RelationshipEnum::BFF, RelationshipEnum::FRIEND, RelationshipEnum::FRIEND ]));
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 35, 0);
                 break;
 
@@ -1217,8 +1220,8 @@ class RelationshipChangeService
                 $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and no longer wants to be FWBs, or friends at all! ' . $p2->getPet()->getName() . ' thought they had a really good friendship going, and had been hoping they might be something more :\'(')->setIcon('icons/activity-logs/breakup');
 
                 $p2->getPet()
-                    ->increaseLove(-mt_rand(16, 24))
-                    ->increaseEsteem(-mt_rand(12, 16))
+                    ->increaseLove(-$this->squirrel3->rngNextInt(16, 24))
+                    ->increaseEsteem(-$this->squirrel3->rngNextInt(12, 16))
                 ;
 
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
@@ -1246,7 +1249,7 @@ class RelationshipChangeService
         switch($p1->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                if(mt_rand(1, 4) === 1)
+                if($this->squirrel3->rngNextInt(1, 4) === 1)
                     return $this->hangOutPrivatelyFromMatesToFriends($p1, $p2);
                 else
                     return $this->hangOutPrivatelyFromMatesToDisliked($p1, $p2);
@@ -1471,7 +1474,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 15, 60);
 
             case RelationshipEnum::MATE:
-                $p2->setRelationshipGoal(ArrayFunctions::pick_one([ RelationshipEnum::FWB, RelationshipEnum::MATE ]));
+                $p2->setRelationshipGoal($this->squirrel3->rngNextFromArray([ RelationshipEnum::FWB, RelationshipEnum::MATE ]));
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 15, 60);
 
             default:
@@ -1504,8 +1507,8 @@ class RelationshipChangeService
                 $log2 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and wants to break up! To be honest, ' . $p2->getPet()->getName() . ' felt the whole dating thing was a bit much, anyway >:(');
 
                 $p2->getPet()
-                    ->increaseLove(-mt_rand(12, 18))
-                    ->increaseEsteem(-mt_rand(8, 12))
+                    ->increaseLove(-$this->squirrel3->rngNextInt(12, 18))
+                    ->increaseEsteem(-$this->squirrel3->rngNextInt(8, 12))
                 ;
 
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
@@ -1519,7 +1522,7 @@ class RelationshipChangeService
             case RelationshipEnum::FWB:
             case RelationshipEnum::MATE:
                 // negotiate for a less-involved relationship
-                $p2->setRelationshipGoal(ArrayFunctions::pick_one([ RelationshipEnum::FWB, RelationshipEnum::BFF, RelationshipEnum::FRIEND ]));
+                $p2->setRelationshipGoal($this->squirrel3->rngNextFromArray([ RelationshipEnum::FWB, RelationshipEnum::BFF, RelationshipEnum::FRIEND ]));
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 0);
 
             default:

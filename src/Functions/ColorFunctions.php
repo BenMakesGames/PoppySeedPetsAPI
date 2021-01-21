@@ -126,23 +126,6 @@ final class ColorFunctions
         return ColorFunctions::RGB2Hex((int)$rgb['r'], (int)$rgb['g'], (int)$rgb['b']);
     }
 
-    public static function tweakColor(string $color, int $radius = 12): string
-    {
-        $newColor = '';
-
-        for($i = 0; $i < 3; $i++)
-        {
-            $part = hexdec($color[$i * 2] . $color[$i * 2 + 1]);    // get color part as decimal
-            $part += mt_rand(-$radius, $radius);                    // randomize
-            $part = max(0, min(255, $part));                        // keep between 0 and 255
-            $part = str_pad(dechex($part), 2, '0', STR_PAD_LEFT);   // turn back into hex
-
-            $newColor .= $part;
-        }
-
-        return $newColor;
-    }
-
     // not-perfect, but should be computationally fast!
     public function GrayscalifyHex(string $hexColor)
     {

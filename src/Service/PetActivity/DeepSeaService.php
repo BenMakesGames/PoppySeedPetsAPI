@@ -16,6 +16,7 @@ use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\TransactionService;
 
 class DeepSeaService
@@ -25,10 +26,11 @@ class DeepSeaService
     private $petExperienceService;
     private $transactionService;
     private $userQuestRepository;
+    private $squirrel3;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, UserQuestRepository $userQuestRepository
+        TransactionService $transactionService, UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3
     )
     {
         $this->responseService = $responseService;
@@ -36,6 +38,7 @@ class DeepSeaService
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
         $this->userQuestRepository = $userQuestRepository;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -45,7 +48,7 @@ class DeepSeaService
 
         $maxSkill = NumberFunctions::clamp($maxSkill, 1, 18);
 
-        $roll = mt_rand(1, $maxSkill);
+        $roll = $this->squirrel3->rngNextInt(1, $maxSkill);
 
         $activityLog = null;
         $changes = new PetChanges($pet);
@@ -98,13 +101,13 @@ class DeepSeaService
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));
 
-        if(mt_rand(1, 75) === 1)
+        if($this->squirrel3->rngNextInt(1, 75) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);
     }
 
     private function failedToUseSubmarine(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to get the Submarine started, but forgot one of the steps, causing the whole thing to freak out and shut down :|', 'icons/activity-logs/confused');
 
@@ -115,7 +118,7 @@ class DeepSeaService
 
     private function foundAlgae(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, true);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% took the Submarine out to sea, but didn\'t really get anywhere... some Algae got stuck to the hull, though, so there\'s that!', 'items/tool/submarine');
 
@@ -129,25 +132,25 @@ class DeepSeaService
     private function foundSandOrSeaweed(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($roll >= 10)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, true);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
 
-            if(mt_rand(1, 100) === 1)
+            if($this->squirrel3->rngNextInt(1, 100) === 1)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine, and found a Dino Skull!', 'items/tool/submarine');
 
                 $this->inventoryService->petCollectsItem('Dino Skull', $pet, $pet->getName() . ' found this while exploring the shelf sea using the Submarine!', $activityLog);
 
-                $pet->increaseEsteem(mt_rand(4, 8));
+                $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
             }
             else
             {
-                $loot = ArrayFunctions::pick_one([
+                $loot = $this->squirrel3->rngNextFromArray([
                     'Seaweed', 'Silica Grounds', 'Fish', 'Scales'
                 ]);
 
@@ -160,11 +163,11 @@ class DeepSeaService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine. (Pretty!)', 'items/tool/submarine');
 
-            $pet->increaseEsteem(mt_rand(2, 4));
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
         }
@@ -175,11 +178,11 @@ class DeepSeaService
     private function fishedJellyFish(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($roll >= 12)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, true);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine. They caught a jellyfish while they were out there. (Yum! Jellyfish Jelly!)', 'items/tool/submarine');
 
@@ -189,11 +192,11 @@ class DeepSeaService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine. A smack of jellyfish swam by; ' . $pet->getName() . ' watched in wonder...', 'items/tool/submarine');
 
-            $pet->increaseEsteem(mt_rand(2, 4));
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
         }
@@ -204,15 +207,15 @@ class DeepSeaService
     private function exploredReef(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($roll >= 13)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, true);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
 
-            $lucky = $pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 50) === 1;
+            $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 50) === 1;
 
-            if($lucky || mt_rand(1, 100) === 1)
+            if($lucky || $this->squirrel3->rngNextInt(1, 100) === 1)
             {
                 $loot = 'Little Strongbox';
 
@@ -223,7 +226,7 @@ class DeepSeaService
             }
             else
             {
-                $loot = ArrayFunctions::pick_one([
+                $loot = $this->squirrel3->rngNextFromArray([
                     'Crown Coral', 'Fish', 'Sand Dollar'
                 ]);
 
@@ -238,7 +241,7 @@ class DeepSeaService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started exploring a coral reef using the Submarine, but was chased off by some sharks...', '');
 
@@ -251,19 +254,19 @@ class DeepSeaService
     private function fishedHexactinellid(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine, but it was too dark to see anything...', 'icons/activity-logs/confused');
         }
         else if($roll >= 14)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, true);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
 
-            if(mt_rand(1, 10) === 1)
+            if($this->squirrel3->rngNextInt(1, 10) === 1)
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% used the Submarine and found a hexactinellid deep in the ocean... and took some of its Glass. (Rude?!)', 'items/tool/submarine');
             else
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% used the Submarine and found a hexactinellid deep in the ocean... and took some of its Glass.', 'items/tool/submarine');
@@ -277,7 +280,7 @@ class DeepSeaService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine, but didn\'t find anything...', 'icons/activity-logs/confused');
 
@@ -293,11 +296,11 @@ class DeepSeaService
 
         $pet->increaseFood(-1);
 
-        $roll = mt_rand(1, 20 + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $roll = $this->squirrel3->rngNextInt(1, 20 + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($roll >= 16)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, true);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
 
             $tentacles = 2;
 
@@ -310,7 +313,7 @@ class DeepSeaService
             else
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Giant Squid while exploring the deep sea! They got out of the Submarine and fought it off, stealing a couple Tentacles!', 'items/tool/submarine');
 
-            $pet->increaseEsteem(mt_rand(2, 4));
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
 
             if($roll >= 20) $tentacles++;
             if($roll >= 30) $tentacles++;
@@ -322,9 +325,9 @@ class DeepSeaService
         }
         else if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
 
-            $pet->increaseSafety(-mt_rand(2, 4));
+            $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Giant Squid while exploring the deep sea! As a member of High Impact, they immediately stepped up to the challenge, but the squid attacked viciously, and ' . $pet->getName() . ' was forced to retreat...', '');
 
@@ -332,7 +335,7 @@ class DeepSeaService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Giant Squid while exploring the deep sea! They got away as quickly as they could!', '');
 
@@ -344,11 +347,11 @@ class DeepSeaService
 
     private function meetFriendlyWhale(Pet $pet)
     {
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, true);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
 
         $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the deep sea, ' . '%pet:' . $pet->getId() . '.name% watched a pod of whales go by! ' . $pet->getName() . ' swam and sang along with them for a while...', 'items/tool/submarine');
 
-        $pet->increaseLove(mt_rand(2, 4));
+        $pet->increaseLove($this->squirrel3->rngNextInt(2, 4));
 
         $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::NATURE, PetSkillEnum::MUSIC ]);
 
@@ -358,22 +361,22 @@ class DeepSeaService
     private function findSubmarineVolcano(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = mt_rand(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::FISH, false);
 
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine, but it was too dark to see anything...', 'icons/activity-logs/confused');
         }
 
         if($roll >= 17)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, true);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
 
             $loot = [
-                ArrayFunctions::pick_one([ 'Liquid-hot Magma', 'Glass', 'Silica Grounds' ]),
-                ArrayFunctions::pick_one([ 'Scales', 'Silica Grounds', 'Rock' ]),
+                $this->squirrel3->rngNextFromArray([ 'Liquid-hot Magma', 'Glass', 'Silica Grounds' ]),
+                $this->squirrel3->rngNextFromArray([ 'Scales', 'Silica Grounds', 'Rock' ]),
             ];
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine, and found a submarine volcano! They looked around for a little while and scooped up some ' . ArrayFunctions::list_nice($loot) . ' before surfacing.', 'items/tool/submarine');
@@ -385,13 +388,13 @@ class DeepSeaService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine, and found a submarine volcano! They had to resurface before they could collect anything, though.', 'icons/activity-logs/confused');
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
         }
 
-        if(mt_rand(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
+        if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
         {
             if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
             {
@@ -402,10 +405,10 @@ class DeepSeaService
             else
             {
                 $pet->increaseFood(-2);
-                $pet->increaseSafety(-mt_rand(2, 4));
+                $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
 
                 // why need to have unlocked the greenhouse? just testing that you've been playing for a while
-                if(mt_rand(1, 20) === 1)
+                if($this->squirrel3->rngNextInt(1, 20) === 1)
                     $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and I don\'t mean in a sexy way; %pet:' . $pet->getId() . '.name% got a bit light-headed while cramped inside the Submarine.');
                 else
                     $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and %pet:' . $pet->getId() . '.name% got a bit light-headed while cramped inside the Submarine.');
@@ -418,20 +421,20 @@ class DeepSeaService
     private function findSunkenShip(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = mt_rand(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($roll >= 18)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, true);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
 
-            $lucky = $pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 50) === 1;
+            $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 50) === 1;
 
             $rareTreasure = null;
             $andMore = '!';
 
-            if($lucky || mt_rand(1, 100) === 1)
+            if($lucky || $this->squirrel3->rngNextInt(1, 100) === 1)
             {
-                $rareTreasure = ArrayFunctions::pick_one([
+                $rareTreasure = $this->squirrel3->rngNextFromArray([
                     'Little Strongbox', 'Little Strongbox',
                     'Jolliest Roger', 'Jolliest Roger',
                     'Blackonite'
@@ -444,25 +447,25 @@ class DeepSeaService
             }
             else if($roll >= 28)
             {
-                if(mt_rand(1, 100) === 1)
+                if($this->squirrel3->rngNextInt(1, 100) === 1)
                 {
-                    $rareTreasure = ArrayFunctions::pick_one([ 'Species Transmigration Serum', 'Yellow Bow' ]);
+                    $rareTreasure = $this->squirrel3->rngNextFromArray([ 'Species Transmigration Serum', 'Yellow Bow' ]);
                     $andMore = '; oh, and a ' . $rareTreasure . ', too!';
                 }
-                else if(mt_rand(1, 10) === 1)
+                else if($this->squirrel3->rngNextInt(1, 10) === 1)
                 {
                     $rareTreasure = 'Barnacles';
                     $andMore = '; oh, and some Barnacles, too!';
                 }
                 else
                 {
-                    $loot[] = ArrayFunctions::pick_one(['Silver Bar', 'Gold Ring']);
+                    $loot[] = $this->squirrel3->rngNextFromArray(['Silver Bar', 'Gold Ring']);
                 }
             }
 
             $loot = [
-                ArrayFunctions::pick_one([ 'Gold Bar', 'Gold Bar', 'Silver Bar', 'Silver Bar', 'Merchant Fish' ]),
-                ArrayFunctions::pick_one([ 'Gold Bar', 'Silver Bar', 'Mermaid Egg', 'Scales', 'Fish', 'Seaweed', 'Captain\'s Log' ])
+                $this->squirrel3->rngNextFromArray([ 'Gold Bar', 'Gold Bar', 'Silver Bar', 'Silver Bar', 'Merchant Fish' ]),
+                $this->squirrel3->rngNextFromArray([ 'Gold Bar', 'Silver Bar', 'Mermaid Egg', 'Scales', 'Fish', 'Seaweed', 'Captain\'s Log' ])
             ];
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the ocean using the Submarine, and found a sunken ship! Inside was ' . ArrayFunctions::list_nice($loot) . $andMore, 'items/tool/submarine');
@@ -482,7 +485,7 @@ class DeepSeaService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started exploring a coral reef using the Submarine, but was chased off by some sharks...', '');
 

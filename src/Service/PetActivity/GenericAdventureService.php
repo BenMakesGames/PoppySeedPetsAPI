@@ -6,7 +6,6 @@ use App\Enum\BirdBathBirdEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
-use App\Functions\ArrayFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
@@ -15,6 +14,7 @@ use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\TransactionService;
 
 class GenericAdventureService
@@ -26,11 +26,12 @@ class GenericAdventureService
     private $transactionService;
     private $meritRepository;
     private $itemRepository;
+    private $squirrel3;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         UserQuestRepository $userQuestRepository, TransactionService $transactionService, MeritRepository $meritRepository,
-        ItemRepository $itemRepository
+        ItemRepository $itemRepository, Squirrel3 $squirrel3
     )
     {
         $this->responseService = $responseService;
@@ -40,13 +41,14 @@ class GenericAdventureService
         $this->transactionService = $transactionService;
         $this->meritRepository = $meritRepository;
         $this->itemRepository = $itemRepository;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
 
         if($pet->getHat() && $pet->getHat()->getItem()->getName() === 'Red')
         {
@@ -62,7 +64,7 @@ class GenericAdventureService
         if($pet->getIsGrandparent() && !$pet->getClaimedGrandparentMerit())
         {
             /** @var string $newMerit */
-            $newMerit = ArrayFunctions::pick_one([
+            $newMerit = $this->squirrel3->rngNextFromArray([
                 MeritEnum::NEVER_EMBARRASSED, MeritEnum::EVERLASTING_LOVE, MeritEnum::NOTHING_TO_FEAR
             ]);
 
@@ -108,7 +110,7 @@ class GenericAdventureService
             return $activityLog;
         }
 
-        if($pet->getOwner()->getGreenhouse() && $pet->getOwner()->getGreenhouse()->getHasBirdBath() && !$pet->getOwner()->getGreenhouse()->getVisitingBird() && mt_rand(1, 20) === 1)
+        if($pet->getOwner()->getGreenhouse() && $pet->getOwner()->getGreenhouse()->getHasBirdBath() && !$pet->getOwner()->getGreenhouse()->getVisitingBird() && $this->squirrel3->rngNextInt(1, 20) === 1)
         {
             $bird = BirdBathBirdEnum::getRandomValue();
 
@@ -119,7 +121,7 @@ class GenericAdventureService
             ;
         }
 
-        if($level >= 10 && mt_rand(1, 130) === 1)
+        if($level >= 10 && $this->squirrel3->rngNextInt(1, 130) === 1)
             $reward = [ 'a ', 'Secret Seashell' ];
         else
         {
@@ -154,7 +156,7 @@ class GenericAdventureService
                 if($pet->hasMerit(MeritEnum::BEHATTED))
                     $possibleRewards[] = [ 'a ', 'Tinfoil Hat' ];
                 else
-                    $possibleRewards[] = [ mt_rand(4, 8), 'moneys' ];
+                    $possibleRewards[] = [ $this->squirrel3->rngNextInt(4, 8), 'moneys' ];
             }
 
             if($level >= 25)
@@ -167,13 +169,13 @@ class GenericAdventureService
             {
                 $possibleRewards[] = [ 'a chunk of ', 'Dark Matter' ];
 
-                if(mt_rand(1, 20) === 1)
+                if($this->squirrel3->rngNextInt(1, 20) === 1)
                     $possibleRewards[] = [ 'a ', 'Species Transmigration Serum' ];
                 else
-                    $possibleRewards[] = [ mt_rand(8, 12), 'moneys' ];
+                    $possibleRewards[] = [ $this->squirrel3->rngNextInt(8, 12), 'moneys' ];
             }
 
-            $reward = ArrayFunctions::pick_one($possibleRewards);
+            $reward = $this->squirrel3->rngNextFromArray($possibleRewards);
         }
 
         if($reward[1] === 'moneys')
@@ -181,7 +183,7 @@ class GenericAdventureService
         else
             $describeReward = $reward[0] . $reward[1];
 
-        $event = mt_rand(1, 4);
+        $event = $this->squirrel3->rngNextInt(1, 4);
         if($event === 1)
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they spotted a bunch of ants carrying ' . $describeReward . '! %pet:' . $pet->getId() . '.name% took the ' . $reward[1] . ', brushed the ants off, and returned home.', 'items/bug/ant-conga');

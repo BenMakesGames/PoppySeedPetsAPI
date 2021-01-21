@@ -29,6 +29,7 @@ use App\Service\GreenhouseService;
 use App\Service\InventoryService;
 use App\Service\PetActivity\GreenhouseAdventureService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -310,7 +311,7 @@ class GreenhouseController extends PoppySeedPetsController
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository, PetRepository $petRepository,
         PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository,
         UserQuestRepository $userQuestRepository, GreenhouseAdventureService $greenhouseAdventureService,
-        GreenhouseService $greenhouseService, SpiceRepository $spiceRepository
+        GreenhouseService $greenhouseService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -353,11 +354,11 @@ class GreenhouseController extends PoppySeedPetsController
         {
             $species = $petSpeciesRepository->findOneBy([ 'name' => 'Dapper Swan' ]);
 
-            $colorA = ColorFunctions::tweakColor(ArrayFunctions::pick_one([
+            $colorA = $squirrel3->rngNextTweakedColor($squirrel3->rngNextFromArray([
                 'EEEEEE', 'EEDDCC', 'DDDDBB'
             ]));
 
-            $colorB = ColorFunctions::tweakColor(ArrayFunctions::pick_one([
+            $colorB = $squirrel3->rngNextTweakedColor($squirrel3->rngNextFromArray([
                 'bb0000', '33CCFF', '009900', 'CC9933', '333333'
             ]));
 
@@ -382,11 +383,11 @@ class GreenhouseController extends PoppySeedPetsController
         {
             $species = $petSpeciesRepository->findOneBy([ 'name' => 'Mushroom' ]);
 
-            $colorA = ColorFunctions::tweakColor(ArrayFunctions::pick_one([
+            $colorA = $squirrel3->rngNextTweakedColor(ArrayFunctions::pick_one([
                 'e32c2c', 'e5e5d6', 'dd8a09', 'a8443d'
             ]));
 
-            $colorB = ColorFunctions::tweakColor(ArrayFunctions::pick_one([
+            $colorB = $squirrel3->rngNextTweakedColor(ArrayFunctions::pick_one([
                 'd7d38b', 'e5e5d6', '716363'
             ]));
 
@@ -412,15 +413,15 @@ class GreenhouseController extends PoppySeedPetsController
         {
             $species = $petSpeciesRepository->findOneBy([ 'name' => 'Tomate' ]);
 
-            $colorA = ColorFunctions::tweakColor(ArrayFunctions::pick_one([
+            $colorA = $squirrel3->rngNextTweakedColor($squirrel3->rngNextFromArray([
                 'FF6622', 'FFCC22', '77FF22', 'FF2222', '7722FF'
             ]));
 
-            $colorB = ColorFunctions::tweakColor(ArrayFunctions::pick_one([
+            $colorB = $squirrel3->rngNextTweakedColor($squirrel3->rngNextFromArray([
                 '007700', '009922', '00bb44'
             ]));
 
-            $name = ArrayFunctions::pick_one([
+            $name = $squirrel3->rngNextFromArray([
                 'Alicante', 'Azoychka', 'Krim', 'Brandywine', 'Campari', 'Canario', 'Tomkin',
                 'Flamenco', 'Giulietta', 'Grandero', 'Trifele', 'Jubilee', 'Juliet', 'Kumato',
                 'Monterosa', 'Montserrat', 'Plum', 'Raf', 'Roma', 'Rutgers', 'Marzano', 'Cherry',

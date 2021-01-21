@@ -1,18 +1,11 @@
 <?php
 namespace App\Service;
 
-use App\Entity\Inventory;
-use App\Entity\Item;
 use App\Entity\Pet;
-use App\Entity\PetActivityLog;
 use App\Entity\StatusEffect;
 use App\Enum\EnumInvalidValueException;
-use App\Enum\FlavorEnum;
-use App\Enum\LocationEnum;
-use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\GrammarFunctions;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -24,16 +17,18 @@ class PetExperienceService
     private $em;
     private $responseService;
     private $itemRepository;
+    private $squirrel3;
 
     public function __construct(
         PetActivityStatsService $petActivityStatsService, EntityManagerInterface $em,
-        ResponseService $responseService, ItemRepository $itemRepository
+        ResponseService $responseService, ItemRepository $itemRepository, Squirrel3 $squirrel3
     )
     {
         $this->petActivityStatsService = $petActivityStatsService;
         $this->em = $em;
         $this->responseService = $responseService;
         $this->itemRepository = $itemRepository;
+        $this->squirrel3 = $squirrel3;
     }
 
     /**
@@ -75,7 +70,7 @@ class PetExperienceService
         while($pet->getExperience() >= $pet->getExperienceToLevel())
         {
             $pet->decreaseExperience($pet->getExperienceToLevel());
-            $pet->getSkills()->increaseStat(ArrayFunctions::pick_one($possibleStats));
+            $pet->getSkills()->increaseStat($this->squirrel3->rngNextFromArray($possibleStats));
         }
     }
 
@@ -84,17 +79,17 @@ class PetExperienceService
         if($pet->hasStatusEffect(StatusEffectEnum::EXTRA_EXTROVERTED))
             $energy = ceil($energy / 2);
 
-        if(mt_rand(1, 10) === 1)
+        if($this->squirrel3->rngNextInt(1, 10) === 1)
         {
             // smallish chance to consume WAY less energy. this was added to help jiggle pets out of a situation where
             // two pets owned by the same account are always offset in social energy such that they're never able to hang
             // out with each other.
-            $energy = mt_rand(ceil($energy / 4), ceil($energy * 3 / 4));
+            $energy = $this->squirrel3->rngNextInt(ceil($energy / 4), ceil($energy * 3 / 4));
         }
         else
         {
             // always add a LITTLE random jiggle, though:
-            $energy = mt_rand(ceil($energy * 8 / 10), ceil($energy * 12 / 10));
+            $energy = $this->squirrel3->rngNextInt(ceil($energy * 8 / 10), ceil($energy * 12 / 10));
         }
 
         // tool modifiers (if any)

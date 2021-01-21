@@ -27,6 +27,7 @@ use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -232,7 +233,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
     public function summonSomethingFriendly(
         Inventory $inventory, ResponseService $responseService, PetRepository $petRepository,
         UserRepository $userRepository, UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
-        PetSpeciesRepository $petSpeciesRepository, PetFactory $petFactory
+        PetSpeciesRepository $petSpeciesRepository, PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -247,7 +248,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
         $gotASentinel = false;
         $gotAReusedSentinel = false;
 
-        if(mt_rand(1, 19) === 1)
+        if($squirrel3->rngNextInt(1, 19) === 1)
         {
             $pet = $petFactory->createRandomPetOfSpecies(
                 $user,
@@ -280,7 +281,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
             $pet = $petFactory->createRandomPetOfSpecies($user, ArrayFunctions::pick_one($allSpecies));
 
-            $pet->setScale(mt_rand(80, 120));
+            $pet->setScale($squirrel3->rngNextInt(80, 120));
 
             if($pet->getSpecies()->getName() === 'Sentinel')
             {
@@ -299,22 +300,22 @@ class SummoningScrollController extends PoppySeedPetsItemController
             $pet->setInDaycare(true);
 
             if($gotAReusedSentinel)
-                $message = 'You read the scroll... not ' . mt_rand(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet! But it looks like someone took care of it... has it done this before?) You put it in the Pet Shelter daycare...';
+                $message = 'You read the scroll... not ' . $squirrel3->rngNextInt(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet! But it looks like someone took care of it... has it done this before?) You put it in the Pet Shelter daycare...';
             else if($gotASentinel)
-                $message = 'You read the scroll... not ' . mt_rand(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet!) You put it in the Pet Shelter daycare...';
+                $message = 'You read the scroll... not ' . $squirrel3->rngNextInt(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet!) You put it in the Pet Shelter daycare...';
             else
-                $message = 'You read the scroll... not ' . mt_rand(3, 6) . ' seconds later, ' . GrammarFunctions::indefiniteArticle($pet->getSpecies()->getName()) . ' ' . $pet->getSpecies()->getName() . ' named ' . $pet->getName() . ' opens the door, waves "hello", then closes it again before heading to the Pet Shelter!';
+                $message = 'You read the scroll... not ' . $squirrel3->rngNextInt(3, 6) . ' seconds later, ' . GrammarFunctions::indefiniteArticle($pet->getSpecies()->getName()) . ' ' . $pet->getSpecies()->getName() . ' named ' . $pet->getName() . ' opens the door, waves "hello", then closes it again before heading to the Pet Shelter!';
         }
         else
         {
             $pet->setInDaycare(false);
 
             if($gotAReusedSentinel)
-                $message = 'You read the scroll... not ' . mt_rand(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet! But it looks like someone took care of it... has it done this before?) Well... it\'s here now, I guess...';
+                $message = 'You read the scroll... not ' . $squirrel3->rngNextInt(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet! But it looks like someone took care of it... has it done this before?) Well... it\'s here now, I guess...';
             else if($gotASentinel)
-                $message = 'You read the scroll... not ' . mt_rand(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet!) Well... it\'s here now, I guess...';
+                $message = 'You read the scroll... not ' . $squirrel3->rngNextInt(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet!) Well... it\'s here now, I guess...';
             else
-                $message = 'You read the scroll... not ' . mt_rand(3, 6) . ' seconds later, ' . GrammarFunctions::indefiniteArticle($pet->getSpecies()->getName()) . ' ' . $pet->getSpecies()->getName() . ' named ' . $pet->getName() . ' opens the door, and walks inside!';
+                $message = 'You read the scroll... not ' . $squirrel3->rngNextInt(3, 6) . ' seconds later, ' . GrammarFunctions::indefiniteArticle($pet->getSpecies()->getName()) . ' ' . $pet->getSpecies()->getName() . ' named ' . $pet->getName() . ' opens the door, and walks inside!';
         }
 
         $em->flush();

@@ -1,21 +1,18 @@
 <?php
 namespace App\Service\PetActivity\Group;
 
-use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetGroup;
 use App\Enum\EnumInvalidValueException;
-use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
-use App\Functions\ArrayFunctions;
-use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -29,10 +26,12 @@ class BandService
     private $responseService;
     private $petExperienceService;
     private $transactionService;
+    private $squirrel3;
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, InventoryService $inventoryService,
-        ResponseService $responseService, PetExperienceService $petExperienceService, TransactionService $transactionService
+        ResponseService $responseService, PetExperienceService $petExperienceService, TransactionService $transactionService,
+        Squirrel3 $squirrel3
     )
     {
         $this->em = $em;
@@ -41,6 +40,7 @@ class BandService
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
+        $this->squirrel3 = $squirrel3;
     }
 
     private const ADJECTIVE_LIST = [
@@ -139,7 +139,7 @@ class BandService
 
     public function generateBandName(): string
     {
-        $pattern = ArrayFunctions::pick_one([
+        $pattern = $this->squirrel3->rngNextFromArray([
             'The? %noun% %nouns%',
             'The/My/Your/Our? %adjective%? %noun% %nouns%',
             'The? %adjective%? %noun% %nouns%',
@@ -165,23 +165,23 @@ class BandService
         {
             if($part[strlen($part) - 1] === '?')
             {
-                if(mt_rand(1, 2) === 1)
+                if($this->squirrel3->rngNextInt(1, 2) === 1)
                     $part = substr($part, 0, strlen($part) - 1);
                 else
                     continue;
             }
 
             if(strpos($part, '/') !== false)
-                $part = ArrayFunctions::pick_one(explode('/', $part));
+                $part = $this->squirrel3->rngNextFromArray(explode('/', $part));
 
             if($part === '%noun%')
-                $newParts[] = ArrayFunctions::pick_one(self::NOUN_LIST);
+                $newParts[] = $this->squirrel3->rngNextFromArray(self::NOUN_LIST);
             else if($part === '%nouns%')
-                $newParts[] = ArrayFunctions::pick_one(self::PLURAL_NOUN_LIST);
+                $newParts[] = $this->squirrel3->rngNextFromArray(self::PLURAL_NOUN_LIST);
             else if($part === '%adjective%')
-                $newParts[] = ArrayFunctions::pick_one(self::ADJECTIVE_LIST);
+                $newParts[] = $this->squirrel3->rngNextFromArray(self::ADJECTIVE_LIST);
             else if($part === '%number%')
-                $newParts[] = ArrayFunctions::pick_one(self::NUMBER_LIST);
+                $newParts[] = $this->squirrel3->rngNextFromArray(self::NUMBER_LIST);
             else
                 $newParts[] = $part;
         }
@@ -197,9 +197,9 @@ class BandService
 
     public function meet(PetGroup $group)
     {
-        if($group->getNumberOfProducts() > 0 && mt_rand(1, 10) === 1)
+        if($group->getNumberOfProducts() > 0 && $this->squirrel3->rngNextInt(1, 10) === 1)
         {
-            $r = mt_rand(1, 100);
+            $r = $this->squirrel3->rngNextInt(1, 100);
 
             if ($r <= 75)
                 $this->receiveFanMail($group);
@@ -229,8 +229,8 @@ class BandService
             $feels = self::FAN_MAIL_FEELS[($pet->getId() * 89) % count(self::FAN_MAIL_FEELS)];
 
             $pet
-                ->increaseEsteem(mt_rand(6, 12))
-                ->increaseLove(mt_rand(2, 4))
+                ->increaseEsteem($this->squirrel3->rngNextInt(6, 12))
+                ->increaseLove($this->squirrel3->rngNextInt(2, 4))
             ;
 
             $activityLog = (new PetActivityLog())
@@ -247,7 +247,7 @@ class BandService
 
     public function receiveRoyalties(PetGroup $group)
     {
-        $moneys = mt_rand(1, 3) + floor(
+        $moneys = $this->squirrel3->rngNextInt(1, 3) + floor(
             sqrt($group->getNumberOfProducts() * 10) / count($group->getMembers())
         );
 
@@ -257,7 +257,7 @@ class BandService
 
             $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' got royalties from ' . $group->getName() . ' sales!');
 
-            $pet->increaseEsteem(mt_rand(4, 8));
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
 
             $activityLog = (new PetActivityLog())
                 ->setPet($pet)
@@ -280,7 +280,7 @@ class BandService
 
         $soothingVoiceValue = 3;
         $skill = 0;
-        $progress = mt_rand(5, 12 + $bandSize * 2);
+        $progress = $this->squirrel3->rngNextInt(5, 12 + $bandSize * 2);
         /** @var PetChanges[] $petChanges */ $petChanges = [];
 
         foreach($group->getMembers() as $pet)
@@ -288,7 +288,7 @@ class BandService
             $petWithSkills = $pet->getComputedSkills();
             $petChanges[$pet->getId()] = new PetChanges($pet);
 
-            $roll = mt_rand(1, 10 + $petWithSkills->getMusic()->getTotal());
+            $roll = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getMusic()->getTotal());
 
             if($pet->hasMerit(MeritEnum::SOOTHING_VOICE))
             {
@@ -309,7 +309,7 @@ class BandService
 
         if($group->getProgress() >= 100)
         {
-            $totalRoll = mt_rand(1, $group->getSkillRollTotal());
+            $totalRoll = $this->squirrel3->rngNextInt(1, $group->getSkillRollTotal());
 
             $group
                 ->clearProgress()
@@ -331,11 +331,11 @@ class BandService
 
             foreach($group->getMembers() as $member)
             {
-                $member->increaseEsteem(mt_rand(8, 12));
+                $member->increaseEsteem($this->squirrel3->rngNextInt(8, 12));
 
                 $activityLog = (new PetActivityLog())
                     ->setPet($member)
-                    ->setEntry($group->getName() . (mt_rand(1, 5) === 1 ? ' finally' : '') . ' released a new ' . $item . '!')
+                    ->setEntry($group->getName() . ($this->squirrel3->rngNextInt(1, 5) === 1 ? ' finally' : '') . ' released a new ' . $item . '!')
                     ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
@@ -348,19 +348,19 @@ class BandService
         }
         else
         {
-            $groupSentiment = ArrayFunctions::pick_one([ 0, 0, 1, 1, 1, 2 ]);
+            $groupSentiment = $this->squirrel3->rngNextFromArray([ 0, 0, 1, 1, 1, 2 ]);
 
             foreach($group->getMembers() as $member)
             {
-                if(mt_rand(1, 8) === 1)
-                    $sentiment = ArrayFunctions::pick_one([ 0, 0, 1, 1, 1, 2 ]);
+                if($this->squirrel3->rngNextInt(1, 8) === 1)
+                    $sentiment = $this->squirrel3->rngNextFromArray([ 0, 0, 1, 1, 1, 2 ]);
                 else
                     $sentiment = $groupSentiment;
 
                 if($sentiment === 0)
-                    $member->increaseLove(mt_rand(2, 6));
+                    $member->increaseLove($this->squirrel3->rngNextInt(2, 6));
                 else if($sentiment === 1)
-                    $member->increaseEsteem(mt_rand(2, 6));
+                    $member->increaseEsteem($this->squirrel3->rngNextInt(2, 6));
 
                 $activityLog = (new PetActivityLog())
                     ->setPet($member)

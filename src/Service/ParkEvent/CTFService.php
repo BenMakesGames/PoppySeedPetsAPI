@@ -17,6 +17,7 @@ use App\Model\PetChanges;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
 use App\Service\PetService;
+use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -36,16 +37,18 @@ class CTFService implements ParkEventInterface
     private $petRelationshipService;
     private $petExperienceService;
     private $transactionService;
+    private $squirrel3;
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService
+        TransactionService $transactionService, Squirrel3 $squirrel3
     )
     {
         $this->em = $em;
         $this->petRelationshipService = $petRelationshipService;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -66,7 +69,7 @@ class CTFService implements ParkEventInterface
             ->setType(ParkEventTypeEnum::CTF)
         ;
 
-        $colors = ArrayFunctions::pick_some([
+        $colors = $this->squirrel3->rngNextSubsetFromArray([
             'red', 'blue', 'green', 'gold', 'purple', 'white', 'black'
         ], 2);
 

@@ -13,6 +13,7 @@ use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 
 class HalloweenSmithingService
 {
@@ -20,16 +21,18 @@ class HalloweenSmithingService
     private $inventoryService;
     private $responseService;
     private $itemRepository;
+    private $squirrel3;
 
     public function __construct(
         PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        ItemRepository $itemRepository
+        ItemRepository $itemRepository, Squirrel3 $squirrel3
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->itemRepository = $itemRepository;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function createPumpkinBucket(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -41,17 +44,17 @@ class HalloweenSmithingService
             'Upside-down, Yellow Plastic Bucket'
         ];
 
-        $makes = $this->itemRepository->findOneByName(ArrayFunctions::pick_one([
+        $makes = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
             'Ecstatic Pumpkin Bucket',
             'Distressed Pumpkin Bucket',
             'Unconvinced Pumpkin Bucket',
         ]));
 
-        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 15)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::SMITH, true);
 
             $itemUsed = $this->inventoryService->loseOneOf($buckets, $pet->getOwner(), LocationEnum::HOME);
             $itemUsedItem = $this->itemRepository->findOneByName($itemUsed);
@@ -69,7 +72,7 @@ class HalloweenSmithingService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to shape a bucket into ' . $makes->getNameWithArticle() . ', but couldn\'t get the heat just right.', 'icons/activity-logs/confused');
         }

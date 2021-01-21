@@ -11,18 +11,24 @@ use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 
 class GreenhouseAdventureService
 {
     private $petService;
     private $responseService;
     private $inventoryService;
+    private $squirrel3;
 
-    function __construct(PetService $petService, ResponseService $responseService, InventoryService $inventoryService)
+    function __construct(
+        PetService $petService, ResponseService $responseService, InventoryService $inventoryService,
+        Squirrel3 $squirrel3
+    )
     {
         $this->petService = $petService;
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills, GreenhousePlant $plant): PetActivityLog
@@ -32,7 +38,7 @@ class GreenhouseAdventureService
         $skill = 10 + $petWithSkills->getNature()->getTotal() + $petWithSkills->getDexterity()->getTotal();
         $skill = NumberFunctions::clamp($skill, 10, 15);
 
-        $roll = mt_rand(1, $skill);
+        $roll = $this->squirrel3->rngNextInt(1, $skill);
 
         $changes = new PetChanges($pet);
 

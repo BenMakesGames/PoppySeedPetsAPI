@@ -11,6 +11,7 @@ use App\Repository\UserRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class GivingTreeGatheringService
@@ -20,10 +21,11 @@ class GivingTreeGatheringService
     private $responseService;
     private $petExperienceService;
     private $em;
+    private $squirrel3;
 
     public function __construct(
         UserRepository $userRepository, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, PetExperienceService $petExperienceService
+        ResponseService $responseService, PetExperienceService $petExperienceService, Squirrel3 $squirrel3
     )
     {
         $this->responseService = $responseService;
@@ -31,6 +33,7 @@ class GivingTreeGatheringService
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->em = $em;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function gatherFromGivingTree(Pet $pet): ?PetActivityLog
@@ -49,7 +52,7 @@ class GivingTreeGatheringService
         }
         else
         {
-            $givingTreeItems = mt_rand(5, 8);
+            $givingTreeItems = $this->squirrel3->rngNextInt(5, 8);
 
             $this->em->getConnection()->executeQuery(
                 '
@@ -68,7 +71,7 @@ class GivingTreeGatheringService
 
             if($pet->isInGuild(GuildEnum::GIZUBIS_GARDEN, 1))
             {
-                $this->petExperienceService->spendTime($pet, mt_rand(20, 30), PetActivityStatEnum::OTHER, null);
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(20, 30), PetActivityStatEnum::OTHER, null);
 
                 $pet->getGuildMembership()->increaseReputation();
 
@@ -78,7 +81,7 @@ class GivingTreeGatheringService
             }
             else
             {
-                $this->petExperienceService->spendTime($pet, mt_rand(10, 20), PetActivityStatEnum::OTHER, null);
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(10, 20), PetActivityStatEnum::OTHER, null);
 
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited The Giving Tree, and picked up several items that other players had discarded.', 'icons/activity-logs/giving-tree')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)

@@ -11,6 +11,7 @@ use App\Repository\SpiceRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 
 class StrangeUmbralEncounters
 {
@@ -20,10 +21,11 @@ class StrangeUmbralEncounters
     private $inventoryService;
     private $enchantmentRepository;
     private $spiceRepository;
+    private $squirrel3;
 
     public function __construct(
         ResponseService $responseService, PetExperienceService $petExperienceService, InventoryService $inventoryService,
-        EnchantmentRepository $enchantmentRepository, SpiceRepository $spiceRepository
+        EnchantmentRepository $enchantmentRepository, SpiceRepository $spiceRepository, Squirrel3 $squirrel3
     )
     {
         $this->responseService = $responseService;
@@ -31,13 +33,14 @@ class StrangeUmbralEncounters
         $this->inventoryService = $inventoryService;
         $this->enchantmentRepository = $enchantmentRepository;
         $this->spiceRepository = $spiceRepository;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
-        switch(mt_rand(1, 2))
+        switch($this->squirrel3->rngNextInt(1, 2))
         {
             case 1:
                 return $this->encounterAgares($pet);
@@ -53,7 +56,7 @@ class StrangeUmbralEncounters
     {
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
         if($pet->getTool() && !$pet->getTool()->getEnchantment())
         {
@@ -76,7 +79,7 @@ class StrangeUmbralEncounters
     {
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::UMBRA, false);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
         $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, some white rain started to fall. ' . '%pet:' . $pet->getId() . '.name% looked up, and saw the Cosmic Goat flying overhead, milk flowing from its udder. They gathered up as much of the "rain" as they could.', '');
 

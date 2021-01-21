@@ -13,6 +13,7 @@ use App\Repository\PetSpeciesRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 
 class DreamingService
 {
@@ -21,10 +22,11 @@ class DreamingService
     private $petSpeciesRepository;
     private $petExperienceService;
     private $itemRepository;
+    private $squirrel3;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetSpeciesRepository $petSpeciesRepository,
-        PetExperienceService $petExperienceService, ItemRepository $itemRepository
+        PetExperienceService $petExperienceService, ItemRepository $itemRepository, Squirrel3 $squirrel3
     )
     {
         $this->inventoryService = $inventoryService;
@@ -32,6 +34,7 @@ class DreamingService
         $this->petSpeciesRepository = $petSpeciesRepository;
         $this->petExperienceService = $petExperienceService;
         $this->itemRepository = $itemRepository;
+        $this->squirrel3 = $squirrel3;
     }
 
     private const LOCATIONS = [
@@ -94,7 +97,7 @@ class DreamingService
                 'Feathers', 'Fez', 'Fluff',
                 'Gold Triangle',
                 'Handicrafts Supply Box',
-                ArrayFunctions::pick_one([ 'Iron Key', 'Iron Key', 'Silver Key', 'Gold Key' ]),
+                $this->squirrel3->rngNextFromArray([ 'Iron Key', 'Iron Key', 'Silver Key', 'Gold Key' ]),
                 'Jar of Fireflies',
                 'Music Note', 'Mysterious Seed',
                 'Paper', 'Paper Bag', 'Password', 'Plastic', 'Plastic Idol',
@@ -105,10 +108,10 @@ class DreamingService
             ]);
         }
 
-        $itemName = ArrayFunctions::pick_one($possibleItems);
+        $itemName = $this->squirrel3->rngNextFromArray($possibleItems);
         $item = $this->itemRepository->findOneByName($itemName);
 
-        $dream = ArrayFunctions::pick_one([
+        $dream = $this->squirrel3->rngNextFromArray([
             [
                 'In a dream, %dreamer% was %wandering% %location1%, when they spotted %a_pet_or_monster%. It whispered something, but %dreamer% can\'t remember what, and gave %dreamer% %item%.',
                 '%a_pet_or_monster% gave this to %dreamer% in a dream.',
@@ -159,7 +162,7 @@ class DreamingService
             ]
         ]);
 
-        $locations = ArrayFunctions::pick_some(self::LOCATIONS, 2);
+        $locations = $this->squirrel3->rngNextSubsetFromArray(self::LOCATIONS, 2);
 
         $replacements = [
             '%item%' => $itemName,
@@ -167,18 +170,18 @@ class DreamingService
             '%dreamer%' => $pet->getName(),
             '%location1%' => $locations[0],
             '%location2%' => $locations[1],
-            '%wandering%' => ArrayFunctions::pick_one(self::WANDERING_WORDS),
-            '%species%' => ArrayFunctions::pick_one($this->petSpeciesRepository->findAll())->getName(),
-            '%adverb%' => ArrayFunctions::pick_one([ 'hesitantly', 'eagerly', 'grumpily', 'apathetically' ]),
-            '%pet_adjective%' => ArrayFunctions::pick_one([ 'colorful', 'suspicious-looking', 'strong', 'big', 'small', 'cute', 'dangerous-looking', 'hungry', 'lost', 'cheerful' ]),
-            '%more%' => ArrayFunctions::pick_one([ 'bigger', 'more colorful', 'smaller', 'more fragrant', 'undulating more', 'paler', 'shinier', 'stickier', 'more fabulous' ]),
-            '%surface%' => ArrayFunctions::pick_one([ 'a table', 'a moss-covered rock', 'the floor', 'a pile of pillows', 'a sturdy box', 'a raw slab of acorn fugu', 'the roof of a skyscraper' ]),
-            '%planet%' => ArrayFunctions::pick_one([ 'the Moon', 'Mars', 'Pluto', 'Enceladus' ]),
-            '%a_drink%' => ArrayFunctions::pick_one([ 'a chai milkshake', 'a mango lassi', 'some tea', 'some fruit punch', 'some coconut cordial' ]),
-            '%a_food%' => ArrayFunctions::pick_one([ 'a cellular peptide cake', 'a piece of naan', 'a slice of za', 'some donburi', 'a lobster', 'some succotash', 'a bowl of chili' ]),
-            '%a_food_or_drink%' => ArrayFunctions::pick_one([ '%a_food%', '%a_drink%' ]),
-            '%a_monster%' => ArrayFunctions::pick_one([ 'a goblin', 'a dragon', 'a huge ant', 'a plant-monster', 'their own shadow' ]),
-            '%a_pet_or_monster%' => ArrayFunctions::pick_one([ 'a %pet_adjective% %species%', '%a_monster%' ]),
+            '%wandering%' => $this->squirrel3->rngNextFromArray(self::WANDERING_WORDS),
+            '%species%' => $this->squirrel3->rngNextFromArray($this->petSpeciesRepository->findAll())->getName(),
+            '%adverb%' => $this->squirrel3->rngNextFromArray([ 'hesitantly', 'eagerly', 'grumpily', 'apathetically' ]),
+            '%pet_adjective%' => $this->squirrel3->rngNextFromArray([ 'colorful', 'suspicious-looking', 'strong', 'big', 'small', 'cute', 'dangerous-looking', 'hungry', 'lost', 'cheerful' ]),
+            '%more%' => $this->squirrel3->rngNextFromArray([ 'bigger', 'more colorful', 'smaller', 'more fragrant', 'undulating more', 'paler', 'shinier', 'stickier', 'more fabulous' ]),
+            '%surface%' => $this->squirrel3->rngNextFromArray([ 'a table', 'a moss-covered rock', 'the floor', 'a pile of pillows', 'a sturdy box', 'a raw slab of acorn fugu', 'the roof of a skyscraper' ]),
+            '%planet%' => $this->squirrel3->rngNextFromArray([ 'the Moon', 'Mars', 'Pluto', 'Enceladus' ]),
+            '%a_drink%' => $this->squirrel3->rngNextFromArray([ 'a chai milkshake', 'a mango lassi', 'some tea', 'some fruit punch', 'some coconut cordial' ]),
+            '%a_food%' => $this->squirrel3->rngNextFromArray([ 'a cellular peptide cake', 'a piece of naan', 'a slice of za', 'some donburi', 'a lobster', 'some succotash', 'a bowl of chili' ]),
+            '%a_food_or_drink%' => $this->squirrel3->rngNextFromArray([ '%a_food%', '%a_drink%' ]),
+            '%a_monster%' => $this->squirrel3->rngNextFromArray([ 'a goblin', 'a dragon', 'a huge ant', 'a plant-monster', 'their own shadow' ]),
+            '%a_pet_or_monster%' => $this->squirrel3->rngNextFromArray([ 'a %pet_adjective% %species%', '%a_monster%' ]),
         ];
 
         // JS does it better, but:
@@ -196,7 +199,7 @@ class DreamingService
 
         $this->inventoryService->receiveItem($itemName, $pet->getOwner(), $pet->getOwner(), $itemDescription, LocationEnum::HOME);
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         return $this->responseService->createActivityLog($pet, $eventDescription, '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)

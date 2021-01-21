@@ -61,22 +61,22 @@ class AdoptionService
         return $fee;
     }
 
-    private function getNumberOfPets(User $user): int
+    private function getNumberOfPets(User $user, Squirrel3 $squirrel3): int
     {
         $statValue = $this->userStatsRepository->getStatValue($user, UserStatEnum::PETS_ADOPTED);
 
-        $bonus = $statValue > 6 && mt_rand(1, 31) === 1 ? 10 : 0;
+        $bonus = $statValue > 6 && $squirrel3->rngNextInt(1, 31) === 1 ? 10 : 0;
 
         if($statValue <= 6)
-            return mt_rand(4, 6) + $bonus;
+            return $squirrel3->rngNextInt(4, 6) + $bonus;
         else if($statValue <= 28)
-            return mt_rand(5, 8) + $bonus;
+            return $squirrel3->rngNextInt(5, 8) + $bonus;
         else if($statValue <= 496)
-            return mt_rand(6, 10) + $bonus;
+            return $squirrel3->rngNextInt(6, 10) + $bonus;
         else if($statValue <= 8128)
-            return mt_rand(6, 10) + $bonus;
+            return $squirrel3->rngNextInt(6, 10) + $bonus;
         else
-            return mt_rand(6, 10) + $bonus;
+            return $squirrel3->rngNextInt(6, 10) + $bonus;
     }
 
     /**
@@ -87,10 +87,11 @@ class AdoptionService
         $now = new \DateTimeImmutable();
         $nowString = $now->format('Y-m-d');
 
-        mt_srand($user->getDailySeed());
+        $squirrel3 = new Squirrel3();
+        $squirrel3->setSeed($user->getDailySeed());
 
-        $numPets = $this->getNumberOfPets($user);
-        $numSeasonalPets = $this->numberOfSeasonalPets($numPets);
+        $numPets = $this->getNumberOfPets($user, $squirrel3);
+        $numSeasonalPets = $this->numberOfSeasonalPets($numPets, $squirrel3);
 
         $dialog = $numPets > 10
             ? "Oh, goodness! A bunch of pets appeared from the Portal today! It just seems to happen now and again; we're still not sure why...\n\n Anyway, if "
@@ -116,40 +117,40 @@ class AdoptionService
         {
             if($i < $numSeasonalPets)
             {
-                list($colorA, $colorB) = ArrayFunctions::pick_some($this->getSeasonalColors(), 2);
+                list($colorA, $colorB) = $squirrel3->rngNextSubsetFromArray($this->getSeasonalColors(), 2);
 
                 $seasonalNames = $this->getSeasonalNames();
 
                 if(count($seasonalNames) === $numSeasonalPets)
                     $name = $seasonalNames[$i];
                 else
-                    $name = ArrayFunctions::pick_one($seasonalNames);
+                    $name = $squirrel3->rngNextFromArray($seasonalNames);
             }
             else if($i === $numPets - 1 && !$isBlueMoon && !$isPinkMoon)
             {
                 // RANDOM!
-                $h1 = mt_rand(0, 1000) / 1000.0;
-                $s1 = mt_rand(mt_rand(0, 500), 1000) / 1000.0;
-                $l1 = mt_rand(mt_rand(0, 500), mt_rand(750, 1000)) / 1000.0;
+                $h1 = $squirrel3->rngNextInt(0, 1000) / 1000.0;
+                $s1 = $squirrel3->rngNextInt($squirrel3->rngNextInt(0, 500), 1000) / 1000.0;
+                $l1 = $squirrel3->rngNextInt($squirrel3->rngNextInt(0, 500), $squirrel3->rngNextInt(750, 1000)) / 1000.0;
 
-                $h2 = mt_rand(0, 1000) / 1000.0;
-                $s2 = mt_rand(mt_rand(0, 500), 1000) / 1000.0;
-                $l2 = mt_rand(mt_rand(0, 500), mt_rand(750, 1000)) / 1000.0;
+                $h2 = $squirrel3->rngNextInt(0, 1000) / 1000.0;
+                $s2 = $squirrel3->rngNextInt($squirrel3->rngNextInt(0, 500), 1000) / 1000.0;
+                $l2 = $squirrel3->rngNextInt($squirrel3->rngNextInt(0, 500), $squirrel3->rngNextInt(750, 1000)) / 1000.0;
 
                 $colorA = ColorFunctions::HSL2Hex($h1, $s1, $l1);
                 $colorB = ColorFunctions::HSL2Hex($h2, $s2, $l2);
 
-                $name = ArrayFunctions::pick_one(PetShelterPet::PET_NAMES);
+                $name = $squirrel3->rngNextFromArray(PetShelterPet::PET_NAMES);
             }
             else
             {
                 if($isBlueMoon)
                 {
-                    $blueA = mt_rand(127, 255);
-                    $otherA = mt_rand(0, $blueA - 16);
+                    $blueA = $squirrel3->rngNextInt(127, 255);
+                    $otherA = $squirrel3->rngNextInt(0, $blueA - 16);
 
-                    $blueB = mt_rand(127, 255);
-                    $otherB = mt_rand(0, $blueB - 16);
+                    $blueB = $squirrel3->rngNextInt(127, 255);
+                    $otherB = $squirrel3->rngNextInt(0, $blueB - 16);
 
                     $colorA = ColorFunctions::RGB2Hex($otherA, $otherA, $blueA);
                     $colorB = ColorFunctions::RGB2Hex($otherB, $otherB, $blueB);
@@ -159,11 +160,11 @@ class AdoptionService
                 }
                 else if($isPinkMoon)
                 {
-                    $redA = mt_rand(224, 255);
-                    $otherA = mt_rand(128, $redA - 32);
+                    $redA = $squirrel3->rngNextInt(224, 255);
+                    $otherA = $squirrel3->rngNextInt(128, $redA - 32);
 
-                    $redB = mt_rand(224, 255);
-                    $otherB = mt_rand(128, $redB - 32);
+                    $redB = $squirrel3->rngNextInt(224, 255);
+                    $otherB = $squirrel3->rngNextInt(128, $redB - 32);
 
                     $colorA = ColorFunctions::RGB2Hex($redA, $otherA, $otherA);
                     $colorB = ColorFunctions::RGB2Hex($redB, $otherB, $otherB);
@@ -177,7 +178,7 @@ class AdoptionService
                         ->andWhere('p.birthDate<:today')
                         ->setParameter('today', $nowString)
                         ->setMaxResults(1)
-                        ->setFirstResult(mt_rand(0, $petCount - 1))
+                        ->setFirstResult($squirrel3->rngNextInt(0, $petCount - 1))
                         ->getQuery()
                         ->getSingleResult();
 
@@ -186,9 +187,9 @@ class AdoptionService
                 }
 
                 if($this->calendarService->isPiDay())
-                    $name = ArrayFunctions::pick_one([ 'Pi',  'Pi', 'Pie', 'Pie', 'Pie', 'Pie', 'Pie', 'Cake' ]);
+                    $name = $squirrel3->rngNextFromArray([ 'Pi',  'Pi', 'Pie', 'Pie', 'Pie', 'Pie', 'Pie', 'Cake' ]);
                 else
-                    $name = ArrayFunctions::pick_one(PetShelterPet::PET_NAMES);
+                    $name = $squirrel3->rngNextFromArray(PetShelterPet::PET_NAMES);
             }
 
             $pet = new PetShelterPet();
@@ -205,10 +206,10 @@ class AdoptionService
                 $pet->label = 'noom!';
                 $dialog = "Agh! This happens every year at about this time! Noombats everywhere! I don't know if it's Noombat breeding season, or what, but please adopt one of these things! If you insist, though, and ";
             }
-            else if(mt_rand(1, 200) === 1)
+            else if($squirrel3->rngNextInt(1, 200) === 1)
             {
-                $pet->species = ArrayFunctions::pick_one($this->petSpeciesRepository->findBy([ 'availableFromPetShelter' => false, 'availableFromBreeding' => true ]));
-                $pet->label = ArrayFunctions::pick_one([
+                $pet->species = $squirrel3->rngNextFromArray($this->petSpeciesRepository->findBy([ 'availableFromPetShelter' => false, 'availableFromBreeding' => true ]));
+                $pet->label = $squirrel3->rngNextFromArray([
                     'gasp!',
                     'oh my!',
                     'whoa!',
@@ -216,38 +217,36 @@ class AdoptionService
                 ]);
             }
             else
-                $pet->species = ArrayFunctions::pick_one($allSpecies);
+                $pet->species = $squirrel3->rngNextFromArray($allSpecies);
 
             $pet->name = $name;
             $pet->colorA = $colorA;
             $pet->colorB = $colorB;
-            $pet->id = mt_rand(100000, 999999) * 10 + $i;
-            $pet->scale = mt_rand(80, 120);
+            $pet->id = $squirrel3->rngNextInt(100000, 999999) * 10 + $i;
+            $pet->scale = $squirrel3->rngNextInt(80, 120);
 
             $pets[] = $pet;
         }
 
-        mt_srand();
-
         return [ $pets, $dialog ];
     }
 
-    public function numberOfSeasonalPets(int $totalPets): int
+    public function numberOfSeasonalPets(int $totalPets, Squirrel3 $squirrel3): int
     {
         $monthDay = $this->calendarService->getMonthAndDay();
 
         if($this->calendarService->isHalloween())
-            return mt_rand(1, 2);
+            return $squirrel3->rngNextInt(1, 2);
 
         // PSP Thanksgiving overlaps Black Friday, but for pet adoption purposes, we want Black Friday to win out:
         if($this->calendarService->isBlackFriday() || $this->calendarService->isCyberMonday())
             return ceil($totalPets / 2);
 
         if($this->calendarService->isThanksgiving())
-            return mt_rand(1, 2);
+            return $squirrel3->rngNextInt(1, 2);
 
         if($this->calendarService->isEaster())
-            return mt_rand(1, 2);
+            return $squirrel3->rngNextInt(1, 2);
 
         if($this->calendarService->isValentines() || $this->calendarService->isWhiteDay())
             return 2;
@@ -258,10 +257,10 @@ class AdoptionService
 
         // christmas colors
         if($monthDay >= 1223 && $monthDay <= 1225)
-            return mt_rand(1, 2);
+            return $squirrel3->rngNextInt(1, 2);
 
         if($this->calendarService->isHannukah())
-            return mt_rand(1, 2);
+            return $squirrel3->rngNextInt(1, 2);
 
         if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)
             return 2;

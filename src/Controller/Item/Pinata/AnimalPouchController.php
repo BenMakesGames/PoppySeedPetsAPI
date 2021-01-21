@@ -10,6 +10,7 @@ use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -25,7 +26,8 @@ class AnimalPouchController extends PoppySeedPetsItemController
      */
     public function openMagpiePouch(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, EnchantmentRepository $enchantmentRepository
+        ResponseService $responseService, EnchantmentRepository $enchantmentRepository,
+        Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -34,10 +36,10 @@ class AnimalPouchController extends PoppySeedPetsItemController
 
         $possibleItems = [
             'Fool\'s Spice',
-            ArrayFunctions::pick_one([ '"Gold" Idol', 'Phishing Rod' ]),
-            ArrayFunctions::pick_one([ 'Glass', 'Crystal Ball' ]),
+            $squirrel3->rngNextFromArray([ '"Gold" Idol', 'Phishing Rod' ]),
+            $squirrel3->rngNextFromArray([ 'Glass', 'Crystal Ball' ]),
             'Mixed Nuts',
-            ArrayFunctions::pick_one([ 'Fluff', 'String' ]),
+            $squirrel3->rngNextFromArray([ 'Fluff', 'String' ]),
             'Sand Dollar'
         ];
 
@@ -46,7 +48,7 @@ class AnimalPouchController extends PoppySeedPetsItemController
 
         $em->remove($inventory);
 
-        $listOfItems = ArrayFunctions::pick_some($possibleItems, 3);
+        $listOfItems = $squirrel3->rngNextSubsetFromArray($possibleItems, 3);
 
         foreach($listOfItems as $itemName)
         {
@@ -67,7 +69,7 @@ class AnimalPouchController extends PoppySeedPetsItemController
      */
     public function openRaccoonPouch(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService
+        ResponseService $responseService, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -76,11 +78,11 @@ class AnimalPouchController extends PoppySeedPetsItemController
 
         $possibleItems = [
             'Beans',
-            ArrayFunctions::pick_one([ 'Baked Fish Fingers', 'Deep-fried Toad Legs' ]),
+            $squirrel3->rngNextFromArray([ 'Baked Fish Fingers', 'Deep-fried Toad Legs' ]),
             'Trout Yogurt',
             'Caramel-covered Popcorn',
-            ArrayFunctions::pick_one([ 'Instant Ramen (Dry)', 'Paper Bag' ]),
-            ArrayFunctions::pick_one([ 'Mixed Nut Brittle', 'Berry Muffin' ]),
+            $squirrel3->rngNextFromArray([ 'Instant Ramen (Dry)', 'Paper Bag' ]),
+            $squirrel3->rngNextFromArray([ 'Mixed Nut Brittle', 'Berry Muffin' ]),
         ];
 
         $spice = $inventory->getSpice();
@@ -89,7 +91,7 @@ class AnimalPouchController extends PoppySeedPetsItemController
 
         $em->remove($inventory);
 
-        $listOfItems = ArrayFunctions::pick_some($possibleItems, 3);
+        $listOfItems = $squirrel3->rngNextSubsetFromArray($possibleItems, 3);
 
         foreach($listOfItems as $itemName)
         {

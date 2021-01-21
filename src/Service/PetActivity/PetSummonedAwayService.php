@@ -13,6 +13,7 @@ use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 
 class PetSummonedAwayService
 {
@@ -20,9 +21,10 @@ class PetSummonedAwayService
     private $inventoryService;
     private $petExperienceService;
     private $itemRepository;
+    private $squirrel3;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService,
+        ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         PetExperienceService $petExperienceService, ItemRepository $itemRepository
     )
     {
@@ -30,6 +32,7 @@ class PetSummonedAwayService
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->itemRepository = $itemRepository;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -40,11 +43,11 @@ class PetSummonedAwayService
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        $pet->increaseSafety(-mt_rand(2, 4));
+        $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
-        switch(mt_rand(1, 4))
+        switch($this->squirrel3->rngNextInt(1, 4))
         {
             case 1:
                 $activityLog = $this->doSummonedToFight($petWithSkills);
@@ -77,26 +80,26 @@ class PetSummonedAwayService
 
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them fight a monster they\'d never seen before';
 
-        if(mt_rand(1, 3) === 1)
-            $message .= '; a creature with ' . (mt_rand(1, 4) * 2) . ' eyes, and a very wrong number of limbs! ';
+        if($this->squirrel3->rngNextInt(1, 3) === 1)
+            $message .= '; a creature with ' . ($this->squirrel3->rngNextInt(1, 4) * 2) . ' eyes, and a very wrong number of limbs! ';
         else
             $message .= '! ';
 
-        if(mt_rand(1, 2) === 1)
+        if($this->squirrel3->rngNextInt(1, 2) === 1)
         {
             $message .= $pet->getName() . ' lost the fight, and was returned home!';
-            $pet->increaseSafety(-mt_rand(2, 4));
+            $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
         }
         else
         {
             $message .= $pet->getName() . ' defeated the creature, and was returned home!';
             $pet
-                ->increaseSafety(mt_rand(2, 4))
-                ->increaseEsteem(mt_rand(2, 4))
+                ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
             ;
         }
 
-        $this->petExperienceService->gainExp($pet, mt_rand(1, 3), [ PetSkillEnum::BRAWL, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+        $this->petExperienceService->gainExp($pet, $this->squirrel3->rngNextInt(1, 3), [ PetSkillEnum::BRAWL, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
 
         return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned');
     }
@@ -105,16 +108,16 @@ class PetSummonedAwayService
     {
         $pet = $petWithSkills->getPet();
 
-        switch(mt_rand(1, 3))
+        switch($this->squirrel3->rngNextInt(1, 3))
         {
             case 1:
                 $activity = 'help clean a mansion the day before a fancy ball';
-                $loot = ArrayFunctions::pick_one([ 'Fluff', 'Cobweb' ]);
+                $loot = $this->squirrel3->rngNextFromArray([ 'Fluff', 'Cobweb' ]);
                 $skill = null;
                 break;
             case 2:
                 $activity = 'serve food to guests at a fancy party in a mansion';
-                $loot = ArrayFunctions::pick_one([
+                $loot = $this->squirrel3->rngNextFromArray([
                     'Tomato "Sushi"', 'Sweet Roll', 'Slice of Red Pie',
                     'Potato-mushroom Stuffed Onion', 'Meringue', 'Minestrone',
                     'Mixed Nut Brittle', 'Largish Bowl of Smallish Pumpkin Soup',
@@ -126,7 +129,7 @@ class PetSummonedAwayService
             case 3:
                 $activity = 'play in a band at a fancy party in a mansion';
                 $skill = PetSkillEnum::MUSIC;
-                $loot = ArrayFunctions::pick_one([
+                $loot = $this->squirrel3->rngNextFromArray([
                     'Fungal Clarinet', 'Decorated Flute',
                     'Gold Triangle', 'Melodica'
                 ]);
@@ -141,7 +144,7 @@ class PetSummonedAwayService
         $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' was summoned by a wizard to ' . $activity . '; they returned home with this!', $activityLog);
 
         if($skill !== null)
-            $this->petExperienceService->gainExp($pet, mt_rand(1, 2), [ $skill ]);
+            $this->petExperienceService->gainExp($pet, $this->squirrel3->rngNextInt(1, 2), [ $skill ]);
 
         return $activityLog;
 
@@ -151,7 +154,7 @@ class PetSummonedAwayService
     {
         $pet = $petWithSkills->getPet();
 
-        switch(mt_rand(1, 7))
+        switch($this->squirrel3->rngNextInt(1, 7))
         {
             case 1:
                 $activity = 'hold a weird-looking mirror while a laser was focused on it';
@@ -187,7 +190,7 @@ class PetSummonedAwayService
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned');
 
-        $this->petExperienceService->gainExp($pet, mt_rand(1, 2), [ $skill ]);
+        $this->petExperienceService->gainExp($pet, $this->squirrel3->rngNextInt(1, 2), [ $skill ]);
 
         return $activityLog;
     }
@@ -201,7 +204,7 @@ class PetSummonedAwayService
         $skill = null;
         $loot = null;
 
-        switch(mt_rand(1, 2))
+        switch($this->squirrel3->rngNextInt(1, 2))
         {
             case 1:
                 $location = 'a farm';
@@ -227,7 +230,7 @@ class PetSummonedAwayService
 
     private function getMiningDescriptionAndLoot(): array
     {
-        $r = mt_rand(1, 10);
+        $r = $this->squirrel3->rngNextInt(1, 10);
 
         if($r <= 5)
         {

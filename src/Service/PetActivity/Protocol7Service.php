@@ -19,6 +19,7 @@ use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -30,10 +31,12 @@ class Protocol7Service
     private $transactionService;
     private $guildService;
     private $itemRepository;
+    private $squirrel3;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, GuildService $guildService, ItemRepository $itemRepository
+        TransactionService $transactionService, GuildService $guildService, ItemRepository $itemRepository,
+        Squirrel3 $squirrel3
     )
     {
         $this->responseService = $responseService;
@@ -42,6 +45,7 @@ class Protocol7Service
         $this->transactionService = $transactionService;
         $this->guildService = $guildService;
         $this->itemRepository = $itemRepository;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -51,7 +55,7 @@ class Protocol7Service
 
         $maxSkill = NumberFunctions::clamp($maxSkill, 1, 21);
 
-        $roll = mt_rand(1, $maxSkill);
+        $roll = $this->squirrel3->rngNextInt(1, $maxSkill);
 
         $activityLog = null;
         $changes = new PetChanges($pet);
@@ -62,7 +66,7 @@ class Protocol7Service
             case 2:
             case 3:
             case 4:
-                if(!$pet->getGuildMembership() && mt_rand(1, 5) === 1)
+                if(!$pet->getGuildMembership() && $this->squirrel3->rngNextInt(1, 5) === 1)
                     $activityLog = $this->guildService->joinGuildProjectE($pet);
                 else
                     $activityLog = $this->foundNothing($petWithSkills, $roll);
@@ -70,7 +74,7 @@ class Protocol7Service
             case 5:
             case 6:
             case 7:
-                if($pet->hasMerit(MeritEnum::BEHATTED) && mt_rand(1, 100) === 1)
+                if($pet->hasMerit(MeritEnum::BEHATTED) && $this->squirrel3->rngNextInt(1, 100) === 1)
                     $activityLog = $this->encounterAnnabellastasia($pet);
                 else
                     $activityLog = $this->encounterGarbageCollector($petWithSkills);
@@ -118,7 +122,7 @@ class Protocol7Service
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));
 
-        if(mt_rand(1, 75) === 1)
+        if($this->squirrel3->rngNextInt(1, 75) === 1)
             $this->inventoryService->petAttractsRandomBug($pet, 'Beta Bug');
     }
 
@@ -134,9 +138,9 @@ class Protocol7Service
         $exp = ceil($roll / 10);
 
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::SCIENCE ]);
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
-        if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY) || mt_rand(1, 3) === 1)
+        if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY) || $this->squirrel3->rngNextInt(1, 3) === 1)
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E, but got distracted playing a minigame!', 'icons/activity-logs/confused');
         else
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E, but got lost.', 'icons/activity-logs/confused');
@@ -146,15 +150,15 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = mt_rand(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
 
         if($roll >= 15)
         {
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
             $pet->getGuildMembership()->increaseReputation();
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
-            $loot = ArrayFunctions::pick_one([
+            $loot = $this->squirrel3->rngNextFromArray([
                 'Pointer',
                 'NUL',
                 'Music Note',
@@ -163,7 +167,7 @@ class Protocol7Service
 
             $item = $this->itemRepository->findOneByName($loot);
 
-            [$locationAndAction, $actioning] = ArrayFunctions::pick_one([
+            [$locationAndAction, $actioning] = $this->squirrel3->rngNextFromArray([
                 [ 'an abandoned forum, and started rooting around old posts', 'rooting around in an abandoned forum' ],
                 [ 'an old BBS still somehow online, and started digging through its logs', 'digging through the logs of an old BBS' ],
                 [ 'a forgotten internet journal, and started combing through old posts and replies', 'digging through posts of a forgotten internet journal' ],
@@ -180,7 +184,7 @@ class Protocol7Service
         else
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E, following some breadcrumbs left by other members of Time\'s Arrow, but they lost the trail, and weren\'t able to find it again.', 'icons/activity-logs/confused');
         }
@@ -190,12 +194,12 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = mt_rand(1, 30 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 30 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
 
         if($roll < 10)
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E, and went to a Dwarfcraft excavation site. They dug for a while, but didn\'t find anything interesting.', 'icons/activity-logs/confused');
         }
@@ -203,42 +207,42 @@ class Protocol7Service
         if($roll < 20)
         {
             $exp = 1;
-            $loot = ArrayFunctions::pick_one([ 'NUL', 'Pointer' ]);
+            $loot = $this->squirrel3->rngNextFromArray([ 'NUL', 'Pointer' ]);
             $exclaim = '...';
         }
         else if($roll < 30)
         {
             $exp = 1;
-            $loot = ArrayFunctions::pick_one([ 'String', 'Green Dye', 'Green Dye', 'Imaginary Number' ]);
+            $loot = $this->squirrel3->rngNextFromArray([ 'String', 'Green Dye', 'Green Dye', 'Imaginary Number' ]);
             $exclaim = '.';
         }
         else if($roll < 40)
         {
             $exp = 2;
-            $loot = ArrayFunctions::pick_one([ 'Iron Ore', 'Silver Ore', 'Gold Ore', 'XOR' ]);
+            $loot = $this->squirrel3->rngNextFromArray([ 'Iron Ore', 'Silver Ore', 'Gold Ore', 'XOR' ]);
             $exclaim = '. Okay.';
         }
         else if($roll < 50)
         {
             $exp = 2;
-            $loot = ArrayFunctions::pick_one([ 'Liquid-hot Magma', 'Cryptocurrency Wallet', 'Magic Smoke' ]);
+            $loot = $this->squirrel3->rngNextFromArray([ 'Liquid-hot Magma', 'Cryptocurrency Wallet', 'Magic Smoke' ]);
             $exclaim = '!';
         }
         else if($roll < 60)
         {
             $exp = 3;
-            $loot = ArrayFunctions::pick_one([ 'Fiberglass', 'Blackonite', 'Piece of Cetgueli\'s Map' ]);
+            $loot = $this->squirrel3->rngNextFromArray([ 'Fiberglass', 'Blackonite', 'Piece of Cetgueli\'s Map' ]);
             $exclaim = '! Neat!';
         }
         else
         {
             $exp = 4;
-            $loot = ArrayFunctions::pick_one([ 'Firestone', 'Gold Ring' ]);
+            $loot = $this->squirrel3->rngNextFromArray([ 'Firestone', 'Gold Ring' ]);
             $exclaim = '! Whoa!';
         }
 
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::SCIENCE ]);
-        $this->petExperienceService->spendTime($pet, mt_rand(40, 55) + $exp * 5, PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(40, 55) + $exp * 5, PetActivityStatEnum::PROTOCOL_7, true);
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E, and went to a Dwarfcraft excavation site. They dug for a while, and found ' . $loot . $exclaim, '');
 
@@ -254,7 +258,7 @@ class Protocol7Service
         $effectiveScience = max(2, $petWithSkills->getScience()->getTotal());
         $minMons = min($effectiveScience, $petWithSkills->getIntelligence()->getTotal());
 
-        $moneys = mt_rand(1, $effectiveScience);
+        $moneys = $this->squirrel3->rngNextInt(1, $effectiveScience);
 
         if($moneys < $minMons)
             $moneys = $minMons;
@@ -263,14 +267,14 @@ class Protocol7Service
 
         $pet->getGuildMembership()->increaseReputation();
 
-        $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E. Correspondence had some message-delivery jobs, so %pet:' . $pet->getId() . '.name% picked a couple up, earning ' . $moneys . '~~m~~ for their trouble.', '');
     }
 
     private function encounterAnnabellastasia(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
         $activityLog = $this->responseService->createActivityLog($pet, 'In Project-E, ' . '%pet:' . $pet->getId() . '.name% ran into a girl named Annabellastasia, who handed %pet:' . $pet->getId() . '.name% a Black Bow.', 'items/hat/bow-black')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
         ;
@@ -284,17 +288,17 @@ class Protocol7Service
 
         if($pet->isInGuild(GuildEnum::TIMES_ARROW))
         {
-            $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getScience()->getTotal());
+            $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getScience()->getTotal());
 
             if($pet->hasMerit(MeritEnum::SOOTHING_VOICE))
                 $roll += 2;
         }
         else
-            $roll = mt_rand(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+            $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         $success = $roll >= 10;
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, $success);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, $success);
 
         if($success)
         {
@@ -305,7 +309,7 @@ class Protocol7Service
             {
                 $pet->getGuildMembership()->increaseReputation();
 
-                if($pet->hasMerit(MeritEnum::SOOTHING_VOICE) && mt_rand(1, 3) === 1)
+                if($pet->hasMerit(MeritEnum::SOOTHING_VOICE) && $this->squirrel3->rngNextInt(1, 3) === 1)
                     $logMessage = '%pet:' . $pet->getId() . '.name% met with a Garbage Collector in Project-E. Happy to help a member of Time\'s Arrow - especially one with such a Soothing Voice! - it handed over a Pointer.';
                 else
                     $logMessage = '%pet:' . $pet->getId() . '.name% met with a Garbage Collector in Project-E. Happy to help a member of Time\'s Arrow, it handed over a Pointer.';
@@ -340,9 +344,9 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        $monster = ArrayFunctions::pick_one([
+        $monster = $this->squirrel3->rngNextFromArray([
             [
                 'name' => 'a Trojan Horse',
                 'loot' => [ 'Plastic' ]
@@ -358,10 +362,10 @@ class Protocol7Service
         ]);
 
         $baddie = $monster['name'];
-        $loot = ArrayFunctions::pick_one($monster['loot']);
+        $loot = $this->squirrel3->rngNextFromArray($monster['loot']);
         $success = $roll >= 12;
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
 
         if($success)
         {
@@ -384,9 +388,9 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        $monster = ArrayFunctions::pick_one([
+        $monster = $this->squirrel3->rngNextFromArray([
             [
                 'name' => 'a Keylogger',
                 'loot' => [ 'Hash Table', 'Password' ]
@@ -402,10 +406,10 @@ class Protocol7Service
         ]);
 
         $baddie = $monster['name'];
-        $loot = ArrayFunctions::pick_one($monster['loot']);
+        $loot = $this->squirrel3->rngNextFromArray($monster['loot']);
         $success = $roll >= 15;
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
 
         if($success)
         {
@@ -430,7 +434,7 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $video = ArrayFunctions::pick_one([
+        $video = $this->squirrel3->rngNextFromArray([
             [
                 'subject' => 'about fractals',
                 'loot' => [ 'Imaginary Number' ],
@@ -441,13 +445,13 @@ class Protocol7Service
             ]
         ]);
 
-        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         if($roll >= 16)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
-            $lootItem = $this->itemRepository->findOneByName(ArrayFunctions::pick_one($video['loot']));
+            $lootItem = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray($video['loot']));
 
             $pet->increaseEsteem(2);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
@@ -460,7 +464,7 @@ class Protocol7Service
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% watched a video ' . $video['subject'] . ' in Project-E, but didn\'t really get anything out of it.', 'icons/activity-logs/confused');
@@ -471,9 +475,9 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        $monster = ArrayFunctions::pick_one([
+        $monster = $this->squirrel3->rngNextFromArray([
             [
                 'name' => 'a Slow Loris',
                 'loot' => [ 'String', 'NUL' ]
@@ -485,10 +489,10 @@ class Protocol7Service
         ]);
 
         $baddie = $monster['name'];
-        $loot = ArrayFunctions::pick_one($monster['loot']);
+        $loot = $this->squirrel3->rngNextFromArray($monster['loot']);
         $success = $roll >= 17;
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
 
         if($success)
         {
@@ -513,18 +517,18 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $check = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+        $check = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         if($check < 15)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%\'s line was suddenly shorted while they were exploring Project-E!', 'icons/activity-logs/confused');
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
         }
-        else if(mt_rand(1, max(10, 50 - $pet->getSkills()->getIntelligence())) === 1)
+        else if($this->squirrel3->rngNextInt(1, max(10, 50 - $pet->getSkills()->getIntelligence())) === 1)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(60, 75), PetActivityStatEnum::PROTOCOL_7, true);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::PROTOCOL_7, true);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%\'s line was suddenly shorted while they were exploring Project-E. %pet:' . $pet->getId() . '.name% managed to capture some Lightning in a Bottle before being forcefully disconnected!', '');
 
@@ -534,7 +538,7 @@ class Protocol7Service
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%\'s line was suddenly shorted while they were exploring Project-E. %pet:' . $pet->getId() . '.name% managed to grab a couple Pointers before being forcefully disconnected.', '');
 
@@ -544,7 +548,7 @@ class Protocol7Service
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
         }
 
-        if(mt_rand(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
+        if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
         {
             if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
             {
@@ -555,7 +559,7 @@ class Protocol7Service
             else
             {
                 $pet->increaseFood(-1);
-                $pet->increaseSafety(-mt_rand(2, 3));
+                $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 3));
 
                 $activityLog->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% was unprotected from the sudden burst of energy, and received a minor singe.');
             }
@@ -568,7 +572,7 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $check = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + min($petWithSkills->getScience()->getTotal(), $petWithSkills->getStealth()->getTotal()) + $petWithSkills->getClimbingBonus()->getTotal());
+        $check = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + min($petWithSkills->getScience()->getTotal(), $petWithSkills->getStealth()->getTotal()) + $petWithSkills->getClimbingBonus()->getTotal());
 
         if($petWithSkills->getClimbingBonus()->getTotal() > 0)
         {
@@ -581,13 +585,13 @@ class Protocol7Service
             $snuck = 'snuck';
         }
 
-        if(mt_rand(1, 100) === 1)
+        if($this->squirrel3->rngNextInt(1, 100) === 1)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $snuck . ' into a Walled Garden, but ran into a Pirate doing the same! ' . $pet->getName() . ' defeated the Pirate, stole its Jolliest Roger, and ran off before the Walled Garden\'s security system detected them! Yarr!', '');
 
-            $pet->increaseEsteem(mt_rand(4, 8));
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
 
             $this->inventoryService->petCollectsItem('Jolliest Roger', $pet, $pet->getName() . ' fought off a Pirate in a Walled Garden within Project-E, and took this from it!', $activityLog);
 
@@ -595,14 +599,14 @@ class Protocol7Service
         }
         else if($check < 15)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried ' . $toSneak . ' into a Walled Garden within Project-E, but was kicked out.', 'icons/activity-logs/confused');
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::STEALTH ]);
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $snuck . ' into a Walled Garden within Project-E, and plucked a Macintosh that was growing there.', '');
 
@@ -620,18 +624,18 @@ class Protocol7Service
 
         if($pet->isInGuild(GuildEnum::TAPESTRIES))
         {
-            $check = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + max($petWithSkills->getUmbra()->getTotal(), $petWithSkills->getScience()->getTotal()));
+            $check = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + max($petWithSkills->getUmbra()->getTotal(), $petWithSkills->getScience()->getTotal()));
         }
         else
         {
-            $check = mt_rand(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal());
+            $check = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal());
         }
 
-        $lucky = $pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 100) === 1;
+        $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 100) === 1;
 
         if($check < 20)
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector, but wasn\'t able to recover any data.', 'icons/activity-logs/confused');
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
@@ -644,11 +648,11 @@ class Protocol7Service
 
             $this->inventoryService->petCollectsItem('Lo-res Crown', $pet, $pet->getName() . ' recovered this from a corrupt sector of Project-E! Lucky~!', $activityLog);
 
-            $pet->increaseEsteem(mt_rand(4, 8));
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ]);
         }
-        else if(mt_rand(1, 100) === 1)
+        else if($this->squirrel3->rngNextInt(1, 100) === 1)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector, and managed to recover a Lo-res Crown from it!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
@@ -656,15 +660,15 @@ class Protocol7Service
 
             $this->inventoryService->petCollectsItem('Lo-res Crown', $pet, $pet->getName() . ' recovered this from a corrupt sector of Project-E!', $activityLog);
 
-            $pet->increaseEsteem(mt_rand(4, 8));
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ]);
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
-            $loot = ArrayFunctions::pick_one([
+            $loot = $this->squirrel3->rngNextFromArray([
                 'Password',
                 'Cryptocurrency Wallet',
                 'Egg Book Audiobook',
@@ -672,16 +676,16 @@ class Protocol7Service
 
             $lucky = false;
 
-            if(mt_rand(1, 100) === 1)
+            if($this->squirrel3->rngNextInt(1, 100) === 1)
                 $otherLoot = 'Recovered Archive';
-            else if(mt_rand(1, 100) === 1 && $pet->hasMerit(MeritEnum::LUCKY))
+            else if($this->squirrel3->rngNextInt(1, 100) === 1 && $pet->hasMerit(MeritEnum::LUCKY))
             {
                 $otherLoot = 'Recovered Archive';
                 $lucky = true;
             }
             else
             {
-                $otherLoot = ArrayFunctions::pick_one([
+                $otherLoot = $this->squirrel3->rngNextFromArray([
                     'Hash Table',
                     'Finite State Machine',
                     'Browser Cookie'

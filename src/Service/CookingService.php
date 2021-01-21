@@ -28,11 +28,13 @@ class CookingService
     private $knownRecipesRepository;
     private $inventoryRepository;
     private $recipeAttemptedRepository;
+    private $squirrel3;
 
     public function __construct(
         RecipeRepository $recipeRepository, InventoryService $inventoryService, EntityManagerInterface $em,
         UserStatsRepository $userStatsRepository, KnownRecipesRepository $knownRecipesRepository,
-        InventoryRepository $inventoryRepository, RecipeAttemptedRepository $recipeAttemptedRepository
+        InventoryRepository $inventoryRepository, RecipeAttemptedRepository $recipeAttemptedRepository,
+        Squirrel3 $squirrel3
     )
     {
         $this->recipeRepository = $recipeRepository;
@@ -42,6 +44,7 @@ class CookingService
         $this->knownRecipesRepository = $knownRecipesRepository;
         $this->inventoryRepository = $inventoryRepository;
         $this->recipeAttemptedRepository = $recipeAttemptedRepository;
+        $this->squirrel3 = $squirrel3;
     }
 
     /**
@@ -199,20 +202,20 @@ class CookingService
 
         if(count($spices) > 0)
         {
-            // shuffle the spices
-            shuffle($spices);
+            // $this->squirrel3->rngNextShuffle the spices
+            $this->squirrel3->rngNextShuffle($spices);
 
             // then add ~1/3 duplicate spices, but always at the END of the initial list
             $originalSpicesCount = count($spices);
 
             for($i = 0; $i < $originalSpicesCount; $i++)
             {
-                if(mt_rand(1, 3) === 1 && !$spices[$i]->getEffects()->getBringsLuck())
+                if($this->squirrel3->rngNextInt(1, 3) === 1 && !$spices[$i]->getEffects()->getBringsLuck())
                     $spices[] = $spices[$i];
             }
 
             // apply the spices to the new inventory in a random order
-            shuffle($newInventory);
+            $this->squirrel3->rngNextShuffle($newInventory);
 
             for($i = 0; $i < count($newInventory) && count($spices) > 0; $i++)
             {

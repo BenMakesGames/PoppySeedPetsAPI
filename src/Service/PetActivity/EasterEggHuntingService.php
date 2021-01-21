@@ -14,6 +14,7 @@ use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 
 class EasterEggHuntingService
 {
@@ -21,16 +22,18 @@ class EasterEggHuntingService
     private $responseService;
     private $petExperienceService;
     private $userQuestRepository;
+    private $squirrel3;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        UserQuestRepository $userQuestRepository
+        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3
     )
     {
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
         $this->userQuestRepository = $userQuestRepository;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -40,7 +43,7 @@ class EasterEggHuntingService
 
         $maxSkill = NumberFunctions::clamp($maxSkill, 1, 21);
 
-        $roll = mt_rand(1, $maxSkill);
+        $roll = $this->squirrel3->rngNextInt(1, $maxSkill);
 
         $activityLog = null;
         $changes = new PetChanges($pet);
@@ -95,7 +98,7 @@ class EasterEggHuntingService
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));
 
-        if(mt_rand(1, 75) === 1)
+        if($this->squirrel3->rngNextInt(1, 75) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);
 
         return $activityLog;
@@ -103,18 +106,18 @@ class EasterEggHuntingService
 
     private function goSearching(ComputedPetSkills $petWithSkills, string $where, int $minEggs, int $maxEggs, int $encounterChance, int $experience, bool $dark = false, bool $hot = false): PetActivityLog
     {
-        if(mt_rand(1, 100) <= $encounterChance && date('l') !== 'Friday')
+        if($this->squirrel3->rngNextInt(1, 100) <= $encounterChance && date('l') !== 'Friday')
             return $this->getAttacked($petWithSkills, $maxEggs);
 
         $pet = $petWithSkills->getPet();
 
         if($hot)
         {
-            if(!$petWithSkills->getHasProtectionFromHeat()->getTotal() > 0 && mt_rand(1, 10) > $petWithSkills->getStamina()->getTotal())
+            if(!$petWithSkills->getHasProtectionFromHeat()->getTotal() > 0 && $this->squirrel3->rngNextInt(1, 10) > $petWithSkills->getStamina()->getTotal())
             {
-                $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, false);
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, false);
 
-                $pet->increaseSafety(-mt_rand(2, 4));
+                $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went looking for plastic eggs ' . $where . ', but it was way too hot; they couldn\'t find anything before they had to leave :(', '');
             }
         }
@@ -125,13 +128,13 @@ class EasterEggHuntingService
         {
             if($petWithSkills->getCanSeeInTheDark()->getTotal() > 0)
             {
-                $numEggs = mt_rand($minEggs + 1, $maxEggs + mt_rand(1, 2));
+                $numEggs = $this->squirrel3->rngNextInt($minEggs + 1, $maxEggs + $this->squirrel3->rngNextInt(1, 2));
 
                 $message .= '. It was really dark, but that didn\'t pose a problem for ' . $pet->getName() . ', who found ' . $numEggs . ' egg' . ($numEggs === 1 ? '' : 's') . '!';
             }
             else
             {
-                $numEggs = mt_rand($minEggs, $maxEggs);
+                $numEggs = $this->squirrel3->rngNextInt($minEggs, $maxEggs);
 
                 if($numEggs === 0)
                     $message .= ', but it was really dark, and they weren\'t able to find any :(';
@@ -141,7 +144,7 @@ class EasterEggHuntingService
         }
         else
         {
-            $numEggs = mt_rand($minEggs, $maxEggs);
+            $numEggs = $this->squirrel3->rngNextInt($minEggs, $maxEggs);
 
             if($numEggs === 0)
                 $message .= ', but wasn\'t able to find any :(';
@@ -149,14 +152,14 @@ class EasterEggHuntingService
                 $message .= ', and found ' . $numEggs . '!';
         }
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::GATHER, $numEggs > 0);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, $numEggs > 0);
         $this->petExperienceService->gainExp($pet, $experience, [ PetSkillEnum::NATURE ]);
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, '');
 
         for($i = 0; $i < $numEggs; $i++)
         {
-            $r = mt_rand(1, 100);
+            $r = $this->squirrel3->rngNextInt(1, 100);
 
             if($r <= 2)
                 $egg = 'Pink Plastic Egg';
@@ -187,18 +190,18 @@ class EasterEggHuntingService
         }
         else
         {
-            $loot = ArrayFunctions::pick_one([
+            $loot = $this->squirrel3->rngNextFromArray([
                 'Blue Plastic Egg',
                 'Yellow Plastic Egg',
-                ArrayFunctions::pick_one([ 'Quintessence', 'Dark Scales' ]),
-                ArrayFunctions::pick_one([ 'Fluff', 'Talon' ]),
-                ArrayFunctions::pick_one([ 'Matzah Bread', 'Fish' ]),
+                $this->squirrel3->rngNextFromArray([ 'Quintessence', 'Dark Scales' ]),
+                $this->squirrel3->rngNextFromArray([ 'Fluff', 'Talon' ]),
+                $this->squirrel3->rngNextFromArray([ 'Matzah Bread', 'Fish' ]),
             ]);
         }
 
-        $skillCheck = mt_rand(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal());
+        $skillCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal());
 
-        $adjective = ArrayFunctions::pick_one([
+        $adjective = $this->squirrel3->rngNextFromArray([
             'horrible', 'crazy', 'mutant', 'disturbing', 'frickin\' weird', 'bananas'
         ]);
 

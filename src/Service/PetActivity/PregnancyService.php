@@ -28,6 +28,7 @@ use App\Service\PetColorService;
 use App\Service\PetExperienceService;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PregnancyService
@@ -43,13 +44,14 @@ class PregnancyService
     private $meritRepository;
     private $petFactory;
     private $petColorService;
+    private $squirrel3;
 
     public function __construct(
         EntityManagerInterface $em, InventoryService $inventoryService, PetRepository $petRepository,
         ResponseService $responseService, PetExperienceService $petExperienceService,
         UserQuestRepository $userQuestRepository, PetSpeciesRepository $petSpeciesRepository,
         UserStatsRepository $userStatsRepository, MeritRepository $meritRepository, PetFactory $petFactory,
-        PetColorService $petColorService
+        PetColorService $petColorService, Squirrel3 $squirrel3
     )
     {
         $this->em = $em;
@@ -63,6 +65,7 @@ class PregnancyService
         $this->meritRepository = $meritRepository;
         $this->petFactory = $petFactory;
         $this->petColorService = $petColorService;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function getPregnant(Pet $pet1, Pet $pet2)
@@ -76,7 +79,7 @@ class PregnancyService
 
     private function createPregnancy(Pet $mother, Pet $father)
     {
-        $r = mt_rand(1, 100);
+        $r = $this->squirrel3->rngNextInt(1, 100);
 
         if($r <= 45)
             $species = $mother->getSpecies();
@@ -89,7 +92,7 @@ class PregnancyService
         $colorB = $this->petColorService->generateColorFromParentColors($mother->getColorB(), $father->getColorB());
 
         // 20% of the time, swap colorA and colorB around
-        if(mt_rand(1, 5) === 1)
+        if($this->squirrel3->rngNextInt(1, 5) === 1)
         {
             $temp = $colorA;
             $colorA = $colorB;
@@ -111,7 +114,7 @@ class PregnancyService
     {
         $species = $this->petSpeciesRepository->findBy([ 'availableFromBreeding' => true ]);
 
-        return ArrayFunctions::pick_one($species);
+        return $this->squirrel3->rngNextFromArray($species);
     }
 
     /**
@@ -137,15 +140,15 @@ class PregnancyService
         $smallestParent = min($pregnancy->getParent()->getScale(), $pregnancy->getOtherParent()->getScale());
         $largestParent = max($pregnancy->getParent()->getScale(), $pregnancy->getOtherParent()->getScale());
 
-        $min = $smallestParent === 80 ? 80 : mt_rand(min($smallestParent, 80), max($smallestParent, 80));
-        $max = $largestParent === 120 ? 120 : mt_rand(min($largestParent, 120), max($largestParent, 120));
+        $min = $smallestParent === 80 ? 80 : $this->squirrel3->rngNextInt(min($smallestParent, 80), max($smallestParent, 80));
+        $max = $largestParent === 120 ? 120 : $this->squirrel3->rngNextInt(min($largestParent, 120), max($largestParent, 120));
 
         if($min === $max)
             $babySize = $min;
         else if($min < $max)
-            $babySize = mt_rand($min, $max);
+            $babySize = $this->squirrel3->rngNextInt($min, $max);
         else
-            $babySize = mt_rand($max, $min);
+            $babySize = $this->squirrel3->rngNextInt($max, $min);
 
         $baby
             ->setMom($pregnancy->getParent())
@@ -160,7 +163,7 @@ class PregnancyService
 
         $numberOfPetsAtHome = $this->petRepository->getNumberAtHome($user);
 
-        $adjective = ArrayFunctions::pick_one([
+        $adjective = $this->squirrel3->rngNextFromArray([
             'a beautiful', 'an energetic', 'a wriggly',
             'a smiling', 'an intense-looking', 'a plump',
         ]);
@@ -200,14 +203,14 @@ class PregnancyService
 
         $this->em->remove($pregnancy);
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 75), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::OTHER, null);
 
         // applied in a slightly weird order, because I-dunno
         $pet
-            ->increaseLove(mt_rand(8, 16))
-            ->increaseEsteem(mt_rand(8, 16))
-            ->increaseSafety(mt_rand(8, 16))
-            ->increaseFood(-mt_rand(8, 16))
+            ->increaseLove($this->squirrel3->rngNextInt(8, 16))
+            ->increaseEsteem($this->squirrel3->rngNextInt(8, 16))
+            ->increaseSafety($this->squirrel3->rngNextInt(8, 16))
+            ->increaseFood(-$this->squirrel3->rngNextInt(8, 16))
         ;
 
         // grandparents get cool stuff :P
@@ -246,14 +249,14 @@ class PregnancyService
             $n1Part = $n1;
         else
         {
-            $n1Offset = mt_rand(
+            $n1Offset = $this->squirrel3->rngNextInt(
                 max(0, ceil(\mb_strlen($n1) / 2) - 2),
                 min(\mb_strlen($n1) - 1, floor(\mb_strlen($n1) / 2) + 2)
             );
 
             if($n1Offset === 0 || $n1Offset === \mb_strlen($n1) - 1)
                 $n1Part = $n1;
-            else if(mt_rand(1, 2) === 1)
+            else if($this->squirrel3->rngNextInt(1, 2) === 1)
                 $n1Part = \mb_substr($n1, 0, $n1Offset);
             else
                 $n1Part = \mb_substr($n1, $n1Offset);
@@ -264,20 +267,20 @@ class PregnancyService
         else
         {
 
-            $n2Offset = mt_rand(
+            $n2Offset = $this->squirrel3->rngNextInt(
                 max(0, ceil(\mb_strlen($n2) / 2) - 2),
                 min(\mb_strlen($n2) - 1, floor(\mb_strlen($n2) / 2) + 2)
             );
 
             if($n2Offset === 0 || $n2Offset === \mb_strlen($n1) - 1)
                 $n2Part = $n2;
-            else if(mt_rand(1, 2) === 1)
+            else if($this->squirrel3->rngNextInt(1, 2) === 1)
                 $n2Part = \mb_substr($n2, 0, $n2Offset);
             else
                 $n2Part = \mb_substr($n2, $n2Offset);
         }
 
-        if(mt_rand(1, 2) === 1)
+        if($this->squirrel3->rngNextInt(1, 2) === 1)
             $newName = trim($n1Part . $n2Part);
         else
             $newName = trim($n2Part . $n1Part);
@@ -285,7 +288,7 @@ class PregnancyService
         $newName = preg_replace('/ +/', ' ', strtolower($newName));
 
         if($this->isForbiddenCombinedName($newName))
-            $newName = ArrayFunctions::pick_one(PetShelterPet::PET_NAMES);
+            $newName = $this->squirrel3->rngNextFromArray(PetShelterPet::PET_NAMES);
 
         return ucwords($newName);
     }

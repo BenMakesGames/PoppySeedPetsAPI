@@ -15,20 +15,24 @@ use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 
 class HeartDimensionService
 {
     private $responseService;
     private $petExperienceService;
     private $inventoryService;
+    private $squirrel3;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService
+        ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
+        Squirrel3 $squirrel3
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function canAdventure(Pet $pet)
@@ -41,7 +45,7 @@ class HeartDimensionService
 
     public function noAdventuresRemaining(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
 
         $this->inventoryService->unequipPet($pet);
 
@@ -82,7 +86,7 @@ class HeartDimensionService
             ->setChanges($changes->compare($pet))
         ;
 
-        if(mt_rand(1, 10) === 1)
+        if($this->squirrel3->rngNextInt(1, 10) === 1)
             $this->inventoryService->petAttractsRandomBug($pet, 'Heart Beetle');
 
         return $activityLog;
@@ -98,7 +102,7 @@ class HeartDimensionService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         if($pet->getFood() <= 4)
         {
@@ -139,7 +143,7 @@ class HeartDimensionService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         if($pet->getFood() <= 4)
         {
@@ -177,7 +181,7 @@ class HeartDimensionService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         if($pet->getFood() <= 4)
         {
@@ -211,13 +215,13 @@ class HeartDimensionService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         $pet->incrementAffectionAdventures();
 
         $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::INSPIRED, 24 * 60);
 
-        $figure = ArrayFunctions::pick_one([
+        $figure = $this->squirrel3->rngNextFromArray([
             [ 'the First Vampire', [ '; it was really scary!', ', but it was oddly calming...' ]],
             [ 'Gizubi and Kaera', [ '. They were angry at one another...', '. They looked happy...' ] ],
             [ 'Kundrav and Keresaspa', [ '. They were fighting, and it was really scary!', '. They were fighting, and it was really cool!' ] ],
@@ -227,7 +231,7 @@ class HeartDimensionService
             [ 'a cavern filled with gold and gems', [ ', and something dangerous lurking in the shadows...', '! So much treasure waiting to be found!' ] ],
         ]);
 
-        $goodOrBad = mt_rand(0, 1);
+        $goodOrBad = $this->squirrel3->rngNextInt(0, 1);
 
         $description = $figure[1][$goodOrBad];
 

@@ -96,6 +96,7 @@ class PetService
     private $notReallyCraftsService;
     private $letterService;
     private $userQuestRepository;
+    private $squirrel3;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -112,10 +113,11 @@ class PetService
         GuildService $guildService, InventoryService $inventoryService, BurntForestService $burntForestService,
         DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService, LetterService $letterService,
         PetSummonedAwayService $petSummonedAwayService, InventoryModifierService $toolBonusService,
-        UserQuestRepository $userQuestRepository
+        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3
     )
     {
         $this->em = $em;
+        $this->squirrel3 = $squirrel3;
         $this->petRepository = $petRepository;
         $this->responseService = $responseService;
         $this->calendarService = $calendarService;
@@ -286,7 +288,7 @@ class PetService
         if(ArrayFunctions::any($inventory, function(Inventory $i) { return $i->getItem()->getFood() === null; }))
             throw new \InvalidArgumentException('At least one of the items selected is not edible!');
 
-        shuffle($inventory);
+        $this->squirrel3->rngNextShuffle($inventory);
 
         $petChanges = new PetChanges($pet);
         $foodsEaten = [];
@@ -356,7 +358,7 @@ class PetService
             $remainder = $foodGained % 8;
             $gain = floor($foodGained / 8);
 
-            if ($remainder > 0 && mt_rand(1, 8) <= $remainder)
+            if ($remainder > 0 && $this->squirrel3->rngNextInt(1, 8) <= $remainder)
                 $gain++;
 
             $pet->increaseSafety($gain);
@@ -376,17 +378,17 @@ class PetService
             if(count($favorites) > 0)
             {
                 $icon = 'ui/affection';
-                $message .= ' ' . $pet->getName() . ' really liked the ' . ArrayFunctions::pick_one($favorites)->name . '!';
+                $message .= ' ' . $pet->getName() . ' really liked the ' . $this->squirrel3->rngNextFromArray($favorites)->name . '!';
             }
 
             if($ateAFortuneCookie)
             {
-                $message .= ' "' . ArrayFunctions::pick_one(FortuneCookie::MESSAGES) . '"';
-                if(mt_rand(1, 20) === 1 && $pet->getOwner()->getUnlockedGreenhouse())
+                $message .= ' "' . $this->squirrel3->rngNextFromArray(FortuneCookie::MESSAGES) . '"';
+                if($this->squirrel3->rngNextInt(1, 20) === 1 && $pet->getOwner()->getUnlockedGreenhouse())
                 {
                     $message .= ' ... in bed!';
 
-                    if(mt_rand(1, 5) === 1)
+                    if($this->squirrel3->rngNextInt(1, 5) === 1)
                         $message .= ' XD';
                 }
             }
@@ -396,7 +398,7 @@ class PetService
         else
         {
             if(count($tooPoisonous) > 0)
-                return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but ' . ArrayFunctions::pick_one($tooPoisonous) . ' really isn\'t appealing right now.', '');
+                return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but ' . $this->squirrel3->rngNextFromArray($tooPoisonous) . ' really isn\'t appealing right now.', '');
             else
                 return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but they\'re too full to eat anymore.', '');
         }
@@ -412,7 +414,7 @@ class PetService
 
         $this->responseService->setReloadPets();
 
-        if($pet->getTool() && $pet->getTool()->canBeNibbled() && mt_rand(1, 10) === 1)
+        if($pet->getTool() && $pet->getTool()->canBeNibbled() && $this->squirrel3->rngNextInt(1, 10) === 1)
         {
             $changes = new PetChangesSummary();
             $changes->food = '+';
@@ -443,7 +445,7 @@ class PetService
         {
             $pet->increaseCaffeine(-1);
 
-            if(mt_rand(1, 2) === 1)
+            if($this->squirrel3->rngNextInt(1, 2) === 1)
                 $pet->increasePoison(1);
         }
 
@@ -455,23 +457,23 @@ class PetService
 
         $safetyRestingPoint = $pet->hasMerit(MeritEnum::NOTHING_TO_FEAR) ? 8 : 0;
 
-        if($pet->getSafety() > $safetyRestingPoint && mt_rand(1, 2) === 1)
+        if($pet->getSafety() > $safetyRestingPoint && $this->squirrel3->rngNextInt(1, 2) === 1)
             $pet->increaseSafety(-1);
         else if($pet->getSafety() < $safetyRestingPoint)
             $pet->increaseSafety(1);
 
         $loveRestingPoint = $pet->hasMerit(MeritEnum::EVERLASTING_LOVE) ? 8 : 0;
 
-        if($pet->getLove() > $loveRestingPoint && mt_rand(1, 2) === 1)
+        if($pet->getLove() > $loveRestingPoint && $this->squirrel3->rngNextInt(1, 2) === 1)
             $pet->increaseLove(-1);
-        else if($pet->getLove() < $loveRestingPoint && mt_rand(1, 2) === 1)
+        else if($pet->getLove() < $loveRestingPoint && $this->squirrel3->rngNextInt(1, 2) === 1)
             $pet->increaseLove(1);
 
         $esteemRestingPoint = $pet->hasMerit(MeritEnum::NEVER_EMBARRASSED) ? 8 : 0;
 
         if($pet->getEsteem() > $esteemRestingPoint)
             $pet->increaseEsteem(-1);
-        else if($pet->getEsteem() < $esteemRestingPoint && mt_rand(1, 2) === 1)
+        else if($pet->getEsteem() < $esteemRestingPoint && $this->squirrel3->rngNextInt(1, 2) === 1)
             $pet->increaseEsteem(1);
 
         $pregnancy = $pet->getPregnancy();
@@ -479,9 +481,9 @@ class PetService
         if($pregnancy)
         {
             if($pet->getFood() < 0) $pregnancy->increaseAffection(-1);
-            if($pet->getSafety() < 0 && mt_rand(1, 2) === 1) $pregnancy->increaseAffection(-1);
-            if($pet->getLove() < 0 && mt_rand(1, 3) === 1) $pregnancy->increaseAffection(-1);
-            if($pet->getEsteem() < 0 && mt_rand(1, 4) === 1) $pregnancy->increaseAffection(-1);
+            if($pet->getSafety() < 0 && $this->squirrel3->rngNextInt(1, 2) === 1) $pregnancy->increaseAffection(-1);
+            if($pet->getLove() < 0 && $this->squirrel3->rngNextInt(1, 3) === 1) $pregnancy->increaseAffection(-1);
+            if($pet->getEsteem() < 0 && $this->squirrel3->rngNextInt(1, 4) === 1) $pregnancy->increaseAffection(-1);
 
             if($pregnancy->getGrowth() >= PetBaby::PREGNANCY_DURATION)
             {
@@ -492,23 +494,23 @@ class PetService
 
         if($pet->getPoison() > 0)
         {
-            if(mt_rand(6, 24) < $pet->getPoison())
+            if($this->squirrel3->rngNextInt(6, 24) < $pet->getPoison())
             {
                 $changes = new PetChanges($pet);
 
                 $safetyVom = ceil($pet->getPoison() / 4);
 
-                $pet->increasePoison(-mt_rand( ceil($pet->getPoison() / 4), ceil($pet->getPoison() * 3 / 4)));
-                if($pet->getAlcohol() > 0) $pet->increaseAlcohol(-mt_rand(1, ceil($pet->getAlcohol() / 2)));
-                if($pet->getPsychedelic() > 0) $pet->increasePsychedelic(-mt_rand(1, ceil($pet->getPsychedelic() / 2)));
-                if($pet->getCaffeine() > 0) $pet->increaseFood(-mt_rand(1, ceil($pet->getCaffeine() / 2)));
-                if($pet->getJunk() > 0) $pet->increaseJunk(-mt_rand(1, ceil($pet->getJunk() / 2)));
-                if($pet->getFood() > 0) $pet->increaseFood(-mt_rand(1, ceil($pet->getFood() / 2)));
+                $pet->increasePoison(-$this->squirrel3->rngNextInt( ceil($pet->getPoison() / 4), ceil($pet->getPoison() * 3 / 4)));
+                if($pet->getAlcohol() > 0) $pet->increaseAlcohol(-$this->squirrel3->rngNextInt(1, ceil($pet->getAlcohol() / 2)));
+                if($pet->getPsychedelic() > 0) $pet->increasePsychedelic(-$this->squirrel3->rngNextInt(1, ceil($pet->getPsychedelic() / 2)));
+                if($pet->getCaffeine() > 0) $pet->increaseFood(-$this->squirrel3->rngNextInt(1, ceil($pet->getCaffeine() / 2)));
+                if($pet->getJunk() > 0) $pet->increaseJunk(-$this->squirrel3->rngNextInt(1, ceil($pet->getJunk() / 2)));
+                if($pet->getFood() > 0) $pet->increaseFood(-$this->squirrel3->rngNextInt(1, ceil($pet->getFood() / 2)));
 
-                $pet->increaseSafety(-mt_rand(1, $safetyVom));
-                $pet->increaseEsteem(-mt_rand(1, $safetyVom));
+                $pet->increaseSafety(-$this->squirrel3->rngNextInt(1, $safetyVom));
+                $pet->increaseEsteem(-$this->squirrel3->rngNextInt(1, $safetyVom));
 
-                $this->petExperienceService->spendTime($pet, mt_rand(15, 30), PetActivityStatEnum::OTHER, null);
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
 
                 $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% threw up :(', '', $changes->compare($pet));
 
@@ -521,18 +523,18 @@ class PetService
             $this->poopingService->poopDarkMatter($pet);
         }
 
-        if($pet->hasMerit(MeritEnum::SHEDS) && mt_rand(1, 180) === 1)
+        if($pet->hasMerit(MeritEnum::SHEDS) && $this->squirrel3->rngNextInt(1, 180) === 1)
         {
             $this->poopingService->shed($pet);
         }
 
         if($pet->hasMerit(MeritEnum::HYPERCHROMATIC))
         {
-            if(mt_rand(1, 250) === 1)
+            if($this->squirrel3->rngNextInt(1, 250) === 1)
             {
                 $pet
-                    ->setColorA(ColorFunctions::RGB2Hex(mt_rand(0, 255), mt_rand(0, 255), mt_rand(0, 255)))
-                    ->setColorB(ColorFunctions::RGB2Hex(mt_rand(0, 255), mt_rand(0, 255), mt_rand(0, 255)))
+                    ->setColorA(ColorFunctions::RGB2Hex($this->squirrel3->rngNextInt(0, 255), $this->squirrel3->rngNextInt(0, 255), $this->squirrel3->rngNextInt(0, 255)))
+                    ->setColorB(ColorFunctions::RGB2Hex($this->squirrel3->rngNextInt(0, 255), $this->squirrel3->rngNextInt(0, 255), $this->squirrel3->rngNextInt(0, 255)))
                 ;
             }
             else
@@ -546,7 +548,7 @@ class PetService
 
         $petWithSkills = $pet->getComputedSkills();
 
-        if(mt_rand(1, 4000) === 1)
+        if($this->squirrel3->rngNextInt(1, 4000) === 1)
         {
             $activityLog = $this->petSummonedAwayService->adventure($petWithSkills);
 
@@ -554,7 +556,7 @@ class PetService
                 return;
         }
 
-        $hunger = mt_rand(0, 4);
+        $hunger = $this->squirrel3->rngNextInt(0, 4);
 
         if($pet->getFood() < $hunger && count($pet->getLunchboxItems()) > 0)
         {
@@ -639,7 +641,7 @@ class PetService
                 return;
         }
 
-        if($pet->hasStatusEffect(StatusEffectEnum::GOBBLE_GOBBLE) && mt_rand(1, 2) === 1)
+        if($pet->hasStatusEffect(StatusEffectEnum::GOBBLE_GOBBLE) && $this->squirrel3->rngNextInt(1, 2) === 1)
         {
             $changes = new PetChanges($pet);
             $activityLog = $this->huntingService->huntedTurkeyDragon($petWithSkills);
@@ -647,7 +649,7 @@ class PetService
             return;
         }
 
-        if($pet->hasStatusEffect(StatusEffectEnum::ONEIRIC) && mt_rand(1, 2) === 1)
+        if($pet->hasStatusEffect(StatusEffectEnum::ONEIRIC) && $this->squirrel3->rngNextInt(1, 2) === 1)
         {
             $this->dreamingService->dream($pet);
             $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::ONEIRIC));
@@ -668,7 +670,7 @@ class PetService
         $programmingPossibilities = $this->programmingService->getCraftingPossibilities($petWithSkills, $quantities);
         $notCraftingPossibilities = $this->notReallyCraftsService->getCraftingPossibilities($petWithSkills, $quantities);
 
-        $houseTooFull = mt_rand(1, 10) > $pet->getOwner()->getMaxInventory() - $itemsInHouse;
+        $houseTooFull = $this->squirrel3->rngNextInt(1, 10) > $pet->getOwner()->getMaxInventory() - $itemsInHouse;
 
         if($houseTooFull)
         {
@@ -679,7 +681,7 @@ class PetService
 
             if(count($craftingPossibilities) === 0 && count($programmingPossibilities) === 0 && count($notCraftingPossibilities) === 0)
             {
-                $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
                 $this->responseService->createActivityLog($pet, $description . ' %pet:' . $pet->getId() . '.name% wanted to make something, but couldn\'t find any materials to work with.', 'icons/activity-logs/house-too-full');
             }
@@ -691,7 +693,7 @@ class PetService
                 if(count($programmingPossibilities) > 0) $possibilities[] = [ $this->programmingService, $programmingPossibilities ];
                 if(count($notCraftingPossibilities) > 0) $possibilities[] = [ $this->notReallyCraftsService, $notCraftingPossibilities ];
 
-                $do = ArrayFunctions::pick_one($possibilities);
+                $do = $this->squirrel3->rngNextFromArray($possibilities);
 
                 /** @var PetActivityLog $activityLog */
                 $activityLog = $do[0]->adventure($petWithSkills, $do[1]);
@@ -701,7 +703,7 @@ class PetService
             return;
         }
 
-        if(mt_rand(1, 50) === 1)
+        if($this->squirrel3->rngNextInt(1, 50) === 1)
         {
             if($this->letterService->adventure($petWithSkills))
                 return;
@@ -716,20 +718,20 @@ class PetService
                 return;
         }
 
-        if(mt_rand(1, 50) === 1)
+        if($this->squirrel3->rngNextInt(1, 50) === 1)
         {
             $activityLog = $this->givingTreeGatheringService->gatherFromGivingTree($pet);
             if($activityLog)
                 return;
         }
 
-        if(mt_rand(1, 4) === 1 && $this->calendarService->isEaster())
+        if($this->squirrel3->rngNextInt(1, 4) === 1 && $this->calendarService->isEaster())
         {
             $this->easterEggHuntingService->adventure($petWithSkills);
             return;
         }
 
-        if($pet->getGuildMembership() && mt_rand(1, 35) === 1)
+        if($pet->getGuildMembership() && $this->squirrel3->rngNextInt(1, 35) === 1)
         {
             if($this->guildService->doGuildActivity($petWithSkills))
                 return;
@@ -798,7 +800,7 @@ class PetService
 
             case 'Silver Keyblade':
             case 'Gold Keyblade':
-                if($pet->getFood() > 0 && mt_rand(1, 10) === 1)
+                if($pet->getFood() > 0 && $this->squirrel3->rngNextInt(1, 10) === 1)
                 {
                     $this->treasureMapService->doKeybladeTower($petWithSkills);
                     return true;
@@ -810,7 +812,7 @@ class PetService
             case 'Sneqo Plushy':
             case 'Bulbun Plushy':
             case 'Peacock Plushy':
-                if(mt_rand(1, 6) === 1 || $this->userStatsRepository->getStatValue($pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER) === 0)
+                if($this->squirrel3->rngNextInt(1, 6) === 1 || $this->userStatsRepository->getStatValue($pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER) === 0)
                 {
                     $this->treasureMapService->doFluffmongerTrade($pet);
                     return true;
@@ -823,7 +825,7 @@ class PetService
                 return true;
 
             case 'Heartstone':
-                if(mt_rand(1, 3) === 1)
+                if($this->squirrel3->rngNextInt(1, 3) === 1)
                 {
                     if($this->heartDimensionService->canAdventure($pet))
                         $this->heartDimensionService->adventure($petWithSkills);
@@ -836,7 +838,7 @@ class PetService
                 return false;
 
             case 'Saucepan':
-                if(mt_rand(1, 10) === 1)
+                if($this->squirrel3->rngNextInt(1, 10) === 1)
                 {
                     $this->treasureMapService->doCookSomething($pet);
                     return true;
@@ -849,7 +851,7 @@ class PetService
                 return true;
 
             case 'Aubergine Commander':
-                if(mt_rand(1, 100) === 1)
+                if($this->squirrel3->rngNextInt(1, 100) === 1)
                 {
                     $this->treasureMapService->doEggplantCurse($pet);
                     return true;
@@ -907,7 +909,7 @@ class PetService
                     break;
 
                 case SocialTimeWantEnum::GROUP:
-                    $this->petGroupService->doGroupActivity(ArrayFunctions::pick_one($availableGroups->toArray()));
+                    $this->petGroupService->doGroupActivity($this->squirrel3->rngNextFromArray($availableGroups->toArray()));
                     return true;
 
                 case SocialTimeWantEnum::CREATE_GROUP:
@@ -931,7 +933,7 @@ class PetService
             return false;
 
         // maybe hang out with a spirit companion, if you have one
-        if($spiritCompanionAvailable && (count($relationships) === 0 || mt_rand(1, count($relationships) + 1) === 1))
+        if($spiritCompanionAvailable && (count($relationships) === 0 || $this->squirrel3->rngNextInt(1, count($relationships) + 1) === 1))
         {
             $this->hangOutWithSpiritCompanion($pet);
             return true;
@@ -947,7 +949,7 @@ class PetService
 
         $friendRelationship = $friendRelationshipsByFriendId[$friend->getId()];
 
-        $skipped = mt_rand(0, 5);
+        $skipped = $this->squirrel3->rngNextInt(0, 5);
 
         foreach($relationships as $r)
         {
@@ -1012,7 +1014,7 @@ class PetService
 
             $chanceToHangOut = $friendRelationshipsByFriendId[$r->getRelationship()->getId()]->getCommitment() * 1000 / $r->getCommitment();
 
-            return mt_rand(0, 999) < $chanceToHangOut;
+            return $this->squirrel3->rngNextInt(0, 999) < $chanceToHangOut;
         });
 
         if(count($relationships) === 0)
@@ -1035,7 +1037,7 @@ class PetService
 
         $adjectives = [ 'bizarre', 'impressive', 'surprisingly-graphic', 'whirlwind' ];
 
-        if(mt_rand(1, 3) !== 1 || ($pet->getSafety() > 0 && $pet->getLove() > 0 && $pet->getEsteem() > 0))
+        if($this->squirrel3->rngNextInt(1, 3) !== 1 || ($pet->getSafety() > 0 && $pet->getLove() > 0 && $pet->getEsteem() > 0))
         {
             $teachingStat = null;
 
@@ -1043,7 +1045,7 @@ class PetService
             {
                 case SpiritCompanionStarEnum::ALTAIR:
                     // the flying/fighting eagle
-                    if(mt_rand(1, 3) === 1)
+                    if($this->squirrel3->rngNextInt(1, 3) === 1)
                     {
                         $teachingStat = PetSkillEnum::BRAWL;
                         $message = '%pet:' . $pet->getId() . '.name% practiced hunting with ' . $companion->getName() . '!';
@@ -1057,14 +1059,14 @@ class PetService
 
                 case SpiritCompanionStarEnum::CASSIOPEIA:
                     // sneaky snake
-                    if(mt_rand(1, 3) === 1)
+                    if($this->squirrel3->rngNextInt(1, 3) === 1)
                     {
                         $teachingStat = PetSkillEnum::STEALTH;
                         $message = $companion->getName() . ' showed %pet:' . $pet->getId() . '.name% how to take advantage of their surroundings to hide their presence.';
                     }
                     else
                     {
-                        if(mt_rand(1, 4) === 1)
+                        if($this->squirrel3->rngNextInt(1, 4) === 1)
                             $message = '%pet:' . $pet->getId() . '.name% listened to ' . $companion->getName() . ' for a little while. They had many, strange secrets to tell, but none really seemed that useful.';
                         else
                             $message = '%pet:' . $pet->getId() . '.name% listened to ' . $companion->getName() . ' for a little while.';
@@ -1073,19 +1075,19 @@ class PetService
 
                 case SpiritCompanionStarEnum::CEPHEUS:
                     // a king
-                    if(mt_rand(1, 3) === 1)
+                    if($this->squirrel3->rngNextInt(1, 3) === 1)
                     {
                         $teachingStat = PetSkillEnum::UMBRA;
                         $message = '%pet:' . $pet->getId() . '.name% listened to ' . $companion->getName() . '\'s stories about the various lands of the near and far Umbra...';
                     }
                     else
                     {
-                        $message = $companion->getName() . ' told a ' . ArrayFunctions::pick_one($adjectives) . ' story they made just for %pet:' . $pet->getId() . '.name%!';
+                        $message = $companion->getName() . ' told a ' . $this->squirrel3->rngNextFromArray($adjectives) . ' story they made just for %pet:' . $pet->getId() . '.name%!';
                     }
                     break;
 
                 case SpiritCompanionStarEnum::GEMINI:
-                    $message = '%pet:' . $pet->getId() . '.name% played ' . ArrayFunctions::pick_one([
+                    $message = '%pet:' . $pet->getId() . '.name% played ' . $this->squirrel3->rngNextFromArray([
                         'hide-and-go-seek tag',
                         'hacky sack',
                         'soccer',
@@ -1101,11 +1103,11 @@ class PetService
 
                 case SpiritCompanionStarEnum::SAGITTARIUS:
                     // satyr-adjacent
-                    if(mt_rand(1, 3) === 1)
+                    if($this->squirrel3->rngNextInt(1, 3) === 1)
                     {
                         // teaches music
                         $teachingStat = PetSkillEnum::MUSIC;
-                        $message = '%pet:' . $pet->getId() . '.name% ' . ArrayFunctions::pick_one([ 'played music', 'danced', 'sang' ]) . ' with ' . $companion->getName() . '!';
+                        $message = '%pet:' . $pet->getId() . '.name% ' . $this->squirrel3->rngNextFromArray([ 'played music', 'danced', 'sang' ]) . ' with ' . $companion->getName() . '!';
                     }
                     else
                     {
@@ -1121,9 +1123,9 @@ class PetService
             if($teachingStat)
             {
                 $pet
-                    ->increaseSafety(mt_rand(1, 2))
-                    ->increaseLove(mt_rand(1, 2))
-                    ->increaseEsteem(mt_rand(1, 2))
+                    ->increaseSafety($this->squirrel3->rngNextInt(1, 2))
+                    ->increaseLove($this->squirrel3->rngNextInt(1, 2))
+                    ->increaseEsteem($this->squirrel3->rngNextInt(1, 2))
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ $teachingStat ]);
@@ -1131,9 +1133,9 @@ class PetService
             else
             {
                 $pet
-                    ->increaseSafety(mt_rand(2, 4))
-                    ->increaseLove(mt_rand(2, 4))
-                    ->increaseEsteem(mt_rand(2, 4))
+                    ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                    ->increaseLove($this->squirrel3->rngNextInt(2, 4))
+                    ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
                 ;
             }
         }
@@ -1144,36 +1146,36 @@ class PetService
                 case SpiritCompanionStarEnum::ALTAIR:
                 case SpiritCompanionStarEnum::CEPHEUS:
                     $pet
-                        ->increaseSafety(mt_rand(6, 10))
-                        ->increaseLove(mt_rand(2, 4))
+                        ->increaseSafety($this->squirrel3->rngNextInt(6, 10))
+                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
                     ;
-                    $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' told a ' . ArrayFunctions::pick_one($adjectives) . ' story about victory in combat, and swore to protect %pet:' . $pet->getId() . '.name%!';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' told a ' . $this->squirrel3->rngNextFromArray($adjectives) . ' story about victory in combat, and swore to protect %pet:' . $pet->getId() . '.name%!';
                     break;
                 case SpiritCompanionStarEnum::CASSIOPEIA:
                     $pet
-                        ->increaseSafety(mt_rand(2, 4))
+                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' whispered odd prophecies, then stared at %pet:' . $pet->getId() . '.name% expectantly. (It\'s the thought that counts...)';
                     break;
                 case SpiritCompanionStarEnum::GEMINI:
                     $pet
-                        ->increaseSafety(mt_rand(4, 8))
-                        ->increaseLove(mt_rand(2, 4))
-                        ->increaseEsteem(mt_rand(2, 4))
+                        ->increaseSafety($this->squirrel3->rngNextInt(4, 8))
+                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' smiled, and split into multiple copies of itself, each defending %pet:' . $pet->getId() . '.name% from another angle. They all turned to %pet:' . $pet->getId() . '.name% and gave a sincere thumbs up before recombining.';
                     break;
                 case SpiritCompanionStarEnum::SAGITTARIUS:
                     $pet
-                        ->increaseSafety(mt_rand(2, 4))
-                        ->increaseLove(mt_rand(2, 4))
+                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
                     ;
-                    $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' tried to distract %pet:' . $pet->getId() . '.name% with ' . ArrayFunctions::pick_one($adjectives) . ' stories about lavish parties. It kind of worked...';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' tried to distract %pet:' . $pet->getId() . '.name% with ' . $this->squirrel3->rngNextFromArray($adjectives) . ' stories about lavish parties. It kind of worked...';
                     break;
                 case SpiritCompanionStarEnum::HYDRA:
                     $pet
-                        ->increaseSafety(mt_rand(4, 8))
-                        ->increaseLove(mt_rand(4, 8))
+                        ->increaseSafety($this->squirrel3->rngNextInt(4, 8))
+                        ->increaseLove($this->squirrel3->rngNextInt(4, 8))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. Sensing %pet:' . $pet->getId() . '.name%\'s unease, ' . $companion->getName() . ' looked around for potential threats, and roared menacingly.';
                     break;
@@ -1188,37 +1190,37 @@ class PetService
                 case SpiritCompanionStarEnum::ALTAIR:
                 case SpiritCompanionStarEnum::CEPHEUS:
                     $pet
-                        ->increaseSafety(mt_rand(2, 4))
-                        ->increaseLove(mt_rand(2, 4))
+                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
                     ;
-                    $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' rambled some ' . ArrayFunctions::pick_one($adjectives) . ' story about victory in combat... (It\'s the thought that counts...)';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' rambled some ' . $this->squirrel3->rngNextFromArray($adjectives) . ' story about victory in combat... (It\'s the thought that counts...)';
                     break;
                 case SpiritCompanionStarEnum::CASSIOPEIA:
                     $pet
-                        ->increaseSafety(mt_rand(2, 4))
-                        ->increaseLove(mt_rand(2, 4))
+                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' whispered odd prophecies, then stared at %pet:' . $pet->getId() . '.name% expectantly. (It\'s the thought that counts...)';
                     break;
                 case SpiritCompanionStarEnum::GEMINI:
                     $pet
-                        ->increaseSafety(mt_rand(4, 8))
-                        ->increaseLove(mt_rand(4, 8))
+                        ->increaseSafety($this->squirrel3->rngNextInt(4, 8))
+                        ->increaseLove($this->squirrel3->rngNextInt(4, 8))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' smiled, and split into multiple copies of itself, and they all played games together!';
                     break;
                 case SpiritCompanionStarEnum::SAGITTARIUS:
                     $pet
-                        ->increaseSafety(mt_rand(2, 4))
-                        ->increaseLove(mt_rand(4, 8))
-                        ->increaseEsteem(mt_rand(2, 4))
+                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseLove($this->squirrel3->rngNextInt(4, 8))
+                        ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. The two hosted a party for themselves; %pet:' . $pet->getId() . '.name% had a lot of fun.';
                     break;
                 case SpiritCompanionStarEnum::HYDRA:
                     $pet
-                        ->increaseSafety(mt_rand(4, 8))
-                        ->increaseLove(mt_rand(4, 8))
+                        ->increaseSafety($this->squirrel3->rngNextInt(4, 8))
+                        ->increaseLove($this->squirrel3->rngNextInt(4, 8))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. Sensing %pet:' . $pet->getId() . '.name%\'s unease, ' . $companion->getName() . ' settled into %pet:' . $pet->getId() . '.name%\'s lap.';
                     break;
@@ -1233,37 +1235,37 @@ class PetService
                 case SpiritCompanionStarEnum::ALTAIR:
                 case SpiritCompanionStarEnum::CEPHEUS:
                     $pet
-                        ->increaseSafety(mt_rand(2, 4))
-                        ->increaseLove(mt_rand(2, 4))
-                        ->increaseEsteem(mt_rand(2, 4))
+                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' listened patiently; in the end, %pet:' . $pet->getId() . '.name% felt a little better.';
                     break;
                 case SpiritCompanionStarEnum::CASSIOPEIA:
                     $pet
-                        ->increaseEsteem(mt_rand(4, 8))
+                        ->increaseEsteem($this->squirrel3->rngNextInt(4, 8))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' whispered odd prophecies, then stared at %pet:' . $pet->getId() . '.name% expectantly. Somehow, that actually helped!';
                     break;
                 case SpiritCompanionStarEnum::GEMINI:
                     $pet
-                        ->increaseLove(mt_rand(2, 4))
+                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' tried to entertain %pet:' . $pet->getId() . '.name% by splitting into copies and dancing around, but it didn\'t really help...';
                     break;
                 case SpiritCompanionStarEnum::SAGITTARIUS:
                     $pet
-                        ->increaseSafety(mt_rand(2, 4))
-                        ->increaseLove(mt_rand(2, 4))
-                        ->increaseEsteem(mt_rand(4, 8))
+                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseEsteem($this->squirrel3->rngNextInt(4, 8))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' empathized completely, having been in similar situations themselves. It was really nice to hear!';
                     break;
                 case SpiritCompanionStarEnum::HYDRA:
                     $pet
-                        ->increaseSafety(mt_rand(2, 4))
-                        ->increaseLove(mt_rand(2, 4))
-                        ->increaseEsteem(mt_rand(4, 8))
+                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseEsteem($this->squirrel3->rngNextInt(4, 8))
                     ;
                     $message = $pet->getName() . ' was feeling down, so talked to ' . $companion->getName() . '. Sensing %pet:' . $pet->getId() . '.name%\'s unease, ' . $companion->getName() . ' settled into %pet:' . $pet->getId() . '.name%\'s lap.';
                     break;
@@ -1352,7 +1354,7 @@ class PetService
 
     private function doNothing(Pet $pet)
     {
-        $this->petExperienceService->spendTime($pet, mt_rand(30, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
         $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% hung around the house.', '');
     }
 
@@ -1360,7 +1362,7 @@ class PetService
     {
         $totalDesire = array_sum($petDesires);
 
-        $pick = mt_rand(0, $totalDesire - 1);
+        $pick = $this->squirrel3->rngNextInt(0, $totalDesire - 1);
 
         foreach($petDesires as $action=>$desire)
         {
@@ -1376,55 +1378,55 @@ class PetService
     public function generateFishingDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
-        $desire = $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() + mt_rand(1, 4);
+        $desire = $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getFishing();
 
-        return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateSubmarineDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
-        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() + mt_rand(1, 4);
+        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getScience() + $pet->getTool()->getItem()->getTool()->getFishing();
 
-        return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateMonsterHuntingDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
-        $desire = $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal() + mt_rand(1, 4);
+        $desire = $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getBrawl();
 
-        return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateCraftingDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
-        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getCrafts()->getTotal() + mt_rand(1, 4);
+        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getCrafts();
 
-        return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateExploreUmbraDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
-        $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal() + mt_rand(1, 4);
+        $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
 
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getUmbra();
@@ -1455,57 +1457,57 @@ class PetService
     public function generateGatheringDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
-        $desire = $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + mt_rand(1, 4);
+        $desire = $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getGathering();
 
-        return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateClimbingBeanstalkDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
-        $desire = floor(($petWithSkills->getStrength()->getTotal() + $petWithSkills->getStamina()->getTotal()) * 1.5) + ceil($petWithSkills->getNature()->getTotal() / 2) + mt_rand(1, 4);
+        $desire = floor(($petWithSkills->getStrength()->getTotal() + $petWithSkills->getStamina()->getTotal()) * 1.5) + ceil($petWithSkills->getNature()->getTotal() / 2) + $this->squirrel3->rngNextInt(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getNature();
 
-        return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateHackingDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
-        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + mt_rand(1, 4);
+        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getScience();
 
-        return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateProgrammingDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
-        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + mt_rand(1, 4);
+        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getScience();
 
-        return max(1, round($desire * (1 + mt_rand(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
     }
 
     private function poop(Pet $pet): bool
     {
-        if($pet->hasMerit(MeritEnum::BLACK_HOLE_TUM) && mt_rand(1, 180) === 1)
+        if($pet->hasMerit(MeritEnum::BLACK_HOLE_TUM) && $this->squirrel3->rngNextInt(1, 180) === 1)
             return true;
 
-        if($pet->getTool() && $pet->getTool()->increasesPooping() && mt_rand(1, 180) === 1)
+        if($pet->getTool() && $pet->getTool()->increasesPooping() && $this->squirrel3->rngNextInt(1, 180) === 1)
             return true;
 
         return false;
@@ -1513,10 +1515,10 @@ class PetService
 
     private function dream(Pet $pet): bool
     {
-        if($pet->hasMerit(MeritEnum::DREAMWALKER) && mt_rand(1, 200) === 1)
+        if($pet->hasMerit(MeritEnum::DREAMWALKER) && $this->squirrel3->rngNextInt(1, 200) === 1)
             return true;
 
-        if($pet->getTool() && $pet->getTool()->isDreamcatcher() && mt_rand(1, 200) === 1)
+        if($pet->getTool() && $pet->getTool()->isDreamcatcher() && $this->squirrel3->rngNextInt(1, 200) === 1)
             return true;
 
         return false;
@@ -1531,8 +1533,8 @@ class PetService
         if($pet->hasMerit(MeritEnum::GOURMAND))
         {
             $pet
-                ->increaseFood(mt_rand(3, 6))
-                ->increaseEsteem(mt_rand(2, 4))
+                ->increaseFood($this->squirrel3->rngNextInt(3, 6))
+                ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
             ;
 
             $this->petExperienceService->spendTime($pet, 5, PetActivityStatEnum::OTHER, null);
@@ -1542,12 +1544,12 @@ class PetService
         }
         else
         {
-            $pet->increaseEsteem(mt_rand(2, 4));
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:'. $pet->getId() . '.name% spends some time cleaning the ' . $itemOnBody . ' off their body...', '');
 
             $this->inventoryService->petCollectsItem($itemOnBody, $pet, $pet->getName() . ' cleaned this off their body...', $activityLog);
 
-            $this->petExperienceService->spendTime($pet, mt_rand(45, 60), PetActivityStatEnum::OTHER, null);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
             $activityLog->setChanges($changes->compare($pet));
 

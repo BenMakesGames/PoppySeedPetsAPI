@@ -7,12 +7,19 @@ use App\Functions\NumberFunctions;
 
 class PetColorService
 {
+    private $squirrel3;
+
+    public function __construct(Squirrel3 $squirrel3)
+    {
+        $this->squirrel3 = $squirrel3;
+    }
+
     /**
      * Favors value in 50-100%
      */
     public function randomSaturation(): float
     {
-        return mt_rand(mt_rand(0, 500), 1000) / 1000.0;
+        return $this->squirrel3->rngNextInt($this->squirrel3->rngNextInt(0, 500), 1000) / 1000.0;
     }
 
     /**
@@ -20,7 +27,7 @@ class PetColorService
      */
     public function randomLuminosity(): float
     {
-        return mt_rand(mt_rand(0, 500), mt_rand(750, 1000)) / 1000.0;
+        return $this->squirrel3->rngNextInt($this->squirrel3->rngNextInt(0, 500), $this->squirrel3->rngNextInt(750, 1000)) / 1000.0;
     }
 
     public function randomizeColorDistinctFromPreviousColor(string $oldColor)
@@ -28,7 +35,7 @@ class PetColorService
         $oldRGB = ColorFunctions::Hex2RGB($oldColor);
         $oldHSL = ColorFunctions::RGB2HSL($oldRGB['r'], $oldRGB['g'], $oldRGB['b']);
 
-        $h = $oldHSL['h'] + mt_rand(200, 800) / 1000.0;
+        $h = $oldHSL['h'] + $this->squirrel3->rngNextInt(200, 800) / 1000.0;
         if($h > 1) $h -= 1;
 
         // now pick a random saturation and luminosity within that:
@@ -40,10 +47,10 @@ class PetColorService
 
     public function generateColorFromParentColors(string $parent1Color, string $parent2Color): string
     {
-        if(mt_rand(1, 5) === 1)
+        if($this->squirrel3->rngNextInt(1, 5) === 1)
         {
             return ColorFunctions::HSL2Hex(
-                mt_rand(0, 1000) / 1000,
+                $this->squirrel3->rngNextInt(0, 1000) / 1000,
                 $this->randomSaturation(),
                 $this->randomLuminosity()
             );
@@ -51,7 +58,7 @@ class PetColorService
         else
         {
             // pick a color somewhere between color1 and color2, tending to prefer a 50/50 mix
-            $skew = mt_rand(mt_rand(0, 127), mt_rand(128, 255));
+            $skew = $this->squirrel3->rngNextInt($this->squirrel3->rngNextInt(0, 127), $this->squirrel3->rngNextInt(128, 255));
 
             $rgb1 = ColorFunctions::Hex2RGB($parent1Color);
             $rgb2 = ColorFunctions::Hex2RGB($parent2Color);
@@ -61,9 +68,9 @@ class PetColorService
             $b = (int)(($rgb1['b'] * $skew + $rgb2['b'] * (255 - $skew)) / 255);
 
             // jiggle the final values a little:
-            $r = NumberFunctions::clamp($r + mt_rand(-6, 6), 0, 255);
-            $g = NumberFunctions::clamp($g + mt_rand(-6, 6), 0, 255);
-            $b = NumberFunctions::clamp($b + mt_rand(-6, 6), 0, 255);
+            $r = NumberFunctions::clamp($r + $this->squirrel3->rngNextInt(-6, 6), 0, 255);
+            $g = NumberFunctions::clamp($g + $this->squirrel3->rngNextInt(-6, 6), 0, 255);
+            $b = NumberFunctions::clamp($b + $this->squirrel3->rngNextInt(-6, 6), 0, 255);
 
             return ColorFunctions::RGB2Hex($r, $g, $b);
         }
@@ -81,11 +88,11 @@ class PetColorService
 
     public function generateRandomPetColors($maxSaturation = 1)
     {
-        $h = mt_rand(0, 1000) / 1000.0;
+        $h = $this->squirrel3->rngNextInt(0, 1000) / 1000.0;
         $s = $this->randomSaturation() * $maxSaturation;
         $l = $this->randomLuminosity();
 
-        $strategy = mt_rand(1, 100);
+        $strategy = $this->squirrel3->rngNextInt(1, 100);
 
         $h2 = $h;
         $s2 = $s;
@@ -97,7 +104,7 @@ class PetColorService
             $h2 = $h2 + 0.5;
             if($h2 > 1) $h2 -= 1;
 
-            if(mt_rand(1, 2) === 1)
+            if($this->squirrel3->rngNextInt(1, 2) === 1)
             {
                 if($s < $maxSaturation / 2)
                     $s2 = $s * 2;
@@ -117,18 +124,18 @@ class PetColorService
         {
             // black & white
             if($l < 0.3333)
-                $l2 = mt_rand(850, 1000) / 1000.0;
+                $l2 = $this->squirrel3->rngNextInt(850, 1000) / 1000.0;
             else if($l > 0.6666)
-                $l2 = mt_rand(0, 150) / 1000.0;
-            else if(mt_rand(1, 2) === 1)
-                $l2 = mt_rand(850, 1000) / 1000.0;
+                $l2 = $this->squirrel3->rngNextInt(0, 150) / 1000.0;
+            else if($this->squirrel3->rngNextInt(1, 2) === 1)
+                $l2 = $this->squirrel3->rngNextInt(850, 1000) / 1000.0;
             else
-                $l2 = mt_rand(0, 150) / 1000.0;
+                $l2 = $this->squirrel3->rngNextInt(0, 150) / 1000.0;
         }
         else
         {
             // RANDOM!
-            $h2 = mt_rand(0, 1000) / 1000.0;
+            $h2 = $this->squirrel3->rngNextInt(0, 1000) / 1000.0;
             $s2 = $this->randomSaturation() * $maxSaturation;
             $l2 = $this->randomSaturation();
         }

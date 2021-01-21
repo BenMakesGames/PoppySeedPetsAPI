@@ -11,6 +11,7 @@ class BeehiveService
 {
     private $em;
     private $itemRepository;
+    private $squirrel3;
 
     public const DESIRED_ITEMS = [
         'Red Clover' => 18,
@@ -42,10 +43,11 @@ class BeehiveService
         'Potato' => 10,
     ];
 
-    public function __construct(EntityManagerInterface $em, ItemRepository $itemRepository)
+    public function __construct(EntityManagerInterface $em, ItemRepository $itemRepository, Squirrel3 $squirrel3)
     {
         $this->em = $em;
         $this->itemRepository = $itemRepository;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function createBeehive(User $user)
@@ -54,7 +56,7 @@ class BeehiveService
             throw new \InvalidArgumentException('User already has a beehive!');
 
         $beehive = (new Beehive())
-            ->setQueenName(ArrayFunctions::pick_one(self::QUEEN_NAMES))
+            ->setQueenName($this->squirrel3->rngNextFromArray(self::QUEEN_NAMES))
             ->setRequestedItem($this->itemRepository->findOneByName(array_rand(self::DESIRED_ITEMS)))
             ->setAlternateRequestedItem($this->itemRepository->findOneByName(array_rand(self::ALT_DESIRED_ITEMS)))
         ;

@@ -31,10 +31,11 @@ class InventoryService
     private $responseService;
     private $petExperienceService;
     private $inventoryRepository;
+    private $squirrel3;
 
     public function __construct(
         ItemRepository $itemRepository, EntityManagerInterface $em, ResponseService $responseService,
-        PetExperienceService $petExperienceService, InventoryRepository $inventoryRepository
+        PetExperienceService $petExperienceService, InventoryRepository $inventoryRepository, Squirrel3 $squirrel3
     )
     {
         $this->itemRepository = $itemRepository;
@@ -42,6 +43,7 @@ class InventoryService
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
         $this->inventoryRepository = $inventoryRepository;
+        $this->squirrel3 = $squirrel3;
     }
 
     /**
@@ -225,7 +227,7 @@ class InventoryService
         }
         else
         {
-            $balloon = ArrayFunctions::pick_one([
+            $balloon = $this->squirrel3->rngNextFromArray([
                 'Red Balloon',
                 'Orange Balloon',
                 'Yellow Balloon',
@@ -315,7 +317,7 @@ class InventoryService
             }
         }
 
-        if($item->getFood() !== null && count($pet->getLunchboxItems()) === 0 && mt_rand(1, 20) < 10 - $pet->getFood())
+        if($item->getFood() !== null && count($pet->getLunchboxItems()) === 0 && $this->squirrel3->rngNextInt(1, 20) < 10 - $pet->getFood())
         {
             if($this->doEat($pet, new FoodWithSpice($item, $spice), $activityLog))
                 return null;
@@ -352,7 +354,7 @@ class InventoryService
             return null;
 
         if($bugName === null)
-            $bugName = ArrayFunctions::pick_one([ 'Spider', 'Centipede', 'Cockroach', 'Line of Ants', 'Fruit Fly', 'Stink Bug', 'Moth' ]);
+            $bugName = $this->squirrel3->rngNextFromArray([ 'Spider', 'Centipede', 'Cockroach', 'Line of Ants', 'Fruit Fly', 'Stink Bug', 'Moth' ]);
 
         $bug = $this->itemRepository->findOneByName($bugName);
 
@@ -364,7 +366,7 @@ class InventoryService
 
         for($i = 0; $i < $bugs; $i++)
         {
-            $location = (!$attractsBugs && $pet->getOwner()->getUnlockedBasement() && mt_rand(1, 4) === 1)
+            $location = (!$attractsBugs && $pet->getOwner()->getUnlockedBasement() && $this->squirrel3->rngNextInt(1, 4) === 1)
                 ? LocationEnum::BASEMENT
                 : LocationEnum::HOME
             ;
@@ -386,7 +388,7 @@ class InventoryService
     {
         $itemIsString = is_string($item);
 
-        if(mt_rand(1, 200) === 1)
+        if($this->squirrel3->rngNextInt(1, 200) === 1)
         {
             $itemName = $itemIsString ? $item : $item->getName();
 
@@ -467,7 +469,7 @@ class InventoryService
      */
     public function loseOneOf($itemList, User $owner, $location)
     {
-        shuffle($itemList);
+        $this->squirrel3->rngNextShuffle($itemList);
 
         foreach($itemList as $item)
         {
@@ -599,13 +601,13 @@ class InventoryService
             $this->responseService->addFlashMessage('After ' . $pet->getName() . ' ate the ' . $food->name . ', ' . ArrayFunctions::list_nice($leftoverNames) . ' ' . $wasOrWere . ' left over.');
         }
 
-        if($food->chanceForBonusItem > 0 && mt_rand(1, 1000) <= $food->chanceForBonusItem)
+        if($food->chanceForBonusItem > 0 && $this->squirrel3->rngNextInt(1, 1000) <= $food->chanceForBonusItem)
         {
             $bonusItem = $this->getBonusItemForLuckyFood();
 
             $comment =
                 'While eating ' . $food->name . ', ' . $pet->getName() . ' happened to spot this! ' .
-                ArrayFunctions::pick_one([
+                $this->squirrel3->rngNextFromArray([
                     '', '... Sure!', '... Why not?', 'As you do!', 'A happy coincidence!', 'Weird!',
                     'Inexplicable, but not unwelcome!', '(Where was it up until this point, I wonder??)',
                     'These things happen. Apparently.', '👍', 'Wild!', 'How\'s _that_ work?',
@@ -614,12 +616,12 @@ class InventoryService
 
             $this->petCollectsItem($bonusItem, $pet, $comment, null);
 
-            $naniNani = ArrayFunctions::pick_one([ 'Convenient!', 'Where\'d that come from??', 'How serendipitous!', 'What are the odds!' ]);
+            $naniNani = $this->squirrel3->rngNextFromArray([ 'Convenient!', 'Where\'d that come from??', 'How serendipitous!', 'What are the odds!' ]);
 
             $this->responseService->addFlashMessage('While eating the ' . $food->name . ', ' . $pet->getName() . ' spotted ' . $bonusItem->getNameWithArticle() . '! (' . $naniNani . ')');
         }
 
-        if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && mt_rand(1, 200) < $food->food + $food->junk)
+        if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && $this->squirrel3->rngNextInt(1, 200) < $food->food + $food->junk)
         {
             $inventory = (new Inventory())
                 ->setItem($this->itemRepository->findOneByName('Moth'))
@@ -680,7 +682,7 @@ class InventoryService
 
     private function getBonusItemForLuckyFood(): Item
     {
-        return $this->itemRepository->findOneByName(ArrayFunctions::pick_one([
+        return $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
             'Fluff',
             'Mermaid Egg',
             'Paper',
