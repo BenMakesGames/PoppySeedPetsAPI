@@ -87,7 +87,7 @@ class PetFactory
 
         $pet = $this->createPet(
             $owner,
-            ArrayFunctions::pick_one(PetShelterPet::PET_NAMES),
+            $this->squirrel3->rngNextFromArray(PetShelterPet::PET_NAMES),
             $petSpecies,
             $colorA,
             $colorB,

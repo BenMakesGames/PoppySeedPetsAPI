@@ -35,7 +35,7 @@ class Squirrel3
 
     public function rngNextFromArray(array $array)
     {
-        return $array[$this->rngNextInt(0, count($array) - 1)];
+        return array_slice($array, $this->rngNextInt(0, count($array) - 1), 1)[0];
     }
 
     public function rngNextShuffle(array &$array)
