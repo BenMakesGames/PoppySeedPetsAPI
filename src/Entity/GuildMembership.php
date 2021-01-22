@@ -7,6 +7,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\GuildMembershipRepository")
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="level_idx", columns={"level"}),
+ *     @ORM\Index(name="joined_on_idx", columns={"joined_on"}),
+ * })
  */
 class GuildMembership
 {
@@ -130,11 +134,12 @@ class GuildMembership
         $title = $this->getTitle();
         $rank = ($this->getLevel() % 10) + 1;
 
-        $titles = $this->getGuild()->getTitles();
-
-        if($title >= count($titles))
-            return 'Master';
-        else
-            return $titles[$title] . ' ' . $rank;
+        switch($title)
+        {
+            case 0: return $this->getGuild()->getJuniorTitle() . ' ' . $rank;
+            case 1: return $this->getGuild()->getMemberTitle() . ' ' . $rank;
+            case 2: return $this->getGuild()->getSeniorTitle() . ' ' . $rank;
+            default: return $this->getGuild()->getMasterTitle();
+        }
     }
 }

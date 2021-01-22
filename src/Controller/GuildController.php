@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\Guild;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\GuildRepository;
+use App\Service\Filter\GuildMemberFilterService;
 use App\Service\Filter\PetFilterService;
 use App\Service\ResponseService;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,12 +27,12 @@ class GuildController extends PoppySeedPetsController
      * @Route("/{guild}", methods={"GET"})
      */
     public function getGuild(
-        Guild $guild, ResponseService $responseService, PetFilterService $petFilterService, Request $request
+        Guild $guild, ResponseService $responseService, GuildMemberFilterService $guildMemberFilterService, Request $request
     )
     {
-        $petFilterService->addRequiredFilter('guild', $guild->getId());
+        $guildMemberFilterService->addRequiredFilter('guild', $guild->getId());
 
-        $members = $petFilterService->getResults($request->query);
+        $members = $guildMemberFilterService->getResults($request->query);
 
         return $responseService->success(
             [
