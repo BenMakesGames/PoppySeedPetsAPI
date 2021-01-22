@@ -21,39 +21,52 @@ class CompareRNGPerformanceCommand extends Command
         ;
     }
 
+    function NumberOfSetBits($v)
+    {
+        $c = $v - (($v >> 1) & 0x55555555);
+        $c = (($c >> 2) & 0x33333333) + ($c & 0x33333333);
+        $c = (($c >> 4) + $c) & 0x0F0F0F0F;
+        $c = (($c >> 8) + $c) & 0x00FF00FF;
+        $c = (($c >> 16) + $c) & 0x0000FFFF;
+        return $c;
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln('Hold on. This will take 20 seconds.');
-
         mt_srand();
-        $mtRandCallCount = 0;
+        $mtRandDiffBits = [];
 
-        $output->writeln('Timing mt_rand...');
+        $output->writeln('Testing mt_rand...');
 
-        $startMtRand = microtime(true);
+        $previous = mt_rand(0, 0xFFFFFFFF);
 
-        while(microtime(true) - $startMtRand < 10)
+        for($i = 0; $i < 100000; $i++)
         {
-            mt_rand(0, 115249);
-            $mtRandCallCount++;
+            $r = mt_rand(0, 0xFFFFFFFF);
+
+            $mtRandDiffBits[] = $this->NumberOfSetBits($r ^ $previous) / 32;
+
+            $previous = $r;
         }
 
         $squirrel3 = new Squirrel3();
-        $squirrel3CallCount = 0;
+        $squirrel3DiffBits = [];
 
         $output->writeln('Timing Squirrel3...');
 
-        $startSquirrel3 = microtime(true);
+        $previous = $squirrel3->rngNextInt(0, 0xFFFFFFFF);
 
-        while(microtime(true) - $startSquirrel3 < 10)
+        for($i = 0; $i < 100000; $i++)
         {
-            $squirrel3->rngNextInt(0, 115249);
-            $squirrel3CallCount++;
+            $r = $squirrel3->rngNextInt(0, 0xFFFFFFFF);
+
+            $squirrel3DiffBits[] = $this->NumberOfSetBits($r ^ $previous) / 32;
+
+            $previous = $r;
         }
 
-        $output->writeln('In 10 seconds...');
-        $output->writeln('Squirrel3: ' . $squirrel3CallCount);
-        $output->writeln('mt_rand  : ' . $mtRandCallCount);
+        $output->writeln('mt_rand % diff  : ' . array_sum($mtRandDiffBits) / 100000);
+        $output->writeln('Squirrel3 % diff: ' . array_sum($squirrel3DiffBits) / 100000);
 
         return Command::SUCCESS;
     }

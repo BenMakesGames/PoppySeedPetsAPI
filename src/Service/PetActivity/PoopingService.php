@@ -38,7 +38,7 @@ class PoopingService
     {
         if($this->squirrel3->rngNextInt(1, 20) === 1)
         {
-            $this->inventoryService->receiveItem('Dark Matter', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' ' . ArrayFunctions::pick_one([
+            $this->inventoryService->receiveItem('Dark Matter', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' ' . $this->squirrel3->rngNextFromArray([
                 'pooped this. Yay?',
                 'pooped this. Neat?',
                 'pooped this. Yep.',

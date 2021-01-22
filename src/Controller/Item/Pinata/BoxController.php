@@ -19,6 +19,7 @@ use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\InventoryModifierService;
+use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -37,7 +38,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openHatBox(
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService, ItemRepository $itemRepository,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -47,7 +48,7 @@ class BoxController extends PoppySeedPetsItemController
         $location = $box->getLocation();
         $lockedToOwner = $box->getLockedToOwner();
 
-        $hatItem = $itemRepository->findOneByName(ArrayFunctions::pick_one([
+        $hatItem = $itemRepository->findOneByName($squirrel3->rngNextFromArray([
             'Masquerade Mask',
             'Wings',
             'Merchant\'s Cap',
@@ -97,7 +98,8 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openOreBox(
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService, PetRepository $petRepository,
-        PetExperienceService $petExperienceService, UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        PetExperienceService $petExperienceService, UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
+        Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -117,14 +119,14 @@ class BoxController extends PoppySeedPetsItemController
 
         $stat = $userStatsRepository->incrementStat($user, 'Looted ' . $box->getItem()->getNameWithArticle());
 
-        $numberOfItems = mt_rand(3, 5);
-        $containsLobster = $stat->getValue() === 1 || mt_rand(1, 4) === 1;
+        $numberOfItems = $squirrel3->rngNextInt(3, 5);
+        $containsLobster = $stat->getValue() === 1 || $squirrel3->rngNextInt(1, 4) === 1;
 
         if($containsLobster)
             $numberOfItems = max(3, $numberOfItems - 1);
 
         for($i = 0; $i < $numberOfItems; $i++)
-            $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleOres), $user, $box->getCreatedBy(), 'Found inside ' . $box->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
+            $inventoryService->receiveItem($squirrel3->rngNextFromArray($possibleOres), $user, $box->getCreatedBy(), 'Found inside ' . $box->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
 
         $em->remove($box);
 
@@ -133,7 +135,7 @@ class BoxController extends PoppySeedPetsItemController
         if($containsLobster)
         {
             /** @var Pet $pet */
-            $pet = ArrayFunctions::pick_one($petRepository->findBy([ 'owner' => $user, 'inDaycare' => false ]));
+            $pet = $squirrel3->rngNextFromArray($petRepository->findBy([ 'owner' => $user, 'inDaycare' => false ]));
 
             $message .= "\n\nWait, what!? One of the rocks moved!";
 
@@ -160,7 +162,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openBoxBox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -171,7 +173,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $location = $inventory->getLocation();
 
-        if(mt_rand(1, 50) === 1)
+        if($squirrel3->rngNextInt(1, 50) === 1)
         {
             $message = "What boxes will be in _this_ Box Box, I wonder?\n\nWait, what? It's _another_ Box Box?";
 
@@ -191,12 +193,12 @@ class BoxController extends PoppySeedPetsItemController
                 'Pepperbox',
             ];
 
-            if(mt_rand(1, 4) === 0)
-                $possibleItems[] = [ ArrayFunctions::pick_one([ 'Cereal Box', 'Hat Box' ]) ];
+            if($squirrel3->rngNextInt(1, 4) === 0)
+                $possibleItems[] = [ $squirrel3->rngNextFromArray([ 'Cereal Box', 'Hat Box' ]) ];
 
-            if(mt_rand(1, 20) === 0)
+            if($squirrel3->rngNextInt(1, 20) === 0)
             {
-                $possibleItems[] = ArrayFunctions::pick_one([
+                $possibleItems[] = $squirrel3->rngNextFromArray([
                     '4th of July Box',
                     'New Year Box',
                     'Chinese New Year Box'
@@ -226,7 +228,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openCerealBox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService
     )
     {
@@ -246,7 +248,7 @@ class BoxController extends PoppySeedPetsItemController
         $newInventory[] = $inventoryService->receiveItem('Rice', $user, $user, $message, $location, $inventory->getLockedToOwner());
 
         for($i = 0; $i < 7; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Corn', 'Wheat', 'Rice' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Corn', 'Wheat', 'Rice' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
 
         return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
     }
@@ -256,7 +258,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openBakers(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository,
         InventoryModifierService $toolBonusService
     )
@@ -281,12 +283,12 @@ class BoxController extends PoppySeedPetsItemController
         $newInventory[] = $inventoryService->receiveItem('Wheat', $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location, $inventory->getLockedToOwner());
 
         for($i = 0; $i < 4; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Egg', 'Wheat Flour', 'Sugar', 'Creamy Milk' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location, $inventory->getLockedToOwner());
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Egg', 'Wheat Flour', 'Sugar', 'Creamy Milk' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location, $inventory->getLockedToOwner());
 
         for($i = 0; $i < 4; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Corn Syrup', 'Yeast', 'Cocoa Beans', 'Baking Soda', 'Cream of Tartar' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location, $inventory->getLockedToOwner());
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Corn Syrup', 'Yeast', 'Cocoa Beans', 'Baking Soda', 'Cream of Tartar' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location, $inventory->getLockedToOwner());
 
-        if(mt_rand(1, 4) === 1)
+        if($squirrel3->rngNextInt(1, 4) === 1)
             $newInventory[] = $inventoryService->receiveItem('Cobbler Recipe', $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location, $inventory->getLockedToOwner());
 
         if($spice)
@@ -305,7 +307,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openFruitsNVeggies(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository,
         InventoryModifierService $toolBonusService
     )
@@ -329,13 +331,13 @@ class BoxController extends PoppySeedPetsItemController
         }
 
         // guaranteed orange or red
-        $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Orange', 'Red' ]), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
+        $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Orange', 'Red' ]), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 
         for($i = 0; $i < 4; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Orange', 'Red', 'Blackberries', 'Blueberries' ]), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Orange', 'Red', 'Blackberries', 'Blueberries' ]), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 
         for($i = 0; $i < 4; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Carrot', 'Onion', 'Celery', 'Carrot', 'Sweet Beet' ]), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Carrot', 'Onion', 'Celery', 'Carrot', 'Sweet Beet' ]), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 
         if($spice)
         {
@@ -353,7 +355,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openHandicrafts(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService
     )
     {
@@ -370,11 +372,11 @@ class BoxController extends PoppySeedPetsItemController
         ];
 
         for($i = 0; $i < 4; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Fluff', 'Plastic', 'Green Dye', 'Yellow Dye', 'Paper', 'Glue']), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray(['Fluff', 'Plastic', 'Green Dye', 'Yellow Dye', 'Paper', 'Glue']), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 
         for($i = 0; $i < 3; $i++)
         {
-            $itemName = ArrayFunctions::pick_one([ 'Limestone', 'Glass', 'Iron Bar', 'Iron Ore', 'Silver Ore' ]);
+            $itemName = $squirrel3->rngNextFromArray([ 'Limestone', 'Glass', 'Iron Bar', 'Iron Ore', 'Silver Ore' ]);
 
             if($itemName === 'Limestone')
                 $description = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '. I don\'t know how it fit in there, either. Your guess is as good as mine.';
@@ -392,7 +394,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openGamingBox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService
     )
     {
@@ -411,9 +413,9 @@ class BoxController extends PoppySeedPetsItemController
 
         // two dice
         for($i = 0; $i < 2; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($dice), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray($dice), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 
-        $itemName = ArrayFunctions::pick_one([
+        $itemName = $squirrel3->rngNextFromArray([
             'Browser Cookie', 'Browser Cookie',
             'Sweet Coffee Bean Tea', 'Coffee Bean Tea', 'Sweet Black Tea', // caffeine
             'Music Note',
@@ -423,7 +425,7 @@ class BoxController extends PoppySeedPetsItemController
         // one of something else
         $newInventory[] = $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 
-        if(mt_rand(1, 10) === 1)
+        if($squirrel3->rngNextInt(1, 10) === 1)
             $newInventory[] = $inventoryService->receiveItem('Glowing Twenty-sided Die', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 
         return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
@@ -457,7 +459,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openBagOfBeans(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService
     )
     {
@@ -468,14 +470,14 @@ class BoxController extends PoppySeedPetsItemController
 
         $newInventory = [];
 
-        $beans = mt_rand(6, mt_rand(7, 12));
+        $beans = $squirrel3->rngNextInt(6, $squirrel3->rngNextInt(7, 12));
 
         $description = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
         $location = $inventory->getLocation();
 
         for($i = 0; $i < $beans; $i++)
         {
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one(['Coffee Beans', 'Cocoa Beans', 'Beans']), $user, $user, $description, $location, $inventory->getLockedToOwner())
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray(['Coffee Beans', 'Cocoa Beans', 'Beans']), $user, $user, $description, $location, $inventory->getLockedToOwner())
                 ->setSpice($inventory->getSpice())
             ;
         }
@@ -489,7 +491,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function disassemblePepperbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -499,7 +501,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $newInventory = [];
 
-        $peppers = mt_rand(4, mt_rand(6, 10));
+        $peppers = $squirrel3->rngNextInt(4, $squirrel3->rngNextInt(6, 10));
 
         $description = $user->getName() . ' got this by taking apart ' . $inventory->getItem()->getNameWithArticle() . '.';
         $location = $inventory->getLocation();
@@ -574,7 +576,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function raidSandbox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -583,12 +585,12 @@ class BoxController extends PoppySeedPetsItemController
         $this->validateInventory($inventory, 'box/sandbox/#/raid');
         $this->validateHouseSpace($inventory, $inventoryService);
 
-        $sand = mt_rand(6, mt_rand(7, 12));
+        $sand = $squirrel3->rngNextInt(6, $squirrel3->rngNextInt(7, 12));
 
         $description = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
         $location = $inventory->getLocation();
 
-        $a = mt_rand(1, 100);
+        $a = $squirrel3->rngNextInt(1, 100);
         $extraItem = null;
 
         if($a === 1 || $a === 2)
@@ -646,7 +648,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openPaperBag(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -654,7 +656,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $this->validateInventory($inventory, 'box/paperBag/#/open');
 
-        $item = ArrayFunctions::pick_one([
+        $item = $squirrel3->rngNextFromArray([
             'Apricot', 'Yeast', 'Baking Soda', 'Beans', 'Blackberry Lassi', 'Blueberries', 'Butter', 'Celery',
             'Cockroach', 'Corn', 'Cream of Tartar', 'Creamy Milk', 'Dark Matter', 'Egg', 'Fish', 'Fluff',
             'Grandparoot', 'Honeydont', 'Hot Dog', 'Iron Ore', 'Kombucha', 'Melon Bun', 'Naner', 'Oil', 'Onion',
@@ -663,9 +665,9 @@ class BoxController extends PoppySeedPetsItemController
             'World\'s Best Sugar Cookie', 'Glowing Four-sided Die', 'Mint', 'Mixed Nuts', 'Canned Food',
         ]);
 
-        if($item === 'Cockroach' && mt_rand(1, 3) === 1)
+        if($item === 'Cockroach' && $squirrel3->rngNextInt(1, 3) === 1)
         {
-            $numRoaches = mt_rand(6, 8);
+            $numRoaches = $squirrel3->rngNextInt(6, 8);
 
             for($i = 0; $i < $numRoaches; $i++)
             {
@@ -730,7 +732,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openNewYearBox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService
     )
     {
@@ -757,8 +759,8 @@ class BoxController extends PoppySeedPetsItemController
             'Eggnog',
         ];
 
-        for($x = mt_rand(4, 5); $x > 0; $x--)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($alcohol), $user, $user, $comment, $location, $lockedToOwner);
+        for($x = $squirrel3->rngNextInt(4, 5); $x > 0; $x--)
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray($alcohol), $user, $user, $comment, $location, $lockedToOwner);
 
         return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
     }
@@ -798,7 +800,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openLittleStrongbox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
         TransactionService $transactionService, InventoryModifierService $toolBonusService
     )
@@ -815,7 +817,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
-        $moneys = mt_rand(10, mt_rand(20, mt_rand(50, mt_rand(100, 200)))); // averages 35?
+        $moneys = $squirrel3->rngNextInt(10, $squirrel3->rngNextInt(20, $squirrel3->rngNextInt(50, $squirrel3->rngNextInt(100, 200)))); // averages 35?
 
         $transactionService->getMoney($user, $moneys, 'Found inside ' . $inventory->getItem()->getNameWithArticle() . '.');
 
@@ -829,13 +831,13 @@ class BoxController extends PoppySeedPetsItemController
             'Glowing Six-sided Die',
         ];
 
-        $numItems = mt_rand(2, mt_rand(3, 4));
+        $numItems = $squirrel3->rngNextInt(2, $squirrel3->rngNextInt(3, 4));
         $newInventory = [];
 
         $location = $inventory->getLocation();
 
         for($i = 0; $i < $numItems; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleItems), $user, $user, $comment, $location);
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray($possibleItems), $user, $user, $comment, $location);
 
         $newInventory[] = $inventoryService->receiveItem('Piece of Cetgueli\'s Map', $user, $user, $comment, $location, $inventory->getLockedToOwner());
 
@@ -849,7 +851,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openVeryStrongbox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
         TransactionService $transactionService, InventoryModifierService $toolBonusService
     )
@@ -866,7 +868,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
-        $moneys = mt_rand(15, mt_rand(45, mt_rand(100, mt_rand(200, 300)))); // averages 50?
+        $moneys = $squirrel3->rngNextInt(15, $squirrel3->rngNextInt(45, $squirrel3->rngNextInt(100, $squirrel3->rngNextInt(200, 300)))); // averages 50?
 
         $transactionService->getMoney($user, $moneys, 'Found inside ' . $inventory->getItem()->getNameWithArticle() . '.');
 
@@ -877,18 +879,18 @@ class BoxController extends PoppySeedPetsItemController
             'Glowing Six-sided Die',
         ];
 
-        $items[] = ArrayFunctions::pick_one([
+        $items[] = $squirrel3->rngNextFromArray([
             'Rusty Blunderbuss',
             'Rusty Rapier',
             'Pepperbox',
         ]);
 
-        $items[] = ArrayFunctions::pick_one([
+        $items[] = $squirrel3->rngNextFromArray([
             'Minor Scroll of Riches',
             'Magic Hourglass',
         ]);
 
-        $items[] = ArrayFunctions::pick_one([
+        $items[] = $squirrel3->rngNextFromArray([
             'Scroll of Fruit',
             'Scroll of the Sea',
             'Forgetting Scroll',
@@ -910,7 +912,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openOutrageouslyStrongbox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
         InventoryModifierService $toolBonusService
     )
@@ -934,7 +936,7 @@ class BoxController extends PoppySeedPetsItemController
             'Dumbbell',
         ];
 
-        $items[] = ArrayFunctions::pick_one([
+        $items[] = $squirrel3->rngNextFromArray([
             'Weird, Blue Egg',
             'Unexpectedly-familiar Metal Box',
         ]);
@@ -955,7 +957,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openTowerBox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService
     )
     {
@@ -973,12 +975,12 @@ class BoxController extends PoppySeedPetsItemController
         $newInventory[] = $inventoryService->receiveItem('Ceremonial Trident', $user, $user, $message, $location, $inventory->getLockedToOwner());
 
         for($i = 0; $i < 4; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Linens and Things', 'Gold Bar', 'Iron Key', 'White Cloth' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Linens and Things', 'Gold Bar', 'Iron Key', 'White Cloth' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
 
-        if(mt_rand(1, 10) === 1)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Renaming Scroll', 'Behatting Scroll', 'Major Scroll of Riches', 'Species Transmigration Serum' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
+        if($squirrel3->rngNextInt(1, 10) === 1)
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Renaming Scroll', 'Behatting Scroll', 'Major Scroll of Riches', 'Species Transmigration Serum' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
 
-        if(mt_rand(1, 10) === 1)
+        if($squirrel3->rngNextInt(1, 10) === 1)
             $newInventory[] = $inventoryService->receiveItem('Secret Seashell', $user, $user, $message, $location, $inventory->getLockedToOwner());
 
         return $this->countRemoveFlushAndRespond('Opening the chest revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
@@ -989,7 +991,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openFishBag(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService
     )
     {
@@ -1019,13 +1021,13 @@ class BoxController extends PoppySeedPetsItemController
         ];
 
         for($i = 0; $i < 3; $i++)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($otherDrops), $user, $user, $message, $location, $inventory->getLockedToOwner());
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray($otherDrops), $user, $user, $message, $location, $inventory->getLockedToOwner());
 
-        if(mt_rand(1, 5) === 1)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Jellyfish Jelly', 'Small, Yellow Plastic Bucket' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
+        if($squirrel3->rngNextInt(1, 5) === 1)
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Jellyfish Jelly', 'Small, Yellow Plastic Bucket' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
 
-        if(mt_rand(1, 20) === 1)
-            $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one([ 'Merchant Fish', 'Secret Seashell', 'Ceremonial Trident' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
+        if($squirrel3->rngNextInt(1, 20) === 1)
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Merchant Fish', 'Secret Seashell', 'Ceremonial Trident' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
 
         return $this->countRemoveFlushAndRespond('Opening the bag revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
     }
@@ -1035,7 +1037,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function alicesSecretTeaTime(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierService $toolBonusService
     )
     {
@@ -1050,7 +1052,7 @@ class BoxController extends PoppySeedPetsItemController
 
         for($i = 0; $i < 3; $i++)
         {
-            $loot[] = ArrayFunctions::pick_one([
+            $loot[] = $squirrel3->rngNextFromArray([
                 'Coffee Bean Tea with Mammal Extract',
                 'Ginger Tea',
                 'Black Tea',
@@ -1060,15 +1062,15 @@ class BoxController extends PoppySeedPetsItemController
 
         for($i = 0; $i < 2; $i++)
         {
-            if(mt_rand(1, 5) === 1)
+            if($squirrel3->rngNextInt(1, 5) === 1)
             {
-                $loot[] = ArrayFunctions::pick_one([
+                $loot[] = $squirrel3->rngNextFromArray([
                     'Dreamwalker\'s Tea', 'Yogurt Muffin',
                 ]);
             }
             else
             {
-                $loot[] = ArrayFunctions::pick_one([
+                $loot[] = $squirrel3->rngNextFromArray([
                     'Toadstool', 'Mini Chocolate Chip Cookies', 'Pumpkin Bread',
                 ]);
             }
@@ -1087,7 +1089,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function alicesSecretHourglass(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierService $toolBonusService
     )
     {
@@ -1105,7 +1107,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function alicesSecretCards(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierService $toolBonusService
     )
     {
@@ -1115,7 +1117,7 @@ class BoxController extends PoppySeedPetsItemController
         $this->validateHouseSpace($inventory, $inventoryService);
 
         $loot = [
-            'Paper', 'Paper', 'Paper', 'Paper', ArrayFunctions::pick_one([ 'Paper', 'Quinacridone Magenta Dye' ])
+            'Paper', 'Paper', 'Paper', 'Paper', $squirrel3->rngNextFromArray([ 'Paper', 'Quinacridone Magenta Dye' ])
         ];
 
         $newInventory = [];
@@ -1131,7 +1133,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function bobsSecretFish(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierService $toolBonusService
     )
     {
@@ -1148,15 +1150,15 @@ class BoxController extends PoppySeedPetsItemController
 
         for($i = 0; $i < 3; $i++)
         {
-            if(mt_rand(1, 5) === 1)
+            if($squirrel3->rngNextInt(1, 5) === 1)
             {
-                $loot[] = ArrayFunctions::pick_one([
+                $loot[] = $squirrel3->rngNextFromArray([
                     'Sand Dollar', 'Tentacle',
                 ]);
             }
             else
             {
-                $loot[] = ArrayFunctions::pick_one([
+                $loot[] = $squirrel3->rngNextFromArray([
                     'Fish', 'Scales',
                 ]);
             }
@@ -1175,7 +1177,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function bobsTool(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         EnchantmentRepository $enchantmentRepository, UserStatsRepository $userStatsRepository,
         ResponseService $responseService, InventoryModifierService $toolBonusService
     )
@@ -1186,7 +1188,7 @@ class BoxController extends PoppySeedPetsItemController
         $this->validateHouseSpace($inventory, $inventoryService);
 
         // apply "Bob's" bonus
-        $tool = ArrayFunctions::pick_one([
+        $tool = $squirrel3->rngNextFromArray([
             'Iron Tongs',
             'Garden Shovel',
             'Crooked Fishing Rod',

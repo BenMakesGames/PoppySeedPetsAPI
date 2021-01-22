@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -21,7 +22,7 @@ class BasketController extends PoppySeedPetsItemController
      */
     public function openBasketOfFish(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'basket/fish/#/open');
@@ -34,8 +35,8 @@ class BasketController extends PoppySeedPetsItemController
         $loot = [
             'Fish',
             'Fish',
-            ArrayFunctions::pick_one([ 'Fish', 'Seaweed', 'Algae', 'Sand Dollar' ]),
-            ArrayFunctions::pick_one([ 'Silica Grounds', 'Seaweed' ]),
+            $squirrel3->rngNextFromArray([ 'Fish', 'Seaweed', 'Algae', 'Sand Dollar' ]),
+            $squirrel3->rngNextFromArray([ 'Silica Grounds', 'Seaweed' ]),
         ];
 
         if(mt_rand(1, 10) === 1)
@@ -92,7 +93,7 @@ class BasketController extends PoppySeedPetsItemController
      */
     public function openFlowerBasket(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'basket/flower/#/loot');
@@ -102,7 +103,7 @@ class BasketController extends PoppySeedPetsItemController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $weirdItem = ArrayFunctions::pick_one([ 'Wheat Flour', 'Flour Tortilla' ]);
+        $weirdItem = $squirrel3->rngNextFromArray([ 'Wheat Flour', 'Flour Tortilla' ]);
 
         $possibleFlowers = [
             'Rice Flower',
@@ -125,7 +126,7 @@ class BasketController extends PoppySeedPetsItemController
                 $weird++;
             }
             else
-                $itemName = ArrayFunctions::pick_one($possibleFlowers);
+                $itemName = $squirrel3->rngNextFromArray($possibleFlowers);
 
             $items[] = $itemName;
 

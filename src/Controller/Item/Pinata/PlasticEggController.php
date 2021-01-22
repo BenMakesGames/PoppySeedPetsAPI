@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -36,7 +37,7 @@ class PlasticEggController extends PoppySeedPetsItemController
      */
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'plasticEgg/#/open');
@@ -64,28 +65,28 @@ class PlasticEggController extends PoppySeedPetsItemController
                     ],
                     [
                         'items' => [
-                            ArrayFunctions::pick_one(self::CANDY),
-                            ArrayFunctions::pick_one(self::CANDY),
-                            ArrayFunctions::pick_one(self::CANDY)
+                            $squirrel3->rngNextFromArray(self::CANDY),
+                            $squirrel3->rngNextFromArray(self::CANDY),
+                            $squirrel3->rngNextFromArray(self::CANDY)
                         ],
                         'description' => 'and there\'s candy inside! (Yay! Candy!)',
                     ],
                     [
                         'items' => [
-                            ArrayFunctions::pick_one(self::CANDY),
-                            ArrayFunctions::pick_one(self::CANDY),
-                            ArrayFunctions::pick_one(self::CANDY)
+                            $squirrel3->rngNextFromArray(self::CANDY),
+                            $squirrel3->rngNextFromArray(self::CANDY),
+                            $squirrel3->rngNextFromArray(self::CANDY)
                         ],
                         'description' => 'and there\'s candy inside! :D',
                     ],
                     [
                         'items' => [
-                            ArrayFunctions::pick_one([
+                            $squirrel3->rngNextFromArray([
                                 'Mini Chocolate Chip Cookies',
                                 'Shortbread Cookies',
                                 'Thicc Mints',
                             ]),
-                            ArrayFunctions::pick_one([
+                            $squirrel3->rngNextFromArray([
                                 'Browser Cookie',
                                 'Fortune Cookie',
                                 'World\'s Best Sugar Cookie'
@@ -106,11 +107,11 @@ class PlasticEggController extends PoppySeedPetsItemController
                 $possibleLoot = [
                     [
                         'items' => [
-                            ArrayFunctions::pick_one(self::CANDY),
-                            ArrayFunctions::pick_one(self::CANDY),
-                            ArrayFunctions::pick_one(self::CANDY),
-                            ArrayFunctions::pick_one(self::CANDY),
-                            ArrayFunctions::pick_one(self::CANDY)
+                            $squirrel3->rngNextFromArray(self::CANDY),
+                            $squirrel3->rngNextFromArray(self::CANDY),
+                            $squirrel3->rngNextFromArray(self::CANDY),
+                            $squirrel3->rngNextFromArray(self::CANDY),
+                            $squirrel3->rngNextFromArray(self::CANDY)
                         ],
                         'description' => 'and there\'s candy inside! SO MUCH CANDY!',
                     ],
@@ -120,13 +121,13 @@ class PlasticEggController extends PoppySeedPetsItemController
                     ],
                     [
                         'items' => [
-                            ArrayFunctions::pick_one([ 'Black Animal Ears', 'White Animal Ears' ])
+                            $squirrel3->rngNextFromArray([ 'Black Animal Ears', 'White Animal Ears' ])
                         ],
                         'description' => 'and there\'s animal ears inside! (Oh, but don\'t worry: they\'re not real! See? Just Plastic and polyester!)'
                     ],
                     [
                         'items' => [
-                            ArrayFunctions::pick_one([
+                            $squirrel3->rngNextFromArray([
                                 '"Gold" Idol',
                                 'Glowing Six-sided Die',
                                 'Gold Triangle',
@@ -170,7 +171,7 @@ class PlasticEggController extends PoppySeedPetsItemController
                 throw new \Exception('Ben screwed up! There\'s no code to handle a ' . $inventory->getItem()->getName() . '!');
         }
 
-        $loot = ArrayFunctions::pick_one($possibleLoot);
+        $loot = $squirrel3->rngNextFromArray($possibleLoot);
 
         $message = 'You open up the plastic egg, ' . $loot['description'];
 

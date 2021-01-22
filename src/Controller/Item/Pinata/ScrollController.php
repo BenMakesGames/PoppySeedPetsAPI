@@ -9,6 +9,7 @@ use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,7 +25,7 @@ class ScrollController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function readFairyScroll(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         EntityManagerInterface $em
     )
     {
@@ -37,8 +38,8 @@ class ScrollController extends PoppySeedPetsItemController
 
         $loot = [
             'Wings',
-            ArrayFunctions::pick_one($lameItems),
-            ArrayFunctions::pick_one($lameItems),
+            $squirrel3->rngNextFromArray($lameItems),
+            $squirrel3->rngNextFromArray($lameItems),
         ];
 
         foreach($loot as $item)
@@ -56,7 +57,7 @@ class ScrollController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function invokeFruitScroll(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -67,13 +68,13 @@ class ScrollController extends PoppySeedPetsItemController
 
         $em->remove($inventory);
 
-        $r = mt_rand(1, 6);
+        $r = $squirrel3->rngNextInt(1, 6);
 
         if($r === 1)
         {
             $userStatsRepository->incrementStat($user, 'Misread a Scroll');
 
-            $pectin = mt_rand(mt_rand(3, 5), mt_rand(6, 10));
+            $pectin = $squirrel3->rngNextInt($squirrel3->rngNextInt(3, 5), $squirrel3->rngNextInt(6, 10));
             $location = $inventory->getLocation();
 
             for($i = 0; $i < $pectin; $i++)
@@ -87,12 +88,12 @@ class ScrollController extends PoppySeedPetsItemController
         {
             $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
-            $item = ArrayFunctions::pick_one([
+            $item = $squirrel3->rngNextFromArray([
                 'Pamplemousse', 'Blackberries', 'Naner', 'Blueberries',
                 'Red', 'Orange', 'Apricot', 'Melowatern', 'Honeydont', 'Tomato', 'Spicy Peps'
             ]);
 
-            $numItems = mt_rand(5, mt_rand(6, 12));
+            $numItems = $squirrel3->rngNextInt(5, $squirrel3->rngNextInt(6, 12));
             $location = $inventory->getLocation();
 
             for($i = 0; $i < $numItems; $i++)
@@ -111,13 +112,13 @@ class ScrollController extends PoppySeedPetsItemController
                 'Red', 'Orange', 'Apricot', 'Melowatern', 'Honeydont', 'Tomato', 'Spicy Peps'
             ];
 
-            $numItems = mt_rand(5, mt_rand(6, mt_rand(7, 15)));
+            $numItems = $squirrel3->rngNextInt(5, $squirrel3->rngNextInt(6, $squirrel3->rngNextInt(7, 15)));
 
             $newInventory = [];
             $location = $inventory->getLocation();
 
             for($i = 0; $i < $numItems; $i++)
-                $newInventory[] = $inventoryService->receiveItem(ArrayFunctions::pick_one($possibleItems), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
+                $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray($possibleItems), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
 
             $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
             sort($itemList);
@@ -157,8 +158,8 @@ class ScrollController extends PoppySeedPetsItemController
 
         $newInventory = [
             $inventoryService->receiveItem('Music Note', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location),
-            $inventoryService->receiveItem(ArrayFunctions::pick_one($commonItems), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location),
-            $inventoryService->receiveItem(ArrayFunctions::pick_one($rareItems), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location),
+            $inventoryService->receiveItem($squirrel3->rngNextFromArray($commonItems), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location),
+            $inventoryService->receiveItem($squirrel3->rngNextFromArray($rareItems), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location),
         ];
 
         $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
@@ -226,7 +227,7 @@ class ScrollController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function invokeSeaScroll(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -243,18 +244,18 @@ class ScrollController extends PoppySeedPetsItemController
             'Fish',
             'Seaweed',
             'Silica Grounds',
-            ArrayFunctions::pick_one([ 'Fish', 'Tentacle' ]),
-            ArrayFunctions::pick_one([ 'Seaweed', 'Fish' ]),
-            ArrayFunctions::pick_one([ 'Seaweed', 'Silica Grounds' ]),
-            ArrayFunctions::pick_one([ 'Seaweed', 'Crooked Stick' ]),
+            $squirrel3->rngNextFromArray([ 'Fish', 'Tentacle' ]),
+            $squirrel3->rngNextFromArray([ 'Seaweed', 'Fish' ]),
+            $squirrel3->rngNextFromArray([ 'Seaweed', 'Silica Grounds' ]),
+            $squirrel3->rngNextFromArray([ 'Seaweed', 'Crooked Stick' ]),
         ];
 
-        if(mt_rand(1, 4) === 1) $items[] = 'Glass';
-        if(mt_rand(1, 5) === 1) $items[] = 'Music Note';
-        if(mt_rand(1, 8) === 1) $items[] = 'Mermaid Egg';
-        if(mt_rand(1, 10) === 1) $items[] = 'Secret Seashell';
-        if(mt_rand(1, 15) === 1) $items[] = 'Iron Ore';
-        if(mt_rand(1, 20) === 1) $items[] = 'Little Strongbox';
+        if($squirrel3->rngNextInt(1, 4) === 1) $items[] = 'Glass';
+        if($squirrel3->rngNextInt(1, 5) === 1) $items[] = 'Music Note';
+        if($squirrel3->rngNextInt(1, 8) === 1) $items[] = 'Mermaid Egg';
+        if($squirrel3->rngNextInt(1, 10) === 1) $items[] = 'Secret Seashell';
+        if($squirrel3->rngNextInt(1, 15) === 1) $items[] = 'Iron Ore';
+        if($squirrel3->rngNextInt(1, 20) === 1) $items[] = 'Little Strongbox';
 
         $newInventory = [];
         $location = $inventory->getLocation();
@@ -275,7 +276,8 @@ class ScrollController extends PoppySeedPetsItemController
      */
     public function invokeMinorRichesScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService,
+        Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -286,12 +288,12 @@ class ScrollController extends PoppySeedPetsItemController
 
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
-        $moneys = mt_rand(30, 50);
+        $moneys = $squirrel3->rngNextInt(30, 50);
 
-        $item = ArrayFunctions::pick_one([ 'Little Strongbox', 'Bag of Beans' ]);
+        $item = $squirrel3->rngNextFromArray([ 'Little Strongbox', 'Bag of Beans' ]);
         $location = $inventory->getLocation();
 
-        if(mt_rand(1, 10) === 1)
+        if($squirrel3->rngNextInt(1, 10) === 1)
             $transactionService->getMoney($user, $moneys, 'Conjured by a Scroll of Minor Riches. (Hopefully not out of a bank, or dragon\'s hoard, or something...)');
         else
             $transactionService->getMoney($user, $moneys, 'Conjured by a Scroll of Minor Riches.');
@@ -308,7 +310,7 @@ class ScrollController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function invokeMajorRichesScroll(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
     )
     {
@@ -320,12 +322,12 @@ class ScrollController extends PoppySeedPetsItemController
 
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
-        $moneys = mt_rand(60, 100);
+        $moneys = $squirrel3->rngNextInt(60, 100);
 
-        $item = ArrayFunctions::pick_one([ 'Striped Microcline', 'Firestone', 'Moon Pearl', 'Blackonite' ]);
+        $item = $squirrel3->rngNextFromArray([ 'Striped Microcline', 'Firestone', 'Moon Pearl', 'Blackonite' ]);
         $location = $inventory->getLocation();
 
-        if(mt_rand(1, 10) === 1)
+        if($squirrel3->rngNextInt(1, 10) === 1)
             $transactionService->getMoney($user, $moneys, 'Conjured by a Scroll of Major Riches. (Hopefully not out of a bank, or dragon\'s hoard, or something...)');
         else
             $transactionService->getMoney($user, $moneys, 'Conjured by a Scroll of Major Riches.');
@@ -342,7 +344,7 @@ class ScrollController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function readResourcesScroll(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         ResponseService $responseService
     )
     {
@@ -358,7 +360,7 @@ class ScrollController extends PoppySeedPetsItemController
         $possibleItems = [
             'Liquid-hot Magma',
             'Plastic', 'Crooked Stick', 'Fluff', 'Pointer',
-            'Iron Ore', ArrayFunctions::pick_one([ 'Silver Ore', 'Silver Ore', 'Gold Ore' ]),
+            'Iron Ore', $squirrel3->rngNextFromArray([ 'Silver Ore', 'Silver Ore', 'Gold Ore' ]),
             'Scales', 'Yellow Dye', 'Feathers', 'Talon', 'Paper',
             'Glass', 'Gypsum'
         ];
@@ -372,7 +374,7 @@ class ScrollController extends PoppySeedPetsItemController
 
         for($i = 0; $i < $numberOfItems; $i++)
         {
-            $item = ArrayFunctions::pick_one($possibleItems);
+            $item = $squirrel3->rngNextFromArray($possibleItems);
             $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
             $listOfItems[] = $item;
         }

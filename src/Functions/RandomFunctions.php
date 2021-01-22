@@ -19,6 +19,6 @@ class RandomFunctions
         $mangled *= self::SQUIRREL_3_BIT_NOISE_3;
         $mangled ^= ($mangled >> 8);
 
-        return $mangled;
+        return $mangled % 0xffffffff;
     }
 }

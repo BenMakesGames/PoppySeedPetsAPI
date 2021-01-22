@@ -356,9 +356,9 @@ class UmbraService
         }
 
         if($pet->hasMerit(MeritEnum::LUCKY))
-            $die = ArrayFunctions::pick_one([ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die' ]);
+            $die = $this->squirrel3->rngNextFromArray([ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die' ]);
         else
-            $die = ArrayFunctions::pick_one([ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die' ]);
+            $die = $this->squirrel3->rngNextFromArray([ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die' ]);
 
         if($pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 50) === 1)
         {
@@ -402,7 +402,7 @@ class UmbraService
         else if($this->squirrel3->rngNextInt(1, 50) === 1)
             $prize = 'Charcoal';
         else
-            $prize = ArrayFunctions::pick_one($prizes);
+            $prize = $this->squirrel3->rngNextFromArray($prizes);
 
         if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
         {
@@ -622,7 +622,7 @@ class UmbraService
             if($stealthCheck >= 16)
             {
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ]);
-                $loot = ArrayFunctions::pick_one([ 'Blood Wine', 'Linens and Things' ]);
+                $loot = $this->squirrel3->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
 
                 $pet->increaseEsteem(2);
 
@@ -642,7 +642,7 @@ class UmbraService
         else if($pet->getTool() && $pet->getTool()->isGrayscaling())
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $loot = ArrayFunctions::pick_one([ 'Blood Wine', 'Linens and Things' ]);
+            $loot = $this->squirrel3->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
 
             $pet->increaseEsteem(2);
 
@@ -660,7 +660,7 @@ class UmbraService
             if($brawlCheck >= 20)
             {
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
-                $loot = ArrayFunctions::pick_one([ 'White Cloth', 'Talon', 'Quintessence' ]);
+                $loot = $this->squirrel3->rngNextFromArray([ 'White Cloth', 'Talon', 'Quintessence' ]);
 
                 $pet
                     ->increaseEsteem(2)
@@ -743,7 +743,7 @@ class UmbraService
 
         if($roll >= 20)
         {
-            $prize = ArrayFunctions::pick_one([
+            $prize = $this->squirrel3->rngNextFromArray([
                 'Alien Tissue', 'Plastic', 'Silver Bar'
             ]);
 
@@ -809,7 +809,7 @@ class UmbraService
         else
         {
             if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
-                $loot[] = ArrayFunctions::pick_one([ 'Nutmeg', 'Eggplant', 'Silica Grounds' ]);
+                $loot[] = $this->squirrel3->rngNextFromArray([ 'Nutmeg', 'Eggplant', 'Silica Grounds' ]);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ]);
 

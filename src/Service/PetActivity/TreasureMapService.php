@@ -215,7 +215,7 @@ class TreasureMapService
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
-        $agk = ArrayFunctions::pick_one([ 'Agk!', 'Oh dang!', 'Noooo!', 'Quel dommage!', 'Welp!' ]);
+        $agk = $this->squirrel3->rngNextFromArray([ 'Agk!', 'Oh dang!', 'Noooo!', 'Quel dommage!', 'Welp!' ]);
 
         $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, a weird, purple energy oozed out of their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . ', and enveloped them! (' . $agk . ' It\'s the Eggplant Curse!)', '');
         $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::EGGPLANT_CURSED, $this->squirrel3->rngNextInt(24, 48) * 60);
@@ -230,7 +230,7 @@ class TreasureMapService
 
     public function doCookSomething(Pet $pet): PetActivityLog
     {
-        $food = ArrayFunctions::pick_one([
+        $food = $this->squirrel3->rngNextFromArray([
             '"Mud Pie" (made from actual mud)',
             '"Useless Fizz Soda"',
             '"Deep-fried Planetary Rings"',
@@ -277,7 +277,7 @@ class TreasureMapService
         $this->em->remove($pet->getTool());
         $pet->setTool(null);
 
-        $loot = ArrayFunctions::pick_one([
+        $loot = $this->squirrel3->rngNextFromArray([
             'Alice\'s Secret', 'Bob\'s Secret'
         ]);
 

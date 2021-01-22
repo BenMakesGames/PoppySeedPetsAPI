@@ -16,6 +16,7 @@ use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -67,7 +68,7 @@ class BaabbleController extends PoppySeedPetsItemController
      */
     public function openBlackBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -81,24 +82,24 @@ class BaabbleController extends PoppySeedPetsItemController
 
         $items = [];
 
-        $lameThings = mt_rand(2, 8);
-        $okayThings = mt_rand(7, 17);
-        $goodThings = mt_rand(0, 9);
+        $lameThings = $squirrel3->rngNextInt(2, 8);
+        $okayThings = $squirrel3->rngNextInt(7, 17);
+        $goodThings = $squirrel3->rngNextInt(0, 9);
 
         for($i = 0; $i < $lameThings; $i++)
-            $items[] = ArrayFunctions::pick_one(self::LAME_SHIT);
+            $items[] = $squirrel3->rngNextFromArray(self::LAME_SHIT);
 
         for($i = 0; $i < $okayThings; $i++)
-            $items[] = ArrayFunctions::pick_one(self::OKAY_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::OKAY_STUFF);
 
         for($i = 0; $i < $goodThings; $i++)
-            $items[] = ArrayFunctions::pick_one(self::GOOD_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::GOOD_STUFF);
 
-        $weirdItem = ArrayFunctions::pick_one(self::WEIRD_STUFF);
+        $weirdItem = $squirrel3->rngNextFromArray(self::WEIRD_STUFF);
 
         $items[] = $weirdItem;
 
-        $noteworthy = [ ArrayFunctions::pick_one($items), $weirdItem ];
+        $noteworthy = [ $squirrel3->rngNextFromArray($items), $weirdItem ];
 
         shuffle($noteworthy);
 
@@ -120,7 +121,7 @@ class BaabbleController extends PoppySeedPetsItemController
      */
     public function openWhiteBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -134,28 +135,28 @@ class BaabbleController extends PoppySeedPetsItemController
 
         $items = [];
 
-        $lameThings = mt_rand(4, 14);
-        $okayThings = mt_rand(10, 18);
-        $goodThings = mt_rand(0, 9);
+        $lameThings = $squirrel3->rngNextInt(4, 14);
+        $okayThings = $squirrel3->rngNextInt(10, 18);
+        $goodThings = $squirrel3->rngNextInt(0, 9);
         $rareThings = 1;
 
         for($i = 0; $i < $lameThings; $i++)
-            $items[] = ArrayFunctions::pick_one(self::LAME_SHIT);
+            $items[] = $squirrel3->rngNextFromArray(self::LAME_SHIT);
 
         for($i = 0; $i < $okayThings; $i++)
-            $items[] = ArrayFunctions::pick_one(self::OKAY_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::OKAY_STUFF);
 
         for($i = 0; $i < $goodThings; $i++)
-            $items[] = ArrayFunctions::pick_one(self::GOOD_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::GOOD_STUFF);
 
         for($i = 0; $i < $rareThings; $i++)
-            $items[] = ArrayFunctions::pick_one(self::RARE_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::RARE_STUFF);
 
-        $weirdItem = ArrayFunctions::pick_one(self::WEIRD_STUFF);
+        $weirdItem = $squirrel3->rngNextFromArray(self::WEIRD_STUFF);
 
         $items[] = $weirdItem;
 
-        $noteworthy = [ ArrayFunctions::pick_one($items), $weirdItem ];
+        $noteworthy = [ $squirrel3->rngNextFromArray($items), $weirdItem ];
 
         shuffle($noteworthy);
 
@@ -177,7 +178,7 @@ class BaabbleController extends PoppySeedPetsItemController
      */
     public function openGoldBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -191,28 +192,28 @@ class BaabbleController extends PoppySeedPetsItemController
 
         $items = [];
 
-        $lameThings = mt_rand(4, 14);
-        $okayThings = mt_rand(6, 16);
-        $goodThings = mt_rand(0, 12);
-        $weirdThings = mt_rand(0, 10);
-        $rareThings = mt_rand(1, 5);
+        $lameThings = $squirrel3->rngNextInt(4, 14);
+        $okayThings = $squirrel3->rngNextInt(6, 16);
+        $goodThings = $squirrel3->rngNextInt(0, 12);
+        $weirdThings = $squirrel3->rngNextInt(0, 10);
+        $rareThings = $squirrel3->rngNextInt(1, 5);
 
         for($i = 0; $i < $lameThings; $i++)
-            $items[] = ArrayFunctions::pick_one(self::LAME_SHIT);
+            $items[] = $squirrel3->rngNextFromArray(self::LAME_SHIT);
 
         for($i = 0; $i < $okayThings; $i++)
-            $items[] = ArrayFunctions::pick_one(self::OKAY_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::OKAY_STUFF);
 
         for($i = 0; $i < $goodThings; $i++)
-            $items[] = ArrayFunctions::pick_one(self::GOOD_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::GOOD_STUFF);
 
         for($i = 0; $i < $weirdThings; $i++)
-            $items[] = ArrayFunctions::pick_one(self::WEIRD_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::WEIRD_STUFF);
 
         for($i = 0; $i < $rareThings; $i++)
-            $items[] = ArrayFunctions::pick_one(self::RARE_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::RARE_STUFF);
 
-        $noteworthy = [ ArrayFunctions::pick_one($items), ArrayFunctions::pick_one($items) ];
+        $noteworthy = [ $squirrel3->rngNextFromArray($items), $squirrel3->rngNextFromArray($items) ];
 
         shuffle($noteworthy);
 
@@ -237,7 +238,7 @@ class BaabbleController extends PoppySeedPetsItemController
      */
     public function openShinyBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -251,28 +252,28 @@ class BaabbleController extends PoppySeedPetsItemController
 
         $items = [];
 
-        $lameThings = mt_rand(0, 12);
-        $okayThings = mt_rand(4, 16);
-        $goodThings = mt_rand(4, 16);
-        $weirdThings = mt_rand(4, 14);
-        $rareThings = mt_rand(3, 7);
+        $lameThings = $squirrel3->rngNextInt(0, 12);
+        $okayThings = $squirrel3->rngNextInt(4, 16);
+        $goodThings = $squirrel3->rngNextInt(4, 16);
+        $weirdThings = $squirrel3->rngNextInt(4, 14);
+        $rareThings = $squirrel3->rngNextInt(3, 7);
 
         for($i = 0; $i < $lameThings; $i++)
-            $items[] = ArrayFunctions::pick_one(self::LAME_SHIT);
+            $items[] = $squirrel3->rngNextFromArray(self::LAME_SHIT);
 
         for($i = 0; $i < $okayThings; $i++)
-            $items[] = ArrayFunctions::pick_one(self::OKAY_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::OKAY_STUFF);
 
         for($i = 0; $i < $goodThings; $i++)
-            $items[] = ArrayFunctions::pick_one(self::GOOD_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::GOOD_STUFF);
 
         for($i = 0; $i < $weirdThings; $i++)
-            $items[] = ArrayFunctions::pick_one(self::WEIRD_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::WEIRD_STUFF);
 
         for($i = 0; $i < $rareThings; $i++)
-            $items[] = ArrayFunctions::pick_one(self::RARE_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::RARE_STUFF);
 
-        $noteworthy = [ ArrayFunctions::pick_one($items), ArrayFunctions::pick_one($items) ];
+        $noteworthy = [ $squirrel3->rngNextFromArray($items), $squirrel3->rngNextFromArray($items) ];
 
         shuffle($noteworthy);
 

@@ -4,20 +4,15 @@ namespace App\Controller;
 use App\Entity\Dragon;
 use App\Entity\Fireplace;
 use App\Entity\Inventory;
-use App\Entity\Item;
-use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\GrammarFunctions;
 use App\Functions\JewishCalendarFunctions;
-use App\Functions\StringFunctions;
 use App\Repository\DragonRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
-use App\Service\CalendarService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -230,7 +225,7 @@ class FireplaceController extends PoppySeedPetsController
         }
         else
         {
-            $adverb = ArrayFunctions::pick_one([
+            $adverb = $squirrel3->rngNextFromArray([
                 'happily', 'happily', 'happily', 'excitedly', 'blithely'
             ]);
 
@@ -264,7 +259,7 @@ class FireplaceController extends PoppySeedPetsController
      */
     public function lookInStocking(
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository, ItemRepository $itemRepository
+        UserQuestRepository $userQuestRepository, ItemRepository $itemRepository, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -326,7 +321,7 @@ class FireplaceController extends PoppySeedPetsController
             if(JewishCalendarFunctions::isHannukah($now))
                 $item = 'Dreidel';
             else
-                $item = ArrayFunctions::pick_one($randomRewards);
+                $item = $squirrel3->rngNextFromArray($randomRewards);
         }
 
         $itemObject = $itemRepository->findOneByName($item);
@@ -342,7 +337,7 @@ class FireplaceController extends PoppySeedPetsController
         ];
 
         $responseService->addFlashMessage(
-            ArrayFunctions::pick_one($messages) . "\n\n" . ucfirst($itemObject->getNameWithArticle()) . '!'
+            $squirrel3->rngNextFromArray($messages) . "\n\n" . ucfirst($itemObject->getNameWithArticle()) . '!'
         );
 
         $gotStockingPresent->setValue($now->format('Y-m-d'));

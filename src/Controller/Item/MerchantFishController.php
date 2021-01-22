@@ -9,6 +9,7 @@ use App\Functions\ArrayFunctions;
 use App\Model\StoryStep;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\StoryService;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,7 +27,7 @@ class MerchantFishController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function read(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         StoryService $storyService, Request $request, TraderService $traderService, InventoryService $inventoryService
     )
     {
@@ -50,10 +51,10 @@ class MerchantFishController extends PoppySeedPetsItemController
 
             if(count($lockedTradeGroups) === 0)
             {
-                $loot = ArrayFunctions::pick_one([
-                    ArrayFunctions::pick_one([ 'Yellow Dye', 'Green Dye' ]),
-                    ArrayFunctions::pick_one([ 'Spicy Spice', 'Nutmeg' ]),
-                    ArrayFunctions::pick_one([ 'Silver Bar', 'Gold Bar' ]),
+                $loot = $squirrel3->rngNextFromArray([
+                    $squirrel3->rngNextFromArray([ 'Yellow Dye', 'Green Dye' ]),
+                    $squirrel3->rngNextFromArray([ 'Spicy Spice', 'Nutmeg' ]),
+                    $squirrel3->rngNextFromArray([ 'Silver Bar', 'Gold Bar' ]),
                     'Tentacle',
                     'White Cloth',
                     'Secret Seashell'
@@ -68,7 +69,7 @@ class MerchantFishController extends PoppySeedPetsItemController
             {
                 $newTrades = (new TradesUnlocked())
                     ->setUser($user)
-                    ->setTrades(ArrayFunctions::pick_one($lockedTradeGroups))
+                    ->setTrades($squirrel3->rngNextFromArray($lockedTradeGroups))
                 ;
 
                 $em->persist($newTrades);

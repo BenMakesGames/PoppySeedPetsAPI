@@ -62,7 +62,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
     public function summonSomethingUnfriendly(
         Inventory $inventory, ResponseService $responseService, PetRepository $petRepository,
         EntityManagerInterface $em, UserStatsRepository $userStatsRepository, InventoryService $inventoryService,
-        PetExperienceService $petExperienceService
+        PetExperienceService $petExperienceService, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -84,7 +84,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
         }
 
         /** @var SummoningScrollMonster $monster */
-        $monster = ArrayFunctions::pick_one([
+        $monster = $squirrel3->rngNextFromArray([
             SummoningScrollMonster::CreateDragon(),
             SummoningScrollMonster::CreateBalrog(),
             SummoningScrollMonster::CreateBasabasa(),
@@ -121,7 +121,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
         $loot = $monster->minorRewards;
 
-        $grab = ArrayFunctions::pick_one([
+        $grab = $squirrel3->rngNextFromArray([
             'grab', 'snag', 'take'
         ]);
 
@@ -140,7 +140,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
         else if($roll >= 50)
         {
             $loot[] = $monster->majorReward;
-            $loot[] = ArrayFunctions::pick_one($monster->minorRewards);
+            $loot[] = $squirrel3->rngNextFromArray($monster->minorRewards);
 
             $result .= ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'beats' : 'beat') . ' the monster back, and were rewarded with ' . ArrayFunctions::list_nice($loot) . '!';
 
@@ -255,7 +255,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
                 $petSpeciesRepository->findOneBy([ 'name' => 'Sentinel' ])
             );
 
-            $pet->setName(ArrayFunctions::pick_one(self::SENTINEL_NAMES));
+            $pet->setName($squirrel3->rngNextFromArray(self::SENTINEL_NAMES));
 
             $gotASentinel = true;
         }
@@ -279,13 +279,13 @@ class SummoningScrollController extends PoppySeedPetsItemController
         {
             $allSpecies = $petSpeciesRepository->findAll();
 
-            $pet = $petFactory->createRandomPetOfSpecies($user, ArrayFunctions::pick_one($allSpecies));
+            $pet = $petFactory->createRandomPetOfSpecies($user, $squirrel3->rngNextFromArray($allSpecies));
 
             $pet->setScale($squirrel3->rngNextInt(80, 120));
 
             if($pet->getSpecies()->getName() === 'Sentinel')
             {
-                $pet->setName(ArrayFunctions::pick_one(self::SENTINEL_NAMES));
+                $pet->setName($squirrel3->rngNextFromArray(self::SENTINEL_NAMES));
 
                 $gotASentinel = true;
             }

@@ -27,6 +27,7 @@ use App\Service\PetFactory;
 use App\Service\ProfanityFilterService;
 use App\Service\ResponseService;
 use App\Service\SessionService;
+use App\Service\Squirrel3;
 use App\Service\Typeahead\UserTypeaheadService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,7 +52,8 @@ class AccountController extends PoppySeedPetsController
         Request $request, EntityManagerInterface $em, ResponseService $responseService,
         SessionService $sessionService, UserRepository $userRepository, PetSpeciesRepository $petSpeciesRepository,
         UserPasswordEncoderInterface $userPasswordEncoder, InventoryService $inventoryService,
-        ProfanityFilterService $profanityFilterService, MeritRepository $meritRepository, PetFactory $petFactory
+        ProfanityFilterService $profanityFilterService, MeritRepository $meritRepository, PetFactory $petFactory,
+        Squirrel3 $squirrel3
     )
     {
         $petName = $profanityFilterService->filter(trim($request->request->get('petName')));
@@ -117,7 +119,7 @@ class AccountController extends PoppySeedPetsController
 
         $em->persist($user);
 
-        $favoriteFlavor = ArrayFunctions::pick_one([
+        $favoriteFlavor = $squirrel3->rngNextFromArray([
             FlavorEnum::EARTHY, FlavorEnum::FRUITY, FlavorEnum::CREAMY, FlavorEnum::MEATY, FlavorEnum::PLANTY,
             FlavorEnum::FISHY, FlavorEnum::FATTY,
         ]);
@@ -127,8 +129,8 @@ class AccountController extends PoppySeedPetsController
         $pet = $petFactory->createPet($user, $petName, $species, $petColorA, $petColorB, $favoriteFlavor, $startingMerit);
 
         $pet
-            ->setFoodAndSafety(mt_rand(10, 12), -9)
-            ->setScale(mt_rand(90, 110))
+            ->setFoodAndSafety($squirrel3->rngNextInt(10, 12), -9)
+            ->setScale($squirrel3->rngNextInt(90, 110))
         ;
 
         $inventoryService->receiveItem('Welcome Note', $user, null, 'This Welcome Note was waiting for ' . $user->getName() . ' in their house.', LocationEnum::HOME, true);

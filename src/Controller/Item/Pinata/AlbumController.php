@@ -9,6 +9,7 @@ use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -31,7 +32,7 @@ class AlbumController extends PoppySeedPetsItemController
      */
     public function listenToSingle(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, ItemRepository $itemRepository
+        EntityManagerInterface $em, ItemRepository $itemRepository, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -44,7 +45,7 @@ class AlbumController extends PoppySeedPetsItemController
         $musicNotes->item = $itemRepository->findOneByName('Music Note');
         $musicNotes->quantity = mt_rand(3, 4);
 
-        $extraItem = ArrayFunctions::pick_one([ 'Pointer', 'Quintessence' ]);
+        $extraItem = $squirrel3->rngNextFromArray([ 'Pointer', 'Quintessence' ]);
 
         $inventoryService->giveInventory($musicNotes, $user, $user, $user->getName() . ' got this by listening to a Single.', $location);
         $inventoryService->receiveItem($extraItem, $user, $user, $user->getName() . ' got this by listening to a Single.', $location);
@@ -62,7 +63,7 @@ class AlbumController extends PoppySeedPetsItemController
      */
     public function listenToEP(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, ItemRepository $itemRepository
+        EntityManagerInterface $em, ItemRepository $itemRepository, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -75,8 +76,8 @@ class AlbumController extends PoppySeedPetsItemController
         $musicNotes->item = $itemRepository->findOneByName('Music Note');
         $musicNotes->quantity = mt_rand(4, 6);
 
-        $genre = ArrayFunctions::pick_one(self::GENRES);
-        $extraItem = ArrayFunctions::pick_one([ 'NUL', 'Quintessence' ]);
+        $genre = $squirrel3->rngNextFromArray(self::GENRES);
+        $extraItem = $squirrel3->rngNextFromArray([ 'NUL', 'Quintessence' ]);
 
         $inventoryService->giveInventory($musicNotes, $user, $user, $user->getName() . ' got this by listening to an EP.', $location);
         $inventoryService->receiveItem($genre, $user, $user, $user->getName() . ' got this by listening to a EP.', $location);
@@ -95,7 +96,7 @@ class AlbumController extends PoppySeedPetsItemController
      */
     public function listenToLP(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, ItemRepository $itemRepository
+        EntityManagerInterface $em, ItemRepository $itemRepository, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -108,10 +109,10 @@ class AlbumController extends PoppySeedPetsItemController
         $musicNotes->item = $itemRepository->findOneByName('Music Note');
         $musicNotes->quantity = mt_rand(4, 6);
 
-        $genre = ArrayFunctions::pick_one([ 'Salsa', 'Meringue', 'Rock', 'Rock', 'Bubblegum' ]);
+        $genre = $squirrel3->rngNextFromArray([ 'Salsa', 'Meringue', 'Rock', 'Rock', 'Bubblegum' ]);
 
         $extraItems = [
-            ArrayFunctions::pick_one([ 'Pointer', 'Quintessence' ]),
+            $squirrel3->rngNextFromArray([ 'Pointer', 'Quintessence' ]),
             'Pointer',
             'Quintessence'
         ];

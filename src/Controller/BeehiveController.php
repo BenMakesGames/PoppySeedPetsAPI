@@ -1,20 +1,17 @@
 <?php
 namespace App\Controller;
 
-use App\Entity\Inventory;
-use App\Entity\PetActivityLog;
 use App\Enum\BeehiveSpecializationEnum;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\GrammarFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\SpiceRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\BeehiveService;
 use App\Service\HollowEarthService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -187,7 +184,7 @@ class BeehiveController extends PoppySeedPetsController
      */
     public function harvest(
         ResponseService $responseService, EntityManagerInterface $em, BeehiveService $beehiveService,
-        InventoryService $inventoryService, SpiceRepository $spiceRepository
+        InventoryService $inventoryService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -222,7 +219,7 @@ class BeehiveController extends PoppySeedPetsController
 
             $possibleItems = [
                 'Fluff', 'Talon', 'Yellow Dye', 'Crooked Stick', 'Glue', 'Sugar', 'Antenna',
-                ArrayFunctions::pick_one([
+                $squirrel3->rngNextFromArray([
                     'Jar of Fireflies', 'Sugar', 'Crooked Stick'
                 ])
             ];
@@ -243,12 +240,12 @@ class BeehiveController extends PoppySeedPetsController
 
                 case BeehiveSpecializationEnum::MINING:
                     $possibleItems = array_merge($possibleItems, [
-                        'Iron Ore', 'Silver Ore', ArrayFunctions::pick_one([ 'Gold Ore', 'Iron Ore' ])
+                        'Iron Ore', 'Silver Ore', $squirrel3->rngNextFromArray([ 'Gold Ore', 'Iron Ore' ])
                     ]);
                     break;
             }
 
-            $item = ArrayFunctions::pick_one($possibleItems);
+            $item = $squirrel3->rngNextFromArray($possibleItems);
 
             $newItem = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' took this from their Beehive.', LocationEnum::HOME);
 

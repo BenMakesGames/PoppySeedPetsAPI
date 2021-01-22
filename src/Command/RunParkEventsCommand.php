@@ -21,6 +21,7 @@ use App\Service\InventoryService;
 use App\Service\ParkEvent\JoustingService;
 use App\Service\ParkEvent\KinBallService;
 use App\Service\ParkEvent\TriDChessService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -39,11 +40,13 @@ class RunParkEventsCommand extends Command
     private $calendarService;
     private $inventoryService;
     private $logger;
+    private $squirrel3;
 
     public function __construct(
         KinBallService $kinBallService, PetRepository $petRepository, EntityManagerInterface $em,
         TriDChessService $triDChessService, JoustingService $joustingService, UserQuestRepository $userQuestRepository,
-        CalendarService $calendarService, InventoryService $inventoryService, LoggerInterface $logger
+        CalendarService $calendarService, InventoryService $inventoryService, LoggerInterface $logger,
+        Squirrel3 $squirrel3
     )
     {
         $this->kinBallService = $kinBallService;
@@ -55,6 +58,7 @@ class RunParkEventsCommand extends Command
         $this->calendarService = $calendarService;
         $this->inventoryService = $inventoryService;
         $this->logger = $logger;
+        $this->squirrel3 = $squirrel3;
 
         parent::__construct();
     }
@@ -175,7 +179,7 @@ class RunParkEventsCommand extends Command
                         $birthdayPresentsByUser[$userId]->setValue($birthdayPresentsByUser[$userId]->getValue() + 1);
 
                         $this->inventoryService->receiveItem(
-                            ArrayFunctions::pick_one([
+                            $this->squirrel3->rngNextFromArray([
                                 'Red PSP B-day Present',
                                 'Yellow PSP B-day Present',
                                 'Purple PSP B-day Present'
@@ -231,7 +235,7 @@ class RunParkEventsCommand extends Command
 
     private function playTriDChess(): ?ParkEvent
     {
-        $idealNumberOfPets = ArrayFunctions::pick_one([ 8, 16, 16 ]);
+        $idealNumberOfPets = $this->squirrel3->rngNextFromArray([ 8, 16, 16 ]);
 
         $pets = $this->petRepository->findPetsEligibleForParkEvent(ParkEventTypeEnum::TRI_D_CHESS, $idealNumberOfPets * 3);
 
@@ -256,7 +260,7 @@ class RunParkEventsCommand extends Command
 
     private function playJousting(): ?ParkEvent
     {
-        $idealNumberOfPets = ArrayFunctions::pick_one([ 16, 16, 32 ]);
+        $idealNumberOfPets = $this->squirrel3->rngNextFromArray([ 16, 16, 32 ]);
 
         $pets = $this->petRepository->findPetsEligibleForParkEvent(ParkEventTypeEnum::JOUSTING, $idealNumberOfPets * 3);
 

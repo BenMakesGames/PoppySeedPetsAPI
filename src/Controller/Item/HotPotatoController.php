@@ -7,6 +7,7 @@ use App\Functions\ArrayFunctions;
 use App\Repository\UserRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -22,7 +23,7 @@ class HotPotatoController extends PoppySeedPetsItemController
      */
     public function toss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        UserRepository $userRepository, InventoryService $inventoryService
+        UserRepository $userRepository, InventoryService $inventoryService, Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'hotPotato/#/toss');
@@ -37,8 +38,8 @@ class HotPotatoController extends PoppySeedPetsItemController
             $thirdItem = ArrayFunctions::pick_one([
                 'Charcoal',
                 'Glowing Six-sided Die',
-                ArrayFunctions::pick_one([ 'Oil', 'Butter' ]),
-                ArrayFunctions::pick_one([ 'Sour Cream', 'Cheese' ]),
+                $squirrel3->rngNextFromArray([ 'Oil', 'Butter' ]),
+                $squirrel3->rngNextFromArray([ 'Sour Cream', 'Cheese' ]),
             ]);
 
             $inventoryService->receiveItem($thirdItem, $user, $inventory->getCreatedBy(), 'This exploded out of a Hot Potato.', $inventory->getLocation());

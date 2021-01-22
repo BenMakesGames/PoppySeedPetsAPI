@@ -8,6 +8,7 @@ use App\Repository\ItemRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -24,7 +25,7 @@ class SandyLumpController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function clean(
-        Inventory $lump, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $lump, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, ItemRepository $itemRepository
     )
     {
@@ -38,17 +39,17 @@ class SandyLumpController extends PoppySeedPetsItemController
 
         if(mt_rand(1, 25) === 1)
         {
-            $item = ArrayFunctions::pick_one([
+            $item = $squirrel3->rngNextFromArray([
                 'Secret Seashell',
-                ArrayFunctions::pick_one([ 'Striped Microcline', 'Blackonite' ]),
+                $squirrel3->rngNextFromArray([ 'Striped Microcline', 'Blackonite' ]),
                 'Dino Skull',
                 'Key Ring',
-                ArrayFunctions::pick_one([ 'Meteorite', 'Species Transmigration Serum' ]),
+                $squirrel3->rngNextFromArray([ 'Meteorite', 'Species Transmigration Serum' ]),
             ]);
         }
         else
         {
-            $item = ArrayFunctions::pick_one([
+            $item = $squirrel3->rngNextFromArray([
                 'Iron Ore', 'Iron Ore', 'Silver Ore', 'Gold Ore',
                 'Silica Grounds', 'Silica Grounds', 'Sand Dollar',
                 'Talon',

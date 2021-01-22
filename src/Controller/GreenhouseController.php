@@ -58,7 +58,7 @@ class GreenhouseController extends PoppySeedPetsController
     public function getGreenhouse(
         ResponseService $responseService, GreenhousePlantRepository $greenhousePlantRepository,
         InventoryRepository $inventoryRepository, UserQuestRepository $userQuestRepository, EntityManagerInterface $em,
-        NormalizerInterface $normalizer
+        NormalizerInterface $normalizer, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -74,7 +74,7 @@ class GreenhouseController extends PoppySeedPetsController
             $weedText = null;
         else
         {
-            $weedText = ArrayFunctions::pick_one([
+            $weedText = $squirrel3->rngNextFromArray([
                 'Don\'t need \'em; don\'t want \'em!',
                 'Get outta\' here, weeds!',
                 'Weeds can gtfo!',
@@ -106,7 +106,7 @@ class GreenhouseController extends PoppySeedPetsController
      */
     public function weedPlants(
         ResponseService $responseService, UserQuestRepository $userQuestRepository, EntityManagerInterface $em,
-        InventoryService $inventoryService
+        InventoryService $inventoryService, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -121,9 +121,9 @@ class GreenhouseController extends PoppySeedPetsController
         $weeds->setValue((new \DateTimeImmutable())->modify('+18 hours')->format('Y-m-d H:i:s'));
 
         if(mt_rand(1, 4) === 1)
-            $itemName = ArrayFunctions::pick_one([ 'Fluff', 'Red Clover', 'Talon', 'Feathers' ]);
+            $itemName = $squirrel3->rngNextFromArray([ 'Fluff', 'Red Clover', 'Talon', 'Feathers' ]);
         else
-            $itemName = ArrayFunctions::pick_one([ 'Fluff', 'Crooked Stick', 'Crooked Stick' ]);
+            $itemName = $squirrel3->rngNextFromArray([ 'Fluff', 'Crooked Stick', 'Crooked Stick' ]);
 
         $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this while weeding their Greenhouse.', LocationEnum::HOME);
 
@@ -164,7 +164,7 @@ class GreenhouseController extends PoppySeedPetsController
     public function feedComposter(
         ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
         InventoryService $inventoryService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
-        ItemRepository $itemRepository, SpiceRepository $spiceRepository
+        ItemRepository $itemRepository, SpiceRepository $spiceRepository, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -239,13 +239,13 @@ class GreenhouseController extends PoppySeedPetsController
         {
             $user->getGreenhouse()->setComposterBonusCountdown();
 
-            $bonusItem = $itemRepository->findOneByName(ArrayFunctions::pick_one([
-                ArrayFunctions::pick_one([ 'Grandparoot', 'Secret Seashell', 'Brown Bow' ]),
-                ArrayFunctions::pick_one([ 'Centipede', 'Stink Bug' ]),
+            $bonusItem = $itemRepository->findOneByName($squirrel3->rngNextFromArray([
+                $squirrel3->rngNextFromArray([ 'Grandparoot', 'Secret Seashell', 'Brown Bow' ]),
+                $squirrel3->rngNextFromArray([ 'Centipede', 'Stink Bug' ]),
                 'Twilight Fertilizer',
                 'Grandparoot',
                 'String',
-                ArrayFunctions::pick_one([ 'Iron Ore', 'Iron Ore', 'Silver Ore', 'Gold Ore' ]),
+                $squirrel3->rngNextFromArray([ 'Iron Ore', 'Iron Ore', 'Silver Ore', 'Gold Ore' ]),
                 'Paper Bag',
             ]));
 
@@ -369,7 +369,7 @@ class GreenhouseController extends PoppySeedPetsController
                 $colorB = $temp;
             }
 
-            $name = ArrayFunctions::pick_one([
+            $name = $squirrel3->rngNextFromArray([
                 'Gosling', 'Goose', 'Honks', 'Clamshell', 'Mussel', 'Seafood', 'Nauplius', 'Mr. Beaks',
                 'Medli', 'Buff', 'Tuft', 'Tail-feather', 'Anser', 'Cygnus', 'Paisley', 'Bolo', 'Cravat',
                 'Ascot', 'Neckerchief'
@@ -383,11 +383,11 @@ class GreenhouseController extends PoppySeedPetsController
         {
             $species = $petSpeciesRepository->findOneBy([ 'name' => 'Mushroom' ]);
 
-            $colorA = $squirrel3->rngNextTweakedColor(ArrayFunctions::pick_one([
+            $colorA = $squirrel3->rngNextTweakedColor($squirrel3->rngNextFromArray([
                 'e32c2c', 'e5e5d6', 'dd8a09', 'a8443d'
             ]));
 
-            $colorB = $squirrel3->rngNextTweakedColor(ArrayFunctions::pick_one([
+            $colorB = $squirrel3->rngNextTweakedColor($squirrel3->rngNextFromArray([
                 'd7d38b', 'e5e5d6', '716363'
             ]));
 
@@ -398,7 +398,7 @@ class GreenhouseController extends PoppySeedPetsController
                 $colorB = $temp;
             }
 
-            $name = ArrayFunctions::pick_one([
+            $name = $squirrel3->rngNextFromArray([
                 'Cremini', 'Button', 'Portobello', 'Oyster', 'Porcini', 'Morel', 'Enoki', 'Shimeji',
                 'Shiitake', 'Maitake', 'Reishi', 'Puffball', 'Galerina', 'Gypsy', 'Milkcap', 'Bolete',
                 'Honey', 'Pinewood', 'Horse', 'Périgord', 'Tooth', 'Blewitt', 'Pom Pom', 'Ear', 'Jelly',
@@ -516,7 +516,7 @@ class GreenhouseController extends PoppySeedPetsController
             if(count($petsAtHome) > 0)
             {
                 /** @var Pet $helper */
-                $helper = ArrayFunctions::pick_one($petsAtHome);
+                $helper = $squirrel3->rngNextFromArray($petsAtHome);
 
                 $greenhouseAdventureService->adventure($helper->getComputedSkills(), $plant);
             }

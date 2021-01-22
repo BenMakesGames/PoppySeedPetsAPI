@@ -12,6 +12,7 @@ use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetColorService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -113,7 +114,7 @@ class HouseFairyController extends PoppySeedPetsItemController
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository,
-        PetColorService $petColorService
+        PetColorService $petColorService, Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'fairy/#/buildFireplace');
@@ -143,7 +144,7 @@ class HouseFairyController extends PoppySeedPetsItemController
 
             $fireplace = (new Fireplace())
                 ->setUser($user)
-                ->setStockingAppearance(ArrayFunctions::pick_one(Fireplace::STOCKING_APPEARANCES))
+                ->setStockingAppearance($squirrel3->rngNextFromArray(Fireplace::STOCKING_APPEARANCES))
                 ->setStockingColorA($stockingColors[0])
                 ->setStockingColorB($stockingColors[1])
             ;

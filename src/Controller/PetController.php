@@ -37,6 +37,7 @@ use App\Service\PetRelationshipService;
 use App\Service\PetService;
 use App\Service\ProfanityFilterService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\Typeahead\PetRelationshipTypeaheadService;
 use App\Service\Typeahead\PetTypeaheadService;
 use Doctrine\ORM\AbstractQuery;
@@ -842,7 +843,7 @@ class PetController extends PoppySeedPetsController
      */
     public function reconcileWithAnotherPet(
         Pet $pet, Request $request, ResponseService $responseService, PetRelationshipRepository $petRelationshipRepository,
-        EntityManagerInterface $em, PetRelationshipService $petRelationshipService
+        EntityManagerInterface $em, PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -884,7 +885,7 @@ class PetController extends PoppySeedPetsController
             $petRelationshipService->max($otherSide->getRelationshipGoal(), RelationshipEnum::FRIEND)
         );
 
-        $newRelationship = ArrayFunctions::pick_one($possibleRelationships);
+        $newRelationship = $squirrel3->rngNextFromArray($possibleRelationships);
 
         $minimumCommitment = $petRelationshipService->generateInitialCommitment($newRelationship, $newRelationship);
 
@@ -1199,7 +1200,7 @@ class PetController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function pickTalent(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         MeritRepository $meritRepository
     )
     {
@@ -1228,8 +1229,8 @@ class PetController extends PoppySeedPetsController
                 ->increaseStat('perception')
                 ->increaseStat('dexterity')
 
-                ->increaseStat(ArrayFunctions::pick_one([ 'intelligence', 'perception' ]))
-                ->increaseStat(ArrayFunctions::pick_one([ 'intelligence', 'perception', 'dexterity' ]))
+                ->increaseStat($squirrel3->rngNextFromArray([ 'intelligence', 'perception' ]))
+                ->increaseStat($squirrel3->rngNextFromArray([ 'intelligence', 'perception', 'dexterity' ]))
             ;
         }
         else if($talent === MeritEnum::MATTER_OVER_MIND)
@@ -1239,8 +1240,8 @@ class PetController extends PoppySeedPetsController
                 ->increaseStat('stamina')
                 ->increaseStat('dexterity')
 
-                ->increaseStat(ArrayFunctions::pick_one([ 'strength', 'stamina' ]))
-                ->increaseStat(ArrayFunctions::pick_one([ 'strength', 'stamina', 'dexterity' ]))
+                ->increaseStat($squirrel3->rngNextFromArray([ 'strength', 'stamina' ]))
+                ->increaseStat($squirrel3->rngNextFromArray([ 'strength', 'stamina', 'dexterity' ]))
             ;
         }
         else if($talent === MeritEnum::MODERATION)
@@ -1270,7 +1271,7 @@ class PetController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function pickExpertise(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         MeritRepository $meritRepository
     )
     {
@@ -1299,8 +1300,8 @@ class PetController extends PoppySeedPetsController
                 ->increaseStat('perception')
                 ->increaseStat('dexterity')
 
-                ->increaseStat(ArrayFunctions::pick_one([ 'intelligence', 'perception' ]))
-                ->increaseStat(ArrayFunctions::pick_one([ 'intelligence', 'perception', 'dexterity' ]))
+                ->increaseStat($squirrel3->rngNextFromArray([ 'intelligence', 'perception' ]))
+                ->increaseStat($squirrel3->rngNextFromArray([ 'intelligence', 'perception', 'dexterity' ]))
             ;
         }
         else if($expertise === MeritEnum::FORCE_OF_NATURE)
@@ -1310,8 +1311,8 @@ class PetController extends PoppySeedPetsController
                 ->increaseStat('stamina')
                 ->increaseStat('dexterity')
 
-                ->increaseStat(ArrayFunctions::pick_one([ 'strength', 'stamina' ]))
-                ->increaseStat(ArrayFunctions::pick_one([ 'strength', 'stamina', 'dexterity' ]))
+                ->increaseStat($squirrel3->rngNextFromArray([ 'strength', 'stamina' ]))
+                ->increaseStat($squirrel3->rngNextFromArray([ 'strength', 'stamina', 'dexterity' ]))
             ;
         }
         else if($expertise === MeritEnum::BALANCE)
