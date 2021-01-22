@@ -155,8 +155,8 @@ class AdoptionService
                     $colorA = ColorFunctions::RGB2Hex($otherA, $otherA, $blueA);
                     $colorB = ColorFunctions::RGB2Hex($otherB, $otherB, $blueB);
 
-                    $colorA = ColorFunctions::tweakColor($colorA);
-                    $colorB = ColorFunctions::tweakColor($colorB);
+                    $colorA = $squirrel3->rngNextTweakedColor($colorA);
+                    $colorB = $squirrel3->rngNextTweakedColor($colorB);
                 }
                 else if($isPinkMoon)
                 {
@@ -169,8 +169,8 @@ class AdoptionService
                     $colorA = ColorFunctions::RGB2Hex($redA, $otherA, $otherA);
                     $colorB = ColorFunctions::RGB2Hex($redB, $otherB, $otherB);
 
-                    $colorA = ColorFunctions::tweakColor($colorA);
-                    $colorB = ColorFunctions::tweakColor($colorB);
+                    $colorA = $squirrel3->rngNextTweakedColor($colorA);
+                    $colorB = $squirrel3->rngNextTweakedColor($colorB);
                 }
                 else
                 {
@@ -182,8 +182,8 @@ class AdoptionService
                         ->getQuery()
                         ->getSingleResult();
 
-                    $colorA = ColorFunctions::tweakColor($basePet->getColorA());
-                    $colorB = ColorFunctions::tweakColor($basePet->getColorB());
+                    $colorA = $squirrel3->rngNextTweakedColor($basePet->getColorA());
+                    $colorB = $squirrel3->rngNextTweakedColor($basePet->getColorB());
                 }
 
                 if($this->calendarService->isPiDay())
