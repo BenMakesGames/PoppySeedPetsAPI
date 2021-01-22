@@ -20,14 +20,16 @@ class PetFactory
     private $em;
     private $petRepository;
     private $meritRepository;
+    private $squirrel3;
 
     public function __construct(
-        EntityManagerInterface $em, PetRepository $petRepository, MeritRepository $meritRepository
+        EntityManagerInterface $em, PetRepository $petRepository, MeritRepository $meritRepository, Squirrel3 $squirrel3
     )
     {
         $this->em = $em;
         $this->petRepository = $petRepository;
         $this->meritRepository = $meritRepository;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function createPet(User $owner, string $name, PetSpecies $species, string $colorA, string $colorB, string $favoriteFlavor, Merit $startingMerit): Pet
@@ -80,8 +82,8 @@ class PetFactory
             ->getSingleResult()
         ;
 
-        $colorA = ColorFunctions::tweakColor($basePet->getColorA());
-        $colorB = ColorFunctions::tweakColor($basePet->getColorB());
+        $colorA = $this->squirrel3->rngNextTweakedColor($basePet->getColorA());
+        $colorB = $this->squirrel3->rngNextTweakedColor($basePet->getColorB());
 
         $pet = $this->createPet(
             $owner,

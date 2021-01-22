@@ -540,8 +540,8 @@ class PetService
             else
             {
                 $pet
-                    ->setColorA(ColorFunctions::tweakColor($pet->getColorA(), 4))
-                    ->setColorB(ColorFunctions::tweakColor($pet->getColorB(), 4))
+                    ->setColorA($this->squirrel3->rngNextTweakedColor($pet->getColorA(), 4))
+                    ->setColorB($this->squirrel3->rngNextTweakedColor($pet->getColorB(), 4))
                 ;
             }
         }
