@@ -9,6 +9,7 @@ use App\Functions\ColorFunctions;
 use App\Repository\DragonRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -65,7 +66,7 @@ The Library of Fire is always open. We look forward to seeing you!');
      */
     public function meltSeal(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, DragonRepository $dragonRepository
+        EntityManagerInterface $em, DragonRepository $dragonRepository, Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'letterFromTheLibraryOfFire/#/meltSeal');
@@ -90,7 +91,7 @@ The Library of Fire is always open. We look forward to seeing you!');
 
             $dragon = (new Dragon())
                 ->setOwner($user)
-                ->setName(ArrayFunctions::pick_one([
+                ->setName($squirrel3->rngNextFromArray([
                     'Tanin', 'Draak', 'Dragua', 'Zenido', 'Vishap', 'Herensuge', 'Ghuṛi Biśēṣa',
                     'Chinjoka', 'Qiú', 'Lohikäärme', 'Drak\'oni', 'Ḍrēgana', 'Naga', 'Ajagar',
                     'Zaj', 'Sárkány', 'Dreki', 'Ryū', 'Aydahar', 'Neak', 'Yong', 'Zîha',
@@ -98,8 +99,8 @@ The Library of Fire is always open. We look forward to seeing you!');
                     'Tarako', 'Dhiragoni', 'Makarā', 'Masduulaagii', 'Joka', 'Aƶdaho', 'Ṭirākaṉ',
                     'Mạngkr', 'Ejderha', 'Ajdaho', 'Inamba',
                 ]))
-                ->setColorA(ColorFunctions::tweakColor($colors[0]))
-                ->setColorB(ColorFunctions::tweakColor($colors[1]))
+                ->setColorA($squirrel3->rngNextTweakedColor($colors[0]))
+                ->setColorB($squirrel3->rngNextTweakedColor($colors[1]))
             ;
 
             $em->persist($dragon);
