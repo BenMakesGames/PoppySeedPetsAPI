@@ -35,7 +35,7 @@ class RecoveredArchiveController extends PoppySeedPetsItemController
             return $responseService->itemActionSuccess('You peek at the archive\'s contents. It appears to be a model file for a 3D Printer! If only you had a 3D Printer, you might be able to use it to print the object!');
         }
 
-        $loot = A$squirrel3->rngNextFromArray([
+        $loot = $squirrel3->rngNextFromArray([
             'Bananananers Foster Recipe',
             'Bass Guitar',
             'Big Book of Baking',
