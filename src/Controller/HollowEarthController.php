@@ -77,7 +77,8 @@ class HollowEarthController extends PoppySeedPetsController
      */
     public function continueActing(
         HollowEarthService $hollowEarthService, ResponseService $responseService, EntityManagerInterface $em,
-        Request $request, InventoryRepository $inventoryRepository, TransactionService $transactionService
+        Request $request, InventoryRepository $inventoryRepository, TransactionService $transactionService,
+        Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -122,7 +123,7 @@ class HollowEarthController extends PoppySeedPetsController
                     break;
 
                 case HollowEarthActionTypeEnum::PET_CHALLENGE:
-                    $this->continueActingPetChallenge($action, $player, $request->request, $hollowEarthService);
+                    $this->continueActingPetChallenge($action, $player, $request->request, $hollowEarthService, $squirrel3);
                     break;
 
                 case HollowEarthActionTypeEnum::CHOOSE_ONE:
