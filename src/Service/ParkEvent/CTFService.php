@@ -99,7 +99,7 @@ class CTFService implements ParkEventInterface
             if(count($participantIds) <= 2)
             {
                 $participantIds = range(0, count($participants) - 1);
-                shuffle($participantIds);
+                $this->squirrel3->rngNextShuffle($participantIds);
             }
 
             $id = array_shift($participantIds);

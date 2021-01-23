@@ -293,7 +293,7 @@ class BoxController extends PoppySeedPetsItemController
 
         if($spice)
         {
-            shuffle($newInventory);
+            $squirrel3->rngNextShuffle($newInventory);
 
             for($i = 0; $i < count($newInventory) / 3; $i++)
                 $newInventory[$i]->setSpice($spice);

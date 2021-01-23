@@ -207,7 +207,7 @@ class JoustingService implements ParkEventInterface
 
         if(count($rivalries) > 0)
         {
-            shuffle($rivalries);
+            $this->squirrel3->rngNextShuffle($rivalries);
 
             foreach($rivalries as $rivalry)
             {
@@ -271,7 +271,7 @@ class JoustingService implements ParkEventInterface
             $this->results .= ' The draw shall be resolved with a race; everyone is the horse!' . "\n\n";
 
             $tieBreakers = [ 0.1, 0.2, 0.3, 0.4 ];
-            shuffle($tieBreakers);
+            $this->squirrel3->rngNextShuffle($tieBreakers);
 
             $results = [
                 [ 'name' => $team1->rider->getName(), 'team' => 1, 'roll' => $this->squirrel3->rngNextInt(1, 10 + $team1->rider->getSkills()->getStrength()) + $tieBreakers[0] ],
