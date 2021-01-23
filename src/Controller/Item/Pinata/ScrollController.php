@@ -383,4 +383,47 @@ class ScrollController extends PoppySeedPetsItemController
 
         return $responseService->itemActionSuccess('You read the scroll, producing ' . ArrayFunctions::list_nice($listOfItems) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
     }
+
+    /**
+     * @Route("/resources/{inventory}/invokeFood", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function readResourcesScrollForFood(
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
+        ResponseService $responseService
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'scroll/resources/#/invokeFood');
+
+        $numberOfItems = [
+            'Tiny Scroll of Resources' => 1,
+            'Scroll of Resources' => 3
+        ][$inventory->getItem()->getName()];
+
+        $possibleItems = [
+            'Smallish Pumpkin', 'Tomato', 'Ginger', 'Hot Potato', 'Toad Legs', 'Spicy Peps', 'Naner', 'Sweet Beet',
+            'Seaweed', 'Apricot', 'Corn', 'Mango', 'Pamplemousse', 'Carrot', 'Celery', 'Red', 'Egg', 'Beans', 'Wheat',
+            'Rice', 'Creamy Milk', 'Orange', 'Fish', 'Onion', 'Chanterelle'
+        ];
+
+        $location = $inventory->getLocation();
+        $locked = $inventory->getLockedToOwner();
+
+        $em->remove($inventory);
+
+        $listOfItems = [];
+
+        for($i = 0; $i < $numberOfItems; $i++)
+        {
+            $item = $squirrel3->rngNextFromArray($possibleItems);
+            $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
+            $listOfItems[] = $item;
+        }
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess('You read the scroll, producing ' . ArrayFunctions::list_nice($listOfItems) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+    }
 }

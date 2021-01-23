@@ -4,7 +4,6 @@ namespace App\Service\PetActivity\Crafting\Helpers;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
-use App\Functions\ArrayFunctions;
 use App\Repository\ItemRepository;
 use App\Repository\SpiceRepository;
 use App\Service\InventoryService;

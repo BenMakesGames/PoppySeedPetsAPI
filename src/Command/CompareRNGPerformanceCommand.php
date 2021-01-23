@@ -8,6 +8,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CompareRNGPerformanceCommand extends Command
 {
+    public const ITERATIONS = 100;
+
     public function __construct()
     {
         parent::__construct();
@@ -36,11 +38,11 @@ class CompareRNGPerformanceCommand extends Command
         mt_srand();
         $mtRandDiffBits = [];
 
-        $output->writeln('Testing mt_rand...');
+        $output->writeln(self::ITERATIONS . ' iterations of mt_rand...');
 
         $previous = mt_rand(0, 0xFFFFFFFF);
 
-        for($i = 0; $i < 100000; $i++)
+        for($i = 0; $i < self::ITERATIONS; $i++)
         {
             $r = mt_rand(0, 0xFFFFFFFF);
 
@@ -52,11 +54,11 @@ class CompareRNGPerformanceCommand extends Command
         $squirrel3 = new Squirrel3();
         $squirrel3DiffBits = [];
 
-        $output->writeln('Timing Squirrel3...');
+        $output->writeln(self::ITERATIONS . ' iterations of squirrel3...');
 
         $previous = $squirrel3->rngNextInt(0, 0xFFFFFFFF);
 
-        for($i = 0; $i < 100000; $i++)
+        for($i = 0; $i < self::ITERATIONS; $i++)
         {
             $r = $squirrel3->rngNextInt(0, 0xFFFFFFFF);
 
@@ -65,8 +67,8 @@ class CompareRNGPerformanceCommand extends Command
             $previous = $r;
         }
 
-        $output->writeln('mt_rand % diff  : ' . array_sum($mtRandDiffBits) / 100000);
-        $output->writeln('Squirrel3 % diff: ' . array_sum($squirrel3DiffBits) / 100000);
+        $output->writeln('mt_rand % diff  : ' . array_sum($mtRandDiffBits) / self::ITERATIONS);
+        $output->writeln('Squirrel3 % diff: ' . array_sum($squirrel3DiffBits) / self::ITERATIONS);
 
         return Command::SUCCESS;
     }
