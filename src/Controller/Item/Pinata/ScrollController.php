@@ -133,7 +133,7 @@ class ScrollController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function invokeMusicScroll(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
