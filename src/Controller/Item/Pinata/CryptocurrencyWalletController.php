@@ -7,6 +7,7 @@ use App\Repository\InventoryRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -23,7 +24,7 @@ class CryptocurrencyWalletController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function read(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository,
         TransactionService $transactionService, InventoryService $inventoryService
     )
@@ -39,7 +40,7 @@ class CryptocurrencyWalletController extends PoppySeedPetsItemController
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
-        if(mt_rand(1, 4) === 1)
+        if($squirrel3->rngNextInt(1, 4) === 1)
         {
             $inventoryService->receiveItem('Magic Smoke', $user, $user, 'Escaped from a Cryptocurrency Wallet, ruining it.', $inventory->getLocation());
 
@@ -47,7 +48,7 @@ class CryptocurrencyWalletController extends PoppySeedPetsItemController
         }
         else
         {
-            $moneys = mt_rand(mt_rand(5, 15), mt_rand(20, mt_rand(25, 95)));
+            $moneys = $squirrel3->rngNextInt($squirrel3->rngNextInt(5, 15), $squirrel3->rngNextInt(20, $squirrel3->rngNextInt(25, 95)));
 
             $transactionService->getMoney($user, $moneys, 'Found inside a ' . $inventory->getItem()->getName() . '.');
 

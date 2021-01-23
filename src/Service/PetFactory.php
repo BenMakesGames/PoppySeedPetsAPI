@@ -77,7 +77,7 @@ class PetFactory
             ->andWhere('p.birthDate<:today')
             ->setParameter('today', $now)
             ->setMaxResults(1)
-            ->setFirstResult(mt_rand(0, $petCount - 1))
+            ->setFirstResult($this->squirrel3->rngNextInt(0, $petCount - 1))
             ->getQuery()
             ->getSingleResult()
         ;
@@ -91,11 +91,11 @@ class PetFactory
             $petSpecies,
             $colorA,
             $colorB,
-            FlavorEnum::getRandomValue(),
+            FlavorEnum::getRandomValue($this->squirrel3),
             $this->meritRepository->getRandomStartingMerit()
         );
 
-        $pet->setFoodAndSafety(mt_rand(10, 12), -9);
+        $pet->setFoodAndSafety($this->squirrel3->rngNextInt(10, 12), -9);
 
         return $pet;
     }

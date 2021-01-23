@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -21,7 +22,7 @@ class NoetalaEggController extends PoppySeedPetsItemController
      */
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'noetalaEgg/#/open');
@@ -33,9 +34,9 @@ class NoetalaEggController extends PoppySeedPetsItemController
         $inventoryService->receiveItem('Quinacridone Magenta Dye', $user, $user, 'This oozed out of a Noetala Egg that ' . $user->getName() . ' opened.', $location);
 
         // 75% chance of more Fluff
-        $includeFluff = mt_rand(1, 4) != 1;
+        $includeFluff = $squirrel3->rngNextInt(1, 4) != 1;
 
-        $loot = ArrayFunctions::pick_one([
+        $loot = $squirrel3->rngNextFromArray([
             'Quintessence', 'Talon', 'Tentacle', 'Green Dye'
         ]);
 

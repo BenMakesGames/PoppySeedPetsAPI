@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Enum\SpiritCompanionStarEnum;
 use App\Functions\ArrayFunctions;
+use App\Service\Squirrel3;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -77,9 +78,11 @@ class SpiritCompanion
 
     public function __construct()
     {
-        $this->star = SpiritCompanionStarEnum::getRandomValue();
-        $this->name = ArrayFunctions::pick_one(self::NAMES);
-        $this->image = ArrayFunctions::pick_one(self::IMAGES);
+        $squirrel3 = new Squirrel3();
+
+        $this->star = SpiritCompanionStarEnum::getRandomValue($squirrel3);
+        $this->name = $squirrel3->rngNextFromArray(self::NAMES);
+        $this->image = $squirrel3->rngNextFromArray(self::IMAGES);
     }
 
     public function getId(): ?int

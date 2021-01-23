@@ -6,6 +6,7 @@ use App\Entity\Merit;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
 use App\Functions\ArrayFunctions;
+use App\Service\Squirrel3;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -42,8 +43,12 @@ class MeritRepository extends ServiceEntityRepository
         MeritEnum::DARKVISION,
     ];
 
-    public function __construct(ManagerRegistry $registry)
+    private $squirrel3;
+
+    public function __construct(ManagerRegistry $registry, Squirrel3 $squirrel3)
     {
+        $this->squirrel3 = $squirrel3;
+
         parent::__construct($registry, Merit::class);
     }
 
@@ -57,12 +62,12 @@ class MeritRepository extends ServiceEntityRepository
 
     public function getRandomStartingMerit(): Merit
     {
-        return $this->findOneBy([ 'name' => ArrayFunctions::pick_one(self::POSSIBLE_STARTING_MERITS) ]);
+        return $this->findOneBy([ 'name' => $this->squirrel3->rngNextFromArray(self::POSSIBLE_STARTING_MERITS) ]);
     }
 
     public function getRandomFirstPetStartingMerit(): Merit
     {
-        return $this->findOneBy([ 'name' => ArrayFunctions::pick_one(self::POSSIBLE_FIRST_PET_STARTING_MERITS) ]);
+        return $this->findOneBy([ 'name' => $this->squirrel3->rngNextFromArray(self::POSSIBLE_FIRST_PET_STARTING_MERITS) ]);
     }
 
     public function getRandomAdoptedPetStartingMerit(): Merit
@@ -71,6 +76,6 @@ class MeritRepository extends ServiceEntityRepository
             return $m !== MeritEnum::HYPERCHROMATIC && $m !== MeritEnum::SPECTRAL;
         });
 
-        return $this->findOneBy([ 'name' => ArrayFunctions::pick_one($possibleMerits) ]);
+        return $this->findOneBy([ 'name' => $this->squirrel3->rngNextFromArray($possibleMerits) ]);
     }
 }

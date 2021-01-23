@@ -18,6 +18,7 @@ use App\Service\AdoptionService;
 use App\Service\PetFactory;
 use App\Service\ProfanityFilterService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\StoryService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -86,7 +87,7 @@ class PetShelterController extends PoppySeedPetsController
     public function adoptPet(
         int $id, PetRepository $petRepository, AdoptionService $adoptionService, Request $request,
         ResponseService $responseService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
-        UserQuestRepository $userQuestRepository, TransactionService $transactionService,
+        UserQuestRepository $userQuestRepository, TransactionService $transactionService, Squirrel3 $squirrel3,
         MeritRepository $meritRepository, ProfanityFilterService $profanityFilterService, PetFactory $petFactory
     )
     {
@@ -124,12 +125,12 @@ class PetShelterController extends PoppySeedPetsController
 
         $newPet = $petFactory->createPet(
             $user, $petName, $petToAdopt->species, $petToAdopt->colorA, $petToAdopt->colorB,
-            FlavorEnum::getRandomValue(),
+            FlavorEnum::getRandomValue($squirrel3),
             $meritRepository->getRandomAdoptedPetStartingMerit()
         );
 
         $newPet
-            ->setFoodAndSafety(mt_rand(10, 12), -9)
+            ->setFoodAndSafety($squirrel3->rngNextInt(10, 12), -9)
             ->setScale($petToAdopt->scale)
         ;
 

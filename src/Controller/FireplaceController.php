@@ -353,7 +353,7 @@ class FireplaceController extends PoppySeedPetsController
      */
     public function claimRewards(
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository
+        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -393,7 +393,7 @@ class FireplaceController extends PoppySeedPetsController
 
         for($i = 0; $i < $numItems; $i++)
         {
-            $itemName = $possibleRewards[mt_rand(0, mt_rand(7, 7 + $rewardLevelBonus))];
+            $itemName = $possibleRewards[$squirrel3->rngNextInt(0, $squirrel3->rngNextInt(7, 7 + $rewardLevelBonus))];
 
             if($itemName === 'House Fairy')
             {
@@ -410,7 +410,7 @@ class FireplaceController extends PoppySeedPetsController
                 $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Oops! How\'d that get left in there!)', LocationEnum::HOME);
             else if($itemName === 'Naner Pancakes' || $itemName === 'Hot Dog')
                 $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Whew! didn\'t burn!)', LocationEnum::HOME);
-            else if(mt_rand(1, 4) === 1)
+            else if($squirrel3->rngNextInt(1, 4) === 1)
                 $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Did someone put that it there? It seems like someone put that it there.)', LocationEnum::HOME);
             else
                 $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Is that... normal?)', LocationEnum::HOME);
@@ -425,7 +425,7 @@ class FireplaceController extends PoppySeedPetsController
 
         $em->flush();
 
-        if($fireplace->getHeat() >= 2 * 60 && mt_rand(1, 3) === 1)
+        if($fireplace->getHeat() >= 2 * 60 && $squirrel3->rngNextInt(1, 3) === 1)
             $responseService->addFlashMessage('You reach inside while the fire is still burning, just like a totally normal person would do, and pull out ' . ArrayFunctions::list_nice($itemsReceived) . '!');
         else
             $responseService->addFlashMessage('You reach inside, and pull out ' . ArrayFunctions::list_nice($itemsReceived) . '!');

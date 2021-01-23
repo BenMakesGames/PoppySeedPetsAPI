@@ -7,6 +7,7 @@ use App\Functions\ArrayFunctions;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -22,7 +23,7 @@ class RecoveredArchiveController extends PoppySeedPetsItemController
      */
     public function openRecoveredArchive(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, ItemRepository $itemRepository
+        EntityManagerInterface $em, ItemRepository $itemRepository, Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'recoveredArchive/#/open');
@@ -34,7 +35,7 @@ class RecoveredArchiveController extends PoppySeedPetsItemController
             return $responseService->itemActionSuccess('You peek at the archive\'s contents. It appears to be a model file for a 3D Printer! If only you had a 3D Printer, you might be able to use it to print the object!');
         }
 
-        $loot = ArrayFunctions::pick_one([
+        $loot = A$squirrel3->rngNextFromArray([
             'Bananananers Foster Recipe',
             'Bass Guitar',
             'Big Book of Baking',
@@ -128,7 +129,7 @@ class RecoveredArchiveController extends PoppySeedPetsItemController
 
         $message = "You peek at the archive's contents. It appears to be a model file for a 3D Printer!\n\nYou load the archive into your 3D Printer. Without any Plastic whatsoever, the device springs to life and begins printing at a furious rate! After the sparks stop and smoke clears, you see that it printed " . $item->getNameWithArticle() . "!\n\n";
 
-        $message .= ArrayFunctions::pick_one([
+        $message .= $squirrel3->rngNextFromArray([
             'Weird.',
             'Okay, then...',
             'Is that how that\'s supposed to happen?',

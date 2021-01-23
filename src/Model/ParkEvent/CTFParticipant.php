@@ -3,6 +3,7 @@ namespace App\Model\ParkEvent;
 
 use App\Entity\Pet;
 use App\Enum\MeritEnum;
+use App\Service\Squirrel3;
 
 class CTFParticipant
 {
@@ -16,13 +17,13 @@ class CTFParticipant
     /** @var bool */ public $inJail;
     /** @var int */ public $skill;
 
-    public function pickRole()
+    public function pickRole(Squirrel3 $squirrel3)
     {
         $skills = $this->pet->getSkills();
         $this->skill = floor($skills->getPerception() * 3 + $skills->getDexterity() * 1.5 + $skills->getStrength() + $skills->getStealth() / 2 + $skills->getBrawl() / 4);
 
-        $attack = mt_rand(3, 10 + $this->pet->getStealth() + ($this->pet->hasMerit(MeritEnum::DARKVISION) ? 1 : 0));
-        $defend = mt_rand(1, 10 + $skills->getBrawl());
+        $attack = $squirrel3->rngNextInt(3, 10 + $this->pet->getComputedSkills()->getStealth()->getTotal() + ($this->pet->hasMerit(MeritEnum::DARKVISION) ? 1 : 0));
+        $defend = $squirrel3->rngNextInt(1, 10 + $skills->getBrawl());
 
         if($attack >= $defend)
             $this->role = self::ROLE_EXPLORE;

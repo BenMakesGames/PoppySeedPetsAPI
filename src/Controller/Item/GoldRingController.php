@@ -15,6 +15,7 @@ use App\Service\InventoryService;
 use App\Service\PetColorService;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -29,7 +30,7 @@ class GoldRingController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function smash(
-        Inventory $inventory, ResponseService $responseService, ItemRepository $itemRepository,
+        Inventory $inventory, ResponseService $responseService, ItemRepository $itemRepository, Squirrel3 $squirrel3,
         EntityManagerInterface $em
     )
     {
@@ -37,7 +38,7 @@ class GoldRingController extends PoppySeedPetsItemController
 
         $inventory->changeItem($itemRepository->findOneByName('Gold Bar'));
 
-        $message = ArrayFunctions::pick_one([
+        $message = $squirrel3->rngNextFromArray([
             'Easy as 1, 2, 3.',
             'Easy as pie.',
             'Easy as falling off a log.',
@@ -70,7 +71,7 @@ class GoldRingController extends PoppySeedPetsItemController
     public function collect100(
         Inventory $inventory, EntityManagerInterface $em, InventoryService $inventoryService, ResponseService $responseService,
         PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository, PetRepository $petRepository,
-        PetFactory $petFactory, PetColorService $petColorService
+        PetFactory $petFactory, PetColorService $petColorService, Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'goldRing/#/collect100');
@@ -117,7 +118,7 @@ class GoldRingController extends PoppySeedPetsItemController
 
             $hedgehog = $petSpeciesRepository->findOneBy([ 'name' => 'Hedgehog' ]);
 
-            $hedgehogName = ArrayFunctions::pick_one([
+            $hedgehogName = $squirrel3->rngNextFromArray([
                 'Speedy', 'Dash', 'Blur', 'Quickly', 'Knuckles', 'Boots', 'Nitro', 'Catalyst', 'Dodger',
                 'Runner', 'Jumps', 'Spins', 'Miles',
             ]);
@@ -127,7 +128,7 @@ class GoldRingController extends PoppySeedPetsItemController
             $newPet = $petFactory->createPet(
                 $user, $hedgehogName, $hedgehog,
                 $petColors[0], $petColors[1],
-                FlavorEnum::getRandomValue(),
+                FlavorEnum::getRandomValue($squirrel3),
                 $meritRepository->getRandomStartingMerit()
             );
 
@@ -136,7 +137,7 @@ class GoldRingController extends PoppySeedPetsItemController
                 ->increaseSafety(10)
                 ->increaseEsteem(10)
                 ->increaseFood(-8)
-                ->setScale(mt_rand(80, 120))
+                ->setScale($squirrel3->rngNextInt(80, 120))
             ;
 
             $message = '100 Gold Rings!!! That\'s one extra Hedgehog!';

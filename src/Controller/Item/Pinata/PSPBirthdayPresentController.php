@@ -7,6 +7,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,7 +22,7 @@ class PSPBirthdayPresentController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function open(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         EntityManagerInterface $em
     )
     {
@@ -33,7 +34,7 @@ class PSPBirthdayPresentController extends PoppySeedPetsItemController
 
         $loot = [
             'Slice of Poppy Seed* Pie',
-            ArrayFunctions::pick_one([
+            $squirrel3->rngNextFromArray([
                 'Ruby Feather', 'Secret Seashell', 'Candle', 'Gold Ring', 'Mysterious Seed',
                 'Behatting Scroll', 'Magic Bean Milk', 'Magic Brush'
             ])
@@ -50,7 +51,7 @@ class PSPBirthdayPresentController extends PoppySeedPetsItemController
         ];
 
         for($x = 0; $x < 2; $x++)
-            $loot[] = ArrayFunctions::pick_one($possibleLoot);
+            $loot[] = $squirrel3->rngNextFromArray($possibleLoot);
 
         foreach($loot as $itemName)
         {

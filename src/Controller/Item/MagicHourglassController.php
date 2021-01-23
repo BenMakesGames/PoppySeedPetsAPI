@@ -8,6 +8,7 @@ use App\Repository\UserStatsRepository;
 use App\Service\HouseService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -23,7 +24,8 @@ class MagicHourglassController extends PoppySeedPetsItemController
      */
     public function shatter(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        HouseService $houseService, UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        HouseService $houseService, UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
+        Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'magicHourglass/#/shatter');
@@ -39,7 +41,7 @@ class MagicHourglassController extends PoppySeedPetsItemController
 
         $message = 'Crazy-magic energies flow through the house, swirling and dancing with chaotic shapes that you\'re pretty sure are fractal in nature.' . "\n\n" . 'Also, the Silica Grounds inside - now reduced to Aging Powder - spill all over the ground.';
 
-        if(mt_rand(1, 8) === 1)
+        if($squirrel3->rngNextInt(1, 8) === 1)
             $message .= ' Way to go.';
 
         $em->remove($inventory);

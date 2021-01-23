@@ -14,6 +14,7 @@ use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -33,7 +34,7 @@ class SpiritPolymorphPotionController extends PoppySeedPetsItemController
      */
     public function drink(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        PetRepository $petRepository, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -54,7 +55,7 @@ class SpiritPolymorphPotionController extends PoppySeedPetsItemController
         $currentImage = $pet->getSpiritCompanion()->getImage();
         $possibleImages = array_filter(SpiritCompanion::IMAGES, function($i) use($currentImage) { return $i !== $currentImage; });
 
-        $pet->getSpiritCompanion()->setImage(ArrayFunctions::pick_one($possibleImages));
+        $pet->getSpiritCompanion()->setImage($squirrel3->rngNextFromArray($possibleImages));
 
         $em->flush();
 

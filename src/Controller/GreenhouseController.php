@@ -120,7 +120,7 @@ class GreenhouseController extends PoppySeedPetsController
 
         $weeds->setValue((new \DateTimeImmutable())->modify('+18 hours')->format('Y-m-d H:i:s'));
 
-        if(mt_rand(1, 4) === 1)
+        if($squirrel3->rngNextInt(1, 4) === 1)
             $itemName = $squirrel3->rngNextFromArray([ 'Fluff', 'Red Clover', 'Talon', 'Feathers' ]);
         else
             $itemName = $squirrel3->rngNextFromArray([ 'Fluff', 'Crooked Stick', 'Crooked Stick' ]);
@@ -362,7 +362,7 @@ class GreenhouseController extends PoppySeedPetsController
                 'bb0000', '33CCFF', '009900', 'CC9933', '333333'
             ]));
 
-            if(mt_rand(1, 3) === 1)
+            if($squirrel3->rngNextInt(1, 3) === 1)
             {
                 $temp = $colorA;
                 $colorA = $colorB;
@@ -391,7 +391,7 @@ class GreenhouseController extends PoppySeedPetsController
                 'd7d38b', 'e5e5d6', '716363'
             ]));
 
-            if(mt_rand(1, 4) === 1)
+            if($squirrel3->rngNextInt(1, 4) === 1)
             {
                 $temp = $colorA;
                 $colorA = $colorB;
@@ -444,7 +444,7 @@ class GreenhouseController extends PoppySeedPetsController
 
             foreach($plant->getPlant()->getPlantYields() as $yield)
             {
-                $quantity = mt_rand($yield->getMin(), $yield->getMax());
+                $quantity = $squirrel3->rngNextInt($yield->getMin(), $yield->getMax());
 
                 for($i = 0; $i < $quantity; $i++)
                 {
@@ -459,11 +459,11 @@ class GreenhouseController extends PoppySeedPetsController
 
                     $newItem = $inventoryService->receiveItem($lootItem, $user, $user, $user->getName() . ' harvested this from ' . GrammarFunctions::indefiniteArticle($plantName) . ' ' . $plantName . '.', LocationEnum::HOME);
 
-                    if(mt_rand(1, 10000) < $beeFlavorChance * 100)
+                    if($squirrel3->rngNextInt(1, 10000) < $beeFlavorChance * 100)
                     {
                         $user->getGreenhouse()->setCanUseBeeNetting(true);
 
-                        if(mt_rand(1, 20) === 1)
+                        if($squirrel3->rngNextInt(1, 20) === 1)
                             $newItem->setSpice($spiceRepository->findOneByName('of Queens'));
                         else
                             $newItem->setSpice($spiceRepository->findOneByName('Anthophilan'));
@@ -486,7 +486,7 @@ class GreenhouseController extends PoppySeedPetsController
 
             if($harvestBonusMint)
             {
-                $comment = mt_rand(1, 4) === 1
+                $comment = $squirrel3->rngNextInt(1, 4) === 1
                     ? $user->getName() . ' harvested this from ' . GrammarFunctions::indefiniteArticle($plantName) . ' ' . $plantName . '?! (Mint! It gets everywhere!)'
                     : $user->getName() . ' harvested this from ' . GrammarFunctions::indefiniteArticle($plantName) . ' ' . $plantName . '...'
                 ;
@@ -506,7 +506,7 @@ class GreenhouseController extends PoppySeedPetsController
             $user->getGreenhouse()->increaseMaxPlants(3);
             $message .= ' And you\'ve been given three additional plots in the Greenhouse!';
         }
-        else if(mt_rand(1, 3) === 1)
+        else if($squirrel3->rngNextInt(1, 3) === 1)
         {
             $petsAtHome = $petRepository->findBy([
                 'owner' => $user->getId(),
@@ -572,7 +572,7 @@ class GreenhouseController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function pullUpPlant(
-        GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em,
+        GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         InventoryService $inventoryService
     )
     {
@@ -592,7 +592,7 @@ class GreenhouseController extends PoppySeedPetsController
             $responseService->addFlashMessage('The goat, startled, runs into the jungle, shedding a bit of Fluff in the process.');
 
             $inventoryService->receiveItem('Fluff', $user, $user, 'Dropped by a startled goat.', LocationEnum::HOME);
-            if(mt_rand(1, 2) === 1)
+            if($squirrel3->rngNextInt(1, 2) === 1)
                 $inventoryService->receiveItem('Fluff', $user, $user, 'Dropped by a startled goat.', LocationEnum::HOME);
         }
 

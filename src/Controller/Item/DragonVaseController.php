@@ -13,6 +13,7 @@ use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\ResponseService;
 use App\Service\InventoryModifierService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,7 +31,7 @@ class DragonVaseController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function read(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         UserQuestRepository $userQuestRepository, Request $request, InventoryRepository $inventoryRepository,
         EnchantmentRepository $enchantmentRepository, InventoryModifierService $toolBonusService,
         UserStatsRepository $userStatsRepository
@@ -85,7 +86,7 @@ class DragonVaseController extends PoppySeedPetsItemController
             });
         }
 
-        $newBonus = $enchantmentRepository->findOneByName(ArrayFunctions::pick_one($possibleBonuses));
+        $newBonus = $enchantmentRepository->findOneByName($squirrel3->rngNextFromArray($possibleBonuses));
 
         $hadAnEnchantment = $dippedItem->getEnchantment() !== null;
         $oldName = $toolBonusService->getNameWithModifiers($dippedItem);

@@ -6,6 +6,7 @@ use App\Enum\LocationEnum;
 use App\Functions\ArrayFunctions;
 use App\Service\HollowEarthService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,7 +22,7 @@ class DieController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function read(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         HollowEarthService $hollowEarthService
     )
     {
@@ -35,14 +36,14 @@ class DieController extends PoppySeedPetsItemController
 
         if($itemName === 'Dreidel')
         {
-            $roll = ArrayFunctions::pick_one([
+            $roll = $squirrel3->rngNextFromArray([
                 'נ', 'ג', 'ה', 'ש'
             ]);
         }
         else
         {
             $sides = HollowEarthService::DICE_ITEMS[$itemName];
-            $roll = mt_rand(1, $sides);
+            $roll = $squirrel3->rngNextInt(1, $sides);
         }
 
         if($user->getUnlockedHollowEarth() !== null)

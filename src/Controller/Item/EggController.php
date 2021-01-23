@@ -17,6 +17,7 @@ use App\Service\InventoryService;
 use App\Service\PetColorService;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,7 +35,8 @@ class EggController extends PoppySeedPetsItemController
     public function hatchWeirdBlueEgg(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
         EntityManagerInterface $em, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository,
-        MeritRepository $meritRepository, PetFactory $petFactory, PetColorService $petColorService
+        MeritRepository $meritRepository, PetFactory $petFactory, PetColorService $petColorService,
+        Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'egg/weird-blue/#/hatch');
@@ -67,7 +69,7 @@ class EggController extends PoppySeedPetsItemController
 
         $message .= "\n\nAnyway, it's super cute, and... really seems to like you! In fact, it's already named itself after you??";
 
-        $monkeyName = ArrayFunctions::pick_one([
+        $monkeyName = $squirrel3->rngNextFromArray([
             'Climbing',
             'Fuzzy',
             'Howling',
@@ -79,7 +81,7 @@ class EggController extends PoppySeedPetsItemController
         ]) . ' ' . $user->getName();
 
         $newPet = $petFactory->createPet(
-            $user, $monkeyName, $starMonkey, '', '', FlavorEnum::getRandomValue(), $meritRepository->getRandomStartingMerit()
+            $user, $monkeyName, $starMonkey, '', '', FlavorEnum::getRandomValue($squirrel3), $meritRepository->getRandomStartingMerit()
         );
 
         $newPet
@@ -87,7 +89,7 @@ class EggController extends PoppySeedPetsItemController
             ->increaseSafety(10)
             ->increaseEsteem(10)
             ->increaseFood(-8)
-            ->setScale(mt_rand(80, 120))
+            ->setScale($squirrel3->rngNextInt(80, 120))
         ;
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
@@ -111,7 +113,7 @@ class EggController extends PoppySeedPetsItemController
     public function openMetalBox(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
         EntityManagerInterface $em, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository,
-        MeritRepository $meritRepository, PetFactory $petFactory, PetColorService $petColorService
+        MeritRepository $meritRepository, PetFactory $petFactory, PetColorService $petColorService, Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'egg/metalBox/#/open');
@@ -145,12 +147,12 @@ class EggController extends PoppySeedPetsItemController
         $message .= "\n\nAnyway, it's dashing around like it's excited to be here; it really seems to like you! In fact, it's already named itself after you??";
 
         $newPet = $petFactory->createPet(
-            $user, '', $grabber, '', '', FlavorEnum::getRandomValue(), $meritRepository->getRandomStartingMerit()
+            $user, '', $grabber, '', '', FlavorEnum::getRandomValue($squirrel3), $meritRepository->getRandomStartingMerit()
         );
 
         $petColorService->recolorPet($newPet, 0.2);
 
-        $robotName = 'Metal ' . $user->getName() . ' ' . ArrayFunctions::pick_one([
+        $robotName = 'Metal ' . $user->getName() . ' ' . $squirrel3->rngNextFromArray([
             '2.0',
             'Beta',
             'Mk 2',
@@ -168,7 +170,7 @@ class EggController extends PoppySeedPetsItemController
             ->increaseSafety(10)
             ->increaseEsteem(10)
             ->increaseFood(-8)
-            ->setScale(mt_rand(80, 120))
+            ->setScale($squirrel3->rngNextInt(80, 120))
         ;
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);

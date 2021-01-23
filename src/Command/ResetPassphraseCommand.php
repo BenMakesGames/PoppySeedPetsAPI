@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Functions\StringFunctions;
 use App\Repository\UserRepository;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,12 +16,17 @@ class ResetPassphraseCommand extends Command
     private $em;
     private $userRepository;
     private $passwordEncoder;
+    private $squirrel3;
 
-    public function __construct(EntityManagerInterface $em, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(
+        EntityManagerInterface $em, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder,
+        Squirrel3 $squirrel3
+    )
     {
         $this->em = $em;
         $this->userRepository = $userRepository;
         $this->passwordEncoder = $passwordEncoder;
+        $this->squirrel3 = $squirrel3;
 
         parent::__construct();
     }
@@ -50,9 +56,9 @@ class ResetPassphraseCommand extends Command
             throw new \InvalidArgumentException('There is no user with that e-mail address.');
 
         $password =
-            $terminalCharacters[mt_rand(0, strlen($terminalCharacters) - 1)] .
-            StringFunctions::randomString($allCharacters, mt_rand(8, 12)) .
-            $terminalCharacters[mt_rand(0, strlen($terminalCharacters) - 1)]
+            $terminalCharacters[$this->squirrel3->rngNextInt(0, strlen($terminalCharacters) - 1)] .
+            StringFunctions::randomString($allCharacters, $this->squirrel3->rngNextInt(8, 12)) .
+            $terminalCharacters[$this->squirrel3->rngNextInt(0, strlen($terminalCharacters) - 1)]
         ;
 
         $user->setPassword($this->passwordEncoder->encodePassword($user, $password));

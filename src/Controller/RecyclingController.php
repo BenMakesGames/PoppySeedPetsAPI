@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Enum\LocationEnum;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -23,7 +24,7 @@ class RecyclingController extends PoppySeedPetsController
      */
     public function gamble(
         ResponseService $responseService, EntityManagerInterface $em, InventoryService $inventoryService,
-        Request $request
+        Request $request, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -33,8 +34,8 @@ class RecyclingController extends PoppySeedPetsController
         if($user->getRecyclePoints() < 100)
             throw new AccessDeniedHttpException('You don\'t have enough !');
 
-        $r1 = mt_rand(1, 6);
-        $r2 = mt_rand(1, 6);
+        $r1 = $squirrel3->rngNextInt(1, 6);
+        $r2 = $squirrel3->rngNextInt(1, 6);
 
         $total = $r1 + $r2;
 

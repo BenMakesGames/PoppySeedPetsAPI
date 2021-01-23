@@ -13,6 +13,7 @@ use App\Repository\RecipeRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\StoryService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,7 +31,7 @@ class WhisperStoneController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function read(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         ItemRepository $itemRepository, RecipeRepository $recipeRepository, InventoryService $inventoryService,
         UserStatsRepository $userStatsRepository
     )
@@ -49,7 +50,7 @@ class WhisperStoneController extends PoppySeedPetsItemController
             ->getSingleScalarResult()
         ;
 
-        $recipeToGet = mt_rand(0, $recipeCount - 1);
+        $recipeToGet = $squirrel3->rngNextInt(0, $recipeCount - 1);
 
         /** @var Recipe[] $recipes */
         $recipes = [];
@@ -63,7 +64,7 @@ class WhisperStoneController extends PoppySeedPetsItemController
             ->getSingleResult()
         ;
 
-        $recipeToGet = mt_rand(0, $recipeCount - 2);
+        $recipeToGet = $squirrel3->rngNextInt(0, $recipeCount - 2);
 
         $recipes[] = $recipeRepository->createQueryBuilder('r')
             ->andWhere('r.ingredients LIKE :twoCommas')
@@ -101,7 +102,7 @@ class WhisperStoneController extends PoppySeedPetsItemController
             $message .= 'Wait, aren\'t Whisper Stones supposed to reveal dark secrets from the spirit world?';
         else
         {
-            $message .= ArrayFunctions::pick_one([
+            $message .= $squirrel3->rngNextFromArray([
                 'Thanks, rock!',
                 'This Whisper Stone seems to have knowledge within a very specific domain.',
                 'Might be worth trying sometime?',

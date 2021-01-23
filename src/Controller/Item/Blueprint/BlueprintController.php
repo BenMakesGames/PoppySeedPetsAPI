@@ -16,6 +16,7 @@ use App\Repository\PetRepository;
 use App\Service\BeehiveService;
 use App\Service\PetService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -275,14 +276,15 @@ class BlueprintController extends PoppySeedPetsItemController
 
     private function rewardHelper(PetService $petService, ResponseService $responseService, Pet $pet, ?string $skill, string $flashMessage, string $logMessage)
     {
+        $squirrel3 = new Squirrel3();
         $changes = new PetChanges($pet);
 
         if($skill)
             $pet->getSkills()->increaseStat($skill);
 
         $pet
-            ->increaseLove(mt_rand(3, 6))
-            ->increaseEsteem(mt_rand(2, 4))
+            ->increaseLove($squirrel3->rngNextInt(3, 6))
+            ->increaseEsteem($squirrel3->rngNextInt(2, 4))
         ;
 
         $petService->gainAffection($pet, 10);

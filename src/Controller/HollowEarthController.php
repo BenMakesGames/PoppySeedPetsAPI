@@ -14,6 +14,7 @@ use App\Service\CalendarService;
 use App\Service\HollowEarthService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -236,7 +237,8 @@ class HollowEarthController extends PoppySeedPetsController
     }
 
     private function continueActingPetChallenge(
-        array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService
+        array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService,
+        Squirrel3 $squirrel3
     )
     {
         $stats = $action['stats'];
@@ -245,7 +247,7 @@ class HollowEarthController extends PoppySeedPetsController
         foreach($stats as $stat)
             $score += $player->getChosenPet()->getComputedSkills()->{'get' . $stat }()->getTotal();
 
-        if(mt_rand(1, $score) >= $action['requiredRoll'])
+        if($squirrel3->rngNextInt(1, $score) >= $action['requiredRoll'])
         {
             if(array_key_exists('ifSuccess', $action))
             {
@@ -274,7 +276,7 @@ class HollowEarthController extends PoppySeedPetsController
     public function rollDie(
         ResponseService $responseService, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
         HollowEarthService $hollowEarthService, Request $request, CalendarService $calendarService,
-        InventoryService $inventoryService
+        InventoryService $inventoryService, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -300,7 +302,7 @@ class HollowEarthController extends PoppySeedPetsController
             throw new UnprocessableEntityHttpException('You do not have a ' . $itemName . '!');
 
         $sides = HollowEarthService::DICE_ITEMS[$itemName];
-        $moves = mt_rand(1, $sides);
+        $moves = $squirrel3->rngNextInt(1, $sides);
 
         $responseService->addFlashMessage('You rolled a ' . $moves . '!');
 
@@ -310,11 +312,11 @@ class HollowEarthController extends PoppySeedPetsController
 
         $hollowEarthService->advancePlayer($player);
 
-        if($calendarService->isEaster() && mt_rand(1, 4) === 1)
+        if($calendarService->isEaster() && $squirrel3->rngNextInt(1, 4) === 1)
         {
-            if(mt_rand(1, 6) === 6)
+            if($squirrel3->rngNextInt(1, 6) === 6)
             {
-                if(mt_rand(1, 12) === 12)
+                if($squirrel3->rngNextInt(1, 12) === 12)
                     $loot = 'Pink Plastic Egg';
                 else
                     $loot = 'Yellow Plastic Egg';
@@ -326,7 +328,7 @@ class HollowEarthController extends PoppySeedPetsController
                 ->setLockedToOwner($loot !== 'Blue Plastic Egg')
             ;
 
-            if(mt_rand(1, 10) === 1)
+            if($squirrel3->rngNextInt(1, 10) === 1)
                 $responseService->addFlashMessage('(While moving through the Hollow Earth, you spot a ' . $loot . '! But you decide to leave it there... ... nah, I\'m just kidding, of course you scoop the thing up immediately!)');
             else
                 $responseService->addFlashMessage('(While moving through the Hollow Earth, you spot a ' . $loot . '!)');

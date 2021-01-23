@@ -10,6 +10,7 @@ use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Service\PetColorService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -29,7 +30,7 @@ class IridescentHandCannonController extends PoppySeedPetsItemController
     public function fireHandCannon(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository, ItemRepository $itemRepository, MeritRepository $meritRepository,
-        PetColorService $petColorChangingService
+        PetColorService $petColorChangingService, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -72,21 +73,21 @@ class IridescentHandCannonController extends PoppySeedPetsItemController
             $responseService->addFlashMessage($pet->getName() . ' has been chromatically altered!');
         }
 
-        $deleted = mt_rand(1, 10) === 1;
+        $deleted = $squirrel3->rngNextInt(1, 10) === 1;
 
         if($deleted)
         {
             $comment = 'This was once an Iridescent Hand Cannon.';
 
-            if(mt_rand(1, 2) === 1)
+            if($squirrel3->rngNextInt(1, 2) === 1)
             {
                 $comment .= ' Then it got rusty and fell apart.';
 
-                if(mt_rand(1, 2) === 1)
+                if($squirrel3->rngNextInt(1, 2) === 1)
                 {
                     $comment .= ' At the same time!';
 
-                    if(mt_rand(1, 2) === 1)
+                    if($squirrel3->rngNextInt(1, 2) === 1)
                         $comment .= ' (It\'s more common than you\'d think!)';
                 }
             }

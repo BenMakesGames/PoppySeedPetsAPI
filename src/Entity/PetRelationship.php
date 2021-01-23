@@ -7,6 +7,7 @@ use App\Enum\MeritEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
+use App\Service\Squirrel3;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
@@ -80,9 +81,11 @@ class PetRelationship
 
     public function __construct()
     {
+        $squirrel3 = new Squirrel3();
+
         $this->metOn = new \DateTimeImmutable();
         $this->lastMet = new \DateTimeImmutable();
-        $this->timeUntilChange = mt_rand(mt_rand(20, 30), mt_rand(50, 80));
+        $this->timeUntilChange = $squirrel3->rngNextInt($squirrel3->rngNextInt(20, 30), $squirrel3->rngNextInt(50, 80));
     }
 
     public function getId(): ?int
@@ -193,7 +196,8 @@ class PetRelationship
 
     public function setTimeUntilChange()
     {
-        $this->timeUntilChange = mt_rand(mt_rand(20, 30), mt_rand(40, 50));
+        $squirrel3 = new Squirrel3();
+        $this->timeUntilChange = $squirrel3->rngNextInt($squirrel3->rngNextInt(20, 30), $squirrel3->rngNextInt(40, 50));
     }
 
     public function decrementTimeUntilChange(float $multiplier = 1): self

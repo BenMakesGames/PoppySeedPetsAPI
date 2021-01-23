@@ -16,6 +16,7 @@ use App\Service\Filter\TransactionFilterService;
 use App\Service\InventoryService;
 use App\Service\MarketService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
@@ -116,7 +117,7 @@ class MarketController extends PoppySeedPetsController
      */
     public function buy(
         Request $request, ResponseService $responseService, AdapterInterface $cache, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
+        UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository, Squirrel3 $squirrel3,
         TransactionService $transactionService, MarketService $marketService, InventoryModifierService $bonusService
     )
     {
@@ -143,7 +144,7 @@ class MarketController extends PoppySeedPetsController
 
             $itemsInBasement = $inventoryRepository->countItemsInLocation($user, LocationEnum::BASEMENT);
 
-            $dang = ArrayFunctions::pick_one([
+            $dang = $squirrel3->rngNextFromArray([
                 'Dang!',
                 'Goodness!',
                 'Great googly-moogly!',

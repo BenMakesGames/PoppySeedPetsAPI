@@ -7,6 +7,7 @@ use App\Functions\ArrayFunctions;
 use App\Repository\UserRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -21,7 +22,7 @@ class FlowerbombController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function toss(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         UserRepository $userRepository, InventoryService $inventoryService
     )
     {
@@ -60,11 +61,11 @@ class FlowerbombController extends PoppySeedPetsItemController
             $percentChanceToExplode = 20;
         }
 
-        if(mt_rand(1, 100) <= $percentChanceToExplode)
+        if($squirrel3->rngNextInt(1, 100) <= $percentChanceToExplode)
         {
             for($i = 0; $i < 10 + $numberOfTosses; $i++)
             {
-                $flower = ArrayFunctions::pick_one($possibleFlowers);
+                $flower = $squirrel3->rngNextFromArray($possibleFlowers);
                 $inventoryService->receiveItem($flower, $user, $inventory->getCreatedBy(), 'This exploded out of a Flowerbomb.', $inventory->getLocation());
             }
 

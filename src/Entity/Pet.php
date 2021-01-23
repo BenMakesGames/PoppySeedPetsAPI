@@ -14,6 +14,7 @@ use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
+use App\Service\Squirrel3;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -348,17 +349,19 @@ class Pet
 
     public function __construct()
     {
+        $squirrel3 = new Squirrel3();
+
         $this->birthDate = new \DateTimeImmutable();
         $this->lastInteracted = (new \DateTimeImmutable())->modify('-3 days');
-        $this->stomachSize = mt_rand(16, 30);
+        $this->stomachSize = $squirrel3->rngNextInt(16, 30);
         $this->petRelationships = new ArrayCollection();
         $this->statusEffects = new ArrayCollection();
-        $this->extroverted = mt_rand(-1, 1);
-        $this->bonusMaximumFriends = mt_rand(-2, 2);
+        $this->extroverted = $squirrel3->rngNextInt(-1, 1);
+        $this->bonusMaximumFriends = $squirrel3->rngNextInt(-2, 2);
 
-        if(mt_rand(1, 5) > 1)
+        if($squirrel3->rngNextInt(1, 5) > 1)
             $this->sexDrive = 1; // 80% sexual
-        else if(mt_rand(1, 10) === 1)
+        else if($squirrel3->rngNextInt(1, 10) === 1)
             $this->sexDrive = -1; // 2% asexual
         else
             $this->sexDrive = 0; // 18% flexible
@@ -368,7 +371,7 @@ class Pet
         $this->merits = new ArrayCollection();
         $this->groups = new ArrayCollection();
 
-        $this->loveLanguage = LoveLanguageEnum::getRandomValue();
+        $this->loveLanguage = LoveLanguageEnum::getRandomValue($squirrel3);
         $this->lunchboxItems = new ArrayCollection();
     }
 
@@ -997,11 +1000,13 @@ class Pet
 
     public function setParkEventType(?string $parkEventType): self
     {
+        $squirrel3 = new Squirrel3();
+
         if($parkEventType !== null && !ParkEventTypeEnum::isAValue($parkEventType))
             throw new \InvalidArgumentException('"' . $parkEventType . '" is not a valid park event type.');
 
         $this->parkEventType = $parkEventType;
-        $this->parkEventOrder = mt_rand(0, 2000000000);
+        $this->parkEventOrder = $squirrel3->rngNextInt(0, 2000000000);
 
         return $this;
     }
@@ -1064,15 +1069,17 @@ class Pet
 
     public function getLowestNeed(): string
     {
-        if($this->getSafety() >= mt_rand(0, 4) && $this->getLove() >= mt_rand(0, 4) && $this->getEsteem() >= mt_rand(0, 4))
+        $squirrel3 = new Squirrel3();
+
+        if($this->getSafety() >= $squirrel3->rngNextInt(0, 4) && $this->getLove() >= $squirrel3->rngNextInt(0, 4) && $this->getEsteem() >= $squirrel3->rngNextInt(0, 4))
         {
             return '';
         }
-        else if($this->getSafety() <= $this->getLove() + mt_rand(0, 4) && $this->getSafety() <= $this->getEsteem() + mt_rand(0, 4))
+        else if($this->getSafety() <= $this->getLove() + $squirrel3->rngNextInt(0, 4) && $this->getSafety() <= $this->getEsteem() + $squirrel3->rngNextInt(0, 4))
         {
             return 'safety';
         }
-        else if($this->getSafety() <= $this->getEsteem() + mt_rand(2, 4))
+        else if($this->getSafety() <= $this->getEsteem() + $squirrel3->rngNextInt(2, 4))
         {
             return 'love';
         }

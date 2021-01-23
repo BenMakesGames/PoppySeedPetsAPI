@@ -36,11 +36,12 @@ class PetRelationshipService
     private $friendlyRivalsService;
     private $loveService;
     private $relationshipChangeService;
+    private $squirrel3;
 
     public function __construct(
         PetRelationshipRepository $petRelationshipRepository, EntityManagerInterface $em, ResponseService $responseService,
         PregnancyService $pregnancyService, FriendlyRivalsService $friendlyRivalsService, LoveService $loveService,
-        RelationshipChangeService $relationshipChangeService
+        RelationshipChangeService $relationshipChangeService, Squirrel3 $squirrel3
     )
     {
         $this->petRelationshipRepository = $petRelationshipRepository;
@@ -50,6 +51,7 @@ class PetRelationshipService
         $this->friendlyRivalsService = $friendlyRivalsService;
         $this->loveService = $loveService;
         $this->relationshipChangeService = $relationshipChangeService;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function min(string $relationship1, string $relationship2): string
@@ -129,7 +131,7 @@ class PetRelationshipService
 
         if($p1Relationships)
             $this->hangOutPublicly($p1Relationships, $p2->getRelationshipWith($p1), $hangOutDescription, $enemyDescription);
-        else if(mt_rand(1, 100) <= $meetChance)
+        else if($this->squirrel3->rngNextInt(1, 100) <= $meetChance)
             $this->introducePets($p1, $p2, $meetSummary, $meetActivityLogTemplate);
     }
 
@@ -148,7 +150,7 @@ class PetRelationshipService
         }
         else
         {
-            $whatASurprise = mt_rand(1, 10) === 1 ? 'Quelle surprise!' : 'What a surprise!';
+            $whatASurprise = $this->squirrel3->rngNextInt(1, 10) === 1 ? 'Quelle surprise!' : 'What a surprise!';
 
             $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% and %pet:' . $otherPet->getId() . '.name% are living together, now! ' . $whatASurprise, 'icons/activity-logs/friend')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
@@ -185,7 +187,7 @@ class PetRelationshipService
         else
         {
             $totalSexDrive = $pet->getComputedSkills()->getSexDrive()->getTotal() + $otherPet->getComputedSkills()->getSexDrive()->getTotal();
-            $r = mt_rand(1, 100);
+            $r = $this->squirrel3->rngNextInt(1, 100);
 
             if($r <= $totalSexDrive)
             {
@@ -243,7 +245,7 @@ class PetRelationshipService
             }
         }
 
-        $relationshipGoal = ArrayFunctions::pick_one($possibleRelationships);
+        $relationshipGoal = $this->squirrel3->rngNextFromArray($possibleRelationships);
 
         // pet
         $petRelationship = (new PetRelationship())
@@ -271,7 +273,7 @@ class PetRelationshipService
         $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP);
 
         // other pet
-        $relationshipGoal = ArrayFunctions::pick_one($possibleRelationships);
+        $relationshipGoal = $this->squirrel3->rngNextFromArray($possibleRelationships);
 
         $otherPetRelationship = (new PetRelationship())
             ->setRelationship($pet)
@@ -305,7 +307,7 @@ class PetRelationshipService
 
     public function generateInitialCommitment(string $startingRelationship, string $relationshipGoal)
     {
-        $commitment = mt_rand(0, 30);
+        $commitment = $this->squirrel3->rngNextInt(0, 30);
 
         switch($relationshipGoal)
         {
@@ -438,7 +440,7 @@ class PetRelationshipService
      */
     private function hangOutPrivatelyAsFriends(PetRelationship $p1, PetRelationship $p2): array
     {
-        if(mt_rand(1, 20) === 1)
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
             return $this->friendlyRivalsService->hangOutPrivatelyAsFriendlyRivals($p1, $p2);
 
         $pet = $p1->getPet();
@@ -451,26 +453,26 @@ class PetRelationshipService
         {
             if($friendLowestNeed === '')
             {
-                if(mt_rand(1, 100) <= $this->loveService->sexyTimeChances($pet, $friend, $p1->getCurrentRelationship()))
+                if($this->squirrel3->rngNextInt(1, 100) <= $this->loveService->sexyTimeChances($pet, $friend, $p1->getCurrentRelationship()))
                 {
                     $message = $pet->getName() . ' hung out with ' . $friend->getName() . '. They had fun! ' . $this->loveService->sexyTimesEmoji($pet, $friend);
 
                     $pet
-                        ->increaseLove(mt_rand(2, 4))
-                        ->increaseSafety(mt_rand(2, 4))
-                        ->increaseEsteem(mt_rand(2, 4))
+                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
                     ;
 
                     $friend
-                        ->increaseLove(mt_rand(2, 4))
-                        ->increaseSafety(mt_rand(2, 4))
-                        ->increaseEsteem(mt_rand(2, 4))
+                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
                     ;
 
-                    if(mt_rand(1, 20) === 1)
+                    if($this->squirrel3->rngNextInt(1, 20) === 1)
                         $this->pregnancyService->getPregnant($pet, $friend);
                 }
-                else if($p1->getCurrentRelationship() === RelationshipEnum::MATE && mt_rand(1, 5) === 1)
+                else if($p1->getCurrentRelationship() === RelationshipEnum::MATE && $this->squirrel3->rngNextInt(1, 5) === 1)
                 {
                     $message = $this->loveService->expressLove($pet, $friend);
                 }
@@ -479,15 +481,15 @@ class PetRelationshipService
                     $message = $pet->getName() . ' hung out with ' . $friend->getName() . '. They had fun! :)';
 
                     $pet
-                        ->increaseLove(mt_rand(3, 6))
-                        ->increaseSafety(mt_rand(3, 6))
-                        ->increaseEsteem(mt_rand(3, 6))
+                        ->increaseLove($this->squirrel3->rngNextInt(3, 6))
+                        ->increaseSafety($this->squirrel3->rngNextInt(3, 6))
+                        ->increaseEsteem($this->squirrel3->rngNextInt(3, 6))
                     ;
 
                     $friend
-                        ->increaseLove(mt_rand(3, 6))
-                        ->increaseSafety(mt_rand(3, 6))
-                        ->increaseEsteem(mt_rand(3, 6))
+                        ->increaseLove($this->squirrel3->rngNextInt(3, 6))
+                        ->increaseSafety($this->squirrel3->rngNextInt(3, 6))
+                        ->increaseEsteem($this->squirrel3->rngNextInt(3, 6))
                     ;
                 }
             }
@@ -496,14 +498,14 @@ class PetRelationshipService
                 $message = $pet->getName() . ' hung out with ' . $friend->getName() . ' who wasn\'t actually feeling that great :| ' . $pet->getName() . ' comforted them for a while.';
 
                 $pet
-                    ->increaseLove(mt_rand(2, 4))
-                    ->increaseEsteem(mt_rand(4, 8))
+                    ->increaseLove($this->squirrel3->rngNextInt(2, 4))
+                    ->increaseEsteem($this->squirrel3->rngNextInt(4, 8))
                 ;
 
                 $friend
-                    ->increaseSafety(mt_rand(2, 4))
-                    ->increaseLove(mt_rand(2, 4))
-                    ->increaseEsteem(mt_rand(2, 4))
+                    ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                    ->increaseLove($this->squirrel3->rngNextInt(2, 4))
+                    ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
                 ;
             }
         }
@@ -514,13 +516,13 @@ class PetRelationshipService
                 $message = $pet->getName() . ' was feeling nervous, so came to hang out with ' . $friend->getName() . '... who was also feeling a little nervous! They huddled up together, and kept each other safe.';
 
                 $pet
-                    ->increaseSafety(mt_rand(2, 4))
-                    ->increaseLove(mt_rand(4, 8))
+                    ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                    ->increaseLove($this->squirrel3->rngNextInt(4, 8))
                 ;
 
                 $friend
-                    ->increaseSafety(mt_rand(2, 4))
-                    ->increaseLove(mt_rand(4, 8))
+                    ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                    ->increaseLove($this->squirrel3->rngNextInt(4, 8))
                 ;
             }
             else
@@ -528,13 +530,13 @@ class PetRelationshipService
                 $message = $pet->getName() . ' was feeling nervous, so hung out with ' . $friend->getName() . '. They huddled up together, and kept each other safe.';
 
                 $pet
-                    ->increaseSafety(mt_rand(4, 8))
-                    ->increaseLove(mt_rand(2, 4))
+                    ->increaseSafety($this->squirrel3->rngNextInt(4, 8))
+                    ->increaseLove($this->squirrel3->rngNextInt(2, 4))
                 ;
 
                 $friend
-                    ->increaseEsteem(mt_rand(4, 8))
-                    ->increaseLove(mt_rand(2, 4))
+                    ->increaseEsteem($this->squirrel3->rngNextInt(4, 8))
+                    ->increaseLove($this->squirrel3->rngNextInt(2, 4))
                 ;
             }
         }
@@ -542,17 +544,17 @@ class PetRelationshipService
         {
             $message = $pet->getName() . ' was feeling lonely, so hung out with ' . $friend->getName() . '. They had fun :)';
             $pet
-                ->increaseSafety(mt_rand(2, 4))
-                ->increaseLove(mt_rand(2, 4))
+                ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                ->increaseLove($this->squirrel3->rngNextInt(2, 4))
             ;
 
             if($friendLowestNeed !== 'esteem')
-                $friend->increaseSafety(mt_rand(2, 4));
+                $friend->increaseSafety($this->squirrel3->rngNextInt(2, 4));
 
-            $friend->increaseLove(mt_rand(2, 4));
+            $friend->increaseLove($this->squirrel3->rngNextInt(2, 4));
 
             if($friendLowestNeed === 'esteem')
-                $friend->increaseEsteem(mt_rand(2, 4));
+                $friend->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
         }
         else //if($petLowestNeed === 'esteem')
         {
@@ -561,25 +563,25 @@ class PetRelationshipService
                 $message = $pet->getName() . ' was feeling down, and talked to ' . $friend->getName() . ' about it. ' . $friend->getName() . ' listened patiently, which made ' . $pet->getName() . ' feel a little better.';
 
                 $pet
-                    ->increaseLove(mt_rand(2, 4))
-                    ->increaseEsteem(mt_rand(2, 4))
+                    ->increaseLove($this->squirrel3->rngNextInt(2, 4))
+                    ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
                 ;
 
                 if($friendLowestNeed === 'safety')
-                    $friend->increaseSafety(mt_rand(2, 4));
+                    $friend->increaseSafety($this->squirrel3->rngNextInt(2, 4));
             }
             else
             {
                 $message = $pet->getName() . ' and ' . $friend->getName() . ' were both feeling down. They complained about other people, and the world. It was kind of negative, but sharing their feelings made them both feel a little better.';
 
                 $pet
-                    ->increaseLove(mt_rand(2, 4))
-                    ->increaseEsteem(mt_rand(2, 4))
+                    ->increaseLove($this->squirrel3->rngNextInt(2, 4))
+                    ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
                 ;
 
                 $friend
-                    ->increaseLove(mt_rand(2, 4))
-                    ->increaseEsteem(mt_rand(2, 4))
+                    ->increaseLove($this->squirrel3->rngNextInt(2, 4))
+                    ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
                 ;
             }
         }

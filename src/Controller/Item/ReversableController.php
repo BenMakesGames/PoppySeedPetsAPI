@@ -5,6 +5,7 @@ use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Repository\ItemRepository;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,7 +29,8 @@ class ReversableController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function flipPlasticBucket(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, ItemRepository $itemRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, ItemRepository $itemRepository,
+        Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'reversable/#/flip');
@@ -47,8 +49,6 @@ class ReversableController extends PoppySeedPetsItemController
 
         $newItem = $itemRepository->findOneByName($newItemName);
 
-        $reloadPets = $inventory->getHolder() || $inventory->getWearer();
-
         $inventory
             ->changeItem($newItem)
             ->setModifiedOn()
@@ -56,7 +56,7 @@ class ReversableController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        $message = ArrayFunctions::pick_one([
+        $message = $squirrel3->rngNextFromArray([
             'The ' . $oldItemName . ' has been completely transformed, becoming ' . $newItem->getNameWithArticle() . '!' . "\n\n" . 'Incredible.',
             'You rotate the ' . $oldItemName . ' approximately 3.14 radians about its x-axis, et voilà: ' . $newItem->getNameWithArticle() . '!',
             'You deftly flip the ' . $oldItemName . ' into ' . $newItem->getNameWithArticle() . '!',

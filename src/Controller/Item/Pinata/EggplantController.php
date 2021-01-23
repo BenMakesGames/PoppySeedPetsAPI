@@ -8,6 +8,7 @@ use App\Functions\ArrayFunctions;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -22,7 +23,7 @@ class EggplantController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function open(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         EntityManagerInterface $em, UserStatsRepository $userStatsRepository
     )
     {
@@ -33,7 +34,7 @@ class EggplantController extends PoppySeedPetsItemController
 
         $location = $inventory->getLocation();
 
-        $r = mt_rand(1, 6);
+        $r = $squirrel3->rngNextInt(1, 6);
         $eggs = 0;
 
         if($r === 1)
@@ -81,9 +82,9 @@ class EggplantController extends PoppySeedPetsItemController
             $userStatsRepository->incrementStat($user, UserStatEnum::ROTTEN_EGGPLANTS, 1);
         }
 
-        if(mt_rand(1, 100) === 1)
+        if($squirrel3->rngNextInt(1, 100) === 1)
         {
-            if(mt_rand(1, 2) === 1)
+            if($squirrel3->rngNextInt(1, 2) === 1)
             {
                 $inventoryService->receiveItem('Mysterious Seed', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
 

@@ -132,7 +132,7 @@ class RunParkEventsCommand extends Command
             {
                 $pet->setLastParkEvent();
 
-                if($forceBalloon || mt_rand(1, 10) === 1)
+                if($forceBalloon || $this->squirrel3->rngNextInt(1, 10) === 1)
                 {
                     $changes = new PetChanges($pet);
 
@@ -142,8 +142,8 @@ class RunParkEventsCommand extends Command
                     ;
 
                     $pet
-                        ->increaseEsteem(mt_rand(2, 4))
-                        ->increaseSafety(mt_rand(2, 4))
+                        ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
                     ;
 
                     $balloon = $this->inventoryService->petCollectsRandomBalloon($pet, $pet->getName() . ' found this while participating in a ' . $parkEvent->getType() . ' event!', $forceBalloon, $log);
@@ -295,7 +295,7 @@ class RunParkEventsCommand extends Command
         usort($pets, $sortMethod);
 
         // pick one of the two ends
-        $offset = mt_rand(1, 2) === 1 ? 0 : count($pets) - $numberWanted;
+        $offset = $this->squirrel3->rngNextInt(1, 2) === 1 ? 0 : count($pets) - $numberWanted;
 
         return array_slice($pets, $offset, $numberWanted);
     }

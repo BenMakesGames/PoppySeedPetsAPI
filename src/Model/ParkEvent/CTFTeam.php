@@ -2,6 +2,7 @@
 namespace App\Model\ParkEvent;
 
 use App\Entity\Pet;
+use App\Service\Squirrel3;
 
 class CTFTeam
 {
@@ -15,13 +16,13 @@ class CTFTeam
         $this->color = $color;
     }
 
-    public function addParticipant(Pet $pet): CTFParticipant
+    public function addParticipant(Pet $pet, Squirrel3 $squirrel3): CTFParticipant
     {
         $p = new CTFParticipant();
         $p->pet = $pet;
         $p->team = $this;
         $p->inJail = false;
-        $p->pickRole();
+        $p->pickRole($squirrel3);
 
         return $p;
     }

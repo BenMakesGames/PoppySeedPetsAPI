@@ -15,6 +15,7 @@ use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
+use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -42,10 +43,11 @@ class TriDChessService implements ParkEventInterface
     private $petRelationshipService;
     private $transactionService;
     private $inventoryService;
+    private $squirrel3;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService,
-        TransactionService $transactionService, InventoryService $inventoryService
+        TransactionService $transactionService, InventoryService $inventoryService, Squirrel3 $squirrel3
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -53,6 +55,7 @@ class TriDChessService implements ParkEventInterface
         $this->petRelationshipService = $petRelationshipService;
         $this->transactionService = $transactionService;
         $this->inventoryService = $inventoryService;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -135,7 +138,7 @@ class TriDChessService implements ParkEventInterface
         $this->results .= $p1->pet->getName() . ' vs ' . $p2->pet->getName() . "\n";
 
         $move = 2;
-        $playOrder = mt_rand(0, 1);
+        $playOrder = $this->squirrel3->rngNextInt(0, 1);
 
         // the internet claims that the average number of moves is 40.
         // this simulation expects pets to have a 50/50 chance to make progress, in an evenly-matched game.
@@ -196,17 +199,17 @@ class TriDChessService implements ParkEventInterface
     {
         $bonus = 0;
 
-        if(mt_rand(1, 400) < $participant->skill && $move > 5)
+        if($this->squirrel3->rngNextInt(1, 400) < $participant->skill && $move > 5)
         {
             $this->results .= '* ' . $participant->pet->getName() . ' made a brilliant play!' . "\n";
 
             return 10;
         }
-        else if($participant->pet->hasMerit(MeritEnum::SPIRIT_COMPANION) && $participant->pet->getSpiritCompanion()->getStar() === SpiritCompanionStarEnum::CASSIOPEIA && mt_rand(1, 100) <= 3 && $move > 3)
+        else if($participant->pet->hasMerit(MeritEnum::SPIRIT_COMPANION) && $participant->pet->getSpiritCompanion()->getStar() === SpiritCompanionStarEnum::CASSIOPEIA && $this->squirrel3->rngNextInt(1, 100) <= 3 && $move > 3)
         {
-            $this->results .= '* ' . $participant->pet->getName() . '\'s spirit companion nudged ' . ArrayFunctions::pick_one(self::CHESS_PIECES) . ' forward.';
+            $this->results .= '* ' . $participant->pet->getName() . '\'s spirit companion nudged ' . $this->squirrel3->rngNextFromArray(self::CHESS_PIECES) . ' forward.';
 
-            switch(mt_rand(1, 3))
+            switch($this->squirrel3->rngNextInt(1, 3))
             {
                 case 1: $this->results .= ' ' . $participant->pet->getName() . ' is confused, but it\'s too late now. Hopefully it works out...' . "\n"; break;
                 case 2: $this->results .= ' It\'s a surprisingly-good play!' . "\n"; $bonus = 2; break;
@@ -216,9 +219,9 @@ class TriDChessService implements ParkEventInterface
 
         $lowerBounds = min(ceil($participant->skill / 2), $participant->skill + $healthAdvantage - 1);
 
-        $damage = mt_rand($lowerBounds, $participant->skill + $healthAdvantage);
+        $damage = $this->squirrel3->rngNextInt($lowerBounds, $participant->skill + $healthAdvantage);
 
-        return max(mt_rand(1, 3), $damage) + $bonus;
+        return max($this->squirrel3->rngNextInt(1, 3), $damage) + $bonus;
     }
 
 
@@ -226,7 +229,7 @@ class TriDChessService implements ParkEventInterface
     {
         $affectionAverage = ArrayFunctions::average($this->participants, function(TriDChessParticipant $p) { return $p->pet->getAffectionLevel(); });
 
-        $firstPlaceMoneys = 2 * count($this->participants) - mt_rand(0, 8); // base prize
+        $firstPlaceMoneys = 2 * count($this->participants) - $this->squirrel3->rngNextInt(0, 8); // base prize
         $firstPlaceMoneys += ceil($affectionAverage); // affection bonus
 
         $secondPlaceMoneys = ceil($firstPlaceMoneys * 3 / 4);

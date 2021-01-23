@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Functions\ArrayFunctions;
 use App\Repository\DragonRepository;
+use App\Service\Squirrel3;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -125,7 +126,9 @@ class Dragon
 
     public function __construct()
     {
-        $this->appearance = ArrayFunctions::pick_one(self::APPEARANCE_IMAGES);
+        $squirrel3 = new Squirrel3();
+
+        $this->appearance = $squirrel3->rngNextFromArray(self::APPEARANCE_IMAGES);
     }
 
     public function getId(): ?int

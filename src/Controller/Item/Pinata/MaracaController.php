@@ -5,6 +5,7 @@ use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -20,7 +21,7 @@ class MaracaController extends PoppySeedPetsItemController
      */
     public function read(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'maraca/#/takeApart');
@@ -29,13 +30,13 @@ class MaracaController extends PoppySeedPetsItemController
 
         $location = $inventory->getLocation();
 
-        $count = mt_rand(2, 3);
+        $count = $squirrel3->rngNextInt(2, 3);
 
         // definitely Beans
         $inventoryService->receiveItem('Beans', $user, $user, $user->getName() . ' sacrificed a Maraca for these.', $location);
 
         // 50/50 chance of Magic Beans
-        if(mt_rand(1, 2) === 1)
+        if($squirrel3->rngNextInt(1, 2) === 1)
             $inventoryService->receiveItem('Magic Beans', $user, $user, $user->getName() . ' sacrificed a Maraca for these.', $location);
         else
             $inventoryService->receiveItem('Beans', $user, $user, $user->getName() . ' sacrificed a Maraca for these.', $location);

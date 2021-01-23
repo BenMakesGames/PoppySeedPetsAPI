@@ -6,6 +6,7 @@ use App\Entity\Pet;
 use App\Entity\PetRelationship;
 use App\Entity\User;
 use App\Enum\RelationshipEnum;
+use App\Service\Squirrel3;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -134,6 +135,7 @@ class PetRepository extends ServiceEntityRepository
 
     public function findRandomTrickOrTreater(User $user): ?Pet
     {
+        $squirrel3 = new Squirrel3();
         $oneDayAgo = (new \DateTimeImmutable())->modify('-24 hours');
 
         $numberOfPets = (int)$this->createQueryBuilder('p')
@@ -151,7 +153,7 @@ class PetRepository extends ServiceEntityRepository
         if($numberOfPets === 0)
             return null;
 
-        $offset = mt_rand(0, $numberOfPets - 1);
+        $offset = $squirrel3->rngNextInt(0, $numberOfPets - 1);
 
         return $this->createQueryBuilder('p')
             ->andWhere('p.tool IS NOT NULL')
@@ -205,6 +207,7 @@ class PetRepository extends ServiceEntityRepository
 
     public function findRandomCourier(Pet $except): ?Pet
     {
+        $squirrel3 = new Squirrel3();
         $oneMonthAgo = (new \DateTimeImmutable())->modify('-1 month');
 
         $numberEligible = (int)$this->createQueryBuilder('p')
@@ -226,7 +229,7 @@ class PetRepository extends ServiceEntityRepository
         if($numberEligible === 0)
             return null;
 
-        $petIndex = mt_rand(0, $numberEligible - 1);
+        $petIndex = $squirrel3->rngNextInt(0, $numberEligible - 1);
 
         return $this->createQueryBuilder('p')
             ->join('p.owner', 'o')

@@ -1,6 +1,8 @@
 <?php
 namespace App\Functions;
 
+use App\Service\Squirrel3;
+
 final class ArrayFunctions
 {
     public static function any(iterable $array, callable $delegate)
@@ -41,6 +43,7 @@ final class ArrayFunctions
 
     public static function pick_one_weighted(iterable $array, callable $weightingDelegate)
     {
+        $squirrel3 = new Squirrel3();
         $items = [];
         $total = 0;
 
@@ -59,7 +62,7 @@ final class ArrayFunctions
             $total += $weight;
         }
 
-        $index = mt_rand(0, $total - 1);
+        $index = $squirrel3->rngNextInt(0, $total - 1);
 
         foreach($items as $item)
         {
@@ -70,13 +73,6 @@ final class ArrayFunctions
         }
 
         throw new \Exception('This should not be possible.');
-    }
-
-    public static function pick_one(array $array)
-    {
-        if(count($array) === 0) return null;
-
-        return $array[array_rand($array)];
     }
 
     public static function list_nice_quantities(array $quantities, string $separator = ', ', string $lastSeparator = ', and ')

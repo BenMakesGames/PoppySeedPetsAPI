@@ -6,6 +6,7 @@ use App\Functions\ArrayFunctions;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -20,7 +21,7 @@ class FairyRingController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function takeApart(
-        Inventory $inventory, ResponseService $responseService, ItemRepository $itemRepository,
+        Inventory $inventory, ResponseService $responseService, ItemRepository $itemRepository, Squirrel3 $squirrel3,
         EntityManagerInterface $em, InventoryService $inventoryService
     )
     {
@@ -37,8 +38,8 @@ class FairyRingController extends PoppySeedPetsItemController
 
         $message = 'You pull the Wings off the Fairy Ring. Now it\'s just a regular Gold Ring.';
 
-        if(mt_rand(1, 70) === 1)
-            $message .= ArrayFunctions::pick_one([ ' (I hope you\'re happy.)', ' (See what thy hand hath wrought!)', ' (All according to plan...)' ]);
+        if($squirrel3->rngNextInt(1, 70) === 1)
+            $message .= $squirrel3->rngNextFromArray([ ' (I hope you\'re happy.)', ' (See what thy hand hath wrought!)', ' (All according to plan...)' ]);
 
         return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
 

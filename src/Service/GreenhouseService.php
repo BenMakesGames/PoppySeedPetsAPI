@@ -24,9 +24,10 @@ class GreenhouseService
     private $em;
     private $meritRepository;
     private $userStatsRepository;
+    private $squirrel3;
 
     public function __construct(
-        InventoryService $inventoryService, PetRepository $petRepository, PetFactory $petFactory,
+        InventoryService $inventoryService, PetRepository $petRepository, PetFactory $petFactory, Squirrel3 $squirrel3,
         EntityManagerInterface $em, MeritRepository $meritRepository, UserStatsRepository $userStatsRepository
     )
     {
@@ -36,6 +37,7 @@ class GreenhouseService
         $this->em = $em;
         $this->meritRepository = $meritRepository;
         $this->userStatsRepository = $userStatsRepository;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function approachBird(Greenhouse $greenhouse): string
@@ -45,7 +47,7 @@ class GreenhouseService
         switch($greenhouse->getVisitingBird())
         {
             case BirdBathBirdEnum::OWL:
-                $scroll = ArrayFunctions::pick_one([
+                $scroll = $this->squirrel3->rngNextFromArray([
                     'Behatting Scroll',
                     'Behatting Scroll',
                     'Behatting Scroll',
@@ -96,16 +98,16 @@ class GreenhouseService
             });
         }
 
-        $startingMerit = $this->meritRepository->findOneByName(ArrayFunctions::pick_one($startingMerits));
+        $startingMerit = $this->meritRepository->findOneByName($this->squirrel3->rngNextFromArray($startingMerits));
 
-        $harvestedPet = $this->petFactory->createPet($user, $name, $species, $colorA, $colorB, FlavorEnum::getRandomValue(), $startingMerit);
+        $harvestedPet = $this->petFactory->createPet($user, $name, $species, $colorA, $colorB, FlavorEnum::getRandomValue($this->squirrel3), $startingMerit);
 
         if($bonusMerit)
             $harvestedPet->addMerit($bonusMerit);
 
         $harvestedPet
-            ->setFoodAndSafety(mt_rand(10, 12), -9)
-            ->setScale(mt_rand(80, 120))
+            ->setFoodAndSafety($this->squirrel3->rngNextInt(10, 12), -9)
+            ->setScale($this->squirrel3->rngNextInt(80, 120))
         ;
 
         $this->em->remove($plant);

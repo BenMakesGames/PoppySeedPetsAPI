@@ -13,6 +13,7 @@ use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -32,7 +33,7 @@ class WonderlandTeaController extends PoppySeedPetsItemController
      */
     public function serveTinyTea(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        PetRepository $petRepository, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -50,7 +51,7 @@ class WonderlandTeaController extends PoppySeedPetsItemController
 
         $pet->setScale(max(
             50,
-            $pet->getScale() - mt_rand(8, 12)
+            $pet->getScale() - $squirrel3->rngNextInt(8, 12)
         ));
 
         $em->remove($inventory);
@@ -66,7 +67,7 @@ class WonderlandTeaController extends PoppySeedPetsItemController
      */
     public function serveTremendousTea(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        PetRepository $petRepository, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -84,7 +85,7 @@ class WonderlandTeaController extends PoppySeedPetsItemController
 
         $pet->setScale(min(
             150,
-            $pet->getScale() + mt_rand(8, 12)
+            $pet->getScale() + $squirrel3->rngNextInt(8, 12)
         ));
 
         $em->remove($inventory);

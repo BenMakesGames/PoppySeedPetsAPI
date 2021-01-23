@@ -321,7 +321,7 @@ class PetService
             if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
                 throw new EnumInvalidValueException(FlavorEnum::class, $pet->getFavoriteFlavor());
 
-            $randomFlavor = $food->randomFlavor > 0 ? FlavorEnum::getRandomValue() : null;
+            $randomFlavor = $food->randomFlavor > 0 ? FlavorEnum::getRandomValue($this->squirrel3) : null;
 
             $favoriteFlavorStrength = $this->inventoryService->getFavoriteFlavorStrength($pet, $food, $randomFlavor);
 

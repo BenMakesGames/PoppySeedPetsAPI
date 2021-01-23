@@ -291,7 +291,7 @@ class GuildService
                 }
             }
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::getRandomValue() ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::getRandomValue($this->squirrel3) ]);
         }
         else
         {
@@ -300,7 +300,7 @@ class GuildService
                 '%pet:' . $pet->getId() . '.name% had a minor philosophical debate with a senior ' . $member->getGuild()->getName() . ' member.'
             ]);
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::getRandomValue() ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::getRandomValue($this->squirrel3) ]);
         }
 
         $member->increaseReputation();

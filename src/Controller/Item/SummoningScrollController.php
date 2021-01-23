@@ -115,7 +115,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
             $petChanges[$pet->getId()] = new PetChanges($pet);
         }
 
-        $roll = mt_rand(max(20, 1 + floor($totalSkill / 2)), 20 + $totalSkill);
+        $roll = $squirrel3->rngNextInt(max(20, 1 + floor($totalSkill / 2)), 20 + $totalSkill);
 
         $result = 'You read the scroll, causing ' . GrammarFunctions::indefiniteArticle($monster->name) . ' ' . $monster->name . ' to be summoned! ';
 
@@ -169,19 +169,19 @@ class SummoningScrollController extends PoppySeedPetsItemController
             if($won)
             {
                 $pet
-                    ->increaseSafety(mt_rand(4, 8))
-                    ->increaseEsteem(mt_rand(6, 10))
+                    ->increaseSafety($squirrel3->rngNextInt(4, 8))
+                    ->increaseEsteem($squirrel3->rngNextInt(6, 10))
                 ;
             }
             else
             {
-                $pet->increaseSafety(-mt_rand(4, 8));
+                $pet->increaseSafety(-$squirrel3->rngNextInt(4, 8));
 
                 // you can't feel bad about yourself if you didn't even have a chance... right??
                 if($totalSkill >= 40)
-                    $pet->increaseEsteem(-mt_rand(2, 4));
+                    $pet->increaseEsteem(-$squirrel3->rngNextInt(2, 4));
                 else
-                    $pet->increaseLove(-mt_rand(2, 4)); // not very cool of you to summon the thing, then, though, I guess :P
+                    $pet->increaseLove(-$squirrel3->rngNextInt(2, 4)); // not very cool of you to summon the thing, then, though, I guess :P
             }
         }
 
@@ -190,7 +190,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
             $result .= "\n\n" . ArrayFunctions::list_nice($unprotectedPetNames) . ' ' . (count($unprotectedPetNames) === 1 ? 'was' : 'were') . ' unprotected from the ' . $monster->name . '\'s flames, and got singed!';
 
             foreach($unprotectedPets as $pet)
-                $pet->increaseSafety(-mt_rand(4, 12));
+                $pet->increaseSafety(-$squirrel3->rngNextInt(4, 12));
         }
 
         if($won)
@@ -209,7 +209,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
         foreach($petsAtHome as $pet)
         {
-            $petExperienceService->spendTime($pet, mt_rand(5, 15), PetActivityStatEnum::HUNT, $won);
+            $petExperienceService->spendTime($pet, $squirrel3->rngNextInt(5, 15), PetActivityStatEnum::HUNT, $won);
 
             $activityLog = (new PetActivityLog())
                 ->setPet($pet)

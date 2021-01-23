@@ -37,7 +37,7 @@ class SandyLumpController extends PoppySeedPetsItemController
         $location = $lump->getLocation();
         $lockedToOwner = $lump->getLockedToOwner();
 
-        if(mt_rand(1, 25) === 1)
+        if($squirrel3->rngNextInt(1, 25) === 1)
         {
             $item = $squirrel3->rngNextFromArray([
                 'Secret Seashell',

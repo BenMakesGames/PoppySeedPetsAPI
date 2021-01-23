@@ -39,7 +39,7 @@ class BasketController extends PoppySeedPetsItemController
             $squirrel3->rngNextFromArray([ 'Silica Grounds', 'Seaweed' ]),
         ];
 
-        if(mt_rand(1, 10) === 1)
+        if($squirrel3->rngNextInt(1, 10) === 1)
         {
             $loot[] = 'Secret Seashell';
             $exclaim = '! (Ohh!)';
@@ -120,7 +120,7 @@ class BasketController extends PoppySeedPetsItemController
 
         for($i = 0; $i < 4; $i++)
         {
-            if(mt_rand(1, 8) === 1)
+            if($squirrel3->rngNextInt(1, 8) === 1)
             {
                 $itemName = $weirdItem;
                 $weird++;

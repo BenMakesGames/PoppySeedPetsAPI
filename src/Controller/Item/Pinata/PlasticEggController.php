@@ -61,7 +61,7 @@ class PlasticEggController extends PoppySeedPetsItemController
                     ],
                     [
                         'items' => [ 'Beans', 'Beans' ],
-                        'description' => 'revealing Beans!' . (mt_rand(1, 4) === 1 ? ' BEAAAAAAANS!' : ''),
+                        'description' => 'revealing Beans!' . ($squirrel3->rngNextInt(1, 4) === 1 ? ' BEAAAAAAANS!' : ''),
                     ],
                     [
                         'items' => [
@@ -117,7 +117,7 @@ class PlasticEggController extends PoppySeedPetsItemController
                     ],
                     [
                         'items' => [ 'Century Egg' ],
-                        'description' => 'and there\'s a Century Egg inside?!' . (mt_rand(1, 4) === 1 ? ' WHO WOULD DO SUCH A THING?!?' : '')
+                        'description' => 'and there\'s a Century Egg inside?!' . ($squirrel3->rngNextInt(1, 4) === 1 ? ' WHO WOULD DO SUCH A THING?!?' : '')
                     ],
                     [
                         'items' => [

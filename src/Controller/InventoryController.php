@@ -23,6 +23,7 @@ use App\Service\InventoryModifierService;
 use App\Service\Filter\InventoryFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use phpDocumentor\Reflection\Location;
@@ -87,7 +88,7 @@ class InventoryController extends PoppySeedPetsController
     public function prepareRecipe(
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
         InventoryService $inventoryService, EntityManagerInterface $em, CookingService $cookingService,
-        InventoryModifierService $inventoryModifierService
+        InventoryModifierService $inventoryModifierService, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -205,7 +206,7 @@ class InventoryController extends PoppySeedPetsController
         else if($totalQuantity < 10 || strpos($results->recipe->getIngredients(), ',') === false)
             $exclaim = '!';
         else
-            $exclaim = '! (' . ArrayFunctions::pick_one([ 'Dang!', 'Wow!', 'Incredible...', 'So cook! Very meal!', 'A veritable feast!', 'Such skill!' ]) . ')';
+            $exclaim = '! (' . $squirrel3->rngNextFromArray([ 'Dang!', 'Wow!', 'Incredible...', 'So cook! Very meal!', 'A veritable feast!', 'Such skill!' ]) . ')';
 
         $responseService->addFlashMessage('You prepared ' . ArrayFunctions::list_nice_quantities($qList) . $exclaim);
 

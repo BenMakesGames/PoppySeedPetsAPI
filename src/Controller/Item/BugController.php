@@ -24,6 +24,7 @@ use App\Service\InventoryService;
 use App\Service\PetFactory;
 use App\Service\PetService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\StoryService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -93,7 +94,7 @@ class BugController extends PoppySeedPetsItemController
     public function feedBug(
         Inventory $inventory, ResponseService $responseService, UserStatsRepository $userStatsRepository,
         EntityManagerInterface $em, Request $request, InventoryRepository $inventoryRepository,
-        InventoryService $inventoryService, ItemRepository $itemRepository
+        InventoryService $inventoryService, ItemRepository $itemRepository, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -127,7 +128,7 @@ class BugController extends PoppySeedPetsItemController
             case 'Line of Ants':
                 if($item->getItem()->getName() === 'Ants on a Log')
                 {
-                    if(mt_rand(1, 6) === 6)
+                    if($squirrel3->rngNextInt(1, 6) === 6)
                     {
                         $inventoryService->receiveItem('Ant Queen', $user, $user, $user->getName() . ' fed a Line of Ants; as a result, this Queen Ant showed up! (Is this a good thing?)', $inventory->getLocation());
                         $message = 'As part of a study on cannibalism in other species, you feed the Line of Ants some Ants on a Log. And oh: you\'ve attracted the attention of an Ant Queen! (What a surprising result! What could it mean!?)';
@@ -140,7 +141,7 @@ class BugController extends PoppySeedPetsItemController
                 }
                 else
                 {
-                    if(mt_rand(1, 6) === 6)
+                    if($squirrel3->rngNextInt(1, 6) === 6)
                     {
                         $inventoryService->receiveItem('Ant Queen', $user, $user, $user->getName() . ' fed a Line of Ants; as a result, this Queen Ant showed up! (Is this a good thing?)', $inventory->getLocation());
                         $message = 'Oh? You\'ve attracted an Ant Queen!';
@@ -191,14 +192,14 @@ class BugController extends PoppySeedPetsItemController
     public function adopt(
         Inventory $inventory, EntityManagerInterface $em, PetSpeciesRepository $petSpeciesRepository,
         MeritRepository $meritRepository, PetRepository $petRepository, ResponseService $responseService,
-        PetFactory $petFactory
+        PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
 
         $this->validateInventory($inventory, 'bug/#/adopt');
 
-        $petName = ArrayFunctions::pick_one([
+        $petName = $squirrel3->rngNextFromArray([
             'Afrolixa', 'Alcimus', 'Antocha', 'Argyra', 'Asiola', 'Atarba', 'Atissa',
             'Beskia', 'Bothria', 'Bremia',
             'Cadrema', 'Chlorops', 'Cirrula', 'Cladura', 'Conosia', 'Cremmus',
@@ -225,13 +226,13 @@ class BugController extends PoppySeedPetsItemController
         ]);
 
         // RANDOM!
-        $h1 = mt_rand(0, 1000) / 1000.0;
-        $s1 = mt_rand(mt_rand(0, 500), 1000) / 1000.0;
-        $l1 = mt_rand(mt_rand(0, 500), mt_rand(750, 1000)) / 1000.0;
+        $h1 = $squirrel3->rngNextInt(0, 1000) / 1000.0;
+        $s1 = $squirrel3->rngNextInt($squirrel3->rngNextInt(0, 500), 1000) / 1000.0;
+        $l1 = $squirrel3->rngNextInt($squirrel3->rngNextInt(0, 500), $squirrel3->rngNextInt(750, 1000)) / 1000.0;
 
-        $h2 = mt_rand(0, 1000) / 1000.0;
-        $s2 = mt_rand(mt_rand(0, 500), 1000) / 1000.0;
-        $l2 = mt_rand(mt_rand(0, 500), mt_rand(750, 1000)) / 1000.0;
+        $h2 = $squirrel3->rngNextInt(0, 1000) / 1000.0;
+        $s2 = $squirrel3->rngNextInt($squirrel3->rngNextInt(0, 500), 1000) / 1000.0;
+        $l2 = $squirrel3->rngNextInt($squirrel3->rngNextInt(0, 500), $squirrel3->rngNextInt(750, 1000)) / 1000.0;
 
         $colorA = ColorFunctions::HSL2Hex($h1, $s1, $l1);
         $colorB = ColorFunctions::HSL2Hex($h2, $s2, $l2);
@@ -242,13 +243,13 @@ class BugController extends PoppySeedPetsItemController
             $petSpeciesRepository->find(40),
             $colorA,
             $colorB,
-            FlavorEnum::getRandomValue(),
+            FlavorEnum::getRandomValue($squirrel3),
             $meritRepository->getRandomAdoptedPetStartingMerit()
         );
 
         $newPet
-            ->setFoodAndSafety(mt_rand(10, 12), -9)
-            ->setScale(mt_rand(80, 120))
+            ->setFoodAndSafety($squirrel3->rngNextInt(10, 12), -9)
+            ->setScale($squirrel3->rngNextInt(80, 120))
         ;
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);

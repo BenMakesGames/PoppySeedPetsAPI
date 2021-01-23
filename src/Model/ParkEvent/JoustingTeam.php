@@ -2,6 +2,7 @@
 namespace App\Model\ParkEvent;
 
 use App\Entity\Pet;
+use App\Service\Squirrel3;
 
 class JoustingTeam
 {
@@ -28,9 +29,9 @@ class JoustingTeam
         return $this->rider->getName() . '/' . $this->mount->getName();
     }
 
-    public function randomizeRoles()
+    public function randomizeRoles(Squirrel3 $squirrel3)
     {
-        if(mt_rand(1, 2) === 1)
+        if($squirrel3->rngNextBool())
             $this->switchRoles();
     }
 

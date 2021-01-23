@@ -133,7 +133,7 @@ class PregnancyService
             $pregnancy->getSpecies(),
             $pregnancy->getColorA(),
             $pregnancy->getColorB(),
-            FlavorEnum::getRandomValue(),
+            FlavorEnum::getRandomValue($this->squirrel3),
             $this->meritRepository->getRandomStartingMerit()
         );
 

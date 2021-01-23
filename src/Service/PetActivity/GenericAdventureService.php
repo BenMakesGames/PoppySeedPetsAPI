@@ -112,7 +112,7 @@ class GenericAdventureService
 
         if($pet->getOwner()->getGreenhouse() && $pet->getOwner()->getGreenhouse()->getHasBirdBath() && !$pet->getOwner()->getGreenhouse()->getVisitingBird() && $this->squirrel3->rngNextInt(1, 20) === 1)
         {
-            $bird = BirdBathBirdEnum::getRandomValue();
+            $bird = BirdBathBirdEnum::getRandomValue($this->squirrel3);
 
             $pet->getOwner()->getGreenhouse()->setVisitingBird($bird);
 

@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Enum\LocationEnum;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
+use App\Service\Squirrel3;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 abstract class PoppySeedPetsItemController extends PoppySeedPetsController
@@ -23,7 +24,9 @@ abstract class PoppySeedPetsItemController extends PoppySeedPetsController
 
         if($inventoryService->countTotalInventory($inventory->getOwner(), LocationEnum::HOME) > 150)
         {
-            throw new UnprocessableEntityHttpException(ArrayFunctions::pick_one([
+            $squirrel3 = new Squirrel3();
+
+            throw new UnprocessableEntityHttpException($squirrel3->rngNextFromArray([
                 'Whoa! You\'ve already over 150 items?! The server might LITERALLY EXPLODE if I let you open this!',
                 'Waitwaitwaitwait... over 150 items? Sorry, you\'re already WAY over the limit!',
                 'Whaaaat? You\'re over 150 items already? Dang! You know you\'re technically not supposed to go over 100, right??',

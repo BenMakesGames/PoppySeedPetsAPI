@@ -11,6 +11,7 @@ use App\Repository\PetRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,7 +28,8 @@ class MoonPearlController extends PoppySeedPetsItemController
      */
     public function smash(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, PetRepository $petRepository, PetExperienceService $petExperienceService
+        EntityManagerInterface $em, PetRepository $petRepository, PetExperienceService $petExperienceService,
+        Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'moonPearl/#/smash');
@@ -41,7 +43,7 @@ class MoonPearlController extends PoppySeedPetsItemController
         $inventoryService->receiveItem('Moon Dust', $user, $user, 'The contents of a Moon Pearl which was shattered by ' . $user->getName() . '.', $location);
 
         /** @var Pet $helper */
-        $helper = ArrayFunctions::pick_one($petRepository->findBy([
+        $helper = $squirrel3->rngNextFromArray($petRepository->findBy([
             'owner' => $user->getId(),
             'inDaycare' => false
         ]));
@@ -54,7 +56,7 @@ class MoonPearlController extends PoppySeedPetsItemController
             $helperWithSkills = $helper->getComputedSkills();
             $skill = 20 + $helperWithSkills->getUmbra()->getTotal() + $helperWithSkills->getIntelligence()->getTotal() + $helperWithSkills->getDexterity()->getTotal();
 
-            if(mt_rand(1, $skill) >= 16)
+            if($squirrel3->rngNextInt(1, $skill) >= 16)
             {
                 $petExperienceService->gainExp($helper, 2, [ PetSkillEnum::UMBRA ]);
 

@@ -16,16 +16,18 @@ class RecyclingService
     private $calendarService;
     private $em;
     private $userStatsRepository;
+    private $squirrel3;
 
     public function __construct(
         UserRepository $userRepository, CalendarService $calendarService, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository
+        UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3
     )
     {
         $this->userRepository = $userRepository;
         $this->calendarService = $calendarService;
         $this->em = $em;
         $this->userStatsRepository = $userStatsRepository;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function giveRecyclingPoints(User $user, int $quantity)
@@ -44,7 +46,7 @@ class RecyclingService
         if($i->getLockedToOwner())
             return false;
 
-        if(mt_rand(1, 10) === 1)
+        if($this->squirrel3->rngNextInt(1, 10) === 1)
             return true;
 
         if($givingTreeHoliday && $i->getItem()->getFood() && $i->getItem()->getFood()->getIsCandy())

@@ -16,6 +16,7 @@ use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
 use App\Service\PetService;
+use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -46,10 +47,11 @@ class KinBallService implements ParkEventInterface
     private $petExperienceService;
     private $transactionService;
     private $inventoryService;
+    private $squirrel3;
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, InventoryService $inventoryService
+        TransactionService $transactionService, InventoryService $inventoryService, Squirrel3 $squirrel3
     )
     {
         $this->em = $em;
@@ -57,6 +59,7 @@ class KinBallService implements ParkEventInterface
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
         $this->inventoryService = $inventoryService;
+        $this->squirrel3 = $squirrel3;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -81,7 +84,7 @@ class KinBallService implements ParkEventInterface
         $this->teams = [
             new KinBallTeam('black'),
             new KinBallTeam('grey'),
-            new KinBallTeam(mt_rand(1, 2) === 1 ? 'blue' : 'pink'),
+            new KinBallTeam($this->squirrel3->rngNextInt(1, 2) === 1 ? 'blue' : 'pink'),
         ];
 
         $this->totalPetSkill = 0;
@@ -100,7 +103,7 @@ class KinBallService implements ParkEventInterface
             $this->teams[$team]->pets[] = $participant;
         }
 
-        $this->attackingTeam = mt_rand(0, 2);
+        $this->attackingTeam = $this->squirrel3->rngNextInt(0, 2);
 
         foreach($this->teams as $team)
         {
@@ -183,7 +186,7 @@ class KinBallService implements ParkEventInterface
 
         $winningTeamIndex = $this->getGameWinningTeam();
 
-        $firstPlaceMoneys = 2 * 12 - mt_rand(0, 8); // * 12, because there are 12 players
+        $firstPlaceMoneys = 2 * 12 - $this->squirrel3->rngNextInt(0, 8); // * 12, because there are 12 players
         $firstPlaceMoneys += ceil($affectionTotal / 12); // affection bonus
         $firstPlaceMoneys += floor($firstPlaceMoneys * 3 / 4); // usually there's a second-place prize; not in Kin-Ball!
         $firstPlaceMoneys = ceil($firstPlaceMoneys / 4); // the prize is shared by all four members of the team
@@ -255,7 +258,7 @@ class KinBallService implements ParkEventInterface
             function($t) { return $t !== $this->attackingTeam; }
         );
 
-        $this->designatedTeam = ArrayFunctions::pick_one($possibleTeams);
+        $this->designatedTeam = $this->squirrel3->rngNextFromArray($possibleTeams);
     }
 
     private function getTeamsHavingScore(int $score)
@@ -393,22 +396,22 @@ class KinBallService implements ParkEventInterface
 
         $defendingPet = $this->getRandomPetFromTeam($this->designatedTeam);
 
-        $attackRoll = mt_rand(1, 3 + $callingPet->skill);
+        $attackRoll = $this->squirrel3->rngNextInt(1, 3 + $callingPet->skill);
 
         if($attackRoll === 1)
         {
             $this->results .= '* ' . $callingPet->pet->getName() . ' didn\'t hit the ball hard enough!' . "\n";
             $this->givePointToOtherTeams($this->attackingTeam);
         }
-        else if(mt_rand(1, 3 + $defendingPet->skill) >= $attackRoll)
+        else if($this->squirrel3->rngNextInt(1, 3 + $defendingPet->skill) >= $attackRoll)
         {
             $this->results .= '* ' . $defendingPet->pet->getName() . ' catches the ball.' . "\n";
         }
         else
         {
-            $foul = mt_rand(1, 3);
+            $foul = $this->squirrel3->rngNextInt(1, 3);
 
-            if($defendingPet->pet->hasMerit(MeritEnum::LUCKY) && mt_rand(1, 20) === 1)
+            if($defendingPet->pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 20) === 1)
             {
                 if($foul === 1)
                     $this->results .= '* ' . $defendingPet->pet->getName() . ' tried to catch the ball, and it was totally going to hit below the hips, but ' . $defendingPet->pet->getName() . ' happened to stumble in such a way that made them dip juuuust low enough for it to be a legal touch! Lucky~!' . "\n";
@@ -450,6 +453,6 @@ class KinBallService implements ParkEventInterface
 
     private function getRandomPetFromTeam(int $team): KinBallParticipant
     {
-        return ArrayFunctions::pick_one($this->teams[$team]->pets);
+        return $this->squirrel3->rngNextFromArray($this->teams[$team]->pets);
     }
 }

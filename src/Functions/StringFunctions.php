@@ -1,6 +1,8 @@
 <?php
 namespace App\Functions;
 
+use App\Service\Squirrel3;
+
 final class StringFunctions
 {
     public static function isISO88591(string $string): bool
@@ -14,12 +16,12 @@ final class StringFunctions
         return strpos($haystack, $needle) === 0;
     }
 
-    public static function randomPassword(): string
+    public static function randomPassword(Squirrel3 $squirrel3): string
     {
         $words = [];
 
         for($i = 0; $i < 4; $i++)
-            $words[] = ArrayFunctions::pick_one(self::WORDS);
+            $words[] = $squirrel3->rngNextFromArray(self::WORDS);
 
         return implode(' ', $words);
     }
@@ -31,10 +33,11 @@ final class StringFunctions
 
     public static function randomString(string $characters, int $length): string
     {
+        $squirrel3 = new Squirrel3();
         $string = '';
 
         for($i = 0; $i < $length; $i++)
-            $string .= $characters[mt_rand(0, strlen($characters) - 1)];
+            $string .= $characters[$squirrel3->rngNextInt(0, strlen($characters) - 1)];
 
         return $string;
     }

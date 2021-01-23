@@ -210,7 +210,7 @@ class PetSummonedAwayService
                 $location = 'a farm';
                 $description = 'work a farm';
                 $descriptioning = 'working a farm';
-                $loot = ArrayFunctions::pick_one([ 'Rice', 'Wheat', 'Egg', 'Creamy Milk' ]);
+                $loot = $this->squirrel3->rngNextFromArray([ 'Rice', 'Wheat', 'Egg', 'Creamy Milk' ]);
                 break;
 
             case 2:

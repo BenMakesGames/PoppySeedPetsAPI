@@ -8,6 +8,7 @@ use App\Functions\ArrayFunctions;
 use App\Repository\TraderRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -25,7 +26,7 @@ class BarnaclesController extends PoppySeedPetsItemController
      */
     public function harvestBarnacles(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'barnacles/#/harvest');
@@ -35,12 +36,12 @@ class BarnaclesController extends PoppySeedPetsItemController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $numberOfItems = mt_rand(1, 2);
+        $numberOfItems = $squirrel3->rngNextInt(1, 2);
         $loot = [];
 
         for($i = 0; $i < $numberOfItems; $i++)
         {
-            $itemName = ArrayFunctions::pick_one([ 'Egg', 'Egg', 'Feathers' ]);
+            $itemName = $squirrel3->rngNextFromArray([ 'Egg', 'Egg', 'Feathers' ]);
 
             $loot[] = $itemName;
 

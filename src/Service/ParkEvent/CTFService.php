@@ -89,7 +89,7 @@ class CTFService implements ParkEventInterface
         {
             $team = $i % 2;
 
-            $participants[] = $this->teams[$team]->AddParticipant($pets[$i]);
+            $participants[] = $this->teams[$team]->AddParticipant($pets[$i], $this->squirrel3);
         }
 
         $participantIds = [];

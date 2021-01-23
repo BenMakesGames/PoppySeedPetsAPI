@@ -7,6 +7,7 @@ use App\Functions\ArrayFunctions;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -23,7 +24,7 @@ class RockController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function smash(
-        Inventory $rock, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $rock, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -54,8 +55,8 @@ class RockController extends PoppySeedPetsItemController
 
         $userStatsRepository->incrementStat($user, 'Smashed Open a ' . $rock->getItem()->getName());
 
-        $ore = ArrayFunctions::pick_one($ores);
-        $extraItem = ArrayFunctions::pick_one($extraItems);
+        $ore = $squirrel3->rngNextFromArray($ores);
+        $extraItem = $squirrel3->rngNextFromArray($extraItems);
 
         $inventoryService->receiveItem($ore, $user, $rock->getCreatedBy(), 'Found inside a Rock.', $location, $lockedToOwner);
         $inventoryService->receiveItem($extraItem, $user, $rock->getCreatedBy(), 'Found inside a Rock.', $location, $lockedToOwner);

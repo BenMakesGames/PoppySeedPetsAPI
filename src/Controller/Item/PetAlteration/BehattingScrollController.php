@@ -13,6 +13,7 @@ use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -32,7 +33,7 @@ class BehattingScrollController extends PoppySeedPetsItemController
      */
     public function readBehattingScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, MeritRepository $meritRepository
+        PetRepository $petRepository, MeritRepository $meritRepository, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -57,7 +58,7 @@ class BehattingScrollController extends PoppySeedPetsItemController
 
         $pet->addMerit($merit);
 
-        $adjective = ArrayFunctions::pick_one([
+        $adjective = $squirrel3->rngNextFromArray([
             'awe-inspiring', 'incredible', 'breathtaking', 'amazing', 'fabulous'
         ]);
 

@@ -15,6 +15,7 @@ use App\Service\CalendarService;
 use App\Service\Holidays\HalloweenService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -94,7 +95,7 @@ class HalloweenController extends PoppySeedPetsController
     public function giveCandy(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
         Request $request, InventoryRepository $inventoryRepository, CalendarService $calendarService,
-        InventoryService $inventoryService, UserRepository $userRepository
+        InventoryService $inventoryService, UserRepository $userRepository, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -155,7 +156,7 @@ class HalloweenController extends PoppySeedPetsController
             $favoriteFlavorStrength = $inventoryService->getFavoriteFlavorStrength($trickOrTreater, new FoodWithSpice($candy->getItem(), null));
 
             if($favoriteFlavorStrength > 0)
-                $logMessage .= ' (' . ArrayFunctions::pick_one([ 'Just what they wanted!', 'Ah! The good stuff!', 'One of their favorites!' ]) . ')';
+                $logMessage .= ' (' . $squirrel3->rngNextFromArray([ 'Just what they wanted!', 'Ah! The good stuff!', 'One of their favorites!' ]) . ')';
 
             $log = (new PetActivityLog())
                 ->setPet($trickOrTreater)

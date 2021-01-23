@@ -43,7 +43,7 @@ class AlbumController extends PoppySeedPetsItemController
 
         $musicNotes = new ItemQuantity();
         $musicNotes->item = $itemRepository->findOneByName('Music Note');
-        $musicNotes->quantity = mt_rand(3, 4);
+        $musicNotes->quantity = $squirrel3->rngNextInt(3, 4);
 
         $extraItem = $squirrel3->rngNextFromArray([ 'Pointer', 'Quintessence' ]);
 
@@ -74,7 +74,7 @@ class AlbumController extends PoppySeedPetsItemController
 
         $musicNotes = new ItemQuantity();
         $musicNotes->item = $itemRepository->findOneByName('Music Note');
-        $musicNotes->quantity = mt_rand(4, 6);
+        $musicNotes->quantity = $squirrel3->rngNextInt(4, 6);
 
         $genre = $squirrel3->rngNextFromArray(self::GENRES);
         $extraItem = $squirrel3->rngNextFromArray([ 'NUL', 'Quintessence' ]);
@@ -107,7 +107,7 @@ class AlbumController extends PoppySeedPetsItemController
 
         $musicNotes = new ItemQuantity();
         $musicNotes->item = $itemRepository->findOneByName('Music Note');
-        $musicNotes->quantity = mt_rand(4, 6);
+        $musicNotes->quantity = $squirrel3->rngNextInt(4, 6);
 
         $genre = $squirrel3->rngNextFromArray([ 'Salsa', 'Meringue', 'Rock', 'Rock', 'Bubblegum' ]);
 

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Service\Squirrel3;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -194,8 +195,10 @@ class Greenhouse
 
     public function setComposterBonusCountdown(): self
     {
+        $squirrel3 = new Squirrel3();
+
         if($this->composterBonusCountdown <= 0)
-            $this->composterBonusCountdown += mt_rand(3 * 20, 7 * 20);
+            $this->composterBonusCountdown += $squirrel3->rngNextInt(3 * 20, 7 * 20);
 
         return $this;
     }

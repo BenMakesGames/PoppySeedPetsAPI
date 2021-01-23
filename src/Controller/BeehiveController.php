@@ -251,7 +251,7 @@ class BeehiveController extends PoppySeedPetsController
 
             if($newItem->getItem()->getName() === 'Crooked Stick' || $newItem->getItem()->getFood())
             {
-                if(mt_rand(1, 20) === 1)
+                if($squirrel3->rngNextInt(1, 20) === 1)
                     $newItem->setSpice($spiceRepository->findOneByName('of Queens'));
                 else
                     $newItem->setSpice($spiceRepository->findOneByName('Anthophilan'));

@@ -8,6 +8,7 @@ use App\Functions\ArrayFunctions;
 use App\Repository\TraderRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -25,7 +26,7 @@ class LinensController extends PoppySeedPetsItemController
      */
     public function rummageThroughLinens(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'linensAndThings/#/rummage');
@@ -35,8 +36,8 @@ class LinensController extends PoppySeedPetsItemController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $baseNumberOfCloth = mt_rand(1, 2);
-        $hasBadCloth = mt_rand(1, 2) === 1;
+        $baseNumberOfCloth = $squirrel3->rngNextInt(1, 2);
+        $hasBadCloth = $squirrel3->rngNextInt(1, 2) === 1;
 
         $inventoryService->receiveItem($hasBadCloth ? 'Filthy Cloth' : 'White Cloth', $user, $user, $user->getName() . ' found this in a pile of Linens and Things.', $location, $lockedToOwner);
 

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Service\Squirrel3;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -26,6 +27,7 @@ class UserRepository extends ServiceEntityRepository
 
     public function findOneRecentlyActive(?User $except): ?User
     {
+        $squirrel3 = new Squirrel3();
         $oneDayAgo = (new \DateTimeImmutable())->modify('-24 hours');
 
         $numberOfUsersQuery = $this->createQueryBuilder('u')
@@ -47,7 +49,7 @@ class UserRepository extends ServiceEntityRepository
         if($numberOfUsers === 0)
             return null;
 
-        $offset = mt_rand(0, $numberOfUsers - 1);
+        $offset = $squirrel3->rngNextInt(0, $numberOfUsers - 1);
 
         $userQuery = $this->createQueryBuilder('u')
             ->andWhere('u.lastActivity >= :oneDayAgo')

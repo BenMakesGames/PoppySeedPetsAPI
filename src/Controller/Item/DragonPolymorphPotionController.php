@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Repository\DragonRepository;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,7 +22,7 @@ class DragonPolymorphPotionController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function drink(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         DragonRepository $dragonRepository
     )
     {
@@ -48,7 +49,7 @@ class DragonPolymorphPotionController extends PoppySeedPetsItemController
             }
         );
 
-        $dragon->setAppearance(ArrayFunctions::pick_one($availableAppearances));
+        $dragon->setAppearance($squirrel3->rngNextFromArray($availableAppearances));
 
         $em->flush();
 

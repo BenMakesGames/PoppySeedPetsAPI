@@ -79,10 +79,10 @@ The Library of Fire is always open. We look forward to seeing you!');
         {
             $colors = [
                 ColorFunctions::HSL2Hex(0, 0.52, 0.5),
-                ColorFunctions::HSL2Hex(mt_rand(0, 1000) / 1000, 0.4, 0.42),
+                ColorFunctions::HSL2Hex($squirrel3->rngNextInt(0, 1000) / 1000, 0.4, 0.42),
             ];
 
-            if(mt_rand(1, 3) === 1)
+            if($squirrel3->rngNextInt(1, 3) === 1)
             {
                 $temp = $colors[0];
                 $colors[0] = $colors[1];

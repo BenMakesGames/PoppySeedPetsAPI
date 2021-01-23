@@ -2,6 +2,7 @@
 namespace App\Enum;
 
 use App\Functions\ArrayFunctions;
+use App\Service\Squirrel3;
 
 trait Enum
 {
@@ -15,8 +16,8 @@ trait Enum
         return in_array($value, self::getValues());
     }
 
-    public static function getRandomValue(): string
+    public static function getRandomValue(Squirrel3 $squirrel3): string
     {
-        return ArrayFunctions::pick_one(self::getValues());
+        return $squirrel3->rngNextFromArray(self::getValues());
     }
 }

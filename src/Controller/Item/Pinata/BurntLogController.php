@@ -10,6 +10,7 @@ use App\Repository\ItemRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -24,7 +25,7 @@ class BurntLogController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openBurntLog(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         EntityManagerInterface $em, UserStatsRepository $userStatsRepository, ItemRepository $itemRepository
     )
     {
@@ -37,7 +38,7 @@ class BurntLogController extends PoppySeedPetsItemController
 
         $stat = $userStatsRepository->incrementStat($user, UserStatEnum::BURNT_LOGS_BROKEN);
 
-        $extraItem = $itemRepository->findOneByName(ArrayFunctions::pick_one([
+        $extraItem = $itemRepository->findOneByName($squirrel3->rngNextFromArray([
             'Crooked Stick',
             'Iron Ore',
             'Glass',
@@ -45,7 +46,7 @@ class BurntLogController extends PoppySeedPetsItemController
             'Fried Egg',
         ]));
 
-        if(mt_rand(1, 4) === 1)
+        if($squirrel3->rngNextInt(1, 4) === 1)
         {
             $charcoalReceived = 'Charcoal, Liquid-hot Magma';
             $inventoryService->receiveItem('Liquid-hot Magma', $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);

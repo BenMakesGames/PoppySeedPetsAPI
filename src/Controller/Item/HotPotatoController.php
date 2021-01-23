@@ -30,12 +30,12 @@ class HotPotatoController extends PoppySeedPetsItemController
 
         $user = $this->getUser();
 
-        if(mt_rand(1, 5) === 1)
+        if($squirrel3->rngNextInt(1, 5) === 1)
         {
             $inventoryService->receiveItem('Smashed Potatoes', $user, $inventory->getCreatedBy(), 'The remains of an exploded Hot Potato.', $inventory->getLocation());
             $inventoryService->receiveItem('Liquid-hot Magma', $user, $inventory->getCreatedBy(), 'The remains of an exploded Hot Potato.', $inventory->getLocation());
 
-            $thirdItem = ArrayFunctions::pick_one([
+            $thirdItem = $squirrel3->rngNextFromArray([
                 'Charcoal',
                 'Glowing Six-sided Die',
                 $squirrel3->rngNextFromArray([ 'Oil', 'Butter' ]),
