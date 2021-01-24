@@ -282,9 +282,6 @@
             "./.env"
         ]
     },
-    "symfony/form": {
-        "version": "v4.4.13"
-    },
     "symfony/framework-bundle": {
         "version": "5.1",
         "recipe": {
@@ -349,9 +346,6 @@
             "./config/packages/prod/monolog.yaml",
             "./config/packages/test/monolog.yaml"
         ]
-    },
-    "symfony/options-resolver": {
-        "version": "v4.4.13"
     },
     "symfony/orm-pack": {
         "version": "v2.0.0"
