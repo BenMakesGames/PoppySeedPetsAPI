@@ -23,4 +23,9 @@ $schedule->run('php bin/console app:calculate-daily-market-item-averages')
     ->daily()
 ;
 
+$schedule->run('php bin/console app:calculate-daily-stats')
+    ->description('Calculates daily stats.')
+    ->daily()
+;
+
 return $schedule;
