@@ -834,6 +834,22 @@ class TraderService
     {
         $offers = [];
 
+        if($this->calendarService->isValentinesOrAdjacent())
+        {
+            $offers[] = new TraderOffer(
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Twu Wuv'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('White Cloth'), 1),
+                    TraderOfferCostOrYield::createMoney(100),
+                ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Pink Bow'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Chocolate Bar'), 1),
+                ],
+                'Please enjoy the complementary chocolate, and remember: all candies "recycled" during Valentine\'s are guaranteed to find their way to the Giving Tree, where any pet may collect them!'
+            );
+        }
+
         $leapDay = $this->calendarService->isLeapDay();
 
         if($dayOfWeek === 'Mon' || $leapDay)
