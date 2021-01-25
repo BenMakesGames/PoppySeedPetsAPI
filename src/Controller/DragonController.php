@@ -82,7 +82,7 @@ class DragonController extends PoppySeedPetsController
         if(!$dragon)
             throw new NotFoundHttpException('You don\'t have an adult dragon!');
 
-        return $responseService->success($dragon, SerializationGroupEnum::MY_DRAGON);
+        return $responseService->success($dragon, [ SerializationGroupEnum::MY_DRAGON ]);
     }
 
     /**
@@ -102,7 +102,7 @@ class DragonController extends PoppySeedPetsController
 
         $treasures = $inventoryRepository->findTreasures($user);
 
-        return $responseService->success($treasures, SerializationGroupEnum::DRAGON_TREASURE);
+        return $responseService->success($treasures, [ SerializationGroupEnum::DRAGON_TREASURE ]);
     }
 
     /**
@@ -185,6 +185,6 @@ class DragonController extends PoppySeedPetsController
 
         $responseService->addFlashMessage($dragon->getName() . ' thanks you for your gift, and gives you ' . ArrayFunctions::list_nice($itemNames) . ' in exchange.');
 
-        return $responseService->success($dragon, SerializationGroupEnum::MY_DRAGON);
+        return $responseService->success($dragon, [ SerializationGroupEnum::MY_DRAGON ]);
     }
 }
