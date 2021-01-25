@@ -80,7 +80,7 @@ class PetController extends PoppySeedPetsController
             'inDaycare' => false,
         ]);
 
-        return $responseService->success($petsAtHome, SerializationGroupEnum::MY_PET);
+        return $responseService->success($petsAtHome, [ SerializationGroupEnum::MY_PET ]);
     }
 
     /**
@@ -353,7 +353,7 @@ class PetController extends PoppySeedPetsController
             'parents' => $parents,
             'siblings' => $siblings,
             'children' => $children,
-        ], SerializationGroupEnum::PET_FRIEND);
+        ], [ SerializationGroupEnum::PET_FRIEND ]);
     }
 
     /**
@@ -511,7 +511,7 @@ class PetController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+        return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }
 
     /**
@@ -572,7 +572,7 @@ class PetController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+        return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }
 
     /**
@@ -586,7 +586,7 @@ class PetController extends PoppySeedPetsController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
 
-        return $responseService->success($meritService->getAvailableMerits($pet), SerializationGroupEnum::AVAILABLE_MERITS);
+        return $responseService->success($meritService->getAvailableMerits($pet), [ SerializationGroupEnum::AVAILABLE_MERITS ]);
     }
 
     /**
@@ -612,7 +612,7 @@ class PetController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+        return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }
 
     /**
@@ -641,7 +641,7 @@ class PetController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+        return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }
 
     /**
@@ -750,7 +750,7 @@ class PetController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+        return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }
 
     /**
@@ -784,7 +784,7 @@ class PetController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+        return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }
 
     /**
@@ -834,7 +834,7 @@ class PetController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+        return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }
 
     /**
@@ -924,7 +924,7 @@ class PetController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+        return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }
 
     /**
@@ -1117,7 +1117,7 @@ class PetController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+        return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }
 
     /**
@@ -1145,7 +1145,7 @@ class PetController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+        return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }
 
     /**
@@ -1191,7 +1191,7 @@ class PetController extends PoppySeedPetsController
 
         return $responseService->success(
             $pet,
-            SerializationGroupEnum::MY_PET
+            [ SerializationGroupEnum::MY_PET ]
         );
     }
 
@@ -1263,7 +1263,7 @@ class PetController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+        return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }
 
     /**
@@ -1334,7 +1334,7 @@ class PetController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($pet, SerializationGroupEnum::MY_PET);
+        return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }
 
     /**
@@ -1351,7 +1351,7 @@ class PetController extends PoppySeedPetsController
         {
             $suggestions = $petTypeaheadService->search('name', $request->query->get('search', ''));
 
-            return $responseService->success($suggestions, SerializationGroupEnum::MY_PET);
+            return $responseService->success($suggestions, [ SerializationGroupEnum::MY_PET ]);
         }
         catch(\InvalidArgumentException $e)
         {
