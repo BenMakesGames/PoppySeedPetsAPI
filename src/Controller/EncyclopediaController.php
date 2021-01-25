@@ -40,7 +40,7 @@ class EncyclopediaController extends PoppySeedPetsController
         {
             $suggestions = $itemTypeaheadService->search('name', $request->query->get('search', ''), 5);
 
-            return $responseService->success($suggestions, SerializationGroupEnum::ITEM_TYPEAHEAD);
+            return $responseService->success($suggestions, [ SerializationGroupEnum::ITEM_TYPEAHEAD ]);
         }
         catch(\InvalidArgumentException $e)
         {
@@ -73,7 +73,7 @@ class EncyclopediaController extends PoppySeedPetsController
         if(!$item)
             throw new NotFoundHttpException('There is no such item.');
 
-        return $responseService->success($item, SerializationGroupEnum::ITEM_ENCYCLOPEDIA);
+        return $responseService->success($item, [ SerializationGroupEnum::ITEM_ENCYCLOPEDIA ]);
     }
 
     /**
