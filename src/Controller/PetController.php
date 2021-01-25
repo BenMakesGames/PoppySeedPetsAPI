@@ -265,11 +265,11 @@ class PetController extends PoppySeedPetsController
         $relationships = $petRelationshipRepository->getFriends($pet);
 
         return $responseService->success([
-            'spiritCompanion' => $normalizer->normalize($pet->getSpiritCompanion(), null, [ 'groups' => SerializationGroupEnum::MY_PET ]),
-            'groups' => $normalizer->normalize($pet->getGroups(), null, [ 'groups' => SerializationGroupEnum::PET_GROUP ]),
+            'spiritCompanion' => $normalizer->normalize($pet->getSpiritCompanion(), null, [ 'groups' => [ SerializationGroupEnum::MY_PET ]]),
+            'groups' => $normalizer->normalize($pet->getGroups(), null, [ 'groups' => [ SerializationGroupEnum::PET_GROUP ]]),
             'relationshipCount' => $petRelationshipRepository->countRelationships($pet),
-            'friends' => $normalizer->normalize($relationships, null, [ 'groups' => SerializationGroupEnum::PET_FRIEND ]),
-            'guild' => $normalizer->normalize($pet->getGuildMembership(), null, [ 'groups' => SerializationGroupEnum::PET_GUILD ])
+            'friends' => $normalizer->normalize($relationships, null, [ 'groups' => [ SerializationGroupEnum::PET_FRIEND ]]),
+            'guild' => $normalizer->normalize($pet->getGuildMembership(), null, [ 'groups' => [ SerializationGroupEnum::PET_GUILD ]])
         ]);
     }
 
