@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Pet;
 use App\Entity\PetRelationship;
+use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Enum\RelationshipEnum;
 use App\Service\Squirrel3;
@@ -111,7 +112,7 @@ class PetRepository extends ServiceEntityRepository
 
     public function getTotalOwned(User $user): int
     {
-        return $this->createQueryBuilder('p')
+        return (int)$this->createQueryBuilder('p')
             ->select('COUNT(p.id)')
             ->andWhere('p.owner=:owner')
             ->setParameter('owner', $user->getId())
@@ -120,7 +121,7 @@ class PetRepository extends ServiceEntityRepository
         ;
     }
 
-    public function getRoommates(Pet $pet)
+    public function getRoommates(Pet $pet): array
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.owner = :owner')
@@ -246,6 +247,17 @@ class PetRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getSingleResult()
+        ;
+    }
+
+    public function getNumberHavingSpecies(PetSpecies $petSpecies): int
+    {
+        return (int)$this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->andWhere('p.species=:species')
+            ->setParameter('species', $petSpecies)
+            ->getQuery()
+            ->getSingleScalarResult()
         ;
     }
 }

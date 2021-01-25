@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\DailyStatsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=DailyStatsRepository::class)
@@ -19,76 +20,91 @@ class DailyStats
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"globalStats"})
      */
     private $date;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"globalStats"})
      */
     private $numberOfPlayers1Day;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"globalStats"})
      */
     private $numberOfPlayers3Day;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"globalStats"})
      */
     private $numberOfPlayers7Day;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"globalStats"})
      */
     private $numberOfPlayers28Day;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"globalStats"})
      */
     private $numberOfPlayersLifetime;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"globalStats"})
      */
     private $totalMoneys1Day;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"globalStats"})
      */
     private $totalMoneys3Day;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"globalStats"})
      */
     private $totalMoneys7Day;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"globalStats"})
      */
     private $totalMoneys28Day;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"globalStats"})
      */
     private $totalMoneysLifetime;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"globalStats"})
      */
     private $newPlayers1Day;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"globalStats"})
      */
     private $newPlayers3Day;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"globalStats"})
      */
     private $newPlayers7Day;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"globalStats"})
      */
     private $newPlayers28Day;
 
