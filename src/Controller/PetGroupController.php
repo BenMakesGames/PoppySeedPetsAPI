@@ -31,6 +31,6 @@ class PetGroupController extends PoppySeedPetsController
      */
     public function getGroup(PetGroup $group, ResponseService $responseService)
     {
-        return $responseService->success($group, SerializationGroupEnum::PET_GROUP_DETAILS);
+        return $responseService->success($group, [ SerializationGroupEnum::PET_GROUP_DETAILS ]);
     }
 }

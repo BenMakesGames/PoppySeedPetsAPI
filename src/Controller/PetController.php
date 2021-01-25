@@ -122,7 +122,7 @@ class PetController extends PoppySeedPetsController
      */
     public function profile(Pet $pet, ResponseService $responseService)
     {
-        return $responseService->success($pet, SerializationGroupEnum::PET_PUBLIC_PROFILE);
+        return $responseService->success($pet, [ SerializationGroupEnum::PET_PUBLIC_PROFILE ]);
     }
 
     /**
@@ -1396,7 +1396,7 @@ class PetController extends PoppySeedPetsController
                 ];
             }, $petRelationshipTypeaheadService->search('name', $request->query->get('search', '')));
 
-            return $responseService->success($suggestions, SerializationGroupEnum::PET_PUBLIC_PROFILE);
+            return $responseService->success($suggestions, [ SerializationGroupEnum::PET_PUBLIC_PROFILE ]);
         }
         catch(\InvalidArgumentException $e)
         {

@@ -39,7 +39,7 @@ class MerchantFishController extends PoppySeedPetsItemController
         {
             $response = $storyService->doStory($user, StoryEnum::MERCHANT_FISH_MERCHANT, $request->request, $inventory);
 
-            return $responseService->success($response, SerializationGroupEnum::STORY);
+            return $responseService->success($response, [ SerializationGroupEnum::STORY ]);
         }
         else
         {

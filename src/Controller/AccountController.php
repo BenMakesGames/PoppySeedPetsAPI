@@ -361,7 +361,7 @@ class AccountController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($newInventory, SerializationGroupEnum::MY_INVENTORY);
+        return $responseService->success($newInventory, [ SerializationGroupEnum::MY_INVENTORY ]);
     }
 
     /**
@@ -429,7 +429,7 @@ class AccountController extends PoppySeedPetsController
     {
         $stats = $userStatsRepository->findBy([ 'user' => $this->getUser() ]);
 
-        return $responseService->success($stats, SerializationGroupEnum::MY_STATS);
+        return $responseService->success($stats, [ SerializationGroupEnum::MY_STATS ]);
     }
 
     /**
@@ -472,7 +472,7 @@ class AccountController extends PoppySeedPetsController
         {
             $suggestions = $userTypeaheadService->search('name', $request->query->get('search', ''), 5);
 
-            return $responseService->success($suggestions, SerializationGroupEnum::USER_TYPEAHEAD);
+            return $responseService->success($suggestions, [ SerializationGroupEnum::USER_TYPEAHEAD ]);
         }
         catch(\InvalidArgumentException $e)
         {

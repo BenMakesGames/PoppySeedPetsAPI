@@ -54,7 +54,7 @@ class InventoryController extends PoppySeedPetsController
             ],
             [ 'modifiedOn' => 'DESC' ]
         );
-        return $responseService->success($inventory, SerializationGroupEnum::MY_INVENTORY);
+        return $responseService->success($inventory, [ SerializationGroupEnum::MY_INVENTORY ]);
     }
 
     /**
@@ -147,7 +147,7 @@ class InventoryController extends PoppySeedPetsController
 
                     $responseService->setReloadInventory();
 
-                    return $responseService->success($enchanted, SerializationGroupEnum::MY_INVENTORY);
+                    return $responseService->success($enchanted, [ SerializationGroupEnum::MY_INVENTORY ]);
                 }
 
                 // try spicing up
@@ -174,7 +174,7 @@ class InventoryController extends PoppySeedPetsController
 
                     $responseService->setReloadInventory();
 
-                    return $responseService->success($spiced, SerializationGroupEnum::MY_INVENTORY);
+                    return $responseService->success($spiced, [ SerializationGroupEnum::MY_INVENTORY ]);
                 }
             }
             catch(\InvalidArgumentException $exception)
@@ -210,7 +210,7 @@ class InventoryController extends PoppySeedPetsController
 
         $responseService->addFlashMessage('You prepared ' . ArrayFunctions::list_nice_quantities($qList) . $exclaim);
 
-        return $responseService->success($results->inventory, SerializationGroupEnum::MY_INVENTORY);
+        return $responseService->success($results->inventory, [ SerializationGroupEnum::MY_INVENTORY ]);
     }
 
     /**

@@ -1,14 +1,10 @@
 <?php
 namespace App\Controller;
 
-use App\Entity\Pet;
-use App\Entity\PetSkills;
 use App\Enum\FlavorEnum;
 use App\Enum\SerializationGroupEnum;
-use App\Enum\StoryEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\StringFunctions;
 use App\Model\PetShelterPet;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
@@ -19,10 +15,8 @@ use App\Service\PetFactory;
 use App\Service\ProfanityFilterService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
-use App\Service\StoryService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;

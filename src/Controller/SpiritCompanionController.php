@@ -20,7 +20,7 @@ class SpiritCompanionController extends PoppySeedPetsController
      */
     public function find(SpiritCompanion $spiritCompanion, ResponseService $responseService)
     {
-        return $responseService->success($spiritCompanion, SerializationGroupEnum::SPIRIT_COMPANION_PUBLIC_PROFILE);
+        return $responseService->success($spiritCompanion, [ SerializationGroupEnum::SPIRIT_COMPANION_PUBLIC_PROFILE ]);
     }
 
     /**

@@ -291,6 +291,6 @@ class BugController extends PoppySeedPetsItemController
 
         $response = $storyService->doStory($user, StoryEnum::STOLEN_PLANS, $request->request, $inventory);
 
-        return $responseService->success($response, SerializationGroupEnum::STORY);
+        return $responseService->success($response, [ SerializationGroupEnum::STORY ]);
     }
 }

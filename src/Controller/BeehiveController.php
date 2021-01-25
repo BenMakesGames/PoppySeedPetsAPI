@@ -40,7 +40,7 @@ class BeehiveController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($user->getBeehive(), SerializationGroupEnum::MY_BEEHIVE);
+        return $responseService->success($user->getBeehive(), [ SerializationGroupEnum::MY_BEEHIVE ]);
     }
 
     /**
@@ -71,7 +71,7 @@ class BeehiveController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($beehive, SerializationGroupEnum::MY_BEEHIVE);
+        return $responseService->success($beehive, [ SerializationGroupEnum::MY_BEEHIVE ]);
     }
 
     /**
@@ -108,7 +108,7 @@ class BeehiveController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($beehive, SerializationGroupEnum::MY_BEEHIVE);
+        return $responseService->success($beehive, [ SerializationGroupEnum::MY_BEEHIVE ]);
     }
 
     /**
@@ -146,7 +146,7 @@ class BeehiveController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($user->getBeehive(), SerializationGroupEnum::MY_BEEHIVE);
+        return $responseService->success($user->getBeehive(), [ SerializationGroupEnum::MY_BEEHIVE ]);
     }
 
     /**
@@ -175,7 +175,7 @@ class BeehiveController extends PoppySeedPetsController
             ->getResult()
         ;
 
-        return $responseService->success($inventory, SerializationGroupEnum::MY_INVENTORY);
+        return $responseService->success($inventory, [ SerializationGroupEnum::MY_INVENTORY ]);
     }
 
     /**
@@ -266,6 +266,6 @@ class BeehiveController extends PoppySeedPetsController
 
         $responseService->addFlashMessage('You received ' . ArrayFunctions::list_nice($itemNames) . '.');
 
-        return $responseService->success($user->getBeehive(), SerializationGroupEnum::MY_BEEHIVE);
+        return $responseService->success($user->getBeehive(), [ SerializationGroupEnum::MY_BEEHIVE ]);
     }
 }

@@ -56,14 +56,17 @@ class ResponseService
         return $this->success($data);
     }
 
-    /**
-     * @param string|string[] $groups
-     */
-    public function success($data = null, $groups = []): JsonResponse
+    private function getUser(): User
     {
-        if(!\is_array($groups)) $groups = [ $groups ];
+        return $this->security->getUser();
+    }
 
-        $user = $this->security->getUser();
+    /**
+     * @param string[] $groups
+     */
+    public function success($data = null, array $groups = []): JsonResponse
+    {
+        $user = $this->getUser();
 
         if($user && $user->getIsAdmin())
             $groups[] = SerializationGroupEnum::QUERY_ADMIN;
@@ -85,7 +88,7 @@ class ResponseService
 
         $responseData['event'] = $this->calendarService->getEventData($user);
 
-        if($this->security->getUser() && $this->security->getUser()->getIsAdmin())
+        if($user && $user->getIsAdmin())
             $responseData['serializationGroups'] = $groups;
 
         $this->injectUserData($responseData);
@@ -142,7 +145,7 @@ class ResponseService
 
     private function injectUserData(array &$responseData)
     {
-        $user = $this->security->getUser();
+        $user = $this->getUser();
 
         if(!$user)
             $responseData['user'] = null;

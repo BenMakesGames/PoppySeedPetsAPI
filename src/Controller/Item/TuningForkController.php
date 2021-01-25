@@ -35,6 +35,6 @@ class TuningForkController extends PoppySeedPetsItemController
 
         $response = $storyService->doStory($user, StoryEnum::SHARUMINYINKAS_DESPAIR, $request->request, $inventory);
 
-        return $responseService->success($response, SerializationGroupEnum::STORY);
+        return $responseService->success($response, [ SerializationGroupEnum::STORY ]);
     }
 }

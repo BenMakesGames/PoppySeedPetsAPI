@@ -20,7 +20,7 @@ class GlobalStatsController extends PoppySeedPetsController
     {
         return $responseService->success(
             $dailyStatsRepository->findOneBy([], [ 'id' => 'desc' ]),
-            SerializationGroupEnum::GLOBAL_STATS
+            [ SerializationGroupEnum::GLOBAL_STATS ]
         );
     }
 }

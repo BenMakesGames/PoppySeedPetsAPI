@@ -16,7 +16,6 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\DateFunctions;
 use App\Functions\GrammarFunctions;
 use App\Model\FoodWithSpice;
 use App\Model\ItemQuantity;
@@ -81,7 +80,7 @@ class InventoryService
     /**
      * @param Item|string|integer $item
      */
-    public function countInventoryAnywhere(User $user, $item)
+    public function countInventoryAnywhere(User $user, $item): int
     {
         if(is_string($item))
             $itemId = $this->itemRepository->findOneByName($item)->getId();
@@ -101,7 +100,7 @@ class InventoryService
             ->setParameter('item', $itemId)
             ->getQuery()
             ->getSingleScalarResult()
-           ;
+        ;
     }
 
     /**

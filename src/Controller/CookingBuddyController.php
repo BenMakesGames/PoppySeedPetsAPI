@@ -133,6 +133,6 @@ class CookingBuddyController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($results->inventory, SerializationGroupEnum::MY_INVENTORY);
+        return $responseService->success($results->inventory, [ SerializationGroupEnum::MY_INVENTORY ]);
     }
 }

@@ -20,7 +20,7 @@ class GuildController extends PoppySeedPetsController
      */
     public function getAll(ResponseService $responseService, GuildRepository $guildRepository)
     {
-        return $responseService->success($guildRepository->findAll(), SerializationGroupEnum::GUILD_ENCYCLOPEDIA);
+        return $responseService->success($guildRepository->findAll(), [ SerializationGroupEnum::GUILD_ENCYCLOPEDIA ]);
     }
 
     /**

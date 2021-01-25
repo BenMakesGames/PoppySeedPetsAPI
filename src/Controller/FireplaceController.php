@@ -113,7 +113,7 @@ class FireplaceController extends PoppySeedPetsController
 
         $fuel = $inventoryRepository->findFuel($user);
 
-        return $responseService->success($fuel, SerializationGroupEnum::FIREPLACE_FUEL);
+        return $responseService->success($fuel, [ SerializationGroupEnum::FIREPLACE_FUEL ]);
     }
 
     /**
@@ -142,7 +142,7 @@ class FireplaceController extends PoppySeedPetsController
             ->execute()
         ;
 
-        return $responseService->success($food, SerializationGroupEnum::MY_INVENTORY);
+        return $responseService->success($food, [ SerializationGroupEnum::MY_INVENTORY ]);
     }
 
     /**
@@ -250,7 +250,7 @@ class FireplaceController extends PoppySeedPetsController
         if($whelp->getIsAdult())
             return $responseService->success();
         else
-            return $responseService->success($whelp, SerializationGroupEnum::MY_FIREPLACE);
+            return $responseService->success($whelp, [ SerializationGroupEnum::MY_FIREPLACE ]);
     }
 
     /**
@@ -430,7 +430,7 @@ class FireplaceController extends PoppySeedPetsController
         else
             $responseService->addFlashMessage('You reach inside, and pull out ' . ArrayFunctions::list_nice($itemsReceived) . '!');
 
-        return $responseService->success($fireplace, SerializationGroupEnum::MY_FIREPLACE);
+        return $responseService->success($fireplace, [ SerializationGroupEnum::MY_FIREPLACE ]);
     }
 
     /**
@@ -487,7 +487,7 @@ class FireplaceController extends PoppySeedPetsController
             );
         }
 
-        return $responseService->success($user->getFireplace(), SerializationGroupEnum::MY_FIREPLACE);
+        return $responseService->success($user->getFireplace(), [ SerializationGroupEnum::MY_FIREPLACE ]);
     }
 
     /**
@@ -500,6 +500,6 @@ class FireplaceController extends PoppySeedPetsController
             'location' => LocationEnum::MANTLE
         ]);
 
-        return $responseService->success($inventory, SerializationGroupEnum::FIREPLACE_MANTLE);
+        return $responseService->success($inventory, [ SerializationGroupEnum::FIREPLACE_MANTLE ]);
     }
 }

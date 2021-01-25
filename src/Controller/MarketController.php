@@ -50,7 +50,7 @@ class MarketController extends PoppySeedPetsController
                 'history' => $itemHistory,
                 'lastHistory' => $dailyMarketItemAverageRepository->findLastHistoryForItem($item)
             ],
-            SerializationGroupEnum::MARKET_ITEM_HISTORY
+            [ SerializationGroupEnum::MARKET_ITEM_HISTORY ]
         );
     }
 
@@ -232,7 +232,7 @@ class MarketController extends PoppySeedPetsController
             $cache->deleteItem('Trading Inventory #' . $itemToBuy->getId());
         }
 
-        return $responseService->success($itemToBuy, SerializationGroupEnum::MY_INVENTORY);
+        return $responseService->success($itemToBuy, [ SerializationGroupEnum::MY_INVENTORY ]);
     }
 
     /**
