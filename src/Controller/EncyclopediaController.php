@@ -99,7 +99,7 @@ class EncyclopediaController extends PoppySeedPetsController
         if(!$species)
             throw new NotFoundHttpException('There is no such species.');
 
-        return $responseService->success($species, SerializationGroupEnum::PET_ENCYCLOPEDIA);
+        return $responseService->success($species, [ SerializationGroupEnum::PET_ENCYCLOPEDIA ]);
     }
 
     /**
