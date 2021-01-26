@@ -204,6 +204,7 @@ class MarketController extends PoppySeedPetsController
         if(count($forSale) === 0)
             throw new NotFoundHttpException('An item for that price could not be found on the market. Someone may have bought it up just for you did! Sorry :| Reload the page to get the latest prices available!');
 
+        /** @var Inventory $itemToBuy */
         $itemToBuy = ArrayFunctions::min($forSale, function(Inventory $inventory) {
             return $inventory->getSellPrice();
         });
@@ -231,6 +232,11 @@ class MarketController extends PoppySeedPetsController
         {
             $cache->deleteItem('Trading Inventory #' . $itemToBuy->getId());
         }
+
+        if($placeItemsIn === LocationEnum::BASEMENT)
+            $responseService->addFlashMessage('The ' . $itemToBuy->getItem()->getName() . ' is yours; you\'ll find it in your Basement! (The house is a bit full...)');
+        else
+            $responseService->addFlashMessage('The ' . $itemToBuy->getItem()->getName() . ' is yours!');
 
         return $responseService->success($itemToBuy, [ SerializationGroupEnum::MY_INVENTORY ]);
     }

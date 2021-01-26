@@ -194,6 +194,11 @@ class ItemTool
      */
     private $sexDrive = 0;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $whenGatherPreventGather = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -414,12 +419,19 @@ class ItemTool
         if($this->getFocusSkill())
             $modifiers[] = 'learn faster when using ' . $this->getFocusSkill();
 
-        if($this->getWhenGather() && $this->getWhenGatherAlsoGather())
+        if($this->getWhenGather())
         {
-            if($this->getWhenGather()->getId() === $this->getWhenGatherAlsoGather()->getId())
-                $modifiers[] = 'when the pet obtains ' . $this->getWhenGather()->getName() . ', it gets another ' . $this->getWhenGatherAlsoGather()->getName();
-            else
-                $modifiers[] = 'when the pet obtains ' . $this->getWhenGather()->getName() . ', it also gets ' . $this->getWhenGatherAlsoGather()->getName();
+            if($this->getWhenGatherAlsoGather())
+            {
+                if($this->getWhenGatherPreventGather())
+                    $modifiers[] = 'when the pet would obtains ' . $this->getWhenGather()->getName() . ', it gets ' . $this->getWhenGatherAlsoGather()->getName() . ', instead!';
+                else if($this->getWhenGather()->getId() === $this->getWhenGatherAlsoGather()->getId())
+                    $modifiers[] = 'when the pet obtains ' . $this->getWhenGather()->getName() . ', it gets another ' . $this->getWhenGatherAlsoGather()->getName();
+                else
+                    $modifiers[] = 'when the pet obtains ' . $this->getWhenGather()->getName() . ', it also gets ' . $this->getWhenGatherAlsoGather()->getName();
+            }
+            else if($this->getWhenGatherPreventGather())
+                $modifiers[] = 'the pet can never obtain ' . $this->getWhenGather()->getName() . '!';
         }
 
         if($this->getAttractsBugs())
@@ -686,6 +698,18 @@ class ItemTool
     public function setSexDrive(int $sexDrive): self
     {
         $this->sexDrive = $sexDrive;
+
+        return $this;
+    }
+
+    public function getWhenGatherPreventGather(): ?bool
+    {
+        return $this->whenGatherPreventGather;
+    }
+
+    public function setWhenGatherPreventGather(bool $whenGatherPreventGather): self
+    {
+        $this->whenGatherPreventGather = $whenGatherPreventGather;
 
         return $this;
     }
