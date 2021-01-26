@@ -38,7 +38,7 @@ class CannedFoodController extends PoppySeedPetsItemController
 
         if($cansOpened->getValue() > 2 && mt_rand(1, 50) === 1)
         {
-            $worms = $squirrel3->rngNextInt(4, 6);
+            $worms = $squirrel3->rngNextInt(4, 12);
 
             for($i = 0; $i < $worms; $i++)
                 $inventoryService->receiveItem('Worms', $user, $user, $user->getName() . ' found this in a can. A Canned Food can. Of worms.', $location, $lockedToOwner);
