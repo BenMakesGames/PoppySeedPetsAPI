@@ -56,7 +56,7 @@ class ResponseService
         return $this->success($data);
     }
 
-    private function getUser(): User
+    private function getUser(): ?User
     {
         return $this->security->getUser();
     }
