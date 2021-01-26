@@ -117,14 +117,17 @@ class RunParkEventsCommand extends Command
             $birthdayPresentsByUser = [];
 
             $forceBalloon = null;
+            $commentExtra = null;
 
             switch(DateFunctions::getFullMoonName($now))
             {
                 case 'Wolf':
                     $forceBalloon = '"Wolf" Balloon';
+                    $commentExtra = '(There\'s a Wolf Moon out today! IRL! It\'s true!)';
                     break;
                 case 'Pink':
                     $forceBalloon = 'Pink Balloon';
+                    $commentExtra = '(There\'s a Pink Moon out today! IRL! It\'s true!)';
                     break;
             }
 
@@ -146,7 +149,12 @@ class RunParkEventsCommand extends Command
                         ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
                     ;
 
-                    $balloon = $this->inventoryService->petCollectsRandomBalloon($pet, $pet->getName() . ' found this while participating in a ' . $parkEvent->getType() . ' event!', $forceBalloon, $log);
+                    $comment = $pet->getName() . ' found this while participating in a ' . $parkEvent->getType() . ' event!';
+
+                    if($commentExtra)
+                        $comment .= ' ' . $commentExtra;
+
+                    $balloon = $this->inventoryService->petCollectsRandomBalloon($pet, $comment, $forceBalloon, $log);
 
                     $log
                         ->setEntry($pet->getName() . ' found a ' . $balloon->getItem()->getName() . ' while participating in a ' . $parkEvent->getType() . ' event!')
