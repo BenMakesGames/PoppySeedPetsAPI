@@ -255,6 +255,8 @@ class InventoryService
 
             if($pet->getTool()->getSpice())
                 $extraItemSpice = (!$spice || $this->squirrel3->rngNextBool()) ? $pet->getTool()->getSpice() : $spice;
+            else
+                $extraItemSpice = $spice;
 
             if($pet->getTool()->getItem()->getTool())
             {
