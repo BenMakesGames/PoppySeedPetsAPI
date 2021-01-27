@@ -10,6 +10,7 @@ use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
+use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -27,11 +28,12 @@ class GenericAdventureService
     private $meritRepository;
     private $itemRepository;
     private $squirrel3;
+    private $spiceRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         UserQuestRepository $userQuestRepository, TransactionService $transactionService, MeritRepository $meritRepository,
-        ItemRepository $itemRepository, Squirrel3 $squirrel3
+        ItemRepository $itemRepository, Squirrel3 $squirrel3, SpiceRepository $spiceRepository
     )
     {
         $this->responseService = $responseService;
@@ -42,6 +44,7 @@ class GenericAdventureService
         $this->meritRepository = $meritRepository;
         $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
+        $this->spiceRepository = $spiceRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -210,7 +213,18 @@ class GenericAdventureService
             $this->transactionService->getMoney($pet->getOwner(), $reward[0], $comment);
         }
         else
-            $this->inventoryService->petCollectsItem($reward[1], $pet, $comment, $activityLog);
+        {
+            if($reward[1] === 'Fishkebab')
+            {
+                $spice = $this->spiceRepository->findOneByName($this->squirrel3->rngNextFromArray([
+                    'Spicy', 'with Ketchup', 'Cheesy', 'Fishy', 'Ducky', 'Onion\'d',
+                ]));
+            }
+            else
+                $spice = null;
+
+            $this->inventoryService->petCollectsEnhancedItem($reward[1], null, $spice, $pet, $comment, $activityLog);
+        }
 
         $activityLog
             ->setChanges($changes->compare($pet))
