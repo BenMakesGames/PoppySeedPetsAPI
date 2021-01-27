@@ -245,7 +245,7 @@ class GreenhouseController extends PoppySeedPetsController
                 'Twilight Fertilizer',
                 'Grandparoot',
                 'String',
-                $squirrel3->rngNextFromArray([ 'Iron Ore', 'Iron Ore', 'Silver Ore', 'Gold Ore' ]),
+                $squirrel3->rngNextFromArray([ 'Iron Ore', 'Iron Ore', 'Silver Ore', 'Gold Ore', 'Worms' ]),
                 'Paper Bag',
             ]));
 
