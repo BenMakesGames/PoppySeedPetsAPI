@@ -2,6 +2,7 @@
 namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
+use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Functions\ArrayFunctions;
@@ -34,24 +35,26 @@ class PoopingService
         ;
     }
 
-    public function poopDarkMatter(Pet $pet)
+    public function poopDarkMatter(Pet $pet): PetActivityLog
     {
+        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%, um, _created_ some Dark Matter.', 'items/element/dark-matter')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+        ;
+
         if($this->squirrel3->rngNextInt(1, 20) === 1)
         {
-            $this->inventoryService->receiveItem('Dark Matter', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' ' . $this->squirrel3->rngNextFromArray([
+            $this->inventoryService->petCollectsItem('Dark Matter', $pet, $pet->getName() . ' ' . $this->squirrel3->rngNextFromArray([
                 'pooped this. Yay?',
                 'pooped this. Neat?',
                 'pooped this. Yep.',
                 'pooped this. Hooray. Poop.'
-            ]), LocationEnum::HOME);
+            ]), $activityLog);
         }
         else
         {
-            $this->inventoryService->receiveItem('Dark Matter', $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' pooped this.', LocationEnum::HOME);
+            $this->inventoryService->petCollectsItem('Dark Matter', $pet, $pet->getName() . ' pooped this.', $activityLog);
         }
 
-        $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%, um, _created_ some Dark Matter.', 'items/element/dark-matter')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-        ;
+        return $activityLog;
     }
 }

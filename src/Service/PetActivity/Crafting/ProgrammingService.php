@@ -44,6 +44,9 @@ class ProgrammingService
 
         $possibilities = [];
 
+        if(array_key_exists('Tiny Black Hole', $quantities) && array_key_exists('Worms', $quantities))
+            $possibilities[] = new ActivityCallback($this, 'createWormhole', 10);
+
         if(array_key_exists('Macintosh', $quantities))
             $possibilities[] = new ActivityCallback($this, 'hackMacintosh', 10);
 
@@ -375,6 +378,49 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to implement a Regex, but it was taking forever. ' . $pet->getName() . ' saved and quit for now.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createWormhole(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+
+            if($this->squirrel3->rngNextBool() || $pet->getFood() > 4)
+            {
+                $this->inventoryService->loseItem('Tiny Black Hole', $pet->getOwner(), LocationEnum::HOME, 1);
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a Wormhole, but accidentally reduced the Tiny Black Hole to Hawking radiation! ', '');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Worms', $pet->getOwner(), LocationEnum::HOME, 1);
+                $pet->increaseFood(mt_rand(3, 6));
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to create a Wormhole, but absentmindedly ate the Worms, instead :(', '');
+            }
+        }
+        else if($roll >= 17)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->inventoryService->loseItem('Tiny Black Hole', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Worms', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Wormhole by inverting a Tiny Black Hole... and adding Worms?', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
+            ;
+            $this->inventoryService->petCollectsItem('Wormhole', $pet, $pet->getName() . ' created this from a Tiny Black Hole, and also Worms.' . ($this->squirrel3->rngNextInt(1, 10) === 1 ? ' (SCIENCE.)' : ''), $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Wormhole, but the Worms kept crawling away, and %pet.' . $pet->getId() . '.name% wasted all their time gathering them back up again...', 'icons/activity-logs/confused');
         }
     }
 

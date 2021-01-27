@@ -247,113 +247,120 @@ class InventoryService
     public function petCollectsEnhancedItem($item, ?Enchantment $bonus, ?Spice $spice, Pet $pet, string $comment, ?PetActivityLog $activityLog): ?Inventory
     {
         $item = $this->getItemWithChanceForLuckyTransformation($item);
-        $replacementItemNames = [];
-        $cancelGather = false;
 
-        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+        if($pet->getTool())
         {
-            $toolTool = $pet->getTool()->getItem()->getTool();
+            $replacementItemNames = [];
+            $cancelGather = false;
 
-            // bonus gather from equipment
-            if($toolTool->getWhenGather() && $item->getName() === $toolTool->getWhenGather()->getName())
+            if($pet->getTool()->getSpice())
+                $extraItemSpice = (!$spice || $this->squirrel3->rngNextBool()) ? $pet->getTool()->getSpice() : $spice;
+
+            if($pet->getTool()->getItem()->getTool())
             {
-                if($toolTool->getWhenGatherPreventGather())
-                    $cancelGather = true;
+                $toolTool = $pet->getTool()->getItem()->getTool();
 
-                if($toolTool->getWhenGatherAlsoGather())
+                // bonus gather from equipment
+                if($toolTool->getWhenGather() && $item->getName() === $toolTool->getWhenGather()->getName())
                 {
-                    $extraItem = (new Inventory())
-                        ->setOwner($pet->getOwner())
-                        ->setCreatedBy($pet->getOwner())
-                        ->setItem($toolTool->getWhenGatherAlsoGather())
-                        ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
-                        ->setLocation(LocationEnum::HOME)
-                        ->setSpice($spice)
-                        ->setEnchantment($bonus)
-                    ;
-
-                    $this->em->persist($extraItem);
-
-                    $this->responseService->setReloadInventory();
-
                     if($toolTool->getWhenGatherPreventGather())
-                        $replacementItemNames[] = $extraItem->getItem()->getNameWithArticle();
+                        $cancelGather = true;
+
+                    if($toolTool->getWhenGatherAlsoGather())
+                    {
+                        $extraItem = (new Inventory())
+                            ->setOwner($pet->getOwner())
+                            ->setCreatedBy($pet->getOwner())
+                            ->setItem($toolTool->getWhenGatherAlsoGather())
+                            ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
+                            ->setLocation(LocationEnum::HOME)
+                            ->setSpice($extraItemSpice)
+                            ->setEnchantment($bonus)
+                        ;
+
+                        $this->em->persist($extraItem);
+
+                        $this->responseService->setReloadInventory();
+
+                        if($toolTool->getWhenGatherPreventGather())
+                            $replacementItemNames[] = $extraItem->getItem()->getNameWithArticle();
+                    }
                 }
-            }
-            else if($toolTool->getAttractsBugs() && $item->getName() === 'Weird Beetle')
-            {
-                $extraItem = (new Inventory())
-                    ->setOwner($pet->getOwner())
-                    ->setCreatedBy($pet->getOwner())
-                    ->setItem($item)
-                    ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
-                    ->setLocation(LocationEnum::HOME)
-                    ->setSpice($spice)
-                    ->setEnchantment($bonus)
-                ;
-
-                $this->responseService->setReloadInventory();
-
-                $this->em->persist($extraItem);
-            }
-        }
-
-        // bonus gather from equipment enchantment effects
-        if($pet->getTool() && $pet->getTool()->getEnchantment())
-        {
-            $bonusEffects = $pet->getTool()->getEnchantment()->getEffects();
-
-            if($bonusEffects->getWhenGather() && $item->getName() === $bonusEffects->getWhenGather()->getName())
-            {
-                if($bonusEffects->getWhenGatherPreventGather())
-                    $cancelGather = true;
-
-                if($bonusEffects->getWhenGatherAlsoGather())
+                else if($toolTool->getAttractsBugs() && $item->getName() === 'Weird Beetle')
                 {
                     $extraItem = (new Inventory())
                         ->setOwner($pet->getOwner())
                         ->setCreatedBy($pet->getOwner())
-                        ->setItem($pet->getTool()->getEnchantment()->getEffects()->getWhenGatherAlsoGather())
+                        ->setItem($item)
                         ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
                         ->setLocation(LocationEnum::HOME)
-                        ->setSpice($spice)
+                        ->setSpice($extraItemSpice)
+                        ->setEnchantment($bonus)
+                    ;
+
+                    $this->responseService->setReloadInventory();
+
+                    $this->em->persist($extraItem);
+                }
+            }
+
+            // bonus gather from equipment enchantment effects
+            if($pet->getTool()->getEnchantment())
+            {
+                $bonusEffects = $pet->getTool()->getEnchantment()->getEffects();
+
+                if($bonusEffects->getWhenGather() && $item->getName() === $bonusEffects->getWhenGather()->getName())
+                {
+                    if($bonusEffects->getWhenGatherPreventGather())
+                        $cancelGather = true;
+
+                    if($bonusEffects->getWhenGatherAlsoGather())
+                    {
+                        $extraItem = (new Inventory())
+                            ->setOwner($pet->getOwner())
+                            ->setCreatedBy($pet->getOwner())
+                            ->setItem($pet->getTool()->getEnchantment()->getEffects()->getWhenGatherAlsoGather())
+                            ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
+                            ->setLocation(LocationEnum::HOME)
+                            ->setSpice($extraItemSpice)
+                            ->setEnchantment($bonus)
+                        ;
+
+                        $this->em->persist($extraItem);
+
+                        $this->responseService->setReloadInventory();
+
+                        if($bonusEffects->getWhenGatherPreventGather())
+                            $replacementItemNames[] = $extraItem->getItem()->getNameWithArticle();
+                    }
+                }
+                else if($bonusEffects->getAttractsBugs() && $item->getName() === 'Weird Beetle')
+                {
+                    $extraItem = (new Inventory())
+                        ->setOwner($pet->getOwner())
+                        ->setCreatedBy($pet->getOwner())
+                        ->setItem($item)
+                        ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
+                        ->setLocation(LocationEnum::HOME)
+                        ->setSpice($extraItemSpice)
                         ->setEnchantment($bonus)
                     ;
 
                     $this->em->persist($extraItem);
 
                     $this->responseService->setReloadInventory();
-
-                    if($bonusEffects->getWhenGatherPreventGather())
-                        $replacementItemNames[] = $extraItem->getItem()->getNameWithArticle();
                 }
             }
-            else if($bonusEffects->getAttractsBugs() && $item->getName() === 'Weird Beetle')
+
+            if($cancelGather)
             {
-                $extraItem = (new Inventory())
-                    ->setOwner($pet->getOwner())
-                    ->setCreatedBy($pet->getOwner())
-                    ->setItem($item)
-                    ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
-                    ->setLocation(LocationEnum::HOME)
-                    ->setSpice($spice)
-                    ->setEnchantment($bonus)
-                ;
+                if(count($replacementItemNames) > 0)
+                    $activityLog->setEntry($activityLog->getEntry() . ' And the ' . $item->getName() . ' transformed into ' . ArrayFunctions::list_nice($replacementItemNames) . '!');
+                else
+                    $activityLog->setEntry($activityLog->getEntry() . ' However, the ' . $item->getName() . ' melted away instantly!');
 
-                $this->em->persist($extraItem);
-
-                $this->responseService->setReloadInventory();
+                return null;
             }
-        }
-
-        if($cancelGather)
-        {
-            if(count($replacementItemNames) > 0)
-                $activityLog->setEntry($activityLog->getEntry() . ' And the ' . $item->getName() . ' transformed into ' . ArrayFunctions::list_nice($replacementItemNames) . '!');
-            else
-                $activityLog->setEntry($activityLog->getEntry() . ' However, the ' . $item->getName() . ' melted away instantly!');
-
-            return null;
         }
 
         if($item->getFood() !== null && count($pet->getLunchboxItems()) === 0 && $this->squirrel3->rngNextInt(1, 20) < 10 - $pet->getFood())
