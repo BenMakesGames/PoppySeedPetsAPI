@@ -39,6 +39,9 @@ class InventoryFilterService
                 'bonus' => [ $this, 'filterBonus' ],
                 'aHat' => [ $this, 'filterAHat' ],
                 'hasDonated' => [ $this, 'filterHasDonated' ],
+            ],
+            [
+                'nameExactMatch'
             ]
         );
     }
@@ -71,16 +74,26 @@ class InventoryFilterService
         ;
     }
 
-    public function filterName(QueryBuilder $qb, $value)
+    public function filterName(QueryBuilder $qb, $value, $filters)
     {
         $name = trim($value);
 
         if(!$name) return;
 
-        $qb
-            ->andWhere('item.name LIKE :nameLike')
-            ->setParameter('nameLike', '%' . $name . '%')
-        ;
+        if(array_key_exists('nameExactMatch', $filters) && (bool)$filters['nameExactMatch'])
+        {
+            $qb
+                ->andWhere('item.name = :nameLike')
+                ->setParameter('nameLike', $name)
+            ;
+        }
+        else
+        {
+            $qb
+                ->andWhere('item.name LIKE :nameLike')
+                ->setParameter('nameLike', '%' . $name . '%')
+            ;
+        }
     }
 
     public function filterEdible(QueryBuilder $qb, $value)

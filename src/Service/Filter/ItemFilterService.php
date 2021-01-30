@@ -40,6 +40,9 @@ class ItemFilterService
                 'notDonatedBy' => [ $this, 'filterNotDonatedBy' ],
                 'aHat' => [ $this, 'filterAHat' ],
                 'hasDonated' => [ $this, 'filterHasDonated' ],
+            ],
+            [
+                'nameExactMatch'
             ]
         );
     }
@@ -54,12 +57,26 @@ class ItemFilterService
         return $this->repository->createQueryBuilder('i');
     }
 
-    public function filterName(QueryBuilder $qb, $value)
+    public function filterName(QueryBuilder $qb, $value, $filters)
     {
-        $qb
-            ->andWhere('i.name LIKE :nameLike')
-            ->setParameter('nameLike', '%' . $value . '%')
-        ;
+        $name = trim($value);
+
+        if(!$name) return;
+
+        if(array_key_exists('nameExactMatch', $filters) && (bool)$filters['nameExactMatch'])
+        {
+            $qb
+                ->andWhere('i.name = :nameLike')
+                ->setParameter('nameLike', $name)
+            ;
+        }
+        else
+        {
+            $qb
+                ->andWhere('i.name LIKE :nameLike')
+                ->setParameter('nameLike', '%' . $name . '%')
+            ;
+        }
     }
 
     public function filterNotDonatedBy(QueryBuilder $qb, $value)

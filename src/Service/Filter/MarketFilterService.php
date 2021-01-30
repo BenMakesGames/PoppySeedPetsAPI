@@ -41,6 +41,9 @@ class MarketFilterService
                 'bonus' => [ $this, 'filterBonus' ],
                 'aHat' => [ $this, 'filterAHat' ],
                 'hasDonated' => [ $this, 'filterHasDonated' ],
+            ],
+            [
+                'nameExactMatch'
             ]
         );
     }
@@ -66,26 +69,26 @@ class MarketFilterService
         $this->user = $user;
     }
 
-    public function filterName(QueryBuilder $qb, $value)
+    public function filterName(QueryBuilder $qb, $value, $filters)
     {
         $name = trim($value);
 
         if(!$name) return;
 
-        if(!in_array('enchantment', $qb->getAllAliases()))
-            $qb->leftJoin('item.enchantment', 'enchantment');
-
-        if(!in_array('spice', $qb->getAllAliases()))
-            $qb->leftJoin('item.spice', 'spice');
-
-        $qb
-            ->andWhere($qb->expr()->orX(
-                'item.name LIKE :nameLike',
-                'enchantment.name LIKE :nameLike',
-                'spice.name LIKE :nameLike'
-            ))
-            ->setParameter('nameLike', '%' . $name . '%')
-        ;
+        if(array_key_exists('nameExactMatch', $filters) && (bool)$filters['nameExactMatch'])
+        {
+            $qb
+                ->andWhere('item.name = :nameLike')
+                ->setParameter('nameLike', $name)
+            ;
+        }
+        else
+        {
+            $qb
+                ->andWhere('item.name LIKE :nameLike')
+                ->setParameter('nameLike', '%' . $name . '%')
+            ;
+        }
     }
 
     public function filterCandy(QueryBuilder $qb, $value)

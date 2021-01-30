@@ -4,6 +4,7 @@ namespace App\Controller\Item;
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
 use App\Functions\ArrayFunctions;
+use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -23,25 +24,14 @@ class FlowerbombController extends PoppySeedPetsItemController
      */
     public function toss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
-        UserRepository $userRepository, InventoryService $inventoryService
+        UserRepository $userRepository, InventoryService $inventoryService, UserQuestRepository $userQuestRepository
     )
     {
         $this->validateInventory($inventory, 'flowerbomb/#/toss');
 
-        $possibleFlowers = [
-            'Agrimony',
-            'Bird\'s-foot Trefoil',
-            'Coriander Flower',
-            'Green Carnation',
-            'Iris',
-            'Purple Violet',
-            'Red Clover',
-            'Viscaria',
-            'Witch-hazel',
-            'Wheat',
-        ];
-
         $user = $this->getUser();
+
+        $lastFlowerBombWasNarcissistic = $userQuestRepository->findOrCreate($user, 'Last Flowerbomb was Narcissus', true);
 
         $numberOfTosses = 0;
 
@@ -53,15 +43,35 @@ class FlowerbombController extends PoppySeedPetsItemController
 
         if($numberOfTosses === 0)
         {
-            $possibleFlowers = ['Narcissus'];
-            $percentChanceToExplode = 10;
+            $chanceToExplode = $lastFlowerBombWasNarcissistic->getValue() ? 0 : 10;
+
+            $possibleFlowers = [
+                'Narcissus'
+            ];
         }
         else
         {
-            $percentChanceToExplode = 20;
+            $chanceToExplode = 20;
+
+            $possibleFlowers = [
+                'Agrimony',
+                'Bird\'s-foot Trefoil',
+                'Coriander Flower',
+                'Green Carnation',
+                'Iris',
+                'Purple Violet',
+                'Red Clover',
+                'Viscaria',
+                'Witch-hazel',
+                'Wheat',
+            ];
         }
 
-        if($squirrel3->rngNextInt(1, 100) <= $percentChanceToExplode)
+        $explodes = $squirrel3->rngNextInt(1, 100) <= $chanceToExplode;
+
+        $lastFlowerBombWasNarcissistic->setValue($explodes && $numberOfTosses === 0);
+
+        if($explodes)
         {
             for($i = 0; $i < 10 + $numberOfTosses; $i++)
             {

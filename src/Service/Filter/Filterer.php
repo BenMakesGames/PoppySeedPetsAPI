@@ -12,15 +12,17 @@ class Filterer
 {
     private $orderByMap;
     private $filterMap;
+    private $filterWithoutCallbackMap;
     private $pageSize;
     private $defaultFilters = [];
     private $requiredFilters = [];
 
-    public function __construct(int $pageSize, array $orderByMap, array $filterCallbacks)
+    public function __construct(int $pageSize, array $orderByMap, array $filterCallbacks, array $filtersWithoutCallbacks = [])
     {
         $this->pageSize = $pageSize;
         $this->orderByMap = $orderByMap;
         $this->filterMap = $filterCallbacks;
+        $this->filterWithoutCallbackMap = $filtersWithoutCallbacks;
     }
 
     public function setPageSize(int $pageSize)
@@ -70,7 +72,7 @@ class Filterer
                 else if($value == '')
                     return false;
                 else
-                    return array_key_exists($filter, $this->filterMap);
+                    return array_key_exists($filter, $this->filterMap) || in_array($filter, $this->filterWithoutCallbackMap);
             },
             ARRAY_FILTER_USE_BOTH
         );
@@ -87,7 +89,10 @@ class Filterer
         }
 
         foreach($filters as $filter=>$value)
-            $this->filterMap[$filter]($qb, $value);
+        {
+            if(array_key_exists($filter, $this->filterMap))
+                $this->filterMap[$filter]($qb, $value, $filters);
+        }
 
         $paginator = new Paginator($qb->getQuery());
 
