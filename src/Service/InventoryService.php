@@ -412,14 +412,17 @@ class InventoryService
             if($pet->getTool()->getItem()->getTool()->getPreventsBugs())
                 $bugs--;
 
-            if($pet->getTool()->getEnchantment()->getEffects()->getAttractsBugs())
+            if($pet->getTool()->getEnchantment())
             {
-                $toolAttractsBugs = true;
-                $bugs++;
-            }
+                if($pet->getTool()->getEnchantment()->getEffects()->getAttractsBugs())
+                {
+                    $toolAttractsBugs = true;
+                    $bugs++;
+                }
 
-            if($pet->getTool()->getEnchantment()->getEffects()->getPreventsBugs())
-                $bugs--;
+                if($pet->getTool()->getEnchantment()->getEffects()->getPreventsBugs())
+                    $bugs--;
+            }
         }
 
         if($bugs <= 0)

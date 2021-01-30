@@ -473,22 +473,6 @@ class Inventory
         ;
     }
 
-    public function preventsBugs(): int
-    {
-        return
-            ($this->getItem()->getTool() && $this->getItem()->getTool()->getPreventsBugs()) ||
-            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getPreventsBugs())
-        ;
-    }
-
-    public function attractsBugs(): int
-    {
-        return
-            ($this->getItem()->getTool() && $this->getItem()->getTool()->getAttractsBugs()) ||
-            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getAttractsBugs())
-        ;
-    }
-
     public function focusesSkill(string $skill): bool
     {
         return
