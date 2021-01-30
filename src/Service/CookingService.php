@@ -219,6 +219,10 @@ class CookingService
 
             for($i = 0; $i < count($newInventory) && count($spices) > 0; $i++)
             {
+                // if this item is a spice item (like Spicy Spice), DON'T try to apply a spice to it!
+                if($newInventory[$i]->getItem()->getSpice())
+                    continue;
+
                 $spice = array_shift($spices);
                 $newInventory[$i]->setSpice($spice);
             }

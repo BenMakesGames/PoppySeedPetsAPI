@@ -24,7 +24,6 @@ use App\Repository\PetSpeciesRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
-use App\Service\BeehiveService;
 use App\Service\GreenhouseService;
 use App\Service\InventoryService;
 use App\Service\PetActivity\GreenhouseAdventureService;

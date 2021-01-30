@@ -129,7 +129,7 @@ class DreamingService
                 '%dreamer% received this from a friend in a dream.'
             ],
             [
-                '%dreamer% dreamed that they were making out with a %species% on %surface% %location1%. A %item% got in the way, so %dreamer% tossed it aside.',
+                '%dreamer% dreamed that they were making out with a %species% on %surface% %location1%. %Item_with_article% got in the way, so %dreamer% tossed it aside.',
                 '%dreamer%, um, found this in a dream.'
             ],
             [
@@ -167,6 +167,7 @@ class DreamingService
         $replacements = [
             '%item%' => $itemName,
             '%item_with_article%' => $item->getNameWithArticle(),
+            '%Item_with_article%' => ucfirst($item->getNameWithArticle()),
             '%dreamer%' => $pet->getName(),
             '%location1%' => $locations[0],
             '%location2%' => $locations[1],
