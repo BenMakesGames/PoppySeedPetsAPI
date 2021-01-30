@@ -1126,7 +1126,7 @@ class SmithingService
         }
     }
 
-    private function maybeMakeARainbowToo(Pet $pet): PetActivityLog
+    private function maybeMakeARainbowToo(Pet $pet): ?PetActivityLog
     {
         $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 60) === 1;
 
@@ -1141,7 +1141,10 @@ class SmithingService
             ;
 
             $this->inventoryService->petCollectsItem('Rainbow', $pet, $pet->getName() . ' captured this while making a Crystal Ball!' . $luckySuffix, $activityLog);
+
+            return $activityLog;
         }
-        return $activityLog;
+
+        return null;
     }
 }
