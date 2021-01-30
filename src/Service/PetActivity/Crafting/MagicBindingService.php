@@ -47,7 +47,7 @@ class MagicBindingService
     {
         $hour = (int)((new \DateTimeImmutable())->format('G'));
 
-        $isNight = ($hour <= 6 || $hour > 18);
+        $isNight = ($hour < 6 || $hour >= 18);
 
         $possibilities = [];
 
@@ -1914,7 +1914,7 @@ class MagicBindingService
 
             $hour = (int)((new \DateTimeImmutable())->format('G'));
 
-            $makes = ($hour <= 6 || $hour > 18) ? 'Midnight' : 'Sunrise';
+            $makes = ($hour < 6 || $hour >= 18) ? 'Midnight' : 'Sunrise';
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Sidereal Spear, creating ' . $makes . '!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
