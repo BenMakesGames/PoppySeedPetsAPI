@@ -398,7 +398,31 @@ class InventoryService
 
     public function petAttractsRandomBug(Pet $pet, $bugName = null): ?Inventory
     {
-        if($pet->getTool() && $pet->getTool()->preventsBugs())
+        $bugs = 1;
+        $toolAttractsBugs = false;
+
+        if($pet->getTool())
+        {
+            if($pet->getTool()->getItem()->getTool()->getAttractsBugs())
+            {
+                $toolAttractsBugs = true;
+                $bugs++;
+            }
+
+            if($pet->getTool()->getItem()->getTool()->getPreventsBugs())
+                $bugs--;
+
+            if($pet->getTool()->getEnchantment()->getEffects()->getAttractsBugs())
+            {
+                $toolAttractsBugs = true;
+                $bugs++;
+            }
+
+            if($pet->getTool()->getEnchantment()->getEffects()->getPreventsBugs())
+                $bugs--;
+        }
+
+        if($bugs <= 0)
             return null;
 
         if($bugName === null)
@@ -406,22 +430,19 @@ class InventoryService
 
         $bug = $this->itemRepository->findOneByName($bugName);
 
-        $attractsBugs = $pet->getTool() && $pet->getTool()->attractsBugs();
-
-        $bugs = $attractsBugs ? 2 : 1;
-        $comment = $attractsBugs ? $pet->getName() . ' caught this in their ' . $pet->getTool()->getItem()->getName() . '!' : 'Ah! How\'d this get inside?!';
+        $comment = $toolAttractsBugs ? $pet->getName() . ' caught this in their ' . $pet->getTool()->getItem()->getName() . '!' : 'Ah! How\'d this get inside?!';
         $inventory = null;
 
         for($i = 0; $i < $bugs; $i++)
         {
-            $location = (!$attractsBugs && $pet->getOwner()->getUnlockedBasement() && $this->squirrel3->rngNextInt(1, 4) === 1)
+            $location = (!$toolAttractsBugs && $pet->getOwner()->getUnlockedBasement() && $this->squirrel3->rngNextInt(1, 4) === 1)
                 ? LocationEnum::BASEMENT
                 : LocationEnum::HOME
             ;
 
             $inventory = $this->receiveItem($bug, $pet->getOwner(), null, $comment, $location);
 
-            if(!$attractsBugs && $bugName === 'Spider')
+            if($bugName === 'Spider' && $i === 0)
                 $this->receiveItem('Cobweb', $pet->getOwner(), null, 'Cobwebs?! Some Spider must have made this...', $location);
         }
 
