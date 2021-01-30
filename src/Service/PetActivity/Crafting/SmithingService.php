@@ -1,6 +1,7 @@
 <?php
 namespace App\Service\PetActivity\Crafting;
 
+use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\GuildEnum;
 use App\Enum\LocationEnum;
@@ -504,23 +505,6 @@ class SmithingService
     public function createCrystalBall(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 60) === 1;
-
-        if($this->squirrel3->rngNextInt(1, 60) === 1 || $lucky)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::SMITH, true);
-            $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
-
-            $luckySuffix = $lucky ? ' Lucky~!' : '';
-
-            $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
-
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a Crystal Ball out of Glass, but happened to catch the light just right, and got a Rainbow, instead!' . $luckySuffix, 'items/mineral/silica-glass-ball')
-                ->addInterestingness($lucky ? PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT : PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-            ;
-            $this->inventoryService->petCollectsItem('Rainbow', $pet, $pet->getName() . ' created this on accident while trying to make a Crystal Ball!' . $luckySuffix, $activityLog);
-            return $activityLog;
-        }
 
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
@@ -532,6 +516,7 @@ class SmithingService
 
             $pet->increaseEsteem(-2);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Crystal Ball, but slipped and dropped it! :(', '');
         }
         else if($roll >= 20 && $this->squirrel3->rngNextInt(1, 3) === 1)
@@ -547,6 +532,9 @@ class SmithingService
             ;
             $this->inventoryService->petCollectsItem('Crystal Ball', $pet, $pet->getName() . ' created this from Glass.', $activityLog);
             $this->inventoryService->petCollectsItem('Crystal Ball', $pet, $pet->getName() . ' created this from Glass.', $activityLog);
+
+            $this->maybeMakeARainbowToo($pet);
+
             return $activityLog;
         }
         else if($roll >= 12)
@@ -561,6 +549,9 @@ class SmithingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
             ;
             $this->inventoryService->petCollectsItem('Crystal Ball', $pet, $pet->getName() . ' created this from Glass.', $activityLog);
+
+            $this->maybeMakeARainbowToo($pet);
+
             return $activityLog;
         }
         else
@@ -1133,5 +1124,24 @@ class SmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to refine Gold Ore into a Gold Bar, but couldn\'t figure it out.', 'icons/activity-logs/confused');
         }
+    }
+
+    private function maybeMakeARainbowToo(Pet $pet): PetActivityLog
+    {
+        $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 60) === 1;
+
+        if($this->squirrel3->rngNextInt(1, 60) === 1 || $lucky)
+        {
+            $luckySuffix = $lucky ? ' Lucky~!' : '';
+
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
+
+            $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was making a Crystal Ball, they happened to catch the light just right, and caught a Rainbow, too!' . $luckySuffix, '')
+                ->addInterestingness($lucky ? PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT : PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ;
+
+            $this->inventoryService->petCollectsItem('Rainbow', $pet, $pet->getName() . ' captured this while making a Crystal Ball!' . $luckySuffix, $activityLog);
+        }
+        return $activityLog;
     }
 }
