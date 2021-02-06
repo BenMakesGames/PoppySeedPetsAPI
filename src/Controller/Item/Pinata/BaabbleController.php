@@ -30,31 +30,28 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class BaabbleController extends PoppySeedPetsItemController
 {
     private const LAME_SHIT = [
-        'Crooked Stick',
-        'Scales', 'Tea Leaves', 'Aging Powder', 'Fluff', 'Pointer', 'Creamy Milk', 'Silica Grounds',
+        'Crooked Stick', 'Scales', 'Tea Leaves', 'Aging Powder', 'Fluff', 'Pointer', 'Creamy Milk', 'Silica Grounds',
     ];
 
     private const OKAY_STUFF = [
         'Crooked Stick',
         'Iron Ore',
         'Plastic', 'Plastic',
-        'Carrot', 'Paper', 'Talon', 'Feathers', 'Glue',
+        'Glass', 'Paper', 'Talon', 'Feathers', 'Glue',
     ];
 
     private const GOOD_STUFF = [
-        'Quintessence', 'Quintessence',
-        'Iron Ore', 'Iron Ore',
+        'Quintessence', 'Quintessence', 'Wings',
+        'Iron Ore', 'Iron Ore', 'Iron Bar',
         'Silver Ore', 'Silver Ore',
         'Gold Ore',
-        'Dark Scales', 'Hash Table', 'Paper Bag', 'Finite State Machine',
+        'Dark Scales', 'Hash Table', 'Paper Bag', 'Finite State Machine', 'Fiberglass', 'Tiny Scroll of Resources'
     ];
 
     private const WEIRD_STUFF = [
-        'Really Big Leaf',
-        'Music Note', 'Music Note',
-        'White Cloth',
-        'Dark Matter', 'Coriander Flower', 'Charcoal', 'Moon Pearl',
-        'XOR', 'Liquid-hot Magma', 'Quinacridone Magenta Dye', 'Gypsum', 'Tiny Black Hole',
+        'Really Big Leaf', 'Music Note', 'Bag of Beans', 'Crystal Ball', 'Linens and Things', 'Dark Matter',
+        'Coriander Flower', 'Charcoal', 'Tentacle', 'XOR', 'Liquid-hot Magma', 'Quinacridone Magenta Dye', 'Gypsum',
+        'Tiny Black Hole', 'Chocolate Bar',
     ];
 
     private const RARE_STUFF = [
@@ -99,7 +96,13 @@ class BaabbleController extends PoppySeedPetsItemController
 
         $items[] = $weirdItem;
 
-        $noteworthy = [ $squirrel3->rngNextFromArray($items), $weirdItem ];
+        if($squirrel3->rngNextInt(1, 20) === 1)
+        {
+            $items[] = 'Blue Bow';
+            $noteworthy = [ 'Blue Bow', $weirdItem ];
+        }
+        else
+            $noteworthy = [ $squirrel3->rngNextFromArray($items), $weirdItem ];
 
         shuffle($noteworthy);
 
