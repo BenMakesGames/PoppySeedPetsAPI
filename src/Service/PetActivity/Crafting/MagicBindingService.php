@@ -70,6 +70,9 @@ class MagicBindingService
 
             if(array_key_exists('Grappling Hook', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createFlyingGrapplingHook', 8);
+
+            if(array_key_exists('Rapier', $quantities) && array_key_exists('White Feathers', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createWhiteEpee', 8);
         }
 
         if(array_key_exists('Armor', $quantities) && array_key_exists('Ruby Feather', $quantities))
@@ -2101,6 +2104,43 @@ class MagicBindingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
             ;
             $this->inventoryService->petCollectsItem('Glowing Russet Staff of Swiftness', $pet, $pet->getName() . ' bound this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createWhiteEpee(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getPerception()->getTotal());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->inventoryService->loseItem('Wings', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(-1);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Rapier, but accidentally tore the Wings back into Feathers :(', '');
+            $this->inventoryService->petCollectsItem('Feathers', $pet, $pet->getName() . ' accidentally tore some Wings, leaving only these Feathers.', $activityLog);
+            return $activityLog;
+        }
+        else if($umbraCheck < 17)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Rapier, but was having trouble getting the Wings to cooperate...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Wings', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('White Feathers', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Rapier', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(mt_rand(3, 6));
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a White Épée.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
+            ;
+            $this->inventoryService->petCollectsItem('White Épée', $pet, $pet->getName() . ' bound this.', $activityLog);
             return $activityLog;
         }
     }
