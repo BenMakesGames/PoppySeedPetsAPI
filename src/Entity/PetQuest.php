@@ -2,30 +2,31 @@
 
 namespace App\Entity;
 
+use App\Repository\PetQuestRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\UserQuestRepository")
+ * @ORM\Entity(repositoryClass=PetQuestRepository::class)
  * @ORM\Table(
  *     uniqueConstraints={
- *         @ORM\UniqueConstraint(name="user_id_name_idx", columns={"user_id", "name"})
+ *         @ORM\UniqueConstraint(name="pet_id_name_idx", columns={"pet_id", "name"})
  *     }
  * )
  */
-class UserQuest
+class PetQuest
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\Id
+     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class)
+     * @ORM\ManyToOne(targetEntity=Pet::class)
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user;
+    private $pet;
 
     /**
      * @ORM\Column(type="string", length=120)
@@ -47,24 +48,19 @@ class UserQuest
      */
     private $lastUpdated;
 
-    public function __construct()
-    {
-        $this->createdOn = new \DateTimeImmutable();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUser(): User
+    public function getPet(): ?Pet
     {
-        return $this->user;
+        return $this->pet;
     }
 
-    public function setUser(User $user): self
+    public function setPet(?Pet $pet): self
     {
-        $this->user = $user;
+        $this->pet = $pet;
 
         return $this;
     }

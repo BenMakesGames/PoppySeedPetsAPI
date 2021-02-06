@@ -7,7 +7,7 @@ class RandomFunctions
     private const SQUIRREL_3_BIT_NOISE_2 = 0xb5297a4d;
     private const SQUIRREL_3_BIT_NOISE_3 = 0x1b56c4e9;
 
-    public static function squirrel3Noise(int $position, int $seed)
+    public static function squirrel3Noise(int $position, int $seed): int
     {
         $mangled = $position;
 
