@@ -834,7 +834,10 @@ class CraftingService
 
         $making = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
             'Chocolate Sword',
-            'Chocolate Hammer'
+            'Chocolate Sword',
+            'Chocolate Hammer',
+            'Chocolate Hammer',
+            'Chocolate Key'
         ]));
 
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());

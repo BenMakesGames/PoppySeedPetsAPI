@@ -431,7 +431,7 @@ class ItemTool
             if($this->getWhenGatherAlsoGather())
             {
                 if($this->getWhenGatherPreventGather())
-                    $modifiers[] = 'when the pet would obtains ' . $this->getWhenGather()->getName() . ', it gets ' . $this->getWhenGatherAlsoGather()->getName() . ', instead!';
+                    $modifiers[] = 'when the pet would obtain ' . $this->getWhenGather()->getName() . ', it gets ' . $this->getWhenGatherAlsoGather()->getName() . ', instead!';
                 else if($this->getWhenGather()->getId() === $this->getWhenGatherAlsoGather()->getId())
                     $modifiers[] = 'when the pet obtains ' . $this->getWhenGather()->getName() . ', it gets another ' . $this->getWhenGatherAlsoGather()->getName();
                 else
