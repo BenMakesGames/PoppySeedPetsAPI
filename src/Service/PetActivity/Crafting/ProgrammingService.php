@@ -114,6 +114,9 @@ class ProgrammingService
             if(array_key_exists('Iron Sword', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createLightningSword', 10);
 
+            if(array_key_exists('Gold Bar', $quantities) && array_key_exists('Glass Pendulum', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createLivewire', 10);
+
             if(
                 array_key_exists('Weird Beetle', $quantities) &&
                 // there's a compiler in the room, or you're holding one:
@@ -854,14 +857,53 @@ class ProgrammingService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% electrified an Iron Sword; now it\'s a _Lightning_ Sword!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
             ;
-            $this->inventoryService->petCollectsItem('Lightning Sword', $pet, $pet->getName() . ' implemented this.', $activityLog);
+            $description = $this->squirrel3->rngNextInt(1, 10) === 1 ? ($pet->getName() . ' scienced this. With SCIENCE.') : ($pet->getName() . ' scienced this.');
+            $this->inventoryService->petCollectsItem('Lightning Sword', $pet, $description, $activityLog);
             return $activityLog;
         }
         else
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to electrify an Iron Sword, but the lightning was arcing and sparking violently, so ' . $pet->getName() . ' decided to wait a bit...', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to electrify an Iron Sword, but the lightning started arcing and sparking rather violently, so ' . $pet->getName() . ' decided to wait a bit...', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createLivewire(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+
+            $this->inventoryService->loseItem('Lightning in a Bottle', $pet->getOwner(), LocationEnum::HOME, 1);
+            $pet->increaseSafety(-$this->squirrel3->rngNextInt(4, 8));
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to electrify a Glass Pendulum, but the lightning escaped, and ' . $pet->getName() . ' got shocked :(', '');
+            return $activityLog;
+        }
+        else if($roll >= 18)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::SMITH, true);
+            $this->inventoryService->loseItem('Lightning in a Bottle', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Glass Pendulum', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(3);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% electrified a Glass Pendulum laced with gold, creating a Livewire!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+            ;
+            $description = $this->squirrel3->rngNextInt(1, 10) === 1 ? ($pet->getName() . ' scienced this. With SCIENCE.') : ($pet->getName() . ' scienced this.');
+            $this->inventoryService->petCollectsItem('Livewire', $pet, $description, $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to electrify a Glass Pendulum, but the lightning started arcing and sparking rather violently, so ' . $pet->getName() . ' decided to wait a bit...', 'icons/activity-logs/confused');
         }
     }
 
