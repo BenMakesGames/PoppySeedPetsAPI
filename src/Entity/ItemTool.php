@@ -199,6 +199,11 @@ class ItemTool
      */
     private $whenGatherPreventGather = false;
 
+    /**
+     * @ORM\Column(type="string", length=40, nullable=true)
+     */
+    private $adventureDescription;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -404,7 +409,9 @@ class ItemTool
 
         if($this->getLeadsToAdventure())
         {
-            if($this->getId() === 205) // aubergine commander
+            if($this->getAdventureDescription())
+                $modifiers[] = 'leads to adventure: ' . $this->getAdventureDescription();
+            else if($this->getId() === 205) // aubergine commander
                 $modifiers[] = 'leads to... adventure??';
             else
                 $modifiers[] = 'leads to adventure!';
@@ -710,6 +717,18 @@ class ItemTool
     public function setWhenGatherPreventGather(bool $whenGatherPreventGather): self
     {
         $this->whenGatherPreventGather = $whenGatherPreventGather;
+
+        return $this;
+    }
+
+    public function getAdventureDescription(): ?string
+    {
+        return $this->adventureDescription;
+    }
+
+    public function setAdventureDescription(?string $adventureDescription): self
+    {
+        $this->adventureDescription = $adventureDescription;
 
         return $this;
     }
