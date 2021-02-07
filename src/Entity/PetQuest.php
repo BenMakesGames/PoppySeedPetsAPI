@@ -48,6 +48,11 @@ class PetQuest
      */
     private $lastUpdated;
 
+    public function __construct()
+    {
+        $this->createdOn = new \DateTimeImmutable();
+    }
+
     public function getId(): ?int
     {
         return $this->id;

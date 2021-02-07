@@ -64,7 +64,7 @@ class ChocolateMansion
 
         $petFurthestRoom = $this->petQuestRepository->findOrCreate($pet, 'Chocolate Mansion Furthest Room', self::QUEST_VALUE_UP_TO_FOYER);
 
-        $maxRoom = min($roomsAvailableQuest->getValue(), $petFurthestRoom);
+        $maxRoom = min($roomsAvailableQuest->getValue(), $petFurthestRoom->getValue());
 
         $activityLog = null;
         $changes = new PetChanges($pet);
@@ -477,18 +477,37 @@ class ChocolateMansion
     {
         $pet = $petWithSkills->getPet();
         $description = $this->getEntryDescription($pet);
+        $climbing = $this->rng->rngNextInt(1, 5) <= $petWithSkills->getClimbingBonus()->getTotal();
 
         if($quest->getValue() === 1)
         {
             $quest->setValue(2);
             $description .= 'They tried to enter the mansion\'s front door, but two, giant choco-steel bars blocked entry... ';
+
+            if($climbing)
+                $description .= 'so instead, they climbed up to the roof of the mansion, and broke off a couple of its chocolate shingles.';
+            else
+                $description .= 'while they were poking around, ';
         }
         else
-            $description .= 'They explored the mansion\'s front patio; ';
+        {
+            if($climbing)
+                $description .= 'They climbed the awning over the mansion\'s front patio, worked their way up to the roof, and broke off a couple of its chocolate singles.';
+            else
+                $description .= 'They explored the mansion\'s front patio; while they were poking around, ';
+        }
 
-        $description .= 'while they were poking around, ';
+        if($climbing)
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
 
-        if($this->rng->rngNextBool())
+            $activityLog = $this->responseService->createActivityLog($pet, $description, '');
+            $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
+
+            $this->inventoryService->petCollectsItem('Chocolate Bar', $pet, $pet->getName() . ' broke this "shingle" off the roof of le Manoir de Chocolat.', $activityLog);
+            $this->inventoryService->petCollectsItem('Chocolate Bar', $pet, $pet->getName() . ' broke this "shingle" off the root of le Manoir de Chocolat.', $activityLog);
+        }
+        else if($this->rng->rngNextBool())
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
 
