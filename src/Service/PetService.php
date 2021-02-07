@@ -34,6 +34,7 @@ use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\BurntForestService;
+use App\Service\PetActivity\ChocolateMansion;
 use App\Service\PetActivity\Crafting\NotReallyCraftsService;
 use App\Service\PetActivity\CraftingService;
 use App\Service\PetActivity\DeepSeaService;
@@ -97,6 +98,7 @@ class PetService
     private $letterService;
     private $userQuestRepository;
     private $squirrel3;
+    private $chocolateMansion;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -113,7 +115,7 @@ class PetService
         GuildService $guildService, InventoryService $inventoryService, BurntForestService $burntForestService,
         DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService, LetterService $letterService,
         PetSummonedAwayService $petSummonedAwayService, InventoryModifierService $toolBonusService,
-        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3
+        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, ChocolateMansion $chocolateMansion
     )
     {
         $this->em = $em;
@@ -153,6 +155,7 @@ class PetService
         $this->notReallyCraftsService = $notReallyCraftsService;
         $this->letterService = $letterService;
         $this->userQuestRepository = $userQuestRepository;
+        $this->chocolateMansion = $chocolateMansion;
     }
 
     /**
@@ -854,6 +857,14 @@ class PetService
                 if($this->squirrel3->rngNextInt(1, 100) === 1)
                 {
                     $this->treasureMapService->doEggplantCurse($pet);
+                    return true;
+                }
+                return false;
+
+            case 'Chocolate Key':
+                if($this->squirrel3->rngNextInt(1, 4) === 1)
+                {
+                    $this->chocolateMansion->adventure($petWithSkills);
                     return true;
                 }
                 return false;

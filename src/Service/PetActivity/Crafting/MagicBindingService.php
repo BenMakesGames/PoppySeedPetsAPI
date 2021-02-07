@@ -2136,7 +2136,7 @@ class MagicBindingService
             $this->inventoryService->loseItem('White Feathers', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Rapier', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(mt_rand(3, 6));
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(3, 6));
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a White Épée.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
             ;

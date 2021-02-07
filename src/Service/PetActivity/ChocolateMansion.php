@@ -17,6 +17,7 @@ use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
 
 class ChocolateMansion
 {
@@ -27,11 +28,12 @@ class ChocolateMansion
     private $petExperienceService;
     private $responseService;
     private $petQuestRepository;
+    private $em;
 
     public function __construct(
         UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, ItemRepository $itemRepository,
         InventoryService $inventoryService, PetExperienceService $petExperienceService, ResponseService $responseService,
-        PetQuestRepository $petQuestRepository
+        PetQuestRepository $petQuestRepository, EntityManagerInterface $em
     )
     {
         $this->userQuestRepository = $userQuestRepository;
@@ -41,11 +43,15 @@ class ChocolateMansion
         $this->petExperienceService = $petExperienceService;
         $this->responseService = $responseService;
         $this->petQuestRepository = $petQuestRepository;
+        $this->em = $em;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
     {
         $pet = $petWithSkills->getPet();
+
+        $this->em->remove($pet->getTool());
+        $pet->setTool(null);
 
         $roomsAvailableQuest = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Chocolate Mansion Rooms', 1);
 
@@ -99,18 +105,27 @@ class ChocolateMansion
 
     private function exploreAttic(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+        $description = $this->getEntryDescription($pet);
+
         // TODO: fight chocolate spectre
         // loot: Quintessence, Chocolate-stained Cloth, Chocolate Feather Bonnet
     }
 
     private function exploreCellar(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+        $description = $this->getEntryDescription($pet);
+
         // TODO: fight chocolate vampire
         // loot: Blood Wine, Chocolate Wine, Chocolate Top Hat
     }
 
     private function exploreStudy(ComputedPetSkills $petWithSkills, UserQuest $quest): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+        $description = $this->getEntryDescription($pet);
+
         // TODO: possible to solve chemistry puzzle, unlocking Cellar and Attic
         //$quest->setValue(8);
 
@@ -119,6 +134,9 @@ class ChocolateMansion
 
     private function exploreMasterBedroom(ComputedPetSkills $petWithSkills, UserQuest $quest): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+        $description = $this->getEntryDescription($pet);
+
         // TODO: possible to find secret passage, unlocking Cellar and Attic
         //$quest->setValue(8);
 
@@ -127,6 +145,9 @@ class ChocolateMansion
 
     private function exploreParlor(ComputedPetSkills $petWithSkills, UserQuest $quest): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+        $description = $this->getEntryDescription($pet);
+
         // TODO: possible to play correct tune on piano, unlocking Cellar and Attic
         //$quest->setValue(8);
 
@@ -135,19 +156,85 @@ class ChocolateMansion
 
     private function exploreFoyer(ComputedPetSkills $petWithSkills, PetQuest $petFurthestRoom): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+        $description = $this->getEntryDescription($pet);
+
         if($petFurthestRoom->getValue() === 3)
         {
-            $petFurthestRoom->setValue(6);
-            // TODO: marvel at spectacle
+            $petFurthestRoom->setValue(8);
+            $description .= 'They stepped into the mansion for the first time, and took a moment marvel at the grand foyer before snooping around. While there, ';
+        }
+        else
+        {
+            $description .= 'They spent some time snooping around the foyer; while there, ';
         }
 
-        // TODO: search suit of armor, or reset grandfather clock; botch: get attacked by falling chandelier
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $difficulty = 16;
+        $loot = null;
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, $roll >= $difficulty);
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH ]);
+            $pet->increaseSafety(-$this->rng->rngNextInt(3, 6));
+            $description .= 'a chocolate chandelier fell, almost hitting %pet:' . $pet->getId() . '.name%! They grabbed a piece of its remains, and hightailed it out of there.';
+        }
+        else if($roll >= $difficulty)
+        {
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH ]);
+
+            if($this->rng->rngNextBool())
+            {
+                $loot = $this->itemRepository->findOneByName($this->rng->rngNextFromArray([
+                    'Minor Scroll of Riches', 'Piece of Cetgueli\'s Map', 'Wings', 'Cast Net',
+                    'Glowing Six-sided Die', 'Glowing Six-sided Die',
+                ]));
+                $description .= '%pet:' . $pet->getId() . '.name% opened the visor of a chocolate suit of armor, and found ' . $loot->getNameWithArticle() . ' inside!';
+                $comment = $pet->getName() . ' found this in a chocolate suit of armor.';
+            }
+            else
+            {
+                $loot = $this->itemRepository->findOneByName($this->rng->rngNextFromArray([
+                    'Pepperbox', 'Gold Bar', 'Warping Wand', 'XOR',
+                    'Glowing Six-sided Die', 'Glowing Six-sided Die',
+                ]));
+                $description .= '%pet:' . $pet->getId() . '.name% noticed a chocolate grandfather clock had the wrong time, and fixed it. While they had it open, they found ' . $loot->getNameWithArticle() . ' inside!';
+                $comment = $pet->getName() . ' found this in a chocolate grandfather clock.';
+            }
+
+        }
+        else
+        {
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH ]);
+            $pet->increaseEsteem(-2);
+
+            $loot = 'Chocolate Bar';
+
+            if($this->rng->rngNextBool())
+            {
+                $description .= '%pet:' . $pet->getId() . '.name% tried to open the visor of a chocolate suit of armor, but accidentally broke a piece off, instead!';
+                $comment = 'A piece broken off of a chocolate suit of armor.';
+            }
+            else
+            {
+                $description .= '%pet:' . $pet->getId() . '.name% noticed a chocolate grandfather clock had the wrong time, and tried to fix it, but accidentally broke a piece off, instead!';
+                $comment = 'A piece broken off of a chocolate grandfather clock.';
+            }
+        }
+
+        $activityLog = $this->responseService->createActivityLog($pet, $description, '');
+
+        if($loot)
+            $this->inventoryService->petCollectsItem($loot, $pet, $comment, $activityLog);
+
+        return $activityLog;
     }
 
     private function exploreGardens(ComputedPetSkills $petWithSkills, UserQuest $quest): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-
         $description = $this->getEntryDescription($pet);
 
         if($petWithSkills->getClimbingBonus()->getTotal() > 0)
@@ -217,7 +304,6 @@ class ChocolateMansion
     private function explorePatio(ComputedPetSkills $petWithSkills, UserQuest $quest): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-
         $description = $this->getEntryDescription($pet);
 
         if($quest->getValue() === 1)

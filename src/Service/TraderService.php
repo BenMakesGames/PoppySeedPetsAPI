@@ -215,14 +215,6 @@ class TraderService
         return [
             new TraderOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Filthy Cloth'), 1),
-                    TraderOfferCostOrYield::createMoney(5)
-                ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('White Cloth'), 1) ],
-                'There you go! Good as new!'
-            ),
-            new TraderOffer(
-                [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Dragon Flag'), 1),
                     TraderOfferCostOrYield::createMoney(10)
                 ],
@@ -244,6 +236,25 @@ class TraderService
                 ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('White Feathers'), 1) ],
                 'Sometimes it\'s just easier to defeat a demon than a pegasus, you know?'
+            ),
+            new TraderOffer(
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Filthy Cloth'), 1),
+                    TraderOfferCostOrYield::createMoney(5)
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('White Cloth'), 1) ],
+                'There you go! Good as new!'
+            ),
+            new TraderOffer(
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Chocolate-stained Cloth'), 1),
+                    TraderOfferCostOrYield::createMoney(5)
+                ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('White Cloth'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Cocoa Powder'), 1),
+                ],
+                'There you go! Good as new! And I even kept the Cocoa Powder for you.'
             ),
             new TraderOffer(
                 [

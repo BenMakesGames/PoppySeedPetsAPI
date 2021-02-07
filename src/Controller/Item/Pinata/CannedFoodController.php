@@ -36,7 +36,7 @@ class CannedFoodController extends PoppySeedPetsItemController
 
         $cansOpened = $userStatsRepository->findOrCreate($user, UserStatEnum::CANS_OF_FOOD_OPENED);
 
-        if($cansOpened->getValue() > 2 && mt_rand(1, 50) === 1)
+        if($cansOpened->getValue() > 2 && $squirrel3->rngNextInt(1, 50) === 1)
         {
             $worms = $squirrel3->rngNextInt(4, 12);
 
