@@ -109,7 +109,7 @@ class ChocolateMansion
 
     private function getEntryDescription(Pet $pet): string
     {
-        return '%pet:' . $pet->getId() . '.name% used their Chocolate Key to open the gates of le Manoir de Chocolate. ';
+        return '%pet:' . $pet->getId() . '.name% used (and broke) their Chocolate Key to open the gates of le Manoir de Chocolate. ';
     }
 
     private function exploreAttic(ComputedPetSkills $petWithSkills): PetActivityLog

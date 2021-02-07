@@ -78,7 +78,9 @@ class CraftingService
 
         if(array_key_exists('Chocolate Bar', $quantities))
         {
-            $possibilities[] = new ActivityCallback($this, 'makeChocolateTool', 8);
+            $weight = $this->calendarService->isValentinesOrAdjacent() ? 80 : 8;
+
+            $possibilities[] = new ActivityCallback($this, 'makeChocolateTool', $weight);
         }
 
         if(array_key_exists('Fluff', $quantities) || array_key_exists('Cobweb', $quantities))
