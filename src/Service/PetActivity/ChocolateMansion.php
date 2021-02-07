@@ -6,6 +6,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\PetQuest;
 use App\Entity\UserQuest;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\ComputedPetSkills;
@@ -21,6 +22,12 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ChocolateMansion
 {
+    private const QUEST_VALUE_PATIO_ONLY = 1;
+    private const QUEST_VALUE_UP_TO_GARDENS = 2;
+    private const QUEST_VALUE_UP_TO_FOYER = 3;
+    private const QUEST_VALUE_ALL_EXCEPT_CELLAR_AND_ATTIC = 6;
+    private const QUEST_VALUE_FULL_ACCESS = 8;
+
     private $userQuestRepository;
     private $rng;
     private $itemRepository;
@@ -53,9 +60,9 @@ class ChocolateMansion
         $this->em->remove($pet->getTool());
         $pet->setTool(null);
 
-        $roomsAvailableQuest = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Chocolate Mansion Rooms', 1);
+        $roomsAvailableQuest = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Chocolate Mansion Rooms', self::QUEST_VALUE_PATIO_ONLY);
 
-        $petFurthestRoom = $this->petQuestRepository->findOrCreate($pet, 'Chocolate Mansion Furthest Room', 3);
+        $petFurthestRoom = $this->petQuestRepository->findOrCreate($pet, 'Chocolate Mansion Furthest Room', self::QUEST_VALUE_UP_TO_FOYER);
 
         $maxRoom = min($roomsAvailableQuest->getValue(), $petFurthestRoom);
 
@@ -90,6 +97,8 @@ class ChocolateMansion
                 break;
         }
 
+
+        $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY);
 
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));
@@ -126,10 +135,77 @@ class ChocolateMansion
         $pet = $petWithSkills->getPet();
         $description = $this->getEntryDescription($pet);
 
-        // TODO: possible to solve chemistry puzzle, unlocking Cellar and Attic
-        //$quest->setValue(8);
+        $searchRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $success = $searchRoll >= 15;
 
-        // loot: Tiny Scroll of Resources, Le Chocolat (chocolate recipe book), Scroll of Chocolate
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, $success);
+
+        if($success)
+        {
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH ]);
+
+            $book = $this->rng->rngNextFromArray([
+                'Tiny Scroll of Resources', 'Le Chocolat', 'Scroll of Chocolate'
+            ]);
+
+            $description .= 'They entered a large study, and searched the shelves for anything interesting. Most of the books just broke into chocolate, but they did find a usable ' . $book . '!';
+
+            $activityLog = $this->responseService->createActivityLog($pet, $description, '');
+
+            $this->inventoryService->petCollectsItem($book, $pet, $pet->getName() . ' found this in the study of le Manoir de Chocolat.', $activityLog);
+        }
+        else
+        {
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH ]);
+
+            $description .= 'They entered a large study, and searched the shelves for anything interesting, but every book they checked broke into pieces of chocolate!';
+
+            $activityLog = $this->responseService->createActivityLog($pet, $description, '');
+        }
+
+        $this->inventoryService->petCollectsItem('Chocolate Bar', $pet, $pet->getName() . ' broke this off of a chocolate book in the study of le Manoir de Chocolat.', $activityLog);
+
+        if($searchRoll > 2 && $quest->getValue() === self::QUEST_VALUE_ALL_EXCEPT_CELLAR_AND_ATTIC)
+        {
+            $loot = null;
+
+            $chemistryDescription = 'On one of the tables in the study, %pet:' . $pet->getId() . '.name% saw a table littered with notes, bottles, and chemistry equipment. ';
+
+            $scienceRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+
+            if($scienceRoll <= 2)
+            {
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(5, 10), PetActivityStatEnum::PROGRAM, false);
+
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+                $chemistryDescription .= 'They weren\'t sure what to make of it.';
+            }
+            else if($scienceRoll >= 15)
+            {
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::PROGRAM, true);
+
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+                $pet->increaseEsteem(8);
+
+                $chemistryDescription .= 'They looked over the notes, and realized it was some kind of "dungeon puzzle". After following the instructions, they produced a liquid which puffed away immediately, and a strange "click" was heard from elsewhere in the mansion! (Dungeon puzzle!)';
+                $quest->setValue(self::QUEST_VALUE_FULL_ACCESS);
+            }
+            else
+            {
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::PROGRAM, true);
+
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+                $chemistryDescription .= 'They looked over the notes, and realized it was some kind of "dungeon puzzle", but after following the instructions, they were left with some Useless Fizz. (Must have messed something up!)';
+                $loot = 'Useless Fizz';
+            }
+
+            $activityLog->setEntry($activityLog->getEntry() . ' ' . $chemistryDescription);
+
+            if($loot)
+                $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' created this while trying to do some SCIENCE.', $activityLog);
+        }
+
+        return $activityLog;
     }
 
     private function exploreMasterBedroom(ComputedPetSkills $petWithSkills, UserQuest $quest): PetActivityLog
@@ -137,21 +213,110 @@ class ChocolateMansion
         $pet = $petWithSkills->getPet();
         $description = $this->getEntryDescription($pet);
 
-        // TODO: possible to find secret passage, unlocking Cellar and Attic
-        //$quest->setValue(8);
+        $searchRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() * 2 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $success = $searchRoll >= 20;
 
-        // loot: Chocolate Chest (no key needed; a pet helps by eating off the lock), Music Notes (from a musicbox)
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, $success);
+
+        if($success)
+        {
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH ]);
+
+            $description .= 'They entered the master bedroom, and searched for anything interesting. Underneath the bed, they found a Chocolate Chest!';
+            $loot = 'Chocolate Chest';
+        }
+        else
+        {
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH ]);
+
+            $description .= 'They entered the master bedroom, and searched for anything interesting, but just found a bunch of Chocolate-stained Cloth...';
+            $loot = 'Chocolate-stained Cloth';
+        }
+
+        $activityLog = $this->responseService->createActivityLog($pet, $description, '');
+
+        $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this in the master bedroom of le Manoir de Chocolat.', $activityLog);
+
+        if($searchRoll >= 25 && $quest->getValue() === self::QUEST_VALUE_ALL_EXCEPT_CELLAR_AND_ATTIC)
+        {
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH ]);
+            $pet->increaseEsteem(8);
+
+            $activityLog->setEntry($activityLog->getEntry() . ' While they were poking around, %pet:' . $pet->getId() . '.name% found a secret door with passages to the mansion\'s cellar and attic, and unlocked the doors to both before returning home!');
+
+            $quest->setValue(self::QUEST_VALUE_FULL_ACCESS);
+        }
+
+        return $activityLog;
     }
 
     private function exploreParlor(ComputedPetSkills $petWithSkills, UserQuest $quest): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $description = $this->getEntryDescription($pet);
+        $description = $this->getEntryDescription($pet) . 'They entered a parlor, and looked around for anything interesting. ';
 
-        // TODO: possible to play correct tune on piano, unlocking Cellar and Attic
-        //$quest->setValue(8);
+        $searchRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() * 2 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
 
-        // loot: Chocolate Wine, Chocolate Cue Stick, Chocolate Cue Ball, and/or Chocolate LP
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH ]);
+
+        if($this->rng->rngNextBool())
+        {
+            $loot = 'Chocolate Cue Ball';
+            $description .= 'A chocolate pool table caught their attention; %pet:' . $pet->getId() . '.name% took one of its cue balls.';
+        }
+        else
+        {
+            $loot = 'Chocolate Wine';
+            $description .= 'A bottle of Chocolate Wine caught their attention; %pet:' . $pet->getId() . '.name% grabbed it.';
+        }
+
+        $activityLog = $this->responseService->createActivityLog($pet, $description, '');
+
+        $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this in the parlor of le Manoir de Chocolat.', $activityLog);
+
+        if($searchRoll > 2 && $quest->getValue() === self::QUEST_VALUE_ALL_EXCEPT_CELLAR_AND_ATTIC)
+        {
+            $loot = null;
+
+            $musicDescription = 'The parlor also had a grand piano with some sheet music on it';
+
+            $musicRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMusic()->getTotal());
+
+            if($musicRoll <= 2)
+            {
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(5, 10), PetActivityStatEnum::OTHER, false);
+
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::MUSIC ]);
+                $musicDescription .= ', but the music was crazy-complicated, so %pet:' . $pet->getId() . '.name% left it alone.';
+            }
+            else if($musicRoll >= 15)
+            {
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::PROGRAM, true);
+
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
+                $musicDescription .= '. %pet:' . $pet->getId() . '.name% played it, producing a Music Note; when they had finished, a strange "click" was heard from elsewhere in the mansion. (A dungeon puzzle!?)';
+                $pet->increaseEsteem(8);
+                $quest->setValue(self::QUEST_VALUE_FULL_ACCESS);
+                $loot = 'Music Note';
+            }
+            else
+            {
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::PROGRAM, true);
+
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+                $musicDescription .= '. %pet:' . $pet->getId() . '.name% tried to play it, but couldn\'t get past a tricky part in the middle. They produced a Music Note, but ultimately had to give up, and move on.';
+                $loot = 'Music Note';
+            }
+
+            $activityLog->setEntry($activityLog->getEntry() . ' ' . $musicDescription);
+
+            if($loot)
+                $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' created this while playing a piano in the parlor of le Manoir de Chocolat.', $activityLog);
+        }
+
+        return $activityLog;
     }
 
     private function exploreFoyer(ComputedPetSkills $petWithSkills, PetQuest $petFurthestRoom): PetActivityLog
@@ -159,10 +324,10 @@ class ChocolateMansion
         $pet = $petWithSkills->getPet();
         $description = $this->getEntryDescription($pet);
 
-        if($petFurthestRoom->getValue() === 3)
+        if($petFurthestRoom->getValue() === self::QUEST_VALUE_UP_TO_FOYER)
         {
-            $petFurthestRoom->setValue(8);
-            $description .= 'They stepped into the mansion for the first time, and took a moment marvel at the grand foyer before snooping around. While there, ';
+            $petFurthestRoom->setValue(self::QUEST_VALUE_FULL_ACCESS);
+            $description .= 'They stepped into the mansion for the first time, and took a moment marvel at the grand foyer... before immediately snooping around! While there, ';
         }
         else
         {
@@ -203,7 +368,6 @@ class ChocolateMansion
                 $description .= '%pet:' . $pet->getId() . '.name% noticed a chocolate grandfather clock had the wrong time, and fixed it. While they had it open, they found ' . $loot->getNameWithArticle() . ' inside!';
                 $comment = $pet->getName() . ' found this in a chocolate grandfather clock.';
             }
-
         }
         else
         {
@@ -236,6 +400,7 @@ class ChocolateMansion
     {
         $pet = $petWithSkills->getPet();
         $description = $this->getEntryDescription($pet);
+        $usedMerit = false;
 
         if($petWithSkills->getClimbingBonus()->getTotal() > 0)
         {
@@ -249,6 +414,7 @@ class ChocolateMansion
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::GATHER, true);
 
             $description .= 'They explored the mansion\'s chocolate hedge maze, which was super-easy thanks to their Eidetic Memory! ';
+            $usedMerit = true;
             $success = true;
         }
         else if($pet->hasMerit(MeritEnum::GOURMAND) && $pet->getFood() <= $pet->getStomachSize() * 3 / 4)
@@ -258,6 +424,7 @@ class ChocolateMansion
             $pet->increaseFood($this->rng->rngNextInt(4, 8));
 
             $description .= 'They explored the mansion\'s chocolate hedge maze, eating their way to the center! ';
+            $usedMerit = true;
             $success = true;
         }
         else
@@ -279,9 +446,9 @@ class ChocolateMansion
 
         if($success)
         {
-            if($quest->getValue() === 2)
+            if($quest->getValue() === self::QUEST_VALUE_UP_TO_GARDENS)
             {
-                $quest->setValue(6); // the inside of the mansion
+                $quest->setValue(self::QUEST_VALUE_ALL_EXCEPT_CELLAR_AND_ATTIC);
                 $description .= 'There was a chocolate fountain in the center; %pet:' . $pet->getId() . '.name% bottled some of the liquid. While they were doing so, they spotted a lever. Pulling it, a large \\*CLANK\\* was heard coming from the front of the house!';
             }
             else
@@ -291,14 +458,19 @@ class ChocolateMansion
 
             $activityLog = $this->responseService->createActivityLog($pet, $description, '');
 
-            $this->inventoryService->petCollectsItem('Giant Bottle of Chocolate Syrup', $pet, $pet->getName() . ' collected this from a chocolate fountain in the center of le Manoir de Chocolat\'s chocolate hedge maze.', $activityLog);
-
-            return $activityLog;
+            $this->inventoryService->petCollectsItem('Chocolate Syrup', $pet, $pet->getName() . ' collected this from a chocolate fountain in the center of le Manoir de Chocolat\'s chocolate hedge maze.', $activityLog);
+            $this->inventoryService->petCollectsItem('Chocolate Syrup', $pet, $pet->getName() . ' collected this from a chocolate fountain in the center of le Manoir de Chocolat\'s chocolate hedge maze.', $activityLog);
+            if($this->rng->rngNextBool()) $this->inventoryService->petCollectsItem('Chocolate Syrup', $pet, $pet->getName() . ' collected this from a chocolate fountain in the center of le Manoir de Chocolat\'s chocolate hedge maze.', $activityLog);
         }
         else
         {
-            return $this->responseService->createActivityLog($pet, $description, '');
+            $activityLog = $this->responseService->createActivityLog($pet, $description, '');
         }
+
+        if($usedMerit)
+            $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT);
+
+        return $activityLog;
     }
 
     private function explorePatio(ComputedPetSkills $petWithSkills, UserQuest $quest): PetActivityLog
@@ -309,7 +481,7 @@ class ChocolateMansion
         if($quest->getValue() === 1)
         {
             $quest->setValue(2);
-            $description .= 'They tried to enter the mansion\'s front door, but two, giant steel bars blocked entry... ';
+            $description .= 'They tried to enter the mansion\'s front door, but two, giant choco-steel bars blocked entry... ';
         }
         else
             $description .= 'They explored the mansion\'s front patio; ';

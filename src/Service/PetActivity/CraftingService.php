@@ -14,6 +14,7 @@ use App\Model\ComputedPetSkills;
 use App\Model\ItemQuantity;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
+use App\Service\CalendarService;
 use App\Service\InventoryService;
 use App\Service\PetActivity\Crafting\EventLanternService;
 use App\Service\PetActivity\Crafting\Helpers\TwuWuvCraftingService;
@@ -38,13 +39,14 @@ class CraftingService
     private $eventLanternService;
     private $twuWuvCraftingService;
     private $squirrel3;
+    private $calendarService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, SmithingService $smithingService,
         MagicBindingService $magicBindingService, PlasticPrinterService $plasticPrinterService,
         PetExperienceService $petExperienceService, StickCraftingService $stickCraftingService,
         ItemRepository $itemRepository, EventLanternService $eventLanternService, TwuWuvCraftingService $twuWuvCraftingService,
-        Squirrel3 $squirrel3
+        Squirrel3 $squirrel3, CalendarService $calendarService
     )
     {
         $this->responseService = $responseService;
@@ -58,6 +60,7 @@ class CraftingService
         $this->eventLanternService = $eventLanternService;
         $this->twuWuvCraftingService = $twuWuvCraftingService;
         $this->squirrel3 = $squirrel3;
+        $this->calendarService = $calendarService;
     }
 
     /**
@@ -832,17 +835,22 @@ class CraftingService
     {
         $pet = $petWithSkills->getPet();
 
-        $making = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
-            'Chocolate Sword',
-            'Chocolate Sword',
-            'Chocolate Hammer',
-            'Chocolate Hammer',
-            'Chocolate Key'
-        ]));
+        if($this->calendarService->isValentinesOrAdjacent())
+            $making = $this->itemRepository->findOneByName('Chocolate Key');
+        else
+        {
+            $making = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+                'Chocolate Sword',
+                'Chocolate Sword',
+                'Chocolate Hammer',
+                'Chocolate Hammer',
+                'Chocolate Key'
+            ]));
+        }
 
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
-        $botchChance = $pet->getFood() <= 0 ? 2 : 1;
+        $botchChance = $pet->getFood() <= 0 ? 3 : 1;
 
         if($roll <= $botchChance)
         {
@@ -852,19 +860,36 @@ class CraftingService
             $this->inventoryService->loseItem('Chocolate Bar', $pet->getOwner(), LocationEnum::HOME, 1);
 
             $pet->increaseFood($this->squirrel3->rngNextInt(2, 4));
+            $pet->increaseEsteem(-2);
 
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started making a ' . $making->getName() . ', but ended up eating the Chocolate Bar, instead >_>', '');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started making ' . $making->getNameWithArticle() . ', but ended up eating the Chocolate Bar, instead >_>', '');
         }
         else if($roll >= 10)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
             $this->inventoryService->loseItem('Chocolate Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% molded a Chocolate Bar into a ' . $making->getName() . '.', 'items/' . $making->getImage())
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
-            ;
+            $makeTwo = $roll >= 20 && $making->getName() === 'Chocolate Key';
+
+            if($makeTwo)
+            {
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
+                $pet->increaseEsteem(4);
+
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% molded a Chocolate Bar into TWO ' . $making->getName() . 's!', 'items/' . $making->getImage())
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ;
+
+                $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' made this out of a Chocolate Bar.', $activityLog);
+            }
+            else
+            {
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% molded a Chocolate Bar into ' . $making->getNameWithArticle() . '.', 'items/' . $making->getImage())
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+                ;
+            }
 
             $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' made this out of a Chocolate Bar.', $activityLog);
 
@@ -874,7 +899,7 @@ class CraftingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a ' . $making->getName() . ', but couldn\'t get the mold right...', '');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make ' . $making->getNameWithArticle() . ', but couldn\'t get the mold right...', '');
         }
     }
 

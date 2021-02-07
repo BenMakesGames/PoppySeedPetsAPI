@@ -13,6 +13,7 @@ use App\Repository\EnchantmentRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\PetRepository;
+use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
@@ -1234,5 +1235,76 @@ class BoxController extends PoppySeedPetsItemController
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from Bob\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
 
         return $this->countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+    }
+
+    /**
+     * @Route("/chocolate/{box}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openChocolateChest(
+        Inventory $box, ResponseService $responseService, InventoryService $inventoryService, PetRepository $petRepository,
+        SpiceRepository $spiceRepository, UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
+        Squirrel3 $squirrel3
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($box, 'box/chocolate/#/open');
+        $this->validateHouseSpace($box, $inventoryService);
+
+        $location = $box->getLocation();
+        $lockedToOwner = $box->getLockedToOwner();
+
+        /** @var Pet $pet */
+        $pet = $squirrel3->rngNextFromArray($petRepository->findBy([ 'owner' => $user, 'inDaycare' => false ]));
+
+        if($pet)
+        {
+            $description = 'The chest is locked. You struggle with it for a bit before ' . $pet->getName() . ' simply eats the lock. ';
+            $pet
+                ->increaseFood($squirrel3->rngNextInt(2, 4))
+                ->increaseEsteem(2)
+            ;
+        }
+        else
+        {
+            $description = 'The chest is locked... so you eat the lock. ';
+        }
+
+        $possibleItems = [
+            'Chocolate Bar', 'Chocolate Sword', 'Chocolate Cake Pops', 'Chocolate Meringue', 'Chocolate Syrup',
+            'Chocolate Toffee Matzah', 'Chocolate-covered Honeycomb', 'Chocolate-frosted Donut',
+            'Mini Chocolate Chip Cookies', 'Slice of Chocolate Cream Pie', 'Chocolate Key'
+        ];
+
+        $userStatsRepository->incrementStat($user, 'Looted ' . $box->getItem()->getNameWithArticle());
+
+        $numberOfItems = $squirrel3->rngNextInt(2, 4);
+
+        for($i = 0; $i < $numberOfItems; $i++)
+        {
+            $item = $inventoryService->receiveItem($squirrel3->rngNextFromArray($possibleItems), $user, $box->getCreatedBy(), $user->getName() . ' found inside ' . $box->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
+
+            $lootNames[] = $item->getItem()->getNameWithArticle();
+        }
+
+        $possibleGrossItems = [
+            'Tomato "Sushi"', 'Tentacle', 'Hot Dog', 'Gefilte Fish', 'Egg Salad', 'Minestrone', 'Carrot Juice',
+            'Onion Rings', 'Iron Sword',
+        ];
+
+        $grossItem = $inventoryService->receiveItem($squirrel3->rngNextFromArray($possibleGrossItems), $user, $box->getCreatedBy(), $user->getName() . ' found inside ' . $box->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
+        $grossItem->setSpice($spiceRepository->findOneByName('Chocolate-covered'));
+        $lootNames[] = 'a Chocolate-covered ' . $grossItem->getItem()->getName();
+
+        $em->remove($box);
+
+        sort($lootNames);
+
+        $description .= 'Inside the chest, you find ' . ArrayFunctions::list_nice($lootNames) . '!';
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess($description, [ 'itemDeleted' => true ]);
     }
 }
