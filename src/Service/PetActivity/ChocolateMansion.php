@@ -115,19 +115,129 @@ class ChocolateMansion
     private function exploreAttic(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $description = $this->getEntryDescription($pet);
+        $description = $this->getEntryDescription($pet) . 'They entered the attic, where an aggressive spectre was lying in wait! ';
+        $loot = [];
 
-        // TODO: fight chocolate spectre
-        // loot: Quintessence, Chocolate-stained Cloth, Chocolate Feather Bonnet
+        $combatRoll = $this->rng->rngNextInt(1, $this->rng->rngNextInt(16, 20) + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl(false)->getTotal());
+        $magicRoll = $this->rng->rngNextInt(1, $this->rng->rngNextInt(16, 20) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getUmbra()->getTotal());
+
+        if($combatRoll > $magicRoll)
+        {
+            if($combatRoll >= 20)
+            {
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ]);
+
+                $loot[] = 'Chocolate-stained Cloth';
+
+                if($combatRoll >= 25)
+                {
+                    $loot[] = 'Chocolate Feather Bonnet';
+                    $description .= '%pet:' . $pet->getId() . '.name% fought valiantly, and the spectre was forced to flee, dropping its Chocolate Top Hat! %pet:' . $pet->getId() . '.name% took it, along with some Chocolate-stained Cloth from the attic.';
+                }
+                else
+                {
+                    $loot[] = 'Quintessence';
+                    $description .= '%pet:' . $pet->getId() . '.name% fought valiantly, and the spectre was forced to flee, leaving a trail of Quintessence! %pet:' . $pet->getId() . '.name% collected it, along with some Chocolate-stained Cloth from the attic.';
+                }
+            }
+            else
+            {
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
+
+                $description .= '%pet:' . $pet->getId() . '.name% was overwhelmed by the attack, and forced to flee!';
+            }
+        }
+        else
+        {
+            if($magicRoll >= 20)
+            {
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
+
+                $loot[] = 'Chocolate-stained Cloth';
+
+                if($magicRoll >= 25)
+                {
+                    $loot[] = 'Chocolate Feather Bonnet';
+                    $description .= '%pet:' . $pet->getId() . '.name% evaded long enough to cast a banishing spell, and the spectre was forced to flee, dropping its Chocolate Feather Bonnet! %pet:' . $pet->getId() . '.name% took it, along with some Chocolate-stained Cloth from the attic.';
+                }
+                else
+                {
+                    $loot[] = 'Quintessence';
+                    $description .= '%pet:' . $pet->getId() . '.name% evaded long enough to cast a banishing spell, and the spectre was forced to flee, leaving a trail of Quintessence! %pet:' . $pet->getId() . '.name% collected it, along with some Chocolate-stained Cloth from the attic.';
+                }
+            }
+            else
+            {
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+
+                $description .= '%pet:' . $pet->getId() . '.name% tried to cast a banishing spell, but was overwhelmed by the attack, and forced to flee!';
+            }
+
+        }
+
+        $activityLog = $this->responseService->createActivityLog($pet, $description, '');
+
+        foreach($loot as $item)
+            $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' got this from a spectre in the attic of le Manoir de Chocolat.', $activityLog);
+
+        return $activityLog;
     }
 
     private function exploreCellar(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $description = $this->getEntryDescription($pet);
+        $description = $this->getEntryDescription($pet) . 'They entered the cellar, where a vampire was lying in wait! ';
+        $loot = [];
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl(false)->getTotal());
 
-        // TODO: fight chocolate vampire
-        // loot: Blood Wine, Chocolate Wine, Chocolate Top Hat
+        if($pet->getTool() && $pet->getTool()->isGrayscaling())
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, true);
+
+            $item = $this->itemRepository->findOneByName($this->rng->rngNextFromArray([
+                'Blood Wine', 'Chocolate Wine',
+            ]));
+
+            $loot[] = $item;
+
+            $description .= 'Fortunately, %pet:' . $pet->getId() . '.name%\'s pale color tricked the vampire into thinking they were the same sort of creatures. After apologizing, the vampire offered %pet:' . $pet->getId() . '.name% ' . $item->getNameWithArticle() . '. They accepted, and left as quickly as seemed polite.';
+        }
+        else if($roll >= 20)
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ]);
+
+            $loot[] = 'Chocolate Wine';
+
+            if($roll >= 25)
+            {
+                $loot[] = 'Chocolate Top Hat';
+                $description .= '%pet:' . $pet->getId() . '.name% fought valiantly, and the vampire was forced to flee, dropping its Chocolate Top Hat! %pet:' . $pet->getId() . '.name% took it, along with a glass of Chocolate Wine from the cellar.';
+            }
+            else
+            {
+                $loot[] = 'Blood Wine';
+                $description .= '%pet:' . $pet->getId() . '.name% fought valiantly, and the vampire was forced to flee! Afterwards, %pet:' . $pet->getId() . '.name% explored the cellar, and got a glass of Blood Wine, and Chocolate Wine.';
+            }
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
+
+            $description .= '%pet:' . $pet->getId() . '.name% was overwhelmed by the attack, and forced to flee!';
+        }
+
+        $activityLog = $this->responseService->createActivityLog($pet, $description, '');
+
+        foreach($loot as $item)
+            $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' got this from a vampire in the cellar of le Manoir de Chocolat.', $activityLog);
+
+        return $activityLog;
     }
 
     private function exploreStudy(ComputedPetSkills $petWithSkills, UserQuest $quest): PetActivityLog
