@@ -437,7 +437,7 @@ class ChocolateMansion
         if($petFurthestRoom->getValue() === self::QUEST_VALUE_UP_TO_FOYER)
         {
             $petFurthestRoom->setValue(self::QUEST_VALUE_FULL_ACCESS);
-            $description .= 'They stepped into the mansion for the first time, and took a moment marvel at the grand foyer... before immediately snooping around! While there, ';
+            $description .= 'They stepped into the mansion for the first time, and took a moment to marvel at the grand foyer... before immediately snooping around! While there, ';
         }
         else
         {
