@@ -57,7 +57,6 @@ use App\Service\PetActivity\Protocol7Service;
 use App\Service\PetActivity\TreasureMapService;
 use App\Service\PetActivity\UmbraService;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\Location;
 
 class PetService
 {

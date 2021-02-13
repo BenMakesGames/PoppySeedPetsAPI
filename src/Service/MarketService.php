@@ -4,15 +4,19 @@ namespace App\Service;
 use App\Entity\DailyMarketInventoryTransaction;
 use App\Entity\Inventory;
 use App\Entity\User;
+use App\Enum\UserStatEnum;
+use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class MarketService
 {
     private $em;
+    private $userStatsRepository;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, UserStatsRepository  $userStatsRepository)
     {
         $this->em = $em;
+        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function getItemToRaiseLimit(User $user): ?array
@@ -53,6 +57,8 @@ class MarketService
 
     public function transferItemToPlayer(Inventory $item, User $newOwner, int $location)
     {
+        $previousOwner = $item->getOwner();
+
         $item
             ->setOwner($newOwner)
             ->setSellPrice(null)
@@ -69,5 +75,8 @@ class MarketService
         if($item->getWearer())
             $item->getWearer()->setHat(null);
 
+        $this->userStatsRepository->incrementStat($previousOwner, UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $item->getSellPrice());
+        $this->userStatsRepository->incrementStat($previousOwner, UserStatEnum::ITEMS_SOLD_IN_MARKET, 1);
+        $this->userStatsRepository->incrementStat($newOwner, UserStatEnum::ITEMS_BOUGHT_IN_MARKET, 1);
     }
 }

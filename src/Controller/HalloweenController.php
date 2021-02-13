@@ -5,8 +5,6 @@ use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
-use App\Functions\ArrayFunctions;
-use App\Functions\GrammarFunctions;
 use App\Model\FoodWithSpice;
 use App\Repository\InventoryRepository;
 use App\Repository\UserQuestRepository;

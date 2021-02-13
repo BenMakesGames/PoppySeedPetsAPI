@@ -2,7 +2,6 @@
 namespace App\Controller;
 
 use App\Entity\MarketBid;
-use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\InventoryRepository;
@@ -12,7 +11,6 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\Location;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;

@@ -80,9 +80,9 @@ Sweet Beets are _brimming_ with Sugar, just waiting to be extracted!
 
 Quick method:
 
-1. Click "Cook & Combine"
+1. Click "Cook or Combine"
 2. Select one Sweet Beet
-3. Click "Cook & Combine" again
+3. Click "Cook or Combine" again
 4. Dries instantly, because reasons; don\'t worry about it
 
 ## Recipes

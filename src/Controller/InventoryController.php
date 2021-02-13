@@ -2,20 +2,12 @@
 namespace App\Controller;
 
 use App\Entity\Inventory;
-use App\Entity\KnownRecipes;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
-use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Repository\InventoryRepository;
-use App\Repository\ItemRepository;
-use App\Repository\KnownRecipesRepository;
 use App\Repository\MarketBidRepository;
-use App\Repository\RecipeRepository;
-use App\Repository\UserRepository;
-use App\Repository\UserStatsRepository;
-use App\Service\CalendarService;
 use App\Service\CookingService;
 use App\Service\MarketService;
 use App\Service\RecyclingService;
@@ -26,7 +18,6 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\Location;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -97,7 +88,7 @@ class InventoryController extends PoppySeedPetsController
         if(!\is_array($inventoryIds)) $inventoryIds = [ $inventoryIds ];
 
         if(count($inventoryIds) > 100)
-            throw new UnprocessableEntityHttpException('Oh, goodness, please don\'t try to cook & combine more than 100 items at a time. Sorry.');
+            throw new UnprocessableEntityHttpException('Oh, goodness, please don\'t try to Cook or Combine more than 100 items at a time! (Sorry for the inconvenience...)');
 
         $inventory = $inventoryRepository->findBy([
             'owner' => $user,

@@ -32,9 +32,9 @@ class Cooking101Controller extends PoppySeedPetsItemController
 Your house comes with everything you need: stove, pots and pans, water, and basic spices.
 
 To get started:
-1. Click "Cook & Combine"
+1. Click "Cook or Combine"
 2. Select the item or items you want to use
-3. Click "Cook & Combine" again!
+3. Click "Cook or Combine" again!
 
 There are ' . $recipeCount . ' recipes to discover, so feel free to experiment! Nothing bad will happen if you try to prepare a "wrong" recipe; the items will simply not be used.
 
