@@ -78,14 +78,14 @@ class MarketFilterService
         if(array_key_exists('nameExactMatch', $filters) && (bool)$filters['nameExactMatch'])
         {
             $qb
-                ->andWhere('item.name = :nameLike')
+                ->andWhere('i.fullItemName = :nameLike')
                 ->setParameter('nameLike', $name)
             ;
         }
         else
         {
             $qb
-                ->andWhere('item.name LIKE :nameLike')
+                ->andWhere('i.fullItemName LIKE :nameLike')
                 ->setParameter('nameLike', '%' . $name . '%')
             ;
         }
