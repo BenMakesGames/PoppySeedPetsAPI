@@ -11,6 +11,7 @@ use App\Repository\EnchantmentRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserStatsRepository;
+use App\Service\CalendarService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -113,7 +114,7 @@ class DragonController extends PoppySeedPetsController
         ResponseService $responseService, DragonRepository $dragonRepository, InventoryRepository $inventoryRepository,
         Request $request, EntityManagerInterface $em, InventoryService $inventoryService,
         EnchantmentRepository $enchantmentRepository, SpiceRepository $spiceRepository,
-        UserStatsRepository $userStatsRepository
+        UserStatsRepository $userStatsRepository, CalendarService  $calendarService
     )
     {
         $user = $this->getUser();
@@ -144,6 +145,26 @@ class DragonController extends PoppySeedPetsController
 
         $userStatsRepository->incrementStat($user, UserStatEnum::TREASURES_GIVEN_TO_DRAGON_HOARD, count($items));
 
+        $silverGoodies = self::SILVER_GOODIES;
+        $goldGoodies = self::GOLD_GOODIES;
+        $gemGoodies = self::GEM_GOODIES;
+
+        if($calendarService->isValentinesOrAdjacent())
+        {
+            $silverGoodies[] = [ 'weight' => 10, 'item' => 'Cocoa Beans' ];
+            $goldGoodies[] = [ 'weight' => 10, 'item' => 'Chocolate Bar' ];
+            $gemGoodies[] = [ 'weight' => 10, 'item' => 'Chocolate Key' ];
+        }
+
+        $chineseCalendarInfo = $calendarService->getChineseCalendarInfo();
+
+        if($chineseCalendarInfo->month === 1 && $chineseCalendarInfo->day <= 6)
+        {
+            $silverGoodies[] = [ 'weight' => 10, 'item' => 'Mooncake' ];
+            $goldGoodies[] = [ 'weight' => 10, 'item' => 'Mooncake' ];
+            $gemGoodies[] = [ 'weight' => 10, 'item' => 'Mooncake' ];
+        }
+
         $goodies = [];
 
         if($silver > 0)
@@ -151,7 +172,7 @@ class DragonController extends PoppySeedPetsController
             $dragon->increaseSilver($silver);
 
             for($i = 0; $i < $silver; $i++)
-                $goodies[] = ArrayFunctions::pick_one_weighted(self::SILVER_GOODIES, function($i) { return $i['weight']; });
+                $goodies[] = ArrayFunctions::pick_one_weighted($silverGoodies, function($i) { return $i['weight']; });
         }
 
         if($gold > 0)
@@ -159,7 +180,7 @@ class DragonController extends PoppySeedPetsController
             $dragon->increaseGold($gold);
 
             for($i = 0; $i < $gold; $i++)
-                $goodies[] = ArrayFunctions::pick_one_weighted(self::GOLD_GOODIES, function($i) { return $i['weight']; });
+                $goodies[] = ArrayFunctions::pick_one_weighted($goldGoodies, function($i) { return $i['weight']; });
         }
 
         if($gems > 0)
@@ -167,7 +188,7 @@ class DragonController extends PoppySeedPetsController
             $dragon->increaseGems($gems);
 
             for($i = 0; $i < $gems; $i++)
-                $goodies[] = ArrayFunctions::pick_one_weighted(self::GEM_GOODIES, function($i) { return $i['weight']; });
+                $goodies[] = ArrayFunctions::pick_one_weighted($gemGoodies, function($i) { return $i['weight']; });
         }
 
         foreach($goodies as $goody)
