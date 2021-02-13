@@ -15,7 +15,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Table(indexes={
  *     @ORM\Index(name="modified_on_idx", columns={"modified_on"}),
  *     @ORM\Index(name="sell_price_idx", columns={"sell_price"}),
- *     @ORM\Index(name="location_idx", columns={"location"})
+ *     @ORM\Index(name="location_idx", columns={"location"}),
+ *     @ORM\Index(name="full_item_name_idx", columns={"full_item_name"})
  * })
  */
 class Inventory
