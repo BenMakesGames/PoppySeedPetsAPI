@@ -29,11 +29,11 @@ final class Version20210213172141 extends AbstractMigration
             LEFT JOIN spice AS s ON i.spice_id=s.id
             
             SET i.full_item_name=CONCAT(
-                IF(e.name IS NULL OR e.is_suffix=1, '', CONCAT(e.name, ' ')),
-                IF(s.name IS NULL OR s.is_suffix=1, '', CONCAT(s.name, ' ')),
+                IF(e.name IS NULL OR e.is_suffix=1, \'\', CONCAT(e.name, \' \')),
+                IF(s.name IS NULL OR s.is_suffix=1, \'\', CONCAT(s.name, \' \')),
                 item.name,
-                IF(e.name IS NULL OR e.is_suffix=0, '', CONCAT(e.name, ' ')),
-                IF(s.name IS NULL OR s.is_suffix=0, '', CONCAT(s.name, ' '))
+                IF(e.name IS NULL OR e.is_suffix=0, \'\', CONCAT(e.name, \' \')),
+                IF(s.name IS NULL OR s.is_suffix=0, \'\', CONCAT(s.name, \' \'))
             )
         ');
     }
