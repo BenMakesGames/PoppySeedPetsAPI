@@ -47,6 +47,9 @@ class ProgrammingService
         if(array_key_exists('Tiny Black Hole', $quantities) && array_key_exists('Worms', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createWormhole', 10);
 
+        if(array_key_exists('Photon', $quantities))
+            $possibilities[] = new ActivityCallback($this, 'createPoisson', 10);
+
         if(array_key_exists('Macintosh', $quantities))
             $possibilities[] = new ActivityCallback($this, 'hackMacintosh', 10);
 
@@ -176,6 +179,42 @@ class ProgrammingService
             $activityLog->setChanges($changes->compare($pet));
 
         return $activityLog;
+    }
+
+    private function createPoisson(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+
+            $this->inventoryService->loseItem('Photon', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+            $pet->increasePoison(2);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to measure a Photon to confirm the Poisson Distribution, but a miscalculation produced a distribution of poison, instead! x_x', '');
+        }
+        else if($roll > 12)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, true);
+
+            $this->inventoryService->loseItem('Photon', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% measured a Photon, confirming the Poisson Distribution!', 'items/space/photon')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
+            ;
+            $this->inventoryService->petCollectsItem('Fish', $pet, $pet->getName() . ' measured a Photon, confirming the _Poisson_ Distribution!', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to measure a Photon, but it kept zipping away before they could do so! >:(', 'icons/activity-logs/confused');
+        }
+
     }
 
     private function createLaserPointer(ComputedPetSkills $petWithSkills): PetActivityLog
