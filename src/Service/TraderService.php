@@ -125,7 +125,7 @@ class TraderService
         return array_diff(TradeGroupEnum::getValues(), $this->getUnlockedTradeGroups($user));
     }
 
-    public function getOfferById(User $user, string $id): TraderOffer
+    public function getOfferById(User $user, string $id): ?TraderOffer
     {
         $offers = $this->getOffers($user);
 
@@ -857,7 +857,7 @@ class TraderService
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Pink Bow'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Chocolate Bar'), 1),
                 ],
-                'Please enjoy the complementary chocolate, and remember: all candies "recycled" during Valentine\'s are guaranteed to find their way to the Giving Tree, where any pet may collect them!'
+                'Please enjoy the complimentary chocolate, and remember: all candies "recycled" during Valentine\'s are guaranteed to find their way to the Giving Tree, where any pet may collect them!'
             );
         }
 

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
+use App\Service\InventoryModifierService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -120,6 +121,11 @@ class Inventory
      */
     private $spice;
 
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $fullItemName;
+
     public function __construct()
     {
         $this->createdOn = new \DateTimeImmutable();
@@ -142,12 +148,16 @@ class Inventory
 
         $this->item = $item;
 
+        $this->fullItemName = InventoryModifierService::getNameWithModifiers($this);
+
         return $this;
     }
 
     public function changeItem(Item $item): self
     {
         $this->item = $item;
+
+        $this->fullItemName = InventoryModifierService::getNameWithModifiers($this);
 
         // if the item changes, we need to make sure it can still be worn/held, and unequip it if not
         if($this->getWearer() && !$item->getHat())
@@ -347,6 +357,8 @@ class Inventory
     {
         $this->enchantment = $enchantment;
 
+        $this->fullItemName = InventoryModifierService::getNameWithModifiers($this);
+
         return $this;
     }
 
@@ -533,6 +545,13 @@ class Inventory
 
         $this->spice = $spice;
 
+        $this->fullItemName = InventoryModifierService::getNameWithModifiers($this);
+
         return $this;
+    }
+
+    public function getFullItemName(): ?string
+    {
+        return $this->fullItemName;
     }
 }
