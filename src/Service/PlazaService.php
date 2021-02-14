@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Model\AvailableHolidayBox;
+use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 
 class PlazaService
@@ -10,11 +11,15 @@ class PlazaService
     private $calendarService;
     private $chineseCalendarInfo;
     private $userQuestRepository;
+    private $itemRepository;
 
-    public function __construct(CalendarService $calendarService, UserQuestRepository $userQuestRepository)
+    public function __construct(
+        CalendarService $calendarService, UserQuestRepository $userQuestRepository, ItemRepository $itemRepository
+    )
     {
         $this->calendarService = $calendarService;
         $this->userQuestRepository = $userQuestRepository;
+        $this->itemRepository = $itemRepository;
 
         $this->chineseCalendarInfo = $calendarService->getChineseCalendarInfo();
     }
@@ -25,8 +30,19 @@ class PlazaService
 
         $now = new \DateTimeImmutable();
 
+        $year = (int)$now->format('Y');
         $month = (int)$now->format('m');
         $day = (int)$now->format('d');
+
+        if($year === 2021 && $month === 2 && $day <= 19)
+        {
+            $boxes[] = new AvailableHolidayBox(
+                'Twu Wuv',
+                'Received from Tess, in exchange for a Wed Bawwoon.',
+                null,
+                $this->itemRepository->findOneByName('Wed Bawwoon')
+            );
+        }
 
         if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)
         {
@@ -37,7 +53,8 @@ class PlazaService
                 $boxes[] = new AvailableHolidayBox(
                     'Chinese New Year Box',
                     'Received for the ' . $this->chineseCalendarInfo->year . ' Chinese New Year.',
-                    $gotBox
+                    $gotBox,
+                    null
                 );
             }
         }
@@ -51,7 +68,8 @@ class PlazaService
                 $boxes[] = new AvailableHolidayBox(
                     '4th of July Box',
                     'Received on the ' . $now->format('jS') . ' of July, ' . $now->format('Y') . '.',
-                    $gotBox
+                    $gotBox,
+                    null
                 );
             }
         }
@@ -66,7 +84,8 @@ class PlazaService
                 $boxes[] = new AvailableHolidayBox(
                     'New Year Box',
                     'Received on the ' . $now->format('jS') . ' of ' . $now->format('F') . ', ' . $now->format('Y') . '.',
-                    $gotBox
+                    $gotBox,
+                    null
                 );
             }
         }

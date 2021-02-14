@@ -54,7 +54,14 @@ class PlazaController extends PoppySeedPetsController
         if(!$box)
             throw new UnprocessableEntityHttpException('No holiday box is available right now...');
 
-        $box->userQuestEntity->setValue(true);
+        if($box->itemToExchange)
+        {
+            if(!$inventoryService->loseItem($box->itemToExchange, $user, LocationEnum::HOME, 1))
+                throw new UnprocessableEntityHttpException('You need ' . $box->itemToExchange->getNameWithArticle() . '. (Make sure it\'s in your house, not in your Basement.)');
+        }
+
+        if($box->userQuestEntity)
+            $box->userQuestEntity->setValue(true);
 
         $inventoryService->receiveItem($box->itemName, $user, $user, $box->comment, LocationEnum::HOME, true);
 
