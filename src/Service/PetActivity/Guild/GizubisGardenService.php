@@ -99,7 +99,7 @@ class GizubisGardenService
         else if($roll >= 13)
         {
             $loot = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
-                'Red', 'Crooked Stick', 'Apricot', 'Orange', 'Naner', 'Pamplemousse'
+                'Red', 'Crooked Stick', 'Apricot', 'Orange', 'Naner', 'Pamplemousse', 'Avocado'
             ]));
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
