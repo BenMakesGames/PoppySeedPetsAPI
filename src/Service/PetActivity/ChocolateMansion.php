@@ -455,6 +455,7 @@ class ChocolateMansion
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH ]);
             $pet->increaseSafety(-$this->rng->rngNextInt(3, 6));
             $description .= 'a chocolate chandelier fell, almost hitting %pet:' . $pet->getId() . '.name%! They grabbed a piece of its remains, and hightailed it out of there.';
+            $comment = $pet->getName() . ' recovered this from a chandelier that tried to fall on them?!';
             $loot = 'Chocolate Bar';
         }
         else if($roll >= $difficulty)
