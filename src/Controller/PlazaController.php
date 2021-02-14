@@ -48,7 +48,7 @@ class PlazaController extends PoppySeedPetsController
 
         /** @var AvailableHolidayBox $box */
         $box = ArrayFunctions::find_one($availableBoxes, function(AvailableHolidayBox $box) use($requestedBox) {
-            return $box->itemName === $requestedBox;
+            return $box->tradeDescription === $requestedBox;
         });
 
         if(!$box)
