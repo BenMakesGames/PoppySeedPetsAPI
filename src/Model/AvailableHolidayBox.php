@@ -9,6 +9,11 @@ class AvailableHolidayBox
     /**
      * @var string
      */
+    public $tradeDescription;
+
+    /**
+     * @var string
+     */
     public $itemName;
 
     /**
@@ -26,8 +31,9 @@ class AvailableHolidayBox
      */
     public $itemToExchange;
 
-    public function __construct(string $itemName, string $comment, ?UserQuest $userQuest, ?Item $itemToExchange)
+    public function __construct(string $tradeDescription, string $itemName, string $comment, ?UserQuest $userQuest, ?Item $itemToExchange)
     {
+        $this->tradeDescription = $tradeDescription;
         $this->itemName = $itemName;
         $this->comment = $comment;
         $this->userQuestEntity = $userQuest;

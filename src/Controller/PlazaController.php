@@ -27,7 +27,7 @@ class PlazaController extends PoppySeedPetsController
         $user = $this->getUser();
 
         return $responseService->success(array_map(
-            function(AvailableHolidayBox $box) { return $box->itemName; },
+            function(AvailableHolidayBox $box) { return $box->tradeDescription; },
             $plazaService->getAvailableHolidayBoxes($user)
         ));
     }
@@ -67,8 +67,10 @@ class PlazaController extends PoppySeedPetsController
 
         $em->flush();
 
+        $responseService->addFlashMessage('Here you go! One ' . $box->itemName . '!');
+
         return $responseService->success(array_map(
-            function(AvailableHolidayBox $box) { return $box->itemName; },
+            function(AvailableHolidayBox $box) { return $box->tradeDescription; },
             $plazaService->getAvailableHolidayBoxes($user)
         ));
     }

@@ -37,6 +37,7 @@ class PlazaService
         if($year === 2021 && $month === 2 && $day <= 19)
         {
             $boxes[] = new AvailableHolidayBox(
+                'Twu Wuv (in exchange for a Wed Bawwoon, of course)',
                 'Twu Wuv',
                 'Received from Tess, in exchange for a Wed Bawwoon.',
                 null,
@@ -51,6 +52,7 @@ class PlazaService
             if(!$gotBox->getValue())
             {
                 $boxes[] = new AvailableHolidayBox(
+                    'Chinese New Year Box',
                     'Chinese New Year Box',
                     'Received for the ' . $this->chineseCalendarInfo->year . ' Chinese New Year.',
                     $gotBox,
@@ -67,6 +69,7 @@ class PlazaService
             {
                 $boxes[] = new AvailableHolidayBox(
                     '4th of July Box',
+                    '4th of July Box',
                     'Received on the ' . $now->format('jS') . ' of July, ' . $now->format('Y') . '.',
                     $gotBox,
                     null
@@ -82,6 +85,7 @@ class PlazaService
             if(!$gotBox->getValue())
             {
                 $boxes[] = new AvailableHolidayBox(
+                    'New Year Box',
                     'New Year Box',
                     'Received on the ' . $now->format('jS') . ' of ' . $now->format('F') . ', ' . $now->format('Y') . '.',
                     $gotBox,
