@@ -36,6 +36,7 @@ class BakingBookController extends PoppySeedPetsItemController
 
 * Brownie
 * Chocolate Chip Cookies
+* Chocolate Lava Cake
 * Donut (Cake)
 * Donut (Yeast)
 * Flour Tortilla
@@ -94,6 +95,18 @@ Simply grind some Wheat into a fine powder.
 * Chocolate Bar
 
 Makes 12!
+
+#### Chocolate Lava Cake
+
+Just don\'t _real_ lava!
+
+* Butter
+* Chocolate Bar
+* Egg
+* Sugar
+* Wheat Flour
+
+I\'m serious! Don\'t add real lava! It won\'t be edible! (How could that be edible?!)
 
 #### Donut (Cake)
 
