@@ -98,6 +98,18 @@ class MagicBindingService
 
         if(array_key_exists('Quintessence', $quantities))
         {
+            if(array_key_exists('Crooked Stick', $quantities))
+            {
+                if(array_key_exists('Mirror', $quantities))
+                    $possibilities[] = new ActivityCallback($this, 'createMagicMirror', 8);
+
+                if(array_key_exists('Dark Mirror', $quantities))
+                    $possibilities[] = new ActivityCallback($this, 'createPandemirrorum', 8);
+
+                if(array_key_exists('Blackberries', $quantities) && array_key_exists('Goodberries', $quantities))
+                    $possibilities[] = new ActivityCallback($this, 'createTwiggenBerries', 16);
+            }
+
             if(array_key_exists('Leaf Spear', $quantities) && array_key_exists('Mint', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createSpearmint', 8);
 
@@ -136,12 +148,6 @@ class MagicBindingService
 
             if(array_key_exists('Gold Tuning Fork', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createAstralTuningFork', 8);
-
-            if(array_key_exists('Mirror', $quantities) && array_key_exists('Crooked Stick', $quantities))
-                $possibilities[] = new ActivityCallback($this, 'createMagicMirror', 8);
-
-            if(array_key_exists('Dark Mirror', $quantities) && array_key_exists('Crooked Stick', $quantities))
-                $possibilities[] = new ActivityCallback($this, 'createPandemirrorum', 8);
 
             if(array_key_exists('Feathers', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createWings', 8);
@@ -1563,6 +1569,64 @@ class MagicBindingService
             ;
 
             $this->inventoryService->petCollectsItem('Kokopelli', $pet, $pet->getName() . ' bound this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createTwiggenBerries(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $craftsCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getNature()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
+
+        if($craftsCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(-2);
+
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Crooked Stick, but accidentally broke it in the process :(', '');
+        }
+        else if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(-2);
+
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Crooked Stick, but mishandled the Quintessence; it evaporated back into the fabric of the universe! :(', '');
+        }
+        else if($craftsCheck < 10)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::MUSIC ]);
+            $pet->increaseSafety(-2);
+
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind some berries to a Crooked Stick, but the vines were scratchy, and berries kept falling off, and ugh!', 'icons/activity-logs/confused');
+        }
+        else if($umbraCheck < 20)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA, PetSkillEnum::MUSIC ]);
+
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind some berries to a Crooked Stick, but kept messing up the enchantment...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Blackberries', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Goodberries', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA, PetSkillEnum::SCIENCE ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some berries to a Crooked Stick, creating Twiggen Berries!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+            ;
+
+            $this->inventoryService->petCollectsItem('Twiggen Berries', $pet, $pet->getName() . ' bound this.', $activityLog);
             return $activityLog;
         }
     }
