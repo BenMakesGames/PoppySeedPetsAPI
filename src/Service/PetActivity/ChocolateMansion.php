@@ -132,7 +132,7 @@ class ChocolateMansion
 
                 if($combatRoll >= 25)
                 {
-                    $loot[] = 'Chocolate Feather Bonnet';
+                    $loot[] = 'Chocolate Top Hat';
                     $description .= '%pet:' . $pet->getId() . '.name% fought valiantly, and the spectre was forced to flee, dropping its Chocolate Top Hat! %pet:' . $pet->getId() . '.name% took it, along with some Chocolate-stained Cloth from the attic.';
                 }
                 else
