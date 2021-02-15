@@ -247,8 +247,14 @@ class CraftingService
                 $possibilities[] = new ActivityCallback($this, 'createVeilPiercer', 10);
         }
 
-        if(array_key_exists('Crooked Fishing Rod', $quantities) && array_key_exists('Yellow Dye', $quantities) && array_key_exists('Green Dye', $quantities))
-            $possibilities[] = new ActivityCallback($this, 'createPaintedFishingRod', 10);
+        if(array_key_exists('Crooked Fishing Rod', $quantities))
+        {
+            if(array_key_exists('Yellow Dye', $quantities) && array_key_exists('Green Dye', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createPaintedFishingRod', 10);
+
+            if(array_key_exists('Carrot', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createCaroteneStick', 10);
+        }
 
         if(array_key_exists('Plastic Boomerang', $quantities) && array_key_exists('Quinacridone Magenta Dye', $quantities))
             $possibilities[] = new ActivityCallback($this, 'createPaintedBoomerang', 10);
@@ -1752,6 +1758,45 @@ class CraftingService
             ;
 
             $this->inventoryService->petCollectsItem('Lassoscope', $pet, $itemComment, $activityLog);
+
+            return $activityLog;
+        }
+    }
+
+    private function createCaroteneStick(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $craftsCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+
+        if($craftsCheck <= 2)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Lassoscope by roping a Gold Telescope with a Flying Grappling Hook, but the Wings broke off, and flew away!', '');
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->inventoryService->loseItem('Crooked Fishing Rod', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' accidentally broke the string of a Crooked Fishing Rod, reducing it to a mere Crooked Stick.', $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-1);
+            return $activityLog;
+        }
+        else if($craftsCheck < 14)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Carrot lure for a Crooked Fishing Rod, but couldn\'t figure out how best to go about it...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Crooked Fishing Rod', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Carrot', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Carrot Lure for a Crooked Fishing Rod; now it\'s a Carotene Stick!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+            ;
+
+            $this->inventoryService->petCollectsItem('Carotene Stick', $pet, $pet->getName() . ' made this.', $activityLog);
 
             return $activityLog;
         }
