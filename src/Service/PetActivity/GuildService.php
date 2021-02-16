@@ -328,7 +328,7 @@ class GuildService
         return $this->responseService->createActivityLog($pet, $message, '');
     }
 
-    private function doHighImpactMission(Pet $pet): PetActivityLog
+    private function doHighImpactMission(Pet $pet): ?PetActivityLog
     {
         $member = $pet->getGuildMembership();
 

@@ -56,6 +56,9 @@ class MagicBindingService
 
         if(array_key_exists('Wings', $quantities))
         {
+            if(array_key_exists('Coriander Flower', $quantities) && array_key_exists('Crooked Stick', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createMericarp', 8);
+
             if(array_key_exists('Talon', $quantities) && array_key_exists('Paper', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createSummoningScroll', 8);
 
@@ -2074,6 +2077,53 @@ class MagicBindingService
     public function createMusicScroll(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         return $this->createGenericScroll($petWithSkills, 'Musical Scales', 'Scroll of Songs');
+    }
+
+    public function createMericarp(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $craftsCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
+
+        if($craftsCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-1);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a magic wand, but accidentally broke the stick :(', 'icons/activity-logs/torn-to-bits');
+        }
+        else if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->inventoryService->loseItem('Wings', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(-1);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a magic wand with Wings, but accidentally tore the Wings, leaving only feathers :(', '');
+            $this->inventoryService->petCollectsItem('Feathers', $pet, $pet->getName() . ' accidentally tore some Wings, leaving only these Feathers.', $activityLog);
+            return $activityLog;
+        }
+        else if($umbraCheck < 18)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
+
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a magic wand, but the Wings kept getting away,  and ' . $pet->getName() . ' spent all their time chasing them down!', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Wings', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Coriander Flower', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(3);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Mericarp.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+            ;
+            $this->inventoryService->petCollectsItem('Mericarp', $pet, $pet->getName() . ' bound this.', $activityLog);
+            return $activityLog;
+        }
     }
 
     public function createSummoningScroll(ComputedPetSkills $petWithSkills): PetActivityLog
