@@ -1046,7 +1046,7 @@ class TraderService
                     $quantity = $this->inventoryService->loseItem($cost->item, $user, LocationEnum::HOME, $cost->quantity);
 
                     if($quantity < $cost->quantity)
-                        throw new \InvalidArgumentException('You do not have the items needed to make this exchange. (Expected ' . $cost['quantity'] . ' items; only found ' . $quantity . '.)');
+                        throw new \InvalidArgumentException('You do not have the items needed to make this exchange. (Expected ' . $cost->quantity . ' items; only found ' . $quantity . '.)');
 
                     break;
 
