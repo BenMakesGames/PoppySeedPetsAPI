@@ -188,7 +188,7 @@ class SmithingService
             $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createGoldTuningFork', ceil($weight / 2));
 
             if(array_key_exists('Culinary Knife', $quantities) && array_key_exists('Firestone', $quantities))
-                $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createNoWhiskNoReward', 10);
+                $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createNoWhiskNoReward', $weight);
 
             if(array_key_exists('Eggplant', $quantities))
                 $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createAubergineScepter', 8);
