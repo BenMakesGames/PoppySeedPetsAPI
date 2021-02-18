@@ -314,12 +314,26 @@ class IronSmithingService
             $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(1);
+            if($roll >= 20)
+            {
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
+                $pet->increaseEsteem(2);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Saucepan.', 'items/tool/saucepan')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
-            ;
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Saucepan... and a Whisk!', 'items/tool/saucepan')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ;
+                $this->inventoryService->petCollectsItem('Whisk', $pet, $pet->getName() . ' created this.', $activityLog);
+            }
+            else
+            {
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+                $pet->increaseEsteem(1);
+
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Saucepan.', 'items/tool/saucepan')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+                ;
+            }
+
             $this->inventoryService->petCollectsItem('Saucepan', $pet, $pet->getName() . ' created this.', $activityLog);
             return $activityLog;
         }
