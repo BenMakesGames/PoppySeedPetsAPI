@@ -1770,7 +1770,7 @@ class CraftingService
 
         if($craftsCheck <= 2)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Lassoscope by roping a Gold Telescope with a Flying Grappling Hook, but the Wings broke off, and flew away!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Carotene Stick, but accidentally broke the string of the Crooked Fishing Rod, reducing it to a mere Crooked Stick!', '');
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->inventoryService->loseItem('Crooked Fishing Rod', $pet->getOwner(), LocationEnum::HOME, 1);
