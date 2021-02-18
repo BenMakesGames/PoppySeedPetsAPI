@@ -149,7 +149,7 @@ class GoldRingController extends PoppySeedPetsItemController
             if(!$petJoinsHouse)
             {
                 $newPet->setInDaycare(true);
-                $message .= "\n\nYour house is full, so it dashes off the daycare.";
+                $message .= "\n\nYour house is full, so it dashes off to the daycare.";
             }
 
             $em->flush();
