@@ -250,7 +250,58 @@ class MagicBindingService
         if(array_key_exists('Magic Smoke', $quantities))
             $possibilities[] = new ActivityCallback($this, 'magicSmokeToQuint', $magicSmokeWeight);
 
+        if(array_key_exists('Witch\'s Broom', $quantities) && array_key_exists('Wood\'s Metal', $quantities))
+            $possibilities[] = new ActivityCallback($this, 'createSnickerblade', 10);
+
         return $possibilities;
+    }
+
+    public function createSnickerblade(ComputedPetSkills  $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStrength()->getTotal());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $pet->increaseEsteem(-2);
+
+            if($this->squirrel3->rngNextBool())
+            {
+                $this->inventoryService->loseItem('Witch\'s Broom', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+                $pet->increaseSafety(-2);
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Snickerblade, but accidentally set the Witch\'s Broom on fire, reducing it to Charcoal in seconds... :(', '');
+                $this->inventoryService->petCollectsItem('Charcoal', $pet, $pet->getName() . ' accidentally reduced a Witch\'s Broom into this...', $activityLog);
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Wood\'s Metal', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Snickerblade, but accidentally broke and bent the Wood\'s Metal into a useless bar of iron :(', '');
+                $this->inventoryService->petCollectsItem('Iron Bar', $pet, $pet->getName() . ' accidentally reduced a Woods\'s Metal into this...', $activityLog);
+            }
+
+            return $activityLog;
+        }
+        else if($umbraCheck < 23)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Wood\'s Metal and a Witch\'s Broom together, but the two objects seemed to naturally repel one another!', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Witch\'s Broom', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Wood\'s Metal', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(3, 6));
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a Wood\'s Metal and a Witch\'s Broom, creating a Snickerblade!', '');
+            $this->inventoryService->petCollectsItem('Snickerblade', $pet, $pet->getName() . ' bound this.', $activityLog);
+            return $activityLog;
+        }
     }
 
     public function createCrazyHotTorch(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -280,7 +331,7 @@ class MagicBindingService
         else if($umbraCheck < 13)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
             if($this->squirrel3->rngNextInt(1, 2) === 1 || $pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Stereotypical Torch, but couldn\'t get it hot enough!', 'icons/activity-logs/confused');
@@ -292,7 +343,7 @@ class MagicBindingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
             $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Stereotypical Torch', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Stereotypical Torch into a Crazy-hot Torch.', '');
             $this->inventoryService->petCollectsItem('Crazy-hot Torch', $pet, $pet->getName() . ' enchanted this.', $activityLog);
