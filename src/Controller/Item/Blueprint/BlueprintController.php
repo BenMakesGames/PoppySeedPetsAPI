@@ -68,7 +68,7 @@ class BlueprintController extends PoppySeedPetsItemController
 
         return $responseService->itemActionSuccess(
             null,
-            [ 'reloadInventory' => true, 'itemDeleted' => true ]
+            [ 'itemDeleted' => true ]
         );
     }
 
@@ -259,7 +259,7 @@ class BlueprintController extends PoppySeedPetsItemController
 
         return $responseService->itemActionSuccess(
             null,
-            [ 'reloadInventory' => true, 'itemDeleted' => true ]
+            [ 'itemDeleted' => true ]
         );
     }
 

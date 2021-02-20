@@ -40,6 +40,6 @@ class FishKebabController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You take the Fishkebab apart, receiving three pieces of Fish, and a Crooked Stick.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You take the Fishkebab apart, receiving three pieces of Fish, and a Crooked Stick.', [ 'itemDeleted' => true ]);
     }
 }

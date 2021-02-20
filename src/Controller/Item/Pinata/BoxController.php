@@ -90,7 +90,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -155,7 +155,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -221,7 +221,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -520,7 +520,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You take apart the Pepperbox into its constituent pieces...', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You take apart the Pepperbox into its constituent pieces...', [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -641,7 +641,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess($itemActionMessage, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess($itemActionMessage, [ 'itemDeleted' => true ]);
     }
 
     /**

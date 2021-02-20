@@ -72,6 +72,6 @@ class RockController extends PoppySeedPetsItemController
         else
             $message .= '.';
 
-        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 }

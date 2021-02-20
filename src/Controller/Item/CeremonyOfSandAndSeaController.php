@@ -50,7 +50,8 @@ class CeremonyOfSandAndSeaController extends PoppySeedPetsItemController
         ;
 
         $em->flush();
+        $responseService->setReloadPets($reloadPets);
 
-        return $responseService->itemActionSuccess('Water pours from the trident, adding two new water plots to your Greenhouse! The trident, having spent its magic, is reduced to a regular ol\' Ceremonial Trident.', [ 'reloadInventory' => true, 'itemDeleted' => true, 'reloadPets' => $reloadPets ]);
+        return $responseService->itemActionSuccess('Water pours from the trident, adding two new water plots to your Greenhouse! The trident, having spent its magic, is reduced to a regular ol\' Ceremonial Trident.', [ 'itemDeleted' => true ]);
     }
 }

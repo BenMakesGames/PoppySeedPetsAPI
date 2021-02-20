@@ -82,7 +82,7 @@ class FlowerbombController extends PoppySeedPetsItemController
             $em->remove($inventory);
             $em->flush();
 
-            return $responseService->itemActionSuccess('You get ready to toss the Flowerbomb, but it explodes in your hands! Flowers go flying everywhere! (Mostly into your house.)', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess('You get ready to toss the Flowerbomb, but it explodes in your hands! Flowers go flying everywhere! (Mostly into your house.)', [ 'itemDeleted' => true ]);
         }
         else
         {

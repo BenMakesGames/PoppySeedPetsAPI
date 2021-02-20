@@ -98,7 +98,9 @@ class EggController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true, 'reloadPets' => true ]);
+        $responseService->setReloadPets(true);
+
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
     /**
      * @Route("/metalBox/{inventory}/open", methods={"POST"})
@@ -177,6 +179,8 @@ class EggController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true, 'reloadPets' => true ]);
+        $responseService->setReloadPets(true);
+
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 }

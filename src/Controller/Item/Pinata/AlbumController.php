@@ -54,7 +54,7 @@ class AlbumController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You received ' . $musicNotes->quantity . ' music notes, and a ' . $extraItem . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You received ' . $musicNotes->quantity . ' music notes, and a ' . $extraItem . '.', [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -87,7 +87,7 @@ class AlbumController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('Ah yes: your favorite genre, ' . $genre . '.' . "\n\n" . 'You also received ' . $musicNotes->quantity . ' Music Notes, and a ' . $extraItem . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('Ah yes: your favorite genre, ' . $genre . '.' . "\n\n" . 'You also received ' . $musicNotes->quantity . ' Music Notes, and a ' . $extraItem . '.', [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -129,6 +129,6 @@ class AlbumController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('Ah yes: your favorite genre, ' . $genre . '.' . "\n\n" . 'You also received ' . $musicNotes->quantity . ' Music Notes, ' . ArrayFunctions::list_nice($extraItems) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('Ah yes: your favorite genre, ' . $genre . '.' . "\n\n" . 'You also received ' . $musicNotes->quantity . ' Music Notes, ' . ArrayFunctions::list_nice($extraItems) . '.', [ 'itemDeleted' => true ]);
     }
 }

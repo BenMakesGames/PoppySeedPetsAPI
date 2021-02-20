@@ -61,7 +61,7 @@ class BugController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess(null, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -84,7 +84,7 @@ class BugController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess(null, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -182,7 +182,7 @@ class BugController extends PoppySeedPetsItemController
 
         $responseService->addFlashMessage($message);
 
-        return $responseService->itemActionSuccess(null, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -272,7 +272,9 @@ class BugController extends PoppySeedPetsItemController
         $em->remove($inventory);
         $em->flush();
 
-        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true, 'reloadPets' => $reloadPets ]);
+        $responseService->setReloadPets($reloadPets);
+
+        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
     /**

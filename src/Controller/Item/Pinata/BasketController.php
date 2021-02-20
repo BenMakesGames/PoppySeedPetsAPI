@@ -56,7 +56,7 @@ class BasketController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You emptied the Basket of Fish, receiving ' . ArrayFunctions::list_nice($loot) . $exclaim . ' (And you keep the Fabric Mâché Basket as well, of course.)', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You emptied the Basket of Fish, receiving ' . ArrayFunctions::list_nice($loot) . $exclaim . ' (And you keep the Fabric Mâché Basket as well, of course.)', [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -84,7 +84,7 @@ class BasketController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You emptied the Fruit Basket, receiving Apricot Preserves, Bluberries, and a Naner. (You keep the Fabric Mâché Basket as well, of course.)', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You emptied the Fruit Basket, receiving Apricot Preserves, Bluberries, and a Naner. (You keep the Fabric Mâché Basket as well, of course.)', [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -146,6 +146,6 @@ class BasketController extends PoppySeedPetsItemController
         else
             $message .= ' (You keep the Fabric Mâché Basket as well, of course.)';
 
-        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 }

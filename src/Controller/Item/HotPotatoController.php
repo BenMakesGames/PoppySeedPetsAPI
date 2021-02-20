@@ -47,7 +47,7 @@ class HotPotatoController extends PoppySeedPetsItemController
             $em->remove($inventory);
             $em->flush();
 
-            return $responseService->itemActionSuccess('You get ready to toss the Hot Potato, but it explodes in your hands! It\'s a bit hot, but hey: you got Smashed Potatoes, Liquid-hot Magma, and ' . $thirdItem . '!', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess('You get ready to toss the Hot Potato, but it explodes in your hands! It\'s a bit hot, but hey: you got Smashed Potatoes, Liquid-hot Magma, and ' . $thirdItem . '!', [ 'itemDeleted' => true ]);
         }
         else
         {

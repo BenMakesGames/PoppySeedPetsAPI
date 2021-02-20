@@ -191,6 +191,6 @@ class PlasticEggController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 }

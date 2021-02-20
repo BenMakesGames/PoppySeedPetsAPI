@@ -41,7 +41,7 @@ class FairyRingController extends PoppySeedPetsItemController
         if($squirrel3->rngNextInt(1, 70) === 1)
             $message .= $squirrel3->rngNextFromArray([ ' (I hope you\'re happy.)', ' (See what thy hand hath wrought!)', ' (All according to plan...)' ]);
 
-        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
 
     }
 }

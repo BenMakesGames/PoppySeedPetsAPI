@@ -71,6 +71,8 @@ class MoonPearlController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true, 'reloadPets' => $reloadPets ]);
+        $responseService->setReloadPets($reloadPets);
+
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 }

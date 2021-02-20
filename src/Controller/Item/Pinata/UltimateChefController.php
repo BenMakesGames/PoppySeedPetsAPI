@@ -36,6 +36,6 @@ class UltimateChefController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You open the book, expecting to see, you know, pages of a book, but instead it somehow unfolds into a chef hat!' , [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You open the book, expecting to see, you know, pages of a book, but instead it somehow unfolds into a chef hat!' , [ 'itemDeleted' => true ]);
     }
 }

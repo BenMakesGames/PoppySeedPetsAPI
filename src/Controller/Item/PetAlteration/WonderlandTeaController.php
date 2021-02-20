@@ -58,7 +58,9 @@ class WonderlandTeaController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true, 'reloadPets' => true ]);
+        $responseService->setReloadPets(true);
+
+        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -92,7 +94,9 @@ class WonderlandTeaController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true, 'reloadPets' => true ]);
+        $responseService->setReloadPets(true);
+
+        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -123,6 +127,8 @@ class WonderlandTeaController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true, 'reloadPets' => true ]);
+        $responseService->setReloadPets(true);
+
+        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 }

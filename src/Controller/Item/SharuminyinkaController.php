@@ -58,7 +58,7 @@ class SharuminyinkaController extends PoppySeedPetsItemController
 
             $em->flush();
 
-            return $responseService->itemActionSuccess('You created Sharuminyinka\'s Hope.', [ 'reloadInventory' => true ]);
+            return $responseService->itemActionSuccess('You created Sharuminyinka\'s Hope.');
         }
     }
     /**
@@ -97,7 +97,7 @@ class SharuminyinkaController extends PoppySeedPetsItemController
 
             $em->flush();
 
-            return $responseService->itemActionSuccess('You created Tig\'s Memory.', [ 'reloadInventory' => true ]);
+            return $responseService->itemActionSuccess('You created Tig\'s Memory.');
         }
     }
 }

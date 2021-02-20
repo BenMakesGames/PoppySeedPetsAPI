@@ -37,6 +37,6 @@ class PaperController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess(null, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 }

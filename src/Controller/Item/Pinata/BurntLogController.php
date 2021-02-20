@@ -72,6 +72,6 @@ class BurntLogController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You break the Burnt Log apart, receiving ' . $charcoalReceived . ', and ' . $extraItem->getNameWithArticle() . '!', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You break the Burnt Log apart, receiving ' . $charcoalReceived . ', and ' . $extraItem->getNameWithArticle() . '!', [ 'itemDeleted' => true ]);
     }
 }

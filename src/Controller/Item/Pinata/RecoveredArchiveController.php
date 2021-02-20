@@ -140,6 +140,6 @@ class RecoveredArchiveController extends PoppySeedPetsItemController
         $em->remove($inventory);
         $em->flush();
 
-        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 }

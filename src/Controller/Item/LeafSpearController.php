@@ -52,6 +52,8 @@ class LeafSpearController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You untie the String, and the leaf practically unrolls on its own.', [ 'reloadInventory' => true, 'itemDeleted' => true, 'reloadPets' => $wasEquipped ]);
+        $responseService->setReloadPets($wasEquipped);
+
+        return $responseService->itemActionSuccess('You untie the String, and the leaf practically unrolls on its own.', [ 'itemDeleted' => true ]);
     }
 }

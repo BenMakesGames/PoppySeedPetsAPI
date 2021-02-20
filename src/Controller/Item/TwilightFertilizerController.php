@@ -41,8 +41,8 @@ class TwilightFertilizerController extends PoppySeedPetsItemController
         $em->flush();
 
         if($user->getGreenhouse()->getMaxDarkPlants() === 1)
-            return $responseService->itemActionSuccess('You lay down the fertilizer in a dark corner of the Greenhouse. (Is that "summoning the night"? Sure. Why not.)', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess('You lay down the fertilizer in a dark corner of the Greenhouse. (Is that "summoning the night"? Sure. Why not.)', [ 'itemDeleted' => true ]);
         else
-            return $responseService->itemActionSuccess('You lay down the fertilizer in a dark corner of the Greenhouse.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess('You lay down the fertilizer in a dark corner of the Greenhouse.', [ 'itemDeleted' => true ]);
     }
 }

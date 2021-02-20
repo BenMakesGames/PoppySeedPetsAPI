@@ -49,6 +49,6 @@ class MaracaController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You take the Maraca apart, recuperating ' . $count . ' lots of Beans.' . "\n\nBecause that's totally how Beans are measured.\n\nIn \"lots\".", [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You take the Maraca apart, recuperating ' . $count . ' lots of Beans.' . "\n\nBecause that's totally how Beans are measured.\n\nIn \"lots\".", [ 'itemDeleted' => true ]);
     }
 }

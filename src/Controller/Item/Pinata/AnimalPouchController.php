@@ -60,7 +60,7 @@ class AnimalPouchController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You open the pouch, revealing ' . ArrayFunctions::list_nice($listOfItems) . '!', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You open the pouch, revealing ' . ArrayFunctions::list_nice($listOfItems) . '!', [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -107,8 +107,8 @@ class AnimalPouchController extends PoppySeedPetsItemController
         $em->flush();
 
         if($spice)
-            return $responseService->itemActionSuccess('You open the pouch, revealing ' . ArrayFunctions::list_nice($listOfItems) . ' - and they\'re all so ' . $spice->getName() . '!', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess('You open the pouch, revealing ' . ArrayFunctions::list_nice($listOfItems) . ' - and they\'re all so ' . $spice->getName() . '!', [ 'itemDeleted' => true ]);
         else
-            return $responseService->itemActionSuccess('You open the pouch, revealing ' . ArrayFunctions::list_nice($listOfItems) . '!', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess('You open the pouch, revealing ' . ArrayFunctions::list_nice($listOfItems) . '!', [ 'itemDeleted' => true ]);
     }
 }

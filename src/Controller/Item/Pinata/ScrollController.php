@@ -49,7 +49,7 @@ class ScrollController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You read the scroll perfectly, summoning ' . ArrayFunctions::list_nice($loot) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You read the scroll perfectly, summoning ' . ArrayFunctions::list_nice($loot) . '.', [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -82,7 +82,7 @@ class ScrollController extends PoppySeedPetsItemController
 
             $em->flush();
 
-            return $responseService->itemActionSuccess('You begin to read the scroll, but mispronounce a line! Thick strands of Pectin stream out of the scroll, covering the floor, walls, and ceiling. In the end, you\'re able to recover ' . $pectin . ' batches of the stuff.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess('You begin to read the scroll, but mispronounce a line! Thick strands of Pectin stream out of the scroll, covering the floor, walls, and ceiling. In the end, you\'re able to recover ' . $pectin . ' batches of the stuff.', [ 'itemDeleted' => true ]);
         }
         else if($r === 2 || $r === 3)
         {
@@ -101,7 +101,7 @@ class ScrollController extends PoppySeedPetsItemController
 
             $em->flush();
 
-            return $responseService->itemActionSuccess('You read the scroll perfectly, summoning ' . $numItems . '&times; ' . $item . '!', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess('You read the scroll perfectly, summoning ' . $numItems . '&times; ' . $item . '!', [ 'itemDeleted' => true ]);
         }
         else
         {
@@ -125,7 +125,7 @@ class ScrollController extends PoppySeedPetsItemController
 
             $em->flush();
 
-            return $responseService->itemActionSuccess('You read the scroll perfectly, summoning ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess('You read the scroll perfectly, summoning ' . ArrayFunctions::list_nice($itemList) . '.', [ 'itemDeleted' => true ]);
         }
     }
     /**
@@ -167,7 +167,7 @@ class ScrollController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You read the scroll perfectly, summoning ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You read the scroll perfectly, summoning ' . ArrayFunctions::list_nice($itemList) . '.', [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -219,7 +219,7 @@ class ScrollController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You read the scroll, summoning ' . ArrayFunctions::list_nice($itemList) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You read the scroll, summoning ' . ArrayFunctions::list_nice($itemList) . '.', [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -267,7 +267,7 @@ class ScrollController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You read the scroll, summoning ' . ArrayFunctions::list_nice($items) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You read the scroll, summoning ' . ArrayFunctions::list_nice($items) . '.', [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -302,7 +302,7 @@ class ScrollController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You read the scroll, producing ' . $moneys . '~~m~~, and ' . $item . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You read the scroll, producing ' . $moneys . '~~m~~, and ' . $item . '.', [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -336,7 +336,7 @@ class ScrollController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You read the scroll, producing ' . $moneys . '~~m~~, and ' . $item . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You read the scroll, producing ' . $moneys . '~~m~~, and ' . $item . '.', [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -381,7 +381,7 @@ class ScrollController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You read the scroll, producing ' . ArrayFunctions::list_nice($listOfItems) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You read the scroll, producing ' . ArrayFunctions::list_nice($listOfItems) . '.', [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -424,6 +424,6 @@ class ScrollController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You read the scroll, producing ' . ArrayFunctions::list_nice($listOfItems) . '.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You read the scroll, producing ' . ArrayFunctions::list_nice($listOfItems) . '.', [ 'itemDeleted' => true ]);
     }
 }

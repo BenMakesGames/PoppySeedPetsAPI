@@ -46,6 +46,6 @@ class LaserGuitarController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You put the Laser Guitar into overload, and take a few steps back. A few seconds later it explodes into a spectacular show of light, music, and plastic shrapnel. After everything settles down, you collect the remains...', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You put the Laser Guitar into overload, and take a few steps back. A few seconds later it explodes into a spectacular show of light, music, and plastic shrapnel. After everything settles down, you collect the remains...', [ 'itemDeleted' => true ]);
     }
 }

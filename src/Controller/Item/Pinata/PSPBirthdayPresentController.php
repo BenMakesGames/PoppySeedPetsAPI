@@ -71,7 +71,7 @@ class PSPBirthdayPresentController extends PoppySeedPetsItemController
 
         return $responseService->itemActionSuccess(
             'Inside the present, you found ' . ArrayFunctions::list_nice($loot) . '!',
-            [ 'reloadInventory' => true, 'itemDeleted' => true ]
+            [ 'itemDeleted' => true ]
         );
     }
 }

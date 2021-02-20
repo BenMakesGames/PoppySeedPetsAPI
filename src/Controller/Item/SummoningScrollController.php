@@ -223,7 +223,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess($result, [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess($result, [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -320,6 +320,8 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess($message, [ 'reloadInventory' => true, 'itemDeleted' => true, 'reloadPets' => $numberOfPetsAtHome < $user->getMaxPets() ]);
+        $responseService->setReloadPets($numberOfPetsAtHome < $user->getMaxPets());
+
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 }

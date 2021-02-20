@@ -38,7 +38,7 @@ class KeyRingController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You pull two Iron Keys off the ring. Apparently, despite the graphic, that\'s all there was.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You pull two Iron Keys off the ring. Apparently, despite the graphic, that\'s all there was.', [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -61,7 +61,7 @@ class KeyRingController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You pull two Silver Keys off the ring. Apparently, despite the graphic, that\'s all there was.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You pull two Silver Keys off the ring. Apparently, despite the graphic, that\'s all there was.', [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -84,6 +84,6 @@ class KeyRingController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You pull two Gold Keys off the ring. Apparently, despite the graphic, that\'s all there was.', [ 'reloadInventory' => true, 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You pull two Gold Keys off the ring. Apparently, despite the graphic, that\'s all there was.', [ 'itemDeleted' => true ]);
     }
 }
