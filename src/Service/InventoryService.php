@@ -464,7 +464,9 @@ class InventoryService
         {
             $itemName = $itemIsString ? $item : $item->getName();
 
-            if($itemName === 'Beans')
+            if($itemName === 'Butter')
+                return $this->itemRepository->findOneByName('Butterknife');
+            else if($itemName === 'Beans')
                 return $this->itemRepository->findOneByName('Magic Beans');
             else if($itemName === 'Feathers')
                 return $this->itemRepository->findOneByName('Ruby Feather');
