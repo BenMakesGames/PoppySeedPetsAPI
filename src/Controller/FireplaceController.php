@@ -411,7 +411,7 @@ class FireplaceController extends PoppySeedPetsController
             else if($itemName === 'Naner Pancakes' || $itemName === 'Hot Dog')
                 $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Whew! didn\'t burn!)', LocationEnum::HOME);
             else if($squirrel3->rngNextInt(1, 4) === 1)
-                $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Did someone put that it there? It seems like someone put that it there.)', LocationEnum::HOME);
+                $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Did someone put that in there? It seems like someone put that in there.)', LocationEnum::HOME);
             else
                 $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Is that... normal?)', LocationEnum::HOME);
 
