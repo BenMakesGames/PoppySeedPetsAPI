@@ -660,17 +660,25 @@ class InventoryService
             $this->applyStatusEffect($pet, $statusEffect['effect'], $statusEffect['duration']);
         }
 
-        if(count($food->leftovers) > 0)
+        $leftovers = $food->leftovers;
+
+        if(strpos('Fishkebab Stew', $food->name) >= 0)
+        {
+            if($this->squirrel3->rngNextInt(1, 6) === 1)
+                $leftovers[] = $this->itemRepository->findOneByName('Fish Bones');
+        }
+
+        if($leftovers)
         {
             $leftoverNames = [];
 
-            foreach($food->leftovers as $leftoverItem)
+            foreach($leftovers as $leftoverItem)
             {
                 $leftoverNames[] = $leftoverItem->getNameWithArticle();
                 $this->petCollectsItem($leftoverItem, $pet, $pet->getName() . ' ate ' . GrammarFunctions::indefiniteArticle($food->name) . ' ' . $food->name . '; this was left over.', null);
             }
 
-            $wasOrWere = count($food->leftovers) === 1 ? 'was' : 'were';
+            $wasOrWere = count($leftovers) === 1 ? 'was' : 'were';
 
             $this->responseService->addFlashMessage('After ' . $pet->getName() . ' ate the ' . $food->name . ', ' . ArrayFunctions::list_nice($leftoverNames) . ' ' . $wasOrWere . ' left over.');
         }
