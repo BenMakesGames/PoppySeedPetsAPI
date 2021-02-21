@@ -2,6 +2,7 @@
 namespace App\Service\PetActivity\Crafting\Helpers;
 
 use App\Entity\Item;
+use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
@@ -30,6 +31,19 @@ class CoinSmithingService
         $this->transactionService = $transactionService;
         $this->responseService = $responseService;
         $this->squirrel3 = $squirrel3;
+    }
+
+    public function spillGold(ComputedPetSkills $petWithSkills, Item $triedToMake): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+        $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+        $pet->increaseEsteem(-1);
+        $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 8));
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ', but they spilled the gold and burned themselves! :(', 'icons/activity-logs/burn');
     }
 
     public function makeSilverCoins(ComputedPetSkills $petWithSkills, Item $triedToMake)

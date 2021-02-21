@@ -43,19 +43,6 @@ class GoldSmithingService
         $this->squirrel3 = $squirrel3;
     }
 
-    public function spillGold(ComputedPetSkills $petWithSkills, Item $triedToMake): PetActivityLog
-    {
-        $pet = $petWithSkills->getPet();
-
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
-        $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-        $pet->increaseEsteem(-1);
-        $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 8));
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-
-        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ', but they spilled the gold and burned themselves! :(', 'icons/activity-logs/burn');
-    }
-
     public function createGoldTriangle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
@@ -132,7 +119,7 @@ class GoldSmithingService
                 if($reRoll >= 12)
                     return $this->coinSmithingService->makeGoldCoins($petWithSkills, $makingItem);
                 else
-                    return $this->spillGold($petWithSkills, $makingItem);
+                    return $this->coinSmithingService->spillGold($petWithSkills, $makingItem);
             }
         }
         else if($roll >= 12)
@@ -368,7 +355,7 @@ class GoldSmithingService
             if($reRoll >= 12)
                 return $this->coinSmithingService->makeGoldCoins($petWithSkills, $makingItem);
             else
-                return $this->spillGold($petWithSkills, $makingItem);
+                return $this->coinSmithingService->spillGold($petWithSkills, $makingItem);
         }
         else if($roll >= 12)
         {
@@ -414,7 +401,7 @@ class GoldSmithingService
             if($reRoll >= 12)
                 return $this->coinSmithingService->makeGoldCoins($petWithSkills, $makingItem);
             else
-                return $this->spillGold($petWithSkills, $makingItem);
+                return $this->coinSmithingService->spillGold($petWithSkills, $makingItem);
         }
         else if($roll >= 13)
         {
@@ -611,7 +598,7 @@ class GoldSmithingService
             if($reRoll >= 12)
                 return $this->coinSmithingService->makeGoldCoins($petWithSkills, $makingItem);
             else
-                return $this->spillGold($petWithSkills, $makingItem);
+                return $this->coinSmithingService->spillGold($petWithSkills, $makingItem);
         }
         else if($roll >= 24)
         {

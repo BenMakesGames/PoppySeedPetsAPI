@@ -78,7 +78,7 @@ class WunderbussController extends PoppySeedPetsItemController
         $newDonatedItem = (new MuseumItem())
             ->setUser($user)
             ->setItem($itemToFind)
-            ->setComments([ 'This item was created by ' . $inventory->getFullItemName() . '!' ])
+            ->setComments([ 'This item was created by wishing for it from Wunderboss!' ])
         ;
 
         $em->persist($newDonatedItem);

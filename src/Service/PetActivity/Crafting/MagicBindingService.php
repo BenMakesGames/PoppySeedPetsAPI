@@ -13,6 +13,7 @@ use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
+use App\Service\PetActivity\Crafting\Helpers\CoinSmithingService;
 use App\Service\PetActivity\Crafting\Helpers\EvericeMeltingService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -26,10 +27,12 @@ class MagicBindingService
     private $itemRepository;
     private $evericeMeltingService;
     private $squirrel3;
+    private $coinSmithingService;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        ItemRepository $itemRepository, EvericeMeltingService $evericeMeltingService, Squirrel3 $squirrel3
+        ItemRepository $itemRepository, EvericeMeltingService $evericeMeltingService, Squirrel3 $squirrel3,
+        CoinSmithingService $coinSmithingService
     )
     {
         $this->inventoryService = $inventoryService;
@@ -38,6 +41,7 @@ class MagicBindingService
         $this->itemRepository = $itemRepository;
         $this->evericeMeltingService = $evericeMeltingService;
         $this->squirrel3 = $squirrel3;
+        $this->coinSmithingService = $coinSmithingService;
     }
 
     /**
@@ -78,8 +82,14 @@ class MagicBindingService
                 $possibilities[] = new ActivityCallback($this, 'createWhiteEpee', 8);
         }
 
-        if(array_key_exists('Armor', $quantities) && array_key_exists('Ruby Feather', $quantities))
-            $possibilities[] = new ActivityCallback($this, 'createRubyeye', 8);
+        if(array_key_exists('Ruby Feather', $quantities))
+        {
+            if(array_key_exists('Armor', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createRubyeye', 8);
+
+            if(array_key_exists('Blunderbuss', $quantities) && array_key_exists('Rainbow', $quantities) && array_key_exists('Gold Bar', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createWunderbuss', 8);
+        }
 
         if(array_key_exists('Everice', $quantities))
         {
@@ -1293,6 +1303,56 @@ class MagicBindingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
             ;
             $this->inventoryService->petCollectsItem('Armor', $pet, $pet->getName() . ' bound this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createWunderbuss(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        $makingItem = $this->itemRepository->findOneByName('Wunderbuss');
+
+        if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+
+            if($this->squirrel3->rngNextBool())
+            {
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+                $this->inventoryService->loseItem('Rainbow', $pet->getOwner(), LocationEnum::HOME, 1);
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to bind a Rainbow to a Blunderbuss, but accidentally caught the light wrong; the Rainbow vanished...', 'icons/activity-logs/confused');
+            }
+            else
+            {
+                $reRoll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+                if($reRoll >= 12)
+                    return $this->coinSmithingService->makeGoldCoins($petWithSkills, $makingItem);
+                else
+                    return $this->coinSmithingService->spillGold($petWithSkills, $makingItem);
+            }
+        }
+        else if($umbraCheck < 30)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had an idea for a brilliantly-colored Blunderbuss, but couldn\'t figure out how to realize it...', 'icons/activity-logs/confused');
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Rainbow', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Blunderbuss', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Ruby Feather', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 5, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Wunderbuss!!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 30)
+            ;
+            $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' created this!', $activityLog);
             return $activityLog;
         }
     }
