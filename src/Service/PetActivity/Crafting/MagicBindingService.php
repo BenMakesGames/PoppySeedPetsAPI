@@ -157,7 +157,17 @@ class MagicBindingService
                 $possibilities[] = new ActivityCallback($this, 'createWitchsBroom', 8);
 
             if(array_key_exists('Blackonite', $quantities))
-                $possibilities[] = new ActivityCallback($this, 'createBunchOfDice', 8);
+            {
+                $diceWeight = 8;
+
+                if(array_key_exists('Fish Head Shovel', $quantities))
+                {
+                    $possibilities[] = new ActivityCallback($this, 'createNephthys', 8);
+                    $diceWeight = 2;
+                }
+
+                $possibilities[] = new ActivityCallback($this, 'createBunchOfDice', $diceWeight);
+            }
 
             if(array_key_exists('Gold Tuning Fork', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createAstralTuningFork', 8);
@@ -528,6 +538,42 @@ class MagicBindingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
             ;
             $this->inventoryService->petCollectsItem('Magic Hourglass', $pet, $pet->getName() . ' enchanted this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createNephthys(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(-1);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Fish Bone Shovel, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+        }
+        else if($umbraCheck < 18)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Fish Bone Shovel, but somehow kept dozing off...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Blackonite', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Fish Head Shovel', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Fish Head Shovel in Nephthys\'s name!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+            ;
+            $this->inventoryService->petCollectsItem('Nephthys', $pet, $pet->getName() . ' enchanted this.', $activityLog);
             return $activityLog;
         }
     }
