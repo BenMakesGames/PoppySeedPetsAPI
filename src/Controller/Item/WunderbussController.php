@@ -90,7 +90,7 @@ class WunderbussController extends PoppySeedPetsItemController
         $em->flush();
 
         $responseService->setReloadInventory(true);
-        $responseService->addFlashMessage('IT IS DONE!');
+        $responseService->addFlashMessage('IT IS DONE! Olfert\'s spirit thanks you, as do I!');
 
         return $responseService->success();
     }
