@@ -662,7 +662,7 @@ class InventoryService
 
         $leftovers = $food->leftovers;
 
-        if(strpos('Fishkebab Stew', $food->name) !== false)
+        if(strpos($food->name, 'Fishkebab Stew') !== false)
         {
             if($this->squirrel3->rngNextInt(1, 6) === 1)
                 $leftovers[] = $this->itemRepository->findOneByName('Fish Bones');
