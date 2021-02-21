@@ -43,6 +43,7 @@ class FishingService
 
     public function adventure(ComputedPetSkills $petWithSkills)
     {
+
         $pet = $petWithSkills->getPet();
         $maxSkill = 5 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2);
 
@@ -60,7 +61,13 @@ class FishingService
             $fishedAMerchantFish->setValue(true);
             $activityLog = $this->fishedMerchantFish($pet);
         }
-        else
+
+        if(!$activityLog)
+        {
+            $activityLog = $this->maybeGetLuckyFishBones($petWithSkills);
+        }
+
+        if(!$activityLog)
         {
             switch($roll)
             {
@@ -432,6 +439,35 @@ class FishingService
         }
 
         return $activityLog;
+    }
+
+    private function maybeGetLuckyFishBones(ComputedPetSkills $petWithSkills): ?PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        if($this->squirrel3->rngNextInt(1, 200) === 1 && $pet->hasMerit(MeritEnum::LUCKY))
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out fishing, and reeled in... some Fish Bones!? (Lucky~??)', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+            ;
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+            $this->inventoryService->petCollectsItem('Fish Bones', $pet, $pet->getName() . ' was out fishing, and one of these got caught on the line!? (Lucky~??)', $activityLog);
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::FISH, true);
+
+            return $activityLog;
+        }
+        else if($this->squirrel3->rngNextInt(1, 200) === 1)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out fishing, and reeled in... some Fish Bones!?', '');
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+            $this->inventoryService->petCollectsItem('Little Strongbox', $pet, $pet->getName() . ' was out fishing, and one of these got caught on the line!?', $activityLog);
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::FISH, true);
+
+            return $activityLog;
+        }
+        else
+            return null;
     }
 
     private function fishedWaterfallBasin(ComputedPetSkills $petWithSkills): PetActivityLog
