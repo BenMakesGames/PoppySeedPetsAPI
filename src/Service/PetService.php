@@ -658,6 +658,20 @@ class PetService
             return;
         }
 
+        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        {
+            if($this->squirrel3->rngNextInt(1, 10) === 1)
+                $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::WEREFORM));
+        }
+        else if(
+            $pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_WERECREATURE) &&
+            $this->squirrel3->rngNextInt(1, 100) === 1 &&
+            !$pet->hasStatusEffect(StatusEffectEnum::WEREFORM)
+        )
+        {
+            $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::WEREFORM, 1);
+        }
+
         if($this->dream($pet))
         {
             $this->dreamingService->dream($pet);
@@ -879,7 +893,7 @@ class PetService
         if($pet->getFood() + $pet->getAlcohol() + $pet->getJunk() < 0)
             return false;
 
-        if($this->meetRoommates($pet))
+        if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM) && $this->meetRoommates($pet))
         {
             $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
             return true;
@@ -889,15 +903,18 @@ class PetService
 
         $wants[] = [ 'activity' => SocialTimeWantEnum::HANG_OUT, 'weight' => 60 ];
 
-        $availableGroups = $pet->getGroups()->filter(function(PetGroup $g) {
-            return $g->getSocialEnergy() >= PetGroupService::SOCIAL_ENERGY_PER_MEET;
-        });
+        if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        {
+            $availableGroups = $pet->getGroups()->filter(function(PetGroup $g) {
+                return $g->getSocialEnergy() >= PetGroupService::SOCIAL_ENERGY_PER_MEET;
+            });
 
-        if(count($availableGroups) > 0)
-            $wants[] = [ 'activity' => SocialTimeWantEnum::GROUP, 'weight' => 30 ];
+            if(count($availableGroups) > 0)
+                $wants[] = [ 'activity' => SocialTimeWantEnum::GROUP, 'weight' => 30 ];
 
-        if(count($pet->getGroups()) < $pet->getMaximumGroups())
-            $wants[] = [ 'activity' => SocialTimeWantEnum::CREATE_GROUP, 'weight' => 5 ];
+            if(count($pet->getGroups()) < $pet->getMaximumGroups())
+                $wants[] = [ 'activity' => SocialTimeWantEnum::CREATE_GROUP, 'weight' => 5 ];
+        }
 
         while(count($wants) > 0)
         {
@@ -1400,6 +1417,10 @@ class PetService
     public function generateSubmarineDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
+
+        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+            return 0;
+
         $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
@@ -1424,6 +1445,10 @@ class PetService
     public function generateCraftingDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
+
+        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+            return 0;
+
         $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
@@ -1491,6 +1516,10 @@ class PetService
     public function generateHackingDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
+
+        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+            return 0;
+
         $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
@@ -1503,6 +1532,10 @@ class PetService
     public function generateProgrammingDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
+
+        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+            return 0;
+
         $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires

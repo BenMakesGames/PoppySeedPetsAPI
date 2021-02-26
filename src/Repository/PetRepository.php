@@ -7,6 +7,7 @@ use App\Entity\PetRelationship;
 use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Enum\RelationshipEnum;
+use App\Enum\StatusEffectEnum;
 use App\Service\Squirrel3;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -78,12 +79,13 @@ class PetRepository extends ServiceEntityRepository
     /**
      * @return Pet[]
      */
-    public function findPetsEligibleForParkEvent(string $eventType, int $number)
+    public function findPetsEligibleForParkEvent(string $eventType, int $number): array
     {
         $today = new \DateTimeImmutable();
 
-        return $this->createQueryBuilder('p')
+        $pets = $this->createQueryBuilder('p')
             //->join('p.skills', 's')
+            ->join('p.statusEffects', 'statusEffects')
             ->andWhere('p.parkEventType=:eventType')
             ->andWhere('(p.lastParkEvent<:today OR p.lastParkEvent IS NULL)')
             ->andWhere('p.inDaycare=0')
@@ -96,6 +98,10 @@ class PetRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+
+        return array_filter($pets, function(Pet $pet) {
+            return !$pet->hasStatusEffect(StatusEffectEnum::WEREFORM);
+        });
     }
 
     public function getNumberAtHome(User $user): int

@@ -72,6 +72,7 @@ Other good offerings include:
   * Dreamwalker\'s Tea, combined with fruit pie, produces an elixir that causes its drinker to shrink in size!
   * Dreamwalker\'s Tea, combined with plain sugar cookies, produces an elixir that causes its drinker to GROW in size!
 * Some food & drink are so imbued with magic, those that consume it may gain their first glimpse of the Umbra. Blood Wine - a fermented drink made from the blood of mythical creatures - is one such item.
+* To stave off werecreatures, steep Wolf\'s Bane with a bar of pure silver overnight (or use Aging Powder if you can\'t wait) 
 ');
     }
 }

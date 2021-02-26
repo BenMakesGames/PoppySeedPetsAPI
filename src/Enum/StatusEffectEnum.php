@@ -5,6 +5,7 @@ final class StatusEffectEnum
 {
     use Enum;
 
+    public const BITTEN_BY_A_WERECREATURE = 'Bitten (by a Werecreature)';
     public const CAFFEINATED = 'Caffeinated';
     public const TIRED = 'Tired';
     public const INSPIRED = 'Inspired';
@@ -18,4 +19,5 @@ final class StatusEffectEnum
     public const ANTI_GRAVD = 'Anti-grav\'d';
     public const OIL_COVERED = 'Oil-covered';
     public const BUBBLEGUMD = 'Bubblegum\'d';
+    public const WEREFORM = 'Wereform';
 }

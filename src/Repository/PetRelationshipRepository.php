@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Pet;
 use App\Entity\PetRelationship;
 use App\Enum\RelationshipEnum;
+use App\Enum\StatusEffectEnum;
+use App\Functions\ArrayFunctions;
 use App\Service\PetExperienceService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -33,6 +35,7 @@ class PetRelationshipRepository extends ServiceEntityRepository
             ->leftJoin('r.pet', 'pet')
             ->leftJoin('r.relationship', 'friend')
             ->leftJoin('friend.houseTime', 'friendHouseTime')
+            ->leftJoin('friend.statusEffects', 'friendStatusEffects')
             ->andWhere('pet.id=:petId')
             ->andWhere('friend.food + friend.alcohol + friend.junk > 0')
             ->andWhere('r.currentRelationship NOT IN (:excludedRelationshipTypes)')
@@ -44,7 +47,24 @@ class PetRelationshipRepository extends ServiceEntityRepository
             ->setParameter('minimumFriendSocialEnergy', floor(PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 3 / 2))
         ;
 
-        return $qb->getQuery()->execute();
+        $friends = $qb->getQuery()->execute();
+
+        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        {
+            // pets in Wereform only hang out with other pets in Wereform
+            $friends = array_filter($friends, function(PetRelationship $r) {
+                return $r->getRelationship()->hasStatusEffect(StatusEffectEnum::WEREFORM);
+            });
+        }
+        else
+        {
+            // pets NOT in Wereform only hang out with other pets NOT in Wereform
+            $friends = array_filter($friends, function(PetRelationship $r) {
+                return !$r->getRelationship()->hasStatusEffect(StatusEffectEnum::WEREFORM);
+            });
+        }
+
+        return $friends;
     }
 
     /**

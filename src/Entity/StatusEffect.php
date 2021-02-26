@@ -107,7 +107,9 @@ class StatusEffect
             StatusEffectEnum::ONEIRIC,
             StatusEffectEnum::GOBBLE_GOBBLE,
             StatusEffectEnum::BUBBLEGUMD,
-            StatusEffectEnum::OIL_COVERED
+            StatusEffectEnum::OIL_COVERED,
+            StatusEffectEnum::BITTEN_BY_A_WERECREATURE,
+            StatusEffectEnum::WEREFORM,
         ]))
         {
             return $this;
