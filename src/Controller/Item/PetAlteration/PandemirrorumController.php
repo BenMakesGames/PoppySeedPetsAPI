@@ -74,6 +74,8 @@ class PandemirrorumController extends PoppySeedPetsItemController
         $em->remove($inventory);
         $em->flush();
 
-        return $responseService->itemActionSuccess($pet->getName() . ' stared so hard at the mirror, it shattered! ' . $messageExtra, [ 'itemDeleted' => true ]);
+        $responseService->addFlashMessage($pet->getName() . ' stared so hard at the mirror, it shattered! ' . $messageExtra);
+
+        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 }
