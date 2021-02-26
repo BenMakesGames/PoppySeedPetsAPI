@@ -6,12 +6,14 @@ use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
+use App\Enum\MoonPhaseEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\DateFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -76,79 +78,86 @@ class HuntingService
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        switch($roll)
+        if(DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON && $this->squirrel3->rngNextInt(1, 100) === 1)
         {
-            case 1:
-            case 2:
-                $activityLog = $this->failedToHunt($petWithSkills);
-                break;
-            case 3:
-            case 4:
-            case 5:
-                $activityLog = $this->huntedDustBunny($petWithSkills);
-                break;
-            case 6:
-                $activityLog = $this->huntedPlasticBag($petWithSkills);
-                break;
-            case 7:
-            case 8:
-                if($this->canRescueAnotherHouseFairy($pet->getOwner()))
-                    $activityLog = $this->rescueHouseFairy($pet);
-                else if($useThanksgivingPrey)
-                    $activityLog = $this->huntedTurkey($petWithSkills);
-                else if($usePassoverPrey)
-                    $activityLog = $this->noGoats($pet);
-                else
-                    $activityLog = $this->huntedGoat($petWithSkills);
-                break;
-            case 9:
-                $activityLog = $this->huntedDoughGolem($petWithSkills);
-                break;
-            case 10:
-            case 11:
-                if($useThanksgivingPrey)
-                    $activityLog = $this->huntedTurkey($petWithSkills);
-                else
-                    $activityLog = $this->huntedLargeToad($petWithSkills);
-                break;
-            case 12:
-                $activityLog = $this->huntedScarecrow($petWithSkills);
-                break;
-            case 13:
-                $activityLog = $this->huntedOnionBoy($petWithSkills);
-                break;
-            case 14:
-            case 15:
-                $activityLog = $this->huntedThievingMagpie($petWithSkills);
-                break;
-            case 16:
-                if($useThanksgivingPrey)
-                    $activityLog = $this->huntedPossessedTurkey($petWithSkills);
-                else
-                    $activityLog = $this->huntedGhosts($petWithSkills);
-                break;
-            case 17:
-            case 18:
-                if($useThanksgivingPrey)
-                    $activityLog = $this->huntedPossessedTurkey($petWithSkills);
-                else if($usePassoverPrey)
-                    $activityLog = $this->noGoats($pet);
-                else
-                    $activityLog = $this->huntedSatyr($petWithSkills);
-                break;
-            case 19:
-            case 20:
-                $activityLog = $this->huntedPaperGolem($petWithSkills);
-                break;
-            case 21:
-                if($useThanksgivingPrey)
-                    $activityLog = $this->huntedTurkeyDragon($petWithSkills);
-                else
-                    $activityLog = $this->huntedLeshyDemon($petWithSkills);
-                break;
-            case 22:
-                $activityLog = $this->huntedEggSaladMonstrosity($petWithSkills);
-                break;
+            $activityLog = $this->huntedWerecreature($petWithSkills);
+        }
+        else
+        {
+            switch($roll)
+            {
+                case 1:
+                case 2:
+                    $activityLog = $this->failedToHunt($petWithSkills);
+                    break;
+                case 3:
+                case 4:
+                case 5:
+                    $activityLog = $this->huntedDustBunny($petWithSkills);
+                    break;
+                case 6:
+                    $activityLog = $this->huntedPlasticBag($petWithSkills);
+                    break;
+                case 7:
+                case 8:
+                    if($this->canRescueAnotherHouseFairy($pet->getOwner()))
+                        $activityLog = $this->rescueHouseFairy($pet);
+                    else if($useThanksgivingPrey)
+                        $activityLog = $this->huntedTurkey($petWithSkills);
+                    else if($usePassoverPrey)
+                        $activityLog = $this->noGoats($pet);
+                    else
+                        $activityLog = $this->huntedGoat($petWithSkills);
+                    break;
+                case 9:
+                    $activityLog = $this->huntedDoughGolem($petWithSkills);
+                    break;
+                case 10:
+                case 11:
+                    if($useThanksgivingPrey)
+                        $activityLog = $this->huntedTurkey($petWithSkills);
+                    else
+                        $activityLog = $this->huntedLargeToad($petWithSkills);
+                    break;
+                case 12:
+                    $activityLog = $this->huntedScarecrow($petWithSkills);
+                    break;
+                case 13:
+                    $activityLog = $this->huntedOnionBoy($petWithSkills);
+                    break;
+                case 14:
+                case 15:
+                    $activityLog = $this->huntedThievingMagpie($petWithSkills);
+                    break;
+                case 16:
+                    if($useThanksgivingPrey)
+                        $activityLog = $this->huntedPossessedTurkey($petWithSkills);
+                    else
+                        $activityLog = $this->huntedGhosts($petWithSkills);
+                    break;
+                case 17:
+                case 18:
+                    if($useThanksgivingPrey)
+                        $activityLog = $this->huntedPossessedTurkey($petWithSkills);
+                    else if($usePassoverPrey)
+                        $activityLog = $this->noGoats($pet);
+                    else
+                        $activityLog = $this->huntedSatyr($petWithSkills);
+                    break;
+                case 19:
+                case 20:
+                    $activityLog = $this->huntedPaperGolem($petWithSkills);
+                    break;
+                case 21:
+                    if($useThanksgivingPrey)
+                        $activityLog = $this->huntedTurkeyDragon($petWithSkills);
+                    else
+                        $activityLog = $this->huntedLeshyDemon($petWithSkills);
+                    break;
+                case 22:
+                    $activityLog = $this->huntedEggSaladMonstrosity($petWithSkills);
+                    break;
+            }
         }
 
         if($activityLog)
@@ -228,6 +237,88 @@ class HuntingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, false);
 
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out hunting, but couldn\'t find anything to hunt.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function huntedWerecreature(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $message = 'Under the influence of the full moon, a werecreature leapt out and attacked %pet:' . $pet->getId() . '.name% while they were out hunting! ';
+
+        $tool = $pet->getTool();
+
+        if($tool)
+        {
+            $treasure = $tool->getItem()->getTreasure();
+
+            if($treasure && $treasure->getSilver() > 0)
+            {
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
+
+                $lootItem = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+                    'Talon', 'Fluff'
+                ]));
+
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+                $pet
+                    ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
+                    ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                ;
+
+                $message .= '%pet:' . $pet->getId() . '.name% brandished their silver ' . $tool->getItem()->getName() . '; the creature ran off at the sight of it, dropping ' . $lootItem->getNameWithArticle() . ' as it went!';
+
+                $activityLog = $this->responseService->createActivityLog($pet, $message, '');
+
+                $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' chased off a werecreature, and received this.', $activityLog);
+
+                return $activityLog;
+            }
+        }
+
+        $skill = 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal();
+
+        if($this->squirrel3->rngNextInt(1, $skill) >= 15)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
+
+            $lootItem = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+                'Talon', 'Fluff'
+            ]));
+
+            $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
+
+            $pet
+                ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
+                ->increaseSafety(-$this->squirrel3->rngNextInt(2, 4))
+            ;
+
+            $message .= '%pet:' . $pet->getId() . '.name% beat the creature back, and received ' . $lootItem->getNameWithArticle() . ', but also received a bite during the encounter... (Uh oh...)';
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $message, '');
+
+            $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' received this from a fight with a werecreature.', $activityLog);
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
+
+            $pet
+                ->increaseEsteem(-$this->squirrel3->rngNextInt(2, 4))
+                ->increaseSafety(-$this->squirrel3->rngNextInt(4, 8))
+            ;
+
+            $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+
+            $message .= '%pet:' . $pet->getId() . '.name% eventually escaped the creature, but not before being scratched and bitten! (Uh oh!)';
+
+            return $this->responseService->createActivityLog($pet, $message, '');
         }
     }
 
