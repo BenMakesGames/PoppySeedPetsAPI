@@ -1326,7 +1326,10 @@ class PetService
 
         if($petPreviousRelationship !== $pet->getCurrentRelationship())
         {
-            $relationshipMovement = $this->petRelationshipService->calculateRelationshipDistance($petPreviousRelationship, $pet->getCurrentRelationship());
+            $relationshipMovement =
+                abs($this->petRelationshipService->calculateRelationshipDistance($pet->getRelationshipWanted(), $petPreviousRelationship)) -
+                abs($this->petRelationshipService->calculateRelationshipDistance($pet->getRelationshipWanted(), $pet->getCurrentRelationship()))
+            ;
 
             $pet->getPet()
                 ->increaseLove($relationshipMovement * 2)
@@ -1336,7 +1339,10 @@ class PetService
 
         if($friendPreviousRelationship !== $friend->getCurrentRelationship())
         {
-            $relationshipMovement = $this->petRelationshipService->calculateRelationshipDistance($friendPreviousRelationship, $friend->getCurrentRelationship());
+            $relationshipMovement =
+                abs($this->petRelationshipService->calculateRelationshipDistance($friend->getRelationshipWanted(), $friendPreviousRelationship)) -
+                abs($this->petRelationshipService->calculateRelationshipDistance($friend->getRelationshipWanted(), $friend->getCurrentRelationship()))
+            ;
 
             $friend->getPet()
                 ->increaseLove($relationshipMovement * 2)
