@@ -8,6 +8,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
+use App\Service\InventoryService;
 use App\Service\MeritService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -62,7 +63,8 @@ class ForgettingScrollController extends PoppySeedPetsItemController
      */
     public function forgetMerit(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, MeritRepository $meritRepository, MeritService $meritService
+        PetRepository $petRepository, MeritRepository $meritRepository, MeritService $meritService,
+        InventoryService $inventoryService
     )
     {
         $user = $this->getUser();
@@ -108,12 +110,7 @@ class ForgettingScrollController extends PoppySeedPetsItemController
         {
             if($pet->getHat())
             {
-                $pet->getHat()
-                    ->setLocation(LocationEnum::HOME)
-                    ->setModifiedOn()
-                ;
-
-                $pet->setHat(null);
+                $inventoryService->unhatPet($pet);
 
                 $responseService->addFlashMessage($pet->getName() . '\'s hat falls to the ground.');
             }

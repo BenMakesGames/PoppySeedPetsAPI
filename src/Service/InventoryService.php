@@ -765,6 +765,36 @@ class InventoryService
             ->setTimeRemaining(min($statusEffect->getTotalDuration(), $statusEffect->getTimeRemaining() + $duration))
         ;
 
+        if($status === StatusEffectEnum::WEREFORM)
+        {
+            $itemsDropped = [];
+
+            if(
+                $pet->getTool() &&
+                $pet->getTool()->getItem()->getTreasure() &&
+                $pet->getTool()->getItem()->getTreasure()->getSilver() > 0
+            )
+            {
+                $itemsDropped[] = $pet->getTool()->getFullItemName();
+                $this->unequipPet($pet);
+            }
+
+            if(
+                $pet->getHat() &&
+                $pet->getHat()->getItem()->getTreasure() &&
+                $pet->getHat()->getItem()->getTreasure()->getSilver() > 0
+            )
+            {
+                $itemsDropped[] = $pet->getHat()->getFullItemName();
+                $this->unhatPet($pet);
+            }
+
+            if(count($itemsDropped) > 0)
+                $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% turned into a Werecreature, and immediately dropped their ' . ArrayFunctions::list_nice($itemsDropped) . '!', '');
+            else
+                $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% turned into a Werecreature!', '');
+        }
+
     }
 
     private function getBonusItemForLuckyFood(): Item
@@ -796,5 +826,17 @@ class InventoryService
             ->setModifiedOn()
         ;
         $pet->setTool(null);
+    }
+
+    public function unhatPet(Pet $pet)
+    {
+        if($pet->getHat() === null)
+            return;
+
+        $pet->getHat()
+            ->setLocation(LocationEnum::HOME)
+            ->setModifiedOn()
+        ;
+        $pet->setHat(null);
     }
 }

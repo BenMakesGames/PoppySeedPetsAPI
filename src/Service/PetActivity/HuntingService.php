@@ -245,6 +245,37 @@ class HuntingService
         $pet = $petWithSkills->getPet();
         $message = 'Under the influence of the full moon, a werecreature leapt out and attacked %pet:' . $pet->getId() . '.name% while they were out hunting! ';
 
+        $hat = $pet->getHat();
+
+        if($hat)
+        {
+            $treasure = $hat->getItem()->getTreasure();
+
+            if($treasure && $treasure->getSilver() > 0)
+            {
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
+
+                $lootItem = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+                    'Talon', 'Fluff'
+                ]));
+
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+                $pet
+                    ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
+                    ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                ;
+
+                $message .= 'However, upon seeing %pet:' . $pet->getId() . '.name%\'s silver ' . $hat->getItem()->getName() . ', the creature ran off, dropping ' . $lootItem->getNameWithArticle() . ' as it went!';
+
+                $activityLog = $this->responseService->createActivityLog($pet, $message, '');
+
+                $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' scared off a werecreature, and received this.', $activityLog);
+
+                return $activityLog;
+            }
+        }
+
         $tool = $pet->getTool();
 
         if($tool)
