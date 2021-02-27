@@ -85,7 +85,7 @@ class PetRepository extends ServiceEntityRepository
 
         $pets = $this->createQueryBuilder('p')
             //->join('p.skills', 's')
-            ->join('p.statusEffects', 'statusEffects')
+            ->leftJoin('p.statusEffects', 'statusEffects')
             ->andWhere('p.parkEventType=:eventType')
             ->andWhere('(p.lastParkEvent<:today OR p.lastParkEvent IS NULL)')
             ->andWhere('p.inDaycare=0')
