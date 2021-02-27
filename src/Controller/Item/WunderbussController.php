@@ -8,6 +8,7 @@ use App\Repository\ItemRepository;
 use App\Repository\MuseumItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
+use App\Service\MuseumService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -44,7 +45,8 @@ class WunderbussController extends PoppySeedPetsItemController
      */
     public function search(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        ItemRepository $itemRepository, MuseumItemRepository $museumItemRepository, UserQuestRepository $userQuestRepository
+        ItemRepository $itemRepository, MuseumItemRepository $museumItemRepository, UserQuestRepository $userQuestRepository,
+        MuseumService $museumService
     )
     {
         $this->validateInventory($inventory, 'wunderbuss');
@@ -75,13 +77,7 @@ class WunderbussController extends PoppySeedPetsItemController
             throw new UnprocessableEntityHttpException('You\'ve already donated ' . $itemToFind->getNameWithArticle() . '.');
 
         // 1. donate the item
-        $newDonatedItem = (new MuseumItem())
-            ->setUser($user)
-            ->setItem($itemToFind)
-            ->setComments([ 'This item was created by wishing for it from Wunderboss!' ])
-        ;
-
-        $em->persist($newDonatedItem);
+        $museumService->forceDonateItem($user, $itemToFind, 'This item was created by wishing for it from Wunderboss!');
 
         // 2. count the wish as granted
         $usedAWunderbuss->setValue(true);
