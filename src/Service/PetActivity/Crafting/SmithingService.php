@@ -539,7 +539,7 @@ class SmithingService
             $this->inventoryService->petCollectsItem('Crystal Ball', $pet, $pet->getName() . ' created this from Glass.', $activityLog);
             $this->inventoryService->petCollectsItem('Crystal Ball', $pet, $pet->getName() . ' created this from Glass.', $activityLog);
 
-            $this->maybeMakeARainbowToo($pet);
+            $this->maybeMakeARainbowToo($pet, 2);
 
             return $activityLog;
         }
@@ -556,7 +556,7 @@ class SmithingService
             ;
             $this->inventoryService->petCollectsItem('Crystal Ball', $pet, $pet->getName() . ' created this from Glass.', $activityLog);
 
-            $this->maybeMakeARainbowToo($pet);
+            $this->maybeMakeARainbowToo($pet, 1);
 
             return $activityLog;
         }
@@ -1170,7 +1170,7 @@ class SmithingService
         }
     }
 
-    private function maybeMakeARainbowToo(Pet $pet): ?PetActivityLog
+    private function maybeMakeARainbowToo(Pet $pet, int $numberOfCrystalBalls): ?PetActivityLog
     {
         $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 60) === 1;
 
@@ -1180,7 +1180,12 @@ class SmithingService
 
             $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
 
-            $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was making a Crystal Ball, they happened to catch the light just right, and caught a Rainbow, too!' . $luckySuffix, '')
+            $message = $numberOfCrystalBalls === 1
+                ? 'While %pet:' . $pet->getId() . '.name% was making a Crystal Ball, they happened to catch the light just right, and caught a Rainbow, too!'
+                : 'While %pet:' . $pet->getId() . '.name% was making some Crystal Balls, they happened to catch the light just right, and caught a Rainbow, too!'
+            ;
+
+            $activityLog = $this->responseService->createActivityLog($pet, $message . $luckySuffix, '')
                 ->addInterestingness($lucky ? PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT : PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
 
