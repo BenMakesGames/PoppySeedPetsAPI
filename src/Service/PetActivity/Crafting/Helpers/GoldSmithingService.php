@@ -607,7 +607,7 @@ class GoldSmithingService
             $this->inventoryService->loseItem('Firestone', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Culinary Knife', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(mt_rand(2, 4));
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% smithed No Whisk, No Reward.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 24)
