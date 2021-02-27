@@ -1,0 +1,74 @@
+<?php
+
+namespace App\Repository;
+
+use App\Entity\DesignGoal;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\ParameterBag;
+
+/**
+ * @method DesignGoal|null find($id, $lockMode = null, $lockVersion = null)
+ * @method DesignGoal|null findOneBy(array $criteria, array $orderBy = null)
+ * @method DesignGoal[]    findAll()
+ * @method DesignGoal[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
+class DesignGoalRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, DesignGoal::class);
+    }
+
+    /**
+     * @return DesignGoal[]
+     */
+    public function findByIdsFromParameters(ParameterBag $params, string $fieldName): array
+    {
+        // *sigh* PHP...
+        $designGoalIds =
+            array_unique(       // unique values
+                array_filter(   //   among values >= 0
+                    array_map(  //     among the string values cast to integers
+                        function($id) { return (int)$id; },
+                        $params->get($fieldName, [])
+                    ),
+                    function(int $id) {
+                        return $id > 0;
+                    }
+                )
+            )
+        ;
+
+        return $this->findBy([ 'id' => $designGoalIds ]);
+    }
+
+    // /**
+    //  * @return DesignGoal[] Returns an array of DesignGoal objects
+    //  */
+    /*
+    public function findByExampleField($value)
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.exampleField = :val')
+            ->setParameter('val', $value)
+            ->orderBy('d.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    */
+
+    /*
+    public function findOneBySomeField($value): ?DesignGoal
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.exampleField = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+    */
+}

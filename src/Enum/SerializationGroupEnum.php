@@ -56,4 +56,5 @@ final class SerializationGroupEnum
     public const DRAGON_TREASURE = 'dragonTreasure';
     public const MY_MARKET_BIDS = 'myBids';
     public const GLOBAL_STATS = 'globalStats';
+    public const DESIGN_GOAL = 'designGoal';
 }

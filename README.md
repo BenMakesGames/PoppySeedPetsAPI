@@ -7,3 +7,9 @@
 3. run `php bin/console doctrine:migrations:migrate`
    * there are no fixtures; you'll need to get recipe, item, NPC data, etc, from somewhere...
 4. add to crontab:<br>`* * * * * cd /PATH_TO_POPPY_SEED_PETS && vendor/bin/crunz schedule:run`
+
+## Local Dev
+
+1. run `symfony server:start` in root of this project
+2. run `ng serve` in root of web app project
+3. optionally, start local redis service

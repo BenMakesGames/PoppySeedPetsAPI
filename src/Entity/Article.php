@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -43,9 +45,16 @@ class Article
      */
     private $author;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=DesignGoal::class, inversedBy="articles")
+     * @Groups({"article"})
+     */
+    private $designGoals;
+
     public function __construct()
     {
         $this->createdOn = new \DateTimeImmutable();
+        $this->designGoals = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -90,6 +99,30 @@ class Article
     public function setAuthor(?User $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|DesignGoal[]
+     */
+    public function getDesignGoals(): Collection
+    {
+        return $this->designGoals;
+    }
+
+    public function addDesignGoal(DesignGoal $designGoal): self
+    {
+        if (!$this->designGoals->contains($designGoal)) {
+            $this->designGoals[] = $designGoal;
+        }
+
+        return $this;
+    }
+
+    public function removeDesignGoal(DesignGoal $designGoal): self
+    {
+        $this->designGoals->removeElement($designGoal);
 
         return $this;
     }

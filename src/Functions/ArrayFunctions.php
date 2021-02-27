@@ -177,4 +177,27 @@ final class ArrayFunctions
 
         return $min;
     }
+
+    /**
+     * Example use: Assume a list of $people and $children, which are arrays of objects of type Person.
+     * We wish to find all $people that AREN'T in the list of $children. We'll determine if two Person
+     * elements are the same by comparing their "ssn" property:
+     *
+     *     $adults = ArrayFunctions::except($people, $children, function(Person $p) { return $p->ssn; });
+     *
+     * @return array All items in $values that do not appear in $toExclude; the $getter is used to compare items.
+     */
+    public static function except(array $values, iterable $toExclude, callable $getter)
+    {
+        return array_filter(
+            $values,
+            function($item) use($toExclude, $getter) {
+                $itemValue = $getter($item);
+
+                return !self::any($toExclude, function($exclude) use($getter, $itemValue) {
+                    $getter($exclude) === $itemValue;
+                });
+            }
+        );
+    }
 }
