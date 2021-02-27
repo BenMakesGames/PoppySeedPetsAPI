@@ -738,7 +738,7 @@ class GreenhouseController extends PoppySeedPetsController
      * @Route("/beeNetting/deploy", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function deployBeeNetting(ResponseService $responseService)
+    public function deployBeeNetting(ResponseService $responseService, Squirrel3 $squirrel3)
     {
         $user = $this->getUser();
         $greenhouse = $user->getGreenhouse();
@@ -751,6 +751,8 @@ class GreenhouseController extends PoppySeedPetsController
 
         $greenhouse->setHasBeeNetting(true);
 
+        $responseService->addFlashMessage('(No more weird bee spices up in here!)');
+
         return $responseService->success();
     }
 
@@ -758,7 +760,7 @@ class GreenhouseController extends PoppySeedPetsController
      * @Route("/beeNetting/putAway", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function putAwayBeeNetting(ResponseService $responseService)
+    public function putAwayBeeNetting(ResponseService $responseService, Squirrel3 $squirrel3)
     {
         $user = $this->getUser();
         $greenhouse = $user->getGreenhouse();
@@ -770,6 +772,12 @@ class GreenhouseController extends PoppySeedPetsController
             throw new AccessDeniedHttpException('You haven\'t unlocked this feature, yet...');
 
         $greenhouse->setHasBeeNetting(false);
+
+        $responseService->addFlashMessage($squirrel3->rngNextFromArray([
+            '(Hook me up with those bee spices!)',
+            '(Gimme them bee spices!)',
+            $squirrel3->rngNextFromArray([ '(Bee spices, bee mine!)', '(Bee spices, bee mine! (See what I did there?))' ])
+        ]));
 
         return $responseService->success();
     }
