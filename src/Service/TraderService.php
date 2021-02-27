@@ -147,7 +147,12 @@ class TraderService
             'trades' => $this->getHolidayOffers($user)
         ];
 
-        $offers = [];
+        $offers = [
+            [
+                'title' => 'Food',
+                'trades' => $this->getFoodsOffers($user)
+            ]
+        ];
 
         $tradeGroups = $this->getUnlockedTradeGroups($user);
 
@@ -162,10 +167,6 @@ class TraderService
                 case TradeGroupEnum::DARK_THINGS:
                     $title = 'Umbral';
                     $trades = $this->getDarkThingsOffers($user);
-                    break;
-                case TradeGroupEnum::FOODS:
-                    $title = 'Food';
-                    $trades = $this->getFoodsOffers($user);
                     break;
                 case TradeGroupEnum::CURIOSITIES:
                     $title = 'Curiosities';
@@ -191,6 +192,8 @@ class TraderService
                     $title = 'Digital';
                     $trades = $this->getDigitalOffers();
                     break;
+                case 3: // old "FOODS" group unlock
+                    continue 2; // why "2"? see https://www.php.net/manual/en/control-structures.continue.php >_>
                 default:
                     throw new \Exception('You have unlocked trade group #' . $group . '... which does not exist. Ben should fix this.');
             }
@@ -637,6 +640,11 @@ class TraderService
     {
         return [
             new TraderOffer(
+                [ TraderOfferCostOrYield::createMoney(100) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Deed for Greenhouse Plot'), 1) ],
+                "Oh, fun, a greenhouse! What kind of Kelp will you be gr-- oh. Right, I suppose you'll just be growing Landweed, and such.\n\nWell.\n\nHave fun with that, I suppose."
+            ),
+            new TraderOffer(
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Moon Pearl'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Cooking Buddy'), 1) ],
                 'That\'s no knock-off! Tell Samarzhoustia trades directly with the Eridanus Federation!'
@@ -971,12 +979,6 @@ class TraderService
 
         if($dayOfWeek === 'Sun')
         {
-            $offers[] = new TraderOffer(
-                [ TraderOfferCostOrYield::createMoney(100) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Deed for Greenhouse Plot'), 1) ],
-                "Oh, fun, a greenhouse! What kind of Kelp will you be gr-- oh. Right, I suppose you'll just be growing Landweed, and such.\n\nWell.\n\nHave fun with that, I suppose."
-            );
-
             $offers[] = new TraderOffer(
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Triangle'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Sunflower'), 1) ],

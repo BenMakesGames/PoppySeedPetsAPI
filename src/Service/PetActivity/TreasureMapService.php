@@ -345,7 +345,7 @@ class TreasureMapService
                         [ 'item' => 'Magic Smoke', 'weight' => 35, 'message' => 'Are you going to make something with that?' ],
                     ]);
 
-                    if($this->hasUnlockedTraderFoodTrades($pet->getOwner()))
+                    if($pet->getOwner()->getUnlockedTrader())
                         $possibleTrades[] = [ 'item' => 'Limestone', 'weight' => 20, 'message' => 'You working on a trade with those Tell Samarzhoustia merchants, or something?' ];
 
                     if($pet->getOwner()->getUnlockedBeehive())
@@ -384,16 +384,6 @@ class TreasureMapService
         $activityLog->setChanges($changes->compare($pet));
 
         return $activityLog;
-    }
-
-    private function hasUnlockedTraderFoodTrades(User $user): bool
-    {
-        if(!$user->getUnlockedTrader())
-            return false;
-
-        $groups = $this->traderService->getUnlockedTradeGroups($user);
-
-        return in_array(TradeGroupEnum::FOODS, $groups);
     }
 
     public function getFluffmongerFlavorFoods($flavor)
