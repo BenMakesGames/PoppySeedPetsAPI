@@ -460,7 +460,7 @@ class FishingService
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out fishing, and reeled in... some Fish Bones!?', '');
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
-            $this->inventoryService->petCollectsItem('Little Strongbox', $pet, $pet->getName() . ' was out fishing, and one of these got caught on the line!?', $activityLog);
+            $this->inventoryService->petCollectsItem('Fish Bones', $pet, $pet->getName() . ' was out fishing, and one of these got caught on the line!?', $activityLog);
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::FISH, true);
 
