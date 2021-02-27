@@ -17,6 +17,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\GuildRepository;
@@ -474,16 +475,28 @@ class PetController extends PoppySeedPetsController
         if($inventory->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException('That item does not exist.');
 
+        if(!$inventory->getItem()->getTool())
+            throw new UnprocessableEntityHttpException('That item\'s not an equipment!');
+
         if($pet->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException('There is no such pet.');
 
         if($pet->getInDaycare())
             throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');
 
+        if(
+            $pet->hasStatusEffect(StatusEffectEnum::WEREFORM) &&
+            $inventory->getItem()->getTreasure() &&
+            $inventory->getItem()->getTreasure()->getSilver() > 0
+        )
+        {
+            throw new UnprocessableEntityHttpException($pet->getName() . ' recoils at the sight of the silvery ' . $inventory->getFullItemName() . '!');
+        }
+
         if($pet->getTool())
         {
             if($inventory->getId() === $pet->getTool()->getId())
-                throw new UnprocessableEntityHttpException($pet->getName() . ' is already equipped with that ' . $pet->getTool()->getItem()->getName() . '!');
+                throw new UnprocessableEntityHttpException($pet->getName() . ' is already equipped with that ' . $pet->getTool()->getFullItemName() . '!');
 
             $inventoryService->unequipPet($pet);
         }
@@ -519,13 +532,17 @@ class PetController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function hatPet(
-        Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
+        Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        InventoryService $inventoryService
     )
     {
         $user = $this->getUser();
 
         if($inventory->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException('That item does not exist.');
+
+        if(!$inventory->getItem()->getHat())
+            throw new UnprocessableEntityHttpException('That item\'s not a hat!');
 
         if($pet->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException('There is no such pet.');
@@ -536,17 +553,21 @@ class PetController extends PoppySeedPetsController
         if(!$pet->hasMerit(MeritEnum::BEHATTED))
             throw new UnprocessableEntityHttpException($pet->getName() . ' does not have the Merit required to wear hats.');
 
+        if(
+            $pet->hasStatusEffect(StatusEffectEnum::WEREFORM) &&
+            $inventory->getItem()->getTreasure() &&
+            $inventory->getItem()->getTreasure()->getSilver() > 0
+        )
+        {
+            throw new UnprocessableEntityHttpException($pet->getName() . ' recoils at the sight of the silvery ' . $inventory->getFullItemName() . '!');
+        }
+
         if($pet->getHat())
         {
             if($inventory->getId() === $pet->getHat()->getId())
-                throw new UnprocessableEntityHttpException($pet->getName() . ' is already wearing that ' . $pet->getHat()->getItem()->getName() . '!');
+                throw new UnprocessableEntityHttpException($pet->getName() . ' is already wearing that ' . $pet->getHat()->getFullItemName() . '!');
 
-            $pet->getHat()
-                ->setLocation(LocationEnum::HOME)
-                ->setModifiedOn()
-            ;
-
-            $pet->setHat(null);
+            $inventoryService->unhatPet($pet);
         }
 
         if($inventory->getHolder())
