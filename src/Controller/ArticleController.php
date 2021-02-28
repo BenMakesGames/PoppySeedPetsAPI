@@ -133,6 +133,22 @@ class ArticleController extends PoppySeedPetsController
         $designGoalsToAdd = ArrayFunctions::except($designGoals, $currentDesignGoals, function(DesignGoal $dg) { return $dg->getId(); });
         $designGoalsToRemove = ArrayFunctions::except($currentDesignGoals, $designGoals, function(DesignGoal $dg) { return $dg->getId(); });
 
+        /*
+        echo 'current design goals:' . "\r\n";
+        foreach($currentDesignGoals as $dg) echo $dg->getId() . ', ' . $dg->getName() . "\r\n";
+
+        echo "\r\n" . 'design goals from request body:' . "\r\n";
+        foreach($designGoals as $dg) echo $dg->getId() . ', ' . $dg->getName() . "\r\n";
+
+        echo "\r\ndesign goals to add:\r\n";
+        foreach($designGoalsToAdd as $dg) echo $dg->getId() . ', ' . $dg->getName() . "\r\n";
+
+        echo "\r\ndesign goals to remove:\r\n";
+        foreach($designGoalsToRemove as $dg) echo $dg->getId() . ', ' . $dg->getName() . "\r\n";
+
+        die;
+        */
+
         foreach($designGoalsToRemove as $toRemove)
             $article->removeDesignGoal($toRemove);
 

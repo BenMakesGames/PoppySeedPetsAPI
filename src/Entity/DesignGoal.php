@@ -17,7 +17,7 @@ class DesignGoal
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"designGoal"})
+     * @Groups({"designGoal", "article"})
      */
     private $id;
 

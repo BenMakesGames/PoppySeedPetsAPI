@@ -187,17 +187,17 @@ final class ArrayFunctions
      *
      * @return array All items in $values that do not appear in $toExclude; the $getter is used to compare items.
      */
-    public static function except(array $values, iterable $toExclude, callable $getter)
+    public static function except(array $values, array $toExclude, callable $getter)
     {
-        return array_filter(
-            $values,
-            function($item) use($toExclude, $getter) {
-                $itemValue = $getter($item);
+        $filteredValues = [];
+        $excludeValues = array_map(function($v) use($getter) { return $getter($v); }, $toExclude);
 
-                return !self::any($toExclude, function($exclude) use($getter, $itemValue) {
-                    $getter($exclude) === $itemValue;
-                });
-            }
-        );
+        foreach($values as $value)
+        {
+            if(!in_array($getter($value), $excludeValues))
+                $filteredValues[] = $value;
+        }
+
+        return $filteredValues;
     }
 }

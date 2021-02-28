@@ -22,7 +22,7 @@ class ArticleFilterService
                 'createdon' => [ 'a.createdOn' => 'desc' ], // first one is the default
             ],
             [
-                'designgoal' => [ $this, 'filterDesignGoal' ],
+                'designGoal' => [ $this, 'filterDesignGoal' ],
             ]
         );
     }
@@ -35,10 +35,10 @@ class ArticleFilterService
     public function filterDesignGoal(QueryBuilder $qb, $value)
     {
         if(!in_array('designGoals', $qb->getAllAliases()))
-            $qb->join('p.designGoals', 'designGoals');
+            $qb->join('a.designGoals', 'designGoals');
 
         $qb
-            ->andWhere('designGoals.name=:designGoal')
+            ->andWhere('designGoals.id=:designGoal')
             ->setParameter('designGoal', $value)
         ;
     }
