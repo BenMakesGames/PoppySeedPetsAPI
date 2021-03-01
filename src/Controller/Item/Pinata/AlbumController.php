@@ -47,7 +47,7 @@ class AlbumController extends PoppySeedPetsItemController
 
         $extraItem = $squirrel3->rngNextFromArray([ 'Pointer', 'Quintessence' ]);
 
-        $inventoryService->giveInventory($musicNotes, $user, $user, $user->getName() . ' got this by listening to a Single.', $location);
+        $inventoryService->giveInventoryQuantities($musicNotes, $user, $user, $user->getName() . ' got this by listening to a Single.', $location);
         $inventoryService->receiveItem($extraItem, $user, $user, $user->getName() . ' got this by listening to a Single.', $location);
 
         $em->remove($inventory);
@@ -79,7 +79,7 @@ class AlbumController extends PoppySeedPetsItemController
         $genre = $squirrel3->rngNextFromArray(self::GENRES);
         $extraItem = $squirrel3->rngNextFromArray([ 'NUL', 'Quintessence' ]);
 
-        $inventoryService->giveInventory($musicNotes, $user, $user, $user->getName() . ' got this by listening to an EP.', $location);
+        $inventoryService->giveInventoryQuantities($musicNotes, $user, $user, $user->getName() . ' got this by listening to an EP.', $location);
         $inventoryService->receiveItem($genre, $user, $user, $user->getName() . ' got this by listening to a EP.', $location);
         $inventoryService->receiveItem($extraItem, $user, $user, $user->getName() . ' got this by listening to a EP.', $location);
 
@@ -119,7 +119,7 @@ class AlbumController extends PoppySeedPetsItemController
 
         sort($extraItems);
 
-        $inventoryService->giveInventory($musicNotes, $user, $user, $user->getName() . ' got this by listening to an LP.', $location);
+        $inventoryService->giveInventoryQuantities($musicNotes, $user, $user, $user->getName() . ' got this by listening to an LP.', $location);
         $inventoryService->receiveItem($genre, $user, $user, $user->getName() . ' got this by listening to a LP.', $location);
 
         foreach($extraItems as $extraItem)

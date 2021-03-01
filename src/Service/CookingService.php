@@ -198,7 +198,7 @@ class CookingService
         foreach($makes as $m)
             $m->quantity *= $multiple;
 
-        $newInventory = $this->inventoryService->giveInventory($makes, $user, $user, $user->getName() . ' prepared this.', $locationOfFirstItem);
+        $newInventory = $this->inventoryService->giveInventoryQuantities($makes, $user, $user, $user->getName() . ' prepared this.', $locationOfFirstItem);
 
         if(count($spices) > 0)
         {
