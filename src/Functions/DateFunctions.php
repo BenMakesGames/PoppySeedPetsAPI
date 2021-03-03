@@ -115,6 +115,7 @@ final class DateFunctions
         }
     }
 
+    /** @noinspection PhpInconsistentReturnPointsInspection */
     public static function getClosestExactFullMoon(\DateTimeImmutable $dt): \DateTimeImmutable
     {
         if(self::getIsExactFullMoon($dt))
@@ -128,9 +129,6 @@ final class DateFunctions
             if(self::getIsExactFullMoon($dt->modify('-' . $d . ' days')))
                 return $dt->modify('-' . $d . ' days');
         }
-
-        // never mind that PHPStorm thinks we're not always returning a value.
-        // we are.
     }
 
     public static function getFullExactMoonDays(int $year, int $month): array

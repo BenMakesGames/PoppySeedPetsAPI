@@ -127,7 +127,7 @@ final class ColorFunctions
     }
 
     // not-perfect, but should be computationally fast!
-    public function GrayscalifyHex(string $hexColor)
+    public static function GrayscalifyHex(string $hexColor)
     {
         $r = substr($hexColor, 0, 2);
         $g = substr($hexColor, 2, 2);

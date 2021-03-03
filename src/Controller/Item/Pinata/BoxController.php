@@ -59,7 +59,7 @@ class BoxController extends PoppySeedPetsItemController
             'Sombrero'
         ]));
 
-        $stat = $userStatsRepository->incrementStat($user, 'Opened ' . $box->getItem()->getNameWithArticle());
+        $userStatsRepository->incrementStat($user, 'Opened ' . $box->getItem()->getNameWithArticle());
 
         if($hatItem->getName() === 'Gray Bow')
         {
@@ -1090,7 +1090,7 @@ class BoxController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function alicesSecretHourglass(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
         UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierService $toolBonusService
     )
     {

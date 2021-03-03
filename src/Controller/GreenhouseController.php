@@ -738,7 +738,7 @@ class GreenhouseController extends PoppySeedPetsController
      * @Route("/beeNetting/deploy", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function deployBeeNetting(ResponseService $responseService, Squirrel3 $squirrel3)
+    public function deployBeeNetting(ResponseService $responseService)
     {
         $user = $this->getUser();
         $greenhouse = $user->getGreenhouse();

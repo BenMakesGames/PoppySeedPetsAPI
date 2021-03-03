@@ -22,12 +22,12 @@ class CTFParticipant
         $skills = $this->pet->getSkills();
         $this->skill = floor($skills->getPerception() * 3 + $skills->getDexterity() * 1.5 + $skills->getStrength() + $skills->getStealth() / 2 + $skills->getBrawl() / 4);
 
-        $attack = $squirrel3->rngNextInt(3, 10 + $this->pet->getComputedSkills()->getStealth()->getTotal() + ($this->pet->hasMerit(MeritEnum::DARKVISION) ? 1 : 0));
+        $attack = $squirrel3->rngNextInt(3, 10 + $skills->getStealth() + ($this->pet->hasMerit(MeritEnum::DARKVISION) ? 1 : 0));
         $defend = $squirrel3->rngNextInt(1, 10 + $skills->getBrawl());
 
         if($attack >= $defend)
             $this->role = self::ROLE_EXPLORE;
         else
-            $this->role = $this->pet->getPerception() > $this->pet->getStrength() ? self::ROLE_DEFEND : self::ROLE_PATROL;
+            $this->role = $skills->getPerception() > $skills->getStrength() ? self::ROLE_DEFEND : self::ROLE_PATROL;
     }
 }

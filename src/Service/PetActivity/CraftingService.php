@@ -194,8 +194,14 @@ class CraftingService
                 $possibilities[] = new ActivityCallback($this, 'createLaserGuidedSword', 10);
         }
 
-        if(array_key_exists('Antenna', $quantities) && array_key_exists('Cobweb', $quantities) && array_key_exists('Fiberglass Bow', $quantities))
-            $possibilities[] = new ActivityCallback($this, 'createBugBow', 10);
+        if(array_key_exists('Antenna', $quantities))
+        {
+            if(array_key_exists('Cobweb', $quantities) && array_key_exists('Fiberglass Bow', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createBugBow', 10);
+
+            if(array_key_exists('Alien Tissue', $quantities))
+                $possibilities[] = new ActivityCallback($this, 'createProboscis', 10);
+        }
 
         if(array_key_exists('String', $quantities))
         {
@@ -1258,6 +1264,54 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started making a Bug Bow, but kept getting stuck to the Cobweb.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createProboscis(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 +
+            $petWithSkills->getIntelligence()->getTotal() +
+            $petWithSkills->getDexterity()->getTotal() +
+            $petWithSkills->getCrafts()->getTotal()
+        );
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            $this->inventoryService->loseItem('Antenna', $pet->getOwner(), LocationEnum::HOME, 1);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% starting making a Proboscis, but accidentally tore the Antenna :(', '');
+        }
+        else if($roll >= 26)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Antenna', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% spun a Proboscis from Alien Tissue and Antenna, and there was still plenty of Alien Tissue left over!', '');
+            $this->inventoryService->petCollectsItem('Proboscis', $pet, $pet->getName() . ' created this out of Alien Tissue and some bug bits.', $activityLog);
+
+            return $activityLog;
+        }
+        else if($roll >= 16)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::CRAFT, true);
+            $this->inventoryService->loseItem('Alien Tissue', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Antenna', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% spun a Proboscis from Alien Tissue and Antenna!', '');
+            $this->inventoryService->petCollectsItem('Proboscis', $pet, $pet->getName() . ' created this out of Alien Tissue and some bug bits.', $activityLog);
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Proboscis, but had trouble spinning the Alien Tissue.', 'icons/activity-logs/confused');
         }
     }
 

@@ -283,7 +283,7 @@ class BugController extends PoppySeedPetsItemController
      * @throws \Exception
      */
     public function talkToQueen(
-        Inventory $inventory, StoryService $storyService, Request $request, EntityManagerInterface $em,
+        Inventory $inventory, StoryService $storyService, Request $request,
         ResponseService $responseService
     )
     {

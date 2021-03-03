@@ -48,8 +48,7 @@ class BeehiveController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function chooseSpecialization(
-        Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        BeehiveService $beehiveService
+        Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -183,7 +182,7 @@ class BeehiveController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function harvest(
-        ResponseService $responseService, EntityManagerInterface $em, BeehiveService $beehiveService,
+        ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3
     )
     {

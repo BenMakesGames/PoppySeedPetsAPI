@@ -21,7 +21,7 @@ class HalloweenService
 
     public function __construct(
         UserQuestRepository $userQuestRepository, PetRepository $petRepository, InventoryService $inventoryService,
-        InventoryRepository $inventoryRepository, CalendarService $calendarService
+        InventoryRepository $inventoryRepository
     )
     {
         $this->userQuestRepository = $userQuestRepository;
