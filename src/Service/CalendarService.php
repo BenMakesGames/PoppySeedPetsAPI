@@ -22,7 +22,7 @@ class CalendarService
     public function setToday(\DateTimeImmutable $date)
     {
         $this->today = $date;
-        $this->monthAndDay = (int)$this->today->format('md');
+        $this->monthAndDay = (int)$this->today->format('nd');
     }
 
     public function isNoombatDay(): bool

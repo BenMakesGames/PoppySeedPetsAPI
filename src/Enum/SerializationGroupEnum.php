@@ -57,4 +57,5 @@ final class SerializationGroupEnum
     public const MY_MARKET_BIDS = 'myBids';
     public const GLOBAL_STATS = 'globalStats';
     public const DESIGN_GOAL = 'designGoal';
+    public const WEATHER = 'weather';
 }

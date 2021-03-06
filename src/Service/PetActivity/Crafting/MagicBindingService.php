@@ -18,6 +18,7 @@ use App\Service\PetActivity\Crafting\Helpers\EvericeMeltingService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use App\Service\WeatherService;
 
 class MagicBindingService
 {
@@ -28,11 +29,12 @@ class MagicBindingService
     private $evericeMeltingService;
     private $squirrel3;
     private $coinSmithingService;
+    private $weatherService;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
         ItemRepository $itemRepository, EvericeMeltingService $evericeMeltingService, Squirrel3 $squirrel3,
-        CoinSmithingService $coinSmithingService
+        CoinSmithingService $coinSmithingService, WeatherService $weatherService
     )
     {
         $this->inventoryService = $inventoryService;
@@ -42,6 +44,7 @@ class MagicBindingService
         $this->evericeMeltingService = $evericeMeltingService;
         $this->squirrel3 = $squirrel3;
         $this->coinSmithingService = $coinSmithingService;
+        $this->weatherService = $weatherService;
     }
 
     /**
@@ -49,9 +52,7 @@ class MagicBindingService
      */
     public function getCraftingPossibilities(ComputedPetSkills $petWithSkills, array $quantities): array
     {
-        $hour = (int)((new \DateTimeImmutable())->format('G'));
-
-        $isNight = ($hour < 6 || $hour >= 18);
+        $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $petWithSkills->getPet());
 
         $possibilities = [];
 
@@ -129,7 +130,7 @@ class MagicBindingService
             if(array_key_exists('Fishing Recorder', $quantities) && array_key_exists('Music Note', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createKokopelli', 8);
 
-            if(array_key_exists('Crystal Ball', $quantities) && $isNight)
+            if(array_key_exists('Crystal Ball', $quantities) && $weather->isNight)
                 $possibilities[] = new ActivityCallback($this, 'createMoonPearl', 8);
 
             if(array_key_exists('Silver Bar', $quantities) && array_key_exists('Paint Stripper', $quantities))
@@ -2139,9 +2140,9 @@ class MagicBindingService
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(3);
 
-            $hour = (int)((new \DateTimeImmutable())->format('G'));
+            $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
 
-            $makes = ($hour < 6 || $hour >= 18) ? 'Midnight' : 'Sunrise';
+            $makes = $weather->isNight ? 'Midnight' : 'Sunrise';
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Sidereal Spear, creating ' . $makes . '!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)

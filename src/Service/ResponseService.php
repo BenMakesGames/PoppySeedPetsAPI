@@ -28,10 +28,11 @@ class ResponseService
     private $sessionId = 0;
     private $calendarService;
     private $petActivityLogRepository;
+    private $weatherService;
 
     public function __construct(
         SerializerInterface $serializer, NormalizerInterface $normalizer, EntityManagerInterface $em, Security $security,
-        CalendarService $calendarService, PetActivityLogRepository $petActivityLogRepository
+        CalendarService $calendarService, PetActivityLogRepository $petActivityLogRepository, WeatherService $weatherService
     )
     {
         $this->serializer = $serializer;
@@ -40,6 +41,7 @@ class ResponseService
         $this->security = $security;
         $this->calendarService = $calendarService;
         $this->petActivityLogRepository = $petActivityLogRepository;
+        $this->weatherService = $weatherService;
     }
 
     public function setSessionId(?string $sessionId)
@@ -86,6 +88,9 @@ class ResponseService
         if($this->sessionId !== 0)
             $responseData['sessionId'] = $this->sessionId;
 
+        $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), null);
+
+        $responseData['weather'] = $this->normalizer->normalize($weather, null, [ 'groups' => [ SerializationGroupEnum::WEATHER ]]);
         $responseData['event'] = $this->calendarService->getEventData($user);
 
         if($user && $user->getIsAdmin())
