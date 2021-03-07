@@ -4,10 +4,12 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Functions\RandomFunctions;
 use App\Model\WeatherData;
+use App\Model\WeatherForecastData;
 
 class WeatherService
 {
     private $calendarService;
+    private $cache;
 
     private const HOUR_OF_DAY_TEMPERATURE_MODIFIER = [
         // 12 am ...
@@ -18,9 +20,12 @@ class WeatherService
         //       ... 11pm
     ];
 
-    public function __construct(CalendarService  $calendarService)
+    public function __construct(
+        CalendarService  $calendarService, CacheHelper $cache
+    )
     {
         $this->calendarService = $calendarService;
+        $this->cache = $cache;
     }
 
     public function getHourSince2000(\DateTimeImmutable $dt): float
@@ -53,6 +58,7 @@ class WeatherService
 
         $hourSince2000 = $this->getHourSince2000($dt);
 
+        $weather->clouds = $this->getClouds($hourSince2000);
         $weather->rainfall = $this->getRainfall($hourSince2000);
         $weather->temperature = $this->getTemperature($hourSince2000, $weather->rainfall);
         $weather->isNight = $this->isNight($hourSince2000 % 24);
@@ -101,6 +107,42 @@ class WeatherService
      */
     public function getRainfall(float $hourOfYear): float
     {
+        $moisture = $this->getMoisture($hourOfYear);
+
+        $rain = 5 * max(0, $moisture - 0.3);
+
+        return $rain;
+    }
+
+    /**
+     * @return float ??? unit of measure ???
+     */
+    public function getClouds(float $hourOfYear): float
+    {
+        $moistureMinus3 = $this->getMoisture($hourOfYear - 3);
+        $moistureMinus2 = $this->getMoisture($hourOfYear - 2);
+        $moistureMinus1 = $this->getMoisture($hourOfYear - 1);
+        $moisture = $this->getMoisture($hourOfYear);
+        $moisturePlus1 = $this->getMoisture($hourOfYear + 1);
+        $moisturePlus2 = $this->getMoisture($hourOfYear + 2);
+        $moisturePlus3 = $this->getMoisture($hourOfYear + 3);
+
+        $rain = max(0,
+            $moistureMinus3 / 8 +
+            $moistureMinus2 / 8 +
+            $moistureMinus1 / 5 +
+            $moisture / 2 +
+            $moisturePlus1 / 5 +
+            $moisturePlus2 / 8 +
+            $moisturePlus3 / 8 -
+            0.18
+        );
+
+        return $rain;
+    }
+
+    public function getMoisture(float $hourOfYear): float
+    {
         $seasonal =
             1.5 * sin(M_PI * 2 * ($hourOfYear - 3500) / 8760) +
             sin(M_PI * 4 * ($hourOfYear - 600) / 8760) +
@@ -109,9 +151,7 @@ class WeatherService
         $n1 = $this->getNoise($hourOfYear, 0.011, 0.041, 0.019, 0.037, 0.71) + 1.25;
         $n2 = $this->getNoise($hourOfYear, 0.17, 0.23, 0.13, 0.37, 0.53) + 1.25;
 
-        $rain = 5 * max(0, ($seasonal * $n1 * $n2) / 50 - 0.2);
-
-        return $rain;
+        return ($seasonal * $n1 * $n2) / 50;
     }
 
     public function isNight(int $hourOfDay): bool
@@ -129,5 +169,94 @@ class WeatherService
         $weather->isNight = $this->isNight($dt->format('G'));
 
         return $weather;
+    }
+
+    /**
+     * @return WeatherData[]
+     */
+    public function get24HourForecast(): array
+    {
+        $now = new \DateTimeImmutable();
+
+        return $this->cache->getOrCompute(
+            'Weather Forecast ' . $now->format('Y-m-d G'),
+            \DateInterval::createFromDateString('1 hour'),
+            function() {
+                return $this->compute24HourForecast();
+            }
+        );
+    }
+
+    private function compute24HourForecast()
+    {
+        $forecast = [];
+        $now = new \DateTimeImmutable();
+
+        for($hour = 0; $hour < 24; $hour++)
+        {
+            $now = $now->modify('+1 hour');
+            $forecast[] = $this->getWeather($now, null);
+        }
+
+        return $forecast;
+    }
+
+    /**
+     * @return WeatherForecastData[]
+     */
+    public function get7DayForecast(): array
+    {
+        $forecast = [];
+
+        for($day = 1; $day <= 7; $day++)
+            $forecast[] = $this->getWeatherForecast((new \DateTimeImmutable())->modify('+' . $day . 'days')->setTime(12, 0, 0));
+
+        return $forecast;
+    }
+
+    public function getWeatherForecast(\DateTimeImmutable $date): WeatherForecastData
+    {
+        return $this->cache->getOrCompute(
+            'Weather Forecast ' . $date->format('Y-m-d'),
+            \DateInterval::createFromDateString('1 day'),
+            function() use($date) {
+                return $this->computeWeatherForecast($date);
+            }
+        );
+    }
+
+    private function computeWeatherForecast(\DateTimeImmutable $date): WeatherForecastData
+    {
+        $temperatures = [];
+        $clouds = [];
+        $rainfalls = [];
+
+        for($hour = 0; $hour < 24; $hour++)
+        {
+            $dateToConsider = $date->setTime($hour, 30, 0);
+            $weather = $this->getWeather($dateToConsider, null);
+
+            $temperatures[] = $weather->temperature;
+            $clouds[] = $weather->clouds;
+            $rainfalls[] = $weather->rainfall;
+        }
+
+        $forecast = new WeatherForecastData();
+
+        $forecast->date = $date;
+
+        $forecast->maxRainfall = max($rainfalls);
+        $forecast->minRainfall = min($rainfalls);
+        $forecast->avgRainfall = array_sum($rainfalls) / 24;
+
+        $forecast->maxClouds = max($clouds);
+        $forecast->minClouds = min($clouds);
+        $forecast->avgClouds = array_sum($clouds) / 24;
+
+        $forecast->maxTemperature = max($temperatures);
+        $forecast->minTemperature = min($temperatures);
+        $forecast->avgTemperature = array_sum($temperatures) / 24;
+
+        return $forecast;
     }
 }

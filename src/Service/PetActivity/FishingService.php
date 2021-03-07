@@ -18,6 +18,7 @@ use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
+use App\Service\WeatherService;
 
 class FishingService
 {
@@ -27,10 +28,12 @@ class FishingService
     private $transactionService;
     private $userQuestRepository;
     private $squirrel3;
+    private $weatherService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3
+        TransactionService $transactionService, UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3,
+        WeatherService $weatherService
     )
     {
         $this->responseService = $responseService;
@@ -39,11 +42,11 @@ class FishingService
         $this->transactionService = $transactionService;
         $this->userQuestRepository = $userQuestRepository;
         $this->squirrel3 = $squirrel3;
+        $this->weatherService = $weatherService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
     {
-
         $pet = $petWithSkills->getPet();
         $maxSkill = 5 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2);
 
@@ -382,10 +385,12 @@ class FishingService
     {
         $pet = $petWithSkills->getPet();
 
+        $toadChance = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet)->getRainfall() > 0 ? 100 : 34;
+
         $nothingBiting = $this->nothingBiting($pet, 20, 'at a Roadside Creek');
         if($nothingBiting !== null) return $nothingBiting;
 
-        if($this->squirrel3->rngNextInt(1, 3) === 1)
+        if($this->squirrel3->rngNextInt(1, 100) <= $toadChance)
         {
             // toad
             if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getFishingBonus()->getTotal()) >= 7)

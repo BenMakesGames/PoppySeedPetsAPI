@@ -7,6 +7,8 @@ use App\Entity\User;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Model\PetChangesSummary;
+use App\Model\WeatherData;
+use App\Model\WeatherForecastData;
 use App\Repository\PetActivityLogRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -90,7 +92,11 @@ class ResponseService
 
         $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), null);
 
-        $responseData['weather'] = $this->normalizer->normalize($weather, null, [ 'groups' => [ SerializationGroupEnum::WEATHER ]]);
+        $responseData['weather'] = $this->normalizer->normalize([
+            'today' => $weather,
+            'forecast' => $this->weatherService->get24HourForecast(),
+        ], null, [ 'groups' => [ SerializationGroupEnum::WEATHER ]]);
+
         $responseData['event'] = $this->calendarService->getEventData($user);
 
         if($user && $user->getIsAdmin())

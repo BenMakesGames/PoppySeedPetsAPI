@@ -28,6 +28,7 @@ use App\Service\ResponseService;
 use App\Service\InventoryModifierService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
+use App\Service\WeatherService;
 
 class HuntingService
 {
@@ -43,13 +44,14 @@ class HuntingService
     private $toolBonusService;
     private $squirrel3;
     private $werecreatureEncounterService;
+    private $weatherService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         CalendarService $calendarService, MuseumItemRepository $museumItemRepository, ItemRepository $itemRepository,
         UserQuestRepository $userQuestRepository, PetExperienceService $petExperienceService,
         TransactionService $transactionService, InventoryModifierService $toolBonusService, Squirrel3 $squirrel3,
-        WerecreatureEncounterService $werecreatureEncounterService
+        WerecreatureEncounterService $werecreatureEncounterService, WeatherService $weatherService
     )
     {
         $this->responseService = $responseService;
@@ -64,6 +66,7 @@ class HuntingService
         $this->toolBonusService = $toolBonusService;
         $this->squirrel3 = $squirrel3;
         $this->werecreatureEncounterService = $werecreatureEncounterService;
+        $this->weatherService = $weatherService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -81,6 +84,9 @@ class HuntingService
         $activityLog = null;
         $changes = new PetChanges($pet);
 
+        $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
+        $isRaining = $weather->getRainfall() > 0;
+
         if(DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON && $this->squirrel3->rngNextInt(1, 100) === 1)
         {
             $activityLog = $this->werecreatureEncounterService->encounterWerecreature($petWithSkills, 'hunting');
@@ -96,7 +102,10 @@ class HuntingService
                 case 3:
                 case 4:
                 case 5:
-                    $activityLog = $this->huntedDustBunny($petWithSkills);
+                    if($isRaining && $this->squirrel3->rngNextBool())
+                        $activityLog = $this->huntedLargeToad($petWithSkills);
+                    else
+                        $activityLog = $this->huntedDustBunny($petWithSkills);
                     break;
                 case 6:
                     $activityLog = $this->huntedPlasticBag($petWithSkills);

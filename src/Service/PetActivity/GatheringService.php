@@ -22,6 +22,7 @@ use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
+use App\Service\WeatherService;
 
 class GatheringService
 {
@@ -32,11 +33,12 @@ class GatheringService
     private $itemRepository;
     private $spiceRepository;
     private $squirrel3;
+    private $weatherService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, ItemRepository $itemRepository, SpiceRepository $spiceRepository,
-        Squirrel3 $squirrel3
+        Squirrel3 $squirrel3, WeatherService $weatherService
     )
     {
         $this->responseService = $responseService;
@@ -46,6 +48,7 @@ class GatheringService
         $this->itemRepository = $itemRepository;
         $this->spiceRepository = $spiceRepository;
         $this->squirrel3 = $squirrel3;
+        $this->weatherService = $weatherService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -188,13 +191,27 @@ class GatheringService
 
     private function foundTeaBush(Pet $pet): PetActivityLog
     {
-        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a Tea Bush, and grabbed a few Tea Leaves.', 'items/veggie/tea-leaves');
+        if($this->weatherService->getWeather(new \DateTimeImmutable(), $pet)->getRainfall() > 0 && $this->squirrel3->rngNextInt(1, 4) === 1)
+        {
+            $message = '%pet:' . $pet->getId() . '.name% found a Tea Bush, and grabbed a few Tea Leaves, as well as some Worms which had surfaced to escape the rain.';
 
-        $this->inventoryService->petCollectsItem('Tea Leaves', $pet, $pet->getName() . ' harvested this from a Tea Bush.', $activityLog);
-        $this->inventoryService->petCollectsItem('Tea Leaves', $pet, $pet->getName() . ' harvested this from a Tea Bush.', $activityLog);
+            $activityLog = $this->responseService->createActivityLog($pet, $message, 'items/veggie/tea-leaves');
 
-        if($this->squirrel3->rngNextBool())
             $this->inventoryService->petCollectsItem('Tea Leaves', $pet, $pet->getName() . ' harvested this from a Tea Bush.', $activityLog);
+            $this->inventoryService->petCollectsItem('Worms', $pet, $pet->getName() . ' found these under a Tea Bush.', $activityLog);
+        }
+        else
+        {
+            $message = '%pet:' . $pet->getId() . '.name% found a Tea Bush, and grabbed a few Tea Leaves.';
+
+            $activityLog = $this->responseService->createActivityLog($pet, $message, 'items/veggie/tea-leaves');
+
+            $this->inventoryService->petCollectsItem('Tea Leaves', $pet, $pet->getName() . ' harvested this from a Tea Bush.', $activityLog);
+            $this->inventoryService->petCollectsItem('Tea Leaves', $pet, $pet->getName() . ' harvested this from a Tea Bush.', $activityLog);
+
+            if($this->squirrel3->rngNextBool())
+                $this->inventoryService->petCollectsItem('Tea Leaves', $pet, $pet->getName() . ' harvested this from a Tea Bush.', $activityLog);
+        }
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
@@ -243,7 +260,9 @@ class GatheringService
     {
         $pet = $petWithSkills->getPet();
 
-        if($this->squirrel3->rngNextInt(1, 4) === 1)
+        $toadChance = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet)->getRainfall() > 0 ? 75 : 25;
+
+        if($this->squirrel3->rngNextInt(1, 100) <= $toadChance)
         {
             if($petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
             {
@@ -429,6 +448,9 @@ class GatheringService
             'Carrot', 'Onion', 'Celery', 'Tomato', 'Beans',
             'Sweet Beet', 'Sweet Beet', 'Ginger', 'Rice Flower'
         ];
+
+        if($this->weatherService->getWeather(new \DateTimeImmutable(), $pet)->getRainfall() > 0)
+            $possibleLoot[] = 'Worms';
 
         $loot = [];
         $didWhat = 'harvested this from an Overgrown Garden';

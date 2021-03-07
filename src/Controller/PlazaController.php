@@ -19,20 +19,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class PlazaController extends PoppySeedPetsController
 {
     /**
-     * @Route("/availableHolidayBoxes", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function getAvailableHolidayBoxes(PlazaService $plazaService, ResponseService $responseService)
-    {
-        $user = $this->getUser();
-
-        return $responseService->success(array_map(
-            function(AvailableHolidayBox $box) { return $box->tradeDescription; },
-            $plazaService->getAvailableHolidayBoxes($user)
-        ));
-    }
-
-    /**
      * @Route("/collectHolidayBox", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */

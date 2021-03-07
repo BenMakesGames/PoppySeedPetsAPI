@@ -6,6 +6,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class WeatherData
 {
     public $temperature;
+    public $clouds;
     public $rainfall;
 
     /**
@@ -25,8 +26,16 @@ class WeatherData
     /**
      * @Groups({"weather"})
      */
+    public function getClouds(): float
+    {
+        return round($this->clouds, 2);
+    }
+
+    /**
+     * @Groups({"weather"})
+     */
     public function getRainfall(): float
     {
-        return round($this->rainfall, 1);
+        return round($this->rainfall, 2);
     }
 }

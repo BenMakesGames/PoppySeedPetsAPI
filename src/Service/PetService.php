@@ -98,6 +98,7 @@ class PetService
     private $userQuestRepository;
     private $squirrel3;
     private $chocolateMansion;
+    private $weatherService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -114,7 +115,8 @@ class PetService
         GuildService $guildService, InventoryService $inventoryService, BurntForestService $burntForestService,
         DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService, LetterService $letterService,
         PetSummonedAwayService $petSummonedAwayService, InventoryModifierService $toolBonusService,
-        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, ChocolateMansion $chocolateMansion
+        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, ChocolateMansion $chocolateMansion,
+        WeatherService $weatherService
     )
     {
         $this->em = $em;
@@ -155,6 +157,7 @@ class PetService
         $this->letterService = $letterService;
         $this->userQuestRepository = $userQuestRepository;
         $this->chocolateMansion = $chocolateMansion;
+        $this->weatherService = $weatherService;
     }
 
     /**
@@ -1578,6 +1581,7 @@ class PetService
         $changes = new PetChanges($pet);
 
         $pet->removeStatusEffect($pet->getStatusEffect($statusEffect));
+        $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
 
         if($pet->hasMerit(MeritEnum::GOURMAND))
         {
@@ -1590,6 +1594,19 @@ class PetService
 
             $this->responseService->createActivityLog($pet, '%pet:'. $pet->getId() . '.name% eats the ' . $itemOnBody . ' off their body in no time flat!', '', $changes->compare($pet));
             return false;
+        }
+        else if($weather->getRainfall() > 0)
+        {
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:'. $pet->getId() . '.name% spends some time cleaning the ' . $itemOnBody . ' off their body. The rain made it go much faster!', '');
+
+            $this->inventoryService->petCollectsItem($itemOnBody, $pet, $pet->getName() . ' cleaned this off their body with the help of the rain...', $activityLog);
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
+
+            $activityLog->setChanges($changes->compare($pet));
+
+            return true;
         }
         else
         {
