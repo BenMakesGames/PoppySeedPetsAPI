@@ -4,6 +4,7 @@ namespace App\Command;
 use App\Functions\RandomFunctions;
 use App\Service\WeatherService;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -22,32 +23,23 @@ class ShowWeatherCommand extends Command
     {
         $this
             ->setName('app:show-weather')
+            ->addArgument('time', InputArgument::OPTIONAL, 'DateTime string to show weather for; leave blank for current time.')
             ->setDescription('Show the weather.')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $monthTotal = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        $time = $input->getArgument('time');
 
-        $csv = fopen('out.csv', 'w');
+        if(!$time)
+            $time = new \DateTimeImmutable();
+        else
+            $time = new \DateTimeImmutable($time);
 
-        for($hourOfYear = 0; $hourOfYear < 8760; $hourOfYear++)
-        {
-            $rain = $this->weatherService->getRainfall($hourOfYear);
-            $temp = $this->weatherService->getTemperature($hourOfYear, $rain);
+        $weather = $this->weatherService->getWeather($time, null);
 
-            fwrite($csv, $rain . ',' . $temp . "\n");
-
-            $month = (int)($hourOfYear / 730);
-            $monthTotal[$month] += $rain;
-        }
-
-        fclose($csv);
-
-        var_export($monthTotal);
-
-        echo array_sum($monthTotal);
+        var_export($weather);
 
         return Command::SUCCESS;
     }

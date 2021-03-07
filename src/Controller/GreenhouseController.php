@@ -122,7 +122,7 @@ class GreenhouseController extends PoppySeedPetsController
         if($squirrel3->rngNextInt(1, 4) === 1)
             $itemName = $squirrel3->rngNextFromArray([ 'Fluff', 'Red Clover', 'Talon', 'Feathers' ]);
         else
-            $itemName = $squirrel3->rngNextFromArray([ 'Fluff', 'Crooked Stick', 'Crooked Stick' ]);
+            $itemName = $squirrel3->rngNextFromArray([ 'Dandelion', 'Crooked Stick', 'Crooked Stick' ]);
 
         $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this while weeding their Greenhouse.', LocationEnum::HOME);
 
@@ -239,11 +239,11 @@ class GreenhouseController extends PoppySeedPetsController
             $user->getGreenhouse()->setComposterBonusCountdown();
 
             $bonusItem = $itemRepository->findOneByName($squirrel3->rngNextFromArray([
-                $squirrel3->rngNextFromArray([ 'Grandparoot', 'Secret Seashell', 'Brown Bow' ]),
+                $squirrel3->rngNextFromArray([ 'Talon', 'Silica Grounds', 'Secret Seashell', 'Brown Bow' ]),
                 $squirrel3->rngNextFromArray([ 'Centipede', 'Stink Bug' ]),
-                'Twilight Fertilizer',
                 'Grandparoot',
-                'String',
+                'Toadstool',
+                'Fluff',
                 $squirrel3->rngNextFromArray([ 'Iron Ore', 'Iron Ore', 'Silver Ore', 'Gold Ore', 'Worms' ]),
                 'Paper Bag',
             ]));
