@@ -243,7 +243,7 @@ class GreenhouseController extends PoppySeedPetsController
                 $squirrel3->rngNextFromArray([ 'Centipede', 'Stink Bug' ]),
                 'Grandparoot',
                 'Toadstool',
-                'Fluff',
+                'String', // let it get rancid
                 $squirrel3->rngNextFromArray([ 'Iron Ore', 'Iron Ore', 'Silver Ore', 'Gold Ore', 'Worms' ]),
                 'Paper Bag',
             ]));
