@@ -126,6 +126,19 @@ final class ColorFunctions
         return ColorFunctions::RGB2Hex((int)$rgb['r'], (int)$rgb['g'], (int)$rgb['b']);
     }
 
+    public static function Hex2HSL(string $hexColor)
+    {
+        $rgb = ColorFunctions::Hex2RGB($hexColor);
+        return ColorFunctions::RGB2HSL($rgb['r'], $rgb['g'], $rgb['b']);
+    }
+
+    public static function ChangeHue(string $hexColor, float $hue)
+    {
+        $hsl = ColorFunctions::Hex2HSL($hexColor);
+        $hsl['h'] = $hue;
+        return ColorFunctions::HSL2Hex($hsl['h'], $hsl['s'], $hsl['l']);
+    }
+
     // not-perfect, but should be computationally fast!
     public static function GrayscalifyHex(string $hexColor)
     {

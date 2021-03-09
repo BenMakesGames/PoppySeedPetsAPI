@@ -19,6 +19,7 @@ use App\Functions\GrammarFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
@@ -40,11 +41,13 @@ class TreasureMapService
     private $traderService;
     private $toolBonusService;
     private $squirrel3;
+    private $itemRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         EntityManagerInterface $em, PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
-        TraderService $traderService, InventoryModifierService $toolBonusService, Squirrel3 $squirrel3
+        TraderService $traderService, InventoryModifierService $toolBonusService, Squirrel3 $squirrel3,
+        ItemRepository $itemRepository
     )
     {
         $this->responseService = $responseService;
@@ -56,6 +59,7 @@ class TreasureMapService
         $this->traderService = $traderService;
         $this->toolBonusService = $toolBonusService;
         $this->squirrel3 = $squirrel3;
+        $this->itemRepository = $itemRepository;
     }
 
     public function doCetguelisTreasureMap(ComputedPetSkills $petWithSkills)
@@ -210,6 +214,34 @@ class TreasureMapService
             $this->inventoryService->petAttractsRandomBug($pet);
     }
 
+    public function doLeprechaun(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+        if($pet->getTool()->isGrayscaling())
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a Leprechaun approached them... but upon seeing %pet:' . $pet->getId() . '.name%\'s pale visage, fled screaming into the woods! (Oops!) %pet:' . $pet->getId() . '.name% put their ' . $pet->getTool()->getFullItemName() . ' down...', '');
+            $this->inventoryService->unequipPet($pet);
+            return $activityLog;
+        }
+
+        $loot = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+            'Pot of Gold', 'Green Scroll'
+        ]));
+
+        $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a Leprechaun approached them, and, without a word, exchanged %pet:' . $pet->getId() . '.name%\'s ' . $pet->getTool()->getFullItemName() . ' for ' . $loot->getNameWithArticle() . '!', '');
+
+        $newInventory = $this->inventoryService->receiveItem($loot, $pet->getOwner(), $pet->getOwner(), 'Given to ' . $pet->getName() . ' by a Leprechaun.', LocationEnum::WARDROBE);
+
+        $this->em->remove($pet->getTool());
+        $pet->setTool($newInventory);
+
+        return $activityLog;
+    }
+
     public function doEggplantCurse(Pet $pet): PetActivityLog
     {
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
@@ -358,7 +390,6 @@ class TreasureMapService
                 if($fluffTradedStat->getValue() > 40)
                 {
                     $possibleTrades[] = [ 'item' => 'Top Hat', 'weight' => 15, 'message' => 'Want another hat? Can\'t blame you. It\'s a fine hat!' ];
-                    $possibleTrades[] = [ 'item' => 'Green Bow', 'weight' => 5, 'message' => 'Every now and again, I get bored of making hats, and make bows, instead. Every now and again.' ];
                 }
             }
 

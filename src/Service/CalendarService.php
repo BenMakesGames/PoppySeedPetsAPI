@@ -103,6 +103,11 @@ class CalendarService
         return $this->monthAndDay >= 1101 && $this->monthAndDay <= 1111;
     }
 
+    public function isSaintPatricksDay(): bool
+    {
+        return $this->monthAndDay >= 315 && $this->monthAndDay <= 317;
+    }
+
     public function isPiDayCrafting(): bool
     {
         return

@@ -526,6 +526,11 @@ class Inventory
         ;
     }
 
+    public function isGreenifying(): bool
+    {
+        return $this->getItem()->getName() === '5-leaf Clover';
+    }
+
     public function socialEnergyModifier(): int
     {
         return

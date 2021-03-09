@@ -12,6 +12,7 @@ use App\Entity\PetGroup;
 use App\Entity\PetRelationship;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
+use App\Enum\GatheringHolidayEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -39,7 +40,7 @@ use App\Service\PetActivity\Crafting\NotReallyCraftsService;
 use App\Service\PetActivity\CraftingService;
 use App\Service\PetActivity\DeepSeaService;
 use App\Service\PetActivity\DreamingService;
-use App\Service\PetActivity\EasterEggHuntingService;
+use App\Service\PetActivity\GatheringHolidayAdventureService;
 use App\Service\PetActivity\FishingService;
 use App\Service\PetActivity\GatheringService;
 use App\Service\PetActivity\GenericAdventureService;
@@ -83,7 +84,7 @@ class PetService
     private $petExperienceService;
     private $dreamingService;
     private $beanStalkService;
-    private $easterEggHuntingService;
+    private $gatheringHolidayAdventureService;
     private $calendarService;
     private $heartDimensionService;
     private $petRelationshipRepository;
@@ -110,7 +111,7 @@ class PetService
         PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService,
         PregnancyService $pregnancyService, PetActivityStatsService $petActivityStatsService,
         PetGroupService $petGroupService, PetExperienceService $petExperienceService, DreamingService $dreamingService,
-        MagicBeanstalkService $beanStalkService, EasterEggHuntingService $easterEggHuntingService,
+        MagicBeanstalkService $beanStalkService, GatheringHolidayAdventureService $gatheringHolidayAdventureService,
         HeartDimensionService $heartDimensionService, PetRelationshipRepository $petRelationshipRepository,
         GuildService $guildService, InventoryService $inventoryService, BurntForestService $burntForestService,
         DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService, LetterService $letterService,
@@ -144,7 +145,7 @@ class PetService
         $this->petExperienceService = $petExperienceService;
         $this->dreamingService = $dreamingService;
         $this->beanStalkService = $beanStalkService;
-        $this->easterEggHuntingService = $easterEggHuntingService;
+        $this->gatheringHolidayAdventureService = $gatheringHolidayAdventureService;
         $this->heartDimensionService = $heartDimensionService;
         $this->petRelationshipRepository = $petRelationshipRepository;
         $this->guildService = $guildService;
@@ -733,7 +734,7 @@ class PetService
 
         if($pet->getTool())
         {
-            if($this->doTreasureMapAdventure($petWithSkills))
+            if($this->considerToolsWhichLeadToAdventure($petWithSkills))
                 return;
         }
 
@@ -744,9 +745,15 @@ class PetService
                 return;
         }
 
+        if($this->squirrel3->rngNextInt(1, 8) === 1 && $this->calendarService->isSaintPatricksDay())
+        {
+            $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::SAINT_PATRICKS);
+            return;
+        }
+
         if($this->squirrel3->rngNextInt(1, 4) === 1 && $this->calendarService->isEaster())
         {
-            $this->easterEggHuntingService->adventure($petWithSkills);
+            $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::EASTER);
             return;
         }
 
@@ -807,7 +814,7 @@ class PetService
         }
     }
 
-    private function doTreasureMapadventure(ComputedPetSkills $petWithSkills): bool
+    private function considerToolsWhichLeadToAdventure(ComputedPetSkills $petWithSkills): bool
     {
         $pet = $petWithSkills->getPet();
 
@@ -884,6 +891,10 @@ class PetService
                     return true;
                 }
                 return false;
+
+            case '5-leaf Clover':
+                $this->treasureMapService->doLeprechaun($petWithSkills);
+                return true;
         }
 
         return false;

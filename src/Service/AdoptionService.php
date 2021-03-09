@@ -3,7 +3,6 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Enum\UserStatEnum;
-use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
 use App\Model\PetShelterPet;
@@ -265,6 +264,9 @@ class AdoptionService
         if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)
             return 2;
 
+        if($this->calendarService->isSaintPatricksDay())
+            return $squirrel3->rngNextInt(1, 3);
+
         return 0;
     }
 
@@ -308,6 +310,9 @@ class AdoptionService
         if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)
             return PetShelterPet::PET_CHINESE_ZODIAC_NAMES[$this->chineseCalendarInfo->animal];
 
+        if($this->calendarService->isSaintPatricksDay())
+            return PetShelterPet::PET_NAMES;
+
         throw new \InvalidArgumentException('Today is not a day for seasonal colors.');
     }
 
@@ -316,97 +321,44 @@ class AdoptionService
         $monthDay = $this->calendarService->getMonthAndDay();
 
         if($this->calendarService->isHalloween())
-            return $this->getHalloweenColors();
+            return [ '333333', 'FF9933' ];
 
         // PSP Thanksgiving overlaps Black Friday, but for pet adoption purposes, we want Black Friday to win out:
         if($this->calendarService->isBlackFriday())
-            return $this->getBlackFridayColors();
+            return [ '000000', '333333', '330000', '003300', '000033' ];
 
         if($this->calendarService->isCyberMonday())
-            return $this->getCyberMondayColors();
+            return [ '000000', '005500', '00aa00', '00ff00' ];
 
         if($this->calendarService->isThanksgiving())
-            return $this->getThanksgivingColors();
+            return [ 'CC6600', 'FFCC00', '009900', 'FF3300' ];
 
         if($this->calendarService->isEaster())
-            return $this->getEasterColors();
+            return [ 'FFCCFF', '99CCFF', 'FFFF99', 'FF9999' ];
 
         if($this->calendarService->isValentines())
-            return $this->getValentinesColors();
+            return [ 'F17B7B', 'F8F8F8', 'FF0000', 'EF85FF' ];
 
         if($this->calendarService->isWhiteDay())
-            return $this->getWhiteDayColors();
+            return [ 'FFFFFF', 'EEEEEE' ];
 
         // winter solstice, more or less
         if($monthDay === 1221 || $monthDay === 1222)
-            return $this->getWinterSolsticeColors();
+            return [ 'F8F8F8', '94C6F8' ];
 
         // christmas colors
         if($monthDay >= 1223 && $monthDay <= 1225)
-            return $this->getChristmasColors();
+            return [ 'F8F8F8', 'CC3300', '009900' ];
 
         if($this->calendarService->isHannukah())
-            return $this->getHannukahColors();
+            return [ 'F8F8F8', '0066FF' ];
 
         if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)
-            return $this->getChineseNewYearColors();
+            return [ 'CC232A', 'F5AC27', 'FFD84B', 'F2888B', 'A3262A', 'CC9902' ];
+
+        if($this->calendarService->isSaintPatricksDay())
+            return [ '009900', '66CC66', '33AA00', '00AA33' ];
 
         throw new \InvalidArgumentException('Today is not a day for seasonal colors.');
-    }
-
-    public function getHalloweenColors(): array
-    {
-        // black and orange
-        return [ '333333', 'FF9933' ];
-    }
-
-    public function getWinterSolsticeColors(): array
-    {
-        return [ 'F8F8F8', '94C6F8' ];
-    }
-
-    public function getChristmasColors(): array
-    {
-        return [ 'F8F8F8', 'CC3300', '009900' ];
-    }
-
-    public function getHannukahColors(): array
-    {
-        return [ 'F8F8F8', '0066FF' ];
-    }
-
-    public function getBlackFridayColors(): array
-    {
-        return [ '000000', '333333', '330000', '003300', '000033' ];
-    }
-
-    public function getCyberMondayColors(): array
-    {
-        return [ '000000', '005500', '00aa00', '00ff00' ];
-    }
-
-    public function getThanksgivingColors(): array
-    {
-        return [ 'CC6600', 'FFCC00', '009900', 'FF3300' ];
-    }
-
-    public function getEasterColors(): array
-    {
-        return [ 'FFCCFF', '99CCFF', 'FFFF99', 'FF9999' ];
-    }
-
-    public function getValentinesColors(): array
-    {
-        return [ 'F17B7B', 'F8F8F8', 'FF0000', 'EF85FF' ];
-    }
-
-    public function getWhiteDayColors(): array
-    {
-        return [ 'FFFFFF', 'EEEEEE' ];
-    }
-
-    public function getChineseNewYearColors(): array
-    {
-        return [ 'CC232A', 'F5AC27', 'FFD84B', 'F2888B', 'A3262A', 'CC9902' ];
     }
 }

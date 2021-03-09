@@ -3,6 +3,8 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\EnumInvalidValueException;
+use App\Enum\GatheringHolidayEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
@@ -16,7 +18,7 @@ use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 
-class EasterEggHuntingService
+class GatheringHolidayAdventureService
 {
     private $inventoryService;
     private $responseService;
@@ -36,8 +38,11 @@ class EasterEggHuntingService
         $this->squirrel3 = $squirrel3;
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
+    public function adventure(ComputedPetSkills $petWithSkills, string $holiday): PetActivityLog
     {
+        if(!GatheringHolidayEnum::isAValue($holiday))
+            throw new EnumInvalidValueException(GatheringHolidayEnum::class, $holiday);
+
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - $pet->getAlcohol() - $pet->getPsychedelic();
 
@@ -53,45 +58,45 @@ class EasterEggHuntingService
             case 1:
             case 2:
             case 3:
-                $activityLog = $this->goSearching($petWithSkills, 'just outside the house', 0, 1, 0, 1);
+                $activityLog = $this->goSearching($petWithSkills, $holiday, 'just outside the house', 0, 1, 0, 1);
                 break;
             case 4:
             case 5:
-                $activityLog = $this->goSearching($petWithSkills, 'on the bank of a small stream', 0, 2, 10, 1);
+                $activityLog = $this->goSearching($petWithSkills, $holiday, 'on the bank of a small stream', 0, 2, 10, 1);
                 break;
             case 6:
             case 7:
             case 8:
-                $activityLog = $this->goSearching($petWithSkills, 'in an abandoned quarry', 0, 2, 20, 1);
+                $activityLog = $this->goSearching($petWithSkills, $holiday, 'in an Abandoned Quarry', 0, 2, 20, 1);
                 break;
             case 9:
-                $activityLog = $this->goSearching($petWithSkills, 'near a waterfall basin', 0, 2, 10, 1);
+                $activityLog = $this->goSearching($petWithSkills, $holiday, 'near a Waterfall Basin', 0, 2, 10, 1);
                 break;
             case 10:
-                $activityLog = $this->goSearching($petWithSkills, 'near the Plaza fountain', 0, 0, 10, 2);
+                $activityLog = $this->goSearching($petWithSkills, $holiday, 'near the Plaza fountain', 0, 0, 10, 2);
                 break;
             case 11:
             case 12:
             case 13:
-                $activityLog = $this->goSearching($petWithSkills, 'at the beach', 1, 2, 20, 2);
+                $activityLog = $this->goSearching($petWithSkills, $holiday, 'at the beach', 1, 2, 20, 2);
                 break;
             case 14:
-                $activityLog = $this->goSearching($petWithSkills, 'in an overgrown garden', 0, 4, 30, 2);
+                $activityLog = $this->goSearching($petWithSkills, $holiday, 'in an Overgrown Garden', 0, 4, 30, 2);
                 break;
             case 15:
             case 16:
-                $activityLog = $this->goSearching($petWithSkills, 'in an iron mine', 0, 2, 50, 2, true);
+                $activityLog = $this->goSearching($petWithSkills, $holiday, 'in an Old Iron Mine', 0, 2, 50, 2, true);
                 break;
             case 17:
             case 18:
-                $activityLog = $this->goSearching($petWithSkills, 'in the microjungle', 1, 3, 40, 2, false, true);
+                $activityLog = $this->goSearching($petWithSkills, $holiday, 'in the Micro-Jungle', 1, 3, 40, 2, false, true);
                 break;
             case 19:
             case 20:
-                $activityLog = $this->goSearching($petWithSkills, 'around the volcano', 1, 5, 50, 3, false, true);
+                $activityLog = $this->goSearching($petWithSkills, $holiday, 'around the island\'s Volcano', 1, 5, 50, 3, false, true);
                 break;
             case 21:
-                $activityLog = $this->goSearching($petWithSkills, 'in an old mine', 1, 3, 60, 3, true);
+                $activityLog = $this->goSearching($petWithSkills, $holiday, 'in a huge cave', 1, 3, 60, 3, true);
                 break;
         }
 
@@ -104,10 +109,23 @@ class EasterEggHuntingService
         return $activityLog;
     }
 
-    private function goSearching(ComputedPetSkills $petWithSkills, string $where, int $minEggs, int $maxEggs, int $encounterChance, int $experience, bool $dark = false, bool $hot = false): PetActivityLog
+    private function searchingFor(string $holiday, bool $plural)
     {
-        if($this->squirrel3->rngNextInt(1, 100) <= $encounterChance && date('l') !== 'Friday')
-            return $this->getAttacked($petWithSkills, $maxEggs);
+        switch($holiday)
+        {
+            case GatheringHolidayEnum::EASTER: return $plural ? 'plastic eggs' : 'plastic egg';
+            case GatheringHolidayEnum::SAINT_PATRICKS: return $plural ? 'clovers' : 'clover';
+            default: throw new EnumInvalidValueException(GatheringHolidayEnum::class, $holiday);
+        }
+    }
+
+    private function goSearching(ComputedPetSkills $petWithSkills, string $holiday, string $where, int $minEggs, int $maxEggs, int $encounterChance, int $experience, bool $dark = false, bool $hot = false): PetActivityLog
+    {
+        if($holiday === GatheringHolidayEnum::EASTER)
+        {
+            if($this->squirrel3->rngNextInt(1, 100) <= $encounterChance && date('l') !== 'Friday')
+                return $this->getAttacked($petWithSkills, $maxEggs);
+        }
 
         $pet = $petWithSkills->getPet();
 
@@ -118,60 +136,70 @@ class EasterEggHuntingService
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, false);
 
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went looking for plastic eggs ' . $where . ', but it was way too hot; they couldn\'t find anything before they had to leave :(', '');
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went looking for '. $this->searchingFor($holiday, true) . ' ' . $where . ', but it was way too hot; they couldn\'t find anything before they had to leave :(', '');
             }
         }
 
-        $message = $pet->getName() . ' went looking for plastic eggs ' . $where;
+        $message = $pet->getName() . ' went looking for '. $this->searchingFor($holiday, true) . ' ' . $where;
 
         if($dark)
         {
             if($petWithSkills->getCanSeeInTheDark()->getTotal() > 0)
             {
-                $numEggs = $this->squirrel3->rngNextInt($minEggs + 1, $maxEggs + $this->squirrel3->rngNextInt(1, 2));
+                $numItems = $this->squirrel3->rngNextInt($minEggs + 1, $maxEggs + $this->squirrel3->rngNextInt(1, 2));
 
-                $message .= '. It was really dark, but that didn\'t pose a problem for ' . $pet->getName() . ', who found ' . $numEggs . ' egg' . ($numEggs === 1 ? '' : 's') . '!';
+                $message .= '. It was really dark, but that didn\'t pose a problem for ' . $pet->getName() . ', who found ' . $numItems . ' ' . $this->searchingFor($holiday, $numItems !== 1) . '!';
             }
             else
             {
-                $numEggs = $this->squirrel3->rngNextInt($minEggs, $maxEggs);
+                $numItems = $this->squirrel3->rngNextInt($minEggs, $maxEggs);
 
-                if($numEggs === 0)
+                if($numItems === 0)
                     $message .= ', but it was really dark, and they weren\'t able to find any :(';
                 else
-                    $message .= '. It was really dark, but they were still able to find ' . $numEggs . '!';
+                    $message .= '. It was really dark, but they were still able to find ' . $numItems . '!';
             }
         }
         else
         {
-            $numEggs = $this->squirrel3->rngNextInt($minEggs, $maxEggs);
+            $numItems = $this->squirrel3->rngNextInt($minEggs, $maxEggs);
 
-            if($numEggs === 0)
+            if($numItems === 0)
                 $message .= ', but wasn\'t able to find any :(';
             else
-                $message .= ', and found ' . $numEggs . '!';
+                $message .= ', and found ' . $numItems . '!';
         }
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, $numEggs > 0);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, $numItems > 0);
         $this->petExperienceService->gainExp($pet, $experience, [ PetSkillEnum::NATURE ]);
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, '');
 
-        for($i = 0; $i < $numEggs; $i++)
+        if($holiday === GatheringHolidayEnum::EASTER)
         {
-            $r = $this->squirrel3->rngNextInt(1, 100);
+            for($i = 0; $i < $numItems; $i++)
+            {
+                $r = $this->squirrel3->rngNextInt(1, 100);
 
-            if($r <= 2)
-                $egg = 'Pink Plastic Egg';
-            else if($r <= 10)
-                $egg = 'Yellow Plastic Egg';
-            else
-                $egg = 'Blue Plastic Egg';
+                if($r <= 2)
+                    $egg = 'Pink Plastic Egg';
+                else if($r <= 10)
+                    $egg = 'Yellow Plastic Egg';
+                else
+                    $egg = 'Blue Plastic Egg';
 
-            $this->inventoryService->petCollectsItem($egg, $pet, $pet->getName() . ' found this ' . $where . '!', $activityLog)
-                ->setLockedToOwner($egg !== 'Blue Plastic Egg')
-            ;
+                $this->inventoryService->petCollectsItem($egg, $pet, $pet->getName() . ' found this ' . $where . '!', $activityLog)
+                    ->setLockedToOwner($egg !== 'Blue Plastic Egg')
+                ;
+            }
         }
+        else if($holiday === GatheringHolidayEnum::SAINT_PATRICKS)
+        {
+            for($i = 0; $i < $numItems; $i++)
+                $this->inventoryService->petCollectsItem('1-leaf Clover', $pet, $pet->getName() . ' found this ' . $where . '!', $activityLog);
+        }
+        else
+            throw new EnumInvalidValueException(GatheringHolidayEnum::class, $holiday);
 
         return $activityLog;
     }
@@ -207,6 +235,8 @@ class EasterEggHuntingService
 
         if($skillCheck >= $difficulty)
         {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
+
             $pet->increaseEsteem($level);
             $this->petExperienceService->gainExp($pet, $level, [ PetSkillEnum::BRAWL ]);
 
@@ -230,6 +260,8 @@ class EasterEggHuntingService
         }
         else
         {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
+
             $pet->increaseSafety(-$level);
             $this->petExperienceService->gainExp($pet, ceil($level / 2), [ PetSkillEnum::BRAWL ]);
 

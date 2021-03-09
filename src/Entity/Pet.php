@@ -568,6 +568,8 @@ class Pet
             return '673192';
         else if($this->getTool() && $this->getTool()->isGrayscaling())
             return ColorFunctions::GrayscalifyHex($this->getColorA());
+        else if($this->getTool() && $this->getTool()->isGreenifying())
+            return ColorFunctions::ChangeHue($this->getColorA(), (25 + $this->id % 14) / 100);
         else
             return $this->getColorA();
     }
@@ -584,6 +586,8 @@ class Pet
             return '8b48c1';
         else if($this->getTool() && $this->getTool()->isGrayscaling())
             return ColorFunctions::GrayscalifyHex($this->getColorB());
+        else if($this->getTool() && $this->getTool()->isGreenifying())
+            return ColorFunctions::ChangeHue($this->getColorB(), (25 + $this->id % 14) / 100);
         else
             return $this->getColorB();
     }
