@@ -241,6 +241,18 @@ class CalendarService
         if($this->isCyberMonday())
             $events[] = 'Cyber Monday';
 
+        if($this->isTalkLikeAPirateDay())
+            $events[] = 'Talk Like a Pirate Day';
+
+        if($this->isThanksgiving())
+            $events[] = 'Thanksgiving';
+
+        if($this->monthAndDay === 101)
+            $events[] = 'New Year\'s Day';
+
+        if($this->monthAndDay === 704)
+            $events[] = '4th of July';
+
         $chineseCalendarInfo = $this->getChineseCalendarInfo();
 
         if($chineseCalendarInfo->month === 1 && $chineseCalendarInfo->day <= 6)
