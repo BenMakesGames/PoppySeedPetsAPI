@@ -197,26 +197,58 @@ class CalendarService
         return $diff < 3;
     }
 
-    public function getEventData(?User $user): ?array
+    /**
+     * @return string[]
+     */
+    public function getEventData(\DateTimeImmutable $dt = null): array
     {
-        if(!$user)
-            return null;
+        // uh oh: this is a bit gross :|
+        if($dt)
+        {
+            $oldToday = $this->today;
+            $this->setToday($dt);
+        }
+
+        $events = [];
 
         if($this->isHalloween())
-        {
-            return [
-                'title' => 'Halloween',
-                'nextTrickOrTreater' => $this->halloweenService->getNextTrickOrTreater($user)->getValue()
-            ];
-        }
+            $events[] = 'Halloween';
 
         if($this->isEaster())
-        {
-            return [
-                'title' => 'Easter'
-            ];
-        }
+            $events[] = 'Easter';
 
-        return null;
+        if($this->isSaintPatricksDay())
+            $events[] = 'Saint Patrick\'s';
+
+        if($this->isValentinesOrAdjacent())
+            $events[] = 'Valentine\'s';
+
+        if($this->isBlackFriday())
+            $events[] = 'Black Friday';
+
+        if($this->isPiDayCrafting())
+            $events[] = 'Pi Day';
+
+        if($this->isPSPBirthday())
+            $events[] = 'PSP Birthday';
+
+        if($this->isHannukah())
+            $events[] ='Hannukah';
+
+        if($this->isWhiteDay())
+            $events[] = 'White Day';
+
+        if($this->isCyberMonday())
+            $events[] = 'Cyber Monday';
+
+        $chineseCalendarInfo = $this->getChineseCalendarInfo();
+
+        if($chineseCalendarInfo->month === 1 && $chineseCalendarInfo->day <= 6)
+            $events[] = 'Chinese New Year';
+
+        if($dt)
+            $this->setToday($oldToday);
+
+        return $events;
     }
 }

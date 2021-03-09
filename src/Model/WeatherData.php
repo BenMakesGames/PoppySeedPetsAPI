@@ -5,6 +5,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class WeatherData
 {
+    /**
+     * @var string[]
+     * @Groups({"weather"})
+     */
+    public $holidays;
+
     public $temperature;
     public $clouds;
     public $rainfall;

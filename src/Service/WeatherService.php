@@ -46,7 +46,7 @@ class WeatherService
         return $year * 8760 + $hourOfYear;
     }
 
-    public function getWeather(\DateTimeImmutable $dt, ?Pet $pet): WeatherData
+    public function getWeather(\DateTimeImmutable $dt, ?Pet $pet, $getHolidays = true): WeatherData
     {
         if($pet)
             $dt->modify('-' . max(0, $pet->getHouseTime()->getActivityTime()) . 'minutes');
@@ -58,6 +58,7 @@ class WeatherService
 
         $hourSince2000 = $this->getHourSince2000($dt);
 
+        $weather->holidays = $getHolidays ? $this->calendarService->getEventData($dt) : [];
         $weather->clouds = $this->getClouds($hourSince2000);
         $weather->rainfall = $this->getRainfall($hourSince2000);
         $weather->temperature = $this->getTemperature($hourSince2000, $weather->rainfall);
@@ -195,7 +196,7 @@ class WeatherService
         for($hour = 0; $hour < 24; $hour++)
         {
             $now = $now->modify('+1 hour');
-            $forecast[] = $this->getWeather($now, null);
+            $forecast[] = $this->getWeather($now, null, false);
         }
 
         return $forecast;
@@ -234,7 +235,7 @@ class WeatherService
         for($hour = 0; $hour < 24; $hour++)
         {
             $dateToConsider = $date->setTime($hour, 30, 0);
-            $weather = $this->getWeather($dateToConsider, null);
+            $weather = $this->getWeather($dateToConsider, null, false);
 
             $temperatures[] = $weather->temperature;
             $clouds[] = $weather->clouds;
@@ -244,6 +245,8 @@ class WeatherService
         $forecast = new WeatherForecastData();
 
         $forecast->date = $date;
+
+        $forecast->holidays = $this->calendarService->getEventData($date);
 
         $forecast->maxRainfall = max($rainfalls);
         $forecast->minRainfall = min($rainfalls);

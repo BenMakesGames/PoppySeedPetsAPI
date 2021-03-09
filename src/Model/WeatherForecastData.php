@@ -11,6 +11,12 @@ class WeatherForecastData
      */
     public $date;
 
+    /**
+     * @var string[]
+     * @Groups({"weather"})
+     */
+    public $holidays;
+
     public $minTemperature;
     public $maxTemperature;
     public $avgTemperature;

@@ -97,8 +97,6 @@ class ResponseService
             'forecast' => $this->weatherService->get24HourForecast(),
         ], null, [ 'groups' => [ SerializationGroupEnum::WEATHER ]]);
 
-        $responseData['event'] = $this->calendarService->getEventData($user);
-
         if($user && $user->getIsAdmin())
             $responseData['serializationGroups'] = $groups;
 
