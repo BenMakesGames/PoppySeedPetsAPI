@@ -745,7 +745,7 @@ class PetService
                 return;
         }
 
-        if($this->squirrel3->rngNextInt(1, 8) === 1 && $this->calendarService->isSaintPatricksDay())
+        if($this->squirrel3->rngNextInt(1, 6) === 1 && $this->calendarService->isSaintPatricksDay())
         {
             $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::SAINT_PATRICKS);
             return;
