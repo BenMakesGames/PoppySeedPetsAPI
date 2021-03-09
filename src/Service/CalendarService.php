@@ -226,7 +226,7 @@ class CalendarService
         if($this->isBlackFriday())
             $events[] = 'Black Friday';
 
-        if($this->isPiDayCrafting())
+        if($this->isPiDay())
             $events[] = 'Pi Day';
 
         if($this->isPSPBirthday())
