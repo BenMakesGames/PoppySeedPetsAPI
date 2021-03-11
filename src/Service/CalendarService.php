@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Functions\DateFunctions;
 use App\Functions\JewishCalendarFunctions;
 use App\Model\ChineseCalendarInfo;
 use App\Service\Holidays\HalloweenService;
@@ -211,6 +212,14 @@ class CalendarService
 
         $events = [];
 
+        $fullMoonName = DateFunctions::getFullMoonName($dt ?? new \DateTimeImmutable());
+
+        if($fullMoonName)
+            $events[] = $fullMoonName . ' Moon';
+
+        if($this->monthAndDay >= 1200 && $this->monthAndDay <= 1231)
+            $events[] = 'Stocking Stuffing Season';
+
         if($this->isHalloween())
             $events[] = 'Halloween';
 
@@ -222,6 +231,9 @@ class CalendarService
 
         if($this->isValentinesOrAdjacent())
             $events[] = 'Valentine\'s';
+
+        if($this->isCyberMonday())
+            $events[] = 'Cyber Monday';
 
         if($this->isBlackFriday())
             $events[] = 'Black Friday';
@@ -237,9 +249,6 @@ class CalendarService
 
         if($this->isWhiteDay())
             $events[] = 'White Day';
-
-        if($this->isCyberMonday())
-            $events[] = 'Cyber Monday';
 
         if($this->isTalkLikeAPirateDay())
             $events[] = 'Talk Like a Pirate Day';

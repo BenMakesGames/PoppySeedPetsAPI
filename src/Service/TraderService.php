@@ -430,24 +430,16 @@ class TraderService
 
         if($this->calendarService->isEaster())
         {
-            $blueEggItem = [
-                'Chili Calamari', 'Deep-fried Toad Legs', 'Fisherman\'s Pie', 'Tomato Soup', 'Coffee Jelly'
-            ][($user->getId() + (int)date('Y')) % 5];
-
-            $yellowEggItem = [
-                'Tinfoil Hat',
-                'Unicorn Horn',
-                'Candle',
-            ][($user->getId() + (int)date('Y')) % 3];
-
             $offers[] = new TraderOffer(
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Blue Plastic Egg'), 10)
                 ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Tofu'), 2),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Rock'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName($blueEggItem), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Chili Calamari'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Deep-fried Toad Legs'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fisherman\'s Pie'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Tomato Soup'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Coffee Jelly'), 1),
                 ],
                 'We fish collect the things, too, you know!'
             );
@@ -457,9 +449,7 @@ class TraderService
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Yellow Plastic Egg'), 5),
                 ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Cryptocurrency Wallet'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Blunderbuss'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName($yellowEggItem), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Major Scroll of Riches'), 1),
                 ],
                 'We fish collect the things, too, you know!'
             );
@@ -469,8 +459,7 @@ class TraderService
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Pink Plastic Egg'), 2),
                 ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Spirit Polymorph Potion'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Firestone'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Hat Box'), 1),
                 ],
                 'We fish collect the things, too, you know!'
             );
