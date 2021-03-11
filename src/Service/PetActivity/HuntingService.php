@@ -735,7 +735,7 @@ class HuntingService
         if($this->squirrel3->rngNextInt(1, 100) === 1)
             $prize = 'Little Strongbox';
         else if($this->squirrel3->rngNextInt(1, 50) === 1)
-            $prize = $this->squirrel3->rngNextFromArray([ 'Rib', 'Stereotypical Bone ']);
+            $prize = $this->squirrel3->rngNextFromArray([ 'Rib', 'Stereotypical Bone' ]);
         else if($this->squirrel3->rngNextInt(1, 8) === 1)
             $prize = $this->squirrel3->rngNextFromArray([ 'Iron Bar', 'Silver Bar', 'Filthy Cloth' ]);
         else if($this->squirrel3->rngNextInt(1, 4) === 1)
