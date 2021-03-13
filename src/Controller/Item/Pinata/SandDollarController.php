@@ -20,7 +20,7 @@ class SandDollarController extends PoppySeedPetsItemController
      * @Route("/{inventory}/loot", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function read(
+    public function lootSandDollar(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         EntityManagerInterface $em, TransactionService $transactionService
     )

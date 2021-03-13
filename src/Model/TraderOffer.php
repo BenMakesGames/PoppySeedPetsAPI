@@ -29,12 +29,19 @@ class TraderOffer
      */
     public $comment;
 
-    public function __construct(array $cost, array $yield, string $comment)
+    /**
+     * @var bool
+     * @Groups({"traderOffer"})
+     */
+    public $lockedToAccount;
+
+    public function __construct(array $cost, array $yield, string $comment, bool $lockedToAccount = false)
     {
         $this->id = self::GenerateID($cost, $yield);
         $this->cost = $cost;
         $this->yield = $yield;
         $this->comment = $comment;
+        $this->lockedToAccount = $lockedToAccount;
     }
 
     private static function GenerateID(array $cost, array $yield): string

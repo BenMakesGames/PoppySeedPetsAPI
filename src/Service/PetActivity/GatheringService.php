@@ -455,8 +455,13 @@ class GatheringService
         $loot = [];
         $didWhat = 'harvested this from an Overgrown Garden';
 
-        if($this->squirrel3->rngNextInt(1, 100) === 1 && $pet->hasMerit(MeritEnum::BEHATTED))
-            $loot[] = 'Orange Bow';
+        if($pet->hasMerit(MeritEnum::BEHATTED))
+        {
+            $chanceToGetOrangeBow = 1 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal();
+
+            if($this->squirrel3->rngNextInt(1, 100) <= $chanceToGetOrangeBow)
+                $loot[] = 'Orange Bow';
+        }
 
         if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) < 10)
         {

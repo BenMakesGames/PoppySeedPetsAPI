@@ -732,7 +732,8 @@ class TraderService
             new TraderOffer(
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Black Baabble'), 1) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('3D Printer'), 1) ],
-                'Please use this responsibly, human. The amount of Plastic ending up in the oceans these days is a bit troubling.'
+                'Please use this responsibly, human. The amount of Plastic ending up in the oceans these days is a bit troubling.',
+                true
             ),
 
             new TraderOffer(
@@ -852,9 +853,9 @@ class TraderService
                 ],
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Pink Bow'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Chocolate Bar'), 1),
                 ],
-                'Please enjoy the complimentary chocolate, and remember: all candies "recycled" during Valentine\'s are guaranteed to find their way to the Giving Tree, where any pet may collect them!'
+                'Please enjoy the complimentary chocolate, and remember: all candies "recycled" during Valentine\'s are guaranteed to find their way to the Giving Tree, where any pet may collect them!',
+                true
             );
         }
 
@@ -1071,7 +1072,7 @@ class TraderService
             {
                 case CostOrYieldTypeEnum::ITEM:
                     for($i = 0; $i < $yield->quantity; $i++)
-                        $this->inventoryService->receiveItem($yield->item, $user, null, $itemDescription, LocationEnum::HOME);
+                        $this->inventoryService->receiveItem($yield->item, $user, null, $itemDescription, LocationEnum::HOME, $exchange->lockedToAccount);
 
                     break;
 
