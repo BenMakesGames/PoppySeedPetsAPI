@@ -8,7 +8,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PetSpeciesRepository")
  * @ORM\Table(indexes={
- *     @ORM\Index(name="name_idx", columns={"name"}),
+ *     @ORM\Index(name="name_sort_idx", columns={"name_sort"}),
  *     @ORM\Index(name="family_idx", columns={"family"}),
  * })
  */
@@ -123,6 +123,11 @@ class PetSpecies
      * @Groups({"myPet", "petEncyclopedia"})
      */
     private $family;
+
+    /**
+     * @ORM\Column(type="string", length=40)
+     */
+    private $nameSort;
 
     public function getId(): ?int
     {
@@ -342,6 +347,18 @@ class PetSpecies
     public function setFamily(string $family): self
     {
         $this->family = $family;
+
+        return $this;
+    }
+
+    public function getNameSort(): ?string
+    {
+        return $this->nameSort;
+    }
+
+    public function setNameSort(string $nameSort): self
+    {
+        $this->nameSort = $nameSort;
 
         return $this;
     }

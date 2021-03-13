@@ -20,7 +20,7 @@ class PetSpeciesFilterService
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
             [
-                'name' => [ 'i.name' => 'asc' ], // first one is the default
+                'name' => [ 'i.nameSort' => 'asc' ], // first one is the default
                 'id' => [ 'i.id' => 'asc' ],
             ],
             [
