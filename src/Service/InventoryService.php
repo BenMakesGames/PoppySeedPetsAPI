@@ -188,7 +188,7 @@ class InventoryService
      * @return Inventory[]
      * @throws EnumInvalidValueException
      */
-    public function giveInventoryQuantities($quantities, User $owner, User $creator, string $comment, int $location): array
+    public function giveInventoryQuantities($quantities, User $owner, User $creator, string $comment, int $location, bool $lockedToOwner = false): array
     {
         if(!is_array($quantities)) $quantities = [ $quantities ];
 
@@ -197,7 +197,7 @@ class InventoryService
         foreach($quantities as $itemQuantity)
         {
             for($q = 0; $q < $itemQuantity->quantity; $q++)
-                $inventory[] = $this->receiveItem($itemQuantity->item, $owner, $creator, $comment, $location);
+                $inventory[] = $this->receiveItem($itemQuantity->item, $owner, $creator, $comment, $location, $lockedToOwner);
         }
 
         $this->responseService->setReloadInventory();

@@ -196,7 +196,11 @@ class GatheringHolidayAdventureService
         else if($holiday === GatheringHolidayEnum::SAINT_PATRICKS)
         {
             for($i = 0; $i < $numItems; $i++)
-                $this->inventoryService->petCollectsItem('1-leaf Clover', $pet, $pet->getName() . ' found this ' . $where . '!', $activityLog);
+            {
+                $this->inventoryService->petCollectsItem('1-leaf Clover', $pet, $pet->getName() . ' found this ' . $where . '!', $activityLog)
+                    ->setLockedToOwner(true)
+                ;
+            }
         }
         else
             throw new EnumInvalidValueException(GatheringHolidayEnum::class, $holiday);

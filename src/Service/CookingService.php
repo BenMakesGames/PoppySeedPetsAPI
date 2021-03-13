@@ -182,6 +182,7 @@ class CookingService
 
         /** @var Spice[] $spices */
         $spices = [];
+        $allLockedToOwner = true;
 
         foreach($inventory as $i)
         {
@@ -189,6 +190,8 @@ class CookingService
                 $spices[] = $i->getSpice();
 
             $this->em->remove($i);
+
+            $allLockedToOwner = $allLockedToOwner && $i->getLockedToOwner();
         }
 
         $locationOfFirstItem = $inventory[0]->getLocation();
@@ -198,7 +201,7 @@ class CookingService
         foreach($makes as $m)
             $m->quantity *= $multiple;
 
-        $newInventory = $this->inventoryService->giveInventoryQuantities($makes, $user, $user, $user->getName() . ' prepared this.', $locationOfFirstItem);
+        $newInventory = $this->inventoryService->giveInventoryQuantities($makes, $user, $user, $user->getName() . ' prepared this.', $locationOfFirstItem, $allLockedToOwner);
 
         if(count($spices) > 0)
         {
