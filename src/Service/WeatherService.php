@@ -205,11 +205,11 @@ class WeatherService
     /**
      * @return WeatherForecastData[]
      */
-    public function get7DayForecast(): array
+    public function get6DayForecast(): array
     {
         $forecast = [];
 
-        for($day = 1; $day <= 7; $day++)
+        for($day = 1; $day <= 6; $day++)
             $forecast[] = $this->getWeatherForecast((new \DateTimeImmutable())->modify('+' . $day . 'days')->setTime(12, 0, 0));
 
         return $forecast;
