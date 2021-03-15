@@ -99,6 +99,14 @@ class TraderController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success([ 'message' => $message ]);
+        $offers = $traderService->getOffers($user);
+
+        return $responseService->success(
+            [
+                'message' => $message,
+                'trades' => $offers
+            ],
+            [ SerializationGroupEnum::TRADER_OFFER, SerializationGroupEnum::MARKET_ITEM ]
+        );
     }
 }
