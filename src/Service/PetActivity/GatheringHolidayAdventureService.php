@@ -197,9 +197,10 @@ class GatheringHolidayAdventureService
         {
             for($i = 0; $i < $numItems; $i++)
             {
-                $this->inventoryService->petCollectsItem('1-leaf Clover', $pet, $pet->getName() . ' found this ' . $where . '!', $activityLog)
-                    ->setLockedToOwner(true)
-                ;
+                $item = $this->inventoryService->petCollectsItem('1-leaf Clover', $pet, $pet->getName() . ' found this ' . $where . '!', $activityLog);
+
+                // it might get eaten immediately
+                if($item) $item->setLockedToOwner(true);
             }
         }
         else
@@ -251,7 +252,7 @@ class GatheringHolidayAdventureService
             $newItem = $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated some kind of ' . $adjective . ', fish-rabbit hybrid thing, and got this!', $activityLog);
 
             // it might get eaten by the pet, immediately!
-            if($newItem !== null)
+            if($newItem)
                 $newItem->setLockedToOwner($loot === 'Behatting Scroll' || $loot === 'Yellow Plastic Egg');
 
             if($loot === 'Behatting Scroll')
