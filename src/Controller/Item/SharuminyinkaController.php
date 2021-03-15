@@ -74,7 +74,7 @@ class SharuminyinkaController extends PoppySeedPetsItemController
 
         $user = $this->getUser();
 
-        $exchange = new TraderOffer(
+        $exchange = TraderOffer::createTradeOffer(
             [
                 TraderOfferCostOrYield::createItem($itemRepository->findOneByName('Crazy-hot Torch'), 1),
                 TraderOfferCostOrYield::createItem($itemRepository->findOneByName('Blackonite'), 1),
@@ -84,7 +84,9 @@ class SharuminyinkaController extends PoppySeedPetsItemController
             [
                 TraderOfferCostOrYield::createItem($itemRepository->findOneByName('Tig\'s Memory'), 1),
             ],
-            ''
+            '',
+            $user,
+            []
         );
 
         if(!$traderService->userCanMakeExchange($user, $exchange))

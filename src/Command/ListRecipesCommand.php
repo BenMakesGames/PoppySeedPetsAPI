@@ -2,7 +2,6 @@
 
 namespace App\Command;
 
-use App\Entity\Item;
 use App\Entity\Recipe;
 use App\Model\ItemQuantity;
 use App\Repository\ItemRepository;
@@ -10,9 +9,7 @@ use App\Repository\RecipeRepository;
 use App\Service\InventoryService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Question\Question;
 
 class ListRecipesCommand extends PoppySeedPetsCommand
 {
