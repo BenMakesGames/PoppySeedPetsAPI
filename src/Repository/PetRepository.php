@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Repository;
 
 use App\Entity\Pet;
@@ -99,9 +98,9 @@ class PetRepository extends ServiceEntityRepository
             ->getResult()
         ;
 
-        return array_filter($pets, function(Pet $pet) {
+        return array_values(array_filter($pets, function(Pet $pet) {
             return !$pet->hasStatusEffect(StatusEffectEnum::WEREFORM);
-        });
+        }));
     }
 
     public function getNumberAtHome(User $user): int

@@ -52,16 +52,16 @@ class PetRelationshipRepository extends ServiceEntityRepository
         if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
         {
             // pets in Wereform only hang out with other pets in Wereform
-            $friends = array_filter($friends, function(PetRelationship $r) {
+            $friends = array_values(array_filter($friends, function(PetRelationship $r) {
                 return $r->getRelationship()->hasStatusEffect(StatusEffectEnum::WEREFORM);
-            });
+            }));
         }
         else
         {
             // pets NOT in Wereform only hang out with other pets NOT in Wereform
-            $friends = array_filter($friends, function(PetRelationship $r) {
+            $friends = array_values(array_filter($friends, function(PetRelationship $r) {
                 return !$r->getRelationship()->hasStatusEffect(StatusEffectEnum::WEREFORM);
-            });
+            }));
         }
 
         return $friends;
