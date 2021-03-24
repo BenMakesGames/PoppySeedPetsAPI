@@ -1,4 +1,5 @@
 #!/bin/sh
+git checkout release
 git checkout bin/deploy
 
 git pull

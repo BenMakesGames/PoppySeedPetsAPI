@@ -198,6 +198,12 @@ class CalendarService
         return $diff < 3;
     }
 
+    public function isHoli(): bool
+    {
+        // :(
+        return $this->monthAndDay == self::HOLI_MONTH_DAYS[(int)$this->today->format('Y')];
+    }
+
     /**
      * @return string[]
      */
@@ -267,9 +273,28 @@ class CalendarService
         if($chineseCalendarInfo->month === 1 && $chineseCalendarInfo->day <= 6)
             $events[] = 'Chinese New Year';
 
+        if($this->isHoli())
+            $events[] = 'Holi';
+
         if($dt)
             $this->setToday($oldToday);
 
         return $events;
     }
+
+    public const HOLI_MONTH_DAYS = [
+        2021 => 328,
+        2022 => 317,
+        2023 => 307,
+        2024 => 324,
+        2025 => 313,
+        2026 => 303,
+        2027 => 322,
+        2028 => 310,
+        2029 => 228,
+        2030 => 319,
+        2031 => 309,
+        2032 => 327,
+        2033 => 316,
+    ];
 }
