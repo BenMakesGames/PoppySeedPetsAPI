@@ -1061,9 +1061,9 @@ class Pet
 
     public function getRelationshipWith(Pet $otherPet): ?PetRelationship
     {
-        return ArrayFunctions::find_one($this->getPetRelationships(), function(PetRelationship $r) use($otherPet) {
-            return $r->getRelationship()->getId() === $otherPet->getId();
-        });
+        return ArrayFunctions::find_one($this->getPetRelationships(), fn(PetRelationship $r) =>
+            $r->getRelationship()->getId() === $otherPet->getId()
+        );
     }
 
     public function getRelationshipCount(): int
@@ -1151,9 +1151,9 @@ class Pet
         if(!StatusEffectEnum::isAValue($statusEffect))
             throw new EnumInvalidValueException(StatusEffectEnum::class, $statusEffect);
 
-        return ArrayFunctions::find_one($this->statusEffects, function(StatusEffect $se) use($statusEffect) {
-            return $se->getStatus() === $statusEffect;
-        });
+        return ArrayFunctions::find_one($this->statusEffects, fn(StatusEffect $se) =>
+            $se->getStatus() === $statusEffect
+        );
     }
 
     public function hasStatusEffect(string $statusEffect): bool

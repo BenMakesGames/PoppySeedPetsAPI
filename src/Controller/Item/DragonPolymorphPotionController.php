@@ -44,9 +44,7 @@ class DragonPolymorphPotionController extends PoppySeedPetsItemController
 
         $availableAppearances = array_filter(
             Dragon::APPEARANCE_IMAGES,
-            function(int $image) use($currentAppearance) {
-                return $image !== $currentAppearance;
-            }
+            fn(int $image) => $image !== $currentAppearance
         );
 
         $dragon->setAppearance($squirrel3->rngNextFromArray($availableAppearances));

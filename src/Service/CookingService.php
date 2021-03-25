@@ -152,11 +152,7 @@ class CookingService
             {
                 // if we cannot evenly divide all of the ingredient quantities by this batch size, then it's not a
                 // valid batch size; try the next one!
-                if(
-                    ArrayFunctions::any($quantities, function(ItemQuantity $q) use($batchSize) {
-                        return $q->quantity % $batchSize !== 0;
-                    })
-                )
+                if(ArrayFunctions::any($quantities, fn(ItemQuantity $q) => $q->quantity % $batchSize !== 0))
                 {
                     continue;
                 }

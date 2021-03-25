@@ -45,9 +45,9 @@ class ForgettingScrollController extends PoppySeedPetsItemController
         if($pet->getLevel() < 10)
             throw new UnprocessableEntityHttpException('Only pets of level 10 or greater may use this scroll.');
 
-        $unlearnableSkills = array_values(array_filter(PetSkillEnum::getValues(), function(string $skill) use($pet) {
-            return $pet->getSkills()->getStat($skill) > 0;
-        }));
+        $unlearnableSkills = array_values(array_filter(PetSkillEnum::getValues(), fn(string $skill) =>
+            $pet->getSkills()->getStat($skill) > 0
+        ));
 
         $data = [
             'merits' => $meritService->getUnlearnableMerits($pet),

@@ -124,7 +124,7 @@ final class ArrayFunctions
     {
         return array_reduce(
             $values,
-            function($carry, $value) use($getter) { return $carry + $getter($value); },
+            fn($carry, $value) => $carry + $getter($value),
             0
         );
     }
@@ -190,7 +190,7 @@ final class ArrayFunctions
     public static function except(array $values, array $toExclude, callable $getter)
     {
         $filteredValues = [];
-        $excludeValues = array_map(function($v) use($getter) { return $getter($v); }, $toExclude);
+        $excludeValues = array_map(fn($v) => $getter($v), $toExclude);
 
         foreach($values as $value)
         {

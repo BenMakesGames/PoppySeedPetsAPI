@@ -574,9 +574,7 @@ class InventoryService
 
         $locationOfFirstItem = $inventory[0]->getLocation();
 
-        return ArrayFunctions::all($inventory, function(Inventory $i) use($locationOfFirstItem) {
-            return $i->getLocation() === $locationOfFirstItem;
-        });
+        return ArrayFunctions::all($inventory, fn(Inventory $i) => $i->getLocation() === $locationOfFirstItem);
     }
 
     /**

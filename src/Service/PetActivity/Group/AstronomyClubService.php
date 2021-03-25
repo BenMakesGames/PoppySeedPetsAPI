@@ -142,9 +142,9 @@ class AstronomyClubService
 
             $longestWordType = array_search($longestWord, $chosenWords);
 
-            $dictionary[$longestWordType] = array_filter($dictionary[$longestWordType], function($word) use($longestWord) {
-                return strlen($word) < strlen($longestWord);
-            });
+            $dictionary[$longestWordType] = array_filter($dictionary[$longestWordType], fn($word) =>
+                strlen($word) < strlen($longestWord)
+            );
         }
     }
 

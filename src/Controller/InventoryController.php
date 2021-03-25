@@ -107,10 +107,10 @@ class InventoryController extends PoppySeedPetsController
         if(count($inventory) === 2)
         {
             /** @var Inventory $baseItem */
-            $baseItem = ArrayFunctions::find_one($inventory, function(Inventory $i) use($inventoryIds) { return $i->getId() === $inventoryIds[0]; });
+            $baseItem = ArrayFunctions::find_one($inventory, fn(Inventory $i) => $i->getId() === $inventoryIds[0]);
 
             /** @var Inventory $addOn */
-            $addOn = ArrayFunctions::find_one($inventory, function(Inventory $i) use($inventoryIds) { return $i->getId() === $inventoryIds[1]; });
+            $addOn = ArrayFunctions::find_one($inventory, fn(Inventory $i) => $i->getId() === $inventoryIds[1]);
 
             try
             {

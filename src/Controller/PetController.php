@@ -742,9 +742,7 @@ class PetController extends PoppySeedPetsController
         $availableMerits = $meritService->getAvailableMerits($pet);
 
         /** @var Merit $merit */
-        $merit = ArrayFunctions::find_one($availableMerits, function(Merit $m) use($meritName) {
-            return $m->getName() === $meritName;
-        });
+        $merit = ArrayFunctions::find_one($availableMerits, fn(Merit $m) => $m->getName() === $meritName);
 
         if(!$merit)
             throw new UnprocessableEntityHttpException('That merit is not available.');

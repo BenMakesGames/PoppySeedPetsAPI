@@ -106,7 +106,7 @@ class PetShelterController extends PoppySeedPetsController
         [$pets, $dialog] = $adoptionService->getDailyPets($user);
 
         /** @var PetShelterPet $petToAdopt */
-        $petToAdopt = ArrayFunctions::find_one($pets, function(PetShelterPet $p) use($id) { return $p->id === $id; });
+        $petToAdopt = ArrayFunctions::find_one($pets, fn(PetShelterPet $p) => $p->id === $id);
 
         if($petToAdopt === null)
             throw new UnprocessableEntityHttpException('There is no such pet available for adoption... maybe reload and try again??');

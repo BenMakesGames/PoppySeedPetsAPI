@@ -53,7 +53,7 @@ class SpiritPolymorphPotionController extends PoppySeedPetsItemController
         $em->remove($inventory);
 
         $currentImage = $pet->getSpiritCompanion()->getImage();
-        $possibleImages = array_filter(SpiritCompanion::IMAGES, function($i) use($currentImage) { return $i !== $currentImage; });
+        $possibleImages = array_filter(SpiritCompanion::IMAGES, fn($i) => $i !== $currentImage);
 
         $pet->getSpiritCompanion()->setImage($squirrel3->rngNextFromArray($possibleImages));
 

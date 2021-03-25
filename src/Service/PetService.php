@@ -362,7 +362,7 @@ class PetService
         if($foodGained > 0)
         {
             $remainder = $foodGained % 8;
-            $gain = floor($foodGained / 8);
+            $gain = $foodGained >> 3; // ">> 3" === "/ 8"
 
             if ($remainder > 0 && $this->squirrel3->rngNextInt(1, 8) <= $remainder)
                 $gain++;
@@ -938,9 +938,7 @@ class PetService
 
             $activity = $want['activity'];
 
-            $wants = array_filter($wants, function($want) use($activity) {
-                return $want['activity'] !== $activity;
-            });
+            $wants = array_filter($wants, fn($want) => $want['activity'] !== $activity);
 
             switch($activity)
             {

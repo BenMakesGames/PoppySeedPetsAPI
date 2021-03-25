@@ -81,7 +81,7 @@ class PetSummonedAwayService
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them fight a monster they\'d never seen before';
 
         if($this->squirrel3->rngNextInt(1, 3) === 1)
-            $message .= '; a creature with ' . ($this->squirrel3->rngNextInt(1, 4) * 2) . ' eyes, and a very wrong number of limbs! ';
+            $message .= '; a creature with ' . ($this->squirrel3->rngNextInt(1, 4) << 1) . ' eyes, and a very wrong number of limbs! ';
         else
             $message .= '! ';
 

@@ -162,7 +162,7 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
             if($itemQuantity->item === null)
                 break;
 
-            $itemQuantity->quantity = $this->askInt('Enter a quantity', 1, function(int $n) { return $n >= 0; });
+            $itemQuantity->quantity = $this->askInt('Enter a quantity', 1, fn(int $n) => $n >= 0);
 
             $quantities[] = $itemQuantity;
         }

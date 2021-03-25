@@ -101,7 +101,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
             $this->output->writeln('6. Edit growing times');
             $this->output->writeln('7. Flush changes, and quit');
 
-            $choice = $this->askInt('', 7, function(int $n) { return $n >= 1 && $n <= 7; });
+            $choice = $this->askInt('', 7, fn(int $n) => $n >= 1 && $n <= 7);
 
             switch($choice)
             {
@@ -165,7 +165,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
 
     private function selectYieldToEdit(Plant $plant)
     {
-        $yieldIndex = $this->askInt('Which yield?', 1, function($n) use($plant) { return $n >= 1 && $n <= count($plant->getPlantYields()); });
+        $yieldIndex = $this->askInt('Which yield?', 1, fn($n) => $n >= 1 && $n <= count($plant->getPlantYields());
         $yield = $plant->getPlantYields()[$yieldIndex - 1];
 
         $this->editYield($yield);
@@ -196,7 +196,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
             $this->output->writeln(($index + 2) . '. Change yield quantity');
             $this->output->writeln(($index + 3) . '. Done');
 
-            $yieldIndex = $this->askInt('', $index + 3, function($n) use($index) { return $n >= 1 && $n <= $index + 3; });
+            $yieldIndex = $this->askInt('', $index + 3, fn($n) => $n >= 1 && $n <= $index + 3);
 
             if($yieldIndex === $index + 3)
             {
@@ -257,7 +257,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
 
     private function deleteYield(Plant $plant)
     {
-        $yieldIndex = $this->askInt('Which yield?', 1, function(int $n) use($plant) { return $n >= 1 && $n <= count($plant->getPlantYields()); });
+        $yieldIndex = $this->askInt('Which yield?', 1, fn(int $n) => $n >= 1 && $n <= count($plant->getPlantYields()));
 
         $yieldToDelete = $plant->getPlantYields()[$yieldIndex - 1];
 
@@ -268,7 +268,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
     private function editYieldQuantities(PlantYield $yield)
     {
         $min = $this->askInt('Minimum yield:', $yield->getMin(), function(int $n) { return $n >= 1; });
-        $max = $this->askInt('Maximum yield:', max($min, $yield->getMax()), function(int $n) use($min) { return $n >= $min; });
+        $max = $this->askInt('Maximum yield:', max($min, $yield->getMax()), fn(int $n) => $n >= $min);
 
         $yield
             ->setMin($min)

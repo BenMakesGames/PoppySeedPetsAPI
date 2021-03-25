@@ -654,11 +654,9 @@ class GreenhouseController extends PoppySeedPetsController
 
         $allPlants = $user->getGreenhousePlants();
 
-        $plantIds = array_filter($plantIds, function(int $i) use($allPlants) {
-            return ArrayFunctions::any($allPlants, function(GreenhousePlant $p) use($i) {
-                return $p->getId() === $i;
-            });
-        });
+        $plantIds = array_filter($plantIds, fn(int $i) =>
+            ArrayFunctions::any($allPlants, fn(GreenhousePlant $p) => $p->getId() === $i)
+        );
 
         if(count($allPlants) !== count($plantIds))
             throw new UnprocessableEntityHttpException('The list of plants must include the full list of your plants; no more; no less!');
@@ -706,9 +704,9 @@ class GreenhouseController extends PoppySeedPetsController
         $largestOrdinal = ArrayFunctions::max($user->getGreenhousePlants(), function(GreenhousePlant $gp) { return $gp->getOrdinal(); });
         $lastOrdinal = $largestOrdinal === null ? 1 : ($largestOrdinal->getOrdinal() + 1);
 
-        $plantsOfSameType = $user->getGreenhousePlants()->filter(function(GreenhousePlant $plant) use($seed) {
-            return $plant->getPlant()->getType() === $seed->getItem()->getPlant()->getType();
-        });
+        $plantsOfSameType = $user->getGreenhousePlants()->filter(fn(GreenhousePlant $plant) =>
+            $plant->getPlant()->getType() === $seed->getItem()->getPlant()->getType()
+        );
 
         switch($seed->getItem()->getPlant()->getType())
         {

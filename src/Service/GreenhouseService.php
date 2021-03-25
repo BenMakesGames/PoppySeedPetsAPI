@@ -93,9 +93,9 @@ class GreenhouseService
 
         if($bonusMerit)
         {
-            $startingMerits = array_filter($startingMerits, function($m) use($bonusMerit) {
-                return $m !== $bonusMerit->getName();
-            });
+            $startingMerits = array_filter($startingMerits, fn($m) =>
+                $m !== $bonusMerit->getName()
+            );
         }
 
         $startingMerit = $this->meritRepository->findOneByName($this->squirrel3->rngNextFromArray($startingMerits));

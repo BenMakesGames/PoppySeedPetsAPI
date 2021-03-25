@@ -220,9 +220,7 @@ class WeatherService
         return $this->cache->getOrCompute(
             'Weather Forecast ' . $date->format('Y-m-d'),
             \DateInterval::createFromDateString('1 day'),
-            function() use($date) {
-                return $this->computeWeatherForecast($date);
-            }
+            fn() => $this->computeWeatherForecast($date)
         );
     }
 

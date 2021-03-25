@@ -111,7 +111,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
             $petChanges[$pet->getId()] = new PetChanges($pet);
         }
 
-        $roll = $squirrel3->rngNextInt(max(20, 1 + floor($totalSkill / 2)), 20 + $totalSkill);
+        $roll = $squirrel3->rngNextInt(max(20, 1 + ($totalSkill >> 1)), 20 + $totalSkill);
 
         $result = 'You read the scroll, causing ' . GrammarFunctions::indefiniteArticle($monster->name) . ' ' . $monster->name . ' to be summoned! ';
 

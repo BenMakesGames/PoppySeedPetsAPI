@@ -342,7 +342,7 @@ class KinBallService implements ParkEventInterface
 
     private function eliminateTeam(int $team)
     {
-        $this->activeTeams = array_filter($this->activeTeams, function(int $t) use($team) { return $t !== $team; });
+        $this->activeTeams = array_filter($this->activeTeams, fn(int $t) => $t !== $team);
 
         $this->results .= "\n" . '**' . ucfirst($this->teams[$team]->color) . ' Team (' . $this->teamWins[$team] . ' points) has been eliminated this Period!**' . "\n\n";
     }

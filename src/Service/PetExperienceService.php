@@ -41,13 +41,11 @@ class PetExperienceService
 
         if($exp < 0) return;
 
-        $possibleStats = array_filter($stats, function($stat) use($pet) {
-            return ($pet->getSkills()->{'get' . $stat}() < 20);
-        });
+        $possibleStats = array_filter($stats, fn($stat) => ($pet->getSkills()->{'get' . $stat}() < 20));
 
         if(count($possibleStats) === 0) return;
 
-        if($pet->getTool() && ArrayFunctions::any($possibleStats, function(string $stat) use($pet) { return $pet->getTool()->focusesSkill($stat); }))
+        if($pet->getTool() && ArrayFunctions::any($possibleStats, fn(string $stat) => $pet->getTool()->focusesSkill($stat)))
         {
             $exp++;
         }

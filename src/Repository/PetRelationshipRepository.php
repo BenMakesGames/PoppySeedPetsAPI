@@ -44,7 +44,7 @@ class PetRelationshipRepository extends ServiceEntityRepository
             ->setMaxResults($maxFriendsToConsider)
             ->setParameter('petId', $pet->getId())
             ->setParameter('excludedRelationshipTypes', [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ])
-            ->setParameter('minimumFriendSocialEnergy', floor(PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 3 / 2))
+            ->setParameter('minimumFriendSocialEnergy', (PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 3) >> 1)
         ;
 
         $friends = $qb->getQuery()->execute();
@@ -77,6 +77,23 @@ class PetRelationshipRepository extends ServiceEntityRepository
             ->leftJoin('r.relationship', 'friend')
             ->andWhere('r.currentRelationship IN (:dislikedRelationshipTypes)')
             ->andWhere('r.commitment>0')
+            ->andWhere('pet.id=:petId')
+            ->setParameter('petId', $pet->getId())
+            ->setParameter('dislikedRelationshipTypes', [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ])
+        ;
+
+        return $qb->getQuery()->execute();
+    }
+
+    /**
+     * @return PetRelationship[]
+     */
+    public function getDislikedRelationships(Pet $pet): array
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->leftJoin('r.pet', 'pet')
+            ->leftJoin('r.relationship', 'friend')
+            ->andWhere('r.currentRelationship IN (:dislikedRelationshipTypes)')
             ->andWhere('pet.id=:petId')
             ->setParameter('petId', $pet->getId())
             ->setParameter('dislikedRelationshipTypes', [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ])

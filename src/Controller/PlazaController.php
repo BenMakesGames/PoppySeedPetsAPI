@@ -33,9 +33,7 @@ class PlazaController extends PoppySeedPetsController
         $requestedBox = $request->request->get('box');
 
         /** @var AvailableHolidayBox $box */
-        $box = ArrayFunctions::find_one($availableBoxes, function(AvailableHolidayBox $box) use($requestedBox) {
-            return $box->tradeDescription === $requestedBox;
-        });
+        $box = ArrayFunctions::find_one($availableBoxes, fn(AvailableHolidayBox $box) => $box->tradeDescription === $requestedBox);
 
         if(!$box)
             throw new UnprocessableEntityHttpException('No holiday box is available right now...');

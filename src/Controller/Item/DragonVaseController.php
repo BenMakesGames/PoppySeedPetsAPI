@@ -81,9 +81,9 @@ class DragonVaseController extends PoppySeedPetsItemController
 
         if($dippedItem->getEnchantment())
         {
-            $possibleBonuses = array_filter($possibleBonuses, function(string $bonus) use($dippedItem) {
-                return $bonus !== $dippedItem->getEnchantment()->getName();
-            });
+            $possibleBonuses = array_filter($possibleBonuses, fn(string $bonus) =>
+                $bonus !== $dippedItem->getEnchantment()->getName()
+            );
         }
 
         $newBonus = $enchantmentRepository->findOneByName($squirrel3->rngNextFromArray($possibleBonuses));

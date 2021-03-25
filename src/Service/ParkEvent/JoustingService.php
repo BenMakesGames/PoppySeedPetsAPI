@@ -374,7 +374,7 @@ class JoustingService implements ParkEventInterface
         foreach($this->participants as $participant)
             $affectionTotal += $participant->rider->getAffectionLevel() + $participant->mount->getAffectionLevel();
 
-        $affectionAverage = $affectionTotal / (count($this->participants) * 2);
+        $affectionAverage = $affectionTotal / (count($this->participants) << 1);
 
         $firstPlaceMoneys = 2 * count($this->participants) - $this->squirrel3->rngNextInt(0, 8); // base prize
         $firstPlaceMoneys += ceil($affectionAverage); // affection bonus

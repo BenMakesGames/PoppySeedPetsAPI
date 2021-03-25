@@ -251,7 +251,7 @@ class PregnancyService
         {
             $n1Offset = $this->squirrel3->rngNextInt(
                 max(0, ceil(\mb_strlen($n1) / 2) - 2),
-                min(\mb_strlen($n1) - 1, floor(\mb_strlen($n1) / 2) + 2)
+                min(\mb_strlen($n1) - 1, (\mb_strlen($n1) >> 1) + 2)
             );
 
             if($n1Offset === 0 || $n1Offset === \mb_strlen($n1) - 1)
@@ -269,7 +269,7 @@ class PregnancyService
 
             $n2Offset = $this->squirrel3->rngNextInt(
                 max(0, ceil(\mb_strlen($n2) / 2) - 2),
-                min(\mb_strlen($n2) - 1, floor(\mb_strlen($n2) / 2) + 2)
+                min(\mb_strlen($n2) - 1, (\mb_strlen($n2) >> 1) + 2)
             );
 
             if($n2Offset === 0 || $n2Offset === \mb_strlen($n1) - 1)
