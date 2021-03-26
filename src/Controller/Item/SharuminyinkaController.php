@@ -6,6 +6,7 @@ use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
 use App\Model\TraderOffer;
 use App\Model\TraderOfferCostOrYield;
+use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
@@ -28,14 +29,16 @@ class SharuminyinkaController extends PoppySeedPetsItemController
      */
     public function createHope(
         Inventory $inventory, ResponseService $responseService, TraderService $traderService, ItemRepository $itemRepository,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, InventoryRepository $inventoryRepository
     )
     {
         $this->validateInventory($inventory, 'sharuminyinka/#/createHope');
 
         $user = $this->getUser();
 
-        $exchange = new TraderOffer(
+        $houseInventoryQuantities = $inventoryRepository->getInventoryQuantities($user, LocationEnum::HOME, 'name');
+
+        $exchange = TraderOffer::createTradeOffer(
             [
                 TraderOfferCostOrYield::createItem($itemRepository->findOneByName('Poker'), 1),
                 TraderOfferCostOrYield::createItem($itemRepository->findOneByName('Spider'), 1),
@@ -45,7 +48,9 @@ class SharuminyinkaController extends PoppySeedPetsItemController
             [
                 TraderOfferCostOrYield::createItem($itemRepository->findOneByName('Sharuminyinka\'s Hope'), 1),
             ],
-            ''
+            '',
+            $user,
+            $houseInventoryQuantities
         );
 
         if(!$traderService->userCanMakeExchange($user, $exchange))
