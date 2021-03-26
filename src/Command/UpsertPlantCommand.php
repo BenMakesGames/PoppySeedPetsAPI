@@ -165,7 +165,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
 
     private function selectYieldToEdit(Plant $plant)
     {
-        $yieldIndex = $this->askInt('Which yield?', 1, fn($n) => $n >= 1 && $n <= count($plant->getPlantYields());
+        $yieldIndex = $this->askInt('Which yield?', 1, fn($n) => $n >= 1 && $n <= count($plant->getPlantYields()));
         $yield = $plant->getPlantYields()[$yieldIndex - 1];
 
         $this->editYield($yield);

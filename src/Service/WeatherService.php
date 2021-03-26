@@ -210,7 +210,7 @@ class WeatherService
         $forecast = [];
 
         for($day = 1; $day <= 6; $day++)
-            $forecast[] = $this->getWeatherForecast((new \DateTimeImmutable())->modify('+' . $day . 'days')->setTime(12, 0, 0));
+            $forecast[] = $this->getWeatherForecast((new \DateTimeImmutable())->modify('+' . $day . 'days'));
 
         return $forecast;
     }
