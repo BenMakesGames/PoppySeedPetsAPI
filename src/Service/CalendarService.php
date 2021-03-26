@@ -200,6 +200,7 @@ class CalendarService
 
     public function isHoli(): bool
     {
+        return true;
         // :(
         return $this->monthAndDay == self::HOLI_MONTH_DAYS[(int)$this->today->format('Y')];
     }

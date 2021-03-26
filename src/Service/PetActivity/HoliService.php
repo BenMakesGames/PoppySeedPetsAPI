@@ -1,16 +1,17 @@
 <?php
 namespace App\Service\PetActivity;
 
+use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
-use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\PetQuestRepository;
 use App\Repository\PetRelationshipRepository;
+use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -22,21 +23,22 @@ class HoliService
     private $petQuestRepository;
     private $responseService;
     private $em;
+    private $petExperienceService;
 
     public function __construct(
         PetRelationshipRepository $petRelationshipRepository, PetQuestRepository $petQuestRepository,
-        ResponseService $responseService, EntityManagerInterface $em
+        ResponseService $responseService, EntityManagerInterface $em, PetExperienceService $petExperienceService
     )
     {
         $this->petRelationshipRepository = $petRelationshipRepository;
         $this->petQuestRepository = $petQuestRepository;
         $this->responseService = $responseService;
         $this->em = $em;
+        $this->petExperienceService = $petExperienceService;
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills): ?PetActivityLog
+    public function adventure(Pet $pet): ?PetActivityLog
     {
-        $pet = $petWithSkills->getPet();
         $now = new \DateTimeImmutable();
 
         $reconciledThisYear = $this->petQuestRepository->findOrCreate($pet, 'Holi ' . $now->format('Y') . ' Reconciliation', false);
@@ -55,7 +57,7 @@ class HoliService
         // if the pet doesn't dislike any pets, they will not participate this year
         if(count($dislikedPets) === 0)
         {
-            $activityLog = $this->doPetNoParticipation($petWithSkills);
+            $activityLog = $this->doPetNoParticipation($pet);
         }
         else
         {
@@ -63,7 +65,7 @@ class HoliService
                 max(1, $r1->getCommitment() >> 1)
             );
 
-            $activityLog = $this->doReconcileWithPet($petWithSkills, $relationshipToReconcile);
+            $activityLog = $this->doReconcileWithPet($pet, $relationshipToReconcile);
         }
 
         $activityLog
@@ -74,9 +76,9 @@ class HoliService
         return $activityLog;
     }
 
-    private function doPetNoParticipation(ComputedPetSkills $petWithSkills): PetActivityLog
+    private function doPetNoParticipation(Pet $pet): PetActivityLog
     {
-        $pet = $petWithSkills->getPet();
+        $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
 
         $pet->increaseLove(8);
 
@@ -87,9 +89,10 @@ class HoliService
         );
     }
 
-    private function doReconcileWithPet(ComputedPetSkills $petWithSkills, PetRelationship $relationshipToReconcile): PetActivityLog
+    private function doReconcileWithPet(Pet $pet, PetRelationship $relationshipToReconcile): PetActivityLog
     {
-        $pet = $petWithSkills->getPet();
+        $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
+
         $otherPet = $relationshipToReconcile->getRelationship();
         $relationshipOtherSide = $otherPet->getRelationshipWith($pet);
 
@@ -126,6 +129,9 @@ class HoliService
             ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
             ->setChanges($otherPetChanges->compare($otherPet))
         ;
+
+        if($pet->getOwner()->getId() === $otherPet->getOwner()->getId())
+            $otherPetLog->setViewed();
 
         $this->em->persist($otherPetLog);
 

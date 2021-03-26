@@ -47,6 +47,7 @@ use App\Service\PetActivity\GenericAdventureService;
 use App\Service\PetActivity\GivingTreeGatheringService;
 use App\Service\PetActivity\GuildService;
 use App\Service\PetActivity\HeartDimensionService;
+use App\Service\PetActivity\HoliService;
 use App\Service\PetActivity\HuntingService;
 use App\Service\PetActivity\LetterService;
 use App\Service\PetActivity\MagicBeanstalkService;
@@ -100,6 +101,7 @@ class PetService
     private $squirrel3;
     private $chocolateMansion;
     private $weatherService;
+    private $holiService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -117,7 +119,7 @@ class PetService
         DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService, LetterService $letterService,
         PetSummonedAwayService $petSummonedAwayService, InventoryModifierService $toolBonusService,
         UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, ChocolateMansion $chocolateMansion,
-        WeatherService $weatherService
+        WeatherService $weatherService, HoliService $holiService
     )
     {
         $this->em = $em;
@@ -159,6 +161,7 @@ class PetService
         $this->userQuestRepository = $userQuestRepository;
         $this->chocolateMansion = $chocolateMansion;
         $this->weatherService = $weatherService;
+        $this->holiService = $holiService;
     }
 
     /**
@@ -911,6 +914,12 @@ class PetService
         {
             $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
             return true;
+        }
+
+        if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM) && $this->calendarService->isHoli())
+        {
+            if($this->holiService->adventure($pet))
+                return true;
         }
 
         $wants = [];
