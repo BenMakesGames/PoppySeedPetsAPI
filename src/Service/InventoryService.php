@@ -16,11 +16,13 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\DateFunctions;
 use App\Functions\GrammarFunctions;
 use App\Model\FoodWithSpice;
 use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
+use App\Repository\SpiceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class InventoryService
@@ -31,10 +33,12 @@ class InventoryService
     private $petExperienceService;
     private $inventoryRepository;
     private $squirrel3;
+    private $spiceRepository;
 
     public function __construct(
         ItemRepository $itemRepository, EntityManagerInterface $em, ResponseService $responseService,
-        PetExperienceService $petExperienceService, InventoryRepository $inventoryRepository, Squirrel3 $squirrel3
+        PetExperienceService $petExperienceService, InventoryRepository $inventoryRepository, Squirrel3 $squirrel3,
+        SpiceRepository $spiceRepository
     )
     {
         $this->itemRepository = $itemRepository;
@@ -43,6 +47,7 @@ class InventoryService
         $this->petExperienceService = $petExperienceService;
         $this->inventoryRepository = $inventoryRepository;
         $this->squirrel3 = $squirrel3;
+        $this->spiceRepository = $spiceRepository;
     }
 
     /**
@@ -488,6 +493,9 @@ class InventoryService
             ->setLocation($location)
             ->setLockedToOwner($lockedToOwner)
         ;
+
+        if($item->getName() === 'Worms' && DateFunctions::getFullMoonName(new \DateTimeImmutable()) === 'Worm')
+            $i->setSpice($this->spiceRepository->findOneByName('with Butts'));
 
         $this->em->persist($i);
 
