@@ -19,7 +19,7 @@ final class ActivityHelpers
             return '%user:' . $user->getId() . '.name%';
     }
 
-    public static function UserNamePosessive(User $user, bool $capitalize = false): string
+    public static function UserNamePossessive(User $user, bool $capitalize = false): string
     {
         if($capitalize)
             return '%user:' . $user->getId() . '.Name\'s%';
