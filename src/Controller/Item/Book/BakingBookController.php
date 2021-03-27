@@ -98,7 +98,7 @@ Makes 12!
 
 #### Chocolate Lava Cake
 
-Just don\'t _real_ lava!
+Just don\'t add _real_ lava!
 
 * Butter
 * Chocolate Bar
