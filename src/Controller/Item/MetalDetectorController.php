@@ -29,6 +29,7 @@ class MetalDetectorController extends PoppySeedPetsItemController
         $em->flush();
 
         $responseService->setReloadPets($inventory->getHolder() !== null);
+        $responseService->setReloadInventory($inventory->getHolder() === null);
 
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
@@ -49,6 +50,7 @@ class MetalDetectorController extends PoppySeedPetsItemController
         $em->flush();
 
         $responseService->setReloadPets($inventory->getHolder() !== null);
+        $responseService->setReloadInventory($inventory->getHolder() === null);
 
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
@@ -69,6 +71,7 @@ class MetalDetectorController extends PoppySeedPetsItemController
         $em->flush();
 
         $responseService->setReloadPets($inventory->getHolder() !== null);
+        $responseService->setReloadInventory($inventory->getHolder() === null);
 
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
