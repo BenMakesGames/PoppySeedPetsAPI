@@ -492,7 +492,7 @@ class TraderService
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Blue Plastic Egg'), 10)
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Blue Plastic Egg'), 5)
                 ],
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Chili Calamari'), 1),
@@ -508,10 +508,10 @@ class TraderService
 
             $offers[] = TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Yellow Plastic Egg'), 5),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Yellow Plastic Egg'), 2),
                 ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Major Scroll of Riches'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Spice Rack'), 3),
                 ],
                 'We fish collect the things, too, you know!',
                 $user,
@@ -520,7 +520,7 @@ class TraderService
 
             $offers[] = TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Pink Plastic Egg'), 2),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Pink Plastic Egg'), 1),
                 ],
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Hat Box'), 1),

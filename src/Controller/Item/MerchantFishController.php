@@ -53,7 +53,7 @@ class MerchantFishController extends PoppySeedPetsItemController
             {
                 $loot = $squirrel3->rngNextFromArray([
                     $squirrel3->rngNextFromArray([ 'Yellow Dye', 'Green Dye' ]),
-                    $squirrel3->rngNextFromArray([ 'Spicy Spice', 'Nutmeg' ]),
+                    'Spice Rack',
                     $squirrel3->rngNextFromArray([ 'Silver Bar', 'Gold Bar' ]),
                     'Tentacle',
                     'White Cloth',
