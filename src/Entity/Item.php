@@ -117,6 +117,11 @@ class Item
      */
     private $treasure;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isBug = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -386,6 +391,18 @@ class Item
     public function setTreasure(ItemTreasure $treasure): self
     {
         $this->treasure = $treasure;
+
+        return $this;
+    }
+
+    public function getIsBug(): bool
+    {
+        return $this->isBug;
+    }
+
+    public function setIsBug(bool $isBug): self
+    {
+        $this->isBug = $isBug;
 
         return $this;
     }

@@ -263,15 +263,19 @@ class InventoryService
 
                     if($toolTool->getWhenGatherAlsoGather())
                     {
+                        $extraItemItem = $this->getItemWithChanceForLuckyTransformation($toolTool->getWhenGatherAlsoGather());
+
                         $extraItem = (new Inventory())
                             ->setOwner($pet->getOwner())
                             ->setCreatedBy($pet->getOwner())
-                            ->setItem($toolTool->getWhenGatherAlsoGather())
+                            ->setItem($extraItemItem)
                             ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
                             ->setLocation(LocationEnum::HOME)
                             ->setSpice($extraItemSpice)
                             ->setEnchantment($bonus)
                         ;
+
+                        $this->applySeasonalSpiceToNewItem($extraItem);
 
                         $this->em->persist($extraItem);
 
@@ -281,7 +285,7 @@ class InventoryService
                             $replacementItemNames[] = $extraItem->getItem()->getNameWithArticle();
                     }
                 }
-                else if($toolTool->getAttractsBugs() && $item->getName() === 'Weird Beetle')
+                else if($toolTool->getAttractsBugs() && $item->getIsBug())
                 {
                     $extraItem = (new Inventory())
                         ->setOwner($pet->getOwner())
@@ -293,9 +297,11 @@ class InventoryService
                         ->setEnchantment($bonus)
                     ;
 
-                    $this->responseService->setReloadInventory();
+                    $this->applySeasonalSpiceToNewItem($extraItem);
 
                     $this->em->persist($extraItem);
+
+                    $this->responseService->setReloadInventory();
                 }
             }
 
@@ -311,15 +317,21 @@ class InventoryService
 
                     if($bonusEffects->getWhenGatherAlsoGather())
                     {
+                        $extraItemItem = $this->getItemWithChanceForLuckyTransformation(
+                            $pet->getTool()->getEnchantment()->getEffects()->getWhenGatherAlsoGather()
+                        );
+
                         $extraItem = (new Inventory())
                             ->setOwner($pet->getOwner())
                             ->setCreatedBy($pet->getOwner())
-                            ->setItem($pet->getTool()->getEnchantment()->getEffects()->getWhenGatherAlsoGather())
+                            ->setItem($extraItemItem)
                             ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
                             ->setLocation(LocationEnum::HOME)
                             ->setSpice($extraItemSpice)
                             ->setEnchantment($bonus)
                         ;
+
+                        $this->applySeasonalSpiceToNewItem($extraItem);
 
                         $this->em->persist($extraItem);
 
@@ -329,7 +341,7 @@ class InventoryService
                             $replacementItemNames[] = $extraItem->getItem()->getNameWithArticle();
                     }
                 }
-                else if($bonusEffects->getAttractsBugs() && $item->getName() === 'Weird Beetle')
+                else if($bonusEffects->getAttractsBugs() && $item->getIsBug())
                 {
                     $extraItem = (new Inventory())
                         ->setOwner($pet->getOwner())
@@ -340,6 +352,8 @@ class InventoryService
                         ->setSpice($extraItemSpice)
                         ->setEnchantment($bonus)
                     ;
+
+                    $this->applySeasonalSpiceToNewItem($extraItem);
 
                     $this->em->persist($extraItem);
 
@@ -374,9 +388,22 @@ class InventoryService
             ->setEnchantment($bonus)
         ;
 
+        $this->applySeasonalSpiceToNewItem($i);
+
         $this->em->persist($i);
 
         $this->responseService->setReloadInventory();
+
+        return $i;
+    }
+
+    private function applySeasonalSpiceToNewItem(Inventory $i): Inventory
+    {
+        if($i->getSpice() && $this->squirrel3->rngNextBool())
+            return $i;
+
+        if($i->getItem()->getName() === 'Worms' && DateFunctions::getFullMoonName(new \DateTimeImmutable()) === 'Worm')
+            return $i->setSpice($this->spiceRepository->findOneByName('with Butts'));
 
         return $i;
     }
@@ -494,8 +521,7 @@ class InventoryService
             ->setLockedToOwner($lockedToOwner)
         ;
 
-        if($item->getName() === 'Worms' && DateFunctions::getFullMoonName(new \DateTimeImmutable()) === 'Worm')
-            $i->setSpice($this->spiceRepository->findOneByName('with Butts'));
+        $this->applySeasonalSpiceToNewItem($i);
 
         $this->em->persist($i);
 
