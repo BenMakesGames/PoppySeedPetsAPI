@@ -94,8 +94,6 @@ class BaabbleController extends PoppySeedPetsItemController
 
         $weirdItem = $squirrel3->rngNextFromArray(self::WEIRD_STUFF);
 
-        $items[] = $weirdItem;
-
         if($squirrel3->rngNextInt(1, 20) === 1)
         {
             $items[] = 'Blue Bow';
@@ -105,6 +103,8 @@ class BaabbleController extends PoppySeedPetsItemController
             $noteworthy = [ $squirrel3->rngNextFromArray($items), $weirdItem ];
 
         shuffle($noteworthy);
+
+        $items[] = $weirdItem;
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
@@ -157,11 +157,11 @@ class BaabbleController extends PoppySeedPetsItemController
 
         $weirdItem = $squirrel3->rngNextFromArray(self::WEIRD_STUFF);
 
-        $items[] = $weirdItem;
-
         $noteworthy = [ $squirrel3->rngNextFromArray($items), $weirdItem ];
 
         shuffle($noteworthy);
+
+        $items[] = $weirdItem;
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
@@ -230,7 +230,7 @@ class BaabbleController extends PoppySeedPetsItemController
         $em->flush();
 
         if($noteworthy[0] === $noteworthy[1])
-            return $responseService->itemActionSuccess('You open the Baabble, and, like, ' . count($items) . ' items come flying out! ' . $noteworthy[0] . ', and ' . $noteworthy[1] . ', among them! (Wait: was that two different ones, or the same one?)', [ 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess('You open the Baabble, and, like, ' . count($items) . ' items come flying out! ' . $noteworthy[0] . ' among them!', [ 'itemDeleted' => true ]);
         else
             return $responseService->itemActionSuccess('You open the Baabble, and, like, ' . count($items) . ' items come flying out! ' . $noteworthy[0] . ', and ' . $noteworthy[1] . ', among them!', [ 'itemDeleted' => true ]);
     }
@@ -290,7 +290,7 @@ class BaabbleController extends PoppySeedPetsItemController
         $em->flush();
 
         if($noteworthy[0] === $noteworthy[1])
-            return $responseService->itemActionSuccess('You open the Baabble, and, like, ' . count($items) . ' items come flying out! ' . $noteworthy[0] . ', and ' . $noteworthy[1] . ', among them! (Wait: was that two different ones, or the same one?)', [ 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess('You open the Baabble, and, like, ' . count($items) . ' items come flying out! ' . $noteworthy[0] . ' among them!', [ 'itemDeleted' => true ]);
         else
             return $responseService->itemActionSuccess('You open the Baabble, and, like, ' . count($items) . ' items come flying out! ' . $noteworthy[0] . ', and ' . $noteworthy[1] . ', among them!', [ 'itemDeleted' => true ]);
     }
