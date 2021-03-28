@@ -62,7 +62,7 @@ class UmbraService
         $this->weatherService = $weatherService;
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills, WeatherService $weatherService)
+    public function adventure(ComputedPetSkills $petWithSkills)
     {
         $pet = $petWithSkills->getPet();
         $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
