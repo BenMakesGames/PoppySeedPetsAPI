@@ -9,11 +9,13 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SpiritCompanionStarEnum;
+use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Model\WeatherData;
 use App\Repository\DragonRepository;
 use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
@@ -23,6 +25,7 @@ use App\Service\ResponseService;
 use App\Service\InventoryModifierService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
+use App\Service\WeatherService;
 
 class UmbraService
 {
@@ -36,12 +39,13 @@ class UmbraService
     private $strangeUmbralEncounters;
     private $dragonRepository;
     private $squirrel3;
+    private $weatherService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, GuildService $guildService, EnchantmentRepository $enchantmentRepository,
         ItemRepository $itemRepository, InventoryModifierService $toolBonusService, StrangeUmbralEncounters $strangeUmbralEncounters,
-        DragonRepository $dragonRepository, Squirrel3 $squirrel3
+        DragonRepository $dragonRepository, Squirrel3 $squirrel3, WeatherService $weatherService
     )
     {
         $this->responseService = $responseService;
@@ -55,11 +59,13 @@ class UmbraService
         $this->strangeUmbralEncounters = $strangeUmbralEncounters;
         $this->dragonRepository = $dragonRepository;
         $this->squirrel3 = $squirrel3;
+        $this->weatherService = $weatherService;
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills)
+    public function adventure(ComputedPetSkills $petWithSkills, WeatherService $weatherService)
     {
         $pet = $petWithSkills->getPet();
+        $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
         $skill = 10 + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal(); // psychedelics bonus is built into getUmbra()
 
         $skill = NumberFunctions::clamp($skill, 1, 22);
@@ -86,8 +92,9 @@ class UmbraService
                 $activityLog = $this->helpedLostSoul($petWithSkills);
                 break;
             case 9:
-                $activityLog = $this->found2Moneys($petWithSkills);
+                $activityLog = $this->found2Moneys($petWithSkills, $weather);
                 break;
+
             case 10:
             case 11:
                 $activityLog = $this->fightEvilSpirit($petWithSkills);
@@ -103,11 +110,12 @@ class UmbraService
                 break;
 
             case 13:
-                $activityLog = $this->found2Moneys($petWithSkills);
+                $activityLog = $this->found2Moneys($petWithSkills, $weather);
                 break;
+
             case 14:
             case 15:
-                $activityLog = $this->fishingAtRiver($petWithSkills);
+                $activityLog = $this->fishingAtRiver($petWithSkills, $weather);
                 break;
             case 16:
                 $activityLog = $this->strangeUmbralEncounters->adventure($petWithSkills);
@@ -326,8 +334,40 @@ class UmbraService
         }
     }
 
-    private function found2Moneys(ComputedPetSkills $petWithSkills): PetActivityLog
+    private function foundDrizzlyBear(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal());
+        $pet = $petWithSkills->getPet();
+
+        $petName = ActivityHelpers::PetName($pet);
+
+        $success = $roll >= 15;
+
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, $success);
+
+        if($success)
+        {
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA, PetSkillEnum::STEALTH ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $petName . ' stumbled upon a Drizzly Bear emerging from a dark river. It shook itself off, sending rain into the material world. ' . $petName . ' caught some, and brought it home.' , '');
+
+            $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' caught this off a Drizzly Bear shaking itself dry.', $activityLog);
+        }
+        else
+        {
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::STEALTH ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $petName . ' stumbled upon a Drizzly Bear emerging from a dark river. ' . $petName . ' tried to hide, but the Drizzly Bear spotted them, so ' . $petName . ' backed off, and returned home.' , '');
+        }
+
+        return $activityLog;
+    }
+
+    private function found2Moneys(ComputedPetSkills $petWithSkills, WeatherData $weather): PetActivityLog
+    {
+        if($weather->getRainfall() > 0 && $weather->getRainfall() < 2)
+            return $this->foundDrizzlyBear($petWithSkills);
+
         $pet = $petWithSkills->getPet();
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -474,8 +514,11 @@ class UmbraService
         }
     }
 
-    private function fishingAtRiver(ComputedPetSkills $petWithSkills): PetActivityLog
+    private function fishingAtRiver(ComputedPetSkills $petWithSkills, WeatherData $weather): PetActivityLog
     {
+        if($weather->getRainfall() > 0 && $weather->getRainfall() < 2)
+            return $this->foundDrizzlyBear($petWithSkills);
+
         $pet = $petWithSkills->getPet();
 
         $fishingSkill = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() + $petWithSkills->getUmbra()->getTotal());
