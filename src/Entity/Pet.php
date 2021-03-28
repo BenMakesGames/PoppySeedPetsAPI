@@ -796,15 +796,15 @@ class Pet
     public function getPoisonLevel(): string
     {
         if($this->getPoison() > 16)
-            return 'crazy-high';
+            return 'major-vommage!';
         else if($this->getPoison() > 12)
-            return 'very high';
+            return 'very';
         else if($this->getPoison() > 8)
-            return 'high';
+            return 'somewhat';
         else if($this->getPoison() > 4)
-            return 'medium';
+            return 'a little';
         else if($this->getPoison() > 0)
-            return 'low';
+            return 'a touch';
         else
             return 'none';
     }
