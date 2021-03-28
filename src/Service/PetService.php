@@ -24,6 +24,7 @@ use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
+use App\Functions\GrammarFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\FoodWithSpice;
 use App\Model\FortuneCookie;
@@ -1130,7 +1131,8 @@ class PetService
                     }
                     else
                     {
-                        $message = $companion->getName() . ' told a ' . $this->squirrel3->rngNextFromArray($adjectives) . ' story they made just for %pet:' . $pet->getId() . '.name%!';
+                        $adjective = $this->squirrel3->rngNextFromArray($adjectives);
+                        $message = $companion->getName() . ' told ' . GrammarFunctions::indefiniteArticle($adjective) . ' ' . $adjective . ' story they made just for %pet:' . $pet->getId() . '.name%!';
                     }
                     break;
 

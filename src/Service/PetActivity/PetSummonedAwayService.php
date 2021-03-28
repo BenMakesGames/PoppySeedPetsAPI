@@ -161,7 +161,7 @@ class PetSummonedAwayService
                 $skill = PetSkillEnum::SCIENCE;
                 break;
             case 2:
-                $activity = 'mix various chemical together while the wizard watched (from a distance, for some reason...)';
+                $activity = 'mix various chemicals together while the wizard watched (from a distance, for some reason...)';
                 $skill = PetSkillEnum::SCIENCE;
                 break;
             case 3:
