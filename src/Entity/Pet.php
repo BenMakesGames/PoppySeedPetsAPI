@@ -797,8 +797,12 @@ class Pet
     {
         if($this->getPoison() > 16)
             return 'crazy-high';
+        else if($this->getPoison() > 12)
+            return 'very high';
         else if($this->getPoison() > 8)
             return 'high';
+        else if($this->getPoison() > 4)
+            return 'medium';
         else if($this->getPoison() > 0)
             return 'low';
         else
