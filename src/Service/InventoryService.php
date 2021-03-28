@@ -676,7 +676,11 @@ class InventoryService
 
         $pet->increasePsychedelic($food->psychedelic);
         $pet->increaseFood($food->food);
-        $pet->increaseJunk($food->junk);
+
+        if($food->junk > 0)
+            $pet->increaseJunk($food->junk);
+        else if($food->junk < 0)
+            $pet->increasePoison($food->junk);
 
         foreach($food->grantedStatusEffects as $statusEffect)
         {

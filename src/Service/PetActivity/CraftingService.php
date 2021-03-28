@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
+use App\Enum\HolidayEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -25,6 +26,7 @@ use App\Service\PetActivity\Crafting\Helpers\StickCraftingService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use App\Service\WeatherService;
 
 class CraftingService
 {
@@ -40,13 +42,14 @@ class CraftingService
     private $twuWuvCraftingService;
     private $squirrel3;
     private $calendarService;
+    private $weatherService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, SmithingService $smithingService,
         MagicBindingService $magicBindingService, PlasticPrinterService $plasticPrinterService,
         PetExperienceService $petExperienceService, StickCraftingService $stickCraftingService,
         ItemRepository $itemRepository, EventLanternService $eventLanternService, TwuWuvCraftingService $twuWuvCraftingService,
-        Squirrel3 $squirrel3, CalendarService $calendarService
+        Squirrel3 $squirrel3, CalendarService $calendarService, WeatherService $weatherService
     )
     {
         $this->responseService = $responseService;
@@ -61,6 +64,7 @@ class CraftingService
         $this->twuWuvCraftingService = $twuWuvCraftingService;
         $this->squirrel3 = $squirrel3;
         $this->calendarService = $calendarService;
+        $this->weatherService = $weatherService;
     }
 
     /**
@@ -1468,6 +1472,7 @@ class CraftingService
     private function createEatYourFruitsAndVeggies(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
+        $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() * 2 + $petWithSkills->getCrafts()->getTotal());
 
         if($roll <= 2)
@@ -1498,10 +1503,25 @@ class CraftingService
             $this->inventoryService->loseItem('Bownaner', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% loaded a Bownaner with a Carrot...', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
-            ;
-            $this->inventoryService->petCollectsItem('Eat Your Fruits And Veggies', $pet, $pet->getName() . ' created this.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, $roll >= 22 ? 3 : 1, [ PetSkillEnum::CRAFTS ]);
+
+            if($roll >= 22 || $weather->isHoliday(HolidayEnum::EASTER))
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made an Eat Your Fruits and Veggies, and even had enough Carrot left over to make a Carrot Key!', '')
+                    ->addInterestingness($weather->isHoliday(HolidayEnum::EASTER) ? PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT : (PetActivityLogInterestingnessEnum::HO_HUM + 22))
+                ;
+
+                $this->inventoryService->petCollectsItem('Carrot Key', $pet, $pet->getName() . ' made this.', $activityLog);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% loaded a Bownaner with a Carrot...', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
+                ;
+            }
+
+            $this->inventoryService->petCollectsItem('Eat Your Fruits and Veggies', $pet, $pet->getName() . ' created this.', $activityLog);
             return $activityLog;
         }
         else
@@ -1869,6 +1889,7 @@ class CraftingService
     private function createCaroteneStick(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
+        $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
         $craftsCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         if($craftsCheck <= 2)
@@ -1893,11 +1914,23 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
             $this->inventoryService->loseItem('Crooked Fishing Rod', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Carrot', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Carrot Lure for a Crooked Fishing Rod; now it\'s a Carotene Stick!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
-            ;
+            $this->petExperienceService->gainExp($pet, $craftsCheck >= 25 ? 3 : 1, [ PetSkillEnum::CRAFTS ]);
+
+            if($craftsCheck >= 25 || $weather->isHoliday(HolidayEnum::EASTER))
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Carotene Stick, and even had enough Carrot left over to make a Carrot Key!', '')
+                    ->addInterestingness($weather->isHoliday(HolidayEnum::EASTER) ? PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT : (PetActivityLogInterestingnessEnum::HO_HUM + 25))
+                ;
+
+                $this->inventoryService->petCollectsItem('Carrot Key', $pet, $pet->getName() . ' made this.', $activityLog);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Carrot Lure for a Crooked Fishing Rod; now it\'s a Carotene Stick!', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ;
+            }
 
             $this->inventoryService->petCollectsItem('Carotene Stick', $pet, $pet->getName() . ' made this.', $activityLog);
 

@@ -418,13 +418,15 @@ class ItemFood
         $modifiers = [];
 
         if($this->food > 9)
-            $modifiers[] = 'huge meal';
-        else if($this->food > 5)
-            $modifiers[] = 'meal';
-        else if($this->food > 2)
-            $modifiers[] = 'small meal';
-        else if($this->food > 0)
-            $modifiers[] = 'snack';
+            $modifiers[] = 'a huge meal';
+        else if($this->food > 6)
+            $modifiers[] = 'a meal';
+        else if($this->food > 3)
+            $modifiers[] = 'a small meal';
+        else if($this->food > 1)
+            $modifiers[] = 'a snack';
+        else if($this->food === 1)
+            $modifiers[] = 'a morsel';
         else if($this->getSpice() === null)
             $modifiers[] = 'no food value';
 
@@ -441,7 +443,7 @@ class ItemFood
         else if($this->junk > 0)
             $modifiers[] = 'slightly junky';
         else if($this->junk < 0)
-            $modifiers[] = 'a health food';
+            $modifiers[] = 'alleviates poison!';
 
         if($this->alcohol > 2)
             $modifiers[] = 'alcoholic';

@@ -36,6 +36,7 @@ use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\BurntForestService;
+use App\Service\PetActivity\Caerbannog;
 use App\Service\PetActivity\ChocolateMansion;
 use App\Service\PetActivity\Crafting\NotReallyCraftsService;
 use App\Service\PetActivity\CraftingService;
@@ -103,6 +104,7 @@ class PetService
     private $chocolateMansion;
     private $weatherService;
     private $holiService;
+    private $caerbannog;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -120,7 +122,7 @@ class PetService
         DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService, LetterService $letterService,
         PetSummonedAwayService $petSummonedAwayService, InventoryModifierService $toolBonusService,
         UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, ChocolateMansion $chocolateMansion,
-        WeatherService $weatherService, HoliService $holiService
+        WeatherService $weatherService, HoliService $holiService, Caerbannog $caerbannog
     )
     {
         $this->em = $em;
@@ -163,6 +165,7 @@ class PetService
         $this->chocolateMansion = $chocolateMansion;
         $this->weatherService = $weatherService;
         $this->holiService = $holiService;
+        $this->caerbannog = $caerbannog;
     }
 
     /**
@@ -892,6 +895,14 @@ class PetService
                 if($this->squirrel3->rngNextInt(1, 4) === 1)
                 {
                     $this->chocolateMansion->adventure($petWithSkills);
+                    return true;
+                }
+                return false;
+
+            case 'Carrot Key':
+                if($this->squirrel3->rngNextInt(1, 4) === 1)
+                {
+                    $this->caerbannog->adventure($petWithSkills);
                     return true;
                 }
                 return false;

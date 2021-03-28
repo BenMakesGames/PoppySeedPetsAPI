@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Enum\HolidayEnum;
 use App\Functions\DateFunctions;
 use App\Functions\JewishCalendarFunctions;
 use App\Model\ChineseCalendarInfo;
@@ -230,10 +231,10 @@ class CalendarService
             $events[] = 'Halloween';
 
         if($this->isEaster())
-            $events[] = 'Easter';
+            $events[] = HolidayEnum::EASTER;
 
         if($this->isSaintPatricksDay())
-            $events[] = 'Saint Patrick\'s';
+            $events[] = HolidayEnum::SAINT_PATRICKS;
 
         if($this->isValentinesOrAdjacent())
             $events[] = 'Valentine\'s';
