@@ -4,6 +4,7 @@ namespace App\Service\PetActivity\Crafting;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
@@ -332,9 +333,22 @@ class PlasticPrinterService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created ' . $item->getNameWithArticle() . '.', '')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
-                ;
+                if($roll >= 30 && $pet->hasMerit(MeritEnum::BEHATTED))
+                {
+                    $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+
+                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created ' . $item->getNameWithArticle() . '... and a pair of Googly Eyes with bits of leftover Plastic!', '')
+                        ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 30)
+                    ;
+
+                    $this->inventoryService->petCollectsItem('Googly Eyes', $pet, $pet->getName() . ' created this from Plastic.', $activityLog);
+                }
+                else
+                {
+                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created ' . $item->getNameWithArticle() . '.', '')
+                        ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+                    ;
+                }
             }
 
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from Plastic.', $activityLog);
