@@ -1484,7 +1484,6 @@ class CraftingService
                 $this->inventoryService->loseItem('Carrot', $pet->getOwner(), LocationEnum::HOME, 1);
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
                 $pet->increaseFood(2);
-                $pet->increaseJunk(-2);
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make an Eat Your Fruits And Veggies, but was feeling hungry, so... they ate the Carrot.', '');
             }
             else

@@ -630,6 +630,14 @@ class Pet
         return $this;
     }
 
+    public function decrementJunk(): self
+    {
+        if($this->junk >= 0)
+            $this->junk--;
+
+        return $this;
+    }
+
     public function getAlcohol(): int
     {
         return $this->alcohol;

@@ -443,7 +443,7 @@ class PetService
             $pet->increaseFood(-1);
 
         if($pet->getJunk() > 0)
-            $pet->increaseJunk(-1);
+            $pet->decrementJunk();
 
         if($pet->getPoison() > 0 && $pet->getAlcohol() === 0 && $pet->getCaffeine() === 0 && $pet->getPsychedelic() === 0)
             $pet->increasePoison(-1);
