@@ -632,8 +632,10 @@ class Pet
 
     public function decrementJunk(): self
     {
-        if($this->junk >= 0)
+        if($this->junk > 0)
             $this->junk--;
+        else
+            $this->junk = 0;
 
         return $this;
     }
