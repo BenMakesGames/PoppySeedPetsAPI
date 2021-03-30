@@ -217,8 +217,8 @@ class AstronomyClubService
             else if($reward < 50) // 5%
             {
                 $item = 'Paper';
-                $description = 'Paper';
-                $messageTemplate = '%group% wrote this Paper based on their findings.';
+                $description = 'a Paper';
+                $messageTemplate = '%group% wrote %this% based on their findings.';
             }
             else if($reward < 55) // 5%
             {
