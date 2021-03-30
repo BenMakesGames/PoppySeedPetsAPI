@@ -220,7 +220,7 @@ class WeatherService
         return $this->cache->getOrCompute(
             'Weather Forecast ' . $date->format('Y-m-d'),
             \DateInterval::createFromDateString('1 day'),
-            fn() => $this->computeWeatherForecast($date)
+            fn() => $this->computeWeatherForecast($date->setTime(0, 0, 0))
         );
     }
 
@@ -242,9 +242,9 @@ class WeatherService
 
         $forecast = new WeatherForecastData();
 
-        $forecast->date = $date;
+        $forecast->date = $date->setTime(0, 0, 0);
 
-        $forecast->holidays = $this->calendarService->getEventData($date);
+        $forecast->holidays = $this->calendarService->getEventData($forecast->date);
 
         $forecast->maxRainfall = max($rainfalls);
         $forecast->minRainfall = min($rainfalls);
