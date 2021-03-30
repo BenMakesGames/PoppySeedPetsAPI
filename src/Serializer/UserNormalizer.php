@@ -9,14 +9,19 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-class MyAccountNormalizer implements ContextAwareNormalizerInterface
+class UserNormalizer implements ContextAwareNormalizerInterface
 {
+    private $userFollowingRepository;
     private $userLetterRepository;
     private $normalizer;
     private $security;
 
-    public function __construct(UserLetterRepository $userLetterRepository, ObjectNormalizer $normalizer, Security $security)
+    public function __construct(
+        UserLetterRepository $userLetterRepository, ObjectNormalizer $normalizer, Security $security,
+        UserFollowingRepository $userFollowingRepository
+    )
     {
+        $this->userFollowingRepository = $userFollowingRepository;
         $this->userLetterRepository = $userLetterRepository;
         $this->normalizer = $normalizer;
         $this->security = $security;
@@ -32,6 +37,17 @@ class MyAccountNormalizer implements ContextAwareNormalizerInterface
         if(in_array(SerializationGroupEnum::MY_ACCOUNT, $context['groups']))
         {
             $data['unreadLetters'] = $this->userLetterRepository->getNumberUnread($user);
+        }
+
+        if(in_array(SerializationGroupEnum::USER_PUBLIC_PROFILE, $context['groups']))
+        {
+            $friend = $this->userFollowingRepository->findOneBy([
+                'user' => $this->security->getUser(),
+                'following' => $user
+            ]);
+
+            if($friend)
+                $data['following'] = [ 'note' => $friend->getNote() ];
         }
 
         return $data;
