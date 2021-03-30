@@ -623,19 +623,7 @@ class Pet
 
     public function increaseJunk(int $amount): self
     {
-        if($amount < 0) return $this;
-
         $this->junk = NumberFunctions::clamp($this->junk + $amount, 0, $this->getStomachSize() - max(0, $this->food));
-
-        return $this;
-    }
-
-    public function decrementJunk(): self
-    {
-        if($this->junk > 0)
-            $this->junk--;
-        else
-            $this->junk = 0;
 
         return $this;
     }
