@@ -571,7 +571,7 @@ class PetService
 
         $hunger = $this->squirrel3->rngNextInt(0, 4);
 
-        if($pet->getFood() < $hunger && count($pet->getLunchboxItems()) > 0)
+        if($pet->getFood() + $pet->getJunk() < $hunger && count($pet->getLunchboxItems()) > 0)
         {
             $petChanges = new PetChanges($pet);
 
