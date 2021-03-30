@@ -53,7 +53,7 @@ class MeritService
             MeritEnum::GREGARIOUS,
             MeritEnum::HYPERCHROMATIC,
             MeritEnum::LOLLIGOVORE,
-            MeritEnum::NAIVE,
+            MeritEnum::FRIEND_OF_THE_WORLD,
             MeritEnum::PREHENSILE_TONGUE,
             MeritEnum::SHEDS,
             MeritEnum::SPECTRAL,

@@ -221,7 +221,7 @@ class PetRelationshipService
                     $possibleRelationships[] = RelationshipEnum::FWB;
 
             }
-            else if($r <= 15)
+            else if($r <= 15 && !($pet->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD) || $otherPet->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD)))
             {
                 $initialRelationship = RelationshipEnum::DISLIKE;
                 $possibleRelationships = [ RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE, RelationshipEnum::FRIENDLY_RIVAL ];
@@ -245,7 +245,12 @@ class PetRelationshipService
             }
         }
 
-        $relationshipGoal = $this->squirrel3->rngNextFromArray($possibleRelationships);
+        if($pet->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD))
+            $petPossibleRelationships = array_filter($possibleRelationships, fn($r) => $r !== RelationshipEnum::DISLIKE);
+        else
+            $petPossibleRelationships = $possibleRelationships;
+
+        $relationshipGoal = $this->squirrel3->rngNextFromArray($petPossibleRelationships);
 
         // pet
         $petRelationship = (new PetRelationship())
@@ -273,7 +278,12 @@ class PetRelationshipService
         $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP);
 
         // other pet
-        $relationshipGoal = $this->squirrel3->rngNextFromArray($possibleRelationships);
+        if($otherPet->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD))
+            $otherPetPossibleRelationships = array_filter($possibleRelationships, fn($r) => $r !== RelationshipEnum::DISLIKE);
+        else
+            $otherPetPossibleRelationships = $possibleRelationships;
+
+        $relationshipGoal = $this->squirrel3->rngNextFromArray($otherPetPossibleRelationships);
 
         $otherPetRelationship = (new PetRelationship())
             ->setRelationship($pet)
@@ -355,12 +365,12 @@ class PetRelationshipService
 
         if($p1->getCurrentRelationship() === RelationshipEnum::DISLIKE)
         {
-            if($p1->getPet()->hasMerit(MeritEnum::NAIVE))
+            if($p1->getPet()->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD))
                 $p1Description = null;
             else
                 $p1Description = str_replace([ '%p1%', '%p2%' ], [ $p1->getPet()->getName(), $p2->getPet()->getName() ], $enemyDescription);
 
-            if($p2->getPet()->hasMerit(MeritEnum::NAIVE))
+            if($p2->getPet()->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD))
                 $p2Description = null;
             else
                 $p2Description = str_replace([ '%p1%', '%p2%' ], [ $p2->getPet()->getName(), $p1->getPet()->getName() ], $enemyDescription);

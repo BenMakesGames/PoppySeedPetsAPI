@@ -45,7 +45,7 @@ final class MeritEnum
 
     // every pet gets one (list is in MeritRepository::POSSIBLE_STARTING_MERITS)
     public const BURPS_MOTHS = 'Burps Moths';
-    public const NAIVE = 'Naïve'; // treats rivals as friends; treats fwbs as mates; always gives in to relationship changes
+    public const FRIEND_OF_THE_WORLD = 'Friend of the World'; // treats rivals as friends; treats fwbs as mates; always gives in to relationship changes
     public const GOURMAND = 'Gourmand'; // larger stomach
     public const SPECTRAL = 'Spectral'; // opacity = 75%; +1 stealth
     public const PREHENSILE_TONGUE = 'Prehensile Tongue'; // +1 dex; ";P" instead of ";)"

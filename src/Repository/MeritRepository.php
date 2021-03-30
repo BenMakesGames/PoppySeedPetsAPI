@@ -20,7 +20,7 @@ class MeritRepository extends ServiceEntityRepository
 {
     public const POSSIBLE_STARTING_MERITS = [
         MeritEnum::BURPS_MOTHS,
-        MeritEnum::NAIVE,
+        MeritEnum::FRIEND_OF_THE_WORLD,
         MeritEnum::GOURMAND,
         MeritEnum::SPECTRAL,
         MeritEnum::PREHENSILE_TONGUE,
