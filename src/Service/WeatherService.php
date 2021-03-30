@@ -49,7 +49,7 @@ class WeatherService
     public function getWeather(\DateTimeImmutable $dt, ?Pet $pet, $getHolidays = true): WeatherData
     {
         if($pet)
-            $dt->modify('-' . max(0, $pet->getHouseTime()->getActivityTime()) . 'minutes');
+            $dt->modify('-' . max(0, $pet->getHouseTime()->getActivityTime()) . ' minutes');
 
         if($dt->format('nd') === '229')
             return $this->getLeapDayWeather($dt);

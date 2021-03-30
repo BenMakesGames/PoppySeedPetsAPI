@@ -147,7 +147,7 @@ final class DateFunctions
 
     public static function createFromYearMonthDay(int $year, int $month, int $day): \DateTimeImmutable
     {
-        return \DateTimeImmutable::createFromFormat('Y n j', $year . ' ' . $month . ' ' . $day);
+        return (\DateTimeImmutable::createFromFormat('Y n j', $year . ' ' . $month . ' ' . $day))->setTime(0, 0, 0);
     }
 
     public static function getFullMoonName(\DateTimeImmutable $dt): ?string

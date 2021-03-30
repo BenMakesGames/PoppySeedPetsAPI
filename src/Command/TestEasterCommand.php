@@ -20,7 +20,7 @@ class TestEasterCommand extends PoppySeedPetsCommand
     {
         $this
             ->setName('app:test-easter')
-            ->setDescription('Runs text through the profanity filter, and displays the result.')
+            ->setDescription('Tests whether or not a given date is "Easter".')
             ->addArgument('date', InputArgument::REQUIRED, 'Date to test, in "Y-m-d" format.')
         ;
     }
@@ -30,6 +30,7 @@ class TestEasterCommand extends PoppySeedPetsCommand
         $dateString = $this->input->getArgument('date');
 
         $dateToTest = \DateTimeImmutable::createFromFormat('Y-m-d', $dateString);
+        $dateToTest = $dateToTest->setTime(0, 0, 0);
 
         $this->calendarService->setToday($dateToTest);
 

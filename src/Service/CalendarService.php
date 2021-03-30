@@ -189,7 +189,7 @@ class CalendarService
     public function isEaster(): bool
     {
         $easter = \DateTimeImmutable::createFromFormat('U', easter_date((int)$this->today->format('Y')));
-        $easter = \DateTimeImmutable::createFromFormat('Y-m-d', $easter->format('Y-m-d'));
+        $easter = $easter->setTime(0, 0, 0);
 
         if($this->today > $easter)
             return false;

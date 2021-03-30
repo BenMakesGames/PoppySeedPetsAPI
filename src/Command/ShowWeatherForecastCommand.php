@@ -1,6 +1,7 @@
 <?php
 namespace App\Command;
 
+use App\Functions\ArrayFunctions;
 use App\Functions\RandomFunctions;
 use App\Service\WeatherService;
 use Symfony\Component\Console\Command\Command;
@@ -24,33 +25,30 @@ class ShowWeatherForecastCommand extends Command
     {
         $this
             ->setName('app:show-weather-forecast')
-            ->addArgument('time', InputArgument::OPTIONAL, 'DateTime string to show weather for; leave blank for current time.')
-            ->addOption('hours', 'r', InputOption::VALUE_REQUIRED, 'Number of hours to forecast.')
+            ->addArgument('date', InputArgument::OPTIONAL, 'DateTime string to show weather for; leave blank for current date.')
             ->setDescription('Show a weather forecast.')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $time = $input->getArgument('time');
-        $hours = (int)$input->getOption('hours');
+        $date = $input->getArgument('date');
 
-        if(!$time)
-            $time = new \DateTimeImmutable();
+        if(!$date)
+            $date = new \DateTimeImmutable();
         else
-            $time = new \DateTimeImmutable($time);
+            $date = new \DateTimeImmutable($date);
 
-        $time = $time->setTime($time->format('G'), 0, 0);
+        $date = $date->setTime(0, 0, 0);
 
-        $output->writeln("time,\ttemp,\tclouds,\train");
-
-        for($hour = 0; $hour < $hours; $hour++)
+        for($day = 1; $day <= 7; $day++)
         {
-            $timeToConsider = $time->modify('+' . $hour . ' hours');
-            $weather = $this->weatherService->getWeather($timeToConsider, null);
-            $output->writeln(
-                "{$this->weatherService->getHourSince2000($timeToConsider)},\t{$weather->getTemperature()},\t{$weather->getClouds()},\t{$weather->getRainfall()}"
-            );
+            $dateToConsider = $date->modify('+' . $day . ' days');
+            $weather = $this->weatherService->computeWeatherForecast($dateToConsider);
+            echo $weather->date->format('Y-m-d H:i:s') . "\n";
+            echo "-------------------\n";
+            echo "Holidays: " . ArrayFunctions::list_nice($weather->holidays) . "\n";
+            echo "\n";
         }
 
         return Command::SUCCESS;
