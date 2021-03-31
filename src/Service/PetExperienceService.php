@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Entity\StatusEffect;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\StatusEffectEnum;
+use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,10 +19,12 @@ class PetExperienceService
     private $responseService;
     private $itemRepository;
     private $squirrel3;
+    private $inventoryService;
 
     public function __construct(
         PetActivityStatsService $petActivityStatsService, EntityManagerInterface $em,
-        ResponseService $responseService, ItemRepository $itemRepository, Squirrel3 $squirrel3
+        ResponseService $responseService, ItemRepository $itemRepository, Squirrel3 $squirrel3,
+        InventoryService $inventoryService
     )
     {
         $this->petActivityStatsService = $petActivityStatsService;
@@ -29,6 +32,7 @@ class PetExperienceService
         $this->responseService = $responseService;
         $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
+        $this->inventoryService = $inventoryService;
     }
 
     /**
@@ -41,11 +45,7 @@ class PetExperienceService
 
         if($exp < 0) return;
 
-        $possibleStats = array_filter($stats, fn($stat) => ($pet->getSkills()->{'get' . $stat}() < 20));
-
-        if(count($possibleStats) === 0) return;
-
-        if($pet->getTool() && ArrayFunctions::any($possibleStats, fn(string $stat) => $pet->getTool()->focusesSkill($stat)))
+        if($pet->getTool() && ArrayFunctions::any($stats, fn(string $stat) => $pet->getTool()->focusesSkill($stat)))
         {
             $exp++;
         }
@@ -68,7 +68,16 @@ class PetExperienceService
         while($pet->getExperience() >= $pet->getExperienceToLevel())
         {
             $pet->decreaseExperience($pet->getExperienceToLevel());
-            $pet->getSkills()->increaseStat($this->squirrel3->rngNextFromArray($possibleStats));
+
+            $statToLevel = $this->squirrel3->rngNextFromArray($stats);
+
+            if($pet->getSkills()->getStat($statToLevel) >= 20)
+            {
+                $newItem = $this->inventoryService->petCollectsItem('Skill Scroll: ' . $statToLevel, $pet, ActivityHelpers::PetName($pet) . ', a ' . $statToLevel . '-master, produced this scroll.', null);
+                $newItem->setLockedToOwner(true);
+            }
+            else
+                $pet->getSkills()->increaseStat($statToLevel);
         }
     }
 

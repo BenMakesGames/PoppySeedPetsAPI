@@ -793,7 +793,7 @@ class PetController extends PoppySeedPetsController
         if(!PetSkillEnum::isAValue($skillName))
             throw new UnprocessableEntityHttpException('"' . $skillName . '" is not a skill!');
 
-        if($pet->getSkills()->{'get' . $skillName}() >= 20)
+        if($pet->getSkills()->getStat($skillName) >= 20)
             throw new UnprocessableEntityHttpException($pet->getName() . '\'s ' . $skillName . ' is already max!');
 
         $pet->getSkills()->increaseStat($skillName);
