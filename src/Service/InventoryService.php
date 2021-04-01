@@ -30,21 +30,18 @@ class InventoryService
     private $itemRepository;
     private $em;
     private $responseService;
-    private $petExperienceService;
     private $inventoryRepository;
     private $squirrel3;
     private $spiceRepository;
 
     public function __construct(
         ItemRepository $itemRepository, EntityManagerInterface $em, ResponseService $responseService,
-        PetExperienceService $petExperienceService, InventoryRepository $inventoryRepository, Squirrel3 $squirrel3,
-        SpiceRepository $spiceRepository
+        InventoryRepository $inventoryRepository, Squirrel3 $squirrel3, SpiceRepository $spiceRepository
     )
     {
         $this->itemRepository = $itemRepository;
         $this->responseService = $responseService;
         $this->em = $em;
-        $this->petExperienceService = $petExperienceService;
         $this->inventoryRepository = $inventoryRepository;
         $this->squirrel3 = $squirrel3;
         $this->spiceRepository = $spiceRepository;

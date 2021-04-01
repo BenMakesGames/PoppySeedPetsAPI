@@ -21,12 +21,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
- * @Route("/item/skill")
+ * @Route("/item")
  */
 class SkillScrollController extends PoppySeedPetsItemController
 {
     /**
-     * @Route("/brawl/{inventory}/read", methods={"POST"})
+     * @Route("/brawlSkillScroll/{inventory}", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function increaseBrawl(
@@ -38,7 +38,7 @@ class SkillScrollController extends PoppySeedPetsItemController
     }
 
     /**
-     * @Route("/crafts/{inventory}/read", methods={"POST"})
+     * @Route("/craftsSkillScroll/{inventory}", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function increaseCrafts(
@@ -50,7 +50,7 @@ class SkillScrollController extends PoppySeedPetsItemController
     }
 
     /**
-     * @Route("/music/{inventory}/read", methods={"POST"})
+     * @Route("/musicSkillScroll/{inventory}", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function increaseMusic(
@@ -62,7 +62,7 @@ class SkillScrollController extends PoppySeedPetsItemController
     }
 
     /**
-     * @Route("/nature/{inventory}/read", methods={"POST"})
+     * @Route("/natureSkillScroll/{inventory}", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function increaseNature(
@@ -74,7 +74,7 @@ class SkillScrollController extends PoppySeedPetsItemController
     }
 
     /**
-     * @Route("/science/{inventory}/read", methods={"POST"})
+     * @Route("/scienceSkillScroll/{inventory}", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function increaseScience(
@@ -86,7 +86,7 @@ class SkillScrollController extends PoppySeedPetsItemController
     }
 
     /**
-     * @Route("/stealth/{inventory}/read", methods={"POST"})
+     * @Route("/stealthSkillScroll/{inventory}", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function increaseStealth(
@@ -98,7 +98,7 @@ class SkillScrollController extends PoppySeedPetsItemController
     }
 
     /**
-     * @Route("/umbra/{inventory}/read", methods={"POST"})
+     * @Route("/umbraSkillScroll/{inventory}", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function increaseUmbra(
@@ -113,7 +113,7 @@ class SkillScrollController extends PoppySeedPetsItemController
         Inventory $inventory, Request $request, EntityManagerInterface $em, PetRepository $petRepository, ResponseService $responseService, string $skill
     ): JsonResponse
     {
-        $this->validateInventory($inventory, 'skill/' . $skill . '/#/read');
+        $this->validateInventory($inventory, $skill . 'SkillScroll');
 
         if(!PetSkillEnum::isAValue($skill))
             throw new UnprocessableEntityHttpException('Not a valid skill.');
