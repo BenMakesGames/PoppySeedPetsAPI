@@ -146,7 +146,7 @@ class FishingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::FISH, false);
 
-            if($pet->getSkills()->getBrawl() < 5)
+            if($pet->getSkills()->getNature() < 5)
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
 
             $pet
