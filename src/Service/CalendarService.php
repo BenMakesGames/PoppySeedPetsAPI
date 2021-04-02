@@ -23,7 +23,7 @@ class CalendarService
 
     public function setToday(\DateTimeImmutable $date)
     {
-        $this->today = $date;
+        $this->today = $date->setTime(0, 0, 0);
         $this->monthAndDay = (int)$this->today->format('nd');
     }
 
@@ -219,7 +219,7 @@ class CalendarService
 
         $events = [];
 
-        $fullMoonName = DateFunctions::getFullMoonName($dt ?? new \DateTimeImmutable());
+        $fullMoonName = DateFunctions::getFullMoonName($this->today);
 
         if($fullMoonName)
             $events[] = $fullMoonName . ' Moon';
