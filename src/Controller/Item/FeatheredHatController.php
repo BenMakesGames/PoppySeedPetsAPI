@@ -51,8 +51,11 @@ class FeatheredHatController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        $responseService->addFlashMessage('The hat shifts in color!');
-        $responseService->setReloadPets($reloadPets);
+        $responseService
+            ->addFlashMessage('The hat shifts in color!')
+            ->setReloadPets($reloadPets)
+            ->setReloadInventory()
+        ;
 
         return $responseService->itemActionSuccess(null);
     }

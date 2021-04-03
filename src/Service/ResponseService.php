@@ -198,7 +198,7 @@ class ResponseService
         return $this->reloadInventory;
     }
 
-    public function addFlashMessage(string $message)
+    public function addFlashMessage(string $message): self
     {
         $log = (new PetActivityLog())
             ->setEntry($message)
@@ -206,5 +206,7 @@ class ResponseService
         ;
 
         $this->flashMessages[] = $log;
+
+        return $this;
     }
 }
