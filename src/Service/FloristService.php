@@ -25,7 +25,12 @@ class FloristService
             ]
         ];
 
-        if($this->calendarService->isValentines() || $this->calendarService->isWhiteDay() || $this->calendarService->isEaster())
+        if(
+            $this->calendarService->isValentines() ||
+            $this->calendarService->isWhiteDay() ||
+            $this->calendarService->isEaster() ||
+            $this->calendarService->isHalloween()
+        )
         {
             $chocolateBomb = $this->itemRepository->findOneByName('Chocolate Bomb');
 
