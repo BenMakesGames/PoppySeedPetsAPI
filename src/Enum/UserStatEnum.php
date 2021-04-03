@@ -9,7 +9,6 @@ final class UserStatEnum
     const TOTAL_MONEYS_EARNED_IN_MARKET = 'Total Moneys Earned in Market';
     const ITEMS_SOLD_IN_MARKET = 'Items Sold in Market';
     const ITEMS_BOUGHT_IN_MARKET = 'Items Bought in Market';
-    const FLOWERBOMBS_PURCHASED = 'Flowerbombs Purchased';
     const COOKED_SOMETHING = 'Cooked Something';
     const ITEMS_RECYCLED = 'Items Recycled';
     const ITEMS_DONATED_TO_MUSEUM = 'Items Donated to Museum';

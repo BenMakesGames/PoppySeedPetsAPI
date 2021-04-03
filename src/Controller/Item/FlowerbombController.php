@@ -2,10 +2,8 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Enum\LocationEnum;
-use App\Functions\ArrayFunctions;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserRepository;
+use App\Service\HotPotatoService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -24,7 +22,7 @@ class FlowerbombController extends PoppySeedPetsItemController
      */
     public function toss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
-        UserRepository $userRepository, InventoryService $inventoryService, UserQuestRepository $userQuestRepository
+        InventoryService $inventoryService, UserQuestRepository $userQuestRepository, HotPotatoService $hotPotatoService
     )
     {
         $this->validateInventory($inventory, 'flowerbomb/#/toss');
@@ -33,13 +31,7 @@ class FlowerbombController extends PoppySeedPetsItemController
 
         $lastFlowerBombWasNarcissistic = $userQuestRepository->findOrCreate($user, 'Last Flowerbomb was Narcissus', true);
 
-        $numberOfTosses = 0;
-
-        foreach($inventory->getComments() as $comment)
-        {
-            if(strpos($comment, ' tossed this to ') !== false)
-                $numberOfTosses++;
-        }
+        $numberOfTosses = $hotPotatoService->countTosses($inventory);
 
         if($numberOfTosses === 0)
         {
@@ -86,22 +78,7 @@ class FlowerbombController extends PoppySeedPetsItemController
         }
         else
         {
-            $target = $userRepository->findOneRecentlyActive($user);
-
-            if($target === null)
-                return $responseService->itemActionSuccess('Hm... there\'s no one to toss it to! (I guess no one\'s been playing Poppy Seed Pets...)');
-
-            $inventory
-                ->setOwner($target)
-                ->addComment($user->getName() . ' tossed this to ' . $target->getName() . '!')
-                ->setLocation(LocationEnum::HOME)
-                ->setModifiedOn()
-                ->setSellPrice(null)
-            ;
-
-            $em->flush();
-
-            return $responseService->itemActionSuccess('You toss the Flowerbomb to <a href="/poppyopedia/resident/' . $target->getId() . '">' . $target->getName() . '</a>!', [ 'itemDeleted' => true ]);
+            return $hotPotatoService->tossItem($inventory);
         }
     }
 }

@@ -2,9 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Enum\LocationEnum;
-use App\Functions\ArrayFunctions;
-use App\Repository\UserRepository;
+use App\Service\HotPotatoService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -23,7 +21,7 @@ class HotPotatoController extends PoppySeedPetsItemController
      */
     public function toss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        UserRepository $userRepository, InventoryService $inventoryService, Squirrel3 $squirrel3
+        InventoryService $inventoryService, Squirrel3 $squirrel3, HotPotatoService $hotPotatoService
     )
     {
         $this->validateInventory($inventory, 'hotPotato/#/toss');
@@ -51,22 +49,60 @@ class HotPotatoController extends PoppySeedPetsItemController
         }
         else
         {
-            $target = $userRepository->findOneRecentlyActive($user);
+            return $hotPotatoService->tossItem($inventory);
+        }
+    }
 
-            if($target === null)
-                return $responseService->itemActionSuccess('Hm... there\'s no one to toss it to! (I guess no one\'s been playing Poppy Seed Pets...)');
+    /**
+     * @Route("/{inventory}/tossChocolateBomb", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function tossChocolateBomb(
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        InventoryService $inventoryService, Squirrel3 $squirrel3, HotPotatoService $hotPotatoService
+    )
+    {
+        $this->validateInventory($inventory, 'hotPotato/#/tossChocolateBomb');
 
-            $inventory
-                ->setOwner($target)
-                ->addComment($user->getName() . ' tossed this to ' . $target->getName() . '!')
-                ->setLocation(LocationEnum::HOME)
-                ->setModifiedOn()
-                ->setSellPrice(null)
-            ;
+        $user = $this->getUser();
 
+        $numberOfTosses = $hotPotatoService->countTosses($inventory);
+
+        if($squirrel3->rngNextInt(1, 100) <= 10 + $numberOfTosses * 10)
+        {
+            $numberOfItems = 5 + $numberOfTosses;
+
+            $loot = $squirrel3->rngNextSubsetFromArray([
+                'Chocolate Bar',
+                'Chocolate Bomb',
+                'Chocolate Cake Pops',
+                'Chocolate Chip Meringue',
+                'Chocolate Chip Muffin',
+                'Chocolate Ice Cream',
+                'Chocolate Key',
+                'Chocolate Meringue',
+                'Chocolate Syrup',
+                'Chocolate Toffee Matzah',
+                'Chocolate-covered Honeycomb',
+                'Chocolate-covered Naner',
+                'Chocolate-frosted Donut',
+                'Mini Chocolate Chip Cookies',
+                'Orange Chocolate Bar',
+                'Slice of Chocolate Cream Pie',
+                'Spicy Chocolate Bar'
+            ], $numberOfItems);
+
+            foreach($loot as $itemName)
+                $inventoryService->receiveItem($itemName, $user, $inventory->getCreatedBy(), 'This exploded out of a Chocolate Bomb.', $inventory->getLocation(), $itemName === 'Chocolate Bomb');
+
+            $em->remove($inventory);
             $em->flush();
 
-            return $responseService->itemActionSuccess('You toss the Hot Potato to <a href="/poppyopedia/resident/' . $target->getId() . '">' . $target->getName() . '</a>!', [ 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess('You get ready to toss the Chocolate Bomb, but it explodes in your hands; ' . $numberOfItems . ' chocolately items fly out!', [ 'itemDeleted' => true ]);
+        }
+        else
+        {
+            return $hotPotatoService->tossItem($inventory);
         }
     }
 }

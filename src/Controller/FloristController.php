@@ -15,6 +15,7 @@ use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\Filter\UserFilterService;
+use App\Service\FloristService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\SessionService;
@@ -32,10 +33,25 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class FloristController extends PoppySeedPetsController
 {
     /**
-     * @Route("/buyFlowerbomb", methods={"POST"})
+     * @Route("", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getInventory(FloristService $floristService, ResponseService $responseService)
+    {
+        $user = $this->getUser();
+
+        if($user->getUnlockedFlorist() === null)
+            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+
+        return $responseService->success($floristService->getInventory());
+    }
+
+    /**
+     * @Route("/buy", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function buyFlowerbomb(
+        Request $request, FloristService $floristService,
         InventoryService $inventoryService, ResponseService $responseService, UserStatsRepository $userStatsRepository,
         EntityManagerInterface $em, TransactionService $transactionService
     )
@@ -45,16 +61,26 @@ class FloristController extends PoppySeedPetsController
         if($user->getUnlockedFlorist() === null)
             throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
 
-        if($user->getMoneys() < 150)
+        $offers = $floristService->getInventory();
+        $userPickName = $request->request->get('item');
+
+        $userPick = ArrayFunctions::find_one($offers, fn($o) => $o['item']['name'] === $userPickName);
+
+        if(!$userPick)
+            throw new UnprocessableEntityHttpException('That item is not available... (maybe reload the page and try again??)');
+
+        if($user->getMoneys() < $userPick['cost'])
             throw new UnprocessableEntityHttpException('"It seems you don\'t have quite enough moneys."');
 
-        $transactionService->spendMoney($user, 150, 'Purchased a Flowerbomb at The Florist.');
+        $transactionService->spendMoney($user, $userPick['cost'], 'Purchased a ' . $userPick['item']['name'] . ' at The Florist.');
 
-        $inventoryService->receiveItem('Flowerbomb', $user, $user, $user->getName() . ' bought this at The Florist\'s.', LocationEnum::HOME, true);
+        $inventoryService->receiveItem($userPick['item']['name'], $user, $user, $user->getName() . ' bought this at The Florist\'s.', LocationEnum::HOME, true);
 
-        $stat = $userStatsRepository->incrementStat($user, UserStatEnum::FLOWERBOMBS_PURCHASED);
+        $statName = $userPick['item']['name'] . 's Purchased';
 
-        if($stat->getValue() === 1)
+        $stat = $userStatsRepository->incrementStat($user, $statName);
+
+        if($userPick['item']['name'] === 'Flowerbomb' && $stat->getValue() === 1)
             $inventoryService->receiveItem('Book of Flowers', $user, $user, 'This was delivered to you from The Florist\'s.', LocationEnum::HOME, true);
 
         $em->flush();
