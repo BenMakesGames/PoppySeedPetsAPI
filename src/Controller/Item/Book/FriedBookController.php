@@ -37,6 +37,7 @@ class FriedBookController extends PoppySeedPetsItemController
 * Fried Donut
 * Fried Egg
 * Fried Tomato
+* Hash Brown
 * Laufabrauð
 * Onion Rings
 
@@ -123,6 +124,12 @@ Finally the bread crumbs show themselves!
 * Egg
 * Wheat Flour
 * Plain Bread (for that extra-crunchy fried crumb goodness!)
+
+#### Hash Brown
+
+* Oil! (or Butter, if you must)
+* Potato
+* Hash Table
 
 #### Laufabrauð
 

@@ -8,6 +8,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\PetChanges;
+use App\Service\CalendarService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
@@ -27,11 +28,12 @@ class BandService
     private $petExperienceService;
     private $transactionService;
     private $squirrel3;
+    private $calendarService;
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, InventoryService $inventoryService,
         ResponseService $responseService, PetExperienceService $petExperienceService, TransactionService $transactionService,
-        Squirrel3 $squirrel3
+        Squirrel3 $squirrel3, CalendarService $calendarService
     )
     {
         $this->em = $em;
@@ -41,25 +43,26 @@ class BandService
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
         $this->squirrel3 = $squirrel3;
+        $this->calendarService = $calendarService;
     }
 
     private const ADJECTIVE_LIST = [
         'Ace', 'Average', 'Above-average', 'Adult', 'Angry', 'Arctic', 'Apologetic', 'Atomic',
-        'Born-again', 'Big', 'Baby', 'Brilliant', 'Bad', 'Big City', 'Blue', 'Birthday', 'Bleeding', 'Bubbly',
+        'Born-again', 'Big', 'Baby', 'Brilliant', 'Bad', 'Big City', 'Blue', 'Bold', 'Birthday', 'Bleeding', 'Bubbly',
         'Curious', 'Celestial', 'Careful', 'Chattering', 'Cute',
         'Daft', 'Dapper', 'Deep-sea', 'Deranged', 'Destiny\'s', 'Dry', 'Deep', 'Digital', 'Dirty', 'Doomed',
         'Eternal', 'Evil', 'Electric', 'Easy', 'Emo', 'Empty', 'Excitable',
-        'Far-flung', 'Favorite', 'Fabulous', 'Famous', 'Feelgood', 'First', 'Final', 'Fluffy', 'Full-circle', 'Funky',
+        'Far-flung', 'Favorite', 'Fabulous', 'Famous', 'Feelgood', 'First', 'Final', 'Flourishing', 'Fluffy', 'Full-circle', 'Funky',
         'Gentle', 'Gelatinous', 'Giant', 'Golden', 'Good', 'Great', 'Grateful', 'Green', 'Grotesque',
         'Hard', 'Heavy', 'Hungry', 'Happy', 'Harmless', 'Hoof-footed', 'Homemade', 'Humble', 'Hyped',
         'Imaginary', 'Imperfect', 'Ironclad', 'Irresponsible', 'Improved', 'Infamous',
         'Jinxed',
-        'Knowledgeable',
-        'Last', 'Light-hearted', 'Living', 'Lost', 'Lonely', 'Loud', 'Love-sick', 'Lovely', 'Lucky',
+        'Knowledgeable', 'Kung-fu',
+        'Last', 'Lazy', 'Light-hearted', 'Living', 'Lost', 'Lonely', 'Loud', 'Love-sick', 'Lovely', 'Lucky',
         'Make-shift', 'Missing', 'Modest', 'Morally-ambiguous', 'Mossy', 'Mother\'s', 'Mysterious',
         'Naked', 'Naughty', 'Nasty', 'New', 'Nice', 'Noisy', 'Notorious', 'Nuclear',
         'Odd', 'Outrageous', 'Old',
-        'Pretty', 'Primitive', 'Peaceful', 'Perfect', 'Purple', 'Pink', 'Pushy', 'Poor', 'Polite',
+        'Pretty', 'Primitive', 'Peaceful', 'Peculiar', 'Perfect', 'Purple', 'Pink', 'Pushy', 'Poor', 'Polite',
         'Questionable', 'Quiet', 'Quibbling',
         'Rancid', 'Raucous', 'Red', 'Red-hot', 'Rich', 'Riverside', 'Rolling', 'Romantic', 'Round', 'Rose-colored', 'Rude',
         'Rundown',
@@ -76,7 +79,7 @@ class BandService
         'Baby', 'Blade', 'Boulder', 'Bank', 'Blossom', 'Bookkeeper', 'Bumblebee', 'Butter',
         'Castle', 'Cat', 'Cereal', 'Chain', 'Chemical', 'Circle', 'Circus', 'Clown', 'Country', 'Crawlspace', 'Cream', 'Cure',
         'Calculator', 'Coincidence', 'Collective', 'Council', 'Crew', 'Cataclysm',
-        'Dead', 'Deviation', 'Dimension', 'Diver', 'Doctor', 'Dog', 'Doom', 'Door', 'Dragon',
+        'Dead', 'Delegation', 'Deviation', 'Dimension', 'Diver', 'Doctor', 'Dog', 'Doom', 'Door', 'Dragon',
         'Eye',
         'Factory', 'Festival', 'Fire', 'Fighter', 'Forest', 'Foreigner',
         'Glacier', 'Gargoyle', 'Giant', 'Garden', 'Gluestick', 'Goldfish', 'Grass', 'Guardian',
@@ -105,7 +108,7 @@ class BandService
         'Embers', 'Explorers',
         'Faces', 'Favorites', 'Fighters', 'Fires', 'Fireflies', 'Foreigners',
         'Gardens', 'Giants', 'Gorillas', 'Grasses', 'Guns', 'Guardians',
-        'Haircuts', 'Hearts', 'Hermits', 'Heartstrings',
+        'Haircuts', 'Hearts', 'Hermits', 'Heartstrings', 'Hoodlums',
         'Jokers',
         'Kings', 'Killers', 'Kingdoms', 'Kittens', 'Knights',
         'Laser Beams', 'Lines', 'Lips', 'Tongues',
@@ -115,7 +118,7 @@ class BandService
         'People', 'Planets', 'Pieces', 'Parents', 'Pathways', 'Patriots', 'Peppers',
         'Queens',
         'Rascals', 'Rebels', 'Robots', 'Roses', 'Royalty',
-        'Steps', 'Stars', 'Seas', 'Suns', 'Sons and Daughters', 'Shapes', 'Sins', 'Stones',
+        'Shapes', 'Steps', 'Stars', 'Seas', 'Suns', 'Sons and Daughters', 'Shapes', 'Sins', 'Stones',
         'Toys', 'Things', 'Tones', 'Travelers', 'Troubles',
         'Vibrations', 'Visions', 'Voices',
         'Wars', 'Words', 'Winds', 'Walls', 'Wallflowers',

@@ -12,12 +12,9 @@ class CalendarService
 {
     /** @var \DateTimeImmutable */ private $today;
     private $monthAndDay;
-    private $halloweenService;
 
-    public function __construct(HalloweenService $halloweenService)
+    public function __construct()
     {
-        $this->halloweenService = $halloweenService;
-
         $this->setToday(new \DateTimeImmutable());
     }
 
@@ -133,6 +130,16 @@ class CalendarService
         return $this->monthAndDay === 314 || $this->monthAndDay === 722;
     }
 
+    public function isPsyPetsBirthday(): bool
+    {
+        return $this->monthAndDay === 321;
+    }
+
+    public function isBastilleDay(): bool
+    {
+        return $this->monthAndDay === 714;
+    }
+
     public function isWhiteDay(): bool
     {
         return $this->monthAndDay === 314;
@@ -225,10 +232,10 @@ class CalendarService
             $events[] = $fullMoonName . ' Moon';
 
         if($this->monthAndDay >= 1200 && $this->monthAndDay <= 1231)
-            $events[] = 'Stocking Stuffing Season';
+            $events[] = HolidayEnum::STOCKING_STUFFING_SEASON;
 
         if($this->isHalloween())
-            $events[] = 'Halloween';
+            $events[] = HolidayEnum::HALLOWEEN;
 
         if($this->isEaster())
             $events[] = HolidayEnum::EASTER;
@@ -237,45 +244,51 @@ class CalendarService
             $events[] = HolidayEnum::SAINT_PATRICKS;
 
         if($this->isValentinesOrAdjacent())
-            $events[] = 'Valentine\'s';
+            $events[] = HolidayEnum::VALENTINES;
 
         if($this->isCyberMonday())
-            $events[] = 'Cyber Monday';
+            $events[] = HolidayEnum::CYBER_MONDAY;
 
         if($this->isBlackFriday())
-            $events[] = 'Black Friday';
+            $events[] = HolidayEnum::BLACK_FRIDAY;
 
         if($this->isPiDay())
-            $events[] = 'Pi Day';
+            $events[] = HolidayEnum::PI_DAY;
 
         if($this->isPSPBirthday())
-            $events[] = 'PSP Birthday';
+            $events[] = HolidayEnum::PSP_BIRTHDAY;
+
+        if($this->isPsyPetsBirthday())
+            $events[] = HolidayEnum::PSYPETS_BIRTHDAY;
 
         if($this->isHannukah())
-            $events[] ='Hannukah';
+            $events[] = HolidayEnum::HANNUKAH;
 
         if($this->isWhiteDay())
-            $events[] = 'White Day';
+            $events[] = HolidayEnum::WHITE_DAY;
 
         if($this->isTalkLikeAPirateDay())
-            $events[] = 'Talk Like a Pirate Day';
+            $events[] = HolidayEnum::TALK_LIKE_A_PIRATE_DAY;
 
         if($this->isThanksgiving())
-            $events[] = 'Thanksgiving';
+            $events[] = HolidayEnum::THANKSGIVING;
 
         if($this->monthAndDay === 101)
-            $events[] = 'New Year\'s Day';
+            $events[] = HolidayEnum::NEW_YEARS_DAY;
 
         if($this->monthAndDay === 704)
-            $events[] = '4th of July';
+            $events[] = HolidayEnum::FOURTH_OF_JULY;
+
+        if($this->isBastilleDay())
+            $events[] = HolidayEnum::BASTILLE_DAY;
 
         $chineseCalendarInfo = $this->getChineseCalendarInfo();
 
         if($chineseCalendarInfo->month === 1 && $chineseCalendarInfo->day <= 6)
-            $events[] = 'Chinese New Year';
+            $events[] = HolidayEnum::CHINESE_NEW_YEAR;
 
         if($this->isHoli())
-            $events[] = 'Holi';
+            $events[] = HolidayEnum::HOLI;
 
         if($dt)
             $this->setToday($oldToday);

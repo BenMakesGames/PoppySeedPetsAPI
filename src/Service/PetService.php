@@ -13,6 +13,7 @@ use App\Entity\PetRelationship;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
 use App\Enum\GatheringHolidayEnum;
+use App\Enum\HolidayEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -918,6 +919,7 @@ class PetService
     public function runSocialTime(Pet $pet): bool
     {
         $pet->getHouseTime()->setLastSocialHangoutAttempt();
+        $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
 
         if($pet->getFood() + $pet->getAlcohol() + $pet->getJunk() < 0)
             return false;
@@ -928,7 +930,7 @@ class PetService
             return true;
         }
 
-        if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM) && $this->calendarService->isHoli())
+        if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM) && $weather->isHoliday(HolidayEnum::HOLI))
         {
             if($this->holiService->adventure($pet))
                 return true;
