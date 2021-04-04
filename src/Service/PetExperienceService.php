@@ -120,6 +120,7 @@ class PetExperienceService
     }
 
     /**
+     * spendTime should be called AFTER gainExp
      * @throws EnumInvalidValueException
      */
     public function spendTime(Pet $pet, int $time, string $activityStat, ?bool $success)

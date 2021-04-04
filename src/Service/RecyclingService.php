@@ -46,10 +46,12 @@ class RecyclingService
         if($i->getLockedToOwner())
             return false;
 
-        if($this->squirrel3->rngNextInt(1, 10) === 1)
+        $item = $i->getItem();
+
+        if($this->squirrel3->rngNextInt(1, 8 + $item->getRecycleValue() * 2) === 1)
             return true;
 
-        if($givingTreeHoliday && $i->getItem()->getFood() && $i->getItem()->getFood()->getIsCandy())
+        if($givingTreeHoliday && $item->getFood() && $item->getFood()->getIsCandy())
             return true;
 
         return false;

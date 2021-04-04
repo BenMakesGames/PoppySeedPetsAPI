@@ -45,18 +45,17 @@ class WerecreatureEncounterService
 
             if($treasure && $treasure->getSilver() > 0)
             {
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
-
                 $lootItem = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
                     'Talon', 'Fluff'
                 ]));
-
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
                 $pet
                     ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
                     ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
                 ;
+
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
 
                 $message .= 'However, upon seeing %pet:' . $pet->getId() . '.name%\'s silver ' . $hat->getItem()->getName() . ', the creature ran off, dropping ' . $lootItem->getNameWithArticle() . ' as it went!';
 
@@ -76,18 +75,17 @@ class WerecreatureEncounterService
 
             if($treasure && $treasure->getSilver() > 0)
             {
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
-
                 $lootItem = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
                     'Talon', 'Fluff'
                 ]));
-
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
                 $pet
                     ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
                     ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
                 ;
+
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
 
                 $message .= '%pet:' . $pet->getId() . '.name% brandished their silver ' . $tool->getItem()->getName() . '; the creature ran off at the sight of it, dropping ' . $lootItem->getNameWithArticle() . ' as it went!';
 
@@ -103,8 +101,6 @@ class WerecreatureEncounterService
 
         if($this->squirrel3->rngNextInt(1, $skill) >= 15)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
-
             $lootItem = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
                 'Talon', 'Fluff'
             ]));
@@ -119,6 +115,7 @@ class WerecreatureEncounterService
             $message .= '%pet:' . $pet->getId() . '.name% beat the creature back, and received ' . $lootItem->getNameWithArticle() . ', but also received a bite during the encounter... (Uh oh...)';
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
 
             $activityLog = $this->responseService->createActivityLog($pet, $message, '');
 
@@ -128,8 +125,6 @@ class WerecreatureEncounterService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
-
             $pet
                 ->increaseEsteem(-$this->squirrel3->rngNextInt(2, 4))
                 ->increaseSafety(-$this->squirrel3->rngNextInt(4, 8))
@@ -138,6 +133,7 @@ class WerecreatureEncounterService
             $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
 
             $message .= '%pet:' . $pet->getId() . '.name% eventually escaped the creature, but not before being scratched and bitten! (Uh oh!)';
 

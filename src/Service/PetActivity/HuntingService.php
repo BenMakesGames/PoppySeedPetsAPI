@@ -203,8 +203,6 @@ class HuntingService
 
     private function rescueHouseFairy(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
-
         $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Rescued Second House Fairy', false)
             ->setValue(true)
         ;
@@ -221,6 +219,8 @@ class HuntingService
         $pet->increaseLove(2);
         $pet->increaseEsteem(2);
 
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
+
         return $activityLog;
     }
 
@@ -230,8 +230,6 @@ class HuntingService
 
         if($pet->getOwner()->getGreenhouse() && $pet->getOwner()->getGreenhouse()->getHasBirdBath() && !$pet->getOwner()->getGreenhouse()->getVisitingBird())
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, false);
-
             if($pet->getSkills()->getBrawl() < 5)
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
 
@@ -239,6 +237,8 @@ class HuntingService
                 ->increaseSafety($this->squirrel3->rngNextInt(1, 2))
                 ->increaseEsteem($this->squirrel3->rngNextInt(1, 2))
             ;
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, false);
 
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% couldn\'t find anything to hunt, so watched some small birds play in the Greenhouse Bird Bath, instead.', 'icons/activity-logs/birb')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
@@ -267,18 +267,18 @@ class HuntingService
 
         if($this->squirrel3->rngNextInt(1, $skill) >= 6)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
-
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $defeated . ' a Dust Bunny, reducing it to Fluff!', 'items/ambiguous/fluff');
             $this->inventoryService->petCollectsItem('Fluff', $pet, 'The remains of a Dust Bunny that ' . $pet->getName() . ' hunted.', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, false);
-
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $chased . ' a Dust Bunny, but wasn\'t able to catch up with it.', '');
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, false);
         }
 
         return $activityLog;
@@ -299,18 +299,16 @@ class HuntingService
 
         if($this->squirrel3->rngNextInt(1, $skill) >= 6)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
-
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $defeated . ' a Plastic Bag, reducing it to Plastic... somehow?', 'items/ambiguous/fluff');
             $this->inventoryService->petCollectsItem('Plastic', $pet, 'The remains of a vicious Plastic Bag that ' . $pet->getName() . ' hunted!', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, false);
-
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $chased . ' a Plastic Bag, but wasn\'t able to catch up with it!', '');
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, false);
         }
 
         return $activityLog;
@@ -323,9 +321,10 @@ class HuntingService
 
         $pet->increaseFood(-1);
 
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+
         if($this->squirrel3->rngNextInt(1, $skill) >= 6)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
             $pet->increaseEsteem(1);
 
             if($this->squirrel3->rngNextInt(1, 2) === 1)
@@ -338,11 +337,11 @@ class HuntingService
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wrestled a Goat, and won, receiving Butter.', '');
                 $this->inventoryService->petCollectsItem('Butter', $pet, $pet->getName() . '\'s prize for out-wrestling a Goat.', $activityLog);
             }
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
-
             if($this->squirrel3->rngNextInt(1, 4) === 1)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wrestled a Goat. The Goat won.', '');
@@ -350,9 +349,9 @@ class HuntingService
             }
             else
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wrestled a Goat. The Goat won.', '');
-        }
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
+        }
 
         return $activityLog;
     }
@@ -373,7 +372,6 @@ class HuntingService
 
         if($stealth > 25)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
             $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
 
             $loot = $this->squirrel3->rngNextFromArray($possibleLootSansOil);
@@ -384,11 +382,12 @@ class HuntingService
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH ]);
 
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
+
             return $activityLog;
         }
         else if($stealth > 15)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
             $pet->increaseEsteem(1);
 
             $loot = $this->squirrel3->rngNextFromArray($possibleLoot);
@@ -397,6 +396,8 @@ class HuntingService
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this off the body of a sleeping Dough Golem.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH ]);
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
 
             return $activityLog;
         }
@@ -409,7 +410,6 @@ class HuntingService
         {
             $dodgeCheck = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl(false)->getTotal());
 
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
             $loot = $this->squirrel3->rngNextFromArray($possibleLootSansOil);
 
             if($dodgeCheck >= 15)
@@ -430,10 +430,11 @@ class HuntingService
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
             }
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
         else if($skillCheck >= 7)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
             $pet->increaseEsteem(1);
 
             $loot = $this->squirrel3->rngNextFromArray($possibleLoot);
@@ -442,11 +443,11 @@ class HuntingService
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' took this from the body of a defeated Dough Golem.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
-
             if($this->squirrel3->rngNextInt(1, 4) === 1)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% attacked a rampaging Dough Golem, but it released a cloud of defensive flour, and escaped. ' . $pet->getName() . ' picked up some of the flour, and brought it home.', '');
@@ -456,6 +457,8 @@ class HuntingService
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% attacked a Dough Golem, but it was really sticky. ' . $pet->getName() . '\'s attacks were useless, and they were forced to retreat.', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
         }
 
         return $activityLog;
@@ -470,8 +473,6 @@ class HuntingService
 
         if($this->squirrel3->rngNextInt(1, $skill) >= 6)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
-
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
 
             $item = $this->squirrel3->rngNextFromArray([ 'Talon', 'Feathers', 'Giant Turkey Leg', 'Smallish Pumpkin Spice' ]);
@@ -480,14 +481,15 @@ class HuntingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wrestled a Turkey! The Turkey fled, but not before ' . $pet->getName() . ' took ' . $aOrSome . ' ' . $item . '!', '');
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' wrestled this from a Turkey.', $activityLog);
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
-
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% picked a fight with a Turkey, but lost.', '');
             $pet->increaseEsteem(-2);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
         }
 
         return $activityLog;
@@ -502,8 +504,6 @@ class HuntingService
 
         if($this->squirrel3->rngNextInt(1, $skill) >= 6)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
-
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
 
             if($this->squirrel3->rngNextInt(1, 4) === 1)
@@ -516,14 +516,15 @@ class HuntingService
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wrestled a Toadstool off the back of a Giant Toad.', 'items/fungus/toadstool');
                 $this->inventoryService->petCollectsItem('Toadstool', $pet, $pet->getName() . ' wrestled this from a Giant Toad.', $activityLog);
             }
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
-
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% picked a fight with a Giant Toad, but lost.', '');
             $pet->increaseEsteem(-2);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
         }
 
         return $activityLog;
@@ -540,8 +541,6 @@ class HuntingService
 
         if($stealthSkill >= 10)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
-
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH ]);
             $pet->increaseEsteem(1);
 
@@ -553,11 +552,10 @@ class HuntingService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% snuck up on a Scarecrow, and picked its pockets... and also its ' . $bodyPart . '! ' . $pet->getName() . ' walked away with ' . $moneys . '~~m~~, and some ' . $itemName . '.', '');
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' stole this from a Scarecrow\'s ' . $bodyPart .'.', $activityLog);
             $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' stole this from a Scarecrow.');
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
         else if($brawlRoll >= 8)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
-
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
 
             if($this->squirrel3->rngNextInt(1, 2) === 1)
@@ -589,14 +587,15 @@ class HuntingService
                     $this->inventoryService->petCollectsItem('Rice', $pet, $pet->getName() . ' took this from a Rice Farm, after beating up its Scarecrow.', $activityLog);
                 }
             }
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
-
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to take out a Scarecrow, but lost.', '');
             $pet->increaseEsteem(-1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
         }
 
         return $activityLog;
@@ -609,8 +608,6 @@ class HuntingService
 
         if($pet->hasMerit(MeritEnum::GOURMAND) && $this->squirrel3->rngNextInt(1, 2) === 1)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
-
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' didn\'t even flinch, and swallowed the Onionboy whole! (Ah~! A true Gourmand!)', 'items/veggie/onion')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
             ;
@@ -621,30 +618,28 @@ class HuntingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
         }
         else if($pet->getTool() && $pet->getTool()->rangedOnly())
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
-
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' was able to defeat it from a distance thanks to their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . '!', 'items/veggie/onion');
             $this->inventoryService->petCollectsItem('Onion', $pet, 'The remains of an Onion Boy that ' . $pet->getName() . ' encountered.', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
         }
         else if($this->squirrel3->rngNextInt(1, $skill) >= 7)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
-
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' powered through it.', 'items/veggie/onion');
             $this->inventoryService->petCollectsItem('Onion', $pet, 'The remains of an Onion Boy that ' . $pet->getName() . ' encountered.', $activityLog);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, false);
-
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were overwhelming, and ' . $pet->getName() . ' fled.', '');
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $pet->increaseSafety(-2);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, false);
         }
 
         return $activityLog;
@@ -660,8 +655,6 @@ class HuntingService
 
         if($this->squirrel3->rngNextInt(1, $intSkill) <= 2 && $pet->getOwner()->getMoneys() >= 2)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
-
             $moneysLost = $this->squirrel3->rngNextInt(1, 2);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
             $this->transactionService->spendMoney($pet->getOwner(), $moneysLost, $pet->getName() . ' was outsmarted by a Thieving Magpie, who stole this money.', false);
@@ -672,12 +665,12 @@ class HuntingService
                 ->increaseSafety(-2)
             ;
 
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
+
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was outsmarted by a Thieving Magpie, and lost ' . $moneysLost . ' ' . ($moneysLost === 1 ? 'money' : 'moneys') . '.', '');
         }
         else if($this->squirrel3->rngNextInt(1, $dexSkill) >= 9)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
-
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
 
             $pet
@@ -715,14 +708,15 @@ class HuntingService
 
                 $this->inventoryService->petCollectsItem($item, $pet, 'Liberated from a Thieving Magpie.', $activityLog);
             }
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
-
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to take down a Thieving Magpie, but it got away.', '');
             $pet->increaseSafety(-1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
         }
 
         return $activityLog;
@@ -755,7 +749,6 @@ class HuntingService
 
                 $prizeItem = $this->itemRepository->findOneByName($prize);
 
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
                 $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt ' . '%pet:' . $pet->getId() . '.name%, but ' . $pet->getName() . ' was able to calm the spirit! Thankful, the spirit gives ' . $pet->getName() . ' ' . $prizeItem->getNameWithArticle() . '.', 'guilds/light-and-shadow');
                 $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' received this from a grateful Pirate Ghost.', $activityLog);
 
@@ -763,6 +756,8 @@ class HuntingService
                     ->increaseSafety(2)
                     ->increaseEsteem(3)
                 ;
+
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
 
                 return $activityLog;
             }
@@ -776,7 +771,6 @@ class HuntingService
             {
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
 
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
                 $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt ' . '%pet:' . $pet->getId() . '.name%, but ' . $pet->getName() . ' was able to dispel it (and got its ' . $prize . ')!', '');
                 $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' collected this from the remains of a Pirate Ghost.', $activityLog);
 
@@ -784,6 +778,8 @@ class HuntingService
                     ->increaseSafety(3)
                     ->increaseEsteem(2)
                 ;
+
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
 
                 return $activityLog;
             }
@@ -797,19 +793,20 @@ class HuntingService
                     'jumped into a hollow log'
                 ]);
 
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
                 $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt ' . '%pet:' . $pet->getId() . '.name%, but ' . $pet->getName() . ' ' . $hidSomehow . ', eluding the ghost!', '');
 
                 $pet->increaseEsteem(2);
+
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
 
                 return $activityLog;
             }
         }
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::HUNT, false);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out hunting, and got haunted by a Pirate Ghost! After harassing ' . $pet->getName() . ' for a while, the ghost became bored, and left.', '');
         $pet->increaseSafety(-3);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::HUNT, false);
 
         return $activityLog;
     }
@@ -828,8 +825,6 @@ class HuntingService
 
             if($this->squirrel3->rngNextInt(1, $skill) >= 15)
             {
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
-
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
 
                 $pet->getGuildMembership()->increaseReputation();
@@ -842,6 +837,8 @@ class HuntingService
                 $pet->increaseSafety(2);
                 $pet->increaseEsteem(3);
 
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
+
                 return $activityLog;
             }
             else
@@ -850,6 +847,7 @@ class HuntingService
                 $pet->increaseEsteem(-$this->squirrel3->rngNextInt(2, 3));
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(1, 3));
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
 
                 return $activityLog;
             }
@@ -861,8 +859,6 @@ class HuntingService
 
             if($this->squirrel3->rngNextInt(1, $skill) >= 15)
             {
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
-
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
 
                 $pet->getGuildMembership()->increaseReputation();
@@ -875,6 +871,8 @@ class HuntingService
                 $pet->increaseSafety(3);
                 $pet->increaseEsteem(2);
 
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
+
                 return $activityLog;
             }
             else
@@ -883,6 +881,7 @@ class HuntingService
                 $pet->increaseEsteem(-$this->squirrel3->rngNextInt(1, 3));
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 3));
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
 
                 return $activityLog;
             }
@@ -894,10 +893,6 @@ class HuntingService
 
         if($this->squirrel3->rngNextInt(1, $skill) >= 15)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
-
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
-
             $item = $this->itemRepository->findOneByName($loot);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Possessed Turkey! They fought hard, took ' . $item->getNameWithArticle() . ', and drove the creature away!', '');
@@ -905,15 +900,17 @@ class HuntingService
             $pet->increaseSafety(3);
             $pet->increaseEsteem(2);
 
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
+
             return $activityLog;
         }
-
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered and fought a Possessed Turkey, but was chased away by a flurry of kicks and pecks!', '');
         $pet->increaseEsteem(-$this->squirrel3->rngNextInt(1, 3));
         $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
 
         return $activityLog;
     }
@@ -929,8 +926,6 @@ class HuntingService
 
         if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY) && $pet->hasMerit(MeritEnum::SOOTHING_VOICE))
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
-
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Satyr, but remembered that Satyrs love music, so sang a song. The Satyr was so enthralled by ' . $pet->getName() . '\'s Soothing Voice, that it offered gifts before leaving in peace.', 'icons/activity-logs/drunk-satyr');
             $pet->increaseEsteem(1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::MUSIC ]);
@@ -940,13 +935,13 @@ class HuntingService
                 $this->inventoryService->petCollectsItem('Music Note', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
             else
                 $this->inventoryService->petCollectsItem('Plain Yogurt', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
         else if($musicSkill > $brawlRoll)
         {
             if($pet->hasMerit(MeritEnum::SOOTHING_VOICE))
             {
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
-
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Satyr, who upon hearing ' . $pet->getName() . '\'s voice, bade them sing. ' . $pet->getName() . ' did so; the Satyr was so enthralled by their soothing voice, that it offered gifts before leaving in peace.', 'icons/activity-logs/drunk-satyr');
                 $pet->increaseEsteem(1);
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::MUSIC ]);
@@ -956,11 +951,11 @@ class HuntingService
                     $this->inventoryService->petCollectsItem('Music Note', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
                 else
                     $this->inventoryService->petCollectsItem('Plain Yogurt', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
+
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
             }
             else if($musicSkill >= 15)
             {
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
-
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Satyr, who challenged ' . $pet->getName() . ' to a sing. It was surprised by ' . $pet->getName() . '\'s musical skill, and apologetically offered gifts before leaving in peace.', 'icons/activity-logs/drunk-satyr');
                 $pet->increaseEsteem(2);
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::MUSIC ]);
@@ -970,22 +965,21 @@ class HuntingService
                     $this->inventoryService->petCollectsItem('Music Note', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
                 else
                     $this->inventoryService->petCollectsItem('Plain Yogurt', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
+
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
             }
             else
             {
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
-
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Satyr, who challenged ' . $pet->getName() . ' to a sing. The Satyr quickly cut ' . $pet->getName() . ' off, complaining loudly, and leaving in a huff.', '');
                 $pet->increaseEsteem(-1);
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::MUSIC ]);
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
             }
         }
         else
         {
             if($brawlRoll >= 15)
             {
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
-
                 $pet->increaseSafety(3);
                 $pet->increaseEsteem(2);
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
@@ -1001,14 +995,15 @@ class HuntingService
                     $this->inventoryService->petCollectsItem('Plain Yogurt', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.', $activityLog);
                     $this->inventoryService->petCollectsItem('Talon', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.', $activityLog);
                 }
+
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
             }
             else
             {
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
-
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to fight a drunken Satyr, but the Satyr misinterpreted ' . $pet->getName() . '\'s intentions, and it started to get really weird, so ' . $pet->getName() . ' ran away.', 'icons/activity-logs/drunk-satyr');
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(1, 5));
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
             }
         }
 
@@ -1032,8 +1027,6 @@ class HuntingService
 
         if($stealthRoll >= 15 || $brawlRoll >= 17)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
-
             $pet->increaseSafety(1);
             $pet->increaseEsteem(2);
 
@@ -1066,11 +1059,11 @@ class HuntingService
                 if($stealthRoll + $brawlRoll >= 15 + 17)
                     $this->inventoryService->petCollectsItem('Paper', $pet, $pet->getName() . ' got this by unfolding a Paper Golem.', $activityLog);
             }
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
-
             $pet->increaseFood(-1);
             $pet->increaseEsteem(-1);
             $pet->increaseSafety(-1);
@@ -1092,6 +1085,8 @@ class HuntingService
             }
             else
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to unfold a Paper Golem, but got a nasty paper cut!', '');
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
         }
 
         return $activityLog;
@@ -1108,8 +1103,6 @@ class HuntingService
 
         if($this->squirrel3->rngNextInt(1, $skill) >= 18)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
-
             $pet->increaseSafety(1);
             $pet->increaseEsteem(2);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL, PetSkillEnum::NATURE ]);
@@ -1129,11 +1122,11 @@ class HuntingService
 
                 $this->inventoryService->petCollectsItem($extraItem, $pet, $pet->getName() . ' pulled this out of a Leshy Demon\'s root cage.', $activityLog);
             }
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
-
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
 
             if($getExtraItem)
@@ -1148,6 +1141,8 @@ class HuntingService
                 $pet->increaseEsteem(-1);
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Leshy Demon, and forced to flee!', '');
             }
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
         }
 
         return $activityLog;
@@ -1177,8 +1172,6 @@ class HuntingService
 
         if($this->squirrel3->rngNextInt(1, $skill) >= 18)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
-
             $pet->increaseSafety(1);
             $pet->increaseEsteem(2);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL, PetSkillEnum::NATURE ]);
@@ -1199,11 +1192,11 @@ class HuntingService
 
             if($gobbleGobble !== null)
                 $this->inventoryService->petCollectsItem('Turkey King', $pet, $pet->getName() . ' got this from defeating a Turkeydragon.', $activityLog);
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
-
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
 
             if($getExtraItem)
@@ -1229,6 +1222,8 @@ class HuntingService
                 else
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Turkeydragon, and forced to flee!', '');
             }
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
         }
 
         if($gobbleGobble !== null)
@@ -1258,8 +1253,6 @@ class HuntingService
 
             $prize = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray($possibleLoot));
 
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
-
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out hunting, and encountered an Egg Salad Monstrosity! After a grueling (and sticky) battle, ' . $pet->getName() . ' took a huge bite out of the monster, slaying it! (Ah~! A true Gourmand!) Finally, they dug ' . $prize->getNameWithArticle() . ' out of the lumpy corpse, and brought it home.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
             ;
@@ -1271,6 +1264,8 @@ class HuntingService
                 ->increaseSafety(4)
                 ->increaseEsteem(3)
             ;
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
         else if($this->squirrel3->rngNextInt(1, $skill) >= 19)
         {
@@ -1281,7 +1276,6 @@ class HuntingService
                 $this->squirrel3->rngNextFromArray($possibleLoot),
             ];
 
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out hunting, and encountered an Egg Salad Monstrosity! After a grueling (and sticky) battle, ' . $pet->getName() . ' won, and claimed its ' . ArrayFunctions::list_nice($loot) . '!', '');
 
             foreach($loot as $itemName)
@@ -1290,13 +1284,15 @@ class HuntingService
             $pet->increaseSafety(4);
             $pet->increaseEsteem(3);
 
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::HUNT, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out hunting, and encountered an Egg Salad Monstrosity, which chased ' . $pet->getName() . ' away!', '');
             $pet->increaseSafety(-3);
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::HUNT, false);
         }
 
         return $activityLog;

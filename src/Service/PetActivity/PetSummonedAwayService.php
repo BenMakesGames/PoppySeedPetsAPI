@@ -45,8 +45,6 @@ class PetSummonedAwayService
 
         $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
-
         switch($this->squirrel3->rngNextInt(1, 4))
         {
             case 1:
@@ -62,6 +60,8 @@ class PetSummonedAwayService
                 $activityLog = $this->doSummonedToAssistWithGathering($petWithSkills);
                 break;
         }
+
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         if($activityLog)
         {

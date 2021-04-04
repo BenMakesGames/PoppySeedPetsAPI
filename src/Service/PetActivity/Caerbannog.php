@@ -82,8 +82,6 @@ class Caerbannog
 
         if($roll >= 10)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
-
             $loot[] = $this->rng->rngNextFromArray($possibleLoot);
             $exp = 2;
 
@@ -122,16 +120,16 @@ class Caerbannog
             $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ]);
             $pet->increaseEsteem(ceil($exp / 2) * 2);
             $activityLog = $this->responseService->createActivityLog($pet, $petName . ' went to the Caerbannog Cave, and encountered one of the terrifying creatures living there! ' . $petName . ' proved victorious, returning home with ' . ArrayFunctions::list_nice($loot) . '!', 'items/key/carrot');
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
-
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
             $pet->increaseSafety(-2);
             $lootItem = $this->itemRepository->findOneByName($loot[0]);
 
             $activityLog = $this->responseService->createActivityLog($pet, $petName . ' went to the Caerbannog Cave, and encountered one of the terrifying creatures living there, and was forced to flee! (They grabbed ' . $lootItem->getNameWithArticle() . ' on their way out, at least!)', 'items/key/carrot');
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
         }
 
         foreach($loot as $lootName)

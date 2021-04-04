@@ -131,25 +131,26 @@ class GenericAdventureService
             $possibleRewards = [
                 [ 'a ', 'Crooked Stick' ],
                 [ 'some ', 'Spicy Peps' ],
-                [ 'some ', 'Mixed Nuts' ],
+                [ '', 'Ants on a Log' ],
             ];
 
             if($level >= 5)
             {
                 $possibleRewards[] = [ 'a ', 'Sand Dollar' ];
-                $possibleRewards[] = [ '', 'Ants on a Log' ];
+                $possibleRewards[] = [ 'some ', 'Mixed Nuts' ];
             }
 
             if($level >= 10)
             {
-                $possibleRewards[] = [ '', 'Iron Ore' ];
+                $possibleRewards[] = [ 'a ', 'Fishkebab' ];
                 $possibleRewards[] = [ 'a packet of ', 'Instant Ramen (Dry)' ];
             }
 
             if($level >= 15)
             {
                 $possibleRewards[] = [ 'a ', 'Jar of Fireflies' ];
-                $possibleRewards[] = [ 'a ', 'Fishkebab' ];
+                $possibleRewards[] = [ '', 'Iron Ore' ];
+                $possibleRewards[] = [ 'some ', 'Variety' ];
             }
 
             if($level >= 20)

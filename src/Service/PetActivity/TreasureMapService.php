@@ -72,7 +72,6 @@ class TreasureMapService
 
         if($followMapCheck < 15)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 90), PetActivityStatEnum::GATHER, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to decipher Cetgueli\'s Treasure Map, but couldn\'t make sense of it.', 'icons/activity-logs/confused');
             $pet->increaseEsteem(-1);
@@ -82,10 +81,11 @@ class TreasureMapService
                 $activityLog->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% put the treasure map down.');
                 $this->inventoryService->unequipPet($pet);
             }
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 90), PetActivityStatEnum::GATHER, false);
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 90), PetActivityStatEnum::GATHER, true);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE ]);
             $pet->increaseEsteem(5);
 
@@ -97,6 +97,8 @@ class TreasureMapService
             $pet->setTool(null);
 
             $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' found this by following Cetgueli\'s Treasure Map!', $activityLog);
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 90), PetActivityStatEnum::GATHER, true);
         }
 
         if($activityLog)
@@ -113,7 +115,6 @@ class TreasureMapService
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
         $pet->increaseEsteem(5);
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found that Thieving Magpie, and offered it a "Gold" Idol in exchange for something else. The magpie eagerly accepted.', 'items/treasure/magpie-deal')
@@ -124,6 +125,8 @@ class TreasureMapService
         $pet->setTool(null);
 
         $this->inventoryService->petCollectsItem('Magpie\'s Deal', $pet, $pet->getName() . ' got this from a Thieving Magpie in exchange for a "Gold" Idol!', $activityLog);
+
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
 
         if($activityLog)
             $activityLog->setChanges($changes->compare($pet));
@@ -144,8 +147,6 @@ class TreasureMapService
         $floor = NumberFunctions::clamp($floor, 1, 100);
 
         $keybladeName = $pet->getTool()->getItem()->getName();
-
-        $this->petExperienceService->spendTime($pet, 20 + floor($floor / 1.8), PetActivityStatEnum::OTHER, null);
 
         if($floor === 1)
         {
@@ -205,6 +206,8 @@ class TreasureMapService
             $pet->setTool(null);
         }
 
+        $this->petExperienceService->spendTime($pet, 20 + floor($floor / 1.8), PetActivityStatEnum::OTHER, null);
+
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY + $floor)
             ->setChanges($changes->compare($pet))
@@ -218,7 +221,6 @@ class TreasureMapService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
         if($pet->getTool()->isGrayscaling())
@@ -239,13 +241,15 @@ class TreasureMapService
         $this->em->remove($pet->getTool());
         $pet->setTool($newInventory);
 
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+
         return $activityLog;
     }
 
     public function doEggplantCurse(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
 
         $agk = $this->squirrel3->rngNextFromArray([ 'Agk!', 'Oh dang!', 'Noooo!', 'Quel dommage!', 'Welp!' ]);
 
@@ -273,8 +277,8 @@ class TreasureMapService
             '"Acorn Fugu"'
         ]);
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
 
         if($pet->getSpiritCompanion() && $pet->getSpiritCompanion()->getStar() === SpiritCompanionStarEnum::SAGITTARIUS)
         {
@@ -294,16 +298,15 @@ class TreasureMapService
     {
         if(!$pet->hasMerit(MeritEnum::PROTOCOL_7))
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(15, 30), PetActivityStatEnum::PROTOCOL_7, false);
-
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% didn\'t understand what they were supposed to do with the ' . $pet->getTool()->getItem()->getName() . ', so put it down...', '');
 
             $this->inventoryService->unequipPet($pet);
 
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(15, 30), PetActivityStatEnum::PROTOCOL_7, false);
+
             return $activityLog;
         }
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
 
         $this->em->remove($pet->getTool());
@@ -318,14 +321,14 @@ class TreasureMapService
         ;
         $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this in Project-E by using a Diffie-H Key.', $activityLog);
 
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+
         return $activityLog;
     }
 
     public function doFluffmongerTrade(Pet $pet): PetActivityLog
     {
         $changes = new PetChanges($pet);
-
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         if($this->inventoryService->loseItem('Fluff', $pet->getOwner(), LocationEnum::HOME, 1) === 1)
         {
@@ -411,6 +414,8 @@ class TreasureMapService
             // didn't have fluff
             $this->inventoryService->unequipPet($pet);
         }
+
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         $activityLog->setChanges($changes->compare($pet));
 
