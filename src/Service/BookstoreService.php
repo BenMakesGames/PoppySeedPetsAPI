@@ -166,7 +166,7 @@ class BookstoreService
             'Cooking 101' => 15,
         ];
 
-        $flowersPurchased = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::FLOWERBOMBS_PURCHASED ]);
+        $flowersPurchased = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => 'Flowerbombs Purchased' ]);
 
         if($flowersPurchased && $flowersPurchased->getValue() > 0)
             $bookPrices['Book of Flowers'] = 15;
