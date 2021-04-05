@@ -73,7 +73,7 @@ class PetExperienceService
 
             if($pet->getSkills()->getStat($statToLevel) >= 20)
             {
-                $newItem = $this->inventoryService->petCollectsItem('Skill Scroll: ' . $statToLevel, $pet, ActivityHelpers::PetName($pet) . ', a ' . $statToLevel . '-master, produced this scroll.', null);
+                $newItem = $this->inventoryService->petCollectsItem('Skill Scroll: ' . $statToLevel, $pet, $pet->getName() . ', a ' . $statToLevel . '-master, produced this scroll.', null);
                 $newItem->setLockedToOwner(true);
             }
             else
