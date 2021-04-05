@@ -91,7 +91,9 @@ class BookstoreController extends PoppySeedPetsController
         $cost = $bookPrices[$book->getName()];
         $transactionService->spendMoney($user, $cost, 'You bought ' . $book->getName() . ' from the Bookstore.');
 
-        $inventoryService->receiveItem($book, $user, null, $user->getName() . ' bought this from the Book Store.', LocationEnum::HOME);
+        $isLocked = $book->getName() === 'Renaming Scroll';
+
+        $inventoryService->receiveItem($book, $user, null, $user->getName() . ' bought this from the Book Store.', LocationEnum::HOME, $isLocked);
 
         $em->flush();
 

@@ -501,6 +501,11 @@ class InventoryService
             return $itemIsString ? $this->itemRepository->findOneByName($item) : $item;
     }
 
+    public function getItem($item): Item
+    {
+        return is_string($item) ? $this->itemRepository->findOneByName($item) : $item;
+    }
+
     /**
      * @param Item|string $item
      * @throws EnumInvalidValueException

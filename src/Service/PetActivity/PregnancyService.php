@@ -197,8 +197,6 @@ class PregnancyService
 
         $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::GAVE_BIRTH);
 
-        $this->inventoryService->receiveItem('Renaming Scroll', $pet->getOwner(), $pet->getOwner(), 'You received this when ' . $baby->getName() . ' was born.', LocationEnum::HOME);
-
         $pet->setPregnancy(null);
 
         $this->em->remove($pregnancy);
@@ -217,7 +215,10 @@ class PregnancyService
         if($pet->getMom()) $pet->getMom()->setIsGrandparent(true);
         if($pet->getDad()) $pet->getDad()->setIsGrandparent(true);
 
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::PETS_BIRTHED);
+        $petsBirthedStat = $this->userStatsRepository->incrementStat($user, UserStatEnum::PETS_BIRTHED);
+
+        if($petsBirthedStat->getValue() === 1)
+            $this->inventoryService->receiveItem('Renaming Scroll', $pet->getOwner(), $pet->getOwner(), 'You received this when ' . $baby->getName() . ' was born.', LocationEnum::HOME, false);
     }
 
     private const CANONICALIZED_FORBIDDEN_COMBINED_NAMES = [
