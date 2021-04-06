@@ -199,6 +199,12 @@ class PregnancyService
 
         $pet->setPregnancy(null);
 
+        // grandparents get cool stuff :P
+        if($pregnancy->getParent()->getMom()) $pregnancy->getParent()->getMom()->setIsGrandparent(true);
+        if($pregnancy->getParent()->getDad()) $pregnancy->getParent()->getDad()->setIsGrandparent(true);
+        if($pregnancy->getOtherParent()->getMom()) $pregnancy->getOtherParent()->getMom()->setIsGrandparent(true);
+        if($pregnancy->getOtherParent()->getDad()) $pregnancy->getOtherParent()->getDad()->setIsGrandparent(true);
+
         $this->em->remove($pregnancy);
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::OTHER, null);
@@ -210,10 +216,6 @@ class PregnancyService
             ->increaseSafety($this->squirrel3->rngNextInt(8, 16))
             ->increaseFood(-$this->squirrel3->rngNextInt(8, 16))
         ;
-
-        // grandparents get cool stuff :P
-        if($pet->getMom()) $pet->getMom()->setIsGrandparent(true);
-        if($pet->getDad()) $pet->getDad()->setIsGrandparent(true);
 
         $petsBirthedStat = $this->userStatsRepository->incrementStat($user, UserStatEnum::PETS_BIRTHED);
 
