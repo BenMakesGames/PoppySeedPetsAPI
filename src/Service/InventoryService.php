@@ -369,7 +369,7 @@ class InventoryService
             }
         }
 
-        if($item->getFood() !== null && count($pet->getLunchboxItems()) === 0 && $this->squirrel3->rngNextInt(1, 20) < 10 - $pet->getFood())
+        if($item->getFood() !== null && count($pet->getLunchboxItems()) === 0 && $this->squirrel3->rngNextInt(1, 20) < 10 - $pet->getFood() - $pet->getJunk() / 2)
         {
             if($this->doEat($pet, new FoodWithSpice($item, $spice), $activityLog))
                 return null;
