@@ -37,7 +37,7 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
         $errorString = (string)$exception->getStatusCode();
         $lastChar = substr($errorString, -1);
 
-        return 'Generic ' . $errorString . str_repeat($lastChar, mt_rand(9, 13)) . '!!1!';
+        return 'Generic ' . $errorString . str_repeat($lastChar, mt_rand(6, 10)) . '!!1!';
     }
 
     public function onKernelException(ExceptionEvent $event)
@@ -55,7 +55,7 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
                 if($e->getMessage())
                     $message = $e->getMessage();
                 else
-                    $message = 'Generic ' . $this->getGenericErrorCodeString($e) . ' Reload and try again; if the problem persists, let Ben know, so he can fix it! :P';
+                    $message = $this->getGenericErrorCodeString($e) . ' Reload and try again; if the problem persists, let Ben know, so he can fix it! :P';
 
                 $event->setResponse($this->responseService->error(
                     $e->getStatusCode(),
