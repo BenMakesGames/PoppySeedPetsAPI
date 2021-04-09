@@ -50,6 +50,10 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
             {
                 $event->setResponse($this->responseService->error(470, [ 'House hours must be run before you can continue playing.' ]));
             }
+            else if($e->getStatusCode() === 429)
+            {
+                $event->setResponse($this->responseService->error(429, [ "You've made an awful lot of requests recently! Too many to be human! (The game thinks you're a bot; if you're not a bot, please let Ben know! https://docs.google.com/forms/d/e/1FAIpQLSczeBLNsktkSBbPZjyooHw5sEVJOBimJDS6xgEgIgFJvgqM8A/viewform?usp=sf_link )" ]));
+            }
             else
             {
                 if($e->getMessage())
