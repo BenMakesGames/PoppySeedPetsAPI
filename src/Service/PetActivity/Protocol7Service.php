@@ -16,6 +16,7 @@ use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\GuildRepository;
 use App\Repository\ItemRepository;
+use App\Repository\PetQuestRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -32,11 +33,12 @@ class Protocol7Service
     private $guildService;
     private $itemRepository;
     private $squirrel3;
+    private $petQuestRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, GuildService $guildService, ItemRepository $itemRepository,
-        Squirrel3 $squirrel3
+        Squirrel3 $squirrel3, PetQuestRepository $petQuestRepository
     )
     {
         $this->responseService = $responseService;
@@ -46,6 +48,7 @@ class Protocol7Service
         $this->guildService = $guildService;
         $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
+        $this->petQuestRepository = $petQuestRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -74,12 +77,8 @@ class Protocol7Service
             case 5:
             case 6:
             case 7:
-                if(
-                    $pet->hasMerit(MeritEnum::BEHATTED) &&
-                    $petWithSkills->getScience()->getTotal() >= 10 &&
-                    $this->squirrel3->rngNextInt(1, 100) <= $petWithSkills->getScience()->getTotal()
-                )
-                    $activityLog = $this->encounterAnnabellastasia($pet);
+                if($pet->hasMerit(MeritEnum::BEHATTED) && $petWithSkills->getScience()->getTotal() >= 10)
+                    $activityLog = $this->encounterAnnabellastasia($petWithSkills);
                 else
                     $activityLog = $this->encounterGarbageCollector($petWithSkills);
                 break;
@@ -276,8 +275,18 @@ class Protocol7Service
         return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E. Correspondence had some message-delivery jobs, so %pet:' . $pet->getId() . '.name% picked a couple up, earning ' . $moneys . '~~m~~ for their trouble.', '');
     }
 
-    private function encounterAnnabellastasia(Pet $pet): PetActivityLog
+    private function encounterAnnabellastasia(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $pet = $petWithSkills->getPet();
+        $now = new \DateTimeImmutable();
+
+        $petQuest = $this->petQuestRepository->findOrCreate($pet, 'Next Annabellastasia Encounter', $now->format('Y-m-d'));
+
+        if($petQuest && $petQuest->getValue() > $now->format('Y-m-d'))
+            return $this->encounterGarbageCollector($petWithSkills);
+
+        $petQuest->setValue($now->modify('+' . $this->squirrel3->rngNextInt(20, 40) . ' days')->format('Y-m-d'));
+
         $activityLog = $this->responseService->createActivityLog($pet, 'In Project-E, ' . '%pet:' . $pet->getId() . '.name% ran into a girl named Annabellastasia, who handed %pet:' . $pet->getId() . '.name% a Black Bow.', 'items/hat/bow-black')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
         ;

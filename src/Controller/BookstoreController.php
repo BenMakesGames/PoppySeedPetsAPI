@@ -2,11 +2,8 @@
 namespace App\Controller;
 
 use App\Entity\Item;
-use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
-use App\Repository\ItemRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\BookstoreService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -91,9 +88,7 @@ class BookstoreController extends PoppySeedPetsController
         $cost = $bookPrices[$book->getName()];
         $transactionService->spendMoney($user, $cost, 'You bought ' . $book->getName() . ' from the Bookstore.');
 
-        $isLocked = $book->getName() === 'Renaming Scroll';
-
-        $inventoryService->receiveItem($book, $user, null, $user->getName() . ' bought this from the Book Store.', LocationEnum::HOME, $isLocked);
+        $inventoryService->receiveItem($book, $user, null, $user->getName() . ' bought this from the Book Store.', LocationEnum::HOME, true);
 
         $em->flush();
 

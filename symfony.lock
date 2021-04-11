@@ -96,6 +96,9 @@
     "fgrosse/phpasn1": {
         "version": "v2.1.1"
     },
+    "friendsofphp/proxy-manager-lts": {
+        "version": "v1.0.3"
+    },
     "guzzlehttp/guzzle": {
         "version": "6.5.5"
     },

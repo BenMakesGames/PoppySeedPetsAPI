@@ -725,7 +725,8 @@ class TraderService
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Deed for Greenhouse Plot'), 1) ],
                 "Oh, fun, a greenhouse! What kind of Kelp will you be gr-- oh. Right, I suppose you'll just be growing Landweed, and such.\n\nWell.\n\nHave fun with that, I suppose.",
                 $user,
-                $quantities
+                $quantities,
+                true
             ),
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Moon Pearl'), 1) ],
@@ -830,7 +831,8 @@ class TraderService
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Money Sink'), 1) ],
                 'The Museum\'s curator insisted I make this offer...',
                 $user,
-                $quantities
+                $quantities,
+                true
             ),
 
             TraderOffer::createTradeOffer(
@@ -838,7 +840,8 @@ class TraderService
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Garbage Disposal'), 1) ],
                 'The Museum\'s curator insisted I make this offer...',
                 $user,
-                $quantities
+                $quantities,
+                true
             ),
 
             TraderOffer::createTradeOffer(
@@ -854,8 +857,7 @@ class TraderService
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('3D Printer'), 1) ],
                 'Please use this responsibly, human. The amount of Plastic ending up in the oceans these days is a bit troubling.',
                 $user,
-                $quantities,
-                true
+                $quantities
             ),
 
             TraderOffer::createTradeOffer(
@@ -866,7 +868,8 @@ class TraderService
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Submarine'), 1) ],
                 'Derelict submarines sometimes drift into Tell Samarzhoustia. We fix \'em up, and sell them to land-dwellers such as yourself! Have fun!',
                 $user,
-                $quantities
+                $quantities,
+                true
             ),
 
             TraderOffer::createTradeOffer(
