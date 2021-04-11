@@ -32,6 +32,9 @@
     "doctrine/dbal": {
         "version": "2.10.3"
     },
+    "doctrine/deprecations": {
+        "version": "v0.5.3"
+    },
     "doctrine/doctrine-bundle": {
         "version": "2.0",
         "recipe": {
@@ -353,6 +356,9 @@
             "./config/packages/test/monolog.yaml"
         ]
     },
+    "symfony/options-resolver": {
+        "version": "v5.2.4"
+    },
     "symfony/orm-pack": {
         "version": "v2.0.0"
     },
@@ -409,6 +415,9 @@
     },
     "symfony/proxy-manager-bridge": {
         "version": "v4.4.13"
+    },
+    "symfony/rate-limiter": {
+        "version": "v5.2.6"
     },
     "symfony/routing": {
         "version": "5.1",

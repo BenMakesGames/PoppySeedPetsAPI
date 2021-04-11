@@ -1,6 +1,7 @@
 <?php
 namespace App\EventSubscriber;
 
+use App\Annotations\DefaultRateLimiter;
 use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\User;
 use App\Service\HouseService;
@@ -14,8 +15,10 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Security\Core\Security;
 
 class ControllerActionSubscriber implements EventSubscriberInterface
@@ -32,21 +35,47 @@ class ControllerActionSubscriber implements EventSubscriberInterface
     private $cache;
     private $houseService;
     private $annotationReader;
+    private $defaultRateLimiterFactory;
 
-    public function __construct(Security $security, AdapterInterface $cache, HouseService $houseService, Reader $annotationReader)
+    public function __construct(
+        Security $security, AdapterInterface $cache, HouseService $houseService, Reader $annotationReader,
+        RateLimiterFactory $pspDefaultLimiter
+    )
     {
         $this->security = $security;
         $this->cache = $cache;
         $this->houseService = $houseService;
         $this->annotationReader = $annotationReader;
+        $this->defaultRateLimiterFactory = $pspDefaultLimiter;
     }
 
     public function beforeFilter(ControllerEvent $event)
     {
         if(is_array($event->getController()))
+        {
+            $this->checkRateLimiters($event);
             $this->checkHouseHours($event);
+        }
 
         $this->convertJsonStringToArray($event);
+    }
+
+    private function checkRateLimiters(ControllerEvent $event)
+    {
+        /** @var User $user */
+        $user = $this->security->getUser();
+
+        if(!$user)
+            return;
+
+        $limiter = $this->defaultRateLimiterFactory->create($user->getId());
+
+        // the argument of consume() is the number of tokens to consume
+        // and returns an object of type Limit
+        if (false === $limiter->consume(1)->isAccepted()) {
+            throw new TooManyRequestsHttpException();
+        }
+
     }
 
     private function checkHouseHours(ControllerEvent $event)

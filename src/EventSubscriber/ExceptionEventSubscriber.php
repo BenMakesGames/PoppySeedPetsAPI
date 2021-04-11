@@ -37,7 +37,7 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
         $errorString = (string)$exception->getStatusCode();
         $lastChar = substr($errorString, -1);
 
-        return 'Generic ' . $errorString . str_repeat($lastChar, mt_rand(9, 13)) . '!!1!';
+        return 'Generic ' . $errorString . str_repeat($lastChar, mt_rand(6, 10)) . '!!1!';
     }
 
     public function onKernelException(ExceptionEvent $event)
@@ -50,12 +50,16 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
             {
                 $event->setResponse($this->responseService->error(470, [ 'House hours must be run before you can continue playing.' ]));
             }
+            else if($e->getStatusCode() === 429)
+            {
+                $event->setResponse($this->responseService->error(429, [ "You've made an awful lot of requests recently! Too many to be human! (The game thinks you're a bot; if you're not a bot, please let Ben know! https://docs.google.com/forms/d/e/1FAIpQLSczeBLNsktkSBbPZjyooHw5sEVJOBimJDS6xgEgIgFJvgqM8A/viewform?usp=sf_link )" ]));
+            }
             else
             {
                 if($e->getMessage())
                     $message = $e->getMessage();
                 else
-                    $message = 'Generic ' . $this->getGenericErrorCodeString($e) . ' Reload and try again; if the problem persists, let Ben know, so he can fix it! :P';
+                    $message = $this->getGenericErrorCodeString($e) . ' Reload and try again; if the problem persists, let Ben know, so he can fix it! :P';
 
                 $event->setResponse($this->responseService->error(
                     $e->getStatusCode(),
