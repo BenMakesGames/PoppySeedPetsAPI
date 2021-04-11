@@ -74,7 +74,11 @@ class Protocol7Service
             case 5:
             case 6:
             case 7:
-                if($pet->hasMerit(MeritEnum::BEHATTED) && $petWithSkills->getScience()->getTotal() >= 10 && $this->squirrel3->rngNextInt(1, 100) <= $petWithSkills->getScience()->getTotal())
+                if(
+                    $pet->hasMerit(MeritEnum::BEHATTED) &&
+                    $petWithSkills->getScience()->getTotal() >= 10 &&
+                    $this->squirrel3->rngNextInt(1, 100) <= $petWithSkills->getScience()->getTotal()
+                )
                     $activityLog = $this->encounterAnnabellastasia($pet);
                 else
                     $activityLog = $this->encounterGarbageCollector($petWithSkills);
