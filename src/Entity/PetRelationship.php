@@ -28,14 +28,14 @@ class PetRelationship
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Pet", inversedBy="petRelationships")
+     * @ORM\ManyToOne(targetEntity=Pet::class, inversedBy="petRelationships")
      * @ORM\JoinColumn(nullable=false)
      * @var Pet
      */
     private $pet;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Pet")
+     * @ORM\ManyToOne(targetEntity=Pet::class)
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"petFriend"})
      */

@@ -23,7 +23,7 @@ class StatusEffect
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Pet", inversedBy="statusEffects")
+     * @ORM\ManyToOne(targetEntity=Pet::class, inversedBy="statusEffects")
      * @ORM\JoinColumn(nullable=false)
      */
     private $pet;

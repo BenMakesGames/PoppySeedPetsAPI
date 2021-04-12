@@ -78,7 +78,7 @@ class PetSkills
     private $science = 0;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="skills")
+     * @ORM\OneToOne(targetEntity=Pet::class, mappedBy="skills")
      */
     private $pet;
 

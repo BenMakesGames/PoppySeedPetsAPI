@@ -19,7 +19,7 @@ class Greenhouse
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="greenhouse", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=User::class, inversedBy="greenhouse", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $owner;

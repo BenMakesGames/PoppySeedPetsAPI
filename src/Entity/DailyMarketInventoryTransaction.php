@@ -30,7 +30,7 @@ class DailyMarketInventoryTransaction
     private $price;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Item")
+     * @ORM\ManyToOne(targetEntity=Item::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private $item;

@@ -23,7 +23,7 @@ class PetActivityLog
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Pet")
+     * @ORM\ManyToOne(targetEntity=Pet::class)
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"petActivityLogAndPublicPet"})
      */
@@ -65,7 +65,7 @@ class PetActivityLog
     private $viewed = false;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Item")
+     * @ORM\ManyToOne(targetEntity=Item::class)
      * @Groups({"petActivityLogAndPublicPet"})
      */
     private $equippedItem;

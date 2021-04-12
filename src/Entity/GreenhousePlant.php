@@ -19,7 +19,7 @@ class GreenhousePlant
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Plant")
+     * @ORM\ManyToOne(targetEntity=Plant::class)
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"greenhousePlant"})
      */
@@ -36,7 +36,7 @@ class GreenhousePlant
     private $lastInteraction;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="greenhousePlants")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="greenhousePlants")
      * @ORM\JoinColumn(nullable=false)
      */
     private $owner;

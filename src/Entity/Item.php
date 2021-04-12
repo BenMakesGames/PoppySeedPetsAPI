@@ -73,7 +73,7 @@ class Item
     private $museumDonations;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Inventory", mappedBy="item")
+     * @ORM\OneToMany(targetEntity=Inventory::class, mappedBy="item")
      */
     private $inventory;
 

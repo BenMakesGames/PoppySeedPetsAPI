@@ -17,13 +17,13 @@ class UserFollowing
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="following")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="following")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="followedBy")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="followedBy")
      * @ORM\JoinColumn(nullable=false)
      */
     private $following;

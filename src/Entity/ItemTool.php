@@ -130,12 +130,12 @@ class ItemTool
     private $isRanged = false;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Item")
+     * @ORM\ManyToOne(targetEntity=Item::class)
      */
     private $whenGather;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Item")
+     * @ORM\ManyToOne(targetEntity=Item::class)
      */
     private $whenGatherAlsoGather;
 

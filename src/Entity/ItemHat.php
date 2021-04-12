@@ -48,7 +48,7 @@ class ItemHat
     private $headAngleFixed = 0;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Item", mappedBy="hat")
+     * @ORM\OneToOne(targetEntity=Item::class, mappedBy="hat")
      */
     private $item;
 

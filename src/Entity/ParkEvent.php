@@ -21,7 +21,7 @@ class ParkEvent
     private $id;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Pet")
+     * @ORM\ManyToMany(targetEntity=Pet::class)
      * @Groups({"parkEvent"})
      */
     private $participants;

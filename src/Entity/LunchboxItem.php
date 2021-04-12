@@ -18,13 +18,13 @@ class LunchboxItem
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Pet", inversedBy="lunchboxItems")
+     * @ORM\ManyToOne(targetEntity=Pet::class, inversedBy="lunchboxItems")
      * @ORM\JoinColumn(nullable=false)
      */
     private $pet;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Inventory", inversedBy="lunchboxItem")
+     * @ORM\OneToOne(targetEntity=Inventory::class, inversedBy="lunchboxItem")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"myPet"})
      */

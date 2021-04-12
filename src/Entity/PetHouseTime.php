@@ -23,7 +23,7 @@ class PetHouseTime
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Pet", inversedBy="houseTime", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=Pet::class, inversedBy="houseTime", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $pet;

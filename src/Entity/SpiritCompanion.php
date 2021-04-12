@@ -60,7 +60,7 @@ class SpiritCompanion
     private $image;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="spiritCompanion")
+     * @ORM\OneToOne(targetEntity=Pet::class, mappedBy="spiritCompanion")
      * @Groups({"spiritCompanionPublicProfile"})
      */
     private $pet;

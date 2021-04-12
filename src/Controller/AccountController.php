@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\User;
 use App\Entity\UserNotificationPreferences;
+use App\Entity\UserStyle;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
@@ -19,6 +20,7 @@ use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
+use App\Repository\UserStyleRepository;
 use App\Service\CalendarService;
 use App\Service\Filter\UserFilterService;
 use App\Service\InventoryService;
@@ -152,7 +154,8 @@ class AccountController extends PoppySeedPetsController
      */
     public function logIn(
         Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $userPasswordEncoder,
-        SessionService $sessionService, EntityManagerInterface $em, ResponseService $responseService
+        SessionService $sessionService, EntityManagerInterface $em, ResponseService $responseService,
+        UserStyleRepository $userStyleRepository
     )
     {
         $email = $request->request->get('email');
@@ -192,7 +195,11 @@ class AccountController extends PoppySeedPetsController
         $em->flush();
 
         $responseService->setSessionId($session->getSessionId());
-        return $responseService->success();
+
+        return $responseService->success(
+            [ 'currentTheme' => $userStyleRepository->findCurrent($user) ],
+            [ SerializationGroupEnum::MY_STYLE ]
+        );
     }
 
     /**
@@ -271,7 +278,9 @@ class AccountController extends PoppySeedPetsController
      * @Route("", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function getAccount(ResponseService $responseService, EntityManagerInterface $em)
+    public function getAccount(
+        ResponseService $responseService, EntityManagerInterface $em, UserStyleRepository $userStyleRepository
+    )
     {
         $user = $this->getUser();
 
@@ -281,7 +290,10 @@ class AccountController extends PoppySeedPetsController
             $em->flush();
         }
 
-        return $responseService->success();
+        return $responseService->success(
+            [ 'currentTheme' => $userStyleRepository->findCurrent($user) ],
+            [ SerializationGroupEnum::MY_STYLE ]
+        );
     }
 
     /**

@@ -21,7 +21,7 @@ class HollowEarthPlayer
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="hollowEarthPlayer")
+     * @ORM\OneToOne(targetEntity=User::class, inversedBy="hollowEarthPlayer")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
@@ -45,7 +45,7 @@ class HollowEarthPlayer
     private $movesRemaining = 0;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Pet")
+     * @ORM\OneToOne(targetEntity=Pet::class)
      * @ORM\JoinColumn(nullable=true)
      * @Groups({"hollowEarth"})
      */

@@ -18,14 +18,14 @@ class MuseumItem
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\ManyToOne(targetEntity=User::class)
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"museum"})
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Item", inversedBy="museumDonations")
+     * @ORM\ManyToOne(targetEntity=Item::class, inversedBy="museumDonations")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"museum"})
      */
@@ -44,7 +44,7 @@ class MuseumItem
     private $comments = [];
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\ManyToOne(targetEntity=User::class)
      * @Groups({"museum"})
      */
     private $createdBy;

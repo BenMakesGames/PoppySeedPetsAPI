@@ -19,7 +19,7 @@ class PushSubscription
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="pushSubscriptions")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="pushSubscriptions")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;

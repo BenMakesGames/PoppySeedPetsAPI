@@ -35,14 +35,14 @@ class Inventory
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Item", inversedBy="inventory")
+     * @ORM\ManyToOne(targetEntity=Item::class, inversedBy="inventory")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "greenhouseFertilizer", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "petGroupDetails", "dragonTreasure"})
      */
     private $item;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\ManyToOne(targetEntity=User::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private $owner;
@@ -66,13 +66,13 @@ class Inventory
     private $comments = [];
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\ManyToOne(targetEntity=User::class)
      * @Groups({"myInventory"})
      */
     private $createdBy;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="tool")
+     * @ORM\OneToOne(targetEntity=Pet::class, mappedBy="tool")
      * @Groups({"myInventory"})
      */
     private $holder;
@@ -94,7 +94,7 @@ class Inventory
     private $location = LocationEnum::HOME;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="hat")
+     * @ORM\OneToOne(targetEntity=Pet::class, mappedBy="hat")
      * @Groups({"myInventory"})
      */
     private $wearer;

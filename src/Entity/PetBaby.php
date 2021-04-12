@@ -41,12 +41,12 @@ class PetBaby
     private $species;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Pet", mappedBy="pregnancy")
+     * @ORM\OneToOne(targetEntity=Pet::class, mappedBy="pregnancy")
      */
     private $parent;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Pet")
+     * @ORM\ManyToOne(targetEntity=Pet::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private $otherParent;

@@ -41,7 +41,7 @@ class Pet
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="pets")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="pets")
      * @Groups({"petPublicProfile", "parkEvent"})
      */
     private $owner;
@@ -127,7 +127,7 @@ class Pet
     private $species;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Inventory", inversedBy="holder")
+     * @ORM\OneToOne(targetEntity=Inventory::class, inversedBy="holder")
      * @ORM\JoinColumn(onDelete="SET NULL")
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
      */
@@ -229,22 +229,22 @@ class Pet
     private $pregnancy;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Pet", inversedBy="motheredPets")
+     * @ORM\ManyToOne(targetEntity=Pet::class, inversedBy="motheredPets")
      */
     private $mom;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Pet", mappedBy="mom")
+     * @ORM\OneToMany(targetEntity=Pet::class, mappedBy="mom")
      */
     private $motheredPets;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Pet", inversedBy="fatheredPets")
+     * @ORM\ManyToOne(targetEntity=Pet::class, inversedBy="fatheredPets")
      */
     private $dad;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Pet", mappedBy="dad")
+     * @ORM\OneToMany(targetEntity=Pet::class, mappedBy="dad")
      */
     private $fatheredPets;
 
@@ -261,7 +261,7 @@ class Pet
     private $isFertile = false;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Inventory", inversedBy="wearer")
+     * @ORM\OneToOne(targetEntity=Inventory::class, inversedBy="wearer")
      * @ORM\JoinColumn(onDelete="SET NULL")
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
      */

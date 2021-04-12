@@ -40,7 +40,7 @@ class Plant
     private $harvestableImage;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Item", mappedBy="plant")
+     * @ORM\OneToOne(targetEntity=Item::class, mappedBy="plant")
      */
     private $item;
 

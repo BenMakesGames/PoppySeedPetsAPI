@@ -30,7 +30,7 @@ class PetGroup
     private $id;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Pet", inversedBy="groups")
+     * @ORM\ManyToMany(targetEntity=Pet::class, inversedBy="groups")
      * @Groups({"petGroupDetails"})
      */
     private $members;

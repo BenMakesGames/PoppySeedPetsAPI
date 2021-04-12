@@ -33,7 +33,7 @@ class Guild
     private $emblem;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Item")
+     * @ORM\ManyToOne(targetEntity=Item::class)
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"guildEncyclopedia"})
      */

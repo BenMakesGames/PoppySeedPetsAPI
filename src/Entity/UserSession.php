@@ -18,7 +18,7 @@ class UserSession
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="userSessions")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="userSessions")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;

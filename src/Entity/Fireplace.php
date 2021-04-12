@@ -31,7 +31,7 @@ class Fireplace
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="fireplace")
+     * @ORM\OneToOne(targetEntity=User::class, inversedBy="fireplace")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
