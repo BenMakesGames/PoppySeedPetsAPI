@@ -386,7 +386,7 @@ class PetService
 
         if(count($foodsEaten) > 0)
         {
-            $message = 'You fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.';
+            $message = '%user:' . $pet->getOwner()->getId() . '.Name% fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.';
             $icon = 'icons/activity-logs/mangia';
 
             if(count($favorites) > 0)

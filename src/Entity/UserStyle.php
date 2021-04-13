@@ -18,17 +18,37 @@ class UserStyle
 {
     public const CURRENT = 'Current';
 
+    const PROPERTIES = [
+        'backgroundColor',
+        'petInfoBackgroundColor',
+        'speechBubbleBackgroundColor',
+        'textColor',
+        'primaryColor',
+        'textOnPrimaryColor',
+        'tabBarBackgroundColor',
+        'linkAndButtonColor',
+        'buttonTextColor',
+        'dialogLinkColor',
+        'warningColor',
+        'gainColor',
+        'bonusAndSpiceColor',
+        'bonusAndSpiceSelectedColor',
+        'inputBackgroundColor',
+        'inputTextColor'
+    ];
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"myStyle"})
+     * @Groups({"myStyle", "publicStyle"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"publicStyle"})
      */
     private $user;
 
@@ -40,97 +60,97 @@ class UserStyle
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myStyle"})
+     * @Groups({"myStyle", "publicStyle"})
      */
     private $backgroundColor;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myStyle"})
+     * @Groups({"myStyle", "publicStyle"})
      */
     private $petInfoBackgroundColor;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myStyle"})
+     * @Groups({"myStyle", "publicStyle"})
      */
     private $speechBubbleBackgroundColor;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myStyle"})
+     * @Groups({"myStyle", "publicStyle"})
      */
     private $textColor;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myStyle"})
+     * @Groups({"myStyle", "publicStyle"})
      */
     private $primaryColor;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myStyle"})
+     * @Groups({"myStyle", "publicStyle"})
      */
     private $textOnPrimaryColor;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myStyle"})
+     * @Groups({"myStyle", "publicStyle"})
      */
     private $tabBarBackgroundColor;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myStyle"})
+     * @Groups({"myStyle", "publicStyle"})
      */
     private $linkAndButtonColor;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myStyle"})
+     * @Groups({"myStyle", "publicStyle"})
      */
     private $buttonTextColor;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myStyle"})
+     * @Groups({"myStyle", "publicStyle"})
      */
     private $dialogLinkColor;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myStyle"})
+     * @Groups({"myStyle", "publicStyle"})
      */
     private $warningColor;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myStyle"})
+     * @Groups({"myStyle", "publicStyle"})
      */
     private $gainColor;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myStyle"})
+     * @Groups({"myStyle", "publicStyle"})
      */
     private $bonusAndSpiceColor;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myStyle"})
+     * @Groups({"myStyle", "publicStyle"})
      */
     private $bonusAndSpiceSelectedColor;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myStyle"})
+     * @Groups({"myStyle", "publicStyle"})
      */
     private $inputBackgroundColor;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"myStyle"})
+     * @Groups({"myStyle", "publicStyle"})
      */
     private $inputTextColor;
 

@@ -28,32 +28,16 @@ class UserStyleRepository extends ServiceEntityRepository
         ]);
     }
 
-    // /**
-    //  * @return UserStyle[] Returns an array of UserStyle objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function countThemesByUser(User $user): int
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
+        return (int)$this->createQueryBuilder('t') // mind the "(int)" cast!
+            ->select('COUNT(t)')
+            ->andWhere('t.user=:user')
+            ->andWhere('t.name!=:current')
+            ->setParameter('user', $user)
+            ->setParameter('current', UserStyle::CURRENT)
             ->getQuery()
-            ->getResult()
+            ->getSingleScalarResult()
         ;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?UserStyle
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

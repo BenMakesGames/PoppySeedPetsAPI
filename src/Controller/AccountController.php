@@ -58,6 +58,7 @@ class AccountController extends PoppySeedPetsController
         Squirrel3 $squirrel3
     )
     {
+        $theme = $request->request->get('theme');
         $petName = $profanityFilterService->filter(trim($request->request->get('petName')));
         $petImage = $request->request->get('petImage');
         $petColorA = $request->request->get('petColorA');
@@ -142,6 +143,26 @@ class AccountController extends PoppySeedPetsController
         ;
 
         $em->persist($preferences);
+
+        $myTheme = (new UserStyle())
+            ->setUser($user)
+            ->setName(UserStyle::CURRENT)
+        ;
+
+        foreach(UserStyle::PROPERTIES as $property)
+        {
+            $color = $theme[$property];
+
+            if(!preg_match('/^#?[0-9a-fA-F]{6}$/', $color))
+                continue;
+
+            if(strlen($color) === 7)
+                $color = substr($color, 1);
+
+            $myTheme->{'set' . $property}($color);
+        }
+
+        $em->persist($myTheme);
 
         $em->flush();
 

@@ -21,7 +21,7 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myAccount", "myInventory", "userPublicProfile", "article", "petPublicProfile", "museum", "parkEvent", "userTypeahead"})
+     * @Groups({"myAccount", "myInventory", "userPublicProfile", "article", "petPublicProfile", "museum", "parkEvent", "userTypeahead", "publicStyle"})
      */
     private $id;
 
@@ -45,7 +45,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myAccount", "myInventory", "userPublicProfile", "article", "petPublicProfile", "museum", "parkEvent", "userTypeahead"})
+     * @Groups({"myAccount", "myInventory", "userPublicProfile", "article", "petPublicProfile", "museum", "parkEvent", "userTypeahead", "publicStyle"})
      */
     private $name;
 
@@ -96,12 +96,12 @@ class User implements UserInterface
     private $maxPets = 2;
 
     /**
-     * @ORM\OneToMany(targetEntity="UserFollowing", mappedBy="user", orphanRemoval=true, fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity=UserFollowing::class, mappedBy="user", orphanRemoval=true, fetch="EXTRA_LAZY")
      */
     private $following;
 
     /**
-     * @ORM\OneToMany(targetEntity="UserFollowing", mappedBy="following", orphanRemoval=true, fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity=UserFollowing::class, mappedBy="following", orphanRemoval=true, fetch="EXTRA_LAZY")
      */
     private $followedBy;
 
@@ -253,7 +253,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=60, nullable=true)
-     * @Groups({"myAccount", "userPublicProfile", "petPublicProfile", "museum", "parkEvent"})
+     * @Groups({"myAccount", "userPublicProfile", "petPublicProfile", "museum", "parkEvent", "publicStyle"})
      */
     private $icon;
 
