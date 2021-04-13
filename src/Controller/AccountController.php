@@ -519,14 +519,16 @@ class AccountController extends PoppySeedPetsController
      */
     public function getProfile(
         User $user, ResponseService $responseService, PetRepository $petRepository, InventoryRepository $inventoryRepository,
-        NormalizerInterface $normalizer
+        NormalizerInterface $normalizer, UserStyleRepository $userStyleRepository
     )
     {
         $pets = $petRepository->findBy([ 'owner' => $user, 'inDaycare' => false ]);
+        $theme = $userStyleRepository->findCurrent($user);
 
         $data = [
             'user' => $normalizer->normalize($user, null, [ 'groups' => [ SerializationGroupEnum::USER_PUBLIC_PROFILE ] ]),
             'pets' => $normalizer->normalize($pets, null, [ 'groups' => [ SerializationGroupEnum::USER_PUBLIC_PROFILE ] ]),
+            'theme' => $normalizer->normalize($theme, null, [ 'groups' => [ SerializationGroupEnum::PUBLIC_STYLE ]]),
         ];
 
         if((new \DateTimeImmutable())->format('m') == 12 && $user->getFireplace())
