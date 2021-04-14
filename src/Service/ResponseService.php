@@ -31,10 +31,12 @@ class ResponseService
     private $calendarService;
     private $petActivityLogRepository;
     private $weatherService;
+    private $userMenuService;
 
     public function __construct(
         SerializerInterface $serializer, NormalizerInterface $normalizer, EntityManagerInterface $em, Security $security,
-        CalendarService $calendarService, PetActivityLogRepository $petActivityLogRepository, WeatherService $weatherService
+        CalendarService $calendarService, PetActivityLogRepository $petActivityLogRepository, WeatherService $weatherService,
+        UserMenuService $userMenuService
     )
     {
         $this->serializer = $serializer;
@@ -44,6 +46,7 @@ class ResponseService
         $this->calendarService = $calendarService;
         $this->petActivityLogRepository = $petActivityLogRepository;
         $this->weatherService = $weatherService;
+        $this->userMenuService = $userMenuService;
     }
 
     public function setSessionId(?string $sessionId)
@@ -159,7 +162,10 @@ class ResponseService
         if(!$user)
             $responseData['user'] = null;
         else
+        {
             $responseData['user'] = $this->normalizer->normalize($user, null, [ 'groups' => [ SerializationGroupEnum::MY_ACCOUNT ] ]);
+            $responseData['user']['menu'] = $this->normalizer->normalize($this->userMenuService->getUserMenuItems($user), null, [ 'groups' => [ SerializationGroupEnum::MY_MENU ] ]);
+        }
     }
 
     public function createActivityLog(Pet $pet, string $entry, string $icon, ?PetChangesSummary $changes = null): PetActivityLog

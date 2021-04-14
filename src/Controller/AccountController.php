@@ -31,6 +31,7 @@ use App\Service\ResponseService;
 use App\Service\SessionService;
 use App\Service\Squirrel3;
 use App\Service\Typeahead\UserTypeaheadService;
+use App\Service\UserMenuService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -590,6 +591,24 @@ class AccountController extends PoppySeedPetsController
     {
         $user = $this->getUser();
         $user->setIcon(null);
+        $em->flush();
+
+        return $responseService->success();
+    }
+
+    /**
+     * @Route("/menuOrder", methods={"PATCH"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function saveMenuOrder(
+        Request $request, UserMenuService $userMenuService, EntityManagerInterface $em,
+        ResponseService $responseService
+    )
+    {
+        $newOrder = $request->request->get('order');
+
+        $userMenuService->updateUserMenuSortOrder($this->getUser(), $newOrder);
+
         $em->flush();
 
         return $responseService->success();

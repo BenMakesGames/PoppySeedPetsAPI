@@ -275,6 +275,11 @@ class User implements UserInterface
      */
     private $maxMarketBids = 5;
 
+    /**
+     * @ORM\OneToOne(targetEntity=UserMenuOrder::class, mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $menuOrder;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -968,6 +973,23 @@ class User implements UserInterface
     public function increaseMaxMarketBids(int $amount): self
     {
         $this->maxMarketBids += $amount;
+
+        return $this;
+    }
+
+    public function getMenuOrder(): ?UserMenuOrder
+    {
+        return $this->menuOrder;
+    }
+
+    public function setMenuOrder(UserMenuOrder $menuOrder): self
+    {
+        // set the owning side of the relation if necessary
+        if ($menuOrder->getUser() !== $this) {
+            $menuOrder->setUser($this);
+        }
+
+        $this->menuOrder = $menuOrder;
 
         return $this;
     }

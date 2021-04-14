@@ -60,4 +60,5 @@ final class SerializationGroupEnum
     public const WEATHER = 'weather';
     public const MY_STYLE = 'myStyle';
     public const PUBLIC_STYLE = 'publicStyle';
+    public const MY_MENU = 'myMenu';
 }
