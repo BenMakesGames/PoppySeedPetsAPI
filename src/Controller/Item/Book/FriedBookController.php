@@ -40,6 +40,8 @@ class FriedBookController extends PoppySeedPetsItemController
 * Hash Brown
 * Laufabrauð
 * Onion Rings
+* Pan-fried Fish
+* Pan-fried Tofu
 
 ## Basic Ingredients
 
@@ -150,6 +152,13 @@ Yep: a fried bread!
 * Onion
 * Wheat Flour
 * Baking Soda (for that fast-food feel!)
+
+#### Pan-fried Fish
+
+* Oil!
+* Fish (or Tofu, for a vegetarian recipe!)
+
+If you insist, you can replace the Oil with Butter...
 ');
     }
 }

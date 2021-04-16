@@ -217,10 +217,9 @@ class PregnancyService
             ->increaseFood(-$this->squirrel3->rngNextInt(8, 16))
         ;
 
-        $petsBirthedStat = $this->userStatsRepository->incrementStat($user, UserStatEnum::PETS_BIRTHED);
+        $this->userStatsRepository->incrementStat($user, UserStatEnum::PETS_BIRTHED);
 
-        if($petsBirthedStat->getValue() === 1)
-            $this->inventoryService->receiveItem('Renaming Scroll', $pet->getOwner(), $pet->getOwner(), 'You received this when ' . $baby->getName() . ' was born.', LocationEnum::HOME, false);
+        $this->inventoryService->receiveItem('Renaming Scroll', $pet->getOwner(), $pet->getOwner(), 'You received this when ' . $baby->getName() . ' was born.', LocationEnum::HOME, false);
     }
 
     private const CANONICALIZED_FORBIDDEN_COMBINED_NAMES = [

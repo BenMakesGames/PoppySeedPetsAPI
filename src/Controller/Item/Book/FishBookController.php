@@ -42,6 +42,7 @@ class FishBookController extends PoppySeedPetsItemController
 * Grilled Fish
 * Nigiri
 * Orange Fish
+* Pan-fried Fish
 * Sushi
 * Zongzi
 
@@ -147,6 +148,13 @@ Just grill some Fish with Charcoal!
 * Orange
 * Fish
 * Sugar (not optional!)
+
+#### Pan-fried Fish
+
+* Fish
+* Butter, or Oil
+
+That\'s it!
 
 #### Sushi
 
