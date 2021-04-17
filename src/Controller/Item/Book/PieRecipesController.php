@@ -41,10 +41,10 @@ Of pie crusts, there are many options: Graham Cracker. Chocolate Cookie. No crus
 
 I was once told "there as many types of pie filling as there are people who have ever lived, and then some." At first I couldn\'t help but wonder, evolutionarily-speaking, at what point people started to be people, and therefore how many to count, but then I realized that there is a sort of evolution to pie as well. After all, isn\'t Cheesecake more pie than cake? 
 
-#### Blackberry
+#### Berry
 
-* Blackberries
-* Wheat Flour (or Corn Starch)
+* Blueberries or Blackberries
+* Wheat Flour
 * Sugar
 
 #### Chocolate Cream
@@ -74,7 +74,7 @@ I was once told "there as many types of pie filling as there are people who have
 #### Red
 
 * Red
-* Wheat Flour (or Corn Starch)
+* Wheat Flour
 * Sugar
 
 ### Eating

@@ -50,13 +50,19 @@ class ListTopAttemptedRecipesCommand extends PoppySeedPetsCommand
             ->getScalarResult()
         ;
 
+        echo ' Qty   | Recipe                 | Human-readable recipe';
+        echo '-------+------------------------+-------------------------------';
+
         foreach($topRecipes as $recipe)
         {
             $recipeItems = $this->inventoryService->deserializeItemList($recipe['recipe']);
 
             $itemStrings = array_map(fn($item) => $item->quantity . 'x ' . $item->item->getName(), $recipeItems);
 
-            echo $recipe['qty'] . ' attempts: ' . ArrayFunctions::list_nice($itemStrings) . "\r\n";
+            echo
+                ' ' . str_pad($recipe['qty'], 5, ' ') .
+                ' | ' . str_pad($recipe['recipe'], 22, ' ') .
+                ' | ' . ArrayFunctions::list_nice($itemStrings) . "\r\n";
         }
 
         return Command::SUCCESS;
