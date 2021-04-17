@@ -108,7 +108,7 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
     {
         $data = [
             'success' => false,
-            'errors' => [ 'Authentication Required' ]
+            'errors' => [ 'You must be logged in to do that. (Curious! Reload the page and try again, maybe?)' ]
         ];
 
         return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
