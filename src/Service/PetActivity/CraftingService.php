@@ -1248,7 +1248,7 @@ class CraftingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
 
             $this->inventoryService->loseItem($lostItem, $pet->getOwner(), LocationEnum::HOME, 1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% starting making a Bug Bow, but accidentally tore the ' . $lostItem . ' :(', '');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started making a Bug Bow, but accidentally tore the ' . $lostItem . ' :(', '');
         }
         else if($roll >= 12)
         {
@@ -1286,7 +1286,7 @@ class CraftingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
             $this->inventoryService->loseItem('Antenna', $pet->getOwner(), LocationEnum::HOME, 1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% starting making a Proboscis, but accidentally tore the Antenna :(', '');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started making a Proboscis, but accidentally tore the Antenna :(', '');
         }
         else if($roll >= 26)
         {

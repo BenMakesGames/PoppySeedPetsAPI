@@ -80,7 +80,7 @@ class GrocerController extends PoppySeedPetsController
                 if($quantity > 0)
                 {
                     $totalQuantity += $quantity;
-                    $totalCost += $i['cost'];
+                    $totalCost += $i['cost'] * $quantity;
 
                     if(!array_key_exists($itemName, $buyingInventory))
                         $buyingInventory[$itemName] = $quantity;
