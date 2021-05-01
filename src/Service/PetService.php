@@ -1625,7 +1625,7 @@ class PetService
 
             $this->petExperienceService->spendTime($pet, 5, PetActivityStatEnum::OTHER, null);
 
-            $this->responseService->createActivityLog($pet, '%pet:'. $pet->getId() . '.name% eats the ' . $itemOnBody . ' off their body in no time flat!', '', $changes->compare($pet));
+            $this->responseService->createActivityLog($pet, '%pet:'. $pet->getId() . '.name% eats the ' . $itemOnBody . ' off their body in no time flat! (Ah~! A true Gourmand!)', '', $changes->compare($pet));
             return false;
         }
         else if($weather->getRainfall() > 0)
