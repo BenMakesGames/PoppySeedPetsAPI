@@ -8,6 +8,7 @@ use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Repository\ItemRepository;
+use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetExperienceService
@@ -15,24 +16,19 @@ class PetExperienceService
     public const SOCIAL_ENERGY_PER_HANG_OUT = 576; // 2.5 hangouts per day (for average pets)
 
     private $petActivityStatsService;
-    private $em;
-    private $responseService;
-    private $itemRepository;
     private $squirrel3;
     private $inventoryService;
+    private $userStatsRepository;
 
     public function __construct(
-        PetActivityStatsService $petActivityStatsService, EntityManagerInterface $em,
-        ResponseService $responseService, ItemRepository $itemRepository, Squirrel3 $squirrel3,
-        InventoryService $inventoryService
+        PetActivityStatsService $petActivityStatsService, Squirrel3 $squirrel3,
+        InventoryService $inventoryService, UserStatsRepository $userStatsRepository
     )
     {
         $this->petActivityStatsService = $petActivityStatsService;
-        $this->em = $em;
-        $this->responseService = $responseService;
-        $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
         $this->inventoryService = $inventoryService;
+        $this->userStatsRepository = $userStatsRepository;
     }
 
     /**
@@ -73,6 +69,9 @@ class PetExperienceService
 
             if($pet->getSkills()->getStat($statToLevel) >= 20)
             {
+                $pet->getSkills()->increaseScrollLevels();
+                $this->userStatsRepository->incrementStat($pet->getOwner(), 'Skill Scrolls Made by Pets');
+
                 $newItem = $this->inventoryService->petCollectsItem('Skill Scroll: ' . $statToLevel, $pet, $pet->getName() . ', a ' . $statToLevel . '-master, produced this scroll.', null);
                 $newItem->setLockedToOwner(true);
             }

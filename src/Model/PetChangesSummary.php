@@ -53,6 +53,12 @@ class PetChangesSummary
      */
     public $affectionLevel;
 
+    /**
+     * @var string|null
+     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
+     */
+    public $scrollLevel;
+
     public static function rate($value): ?string
     {
         if($value > 20)

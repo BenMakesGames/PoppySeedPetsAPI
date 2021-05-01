@@ -92,6 +92,11 @@ class PetSkills
      */
     private $expertise;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $scrollLevels = 0;
+
     public function __construct()
     {
         $squirrel3 = new Squirrel3();
@@ -332,6 +337,18 @@ class PetSkills
     public function setExpertise(): self
     {
         $this->expertise = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getScrollLevels(): ?int
+    {
+        return $this->scrollLevels;
+    }
+
+    public function increaseScrollLevels(): self
+    {
+        $this->scrollLevels++;
 
         return $this;
     }
