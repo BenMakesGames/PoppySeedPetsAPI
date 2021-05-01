@@ -28,14 +28,13 @@ class ResponseService
     private $security;
     private $normalizer;
     private $sessionId = 0;
-    private $calendarService;
     private $petActivityLogRepository;
     private $weatherService;
     private $userMenuService;
 
     public function __construct(
         SerializerInterface $serializer, NormalizerInterface $normalizer, EntityManagerInterface $em, Security $security,
-        CalendarService $calendarService, PetActivityLogRepository $petActivityLogRepository, WeatherService $weatherService,
+        PetActivityLogRepository $petActivityLogRepository, WeatherService $weatherService,
         UserMenuService $userMenuService
     )
     {
@@ -43,7 +42,6 @@ class ResponseService
         $this->normalizer = $normalizer;
         $this->em = $em;
         $this->security = $security;
-        $this->calendarService = $calendarService;
         $this->petActivityLogRepository = $petActivityLogRepository;
         $this->weatherService = $weatherService;
         $this->userMenuService = $userMenuService;
@@ -182,7 +180,7 @@ class ResponseService
         return $log;
     }
 
-    public function setReloadPets($reload = true)
+    public function setReloadPets($reload = true): self
     {
         $this->reloadPets = $reload;
         return $this;
@@ -193,7 +191,7 @@ class ResponseService
         return $this->reloadPets;
     }
 
-    public function setReloadInventory($reload = true)
+    public function setReloadInventory($reload = true): self
     {
         $this->reloadInventory = $reload;
         return $this;
