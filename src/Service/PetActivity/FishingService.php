@@ -635,14 +635,21 @@ class FishingService
 
     private function fishedTheIsleOfRetreatingTeeth(Pet $pet): PetActivityLog
     {
-        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at The Isle of Retreating Teeth. They weren\'t able to catch anything, but they did grab some Talo-- er, I mean, Teeth.', '')
+        $alsoGetFishBones = $this->squirrel3->rngNextBool();
+
+        $message = $alsoGetFishBones
+            ? '%pet:' . $pet->getId() . '.name% went fishing at The Isle of Retreating Teeth, but only caught Fish _Bones_! They grabbed some Talo-- er, I mean, Teeth, too.'
+            : '%pet:' . $pet->getId() . '.name% went fishing at The Isle of Retreating Teeth. They weren\'t able to catch anything, but they did grab some Talo-- er, I mean, Teeth.'
+        ;
+
+        $activityLog = $this->responseService->createActivityLog($pet, $message, '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
         ;
 
         $this->inventoryService->petCollectsItem('Talon', $pet, $pet->getName() . ' got this from The Isle of Retreating Teeth.', $activityLog);
         $this->inventoryService->petCollectsItem('Talon', $pet, $pet->getName() . ' got this from The Isle of Retreating Teeth.', $activityLog);
 
-        if($this->squirrel3->rngNextBool())
+        if($alsoGetFishBones)
             $this->inventoryService->petCollectsItem('Fish Bones', $pet, $pet->getName() . ' got this from The Isle of Retreating Teeth.', $activityLog);
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
