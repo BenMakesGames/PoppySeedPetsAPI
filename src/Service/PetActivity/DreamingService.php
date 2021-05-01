@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\PetSpecies;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
@@ -129,11 +130,11 @@ class DreamingService
                 '%dreamer% received this from a friend in a dream.'
             ],
             [
-                '%dreamer% dreamed that they were making out with a %species% on %surface% %location1%. %Item_with_article% got in the way, so %dreamer% tossed it aside.',
+                '%dreamer% dreamed that they were making out with %a_species% on %surface% %location1%. %Item_with_article% got in the way, so %dreamer% tossed it aside.',
                 '%dreamer%, um, found this in a dream.'
             ],
             [
-                'In a dream, %dreamer% got in a fight with a %species% %location1%. The %species% threw %item% at %dreamer%, and declared victory! >:(',
+                'In a dream, %dreamer% got in a fight with %a_species% %location1%. The %species% threw %item% at %dreamer%, and declared victory! >:(',
                 'A stupid %species% threw this at %dreamer% in a dream.',
             ],
             [
@@ -163,6 +164,8 @@ class DreamingService
         ]);
 
         $locations = $this->squirrel3->rngNextSubsetFromArray(self::LOCATIONS, 2);
+        /** @var PetSpecies $species */
+        $species = $this->squirrel3->rngNextFromArray($this->petSpeciesRepository->findAll());
 
         $replacements = [
             '%item%' => $itemName,
@@ -172,7 +175,8 @@ class DreamingService
             '%location1%' => $locations[0],
             '%location2%' => $locations[1],
             '%wandering%' => $this->squirrel3->rngNextFromArray(self::WANDERING_WORDS),
-            '%species%' => $this->squirrel3->rngNextFromArray($this->petSpeciesRepository->findAll())->getName(),
+            '%species%' => $species->getName(),
+            '%a_species%' => GrammarFunctions::indefiniteArticle($species->getName()) . ' ' . $species->getName(),
             '%adverb%' => $this->squirrel3->rngNextFromArray([ 'hesitantly', 'eagerly', 'grumpily', 'apathetically' ]),
             '%pet_adjective%' => $this->squirrel3->rngNextFromArray([ 'colorful', 'suspicious-looking', 'strong', 'big', 'small', 'cute', 'dangerous-looking', 'hungry', 'lost', 'cheerful' ]),
             '%more%' => $this->squirrel3->rngNextFromArray([ 'bigger', 'more colorful', 'smaller', 'more fragrant', 'undulating more', 'paler', 'shinier', 'stickier', 'more fabulous' ]),
