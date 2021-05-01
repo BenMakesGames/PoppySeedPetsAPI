@@ -481,7 +481,7 @@ class Inventory
     public function climbingBonus(): int
     {
         return
-            ($this->getItem()->getTool() && $this->getItem()->getTool()->getClimbing()) +
+            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getClimbing() : 0) +
             ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getClimbing() : 0)
         ;
     }
