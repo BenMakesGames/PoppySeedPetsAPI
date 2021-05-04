@@ -579,6 +579,22 @@ class TraderService
             );
         }
 
+        if($this->calendarService->isMayThe4th())
+        {
+            $offers[] = TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Photon'), 1),
+                    TraderOfferCostOrYield::createMoney(100),
+                ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Lightpike'), 1),
+                ],
+                "Masters of the Lightpike can cut you down in one stab!",
+                $user,
+                $quantities
+            );
+        }
+
         return $offers;
     }
 

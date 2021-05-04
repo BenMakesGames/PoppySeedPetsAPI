@@ -145,6 +145,11 @@ class CalendarService
         return $this->monthAndDay === 314;
     }
 
+    public function isMayThe4th(): bool
+    {
+        return $this->monthAndDay === 504;
+    }
+
     public function isTalkLikeAPirateDay(): bool
     {
         return $this->monthAndDay === 919;
