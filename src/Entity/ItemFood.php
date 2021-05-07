@@ -159,6 +159,11 @@ class ItemFood
      */
     private $leftovers;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=ItemGroup::class)
+     */
+    private $bonusItemGroup;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -629,5 +634,17 @@ class ItemFood
     public function getLeftoversName(): ?string
     {
         return $this->leftovers === null ? null : $this->getLeftovers()->getName();
+    }
+
+    public function getBonusItemGroup(): ?ItemGroup
+    {
+        return $this->bonusItemGroup;
+    }
+
+    public function setBonusItemGroup(?ItemGroup $bonusItemGroup): self
+    {
+        $this->bonusItemGroup = $bonusItemGroup;
+
+        return $this;
     }
 }
