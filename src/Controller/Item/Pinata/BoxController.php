@@ -687,7 +687,7 @@ class BoxController extends PoppySeedPetsItemController
                 ->setSpice($inventory->getSpice())
             ;
 
-            if($openedStat->getValue() === 7 || ($openedStat->getValue() >= 12 && $squirrel3->rngNextInt(1, 15) === 1))
+            if($item->getName() !== 'Cockroach' && $openedStat->getValue() >= 5 && $squirrel3->rngNextInt(1, 15) === 1)
             {
                 $message = $squirrel3->rngNextFromArray([
                     'You open the bag... WHAT THE FU-- oh, wait, nm: it\'s just ' . $item->getNameWithArticle() . '.',
@@ -703,6 +703,8 @@ class BoxController extends PoppySeedPetsItemController
                     "If I tell you there's " . $item->getNameWithArticle() . " in this bag, will you believe me?\n\nThere\'s " . $item->getNameWithArticle() . " in this bag.",
                     "You open the bag... but it's one of those Mimic Paper Bags! OH NO! IT CHOMPS DOWN HARD ON YOUR-- oh. Wait, it... it doesn't have any teeth.\n\nWell, it's a bit more work - and a bit wetter - than you\'d like, but with a little work you manage to extract " . $item->getNameWithArticle() . ".",
                     'You open the bag... but it\'s one of those Mimic Paper Bags! OH NO! It wriggles free, drops to the ground, and scurries off, ' . $item->getNameWithArticle() . ' tumbling out of its... mouth (???) as it goes.',
+                    "You open the bag... for some reason it's got that insulation lining on the inside? " . $squirrel3->rngNextFromArray([ 'Cold', 'Warm' ]) . " air cascades out of the bag as you rummage around inside...\n\nAh, here it is: " . $item->getNameWithArticle() . "!",
+                    "You try to open the bag, but it's glued shut!\n\nFoolish bag! Do you really think you're a match for " . $user->getName() . "'s RIPPLING, _SEXY_ MUSCLES!?!\n\nRAWR!!\n\nThe bag is torn in two, sending " . $item->getNameWithArticle() . " tumbling to the ground.",
                 ]);
             }
             else
