@@ -29,6 +29,11 @@ class ItemGroup
      */
     private $items;
 
+    /**
+     * @ORM\Column(type="string", length=20)
+     */
+    private $luckAdjective;
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
@@ -71,6 +76,18 @@ class ItemGroup
     public function removeItem(Item $item): self
     {
         $this->items->removeElement($item);
+
+        return $this;
+    }
+
+    public function getLuckAdjective(): ?string
+    {
+        return $this->luckAdjective;
+    }
+
+    public function setLuckAdjective(string $luckAdjective): self
+    {
+        $this->luckAdjective = $luckAdjective;
 
         return $this;
     }

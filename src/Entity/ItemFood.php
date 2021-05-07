@@ -161,6 +161,7 @@ class ItemFood
 
     /**
      * @ORM\ManyToOne(targetEntity=ItemGroup::class)
+     * @var ItemGroup
      */
     private $bonusItemGroup;
 
@@ -526,9 +527,9 @@ class ItemFood
     /**
      * @Groups({"myInventory", "itemEncyclopedia"})
      */
-    public function getBringsLuck(): bool
+    public function getBringsLuck(): ?string
     {
-        return $this->chanceForBonusItem !== null;
+        return $this->bonusItemGroup ? $this->bonusItemGroup->getLuckAdjective() : null;
     }
 
     public function getRandomFlavor(): int

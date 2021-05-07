@@ -2,6 +2,8 @@
 namespace App\Model;
 
 use App\Entity\Item;
+use App\Entity\ItemFood;
+use App\Entity\ItemGroup;
 use App\Entity\Spice;
 use App\Enum\FlavorEnum;
 
@@ -16,7 +18,7 @@ class FoodWithSpice
     public $psychedelic;
     public $randomFlavor;
     public $containsTentacles;
-    public $chanceForBonusItem;
+    /** @var BonusItemChance[] */ public array $bonusItems = [];
     public $grantedSkills = [];
     public $grantedStatusEffects = [];
     public $earthy;
@@ -46,7 +48,9 @@ class FoodWithSpice
         $this->psychedelic = $food->getPsychedelic();
         $this->randomFlavor = $food->getRandomFlavor();
         $this->containsTentacles = $food->getContainsTentacles() ? 2 : 0;
-        $this->chanceForBonusItem = (int)$food->getChanceForBonusItem();
+
+        if($food->getChanceForBonusItem())
+            $this->bonusItems[] = new BonusItemChance($food);
 
         foreach(FlavorEnum::getValues() as $flavor)
             $this->{$flavor} = $food->{'get' . $flavor}();
@@ -82,7 +86,9 @@ class FoodWithSpice
             $this->psychedelic += $effects->getPsychedelic();
             $this->randomFlavor += $effects->getRandomFlavor();
             $this->containsTentacles += $effects->getContainsTentacles() ? 2 : 0;
-            $this->chanceForBonusItem += (int)$effects->getChanceForBonusItem();
+
+            if($effects->getChanceForBonusItem())
+                $this->bonusItems[] = new BonusItemChance($effects);
 
             if($effects->getGrantedSkill())
                 $this->grantedSkills[] = $effects->getGrantedSkill();
@@ -101,5 +107,17 @@ class FoodWithSpice
             if($effects->getLeftovers())
                 $this->leftovers[] = $effects->getLeftovers();
         }
+    }
+}
+
+class BonusItemChance
+{
+    public int $chance;
+    /** @var ItemGroup */ public $itemGroup;
+
+    public function __construct(ItemFood $food)
+    {
+        $this->chance = (int)$food->getChanceForBonusItem();
+        $this->itemGroup = $food->getBonusItemGroup();
     }
 }

@@ -5,6 +5,7 @@ use App\Entity\Enchantment;
 use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Entity\ItemFood;
+use App\Entity\ItemGroup;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\Spice;
@@ -689,52 +690,56 @@ class InventoryService
             $this->applyStatusEffect($pet, $statusEffect['effect'], $statusEffect['duration']);
         }
 
-        $leftovers = $food->leftovers;
-
-        if(strpos($food->name, 'Fishkebab Stew') !== false)
-        {
-            if($this->squirrel3->rngNextInt(1, 6) === 1)
-                $leftovers[] = $this->itemRepository->findOneByName('Fish Bones');
-        }
-        else if(strpos($food->name, 'Fish Stew') !== false)
-        {
-            if($this->squirrel3->rngNextInt(1, 12) === 1)
-                $leftovers[] = $this->itemRepository->findOneByName('Fish Bones');
-        }
-
-        if($leftovers)
+        if($food->leftovers)
         {
             $leftoverNames = [];
 
-            foreach($leftovers as $leftoverItem)
+            foreach($food->leftovers as $leftoverItem)
             {
                 $leftoverNames[] = $leftoverItem->getNameWithArticle();
                 $this->petCollectsItem($leftoverItem, $pet, $pet->getName() . ' ate ' . GrammarFunctions::indefiniteArticle($food->name) . ' ' . $food->name . '; this was left over.', null);
             }
 
-            $wasOrWere = count($leftovers) === 1 ? 'was' : 'were';
+            $wasOrWere = count($food->leftovers) === 1 ? 'was' : 'were';
 
             $this->responseService->addFlashMessage('After ' . $pet->getName() . ' ate the ' . $food->name . ', ' . ArrayFunctions::list_nice($leftoverNames) . ' ' . $wasOrWere . ' left over.');
         }
 
-        if($food->chanceForBonusItem > 0 && $this->squirrel3->rngNextInt(1, 1000) <= $food->chanceForBonusItem)
+        foreach($food->bonusItems as $bonusItem)
         {
-            $bonusItem = $this->getBonusItemForLuckyFood();
+            if($this->squirrel3->rngNextInt(1, 1000) <= $bonusItem->chance)
+                $bonusItems[] = $this->getRandomItemFromItemGroup($bonusItem->itemGroup);
+        }
 
-            $comment =
-                'While eating ' . $food->name . ', ' . $pet->getName() . ' happened to spot this! ' .
-                $this->squirrel3->rngNextFromArray([
-                    '', '... Sure!', '... Why not?', 'As you do!', 'A happy coincidence!', 'Weird!',
-                    'Inexplicable, but not unwelcome!', '(Where was it up until this point, I wonder??)',
-                    'These things happen. Apparently.', '👍', 'Wild!', 'How\'s _that_ work?',
-                ])
-            ;
+        if(count($bonusItems) > 0)
+        {
+            $exclamations = [ 'Convenient!', 'How serendipitous!', 'What are the odds!' ];
+            $bonusItemNamesWithArticles = [];
 
-            $this->petCollectsItem($bonusItem, $pet, $comment, null);
+            foreach($bonusItems as $item)
+            {
+                $comment =
+                    'While eating ' . $food->name . ', ' . $pet->getName() . ' happened to spot this! ' .
+                    $this->squirrel3->rngNextFromArray([
+                        '', '... Sure!', '... Why not?', 'As you do!', 'A happy coincidence!', 'Weird!',
+                        'Inexplicable, but not unwelcome!', '(Where was it up until this point, I wonder??)',
+                        'These things happen. Apparently.', '👍', 'Wild!', 'How\'s _that_ work?',
+                    ])
+                ;
 
-            $naniNani = $this->squirrel3->rngNextFromArray([ 'Convenient!', 'Where\'d that come from??', 'How serendipitous!', 'What are the odds!' ]);
+                $this->petCollectsItem($item, $pet, $comment, null);
 
-            $this->responseService->addFlashMessage('While eating the ' . $food->name . ', ' . $pet->getName() . ' spotted ' . $bonusItem->getNameWithArticle() . '! (' . $naniNani . ')');
+                $bonusItemNamesWithArticles[] = $item->getNameWithArticle();
+            }
+
+            if(count($bonusItems) === 1)
+                $exclamations[] = 'Where\'d that come from??';
+            else
+                $exclamations[] = 'Where\'d those come from??';
+
+            $naniNani = $this->squirrel3->rngNextFromArray($exclamations);
+
+            $this->responseService->addFlashMessage('While eating the ' . $food->name . ', ' . $pet->getName() . ' spotted ' . ArrayFunctions::list_nice($bonusItemNamesWithArticles) . '! (' . $naniNani . ')');
         }
 
         if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && $this->squirrel3->rngNextInt(1, 200) < $food->food + $food->junk)
@@ -756,6 +761,11 @@ class InventoryService
             if($pet->getSkills()->getStat($skill) < 1)
                 $pet->getSkills()->increaseStat($skill);
         }
+    }
+
+    public function getRandomItemFromItemGroup(ItemGroup $itemGroup): Item
+    {
+        return $this->squirrel3->rngNextFromArray($itemGroup->getItems()->toArray());
     }
 
     public function getStatusEffectMaxDuration(string $status)
@@ -824,25 +834,6 @@ class InventoryService
                 $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% turned into a Werecreature!', '');
         }
 
-    }
-
-    private function getBonusItemForLuckyFood(): Item
-    {
-        return $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
-            'Fluff',
-            'Mermaid Egg',
-            'Paper',
-            'Iron Bar',
-            'Silver Ore',
-            'Gold Ore',
-            'Quintessence',
-            'Feathers',
-            'Beans',
-            'Paper Bag',
-            'Renaming Scroll',
-            'Behatting Scroll',
-            'White Cloth'
-        ]));
     }
 
     public function unequipPet(Pet $pet)

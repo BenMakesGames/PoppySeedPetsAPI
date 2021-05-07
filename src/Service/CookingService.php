@@ -209,7 +209,7 @@ class CookingService
 
             for($i = 0; $i < $originalSpicesCount; $i++)
             {
-                if($this->squirrel3->rngNextInt(1, 3) === 1 && !$spices[$i]->getEffects()->getBringsLuck())
+                if($this->squirrel3->rngNextInt(1, 3) === 1 && !$spices[$i]->getEffects()->getChanceForBonusItem())
                     $spices[] = $spices[$i];
             }
 
