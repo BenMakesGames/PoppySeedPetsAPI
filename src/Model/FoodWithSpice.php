@@ -117,7 +117,7 @@ class BonusItemChance
 
     public function __construct(ItemFood $food)
     {
-        $this->chance = (int)$food->getChanceForBonusItem();
+        $this->chance = 1000; //(int)$food->getChanceForBonusItem();
         $this->itemGroup = $food->getBonusItemGroup();
     }
 }

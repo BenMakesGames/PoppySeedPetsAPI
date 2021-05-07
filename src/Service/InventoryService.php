@@ -21,6 +21,7 @@ use App\Functions\DateFunctions;
 use App\Functions\GrammarFunctions;
 use App\Model\FoodWithSpice;
 use App\Model\ItemQuantity;
+use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\SpiceRepository;
@@ -705,6 +706,8 @@ class InventoryService
             $this->responseService->addFlashMessage('After ' . $pet->getName() . ' ate the ' . $food->name . ', ' . ArrayFunctions::list_nice($leftoverNames) . ' ' . $wasOrWere . ' left over.');
         }
 
+        $bonusItems = [];
+
         foreach($food->bonusItems as $bonusItem)
         {
             if($this->squirrel3->rngNextInt(1, 1000) <= $bonusItem->chance)
@@ -714,7 +717,21 @@ class InventoryService
         if(count($bonusItems) > 0)
         {
             $exclamations = [ 'Convenient!', 'How serendipitous!', 'What are the odds!' ];
-            $bonusItemNamesWithArticles = [];
+
+            $bonusItemNamesWithArticles = array_map(fn(Item $item) => $item->getNameWithArticle(), $bonusItems);
+
+            if(count($bonusItems) === 1)
+                $exclamations[] = 'Where\'d that come from??';
+            else
+                $exclamations[] = 'Where\'d those come from??';
+
+            $naniNani = $this->squirrel3->rngNextFromArray($exclamations);
+
+            $activityLogText = 'While eating the ' . $food->name . ', ' . $pet->getName() . ' spotted ' . ArrayFunctions::list_nice($bonusItemNamesWithArticles) . '! (' . $naniNani . ')';
+
+            $changes = new PetChanges($pet);
+
+            $activityLog = $this->responseService->createActivityLog($pet, $activityLogText, '', null);
 
             foreach($bonusItems as $item)
             {
@@ -727,19 +744,10 @@ class InventoryService
                     ])
                 ;
 
-                $this->petCollectsItem($item, $pet, $comment, null);
-
-                $bonusItemNamesWithArticles[] = $item->getNameWithArticle();
+                $this->petCollectsItem($item, $pet, $comment, $activityLog);
             }
 
-            if(count($bonusItems) === 1)
-                $exclamations[] = 'Where\'d that come from??';
-            else
-                $exclamations[] = 'Where\'d those come from??';
-
-            $naniNani = $this->squirrel3->rngNextFromArray($exclamations);
-
-            $this->responseService->addFlashMessage('While eating the ' . $food->name . ', ' . $pet->getName() . ' spotted ' . ArrayFunctions::list_nice($bonusItemNamesWithArticles) . '! (' . $naniNani . ')');
+            $activityLog->setChanges($changes->compare($pet));
         }
 
         if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && $this->squirrel3->rngNextInt(1, 200) < $food->food + $food->junk)
