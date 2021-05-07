@@ -687,7 +687,7 @@ class BoxController extends PoppySeedPetsItemController
                 ->setSpice($inventory->getSpice())
             ;
 
-            if($openedStat->getValue() === 7 || ($openedStat->getValue() >= 12 && $squirrel3->rngNextInt(1, 20) === 1))
+            if($openedStat->getValue() === 7 || ($openedStat->getValue() >= 12 && $squirrel3->rngNextInt(1, 15) === 1))
             {
                 $message = $squirrel3->rngNextFromArray([
                     'You open the bag... WHAT THE FU-- oh, wait, nm: it\'s just ' . $item->getNameWithArticle() . '.',
