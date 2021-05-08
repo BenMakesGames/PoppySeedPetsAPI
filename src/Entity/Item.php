@@ -122,6 +122,11 @@ class Item
      */
     private $isBug = false;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=HollowEarthTileCard::class)
+     */
+    private $hollowEarthTileCard;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -403,6 +408,18 @@ class Item
     public function setIsBug(bool $isBug): self
     {
         $this->isBug = $isBug;
+
+        return $this;
+    }
+
+    public function getHollowEarthTileCard(): ?HollowEarthTileCard
+    {
+        return $this->hollowEarthTileCard;
+    }
+
+    public function setHollowEarthTileCard(?HollowEarthTileCard $hollowEarthTileCard): self
+    {
+        $this->hollowEarthTileCard = $hollowEarthTileCard;
 
         return $this;
     }
