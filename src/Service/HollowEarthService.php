@@ -10,6 +10,7 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\HollowEarthMoveDirectionEnum;
 use App\Enum\HollowEarthRequiredActionEnum;
 use App\Model\PetChanges;
+use App\Repository\HollowEarthPlayerTileRepository;
 use App\Repository\HollowEarthTileRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -21,6 +22,7 @@ class HollowEarthService
     private $petService;
     private $petExperienceService;
     private $transactionService;
+    private $hollowEarthPlayerTileRepository;
 
     public const DICE_ITEMS = [
         'Dreidel' => 4,
@@ -32,7 +34,8 @@ class HollowEarthService
 
     public function __construct(
         HollowEarthTileRepository $hollowEarthTileRepository, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetService $petService, PetExperienceService $petExperienceService, TransactionService $transactionService
+        PetService $petService, PetExperienceService $petExperienceService, TransactionService $transactionService,
+        HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository
     )
     {
         $this->hollowEarthTileRepository = $hollowEarthTileRepository;
@@ -41,6 +44,7 @@ class HollowEarthService
         $this->petService = $petService;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
+        $this->hollowEarthPlayerTileRepository = $hollowEarthPlayerTileRepository;
     }
 
     public function unlockHollowEarth(User $user): void
@@ -56,6 +60,42 @@ class HollowEarthService
         ;
 
         $user->setHollowEarthPlayer($hollowEarthPlayer);
+    }
+
+    public function getMap(User $player): array
+    {
+        $map = $this->hollowEarthTileRepository->findAll();
+        $playerTiles = $this->hollowEarthPlayerTileRepository->findBy([ 'player' => $player ]);
+        $playerTilesByTile = [];
+
+        foreach($playerTiles as $t)
+            $playerTilesByTile[$t->getTile()->getId()] = $t;
+
+        $data = [];
+
+        foreach($map as $tile)
+        {
+            $playerTile = array_key_exists($tile->getId(), $playerTilesByTile)
+                ? $playerTilesByTile[$tile->getId()]
+                : null
+            ;
+
+            $name = null;
+
+            if($playerTile)
+                $name = $playerTile->getCard()->getName();
+            else if($tile->getCard())
+                $name = $tile->getCard()->getName();
+
+            $data[] = [
+                'x' => $tile->getX(),
+                'y' => $tile->getY(),
+                'name' => $name,
+                'types' => $tile->getTypes()->map(fn($t) => $t->getName()),
+            ];
+        }
+
+        return $data;
     }
 
     public function getDice(User $user): array
@@ -276,10 +316,12 @@ class HollowEarthService
 
     public function getResponseData(User $user): array
     {
+        $map = $this->getMap($user);
         $dice = $this->getDice($user);
 
         return [
             'player' => $user->getHollowEarthPlayer(),
+            'map' => $map,
             'dice' => $dice,
         ];
     }

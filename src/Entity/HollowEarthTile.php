@@ -52,6 +52,11 @@ class HollowEarthTile
      */
     private $types;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=HollowEarthTileCard::class)
+     */
+    private $card;
+
     public function __construct()
     {
         $this->types = new ArrayCollection();
@@ -142,6 +147,18 @@ class HollowEarthTile
     public function removeType(HollowEarthTileType $type): self
     {
         $this->types->removeElement($type);
+
+        return $this;
+    }
+
+    public function getCard(): ?HollowEarthTileCard
+    {
+        return $this->card;
+    }
+
+    public function setCard(?HollowEarthTileCard $card): self
+    {
+        $this->card = $card;
 
         return $this;
     }
