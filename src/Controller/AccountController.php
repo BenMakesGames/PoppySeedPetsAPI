@@ -152,6 +152,12 @@ class AccountController extends PoppySeedPetsController
 
         foreach(UserStyle::PROPERTIES as $property)
         {
+            if(!array_key_exists($property, $theme))
+            {
+                $myTheme = null;
+                break;
+            }
+
             $color = $theme[$property];
 
             if(!preg_match('/^#?[0-9a-fA-F]{6}$/', $color))
@@ -163,7 +169,8 @@ class AccountController extends PoppySeedPetsController
             $myTheme->{'set' . $property}($color);
         }
 
-        $em->persist($myTheme);
+        if($myTheme)
+            $em->persist($myTheme);
 
         $em->flush();
 
