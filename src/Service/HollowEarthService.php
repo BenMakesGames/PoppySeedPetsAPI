@@ -80,17 +80,14 @@ class HollowEarthService
                 : null
             ;
 
-            $name = null;
-
-            if($playerTile)
-                $name = $playerTile->getCard()->getName();
-            else if($tile->getCard())
-                $name = $tile->getCard()->getName();
+            $card = $playerTile ? $playerTile->getCard() : $tile->getCard();
 
             $data[] = [
                 'x' => $tile->getX(),
                 'y' => $tile->getY(),
-                'name' => $name,
+                'name' => $card ? $card->getName() : null,
+                'image' => $card ? $card->getImage() : null,
+                'fixed' => $tile->getCard() && $tile->getCard()->getType()->getName() === 'Fixed',
                 'types' => $tile->getTypes()->map(fn($t) => $t->getName()),
             ];
         }

@@ -32,16 +32,6 @@ class HollowEarthTile
     private $y;
 
     /**
-     * @ORM\Column(type="json", nullable=true)
-     */
-    private $event = null;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $requiredAction = 0;
-
-    /**
      * @ORM\Column(type="string", length=1)
      * @Groups({"hollowEarth"})
      */
@@ -87,30 +77,6 @@ class HollowEarthTile
     public function setY(int $y): self
     {
         $this->y = $y;
-
-        return $this;
-    }
-
-    public function getEvent(): ?array
-    {
-        return $this->event;
-    }
-
-    public function setEvent(?array $event): self
-    {
-        $this->event = $event;
-
-        return $this;
-    }
-
-    public function getRequiredAction(): int
-    {
-        return $this->requiredAction;
-    }
-
-    public function setRequiredAction(int $requiredAction): self
-    {
-        $this->requiredAction = $requiredAction;
 
         return $this;
     }

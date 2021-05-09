@@ -43,6 +43,11 @@ class HollowEarthTileCard
      */
     private $type;
 
+    /**
+     * @ORM\Column(type="string", length=40)
+     */
+    private $image;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -92,6 +97,18 @@ class HollowEarthTileCard
     public function setType(?HollowEarthTileType $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(string $image): self
+    {
+        $this->image = $image;
 
         return $this;
     }
