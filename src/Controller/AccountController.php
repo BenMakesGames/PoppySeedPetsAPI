@@ -161,7 +161,10 @@ class AccountController extends PoppySeedPetsController
             $color = $theme[$property];
 
             if(!preg_match('/^#?[0-9a-fA-F]{6}$/', $color))
-                continue;
+            {
+                $myTheme = null;
+                break;
+            }
 
             if(strlen($color) === 7)
                 $color = substr($color, 1);
