@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\HollowEarthPlayer;
 use App\Entity\HollowEarthTile;
+use App\Entity\HollowEarthTileCard;
 use App\Entity\Inventory;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
@@ -19,7 +20,6 @@ class HollowEarthService
     private $hollowEarthTileRepository;
     private $em;
     private $inventoryService;
-    private $petService;
     private $petExperienceService;
     private $transactionService;
     private $hollowEarthPlayerTileRepository;
@@ -34,14 +34,13 @@ class HollowEarthService
 
     public function __construct(
         HollowEarthTileRepository $hollowEarthTileRepository, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetService $petService, PetExperienceService $petExperienceService, TransactionService $transactionService,
+        PetExperienceService $petExperienceService, TransactionService $transactionService,
         HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository
     )
     {
         $this->hollowEarthTileRepository = $hollowEarthTileRepository;
         $this->em = $em;
         $this->inventoryService = $inventoryService;
-        $this->petService = $petService;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
         $this->hollowEarthPlayerTileRepository = $hollowEarthPlayerTileRepository;
@@ -60,6 +59,34 @@ class HollowEarthService
         ;
 
         $user->setHollowEarthPlayer($hollowEarthPlayer);
+    }
+
+    public function getAllCardIdsOnMap(User $player): array
+    {
+        $map = $this->hollowEarthTileRepository->findAll();
+        $playerTiles = $this->hollowEarthPlayerTileRepository->findBy([ 'player' => $player ]);
+        $playerTilesByTile = [];
+
+        foreach($playerTiles as $t)
+            $playerTilesByTile[$t->getTile()->getId()] = $t;
+
+        $data = [];
+
+        foreach($map as $tile)
+        {
+            $playerTile = array_key_exists($tile->getId(), $playerTilesByTile)
+                ? $playerTilesByTile[$tile->getId()]
+                : null
+            ;
+
+            $card = $playerTile ? $playerTile->getCard() : $tile->getCard();
+
+            if($card)
+                $data[] = $card->getId();
+        }
+
+        return $data;
+
     }
 
     public function getMap(User $player): array
@@ -83,6 +110,7 @@ class HollowEarthService
             $card = $playerTile ? $playerTile->getCard() : $tile->getCard();
 
             $data[] = [
+                'id' => $tile->getId(),
                 'x' => $tile->getX(),
                 'y' => $tile->getY(),
                 'name' => $card ? $card->getName() : null,
@@ -144,9 +172,12 @@ class HollowEarthService
 
         $this->enterTile($player, $tile);
 
+        $card = $this->getEffectiveTileCard($player, $tile);
+        $event = $card ? $card->getEvent() : null;
+
         $player
             ->setCurrentTile($tile)
-            ->setCurrentAction($tile->getEvent())
+            ->setCurrentAction($event)
         ;
     }
 
@@ -173,7 +204,9 @@ class HollowEarthService
             $this->enterTile($player, $nextTile);
         }
 
-        $action = $nextTile->getEvent();
+        $card = $this->getEffectiveTileCard($player, $nextTile);
+
+        $action = $card ? $card->getEvent() : null;
 
         $player
             ->setCurrentTile($nextTile)
@@ -196,7 +229,6 @@ class HollowEarthService
         }
 
         return $this->hollowEarthTileRepository->findOneBy([
-            'zone' => $player->getCurrentTile()->getZone(),
             'x' => $x,
             'y' => $y,
         ]);
@@ -211,13 +243,28 @@ class HollowEarthService
     {
         $player->setCurrentTile($tile);
 
-        if($player->getMovesRemaining() === 0 || $tile->getRequiredAction() === HollowEarthRequiredActionEnum::YES_AND_KEEP_MOVING)
-            $this->doImmediateEvent($player, $tile->getEvent());
-        else if ($tile->getRequiredAction() === HollowEarthRequiredActionEnum::YES_AND_STOP_MOVING)
+        $card = $this->getEffectiveTileCard($player, $tile);
+
+        if(!$card)
+            return;
+
+        if($player->getMovesRemaining() === 0 || $card->getRequiredAction() === HollowEarthRequiredActionEnum::YES_AND_KEEP_MOVING)
+            $this->doImmediateEvent($player, $card->getEvent());
+        else if ($card && $card->getRequiredAction() === HollowEarthRequiredActionEnum::YES_AND_STOP_MOVING)
         {
             $player->setMovesRemaining(0);
-            $this->doImmediateEvent($player, $tile->getEvent());
+            $this->doImmediateEvent($player, $card->getEvent());
         }
+    }
+
+    private function getEffectiveTileCard(HollowEarthPlayer $player, HollowEarthTile $tile): ?HollowEarthTileCard
+    {
+        $playerTile = $this->hollowEarthPlayerTileRepository->findOneBy([
+            'player' => $player->getUser(),
+            'tile' => $tile,
+        ]);
+
+        return $playerTile ? $playerTile->getCard() : $tile->getCard();
     }
 
     /**

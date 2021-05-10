@@ -30,14 +30,14 @@ class Inventory
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "myInventory", "greenhouseFertilizer", "mySeeds", "fireplaceFuel", "dragonTreasure"})
+     * @Groups({"myPet", "myInventory", "greenhouseFertilizer", "mySeeds", "fireplaceFuel", "dragonTreasure", "myHollowEarthTiles"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Item::class, inversedBy="inventory")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "greenhouseFertilizer", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "petGroupDetails", "dragonTreasure"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "greenhouseFertilizer", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "petGroupDetails", "dragonTreasure", "myHollowEarthTiles"})
      */
     private $item;
 
@@ -79,7 +79,7 @@ class Inventory
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"myInventory", "fireplaceFuel", "myGreenhouse", "myPet", "dragonTreasure"})
+     * @Groups({"myInventory", "fireplaceFuel", "myGreenhouse", "myPet", "dragonTreasure", "myHollowEarthTiles"})
      */
     private $sellPrice;
 

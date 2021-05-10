@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\HollowEarthTileCardRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 /**
  * @ORM\Entity(repositoryClass=HollowEarthTileCardRepository::class)
@@ -24,6 +26,7 @@ class HollowEarthTileCard
 
     /**
      * @ORM\Column(type="string", length=40)
+     * @Groups({"myInventory", "itemEncyclopedia"})
      */
     private $name;
 
@@ -40,6 +43,7 @@ class HollowEarthTileCard
     /**
      * @ORM\ManyToOne(targetEntity=HollowEarthTileType::class)
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"myInventory", "itemEncyclopedia"})
      */
     private $type;
 
@@ -89,12 +93,12 @@ class HollowEarthTileCard
         return $this;
     }
 
-    public function getType(): ?HollowEarthTileType
+    public function getType(): HollowEarthTileType
     {
         return $this->type;
     }
 
-    public function setType(?HollowEarthTileType $type): self
+    public function setType(HollowEarthTileType $type): self
     {
         $this->type = $type;
 

@@ -4,9 +4,15 @@ namespace App\Entity;
 
 use App\Repository\HollowEarthTileTypeRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=HollowEarthTileTypeRepository::class)
+ * @ORM\Table(
+ *    uniqueConstraints={
+ *        @ORM\UniqueConstraint(name="name_idx", columns={"name"})
+ *    }
+ * )
  */
 class HollowEarthTileType
 {
@@ -19,8 +25,15 @@ class HollowEarthTileType
 
     /**
      * @ORM\Column(type="string", length=40)
+     * @Groups({"myInventory", "itemEncyclopedia"})
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="string", length=10)
+     * @Groups({"myInventory", "itemEncyclopedia"})
+     */
+    private $article;
 
     public function getId(): ?int
     {
@@ -35,6 +48,18 @@ class HollowEarthTileType
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getArticle(): ?string
+    {
+        return $this->article;
+    }
+
+    public function setArticle(string $article): self
+    {
+        $this->article = $article;
 
         return $this;
     }

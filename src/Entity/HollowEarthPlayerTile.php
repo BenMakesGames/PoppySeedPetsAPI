@@ -7,6 +7,11 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=HollowEarthPlayerTileRepository::class)
+ * @ORM\Table(
+ *     uniqueConstraints={
+ *         @ORM\UniqueConstraint(name="player_id_tile_id_idx", columns={"player_id", "tile_id"})
+ *     }
+ * )
  */
 class HollowEarthPlayerTile
 {
@@ -31,7 +36,6 @@ class HollowEarthPlayerTile
 
     /**
      * @ORM\ManyToOne(targetEntity=HollowEarthTileCard::class)
-     * @ORM\JoinColumn(nullable=false)
      */
     private $card;
 

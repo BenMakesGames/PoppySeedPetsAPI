@@ -101,7 +101,7 @@ class HollowEarthPlayer
         return $this;
     }
 
-    public function getMovesRemaining(): ?int
+    public function getMovesRemaining(): int
     {
         return $this->movesRemaining;
     }
