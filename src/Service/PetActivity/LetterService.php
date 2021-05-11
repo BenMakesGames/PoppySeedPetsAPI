@@ -280,7 +280,7 @@ class LetterService
 
         if($nextLetter->getAttachment())
         {
-            $item = $this->inventoryService->receiveItem($nextLetter->getAttachment(), $user, null, 'This item was sent by ' . $sender . ', along with a letter.', LocationEnum::HOME);
+            $item = $this->inventoryService->receiveItem($nextLetter->getAttachment(), $user, null, 'This item was sent by ' . $sender . ', along with a letter.', LocationEnum::HOME, true);
 
             if($nextLetter->getBonus()) $item->setEnchantment($nextLetter->getBonus());
             if($nextLetter->getSpice()) $item->setSpice($nextLetter->getSpice());

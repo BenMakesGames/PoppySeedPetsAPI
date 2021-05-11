@@ -10,4 +10,5 @@ final class HollowEarthActionTypeEnum
     public const PAY_ITEM = 'payItem?';
     public const PAY_MONEY = 'payMoneys?';
     public const CHOOSE_ONE = 'chooseOne';
+    public const ONWARD = 'onward';
 }

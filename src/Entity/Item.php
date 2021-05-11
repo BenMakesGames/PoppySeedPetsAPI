@@ -23,7 +23,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=45, unique=true)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "fireplaceMantle", "fireplaceFuel", "myBeehive", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "fireplaceMantle", "fireplaceFuel", "myBeehive", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids", "myHollowEarthTiles"})
      */
     private $name;
 
@@ -35,7 +35,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "myBeehive", "petGroupDetails", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "myBeehive", "petGroupDetails", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids", "myHollowEarthTiles"})
      */
     private $image;
 
@@ -121,6 +121,12 @@ class Item
      * @ORM\Column(type="boolean")
      */
     private $isBug = false;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=HollowEarthTileCard::class)
+     * @Groups({"myInventory", "itemEncyclopedia"})
+     */
+    private $hollowEarthTileCard;
 
     public function getId(): ?int
     {
@@ -403,6 +409,18 @@ class Item
     public function setIsBug(bool $isBug): self
     {
         $this->isBug = $isBug;
+
+        return $this;
+    }
+
+    public function getHollowEarthTileCard(): ?HollowEarthTileCard
+    {
+        return $this->hollowEarthTileCard;
+    }
+
+    public function setHollowEarthTileCard(?HollowEarthTileCard $hollowEarthTileCard): self
+    {
+        $this->hollowEarthTileCard = $hollowEarthTileCard;
 
         return $this;
     }

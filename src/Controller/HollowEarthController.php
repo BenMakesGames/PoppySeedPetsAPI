@@ -2,6 +2,8 @@
 namespace App\Controller;
 
 use App\Entity\HollowEarthPlayer;
+use App\Entity\HollowEarthPlayerTile;
+use App\Entity\HollowEarthTileType;
 use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
@@ -9,6 +11,9 @@ use App\Enum\HollowEarthActionTypeEnum;
 use App\Enum\HollowEarthRequiredActionEnum;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Functions\ArrayFunctions;
+use App\Repository\HollowEarthPlayerTileRepository;
+use App\Repository\HollowEarthTileRepository;
 use App\Repository\InventoryRepository;
 use App\Service\CalendarService;
 use App\Service\HollowEarthService;
@@ -42,6 +47,168 @@ class HollowEarthController extends PoppySeedPetsController
             throw new AccessDeniedHttpException();
 
         return $responseService->success($hollowEarthService->getResponseData($user), [ SerializationGroupEnum::HOLLOW_EARTH ]);
+    }
+
+    /**
+     * @Route("/myTiles", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getMyTiles(
+        InventoryRepository $inventoryRepository, ResponseService $responseService, Request $request
+    )
+    {
+        $user = $this->getUser();
+        $player = $user->getHollowEarthPlayer();
+
+        if($player === null)
+            throw new AccessDeniedHttpException();
+
+        $types = $request->query->get('types', []);
+
+        if(!is_array($types) || count($types) === 0)
+            throw new UnprocessableEntityHttpException('The types of tiles is missing.');
+
+        $tiles = $inventoryRepository->findHollowEarthTiles($user, $types);
+
+        return $responseService->success($tiles, [ SerializationGroupEnum::MY_HOLLOW_EARTH_TILES ]);
+    }
+
+
+
+    /**
+     * @Route("/removeTileCard", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function removeTileCard(
+        Request $request, HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository,
+        ResponseService $responseService, EntityManagerInterface $em, HollowEarthTileRepository $hollowEarthTileRepository,
+        InventoryRepository $inventoryRepository, HollowEarthService $hollowEarthService
+    )
+    {
+        $user = $this->getUser();
+        $player = $user->getHollowEarthPlayer();
+
+        if($player === null)
+            throw new AccessDeniedHttpException();
+
+        if($player->getCurrentAction())
+            throw new UnprocessableEntityHttpException('You can\'t change the map while you\'re moving!');
+
+        $tileId = $request->request->getInt('tile', 0);
+
+        $tile = $hollowEarthTileRepository->find($tileId);
+
+        if(!$tile)
+            throw new UnprocessableEntityHttpException('That space in the Hollow Earth does not exist?!?! (Maybe reload and try again...)');
+
+        if($tile->getCard() && $tile->getCard()->getType()->getName() === 'Fixed')
+            throw new UnprocessableEntityHttpException('That space in the Hollow Earth cannot be changed!');
+
+        $existingPlayerTile = $hollowEarthPlayerTileRepository->findOneBy([
+            'player' => $user,
+            'tile' => $tile,
+        ]);
+
+        if($existingPlayerTile)
+        {
+            $existingPlayerTile->setCard(null);
+        }
+        else
+        {
+            $playerTile = (new HollowEarthPlayerTile())
+                ->setPlayer($user)
+                ->setTile($tile)
+                ->setCard(null)
+            ;
+
+            $em->persist($playerTile);
+        }
+
+        $em->flush();
+
+        return $responseService->success();
+    }
+
+    /**
+     * @Route("/setTileCard", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function setTileCard(
+        Request $request, HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository,
+        ResponseService $responseService, EntityManagerInterface $em, HollowEarthTileRepository $hollowEarthTileRepository,
+        InventoryRepository $inventoryRepository, HollowEarthService $hollowEarthService
+    )
+    {
+        $user = $this->getUser();
+        $player = $user->getHollowEarthPlayer();
+
+        if($player === null)
+            throw new AccessDeniedHttpException();
+
+        if($player->getCurrentAction())
+            throw new UnprocessableEntityHttpException('You can\'t change the map while you\'re moving!');
+
+        $tileId = $request->request->getInt('tile', 0);
+        $inventoryId = $request->request->getInt('item', 0);
+
+        $tile = $hollowEarthTileRepository->find($tileId);
+
+        if(!$tile)
+            throw new UnprocessableEntityHttpException('That space in the Hollow Earth does not exist?!?! (Maybe reload and try again...)');
+
+        if($tile->getCard() && $tile->getCard()->getType()->getName() === 'Fixed')
+            throw new UnprocessableEntityHttpException('That space in the Hollow Earth cannot be changed!');
+
+        $inventory = $inventoryRepository->findOneBy([
+            'id' => $inventoryId,
+            'owner' => $user,
+            'location' => LocationEnum::HOME
+        ]);
+
+        if(!$inventory)
+            throw new UnprocessableEntityHttpException('That item couldn\'t be found! (Reload and try again.)');
+
+        $card = $inventory->getItem()->getHollowEarthTileCard();
+
+        if(!$card)
+            throw new UnprocessableEntityHttpException('That item isn\'t a Hollow Earth Tile! (Weird! Reload and try again...)');
+
+        $canUseTile = ArrayFunctions::any($tile->getTypes(), fn(HollowEarthTileType $tt) => $tt->getId() === $card->getType()->getId());
+
+        if(!$canUseTile)
+            throw new UnprocessableEntityHttpException('You can\'t use that Tile on this space! (The types don\'t match!)');
+
+        $cardIdsOnMap = $hollowEarthService->getAllCardIdsOnMap($user);
+
+        if(array_search($card->getId(), $cardIdsOnMap))
+            throw new UnprocessableEntityHttpException('You already have that Tile on the map! (Each Tile can only appear once!)');
+
+        $existingPlayerTile = $hollowEarthPlayerTileRepository->findOneBy([
+            'player' => $user,
+            'tile' => $tile,
+        ]);
+
+        if($existingPlayerTile)
+        {
+            $existingPlayerTile->setCard($card);
+        }
+        else
+        {
+            $playerTile = (new HollowEarthPlayerTile())
+                ->setPlayer($user)
+                ->setTile($tile)
+                ->setCard($card)
+            ;
+
+            $em->persist($playerTile);
+        }
+
+        $em->remove($inventory);
+        $em->flush();
+
+        $responseService->setReloadInventory();
+
+        return $responseService->success();
     }
 
     /**
@@ -132,6 +299,10 @@ class HollowEarthController extends PoppySeedPetsController
 
                 case HollowEarthActionTypeEnum::MOVE_TO:
                     $hollowEarthService->moveTo($player, $action['id']);
+                    break;
+
+                case HollowEarthActionTypeEnum::ONWARD:
+                    $player->setCurrentAction(null);
                     break;
 
                 default:

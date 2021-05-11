@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 
+use App\Entity\User;
 use App\Repository\ItemRepository;
 
 class FloristService
@@ -14,7 +15,7 @@ class FloristService
         $this->itemRepository = $itemRepository;
     }
 
-    public function getInventory(): array
+    public function getInventory(User $user): array
     {
         $flowerbomb = $this->itemRepository->findOneByName('Flowerbomb');
 
@@ -37,6 +38,16 @@ class FloristService
             $inventory[] = [
                 'item' => [ 'name' => $chocolateBomb->getName(), 'image' => $chocolateBomb->getImage() ],
                 'cost' => 100
+            ];
+        }
+
+        if($user->getUnlockedHollowEarth())
+        {
+            $flowerBasketTile = $this->itemRepository->findOneByName('Tile: Flower Basket');
+
+            $inventory[] = [
+                'item' => [ 'name' => $flowerBasketTile->getName(), 'image' => $flowerBasketTile->getImage() ],
+                'cost' => 20
             ];
         }
 

@@ -59,7 +59,28 @@ class InventoryRepository extends ServiceEntityRepository
             ->setParameter('home', LocationEnum::HOME)
             ->getQuery()
             ->execute()
-            ;
+        ;
+    }
+
+    /**
+     * @return Inventory[]
+     */
+    public function findHollowEarthTiles(User $owner, array $types): array
+    {
+        return $this->createQueryBuilder('i')
+            ->leftJoin('i.item', 'item')
+            ->leftJoin('item.hollowEarthTileCard', 'tileCard')
+            ->leftJoin('tileCard.type', 'type')
+            ->andWhere('i.owner=:user')
+            ->andWhere('i.location=:home')
+            ->andWhere('item.hollowEarthTileCard IS NOT NULL')
+            ->andWhere('type.name IN (:allowedTypes)')
+            ->setParameter('user', $owner->getId())
+            ->setParameter('home', LocationEnum::HOME)
+            ->setParameter('allowedTypes', $types)
+            ->getQuery()
+            ->execute()
+        ;
     }
 
     public function findOneToConsume(User $owner, string $itemName): ?Inventory

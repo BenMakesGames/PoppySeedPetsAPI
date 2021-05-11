@@ -17,6 +17,7 @@ class BookstoreService
     private $userQuestRepository;
     private $inventoryService;
     private $itemRepository;
+    private $calendarService;
 
     const BOOKSTORE_QUEST_NAME = 'Items Given to Bookstore';
 
@@ -113,13 +114,14 @@ class BookstoreService
 
     public function __construct(
         UserStatsRepository $userStatsRepository, UserQuestRepository $userQuestRepository,
-        InventoryService $inventoryService, ItemRepository $itemRepository
+        InventoryService $inventoryService, ItemRepository $itemRepository, CalendarService $calendarService
     )
     {
         $this->userStatsRepository = $userStatsRepository;
         $this->userQuestRepository = $userQuestRepository;
         $this->inventoryService = $inventoryService;
         $this->itemRepository = $itemRepository;
+        $this->calendarService = $calendarService;
     }
 
     public function getBookstoreQuestStep(int $step): ?array
@@ -158,7 +160,40 @@ class BookstoreService
         $bookstoreQuestStep->setValue($bookstoreQuestStep->getValue() + 1);
     }
 
-    public function getAvailableInventory(User $user)
+    public function getAvailableCafe(User $user)
+    {
+        $cafePrices = [
+            'Coffee Bean Tea' => 8,
+            'Shortbread Cookies' => 11,
+            'Berry Muffin' => 12,
+            'Pumpkin Bread' => 13,
+            'Chocomilk' => 11
+        ];
+
+        if($this->calendarService->getMonthAndDay() >= 1100)
+        {
+            $cafePrices[] = [ 'Eggnog' => 12 ];
+        }
+
+        return $cafePrices;
+
+    }
+
+    public function getAvailableGames(User $user)
+    {
+        $gamePrices = [
+        ];
+
+        if($user->getUnlockedHollowEarth())
+        {
+            $gamePrices['Formation'] = 15;
+            $gamePrices['Hollow Earth Booster Pack'] = 200;
+        }
+
+        return $gamePrices;
+    }
+
+    public function getAvailableBooks(User $user)
     {
         $bookPrices = [
             'Welcome Note' => 10, // remember: this item can be turned into plain paper
@@ -212,11 +247,6 @@ class BookstoreService
         if($user->getUnlockedFireplace())
         {
             $bookPrices['Melt'] = 25;
-        }
-
-        if($user->getUnlockedHollowEarth())
-        {
-            $bookPrices['Formation'] = 15;
         }
 
         if($itemsDonatedToMuseum)
@@ -274,17 +304,6 @@ class BookstoreService
 
     public function getResponseData(User $user)
     {
-        $bookPrices = $this->getAvailableInventory($user);
-
-        $bookItems = $this->itemRepository->findBy([ 'name' => array_keys($bookPrices) ], [ 'name' => 'ASC' ]);
-
-        $books = array_map(function(Item $bookItem) use($bookPrices) {
-            return [
-                'item' => $bookItem,
-                'price' => $bookPrices[$bookItem->getName()]
-            ];
-        }, $bookItems);
-
         if($this->renamingScrollAvailable($user))
         {
             $bookstoreQuestStep = $this->userQuestRepository->findOrCreate($user, BookstoreService::BOOKSTORE_QUEST_NAME, 0);
@@ -294,8 +313,51 @@ class BookstoreService
             $quest = null;
 
         return [
-            'books' => $books,
+            'books' => $this->getBooks($user),
+            'games' => $this->getGames($user),
+            'cafe' => $this->getCafe($user),
             'quest' => $quest,
         ];
+    }
+
+    /**
+     * @param User $user
+     * @return array|array[]
+     */
+    public function getBooks(User $user): array
+    {
+        $bookPrices = $this->getAvailableBooks($user);
+
+        return $this->serializeShopInventory($bookPrices);
+    }
+
+    /**
+     * @param array $bookPrices
+     * @return array|array[]
+     */
+    private function serializeShopInventory(array $inventory): array
+    {
+        $items = $this->itemRepository->findBy([ 'name' => array_keys($inventory) ], [ 'name' => 'ASC' ]);
+
+        return array_map(
+            fn(Item $item) => [
+                'item' => $item,
+                'price' => $inventory[$item->getName()]
+            ], $items
+        );
+    }
+
+    public function getGames(User $user): array
+    {
+        $gamePrices = $this->getAvailableGames($user);
+
+        return $this->serializeShopInventory($gamePrices);
+    }
+
+    public function getCafe(User $user): array
+    {
+        $cafePrices = $this->getAvailableCafe($user);
+
+        return $this->serializeShopInventory($cafePrices);
     }
 }
