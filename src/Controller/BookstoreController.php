@@ -64,11 +64,11 @@ class BookstoreController extends PoppySeedPetsController
     }
 
     /**
-     * @Route("/{book}/buy", methods={"POST"})
+     * @Route("/{item}/buy", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function buyBook(
-        Item $book, BookstoreService $bookstoreService, InventoryService $inventoryService, EntityManagerInterface $em,
+        Item $item, BookstoreService $bookstoreService, InventoryService $inventoryService, EntityManagerInterface $em,
         ResponseService $responseService, TransactionService $transactionService
     )
     {
@@ -77,18 +77,22 @@ class BookstoreController extends PoppySeedPetsController
         if($user->getUnlockedBookstore() === null)
             throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
 
-        $bookPrices = $bookstoreService->getAvailableInventory($user);
+        $bookPrices = $bookstoreService->getAvailableBooks($user);
+        $gamePrices = $bookstoreService->getAvailableGames($user);
+        $cafePrices = $bookstoreService->getAvailableCafe($user);
 
-        if(!array_key_exists($book->getName(), $bookPrices))
+        $allPrices = array_merge($bookPrices, $gamePrices, $cafePrices);
+
+        if(!array_key_exists($item->getName(), $allPrices))
             throw new UnprocessableEntityHttpException('That item cannot be purchased.');
 
-        if($user->getMoneys() < $bookPrices[$book->getName()])
-            throw new UnprocessableEntityHttpException('You don\'t have enough money to buy ' . $book->getName() . '.');
+        if($user->getMoneys() < $allPrices[$item->getName()])
+            throw new UnprocessableEntityHttpException('You don\'t have enough money to buy ' . $item->getName() . '.');
 
-        $cost = $bookPrices[$book->getName()];
-        $transactionService->spendMoney($user, $cost, 'You bought ' . $book->getName() . ' from the Bookstore.');
+        $cost = $allPrices[$item->getName()];
+        $transactionService->spendMoney($user, $cost, 'You bought ' . $item->getName() . ' from the Bookstore.');
 
-        $inventoryService->receiveItem($book, $user, null, $user->getName() . ' bought this from the Book Store.', LocationEnum::HOME, true);
+        $inventoryService->receiveItem($item, $user, null, $user->getName() . ' bought this from the Book Store.', LocationEnum::HOME, true);
 
         $em->flush();
 

@@ -73,12 +73,12 @@ class HollowEarthPlayer
         return $this;
     }
 
-    public function getCurrentTile(): ?HollowEarthTile
+    public function getCurrentTile(): HollowEarthTile
     {
         return $this->currentTile;
     }
 
-    public function setCurrentTile(?HollowEarthTile $currentTile): self
+    public function setCurrentTile(HollowEarthTile $currentTile): self
     {
         $this->currentTile = $currentTile;
         $this->currentDirection = $currentTile->getMoveDirection();

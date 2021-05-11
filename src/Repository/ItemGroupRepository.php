@@ -19,32 +19,8 @@ class ItemGroupRepository extends ServiceEntityRepository
         parent::__construct($registry, ItemGroup::class);
     }
 
-    // /**
-    //  * @return ItemGroup[] Returns an array of ItemGroup objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findOneByName(string $name): ItemGroup
     {
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('i.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->findOneBy([ 'name' => $name ]);
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?ItemGroup
-    {
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

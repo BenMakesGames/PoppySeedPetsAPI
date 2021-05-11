@@ -305,10 +305,12 @@ class HollowEarthService
         {
             $description = $this->formatEventDescription($event['description'], $player);
 
+            $currentCard = $this->getEffectiveTileCard($player, $player->getCurrentTile());
+
             $activityLog = (new PetActivityLog())
                 ->setPet($pet)
                 ->setEntry($description)
-                ->setIcon('')
+                ->setIcon($currentCard && $currentCard->getImage() ? 'hollow-earth/tile/' . $player->getCurrentTile()->getCard()->getImage() : '')
                 ->setChanges($petChanges->compare($pet))
                 ->setViewed()
             ;

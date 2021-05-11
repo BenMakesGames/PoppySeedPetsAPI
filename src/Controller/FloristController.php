@@ -43,7 +43,7 @@ class FloristController extends PoppySeedPetsController
         if($user->getUnlockedFlorist() === null)
             throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
 
-        return $responseService->success($floristService->getInventory());
+        return $responseService->success($floristService->getInventory($user));
     }
 
     /**
@@ -61,7 +61,7 @@ class FloristController extends PoppySeedPetsController
         if($user->getUnlockedFlorist() === null)
             throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
 
-        $offers = $floristService->getInventory();
+        $offers = $floristService->getInventory($user);
         $userPickName = $request->request->get('item');
 
         $userPick = ArrayFunctions::find_one($offers, fn($o) => $o['item']['name'] === $userPickName);
