@@ -44,10 +44,10 @@ class BoosterPackController extends PoppySeedPetsItemController
         ];
 
         $tileNames = [
-            $tiles[0]->getName() . ' _(★)_',
-            $tiles[1]->getName() . ' _(★)_',
-            $tiles[2]->getName() . ' _(★★)_',
-            $tiles[3]->getName() . ' _(★★★)_',
+            $tiles[0]->getName() . ' (☆)',
+            $tiles[1]->getName() . ' (☆)',
+            $tiles[2]->getName() . ' (☆☆)',
+            $tiles[3]->getName() . ' (☆☆☆)',
         ];
 
         foreach($tiles as $tile)
