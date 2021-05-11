@@ -34,7 +34,7 @@ class BoosterPackController extends PoppySeedPetsItemController
 
         $commons = $itemGroupRepository->findOneByName('Hollow Earth Booster Pack: Common');
         $uncommons = $itemGroupRepository->findOneByName('Hollow Earth Booster Pack: Uncommon');
-        $rares = $itemGroupRepository->findOneByName('Hollow Earth Booster Pack: Uncommon');
+        $rares = $itemGroupRepository->findOneByName('Hollow Earth Booster Pack: Rare');
 
         $tiles = [
             $inventoryService->getRandomItemFromItemGroup($commons),
