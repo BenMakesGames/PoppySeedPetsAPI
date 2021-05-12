@@ -310,7 +310,7 @@ class HollowEarthService
             $activityLog = (new PetActivityLog())
                 ->setPet($pet)
                 ->setEntry($description)
-                ->setIcon(($currentCard && $currentCard->getImage()) ? ('hollow-earth/tile/' . $player->getCurrentTile()->getCard()->getImage()) : '')
+                ->setIcon(($currentCard && $currentCard->getImage()) ? ('hollow-earth/tile/' . $currentCard->getImage()) : '')
                 ->setChanges($petChanges->compare($pet))
                 ->setViewed()
             ;
