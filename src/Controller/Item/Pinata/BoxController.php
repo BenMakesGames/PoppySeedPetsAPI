@@ -11,6 +11,7 @@ use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\InventoryRepository;
+use App\Repository\ItemGroupRepository;
 use App\Repository\ItemRepository;
 use App\Repository\PetRepository;
 use App\Repository\SpiceRepository;
@@ -396,7 +397,8 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openGamingBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService,
+        ItemGroupRepository $itemGroupRepository
     )
     {
         $user = $this->getUser();
@@ -416,15 +418,19 @@ class BoxController extends PoppySeedPetsItemController
         for($i = 0; $i < 2; $i++)
             $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray($dice), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 
-        $itemName = $squirrel3->rngNextFromArray([
-            'Browser Cookie', 'Browser Cookie',
-            'Sweet Coffee Bean Tea', 'Coffee Bean Tea', 'Sweet Black Tea', // caffeine
-            'Music Note',
-            'Toadstool'
-        ]);
+        // one tile
+        $r = $squirrel3->rngNextInt(1, 6);
 
-        // one of something else
-        $newInventory[] = $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
+        if($r === 6)
+            $rarityGroup = $itemGroupRepository->findOneByName('Hollow Earth Booster Pack: Rare');
+        else if($r >= 4)
+            $rarityGroup = $itemGroupRepository->findOneByName('Hollow Earth Booster Pack: Uncommon');
+        else
+            $rarityGroup = $itemGroupRepository->findOneByName('Hollow Earth Booster Pack: Common');
+
+        $tile = $inventoryService->getRandomItemFromItemGroup($rarityGroup);
+
+        $newInventory[] = $inventoryService->receiveItem($tile, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 
         if($squirrel3->rngNextInt(1, 10) === 1)
             $newInventory[] = $inventoryService->receiveItem('Glowing Twenty-sided Die', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
