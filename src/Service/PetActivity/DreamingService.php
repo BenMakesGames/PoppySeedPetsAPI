@@ -65,7 +65,7 @@ class DreamingService
         'taking a break',
         'chilling',
         'treasure-hunting',
-        'fighting %a_monster%',
+        'fighting %a_wandering_monster%',
         'solving a math problem',
         'drinking %a_drink%',
         'eating %a_food%'
@@ -167,6 +167,9 @@ class DreamingService
         /** @var PetSpecies $species */
         $species = $this->squirrel3->rngNextFromArray($this->petSpeciesRepository->findAll());
 
+        $monsters = [ 'a goblin', 'a dragon', 'a huge ant', 'a plant-monster', 'their own shadow' ];
+        $this->squirrel3->rngNextShuffle($monsters);
+
         $replacements = [
             '%item%' => $itemName,
             '%item_with_article%' => $item->getNameWithArticle(),
@@ -185,7 +188,8 @@ class DreamingService
             '%a_drink%' => $this->squirrel3->rngNextFromArray([ 'a chai milkshake', 'a mango lassi', 'some tea', 'some fruit punch', 'some coconut cordial' ]),
             '%a_food%' => $this->squirrel3->rngNextFromArray([ 'a cellular peptide cake', 'a piece of naan', 'a slice of za', 'some donburi', 'a lobster', 'some succotash', 'a bowl of chili' ]),
             '%a_food_or_drink%' => $this->squirrel3->rngNextFromArray([ '%a_food%', '%a_drink%' ]),
-            '%a_monster%' => $this->squirrel3->rngNextFromArray([ 'a goblin', 'a dragon', 'a huge ant', 'a plant-monster', 'their own shadow' ]),
+            '%a_monster%' => $monsters[0],
+            '%a_wandering_monster%' => $monsters[1],
             '%a_pet_or_monster%' => $this->squirrel3->rngNextFromArray([ 'a %pet_adjective% %species%', '%a_monster%' ]),
         ];
 
