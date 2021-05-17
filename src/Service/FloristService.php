@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Functions\DateFunctions;
 use App\Repository\ItemRepository;
 
 class FloristService
@@ -17,12 +18,14 @@ class FloristService
 
     public function getInventory(User $user): array
     {
+        $now = new \DateTimeImmutable();
         $flowerbomb = $this->itemRepository->findOneByName('Flowerbomb');
+        $fullMoonName = DateFunctions::getFullMoonName($now);
 
         $inventory = [
             [
                 'item' => [ 'name' => $flowerbomb->getName(), 'image' => $flowerbomb->getImage() ],
-                'cost' => 150
+                'cost' => $fullMoonName === 'Flower' ? 75 : 150,
             ]
         ];
 
