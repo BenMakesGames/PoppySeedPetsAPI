@@ -2,9 +2,12 @@
 namespace App\Service\PetActivity\Relationship;
 
 use App\Entity\Pet;
+use App\Entity\PetRelationship;
+use App\Entity\PetSkills;
 use App\Enum\LoveLanguageEnum;
 use App\Enum\MeritEnum;
 use App\Enum\RelationshipEnum;
+use App\Model\ComputedPetSkills;
 use App\Service\PetActivity\PregnancyService;
 use App\Service\Squirrel3;
 
@@ -19,8 +22,11 @@ class LoveService
         $this->squirrel3 = $squirrel3;
     }
 
-    public function expressLove(Pet $giver, Pet $receiver)
+    public function expressLove(PetRelationship $givingPet, PetRelationship $receivingPet)
     {
+        $giver = $givingPet->getPet();
+        $receiver = $receivingPet->getPet();
+
         if($giver->hasMerit(MeritEnum::INTROSPECTIVE) || $giver->hasMerit(MeritEnum::EIDETIC_MEMORY) || $this->squirrel3->rngNextInt(1, 3) === 1)
             $expression = $receiver->getLoveLanguage();
         else
@@ -57,17 +63,46 @@ class LoveService
             ->increaseEsteem($this->squirrel3->rngNextInt(3, 6))
         ;
 
+        // the message array triplets refer to whether the expression is the giver's love language, both of the pets' love languages,
+        // or the receiver's love language. ex:
+        //   [ $giver->getName() . ' liked the thing.', 'They both liked the thing.', $receiver->getName() . ' really liked the thing.' ]
         switch($expression)
         {
             case LoveLanguageEnum::TOUCH:
-                $message = $giver->getName() . ' hung out with ' . $receiver->getName() . '. ' .
-                    [ 'They had fun!', 'They both had an awesome time!', 'They had fun!' ][$side] . ' ' .
-                    $this->sexyTimesEmoji($giver, $receiver) . ' ' .
-                    [ $giver->getName() . ' really appreciated the attention!', '', $receiver->getName() . ' really appreciated the attention!' ][$side]
-                ;
+                $sexyTimesChance = $this->sexyTimeChances($giver, $receiver, $givingPet->getCurrentRelationship());
 
-                if($this->squirrel3->rngNextInt(1, 20) === 1)
-                    $this->pregnancyService->getPregnant($giver, $receiver);
+                $message = $giver->getName() . ' hung out with ' . $receiver->getName() . '. ';
+
+                if($this->squirrel3->rngNextInt(1, 100) <= $sexyTimesChance)
+                {
+                    $message .= $this->sexyTimesEmoji($giver, $receiver) . ' ' .
+                        [ 'They had fun!', 'They both had an awesome time!', 'They had fun!' ][$side] . ' ' .
+                        $this->sexyTimesEmoji($giver, $receiver) . ' ' .
+                        [ $giver->getName() . ' really enjoyed giving ' . $receiver->getName() . ' the attention!', '', $receiver->getName() . ' really appreciated the attention!' ][$side]
+                    ;
+
+                    if($this->squirrel3->rngNextInt(1, 20) === 1)
+                        $this->pregnancyService->getPregnant($giver, $receiver);
+                }
+                else
+                {
+                    if($this->squirrel3->rngNextBool())
+                    {
+                        $message .= ':) ' .
+                            [
+                                $giver->getName() . ' surprised ' . $receiver->getName() . ' with a kiss!',
+                                $giver->getName() . ' surprised ' . $receiver->getName() . ' with a kiss! ' . $receiver->getName() . ' surprised ' . $giver->getName() . ' with a kiss of their own!',
+                                $receiver->getName() . ' was delighted to receive a surprise kiss!'
+                            ][$side]
+                        ;
+                    }
+                    else
+                    {
+                        $message .= ':) ' .
+                            [ $giver->getName() . ' really enjoyed cuddling with ' . $receiver->getName() . '!', 'They both enjoyed cuddling for a while!', $receiver->getName() . ' really appreciated the cuddles!' ][$side]
+                        ;
+                    }
+                }
 
                 break;
 
@@ -98,11 +133,18 @@ class LoveService
                     $giver->getName() . ' ' . ($this->squirrel3->rngNextInt(0, $giver->getSkills()->getMusic()) >= 4 ? 'sang a love song for' : 'gave a love poem to') . ' ' . $receiver->getName() . '! ' .
                     [ $receiver->getName() . ' thought it was a little silly, but very cute.', $receiver->getName() . ' loved it! ' . $giver->getName() . ' was delighted!', $receiver->getName() . ' loved it!' ][$side]
                 ;
+
                 break;
 
             case LoveLanguageEnum::TIME:
                 $message = $giver->getName() . ' hung out with ' . $receiver->getName() . '. ' .
-                    [ $giver->getName() . ' loved just spending the time together!', 'They both had an awesome time!', $receiver->getName() . ' really appreciated the attention!' ][$side]
+                    $this->squirrel3->rngNextFromArray([
+                        'They took a walk on the beach, and got into a staring contest with some seagulls.',
+                        'They went to the park, and watched some pets ' . $this->squirrel3->rngNextFromArray([ 'jousting', 'play Tri-D chess', 'play Kin-Ball' ]) . '.',
+                        'They went to the plaza and made wishes at the fountain.',
+                        'They hung out at the bookstore cafe for a while.'
+                    ]) . ' ' .
+                    [ $giver->getName() . ' loved just spending the time together!', 'They both enjoyed the time spent together!', $receiver->getName() . ' really appreciated the time they spent together!' ][$side]
                 ;
                 break;
 

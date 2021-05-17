@@ -484,7 +484,7 @@ class PetRelationshipService
                 }
                 else if($p1->getCurrentRelationship() === RelationshipEnum::MATE && $this->squirrel3->rngNextInt(1, 5) === 1)
                 {
-                    $message = $this->loveService->expressLove($pet, $friend);
+                    $message = $this->loveService->expressLove($p1, $p2);
                 }
                 else
                 {
