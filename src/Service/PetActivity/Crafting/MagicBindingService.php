@@ -274,6 +274,9 @@ class MagicBindingService
             $magicSmokeWeight = 6;
         }
 
+        if(array_key_exists('Cattail', $quantities) && array_key_exists('Moon Pearl', $quantities) && array_key_exists('Fish', $quantities))
+            $possibilities[] = new ActivityCallback($this, 'createMolly', 8);
+
         if(array_key_exists('Magic Smoke', $quantities))
             $possibilities[] = new ActivityCallback($this, 'magicSmokeToQuint', $magicSmokeWeight);
 
@@ -2553,8 +2556,7 @@ class MagicBindingService
         else if($umbraCheck < 16)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseSafety(-1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bring some Fluff to life, but kept messing up the spell.', 'icons/activity-logs/confused');
         }
         else // success!
@@ -2569,6 +2571,68 @@ class MagicBindingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
             ;
             $this->inventoryService->petCollectsItem('Cattail', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createMolly(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+
+            $pet->increaseEsteem(-2);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            if($pet->getFood() < 4)
+            {
+                $pet->increaseFood(8);
+                $this->inventoryService->loseItem('Fish', $pet->getOwner(), LocationEnum::HOME, 1);
+
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was going to feed a Cattail, but ended up eating the Fish themselves...', '');
+            }
+            else
+            {
+                $this->inventoryService->loseItem('Moon Pearl', $pet->getOwner(), LocationEnum::HOME, 1);
+
+                if($umbraCheck === 2)
+                {
+                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was going to further enchant a Cattail, but accidentally dropped the Moon Pearl, shattering it! They managed to grab a Photon before it could get away, at least!', '');
+                    $this->inventoryService->petCollectsItem('Photon', $pet, $pet->getName() . ' caught this escaping from a shattered Moon Pearl.', $activityLog);
+                    return $activityLog;
+                }
+                else
+                {
+                    return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was going to further enchant a Cattail, but accidentally dropped the Moon Pearl, shattering it! :(', '');
+                }
+            }
+        }
+        else if($umbraCheck < 20)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+
+            if($this->squirrel3->rngNextBool())
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to further enchant a Cattail, but it refused to eat >:(', 'icons/activity-logs/confused');
+            else
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to further enchant a Cattail, but it kept batting the Moon Pearl away >:(', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Fish', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Cattail', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Moon Pearl', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(4);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% fed and enchanted a Cattail, creating a Molly!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+            ;
+            $this->inventoryService->petCollectsItem('Molly', $pet, $pet->getName() . ' created this.', $activityLog);
             return $activityLog;
         }
     }
