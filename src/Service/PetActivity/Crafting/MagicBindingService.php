@@ -260,6 +260,12 @@ class MagicBindingService
             if(array_key_exists('Striped Microcline', $quantities))
                 $possibilities[] = new ActivityCallback($this, 'createWhisperStone', 8);
 
+            if(array_key_exists('Fluff', $quantities))
+            {
+                if(array_key_exists('Snakebite', $quantities) || array_key_exists('Wood\'s Metal', $quantities))
+                    $possibilities[] = new ActivityCallback($this, 'createCattail', 8);
+            }
+
             $magicSmokeWeight = 1;
         }
         else
@@ -2524,6 +2530,45 @@ class MagicBindingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
             ;
             $this->inventoryService->petCollectsItem('Praxilla', $pet, $pet->getName() . ' blessed this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createCattail(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+
+            $pet->increaseEsteem(-2);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bring some Fluff to life, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+        }
+        else if($umbraCheck < 16)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseSafety(-1);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bring some Fluff to life, but kept messing up the spell.', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->inventoryService->loseItem('Quintessence', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseItem('Fluff', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->inventoryService->loseOneOf([ 'Snakebite', 'Wood\'s Metal' ], $pet->getOwner(), LocationEnum::HOME);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(3);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% brought some Fluff to life, and bound it to a sword, creating a Cattail!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+            ;
+            $this->inventoryService->petCollectsItem('Cattail', $pet, $pet->getName() . ' created this.', $activityLog);
             return $activityLog;
         }
     }
