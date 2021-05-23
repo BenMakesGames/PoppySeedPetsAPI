@@ -36,7 +36,7 @@ class BlueprintController extends PoppySeedPetsItemController
      */
     public function installComposter(
         Inventory $inventory, ResponseService $responseService, PetRepository $petRepository, Request $request,
-        PetService $petService, EntityManagerInterface $em
+        PetExperienceService $petExperienceService, EntityManagerInterface $em
     )
     {
         $this->validateInventory($inventory, 'installComposter');
@@ -58,7 +58,7 @@ class BlueprintController extends PoppySeedPetsItemController
         $flashMessage = 'You install the Composter with ' . $pet->getName() . '!';
 
         $this->rewardHelper(
-            $petService, $responseService,
+            $petExperienceService, $responseService,
             $pet,
             null,
             $flashMessage,
@@ -79,7 +79,7 @@ class BlueprintController extends PoppySeedPetsItemController
      */
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, PetService $petService
+        PetRepository $petRepository, PetExperienceService $petExperienceService
     )
     {
         $this->validateInventory($inventory, 'basementBlueprint');
@@ -97,7 +97,7 @@ class BlueprintController extends PoppySeedPetsItemController
         $em->remove($inventory);
 
         $this->rewardHelper(
-            $petService, $responseService,
+            $petExperienceService, $responseService,
             $pet,
             PetSkillEnum::CRAFTS,
             $pet->getName() . ' helps you build the Basement. Together, you\'re done in no time! (Video game logic!) ("Basement" has been added to the menu!)',
@@ -118,7 +118,7 @@ class BlueprintController extends PoppySeedPetsItemController
      */
     public function buildBeehive(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        InventoryRepository $inventoryRepository, BeehiveService $beehiveService, PetService $petService,
+        InventoryRepository $inventoryRepository, BeehiveService $beehiveService, PetExperienceService $petExperienceService,
         PetRepository $petRepository
     )
     {
@@ -158,7 +158,7 @@ class BlueprintController extends PoppySeedPetsItemController
         $beehiveService->createBeehive($user);
 
         $this->rewardHelper(
-            $petService, $responseService,
+            $petExperienceService, $responseService,
             $pet,
             PetSkillEnum::CRAFTS,
             'The blueprint is _super_ tiny, but with the help of a magnifying glass, you\'re able to make it all out, and you and ' . $pet->getName() . ' put the thing together! ("Beehive" has been added to the menu!)',
@@ -176,7 +176,7 @@ class BlueprintController extends PoppySeedPetsItemController
      */
     public function claim(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, PetService $petService
+        PetRepository $petRepository, PetExperienceService $petExperienceService
     )
     {
         $this->validateInventory($inventory, 'greenhouseDeed');
@@ -198,7 +198,7 @@ class BlueprintController extends PoppySeedPetsItemController
         ;
 
         $this->rewardHelper(
-            $petService, $responseService,
+            $petExperienceService, $responseService,
             $pet,
             PetSkillEnum::CRAFTS,
             'You and ' . $pet->getName() . ' clear out a space in the public Greenhouse! ("Greenhouse" has been added to the menu!)',
@@ -218,7 +218,7 @@ class BlueprintController extends PoppySeedPetsItemController
      */
     public function buildBirdBath(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, InventoryRepository $inventoryRepository, PetService $petService
+        PetRepository $petRepository, InventoryRepository $inventoryRepository, PetExperienceService $petExperienceService
     )
     {
         $this->validateInventory($inventory, 'birdBathBlueprint');
@@ -249,7 +249,7 @@ class BlueprintController extends PoppySeedPetsItemController
             $flashMessage .= ' (How alliterative!)';
 
         $this->rewardHelper(
-            $petService, $responseService,
+            $petExperienceService, $responseService,
             $pet,
             PetSkillEnum::CRAFTS,
             $flashMessage,
