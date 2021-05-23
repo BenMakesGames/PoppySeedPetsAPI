@@ -35,7 +35,6 @@ class SmithingService
     private $meteoriteSmithingService;
     private $halloweenSmithingService;
     private $calendarService;
-    private $spiceRepository;
     private $evericeMeltingService;
     private $silverSmithingService;
     private $twuWuvCraftingService;
@@ -43,11 +42,10 @@ class SmithingService
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        GoldSmithingService $goldSmithingService, SilverSmithingService $silverSmithingService,
+        GoldSmithingService $goldSmithingService, SilverSmithingService $silverSmithingService, Squirrel3 $squirrel3,
         IronSmithingService $ironSmithingService, MeteoriteSmithingService $meteoriteSmithingService,
         HalloweenSmithingService $halloweenSmithingService, CalendarService $calendarService,
-        SpiceRepository $spiceRepository, EvericeMeltingService $evericeMeltingService,
-        TwuWuvCraftingService $twuWuvCraftingService, Squirrel3 $squirrel3
+        EvericeMeltingService $evericeMeltingService, TwuWuvCraftingService $twuWuvCraftingService
     )
     {
         $this->inventoryService = $inventoryService;
@@ -58,7 +56,6 @@ class SmithingService
         $this->meteoriteSmithingService = $meteoriteSmithingService;
         $this->halloweenSmithingService = $halloweenSmithingService;
         $this->calendarService = $calendarService;
-        $this->spiceRepository = $spiceRepository;
         $this->evericeMeltingService = $evericeMeltingService;
         $this->silverSmithingService = $silverSmithingService;
         $this->twuWuvCraftingService = $twuWuvCraftingService;
