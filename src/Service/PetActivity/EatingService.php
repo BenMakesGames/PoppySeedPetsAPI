@@ -1,5 +1,5 @@
 <?php
-namespace App\Service;
+namespace App\Service\PetActivity;
 
 use App\Entity\Inventory;
 use App\Entity\Item;
@@ -18,6 +18,13 @@ use App\Model\FortuneCookie;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\UserStatsRepository;
+use App\Service\CravingService;
+use App\Service\InventoryService;
+use App\Service\IRandom;
+use App\Service\PetExperienceService;
+use App\Service\ResponseService;
+use App\Service\Squirrel3;
+use App\Service\StatusEffectService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class EatingService

@@ -11,19 +11,15 @@ use App\Entity\PetActivityLog;
 use App\Entity\Spice;
 use App\Entity\User;
 use App\Enum\EnumInvalidValueException;
-use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
-use App\Enum\MeritEnum;
-use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
-use App\Functions\GrammarFunctions;
 use App\Model\FoodWithSpice;
 use App\Model\ItemQuantity;
-use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\SpiceRepository;
+use App\Service\PetActivity\EatingService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class InventoryService
@@ -34,10 +30,12 @@ class InventoryService
     private $inventoryRepository;
     private $squirrel3;
     private $spiceRepository;
+    private $eatingService;
 
     public function __construct(
         ItemRepository $itemRepository, EntityManagerInterface $em, ResponseService $responseService,
-        InventoryRepository $inventoryRepository, Squirrel3 $squirrel3, SpiceRepository $spiceRepository
+        InventoryRepository $inventoryRepository, Squirrel3 $squirrel3, SpiceRepository $spiceRepository,
+        EatingService $eatingService
     )
     {
         $this->itemRepository = $itemRepository;
@@ -46,6 +44,7 @@ class InventoryService
         $this->inventoryRepository = $inventoryRepository;
         $this->squirrel3 = $squirrel3;
         $this->spiceRepository = $spiceRepository;
+        $this->eatingService = $eatingService;
     }
 
     /**
@@ -372,7 +371,7 @@ class InventoryService
 
         if($item->getFood() !== null && count($pet->getLunchboxItems()) === 0 && $this->squirrel3->rngNextInt(1, 20) < 10 - $pet->getFood() - $pet->getJunk() / 2)
         {
-            if($this->doEat($pet, new FoodWithSpice($item, $spice), $activityLog))
+            if($this->eatingService->doEat($pet, new FoodWithSpice($item, $spice), $activityLog))
                 return null;
         }
 

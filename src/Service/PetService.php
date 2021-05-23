@@ -41,6 +41,7 @@ use App\Service\PetActivity\Crafting\NotReallyCraftsService;
 use App\Service\PetActivity\CraftingService;
 use App\Service\PetActivity\DeepSeaService;
 use App\Service\PetActivity\DreamingService;
+use App\Service\PetActivity\EatingService;
 use App\Service\PetActivity\GatheringHolidayAdventureService;
 use App\Service\PetActivity\FishingService;
 use App\Service\PetActivity\GatheringService;
