@@ -1716,10 +1716,10 @@ class Pet
         return $this->craving;
     }
 
-    public function setCraving(PetCraving $craving): self
+    public function setCraving(?PetCraving $craving): self
     {
         // set the owning side of the relation if necessary
-        if ($craving->getPet() !== $this) {
+        if ($craving && $craving->getPet() !== $this) {
             $craving->setPet($this);
         }
 
