@@ -18,7 +18,7 @@ class PetCraving
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity=Pet::class, inversedBy="craving", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=Pet::class, inversedBy="craving")
      * @ORM\JoinColumn(nullable=false)
      */
     private $pet;
