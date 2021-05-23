@@ -14,6 +14,7 @@ use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
 use App\Service\BeehiveService;
+use App\Service\PetExperienceService;
 use App\Service\PetService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -274,7 +275,7 @@ class BlueprintController extends PoppySeedPetsItemController
         return $pet;
     }
 
-    private function rewardHelper(PetService $petService, ResponseService $responseService, Pet $pet, ?string $skill, string $flashMessage, string $logMessage)
+    private function rewardHelper(PetExperienceService $petExperienceService, ResponseService $responseService, Pet $pet, ?string $skill, string $flashMessage, string $logMessage)
     {
         $squirrel3 = new Squirrel3();
         $changes = new PetChanges($pet);
@@ -287,7 +288,7 @@ class BlueprintController extends PoppySeedPetsItemController
             ->increaseEsteem($squirrel3->rngNextInt(2, 4))
         ;
 
-        $petService->gainAffection($pet, 10);
+        $petExperienceService->gainAffection($pet, 10);
 
         $responseService->addFlashMessage($flashMessage);
 

@@ -10,6 +10,7 @@ use App\Repository\InventoryRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
 use App\Service\CalendarService;
+use App\Service\EatingService;
 use App\Service\Holidays\HalloweenService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -93,7 +94,7 @@ class HalloweenController extends PoppySeedPetsController
     public function giveCandy(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
         Request $request, InventoryRepository $inventoryRepository, CalendarService $calendarService,
-        InventoryService $inventoryService, UserRepository $userRepository, Squirrel3 $squirrel3
+        UserRepository $userRepository, Squirrel3 $squirrel3, EatingService $eatingService
     )
     {
         $user = $this->getUser();
@@ -151,7 +152,7 @@ class HalloweenController extends PoppySeedPetsController
 
             $logMessage = $trickOrTreater->getName() . ' went trick-or-treating at ' . $user->getName() . '\'s house, and received ' . $candy->getItem()->getNameWithArticle() . '!';
 
-            $favoriteFlavorStrength = $inventoryService->getFavoriteFlavorStrength($trickOrTreater, new FoodWithSpice($candy->getItem(), null));
+            $favoriteFlavorStrength = $eatingService->getFavoriteFlavorStrength($trickOrTreater, new FoodWithSpice($candy->getItem(), null));
 
             if($favoriteFlavorStrength > 0)
                 $logMessage .= ' (' . $squirrel3->rngNextFromArray([ 'Just what they wanted!', 'Ah! The good stuff!', 'One of their favorites!' ]) . ')';

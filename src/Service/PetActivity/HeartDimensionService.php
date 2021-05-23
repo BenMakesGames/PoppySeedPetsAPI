@@ -12,10 +12,12 @@ use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Service\EquipmentService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use App\Service\StatusEffectService;
 
 class HeartDimensionService
 {
@@ -23,16 +25,20 @@ class HeartDimensionService
     private $petExperienceService;
     private $inventoryService;
     private $squirrel3;
+    private $statusEffectService;
+    private $equipmentService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        Squirrel3 $squirrel3
+        Squirrel3 $squirrel3, StatusEffectService $statusEffectService, EquipmentService $equipmentService
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->squirrel3 = $squirrel3;
+        $this->statusEffectService = $statusEffectService;
+        $this->equipmentService = $equipmentService;
     }
 
     public function canAdventure(Pet $pet)
@@ -47,7 +53,7 @@ class HeartDimensionService
     {
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
 
-        $this->inventoryService->unequipPet($pet);
+        $this->equipmentService->unequipPet($pet);
 
         return $this->responseService->createActivityLog($pet, 'There being nothing more ' . '%pet:' . $pet->getId() . '.name% can do in the Heart Dimension right now, they put the Heartstone down.', '');
     }
@@ -95,7 +101,7 @@ class HeartDimensionService
     private function unequipHeartstone(Pet $pet, PetActivityLog $activityLog)
     {
         $activityLog->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% put the Heartstone down.');
-        $this->inventoryService->unequipPet($pet);
+        $this->equipmentService->unequipPet($pet);
     }
 
     public function fightAngrySpirit(ComputedPetSkills $petWithSkills)
@@ -172,7 +178,7 @@ class HeartDimensionService
 
         $pet->incrementAffectionAdventures();
 
-        $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::INSPIRED, 24 * 60);
+        $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::INSPIRED, 24 * 60);
 
         return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% relaxed for a while in the Heart Dimension, and became Inspired.', 'icons/activity-logs/heart-dimension');
     }
@@ -219,7 +225,7 @@ class HeartDimensionService
 
         $pet->incrementAffectionAdventures();
 
-        $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::INSPIRED, 24 * 60);
+        $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::INSPIRED, 24 * 60);
 
         $figure = $this->squirrel3->rngNextFromArray([
             [ 'the First Vampire', [ '; it was really scary!', ', but it was oddly calming...' ]],

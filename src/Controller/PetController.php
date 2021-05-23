@@ -28,6 +28,8 @@ use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
+use App\Service\EatingService;
+use App\Service\EquipmentService;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\Filter\PetFilterService;
 use App\Service\Filter\PetRelationshipFilterService;
@@ -467,7 +469,7 @@ class PetController extends PoppySeedPetsController
      */
     public function equipPet(
         Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService
+        EquipmentService $equipmentService
     )
     {
         $user = $this->getUser();
@@ -498,7 +500,7 @@ class PetController extends PoppySeedPetsController
             if($inventory->getId() === $pet->getTool()->getId())
                 throw new UnprocessableEntityHttpException($pet->getName() . ' is already equipped with that ' . $pet->getTool()->getFullItemName() . '!');
 
-            $inventoryService->unequipPet($pet);
+            $equipmentService->unequipPet($pet);
         }
 
         if($inventory->getHolder())
@@ -533,7 +535,7 @@ class PetController extends PoppySeedPetsController
      */
     public function hatPet(
         Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService
+        EquipmentService $equipmentService
     )
     {
         $user = $this->getUser();
@@ -567,7 +569,7 @@ class PetController extends PoppySeedPetsController
             if($inventory->getId() === $pet->getHat()->getId())
                 throw new UnprocessableEntityHttpException($pet->getName() . ' is already wearing that ' . $pet->getHat()->getFullItemName() . '!');
 
-            $inventoryService->unhatPet($pet);
+            $equipmentService->unhatPet($pet);
         }
 
         if($inventory->getHolder())
@@ -615,7 +617,7 @@ class PetController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function unequipPet(
-        Pet $pet, ResponseService $responseService, EntityManagerInterface $em,  InventoryService $inventoryService
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em, EquipmentService $equipmentService
     )
     {
         $user = $this->getUser();
@@ -629,7 +631,7 @@ class PetController extends PoppySeedPetsController
         if(!$pet->getTool())
             throw new UnprocessableEntityHttpException($pet->getName() . ' is not currently equipped.');
 
-        $inventoryService->unequipPet($pet);
+        $equipmentService->unequipPet($pet);
 
         $em->flush();
 
@@ -1173,7 +1175,7 @@ class PetController extends PoppySeedPetsController
      */
     public function feed(
         Pet $pet, Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
-        PetService $petService, EntityManagerInterface $em
+        EntityManagerInterface $em, EatingService $eatingService
     )
     {
         $user = $this->getUser();
@@ -1199,7 +1201,7 @@ class PetController extends PoppySeedPetsController
 
         try
         {
-            $petService->doFeed($pet, $inventory);
+            $eatingService->doFeed($pet, $inventory);
         }
         catch(\Exception $e)
         {

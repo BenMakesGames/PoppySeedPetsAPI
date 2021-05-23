@@ -28,6 +28,7 @@ use App\Service\PetActivity\Guild\TimesArrowService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use App\Service\StatusEffectService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class GuildService
@@ -37,26 +38,14 @@ class GuildService
     private $responseService;
     private $inventoryService;
     private $petExperienceService;
-    private $correspondenceService;
-    private $dwarfCraftService;
     private $gizubisGardenService;
-    private $highImpactService;
-    private $innerSanctumService;
-    private $lightAndShadowService;
-    private $tapestriesService;
-    private $theUniverseForgetsService;
-    private $timesArrowService;
+    private $statusEffectService;
     private $squirrel3;
 
     public function __construct(
         GuildRepository $guildRepository, EntityManagerInterface $em, ResponseService $responseService,
         InventoryService $inventoryService, PetExperienceService $petExperienceService,
-
-        CorrespondenceService $correspondenceService, DwarfCraftService $dwarfCraftService,
-        GizubisGardenService $gizubisGardenService, HighImpactService $highImpactService,
-        InnerSanctumService $innerSanctumService, LightAndShadowService $lightAndShadowService,
-        TapestriesService $tapestriesService, TheUniverseForgetsService $theUniverseForgetsService,
-        TimesArrowService $timesArrowService, Squirrel3 $squirrel3
+        StatusEffectService $statusEffectService, GizubisGardenService $gizubisGardenService, Squirrel3 $squirrel3
     )
     {
         $this->guildRepository = $guildRepository;
@@ -64,16 +53,8 @@ class GuildService
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
-
-        $this->correspondenceService = $correspondenceService;
-        $this->dwarfCraftService = $dwarfCraftService;
+        $this->statusEffectService = $statusEffectService;
         $this->gizubisGardenService = $gizubisGardenService;
-        $this->highImpactService = $highImpactService;
-        $this->innerSanctumService = $innerSanctumService;
-        $this->lightAndShadowService = $lightAndShadowService;
-        $this->tapestriesService = $tapestriesService;
-        $this->theUniverseForgetsService = $theUniverseForgetsService;
-        $this->timesArrowService = $timesArrowService;
         $this->squirrel3 = $squirrel3;
     }
 
@@ -287,7 +268,7 @@ class GuildService
                 else
                 {
                     $message .= ' %pet:' . $pet->getId() . '.name% started feeling ' . $effectToGive['effect'] . '!';
-                    $this->inventoryService->applyStatusEffect($pet, $effectToGive['effect'], $effectToGive['duration']);
+                    $this->statusEffectService->applyStatusEffect($pet, $effectToGive['effect'], $effectToGive['duration']);
                 }
             }
 

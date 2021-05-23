@@ -22,11 +22,13 @@ use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
+use App\Service\EquipmentService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\InventoryModifierService;
 use App\Service\Squirrel3;
+use App\Service\StatusEffectService;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -38,16 +40,17 @@ class TreasureMapService
     private $em;
     private $petExperienceService;
     private $userQuestRepository;
-    private $traderService;
+    private $statusEffectService;
     private $toolBonusService;
     private $squirrel3;
     private $itemRepository;
+    private $equipmentService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         EntityManagerInterface $em, PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
-        TraderService $traderService, InventoryModifierService $toolBonusService, Squirrel3 $squirrel3,
-        ItemRepository $itemRepository
+        StatusEffectService $statusEffectService, InventoryModifierService $toolBonusService, Squirrel3 $squirrel3,
+        ItemRepository $itemRepository, EquipmentService $equipmentService
     )
     {
         $this->responseService = $responseService;
@@ -56,10 +59,11 @@ class TreasureMapService
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
         $this->userQuestRepository = $userQuestRepository;
-        $this->traderService = $traderService;
+        $this->statusEffectService = $statusEffectService;
         $this->toolBonusService = $toolBonusService;
         $this->squirrel3 = $squirrel3;
         $this->itemRepository = $itemRepository;
+        $this->equipmentService = $equipmentService;
     }
 
     public function doCetguelisTreasureMap(ComputedPetSkills $petWithSkills)
@@ -79,7 +83,7 @@ class TreasureMapService
             if($this->squirrel3->rngNextInt(1, 3) === 1)
             {
                 $activityLog->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% put the treasure map down.');
-                $this->inventoryService->unequipPet($pet);
+                $this->equipmentService->unequipPet($pet);
             }
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 90), PetActivityStatEnum::GATHER, false);
@@ -226,7 +230,7 @@ class TreasureMapService
         if($pet->getTool()->isGrayscaling())
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a Leprechaun approached them... but upon seeing %pet:' . $pet->getId() . '.name%\'s pale visage, fled screaming into the woods! (Oops!) %pet:' . $pet->getId() . '.name% put their ' . $pet->getTool()->getFullItemName() . ' down...', '');
-            $this->inventoryService->unequipPet($pet);
+            $this->equipmentService->unequipPet($pet);
             return $activityLog;
         }
 
@@ -254,7 +258,7 @@ class TreasureMapService
         $agk = $this->squirrel3->rngNextFromArray([ 'Agk!', 'Oh dang!', 'Noooo!', 'Quel dommage!', 'Welp!' ]);
 
         $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, a weird, purple energy oozed out of their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . ', and enveloped them! (' . $agk . ' It\'s the Eggplant Curse!)', '');
-        $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::EGGPLANT_CURSED, $this->squirrel3->rngNextInt(24, 48) * 60);
+        $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::EGGPLANT_CURSED, $this->squirrel3->rngNextInt(24, 48) * 60);
 
         $pet
             ->increaseEsteem(-$this->squirrel3->rngNextInt(4, 8))
@@ -300,7 +304,7 @@ class TreasureMapService
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% didn\'t understand what they were supposed to do with the ' . $pet->getTool()->getItem()->getName() . ', so put it down...', '');
 
-            $this->inventoryService->unequipPet($pet);
+            $this->equipmentService->unequipPet($pet);
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(15, 30), PetActivityStatEnum::PROTOCOL_7, false);
 
@@ -412,7 +416,7 @@ class TreasureMapService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Fluffmonger, but didn\'t have any Fluff to trade! They put the ' . $pet->getTool()->getItem()->getName() . ' down...', '');
 
             // didn't have fluff
-            $this->inventoryService->unequipPet($pet);
+            $this->equipmentService->unequipPet($pet);
         }
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);

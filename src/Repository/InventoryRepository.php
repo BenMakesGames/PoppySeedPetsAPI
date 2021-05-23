@@ -179,7 +179,7 @@ class InventoryRepository extends ServiceEntityRepository
     /**
      * @throws EnumInvalidValueException
      */
-    public function countItemsInLocation(User $user, int $location)
+    public function countItemsInLocation(User $user, int $location): int
     {
         if(!LocationEnum::isAValue($location))
             throw new EnumInvalidValueException(LocationEnum::class, $location);

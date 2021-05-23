@@ -9,6 +9,7 @@ use App\Enum\FlavorEnum;
 
 class FoodWithSpice
 {
+    public Item $baseItem;
     public $name;
     public $food;
     public $love;
@@ -39,6 +40,7 @@ class FoodWithSpice
     {
         $food = $item->getFood();
 
+        $this->baseItem = $item;
         $this->name = $item->getName();
         $this->food = $food->getFood();
         $this->love = $food->getLove();

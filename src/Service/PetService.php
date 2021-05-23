@@ -4,7 +4,6 @@ namespace App\Service;
 use App\Entity\GreenhousePlant;
 use App\Entity\Inventory;
 use App\Entity\LunchboxItem;
-use App\Entity\Merit;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetBaby;
@@ -34,7 +33,6 @@ use App\Model\PetChangesSummary;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
-use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\BurntForestService;
 use App\Service\PetActivity\Caerbannog;
@@ -83,7 +81,6 @@ class PetService
     private $poopingService;
     private $givingTreeGatheringService;
     private $pregnancyService;
-    private $petActivityStatsService;
     private $petGroupService;
     private $petExperienceService;
     private $dreamingService;
@@ -100,12 +97,14 @@ class PetService
     private $toolBonusService;
     private $notReallyCraftsService;
     private $letterService;
-    private $userQuestRepository;
     private $squirrel3;
     private $chocolateMansion;
     private $weatherService;
     private $holiService;
     private $caerbannog;
+    private CravingService $cravingService;
+    private StatusEffectService $statusEffectService;
+    private EatingService $eatingService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -115,15 +114,15 @@ class PetService
         TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService,
         Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
         PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService,
-        PregnancyService $pregnancyService, PetActivityStatsService $petActivityStatsService,
+        PregnancyService $pregnancyService, Squirrel3 $squirrel3, ChocolateMansion $chocolateMansion,
         PetGroupService $petGroupService, PetExperienceService $petExperienceService, DreamingService $dreamingService,
         MagicBeanstalkService $beanStalkService, GatheringHolidayAdventureService $gatheringHolidayAdventureService,
         HeartDimensionService $heartDimensionService, PetRelationshipRepository $petRelationshipRepository,
         GuildService $guildService, InventoryService $inventoryService, BurntForestService $burntForestService,
         DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService, LetterService $letterService,
         PetSummonedAwayService $petSummonedAwayService, InventoryModifierService $toolBonusService,
-        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, ChocolateMansion $chocolateMansion,
-        WeatherService $weatherService, HoliService $holiService, Caerbannog $caerbannog
+        WeatherService $weatherService, HoliService $holiService, Caerbannog $caerbannog, CravingService $cravingService,
+        StatusEffectService $statusEffectService, EatingService $eatingService
     )
     {
         $this->em = $em;
@@ -146,7 +145,6 @@ class PetService
         $this->poopingService = $poopingService;
         $this->givingTreeGatheringService = $givingTreeGatheringService;
         $this->pregnancyService = $pregnancyService;
-        $this->petActivityStatsService = $petActivityStatsService;
         $this->petGroupService = $petGroupService;
         $this->petExperienceService = $petExperienceService;
         $this->dreamingService = $dreamingService;
@@ -162,59 +160,13 @@ class PetService
         $this->toolBonusService = $toolBonusService;
         $this->notReallyCraftsService = $notReallyCraftsService;
         $this->letterService = $letterService;
-        $this->userQuestRepository = $userQuestRepository;
         $this->chocolateMansion = $chocolateMansion;
         $this->weatherService = $weatherService;
         $this->holiService = $holiService;
         $this->caerbannog = $caerbannog;
-    }
-
-    /**
-     * @param Pet $pet
-     * @param int $points
-     */
-    public function gainAffection(Pet $pet, int $points)
-    {
-        if($points === 0) return;
-
-        $divideBy = 1;
-
-        if($pet->getFood() + $pet->getAlcohol() < 0) $divideBy++;
-        if($pet->getSafety() + $pet->getAlcohol() < 0) $divideBy++;
-
-        $points = ceil($points / $divideBy);
-
-        if($points === 0) return;
-
-        $previousAffectionLevel = $pet->getAffectionLevel();
-
-        $pet->increaseAffectionPoints($points);
-
-        // if a pet's affection level increased, and you haven't unlocked the park, now you get the park!
-        if($pet->getAffectionLevel() > $previousAffectionLevel && $pet->getOwner()->getUnlockedPark() === null)
-            $pet->getOwner()->setUnlockedPark();
-
-        if($this->calendarService->isValentinesOrAdjacent())
-            $this->maybeGivePlayerTwuWuv($pet);
-    }
-
-    private function maybeGivePlayerTwuWuv(Pet $pet): bool
-    {
-        $alreadyReceived = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Valentines ' . date('Y-m-d'), false);
-
-        if($alreadyReceived->getValue())
-            return false;
-
-        $this->inventoryService->receiveItem('Twu Wuv', $pet->getOwner(), $pet->getOwner(), $pet->getOwner()->getName() . ' received this from ' . $pet->getName() . ' for Valentine\'s Day!', LocationEnum::HOME, true);
-        $this->inventoryService->receiveItem('Twu Wuv', $pet->getOwner(), $pet->getOwner(), $pet->getOwner()->getName() . ' received this from ' . $pet->getName() . ' for Valentine\'s Day!', LocationEnum::HOME, true);
-
-        $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave Twu Wuv to %user:' . $pet->getOwner()->getId() . '.Name% for Valentine\'s Day! (Two of them! Two Twu Wuvs!)', 'items/resource/twu-wuv')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
-        ;
-
-        $alreadyReceived->setValue(true);
-
-        return true;
+        $this->cravingService = $cravingService;
+        $this->statusEffectService = $statusEffectService;
+        $this->eatingService = $eatingService;
     }
 
     public function doPet(Pet $pet)
@@ -230,24 +182,26 @@ class PetService
             $pet->setLastInteracted($now->modify('-20 hours'));
             $pet->increaseSafety(15);
             $pet->increaseLove(15);
-            $this->gainAffection($pet, 10);
+            $this->petExperienceService->gainAffection($pet, 10);
         }
         else if($pet->getLastInteracted() < $now->modify('-20 hours'))
         {
             $pet->setLastInteracted($now->modify('-4 hours'));
             $pet->increaseSafety(10);
             $pet->increaseLove(10);
-            $this->gainAffection($pet, 5);
+            $this->petExperienceService->gainAffection($pet, 5);
         }
         else if($pet->getLastInteracted() < $now->modify('-4 hours'))
         {
             $pet->setLastInteracted($now);
             $pet->increaseSafety(7);
             $pet->increaseLove(7);
-            $this->gainAffection($pet, 1);
+            $this->petExperienceService->gainAffection($pet, 1);
         }
         else
             throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
+
+        $this->cravingService->updateCraving($pet);
 
         $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% pet ' . '%pet:' . $pet->getId() . '.name%'. '.', 'ui/affection', $changes->compare($pet));
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PETTED_A_PET);
@@ -266,156 +220,29 @@ class PetService
             $pet->setLastInteracted($now->modify('-20 hours'));
             $pet->increaseLove(15);
             $pet->increaseEsteem(15);
-            $this->gainAffection($pet, 10);
+            $this->petExperienceService->gainAffection($pet, 10);
         }
         else if($pet->getLastInteracted() < $now->modify('-20 hours'))
         {
             $pet->setLastInteracted($now->modify('-4 hours'));
             $pet->increaseLove(10);
             $pet->increaseEsteem(10);
-            $this->gainAffection($pet, 5);
+            $this->petExperienceService->gainAffection($pet, 5);
         }
         else if($pet->getLastInteracted() < $now->modify('-4 hours'))
         {
             $pet->setLastInteracted($now);
             $pet->increaseLove(7);
             $pet->increaseEsteem(7);
-            $this->gainAffection($pet, 1);
+            $this->petExperienceService->gainAffection($pet, 1);
         }
         else
             throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
 
+        $this->cravingService->updateCraving($pet);
+
         $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% praised ' . '%pet:' . $pet->getId() . '.name%'. '.', 'ui/affection', $changes->compare($pet));
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PRAISED_A_PET);
-    }
-
-    /**
-     * @param Pet $pet
-     * @param Inventory[] $inventory
-     * @return PetActivityLog
-     * @throws EnumInvalidValueException
-     */
-    public function doFeed(Pet $pet, array $inventory): PetActivityLog
-    {
-        if($pet->getInDaycare()) throw new \InvalidArgumentException('Pets in daycare cannot be interacted with.');
-
-        if(ArrayFunctions::any($inventory, function(Inventory $i) { return $i->getItem()->getFood() === null; }))
-            throw new \InvalidArgumentException('At least one of the items selected is not edible!');
-
-        $this->squirrel3->rngNextShuffle($inventory);
-
-        $petChanges = new PetChanges($pet);
-        $foodsEaten = [];
-        /** @var FoodWithSpice[] $favorites */ $favorites = [];
-        $tooFull = [];
-        $tooPoisonous = [];
-        $ateAFortuneCookie = false;
-
-        foreach($inventory as $i)
-        {
-            $food = new FoodWithSpice($i->getItem(), $i->getSpice());
-
-            $itemName = $food->name;
-
-            if($pet->getJunk() + $pet->getFood() >= $pet->getStomachSize())
-            {
-                $tooFull[] = $itemName;
-                continue;
-            }
-
-            if($pet->wantsSobriety() && ($food->alcohol > 0 || $food->caffeine > 0 || $food->psychedelic > 0))
-            {
-                $tooPoisonous[] = $itemName;
-                continue;
-            }
-
-            $this->inventoryService->applyFoodEffects($pet, $food);
-
-            // consider favorite flavor:
-            if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
-                throw new EnumInvalidValueException(FlavorEnum::class, $pet->getFavoriteFlavor());
-
-            $randomFlavor = $food->randomFlavor > 0 ? FlavorEnum::getRandomValue($this->squirrel3) : null;
-
-            $favoriteFlavorStrength = $this->inventoryService->getFavoriteFlavorStrength($pet, $food, $randomFlavor);
-
-            $loveAndEsteemGain = $favoriteFlavorStrength + $food->love;
-
-            $pet
-                ->increaseLove($loveAndEsteemGain)
-                ->increaseEsteem($loveAndEsteemGain)
-            ;
-
-            if($favoriteFlavorStrength > 0)
-            {
-                $this->gainAffection($pet, $favoriteFlavorStrength);
-
-                $favorites[] = $food;
-            }
-
-            $this->em->remove($i);
-
-            if($randomFlavor)
-                $foodsEaten[] = $itemName . ' (ooh! ' . $randomFlavor . '!)';
-            else
-                $foodsEaten[] = $itemName;
-
-            if($itemName === 'Fortune Cookie')
-                $ateAFortuneCookie = true;
-        }
-
-        // gain safety & affection equal to 1/8 food gained, when hand-fed
-        $foodGained = $pet->getFood() - $petChanges->food;
-
-        if($foodGained > 0)
-        {
-            $remainder = $foodGained % 8;
-            $gain = $foodGained >> 3; // ">> 3" === "/ 8"
-
-            if ($remainder > 0 && $this->squirrel3->rngNextInt(1, 8) <= $remainder)
-                $gain++;
-
-            $pet->increaseSafety($gain);
-            $this->gainAffection($pet, $gain);
-
-            if($pet->getPregnancy())
-                $pet->getPregnancy()->increaseAffection($gain);
-
-            $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
-        }
-
-        if(count($foodsEaten) > 0)
-        {
-            $message = '%user:' . $pet->getOwner()->getId() . '.Name% fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.';
-            $icon = 'icons/activity-logs/mangia';
-
-            if(count($favorites) > 0)
-            {
-                $icon = 'ui/affection';
-                $message .= ' ' . $pet->getName() . ' really liked the ' . $this->squirrel3->rngNextFromArray($favorites)->name . '!';
-            }
-
-            if($ateAFortuneCookie)
-            {
-                $message .= ' "' . $this->squirrel3->rngNextFromArray(FortuneCookie::MESSAGES) . '"';
-                if($this->squirrel3->rngNextInt(1, 20) === 1 && $pet->getOwner()->getUnlockedGreenhouse())
-                {
-                    $message .= ' ... in bed!';
-
-                    if($this->squirrel3->rngNextInt(1, 5) === 1)
-                        $message .= ' XD';
-                }
-            }
-
-            return $this->responseService->createActivityLog($pet, $message, $icon, $petChanges->compare($pet));
-        }
-        else
-        {
-            if(count($tooPoisonous) > 0)
-                return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but ' . $this->squirrel3->rngNextFromArray($tooPoisonous) . ' really isn\'t appealing right now.', '');
-            else
-                return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but they\'re too full to eat anymore.', '');
-        }
     }
 
     public function runHour(Pet $pet)
@@ -489,6 +316,8 @@ class PetService
             $pet->increaseEsteem(-1);
         else if($pet->getEsteem() < $esteemRestingPoint && $this->squirrel3->rngNextInt(1, 2) === 1)
             $pet->increaseEsteem(1);
+
+        $this->cravingService->updateCraving($pet);
 
         $pregnancy = $pet->getPregnancy();
 
@@ -586,8 +415,8 @@ class PetService
                 $aFood = new FoodWithSpice($a->getInventoryItem()->getItem(), $a->getInventoryItem()->getSpice());
                 $bFood = new FoodWithSpice($b->getInventoryItem()->getItem(), $b->getInventoryItem()->getSpice());
 
-                $aValue = $this->inventoryService->getFavoriteFlavorStrength($pet, $aFood) + $aFood->love;
-                $bValue = $this->inventoryService->getFavoriteFlavorStrength($pet, $bFood) + $bFood->love;
+                $aValue = $this->eatingService->getFavoriteFlavorStrength($pet, $aFood) + $aFood->love;
+                $bValue = $this->eatingService->getFavoriteFlavorStrength($pet, $bFood) + $bFood->love;
 
                 if($aValue === $bValue)
                     return $bFood->food <=> $aFood->food;
@@ -605,7 +434,7 @@ class PetService
 
                 $food = new FoodWithSpice($itemToEat->getInventoryItem()->getItem(), $itemToEat->getInventoryItem()->getSpice());
 
-                $ateIt = $this->inventoryService->doEat($pet, $food, null);
+                $ateIt = $this->eatingService->doEat($pet, $food, null);
 
                 if($ateIt)
                 {
@@ -681,7 +510,7 @@ class PetService
             !$pet->hasStatusEffect(StatusEffectEnum::WEREFORM)
         )
         {
-            $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::WEREFORM, 1);
+            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::WEREFORM, 1);
         }
 
         if($this->dream($pet))
@@ -690,7 +519,7 @@ class PetService
             return;
         }
 
-        $itemsInHouse = (int)$this->inventoryRepository->countItemsInLocation($pet->getOwner(), LocationEnum::HOME);
+        $itemsInHouse = $this->inventoryRepository->countItemsInLocation($pet->getOwner(), LocationEnum::HOME);
 
         $quantities = $this->inventoryRepository->getInventoryQuantities($pet->getOwner(), LocationEnum::HOME, 'name');
 

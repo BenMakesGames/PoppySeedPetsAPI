@@ -11,6 +11,7 @@ use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use App\Service\StatusEffectService;
 
 class WerecreatureEncounterService
 {
@@ -19,10 +20,11 @@ class WerecreatureEncounterService
     private $itemRepository;
     private $responseService;
     private $inventoryService;
+    private $statusEffectService;
 
     public function __construct(
         PetExperienceService $petExperienceService, Squirrel3 $squirrel3, ItemRepository $itemRepository,
-        ResponseService $responseService, InventoryService $inventoryService
+        ResponseService $responseService, InventoryService $inventoryService, StatusEffectService $statusEffectService
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -30,6 +32,7 @@ class WerecreatureEncounterService
         $this->itemRepository = $itemRepository;
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
+        $this->statusEffectService = $statusEffectService;
     }
 
     public function encounterWerecreature(ComputedPetSkills $petWithSkills, string $doingWhat): PetActivityLog
@@ -105,7 +108,7 @@ class WerecreatureEncounterService
                 'Talon', 'Fluff'
             ]));
 
-            $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
+            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
 
             $pet
                 ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
@@ -130,7 +133,7 @@ class WerecreatureEncounterService
                 ->increaseSafety(-$this->squirrel3->rngNextInt(4, 8))
             ;
 
-            $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
+            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);

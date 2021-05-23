@@ -16,6 +16,7 @@ use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use App\Service\StatusEffectService;
 
 class BurntForestService
 {
@@ -24,10 +25,11 @@ class BurntForestService
     private $inventoryService;
     private $userQuestRepository;
     private $squirrel3;
+    private $statusEffectService;
 
     public function __construct(
         PetExperienceService $petExperienceService, ResponseService $responseService, InventoryService $inventoryService,
-        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3
+        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, StatusEffectService $statusEffectService
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -35,6 +37,7 @@ class BurntForestService
         $this->inventoryService = $inventoryService;
         $this->userQuestRepository = $userQuestRepository;
         $this->squirrel3 = $squirrel3;
+        $this->statusEffectService = $statusEffectService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -146,7 +149,7 @@ class BurntForestService
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a wounded fairy! They bandaged it up; thankful, the Fairy cast a minor blessing on ' . $pet->getName() . '!', '');
 
-            $this->inventoryService->applyStatusEffect($pet, $this->squirrel3->rngNextFromArray([
+            $this->statusEffectService->applyStatusEffect($pet, $this->squirrel3->rngNextFromArray([
                 StatusEffectEnum::INSPIRED, StatusEffectEnum::ONEIRIC, StatusEffectEnum::EXTRA_EXTROVERTED
             ]), 4 * 60);
 

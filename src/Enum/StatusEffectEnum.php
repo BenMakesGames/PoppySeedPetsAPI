@@ -20,4 +20,5 @@ final class StatusEffectEnum
     public const OIL_COVERED = 'Oil-covered';
     public const BUBBLEGUMD = 'Bubblegum\'d';
     public const WEREFORM = 'Wereform';
+    public const VIVACIOUS = 'Vivacious';
 }

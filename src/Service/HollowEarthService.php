@@ -23,6 +23,7 @@ class HollowEarthService
     private $petExperienceService;
     private $transactionService;
     private $hollowEarthPlayerTileRepository;
+    private $statusEffectService;
 
     public const DICE_ITEMS = [
         'Dreidel' => 4,
@@ -35,7 +36,7 @@ class HollowEarthService
     public function __construct(
         HollowEarthTileRepository $hollowEarthTileRepository, EntityManagerInterface $em, InventoryService $inventoryService,
         PetExperienceService $petExperienceService, TransactionService $transactionService,
-        HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository
+        HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository, StatusEffectService $statusEffectService
     )
     {
         $this->hollowEarthTileRepository = $hollowEarthTileRepository;
@@ -44,6 +45,7 @@ class HollowEarthService
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
         $this->hollowEarthPlayerTileRepository = $hollowEarthPlayerTileRepository;
+        $this->statusEffectService = $statusEffectService;
     }
 
     public function unlockHollowEarth(User $user): void
@@ -295,7 +297,7 @@ class HollowEarthService
 
         if(array_key_exists('statusEffect', $event))
         {
-            $this->inventoryService->applyStatusEffect($pet, $event['statusEffect']['status'], $event['statusEffect']['duration']);
+            $this->statusEffectService->applyStatusEffect($pet, $event['statusEffect']['status'], $event['statusEffect']['duration']);
             $doLog = true;
         }
 

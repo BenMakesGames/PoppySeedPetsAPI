@@ -27,6 +27,7 @@ use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\InventoryModifierService;
 use App\Service\Squirrel3;
+use App\Service\StatusEffectService;
 use App\Service\TransactionService;
 use App\Service\WeatherService;
 
@@ -45,13 +46,15 @@ class HuntingService
     private $squirrel3;
     private $werecreatureEncounterService;
     private $weatherService;
+    private $statusEffectService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         CalendarService $calendarService, MuseumItemRepository $museumItemRepository, ItemRepository $itemRepository,
         UserQuestRepository $userQuestRepository, PetExperienceService $petExperienceService,
         TransactionService $transactionService, InventoryModifierService $toolBonusService, Squirrel3 $squirrel3,
-        WerecreatureEncounterService $werecreatureEncounterService, WeatherService $weatherService
+        WerecreatureEncounterService $werecreatureEncounterService, WeatherService $weatherService,
+        StatusEffectService $statusEffectService
     )
     {
         $this->responseService = $responseService;
@@ -67,6 +70,7 @@ class HuntingService
         $this->squirrel3 = $squirrel3;
         $this->werecreatureEncounterService = $werecreatureEncounterService;
         $this->weatherService = $weatherService;
+        $this->statusEffectService = $statusEffectService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -426,7 +430,7 @@ class HuntingService
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% attacked a rampaging Deep-fried Dough Golem. It was gross and oily, and %pet:' . $pet->getId() . '.name% got Oil all over themselves, but in the end they defeated the creature, and harvested its ' . $loot . '.', '');
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' took this from the body of a defeated Deep-fried Dough Golem.', $activityLog);
-                $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::OIL_COVERED, 1);
+                $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::OIL_COVERED, 1);
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
             }

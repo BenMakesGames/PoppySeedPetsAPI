@@ -1,0 +1,119 @@
+<?php
+namespace App\Service;
+
+use App\Entity\Item;
+use App\Entity\ItemGroup;
+use App\Entity\Pet;
+use App\Entity\PetCraving;
+use App\Enum\StatusEffectEnum;
+use App\Functions\ActivityHelpers;
+use App\Functions\ArrayFunctions;
+use App\Repository\ItemGroupRepository;
+use Doctrine\ORM\EntityManagerInterface;
+
+class CravingService
+{
+    private EntityManagerInterface $em;
+    private IRandom $squirrel3;
+    private ItemGroupRepository $itemGroupRepository;
+    private PetExperienceService $petExperienceService;
+    private StatusEffectService $statusEffectService;
+    private ResponseService $responseService;
+
+    public function __construct(
+        EntityManagerInterface $em, ItemGroupRepository $itemGroupRepository, Squirrel3 $squirrel3,
+        PetExperienceService $petExperienceService, StatusEffectService $statusEffectService,
+        ResponseService $responseService
+    )
+    {
+        $this->em = $em;
+        $this->itemGroupRepository = $itemGroupRepository;
+        $this->squirrel3 = $squirrel3;
+        $this->petExperienceService = $petExperienceService;
+        $this->statusEffectService = $statusEffectService;
+        $this->responseService = $responseService;
+    }
+
+    public function updateCraving(Pet $pet)
+    {
+        if($pet->hasCraving())
+            $this->maybeRemoveCraving($pet);
+        else
+            $this->maybeAddCraving($pet);
+    }
+
+    private function maybeRemoveCraving(Pet $pet)
+    {
+        if($pet->getFood() < 0 || $pet->getSafety() < 0)
+        {
+            $craving = $pet->getCraving();
+            $this->em->remove($craving);
+            $pet->setCraving(null);
+        }
+    }
+
+    private function maybeAddCraving(Pet $pet)
+    {
+        if($pet->getFullnessPercent() >= 0.5 && $pet->getSafety() >= 8)
+        {
+            $craving = $pet->getCraving();
+            $fiveDaysAgo = (new \DateTimeImmutable())->modify('-5 days');
+
+            if($craving === null)
+            {
+                $craving = (new PetCraving())
+                    ->setFoodGroup($this->getRandomCravingItemGroup())
+                    ->setCreatedOn(new \DateTimeImmutable())
+                ;
+                $this->em->persist($craving);
+                $pet->setCraving($craving);
+            }
+            else if($craving->getSatisfiedOn() && $craving->getSatisfiedOn() <= $fiveDaysAgo)
+            {
+                $craving
+                    ->setFoodGroup($this->getRandomCravingItemGroup())
+                    ->setCreatedOn(new \DateTimeImmutable())
+                    ->setSatisfiedOn(null)
+                ;
+            }
+        }
+    }
+
+    private function getRandomCravingItemGroup(): ItemGroup
+    {
+        $cravingGroups = $this->itemGroupRepository->findBy([ 'isCraving' => 1 ]);
+
+        return $this->squirrel3->rngNextFromArray($cravingGroups);
+    }
+
+    public function foodMeetsCraving(Pet $pet, Item $food)
+    {
+        if(!$pet->getCraving() || $pet->getCraving()->isSatisfied())
+            return false;
+
+        return ArrayFunctions::any(
+            $pet->getCraving()->getFoodGroup()->getItems(),
+            fn(Item $i) => $i->getId() === $food->getId()
+        );
+    }
+
+    public function satisfyCraving(Pet $pet, Item $food)
+    {
+        if(!$pet->getCraving() || $pet->getCraving()->isSatisfied())
+            return;
+
+        $pet->getCraving()->setSatisfiedOn(new \DateTimeImmutable());
+
+        $this->petExperienceService->gainAffection($pet, 2);
+
+        $statusEffect = $this->squirrel3->rngNextFromArray([
+            StatusEffectEnum::INSPIRED,
+            StatusEffectEnum::ONEIRIC,
+            StatusEffectEnum::VIVACIOUS,
+        ]);
+
+        $this->statusEffectService->applyStatusEffect($pet, $statusEffect, 8 * 60);
+
+        $this->responseService->createActivityLog($pet, 'The ' . $food->getName() . ' that ' . ActivityHelpers::PetName($pet) . ' ate satisfied their craving! They\'re feeling ' . $statusEffect . '!', 'icons/status-effect/craving', null);
+    }
+}

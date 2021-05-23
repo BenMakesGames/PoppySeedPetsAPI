@@ -9,26 +9,27 @@ use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
+use App\Service\PetExperienceService;
 use App\Service\PetService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 
 class GreenhouseAdventureService
 {
-    private $petService;
     private $responseService;
     private $inventoryService;
     private $squirrel3;
+    private PetExperienceService $petExperienceService;
 
     function __construct(
-        PetService $petService, ResponseService $responseService, InventoryService $inventoryService,
-        Squirrel3 $squirrel3
+        ResponseService $responseService, InventoryService $inventoryService,
+        Squirrel3 $squirrel3, PetExperienceService $petExperienceService
     )
     {
-        $this->petService = $petService;
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->squirrel3 = $squirrel3;
+        $this->petExperienceService = $petExperienceService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills, GreenhousePlant $plant): PetActivityLog
@@ -42,7 +43,7 @@ class GreenhouseAdventureService
 
         $changes = new PetChanges($pet);
 
-        $this->petService->gainAffection($pet, 1);
+        $this->petExperienceService->gainAffection($pet, 1);
 
         if($roll <= 8)
         {

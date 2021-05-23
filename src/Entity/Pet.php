@@ -347,6 +347,11 @@ class Pet
      */
     private $scale = 100;
 
+    /**
+     * @ORM\OneToOne(targetEntity=PetCraving::class, mappedBy="pet", cascade={"persist", "remove"})
+     */
+    private $craving;
+
     public function __construct()
     {
         $squirrel3 = new Squirrel3();
@@ -677,12 +682,17 @@ class Pet
         return $this;
     }
 
+    public function getFullnessPercent(): float
+    {
+        return ($this->getFood() + $this->getJunk()) / $this->getStomachSize();
+    }
+
     /**
      * @Groups({"myPet"})
      */
     public function getFull(): string
     {
-        $fullness = ($this->getFood() + $this->getJunk()) / $this->getStomachSize();
+        $fullness = $this->getFullnessPercent();
 
         if($fullness >= 0.75)
         {
@@ -1699,5 +1709,39 @@ class Pet
     public function getComputedSkills(): ComputedPetSkills
     {
         return new ComputedPetSkills($this);
+    }
+
+    public function getCraving(): ?PetCraving
+    {
+        return $this->craving;
+    }
+
+    public function setCraving(PetCraving $craving): self
+    {
+        // set the owning side of the relation if necessary
+        if ($craving->getPet() !== $this) {
+            $craving->setPet($this);
+        }
+
+        $this->craving = $craving;
+
+        return $this;
+    }
+
+    public function hasCraving(): bool
+    {
+        return $this->craving !== null;
+    }
+
+    /**
+     * @Groups({"myPet"})
+     * @SerializedName("craving")
+     */
+    public function getSerializedCraving(): ?string
+    {
+        if(!$this->getCraving() || $this->getCraving()->isSatisfied())
+            return null;
+
+        return $this->getCraving()->getFoodGroup()->getName();
     }
 }

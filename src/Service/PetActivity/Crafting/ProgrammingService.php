@@ -16,6 +16,7 @@ use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use App\Service\StatusEffectService;
 
 class ProgrammingService
 {
@@ -23,16 +24,18 @@ class ProgrammingService
     private $inventoryService;
     private $petExperienceService;
     private $squirrel3;
+    private $statusEffectService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        PetExperienceService $petExperienceService
+        PetExperienceService $petExperienceService, StatusEffectService $statusEffectService
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->squirrel3 = $squirrel3;
+        $this->statusEffectService = $statusEffectService;
     }
 
     /**
@@ -1070,7 +1073,7 @@ class ProgrammingService
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::UMBRA ]);
 
                 $pet->increaseSafety(-6);
-                $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+                $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Bermuda Triangle, but accidentally hexed themselves, instead! :(', '');
             }
             else if($effect === 2)

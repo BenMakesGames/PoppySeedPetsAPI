@@ -8,6 +8,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
+use App\Service\EquipmentService;
 use App\Service\InventoryService;
 use App\Service\MeritService;
 use App\Service\ResponseService;
@@ -64,7 +65,7 @@ class ForgettingScrollController extends PoppySeedPetsItemController
     public function forgetMerit(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository, MeritRepository $meritRepository, MeritService $meritService,
-        InventoryService $inventoryService
+        EquipmentService $equipmentService
     )
     {
         $user = $this->getUser();
@@ -110,7 +111,7 @@ class ForgettingScrollController extends PoppySeedPetsItemController
         {
             if($pet->getHat())
             {
-                $inventoryService->unhatPet($pet);
+                $equipmentService->unhatPet($pet);
 
                 $responseService->addFlashMessage($pet->getName() . '\'s hat falls to the ground.');
             }

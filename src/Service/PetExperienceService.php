@@ -4,10 +4,13 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Entity\StatusEffect;
 use App\Enum\EnumInvalidValueException;
+use App\Enum\LocationEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Repository\ItemRepository;
+use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -19,16 +22,23 @@ class PetExperienceService
     private $squirrel3;
     private $inventoryService;
     private $userStatsRepository;
+    private CalendarService $calendarService;
+    private UserQuestRepository $userQuestRepository;
+    private ResponseService $responseService;
 
     public function __construct(
-        PetActivityStatsService $petActivityStatsService, Squirrel3 $squirrel3,
-        InventoryService $inventoryService, UserStatsRepository $userStatsRepository
+        PetActivityStatsService $petActivityStatsService, Squirrel3 $squirrel3, CalendarService $calendarService,
+        InventoryService $inventoryService, UserStatsRepository $userStatsRepository, ResponseService $responseService,
+        UserQuestRepository $userQuestRepository
     )
     {
         $this->petActivityStatsService = $petActivityStatsService;
         $this->squirrel3 = $squirrel3;
         $this->inventoryService = $inventoryService;
         $this->userStatsRepository = $userStatsRepository;
+        $this->calendarService = $calendarService;
+        $this->userQuestRepository = $userQuestRepository;
+        $this->responseService = $responseService;
     }
 
     /**
@@ -155,5 +165,53 @@ class PetExperienceService
             if($statusEffects[$i]->getTimeRemaining() <= 0)
                 $pet->removeStatusEffect($statusEffects[$i]);
         }
+    }
+
+    /**
+     * @param Pet $pet
+     * @param int $points
+     */
+    public function gainAffection(Pet $pet, int $points)
+    {
+        if($points === 0) return;
+
+        $divideBy = 1;
+
+        if($pet->getFood() + $pet->getAlcohol() < 0) $divideBy++;
+        if($pet->getSafety() + $pet->getAlcohol() < 0) $divideBy++;
+
+        $points = ceil($points / $divideBy);
+
+        if($points === 0) return;
+
+        $previousAffectionLevel = $pet->getAffectionLevel();
+
+        $pet->increaseAffectionPoints($points);
+
+        // if a pet's affection level increased, and you haven't unlocked the park, now you get the park!
+        if($pet->getAffectionLevel() > $previousAffectionLevel && $pet->getOwner()->getUnlockedPark() === null)
+            $pet->getOwner()->setUnlockedPark();
+
+        if($this->calendarService->isValentinesOrAdjacent())
+            $this->maybeGivePlayerTwuWuv($pet);
+    }
+
+    private function maybeGivePlayerTwuWuv(Pet $pet): bool
+    {
+        $alreadyReceived = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Valentines ' . date('Y-m-d'), false);
+
+        if($alreadyReceived->getValue())
+            return false;
+
+        $this->inventoryService->receiveItem('Twu Wuv', $pet->getOwner(), $pet->getOwner(), $pet->getOwner()->getName() . ' received this from ' . $pet->getName() . ' for Valentine\'s Day!', LocationEnum::HOME, true);
+        $this->inventoryService->receiveItem('Twu Wuv', $pet->getOwner(), $pet->getOwner(), $pet->getOwner()->getName() . ' received this from ' . $pet->getName() . ' for Valentine\'s Day!', LocationEnum::HOME, true);
+
+        $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave Twu Wuv to %user:' . $pet->getOwner()->getId() . '.Name% for Valentine\'s Day! (Two of them! Two Twu Wuvs!)', 'items/resource/twu-wuv')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
+        ;
+
+        $alreadyReceived->setValue(true);
+
+        return true;
     }
 }

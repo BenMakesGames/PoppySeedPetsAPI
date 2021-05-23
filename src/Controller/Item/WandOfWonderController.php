@@ -14,11 +14,13 @@ use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
+use App\Service\EquipmentService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\PetService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use App\Service\StatusEffectService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,8 +39,8 @@ class WandOfWonderController extends PoppySeedPetsItemController
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
         EntityManagerInterface $em, InventoryService $inventoryService, PetRepository $petRepository,
         TransactionService $transactionService, ItemRepository $itemRepository, MeritRepository $meritRepository,
-        PetExperienceService $petExperienceService, SpiceRepository $spiceRepository, PetService $petService,
-        Squirrel3 $squirrel3
+        PetExperienceService $petExperienceService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3,
+        StatusEffectService $statusEffectService, EquipmentService $equipmentService
     )
     {
         $this->validateInventory($inventory, 'wandOfWonder/#/point');
@@ -221,7 +223,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
                     foreach($petsAtHome as $pet)
                     {
                         $petNames[] = $pet->getName();
-                        $inventoryService->applyStatusEffect($pet, StatusEffectEnum::INSPIRED, 8 * 60);
+                        $statusEffectService->applyStatusEffect($pet, StatusEffectEnum::INSPIRED, 8 * 60);
                     }
 
                     $itemActionDescription = 'The Wand of Wonder gave a very inspiring speech. ' . ArrayFunctions::list_nice($petNames) . ' listened, enraptured.';
@@ -319,7 +321,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
                 {
                     $itemActionDescription = 'The wand squeaks like a balloon slowly losing air. When it finally finishes, you realize ' . $randomPet->getName() . ' has turned invisible!';
                     $responseService->setReloadPets();
-                    $inventoryService->applyStatusEffect($randomPet, StatusEffectEnum::INVISIBLE, 6 * 60);
+                    $statusEffectService->applyStatusEffect($randomPet, StatusEffectEnum::INVISIBLE, 6 * 60);
                 }
                 else
                 {
@@ -447,7 +449,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
 
                     $changes = new PetChanges($randomPet);
 
-                    $petService->gainAffection($randomPet, 1);
+                    $petExperienceService->gainAffection($randomPet, 1);
                     $randomPet->increaseFood(5);
 
                     $responseService->createActivityLog($randomPet, '', '', $changes->compare($randomPet));
@@ -476,7 +478,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
                         else
                             $itemActionDescription = $randomPet->getName() . ' is suddenly looking tired...';
 
-                        $inventoryService->applyStatusEffect($randomPet, StatusEffectEnum::TIRED, 4 * 60);
+                        $statusEffectService->applyStatusEffect($randomPet, StatusEffectEnum::TIRED, 4 * 60);
                     }
                     else
                     {
@@ -498,7 +500,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
             case 'bubblegum':
                 if($randomPet)
                 {
-                    $inventoryService->applyStatusEffect($randomPet, StatusEffectEnum::BUBBLEGUMD, 60);
+                    $statusEffectService->applyStatusEffect($randomPet, StatusEffectEnum::BUBBLEGUMD, 60);
 
                     $itemActionDescription = 'Thick strands of bubblegum suddenly grow out of ' . $randomPet->getName() . '\'s extremities! (Gross!)';
                     $responseService->setReloadPets();
@@ -513,7 +515,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
             case 'oilUp':
                 if($randomPet)
                 {
-                    $inventoryService->applyStatusEffect($randomPet, StatusEffectEnum::OIL_COVERED, 60);
+                    $statusEffectService->applyStatusEffect($randomPet, StatusEffectEnum::OIL_COVERED, 60);
 
                     $itemActionDescription = 'Oil sprays out of the wand, covering ' . $randomPet->getName() . '!';
                     $responseService->setReloadPets();
@@ -548,7 +550,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
                     {
                         $itemActionDescription = $randomPet->getName() . ' drops their ' . $randomPet->getTool()->getItem()->getName() . '; ' . $item->getNameWithArticle() . ' appears in its place!';
 
-                        $inventoryService->unequipPet($randomPet);
+                        $equipmentService->unequipPet($randomPet);
                     }
                     else
                         $itemActionDescription = $randomPet->getName() . ' dons ' . $item->getNameWithArticle() . '!';
@@ -571,7 +573,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
             case 'antiGrav':
                 if($randomPet)
                 {
-                    $inventoryService->applyStatusEffect($randomPet, StatusEffectEnum::ANTI_GRAVD, $squirrel3->rngNextInt(12, 24) * 60);
+                    $statusEffectService->applyStatusEffect($randomPet, StatusEffectEnum::ANTI_GRAVD, $squirrel3->rngNextInt(12, 24) * 60);
 
                     $itemActionDescription = $randomPet->getName() . ' turns upside down, and begins to float. Fortunately, they stop after just a couple inches... but they\'re still upside down!';
                     $responseService->setReloadPets();

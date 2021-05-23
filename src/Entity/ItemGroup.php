@@ -34,6 +34,11 @@ class ItemGroup
      */
     private $luckAdjective;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isCraving;
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
@@ -88,6 +93,18 @@ class ItemGroup
     public function setLuckAdjective(string $luckAdjective): self
     {
         $this->luckAdjective = $luckAdjective;
+
+        return $this;
+    }
+
+    public function getIsCraving(): ?bool
+    {
+        return $this->isCraving;
+    }
+
+    public function setIsCraving(bool $isCraving): self
+    {
+        $this->isCraving = $isCraving;
 
         return $this;
     }

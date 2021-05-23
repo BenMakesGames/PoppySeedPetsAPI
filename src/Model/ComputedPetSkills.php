@@ -26,21 +26,6 @@ class ComputedPetSkills
     /**
      * @Groups({"myPet"})
      */
-    public function getDexterity(): TotalPetSkill
-    {
-        $skill = new TotalPetSkill();
-        $skill->base = $this->pet->getSkills()->getDexterity();
-        $skill->merits =
-            ($this->pet->hasMerit(MeritEnum::PREHENSILE_TONGUE) ? 1 : 0) +
-            ($this->pet->hasMerit(MeritEnum::WONDROUS_DEXTERITY) ? 2 : 0)
-        ;
-
-        return $skill;
-    }
-
-    /**
-     * @Groups({"myPet"})
-     */
     public function getStrength(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -50,6 +35,8 @@ class ComputedPetSkills
             ($this->pet->hasMerit(MeritEnum::MOON_BOUND) ? DateFunctions::moonStrength(new \DateTimeImmutable()) : 0) +
             ($this->pet->hasMerit(MeritEnum::WONDROUS_STRENGTH) ? 2 : 0)
         ;
+
+        $skill->statusEffects = ($this->pet->hasStatusEffect(StatusEffectEnum::VIVACIOUS) ? 1 : 0);
 
         return $skill;
     }
@@ -67,6 +54,25 @@ class ComputedPetSkills
             ($this->pet->hasMerit(MeritEnum::WONDROUS_STAMINA) ? 2 : 0)
         ;
 
+        $skill->statusEffects = ($this->pet->hasStatusEffect(StatusEffectEnum::VIVACIOUS) ? 1 : 0);
+
+        return $skill;
+    }
+
+    /**
+     * @Groups({"myPet"})
+     */
+    public function getDexterity(): TotalPetSkill
+    {
+        $skill = new TotalPetSkill();
+        $skill->base = $this->pet->getSkills()->getDexterity();
+        $skill->merits =
+            ($this->pet->hasMerit(MeritEnum::PREHENSILE_TONGUE) ? 1 : 0) +
+            ($this->pet->hasMerit(MeritEnum::WONDROUS_DEXTERITY) ? 2 : 0)
+        ;
+
+        $skill->statusEffects = ($this->pet->hasStatusEffect(StatusEffectEnum::VIVACIOUS) ? 1 : 0);
+
         return $skill;
     }
 
@@ -81,7 +87,8 @@ class ComputedPetSkills
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? -2 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::TIRED) ? -2 : 0) +
-            ($this->pet->hasStatusEffect(StatusEffectEnum::CAFFEINATED) ? 2 : 0)
+            ($this->pet->hasStatusEffect(StatusEffectEnum::CAFFEINATED) ? 2 : 0) +
+            ($this->pet->hasStatusEffect(StatusEffectEnum::VIVACIOUS) ? 1 : 0)
         ;
 
         return $skill;
@@ -97,7 +104,8 @@ class ComputedPetSkills
         $skill->merits = ($this->pet->hasMerit(MeritEnum::WONDROUS_PERCEPTION) ? 2 : 0);
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::TIRED) ? -2 : 0) +
-            ($this->pet->hasStatusEffect(StatusEffectEnum::CAFFEINATED) ? 2 : 0)
+            ($this->pet->hasStatusEffect(StatusEffectEnum::CAFFEINATED) ? 2 : 0) +
+            ($this->pet->hasStatusEffect(StatusEffectEnum::VIVACIOUS) ? 1 : 0)
         ;
 
         return $skill;

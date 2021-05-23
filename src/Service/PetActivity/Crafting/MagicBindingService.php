@@ -18,6 +18,7 @@ use App\Service\PetActivity\Crafting\Helpers\EvericeMeltingService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use App\Service\StatusEffectService;
 use App\Service\WeatherService;
 
 class MagicBindingService
@@ -30,11 +31,12 @@ class MagicBindingService
     private $squirrel3;
     private $coinSmithingService;
     private $weatherService;
+    private $statusEffectService;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
         ItemRepository $itemRepository, EvericeMeltingService $evericeMeltingService, Squirrel3 $squirrel3,
-        CoinSmithingService $coinSmithingService, WeatherService $weatherService
+        CoinSmithingService $coinSmithingService, WeatherService $weatherService, StatusEffectService $statusEffectService
     )
     {
         $this->inventoryService = $inventoryService;
@@ -45,6 +47,7 @@ class MagicBindingService
         $this->squirrel3 = $squirrel3;
         $this->coinSmithingService = $coinSmithingService;
         $this->weatherService = $weatherService;
+        $this->statusEffectService = $statusEffectService;
     }
 
     /**
@@ -604,7 +607,7 @@ class MagicBindingService
             if($this->squirrel3->rngNextInt(1, 2) === 1)
             {
                 $pet->increaseSafety(-6);
-                $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+                $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Ceremonial Trident, but accidentally hexed themselves, instead! :(', '');
             }
             else
@@ -1608,7 +1611,7 @@ class MagicBindingService
             if($this->squirrel3->rngNextInt(1, 2) === 1)
             {
                 $pet->increaseSafety(-6);
-                $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+                $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Gold Trifecta, but accidentally hexed themselves, instead! :(', '');
             }
             else
@@ -1998,7 +2001,7 @@ class MagicBindingService
             if($this->squirrel3->rngNextInt(1, 2) === 1)
             {
                 $pet->increaseSafety(-6);
-                $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+                $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to transmute plastic into ice, but accidentally hexed themselves, instead! :(', '');
             }
             else
@@ -2084,7 +2087,7 @@ class MagicBindingService
             if($this->squirrel3->rngNextInt(1, 2) === 1)
             {
                 $pet->increaseSafety(-6);
-                $this->inventoryService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+                $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Aubergine Scepter, but accidentally hexed themselves, instead! :(', '');
             }
             else
