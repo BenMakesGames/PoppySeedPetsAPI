@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -127,6 +129,17 @@ class Item
      * @Groups({"myInventory", "itemEncyclopedia"})
      */
     private $hollowEarthTileCard;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=ItemGroup::class, mappedBy="items")
+     * @Groups({"itemEncyclopedia"})
+     */
+    private $itemGroups;
+
+    public function __construct()
+    {
+        $this->itemGroups = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -421,6 +434,33 @@ class Item
     public function setHollowEarthTileCard(?HollowEarthTileCard $hollowEarthTileCard): self
     {
         $this->hollowEarthTileCard = $hollowEarthTileCard;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ItemGroup[]
+     */
+    public function getItemGroups(): Collection
+    {
+        return $this->itemGroups;
+    }
+
+    public function addItemGroup(ItemGroup $itemGroup): self
+    {
+        if (!$this->itemGroups->contains($itemGroup)) {
+            $this->itemGroups[] = $itemGroup;
+            $itemGroup->addItem($this);
+        }
+
+        return $this;
+    }
+
+    public function removeItemGroup(ItemGroup $itemGroup): self
+    {
+        if ($this->itemGroups->removeElement($itemGroup)) {
+            $itemGroup->removeItem($this);
+        }
 
         return $this;
     }

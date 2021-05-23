@@ -40,6 +40,7 @@ class ItemFilterService
                 'notDonatedBy' => [ $this, 'filterNotDonatedBy' ],
                 'aHat' => [ $this, 'filterAHat' ],
                 'hasDonated' => [ $this, 'filterHasDonated' ],
+                'itemGroup' => [ $this, 'filterItemGroup' ],
             ],
             [
                 'nameExactMatch'
@@ -208,5 +209,16 @@ class ItemFilterService
             $qb->andWhere('donations.id IS NULL');
         else
             $qb->andWhere('donations.id IS NOT NULL');
+    }
+
+    public function filterItemGroup(QueryBuilder $qb, $value)
+    {
+        if(!in_array('itemGroups', $qb->getAllAliases()))
+            $qb->leftJoin('i.itemGroups', 'itemGroup');
+
+        $qb
+            ->andWhere('itemGroup.name=:itemGroupName')
+            ->setParameter('itemGroupName', $value)
+        ;
     }
 }

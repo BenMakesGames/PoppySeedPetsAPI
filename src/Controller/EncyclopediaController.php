@@ -2,21 +2,14 @@
 namespace App\Controller;
 
 use App\Annotations\DoesNotRequireHouseHours;
-use App\Entity\Item;
 use App\Enum\SerializationGroupEnum;
-use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
-use App\Repository\MeritRepository;
 use App\Repository\PetSpeciesRepository;
-use App\Repository\RecipeRepository;
 use App\Service\Filter\ItemFilterService;
 use App\Service\Filter\MeritFilterService;
 use App\Service\Filter\PetSpeciesFilterService;
-use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Typeahead\ItemTypeaheadService;
-use App\Service\Typeahead\UserTypeaheadService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;

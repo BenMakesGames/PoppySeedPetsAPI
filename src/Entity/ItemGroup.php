@@ -6,6 +6,7 @@ use App\Repository\ItemGroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ItemGroupRepository::class)
@@ -20,19 +21,15 @@ class ItemGroup
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=40)
+     * @ORM\Column(type="string", length=40, unique=true)
+     * @Groups({"itemEncyclopedia"})
      */
     private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Item::class)
+     * @ORM\ManyToMany(targetEntity=Item::class, inversedBy="itemGroups")
      */
     private $items;
-
-    /**
-     * @ORM\Column(type="string", length=20)
-     */
-    private $luckAdjective;
 
     /**
      * @ORM\Column(type="boolean")
@@ -81,18 +78,6 @@ class ItemGroup
     public function removeItem(Item $item): self
     {
         $this->items->removeElement($item);
-
-        return $this;
-    }
-
-    public function getLuckAdjective(): ?string
-    {
-        return $this->luckAdjective;
-    }
-
-    public function setLuckAdjective(string $luckAdjective): self
-    {
-        $this->luckAdjective = $luckAdjective;
 
         return $this;
     }

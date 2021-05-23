@@ -529,7 +529,7 @@ class ItemFood
      */
     public function getBringsLuck(): ?string
     {
-        return $this->bonusItemGroup ? $this->bonusItemGroup->getLuckAdjective() : null;
+        return $this->bonusItemGroup ? $this->bonusItemGroup->getName() : null;
     }
 
     public function getRandomFlavor(): int
