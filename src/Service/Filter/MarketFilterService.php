@@ -41,6 +41,7 @@ class MarketFilterService
                 'bonus' => [ $this, 'filterBonus' ],
                 'aHat' => [ $this, 'filterAHat' ],
                 'hasDonated' => [ $this, 'filterHasDonated' ],
+                'itemGroup' => [ $this, 'filterItemGroup' ],
             ],
             [
                 'nameExactMatch'
@@ -202,5 +203,16 @@ class MarketFilterService
             $qb->andWhere('donations.id IS NULL');
         else
             $qb->andWhere('donations.id IS NOT NULL');
+    }
+
+    public function filterItemGroup(QueryBuilder $qb, $value)
+    {
+        if(!in_array('itemGroups', $qb->getAllAliases()))
+            $qb->leftJoin('item.itemGroups', 'itemGroup');
+
+        $qb
+            ->andWhere('itemGroup.name=:itemGroupName')
+            ->setParameter('itemGroupName', $value)
+        ;
     }
 }
