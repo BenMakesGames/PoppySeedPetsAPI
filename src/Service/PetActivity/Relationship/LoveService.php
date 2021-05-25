@@ -75,7 +75,7 @@ class LoveService
 
                 if($this->squirrel3->rngNextInt(1, 100) <= $sexyTimesChance)
                 {
-                    $message .= $this->sexyTimesEmoji($giver, $receiver) . ' ' .
+                    $message .=
                         [ 'They had fun!', 'They both had an awesome time!', 'They had fun!' ][$side] . ' ' .
                         $this->sexyTimesEmoji($giver, $receiver) . ' ' .
                         [ $giver->getName() . ' really enjoyed giving ' . $receiver->getName() . ' the attention!', '', $receiver->getName() . ' really appreciated the attention!' ][$side]
@@ -88,19 +88,19 @@ class LoveService
                 {
                     if($this->squirrel3->rngNextBool())
                     {
-                        $message .= ':) ' .
-                            [
-                                $giver->getName() . ' surprised ' . $receiver->getName() . ' with a kiss!',
-                                $giver->getName() . ' surprised ' . $receiver->getName() . ' with a kiss! ' . $receiver->getName() . ' surprised ' . $giver->getName() . ' with a kiss of their own!',
-                                $receiver->getName() . ' was delighted to receive a surprise kiss!'
-                            ][$side]
-                        ;
+                        $message .= [
+                            $giver->getName() . ' surprised ' . $receiver->getName() . ' with a kiss!',
+                            $giver->getName() . ' surprised ' . $receiver->getName() . ' with a kiss! ' . $receiver->getName() . ' surprised ' . $giver->getName() . ' with a kiss of their own!',
+                            $receiver->getName() . ' was delighted to receive a surprise kiss!'
+                        ][$side];
                     }
                     else
                     {
-                        $message .= ':) ' .
-                            [ $giver->getName() . ' really enjoyed cuddling with ' . $receiver->getName() . '!', 'They both enjoyed cuddling for a while!', $receiver->getName() . ' really appreciated the cuddles!' ][$side]
-                        ;
+                        $message .= [
+                            $giver->getName() . ' really enjoyed cuddling with ' . $receiver->getName() . '!',
+                            'They both enjoyed cuddling for a while!',
+                            $receiver->getName() . ' really appreciated the cuddles!'
+                        ][$side];
                     }
                 }
 
