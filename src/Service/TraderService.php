@@ -83,25 +83,21 @@ class TraderService
 
     private $itemRepository;
     private $inventoryService;
-    private $userStatsRepository;
     private $calendarService;
-    private $userQuestRepository;
     private $transactionService;
     private $tradesUnlockedRepository;
     private $squirrel3;
     private $inventoryRepository;
 
     public function __construct(
-        ItemRepository $itemRepository, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
-        CalendarService $calendarService, UserQuestRepository $userQuestRepository, TransactionService $transactionService,
-        TradesUnlockedRepository $tradesUnlockedRepository, Squirrel3 $squirrel3, InventoryRepository $inventoryRepository
+        ItemRepository $itemRepository, InventoryService $inventoryService, CalendarService $calendarService,
+        TransactionService $transactionService, TradesUnlockedRepository $tradesUnlockedRepository, Squirrel3 $squirrel3,
+        InventoryRepository $inventoryRepository
     )
     {
         $this->itemRepository = $itemRepository;
         $this->inventoryService = $inventoryService;
-        $this->userStatsRepository = $userStatsRepository;
         $this->calendarService = $calendarService;
-        $this->userQuestRepository = $userQuestRepository;
         $this->transactionService = $transactionService;
         $this->tradesUnlockedRepository = $tradesUnlockedRepository;
         $this->squirrel3 = $squirrel3;
@@ -919,7 +915,19 @@ class TraderService
                 'Does that one look kind of like ' . $moonName . ' to you?',
                 $user,
                 $quantities
-            )
+            ),
+
+            TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Nón Lá'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Toadstool'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Money Sink'), 1),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Nấm Lá'), 1) ],
+                'The goblin shark that sold me this told me that "nấm" mean "mushroom". Seems kind of on-the-nose, to me, but that\'s goblin sharks for you.',
+                $user,
+                $quantities
+            ),
         ];
     }
 
