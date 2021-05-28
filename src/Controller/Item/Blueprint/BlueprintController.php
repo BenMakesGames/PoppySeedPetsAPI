@@ -139,12 +139,14 @@ class BlueprintController extends PoppySeedPetsItemController
             throw new UnprocessableEntityHttpException('You\'ve already got a Beehive!');
         }
 
-        if(!$inventoryRepository->userHasAnyOneOf($user, $magnifyingGlasses, [
+        $magnifyingGlass = $inventoryRepository->findAnyOneOf($user, $magnifyingGlasses, [
             LocationEnum::HOME,
             LocationEnum::BASEMENT,
             LocationEnum::MANTLE,
             LocationEnum::WARDROBE,
-        ]))
+        ]);
+
+        if(!$magnifyingGlass)
         {
             throw new UnprocessableEntityHttpException('Goodness! It\'s so small! You\'ll need a magnifying glass of some kind...');
         }
@@ -157,11 +159,18 @@ class BlueprintController extends PoppySeedPetsItemController
 
         $beehiveService->createBeehive($user);
 
+        $your = 'your';
+
+        if($magnifyingGlass->getHolder())
+            $your = $magnifyingGlass->getHolder()->getName() . '\'s';
+        else if($magnifyingGlass->getWearer())
+            $your = $magnifyingGlass->getWearer()->getName() . '\'s';
+
         $this->rewardHelper(
             $petExperienceService, $responseService,
             $pet,
             PetSkillEnum::CRAFTS,
-            'The blueprint is _super_ tiny, but with the help of a magnifying glass, you\'re able to make it all out, and you and ' . $pet->getName() . ' put the thing together! ("Beehive" has been added to the menu!)',
+            'The blueprint is _super_ tiny, but with the help of ' . $your . ' ' . $magnifyingGlass->getFullItemName() . ', you\'re able to make it all out, and you and ' . $pet->getName() . ' put the thing together! ("Beehive" has been added to the menu!)',
             $pet->getName() . ' put a Beehive together with ' . $user->getName() . '!'
         );
 

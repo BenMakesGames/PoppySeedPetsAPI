@@ -99,6 +99,22 @@ class InventoryRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findAnyOneOf(User $owner, array $itemNames, array $locationsToCheck = Inventory::CONSUMABLE_LOCATIONS): ?Inventory
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.owner=:user')
+            ->andWhere('i.location IN (:consumableLocations)')
+            ->leftJoin('i.item', 'item')
+            ->andWhere('item.name IN (:itemNames)')
+            ->setParameter('user', $owner)
+            ->setParameter('consumableLocations', $locationsToCheck)
+            ->setParameter('itemNames', $itemNames)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
     public function userHasAnyOneOf(User $owner, array $itemNames, array $locationsToCheck = Inventory::CONSUMABLE_LOCATIONS): bool
     {
         return $this->createQueryBuilder('i')
