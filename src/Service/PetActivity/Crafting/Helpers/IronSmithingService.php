@@ -401,16 +401,32 @@ class IronSmithingService
             $this->inventoryService->loseItem('Crooked Stick', $pet->getOwner(), LocationEnum::HOME, 1);
             $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
 
-            if($roll >= 23)
+            if($roll >= 33)
+            {
+                $this->petExperienceService->gainExp($pet, 5, [ PetSkillEnum::CRAFTS ]);
+                $pet->increaseEsteem($this->squirrel3->rngNextInt(5, 8));
+
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made ' . $item->getNameWithArticle() . ' from a Crooked Stick, and Iron Bar... with enough left over to make a Trowel _and_ Hand Rake, as well! (Dang! Such skills!)', 'items/' . $item->getImage())
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 33)
+                ;
+                $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from a Crooked Stick, and Iron Bar.', $activityLog);
+
+                $this->inventoryService->petCollectsItem('Trowel', $pet, $pet->getName() . ' created this with the leftovers from making ' . $item->getNameWithArticle() . '.', $activityLog);
+                $this->inventoryService->petCollectsItem('Hand Rake', $pet, $pet->getName() . ' created this with the leftovers from making ' . $item->getNameWithArticle() . '.', $activityLog);
+            }
+            else if($roll >= 23)
             {
                 $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
                 $pet->increaseEsteem($this->squirrel3->rngNextInt(3, 6));
 
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made ' . $item->getNameWithArticle() . ' from a Crooked Stick, and Iron Bar... with enough left over to make a small Trowel, as well!', 'items/' . $item->getImage())
+                $bonusItem = $this->squirrel3->rngNextFromArray([ 'Trowel', 'Hand Rake' ]);
+
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made ' . $item->getNameWithArticle() . ' from a Crooked Stick, and Iron Bar... with enough left over to make a ' .  $bonusItem .', as well!', 'items/' . $item->getImage())
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 23)
                 ;
                 $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from a Crooked Stick, and Iron Bar.', $activityLog);
-                $this->inventoryService->petCollectsItem('Trowel', $pet, $pet->getName() . ' created this with the leftovers from making ' . $item->getNameWithArticle() . '.', $activityLog);
+
+                $this->inventoryService->petCollectsItem($bonusItem, $pet, $pet->getName() . ' created this with the leftovers from making ' . $item->getNameWithArticle() . '.', $activityLog);
             }
             else
             {
