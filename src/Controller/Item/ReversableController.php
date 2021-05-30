@@ -22,13 +22,14 @@ class ReversableController extends PoppySeedPetsItemController
         'Small, Yellow Plastic Bucket' => 'Upside-down, Yellow Plastic Bucket',
         'Saucepan' => 'Upside-down Saucepan',
         'Silver Colander' => 'Upside-down Silver Colander',
+        'Pie Crust' => 'Upside-down Pie Crust',
     ];
 
     /**
      * @Route("/{inventory}/flip", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function flipPlasticBucket(
+    public function flipIt(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, ItemRepository $itemRepository,
         Squirrel3 $squirrel3
     )
@@ -61,6 +62,7 @@ class ReversableController extends PoppySeedPetsItemController
             'You rotate the ' . $oldItemName . ' approximately 3.14 radians about its x-axis, et voilà: ' . $newItem->getNameWithArticle() . '!',
             'You deftly flip the ' . $oldItemName . ' into ' . $newItem->getNameWithArticle() . '!',
             'You caaaaaarefully turn the ' . $oldItemName . ' over, then caaaaaarefully put it down...' . "\n\n" . 'Okay... okay, yeah! It worked!' . "\n\n" . 'You successfully made ' . $newItem->getNameWithArticle() . '!',
+            'You confidently toss the ' . $oldItemName . ' into the air with a twist, close your eyes, turn around, and catch it behind you.' . "\n\n" . 'A bit ostentatious, but effective nonetheless: you now have ' . $newItem->getNameWithArticle() . '!'
         ]);
 
         $responseService->setReloadInventory();
