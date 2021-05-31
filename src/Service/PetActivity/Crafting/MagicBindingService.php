@@ -270,7 +270,7 @@ class MagicBindingService
 
             if($this->houseSimService->hasInventory('Fluff'))
             {
-                if($this->houseSimService->hasInventory('Snakebite') || $this->houseSimService->hasInventory('Wood\'s Metal')
+                if($this->houseSimService->hasInventory('Snakebite') || $this->houseSimService->hasInventory('Wood\'s Metal'))
                     $possibilities[] = new ActivityCallback($this, 'createCattail', 8);
             }
 

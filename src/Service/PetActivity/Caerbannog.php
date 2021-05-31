@@ -47,7 +47,6 @@ class Caerbannog
         $this->em->remove($pet->getTool());
         $pet->setTool(null);
 
-        $activityLog = null;
         $changes = new PetChanges($pet);
 
         // TODO: other things the pet can do in here?

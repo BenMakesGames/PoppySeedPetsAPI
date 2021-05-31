@@ -479,14 +479,14 @@ class InventoryService
             $inventory = $this->receiveItem($bug, $pet->getOwner(), null, $comment, $location);
 
             if($location === LocationEnum::HOME)
-                $houseSim->addSingleInventory($inventory);
+                $this->houseSimService->getState()->addSingleInventory($inventory);
 
             if($bugName === 'Spider' && $i === 0)
             {
                 $cobweb = $this->receiveItem('Cobweb', $pet->getOwner(), null, 'Cobwebs?! Some Spider must have made this...', $location);
 
                 if($location === LocationEnum::HOME)
-                    $houseSim->addSingleInventory($cobweb);
+                    $this->houseSimService->getState()->addSingleInventory($cobweb);
             }
         }
 

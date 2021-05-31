@@ -13,7 +13,9 @@ use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
 use App\Service\CalendarService;
+use App\Service\HouseSimService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -25,11 +27,13 @@ class PlasticPrinterService
     private $petExperienceService;
     private $itemRepository;
     private $calendarService;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private HouseSimService $houseSimService;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        ItemRepository $itemRepository, CalendarService $calendarService, Squirrel3 $squirrel3
+        ItemRepository $itemRepository, CalendarService $calendarService, Squirrel3 $squirrel3,
+        HouseSimService $houseSimService
     )
     {
         $this->inventoryService = $inventoryService;
@@ -38,33 +42,34 @@ class PlasticPrinterService
         $this->itemRepository = $itemRepository;
         $this->calendarService = $calendarService;
         $this->squirrel3 = $squirrel3;
+        $this->houseSimService = $houseSimService;
     }
 
     /**
      * @return ActivityCallback[]
      */
-    public function getCraftingPossibilities(ComputedPetSkills $petWithSkills, array $quantities): array
+    public function getCraftingPossibilities(ComputedPetSkills $petWithSkills): array
     {
         $possibilities = [];
 
-        if(array_key_exists('3D Printer', $quantities) && array_key_exists('Plastic', $quantities))
+        if($this->houseSimService->hasInventory('3D Printer') && $this->houseSimService->hasInventory('Plastic'))
         {
             $possibilities[] = new ActivityCallback($this, 'createPlasticCraft', 10);
             $possibilities[] = new ActivityCallback($this, 'createPlasticIdol', 4);
 
-            if(array_key_exists('Iron Bar', $quantities))
+            if($this->houseSimService->hasInventory('Iron Bar'))
                 $possibilities[] = new ActivityCallback($this, 'createCompass', 10);
 
-            if(array_key_exists('String', $quantities))
+            if($this->houseSimService->hasInventory('String'))
                 $possibilities[] = new ActivityCallback($this, 'createPlasticFishingRod', 10);
 
-            if(array_key_exists('Green Dye', $quantities))
+            if($this->houseSimService->hasInventory('Green Dye'))
                 $possibilities[] = new ActivityCallback($this, 'createAlienLaser', 10);
 
-            if(array_key_exists('Black Feathers', $quantities))
+            if($this->houseSimService->hasInventory('Black Feathers'))
                 $possibilities[] = new ActivityCallback($this, 'createEvilFeatherDuster', 10);
 
-            if(array_key_exists('Plastic Boomerang', $quantities) && $quantities['Plastic Boomerang']->quantity >= 2)
+            if($this->houseSimService->hasInventory('Plastic Boomerang', 2))
                 $possibilities[] = new ActivityCallback($this, 'createNonsenserang', 10);
         }
 
