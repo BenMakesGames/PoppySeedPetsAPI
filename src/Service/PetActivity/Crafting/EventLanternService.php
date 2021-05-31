@@ -8,9 +8,12 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
+use App\Model\HouseSimRecipe;
 use App\Repository\ItemRepository;
 use App\Service\CalendarService;
+use App\Service\HouseSimService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -22,11 +25,13 @@ class EventLanternService
     private $petExperienceService;
     private $itemRepository;
     private $calendarService;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private HouseSimService $houseSimService;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        ItemRepository $itemRepository, CalendarService $calendarService, Squirrel3 $squirrel3
+        ItemRepository $itemRepository, CalendarService $calendarService, Squirrel3 $squirrel3,
+        HouseSimService $houseSimService
     )
     {
         $this->inventoryService = $inventoryService;
@@ -35,23 +40,26 @@ class EventLanternService
         $this->itemRepository = $itemRepository;
         $this->calendarService = $calendarService;
         $this->squirrel3 = $squirrel3;
+        $this->houseSimService = $houseSimService;
     }
 
     /**
      * @return ActivityCallback[]
      */
-    public function getCraftingPossibilities(ComputedPetSkills $petWithSkills, array $quantities): array
+    public function getCraftingPossibilities(ComputedPetSkills $petWithSkills): array
     {
         $now = new \DateTimeImmutable();
         $possibilities = [];
 
-        if(
-            array_key_exists('Crooked Fishing Rod', $quantities) &&
-            array_key_exists('Paper', $quantities) && (
-                array_key_exists('Candle', $quantities) ||
-                array_key_exists('Jar of Fireflies', $quantities)
-            )
-        )
+        $recipe = new HouseSimRecipe([
+            $this->itemRepository->findOneByName('Crooked Fishing Rod'),
+            $this->itemRepository->findOneByName('Paper'),
+            $this->itemRepository->findBy([ 'name' => [ 'Candle', 'Jar of Fireflies' ]])
+        ]);
+
+        $items = $this->houseSimService->getState()->getInventory($recipe);
+
+        if($items)
         {
             if($this->calendarService->isHalloweenCrafting())
                 $possibilities[] = new ActivityCallback($this, 'createMoonlightLantern', 10);

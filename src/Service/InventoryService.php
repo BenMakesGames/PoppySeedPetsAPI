@@ -279,6 +279,8 @@ class InventoryService
 
                         $this->em->persist($extraItem);
 
+                        $this->houseSimService->getState()->addSingleInventory($extraItem);
+
                         $this->responseService->setReloadInventory();
 
                         if($toolTool->getWhenGatherPreventGather())
@@ -300,6 +302,8 @@ class InventoryService
                     $this->applySeasonalSpiceToNewItem($extraItem);
 
                     $this->em->persist($extraItem);
+
+                    $this->houseSimService->getState()->addSingleInventory($extraItem);
 
                     $this->responseService->setReloadInventory();
                 }
@@ -335,6 +339,8 @@ class InventoryService
 
                         $this->em->persist($extraItem);
 
+                        $this->houseSimService->getState()->addSingleInventory($extraItem);
+
                         $this->responseService->setReloadInventory();
 
                         if($bonusEffects->getWhenGatherPreventGather())
@@ -356,6 +362,8 @@ class InventoryService
                     $this->applySeasonalSpiceToNewItem($extraItem);
 
                     $this->em->persist($extraItem);
+
+                    $this->houseSimService->getState()->addSingleInventory($extraItem);
 
                     $this->responseService->setReloadInventory();
                 }
@@ -392,9 +400,9 @@ class InventoryService
 
         $this->em->persist($i);
 
-        $this->responseService->setReloadInventory();
-
         $this->houseSimService->getState()->addSingleInventory($i);
+
+        $this->responseService->setReloadInventory();
 
         return $i;
     }
@@ -540,6 +548,8 @@ class InventoryService
 
         $this->em->persist($i);
 
+        $this->houseSimService->getState()->addSingleInventory($i);
+
         $this->responseService->setReloadInventory();
 
         return $i;
@@ -570,6 +580,8 @@ class InventoryService
 
             $this->em->remove($i);
         }
+
+        $this->houseSimService->getState()->removeInventory($inventory);
 
         $this->responseService->setReloadInventory();
 

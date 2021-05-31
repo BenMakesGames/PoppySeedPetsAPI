@@ -442,7 +442,7 @@ class PetService
             return;
         }
 
-        $itemsInHouse = $this->houseSimService->getState()->getItemCount();
+        $itemsInHouse = $this->houseSimService->getState()->getInventoryCount();
 
         $craftingPossibilities = $this->craftingService->getCraftingPossibilities($petWithSkills);
         $programmingPossibilities = $this->programmingService->getCraftingPossibilities($petWithSkills);
@@ -474,7 +474,7 @@ class PetService
                 $do = $this->squirrel3->rngNextFromArray($possibilities);
 
                 /** @var PetActivityLog $activityLog */
-                $activityLog = $do[0]->adventure($petWithSkills, $houseSim, $do[1]);
+                $activityLog = $do[0]->adventure($petWithSkills, $do[1]);
                 $activityLog->setEntry($description . ' ' . $activityLog->getEntry());
             }
 
@@ -483,10 +483,10 @@ class PetService
 
         if($this->squirrel3->rngNextInt(1, 50) === 1)
         {
-            if($this->letterService->adventure($petWithSkills, $houseSim))
+            if($this->letterService->adventure($petWithSkills))
                 return;
 
-            $this->genericAdventureService->adventure($petWithSkills, $houseSim);
+            $this->genericAdventureService->adventure($petWithSkills);
             return;
         }
 
@@ -534,7 +534,7 @@ class PetService
         if($pet->getTool() && $pet->getTool()->getEnchantment() && $pet->getTool()->getEnchantment()->getName() === 'Burnt')
             $petDesires['burntForest'] = $this->generateBurntForestDesire($petWithSkills);
 
-        if(array_key_exists('Submarine', $quantities))
+        if($this->houseSimService->hasInventory('Submarine'))
             $petDesires['submarine'] = $this->generateSubmarineDesire($petWithSkills);
 
         if($pet->getOwner()->getGreenhousePlants()->exists(function(int $key, GreenhousePlant $p) {

@@ -13,22 +13,25 @@ use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\SpiceRepository;
+use App\Service\HouseSimService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 
 class NotReallyCraftsService
 {
-    private $responseService;
-    private $inventoryService;
-    private $petExperienceService;
-    private $spiceRepository;
-    private $squirrel3;
+    private ResponseService $responseService;
+    private InventoryService $inventoryService;
+    private PetExperienceService $petExperienceService;
+    private SpiceRepository $spiceRepository;
+    private IRandom $squirrel3;
+    private HouseSimService $houseSimService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        PetExperienceService $petExperienceService, SpiceRepository $spiceRepository
+        PetExperienceService $petExperienceService, SpiceRepository $spiceRepository, HouseSimService $houseSimService
     )
     {
         $this->responseService = $responseService;
@@ -36,6 +39,7 @@ class NotReallyCraftsService
         $this->petExperienceService = $petExperienceService;
         $this->spiceRepository = $spiceRepository;
         $this->squirrel3 = $squirrel3;
+        $this->houseSimService = $houseSimService;
     }
 
     /**
@@ -62,11 +66,11 @@ class NotReallyCraftsService
         return $activityLog;
     }
 
-    public function getCraftingPossibilities(ComputedPetSkills $petWithSkills, array $quantities): array
+    public function getCraftingPossibilities(ComputedPetSkills $petWithSkills): array
     {
         $possibilities = [];
 
-        if(array_key_exists('Planetary Ring', $quantities))
+        if($this->houseSimService->hasInventory('Planetary Ring'))
             $possibilities[] = new ActivityCallback($this, 'siftThroughPlanetaryRing', 10);
 
         return $possibilities;

@@ -11,11 +11,14 @@ class HouseSim implements IHouseSim
     private $inventory;
     private $inventoryByItemId;
 
+    private IRandom $rng;
+
     /**
      * @param Inventory[] $inventory
      */
-    public function __construct(array $inventory)
+    public function __construct(IRandom $rng, array $inventory)
     {
+        $this->rng = $rng;
         $this->setInventory($inventory);
     }
 
@@ -47,7 +50,7 @@ class HouseSim implements IHouseSim
         }
     }
 
-    public function getItemCount(): int
+    public function getInventoryCount(): int
     {
         return count($this->inventory);
     }
@@ -57,7 +60,7 @@ class HouseSim implements IHouseSim
      * @param IRandom $rng
      * @return array|null
      */
-    public function getItems(HouseSimRecipe $recipe, IRandom $rng): ?array
+    public function getInventory(HouseSimRecipe $recipe): ?array
     {
         $items = [];
 
@@ -68,7 +71,17 @@ class HouseSim implements IHouseSim
                 $itemId = $ingredient->getId();
 
                 if(array_key_exists($itemId, $this->inventoryByItemId))
-                    $items[] = $rng->rngNextFromArray($this->inventoryByItemId[$itemId]);
+                    $items[] = $this->rng->rngNextFromArray($this->inventoryByItemId[$itemId]);
+                else
+                    return null;
+            }
+            else if($ingredient instanceof ItemQuantity)
+            {
+                $itemId = $ingredient->item->getId();
+                $quantity = $ingredient->quantity;
+
+                if(array_key_exists($itemId, $this->inventoryByItemId) && count($this->inventoryByItemId[$itemId]) >= $quantity)
+                    $items = $this->rng->rngNextSubsetFromArray($this->inventoryByItemId[$itemId], $quantity);
                 else
                     return null;
             }
@@ -79,14 +92,14 @@ class HouseSim implements IHouseSim
                 else
                     $possibleItems = $ingredient;
 
-                $rng->rngNextShuffle($possibleItems);
+                $this->rng->rngNextShuffle($possibleItems);
 
                 $inventory = $this->findFirstListOf($possibleItems);
 
                 if($inventory === null)
                     return null;
                 else
-                    $items[] = $rng->rngNextFromArray($inventory);
+                    $items[] = $this->rng->rngNextFromArray($inventory);
             }
         }
 

@@ -2,16 +2,15 @@
 namespace App\Model;
 
 use App\Entity\Inventory;
-use App\Service\IRandom;
 
 class NoHouseSim implements IHouseSim
 {
-    public function getItemCount(): int
+    public function getInventoryCount(): int
     {
         return 0;
     }
 
-    public function getItems(HouseSimRecipe $recipe, IRandom $rng): ?array
+    public function getInventory(HouseSimRecipe $recipe): ?array
     {
         return null;
     }

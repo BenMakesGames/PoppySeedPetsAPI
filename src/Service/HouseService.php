@@ -2,11 +2,8 @@
 namespace App\Service;
 
 use App\Entity\Pet;
-use App\Entity\PetActivityLog;
-use App\Entity\PetRelationship;
 use App\Entity\User;
 use App\Enum\LocationEnum;
-use App\Model\HouseSim;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
@@ -23,11 +20,12 @@ class HouseService
     private $em;
     private IRandom $squirrel3;
     private InventoryRepository $inventoryRepository;
+    private HouseSimService $houseSimService;
 
     public function __construct(
         PetService $petService, PetRepository $petRepository, AdapterInterface $cache, EntityManagerInterface $em,
         UserQuestRepository $userQuestRepository, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        InventoryRepository $inventoryRepository
+        InventoryRepository $inventoryRepository, HouseSimService $houseSimService
     )
     {
         $this->petService = $petService;
@@ -38,6 +36,7 @@ class HouseService
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
         $this->inventoryRepository = $inventoryRepository;
+        $this->houseSimService = $houseSimService;
     }
 
     public function needsToBeRun(User $user)
@@ -98,13 +97,18 @@ class HouseService
             ->execute()
         ;
 
-        $this->houseSimService->begin();
-
-        while(count($petsWithTime) > 0)
+        if(count($petsWithTime) > 0)
         {
-            $this->squirrel3->rngNextShuffle($petsWithTime);
+            $this->houseSimService->begin($user);
 
-            $petsWithTime = $this->processPets($petsWithTime);
+            while(count($petsWithTime) > 0)
+            {
+                $this->squirrel3->rngNextShuffle($petsWithTime);
+
+                $petsWithTime = $this->processPets($petsWithTime);
+            }
+
+            $this->houseSimService->end();
         }
     }
 
@@ -112,7 +116,7 @@ class HouseService
      * @param Pet[] $petsWithTime
      * @return Pet[]
      */
-    private function processPets($petsWithTime, HouseSim $houseSim): array
+    private function processPets($petsWithTime): array
     {
         $petsRemaining = [];
 
