@@ -201,7 +201,7 @@ class CTFService implements ParkEventInterface
                     ->setPet($participant->pet)
                     ->setEntry($activityLogEntry)
                     ->setChanges($state->compare($participant->pet))
-                    ->setIcon('icons/menu/park')
+                    ->setIcon('icons/activity-log/park')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
                 ;
 
