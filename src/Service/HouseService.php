@@ -6,6 +6,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Model\HouseSim;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
@@ -20,11 +21,13 @@ class HouseService
     private $inventoryService;
     private $cache;
     private $em;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private InventoryRepository $inventoryRepository;
 
     public function __construct(
         PetService $petService, PetRepository $petRepository, AdapterInterface $cache, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository, InventoryService $inventoryService, Squirrel3 $squirrel3
+        UserQuestRepository $userQuestRepository, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        InventoryRepository $inventoryRepository
     )
     {
         $this->petService = $petService;
@@ -34,6 +37,7 @@ class HouseService
         $this->cache = $cache;
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
+        $this->inventoryRepository = $inventoryRepository;
     }
 
     public function needsToBeRun(User $user)
@@ -91,7 +95,10 @@ class HouseService
             ->setParameter('minimumSocialEnergy', PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
             ->setParameter('fifteenMinutesAgo', (new \DateTimeImmutable())->modify('-15 minutes'))
             ->getQuery()
-            ->execute();
+            ->execute()
+        ;
+
+        $this->houseSimService->begin();
 
         while(count($petsWithTime) > 0)
         {
@@ -105,7 +112,7 @@ class HouseService
      * @param Pet[] $petsWithTime
      * @return Pet[]
      */
-    private function processPets($petsWithTime): array
+    private function processPets($petsWithTime, HouseSim $houseSim): array
     {
         $petsRemaining = [];
 

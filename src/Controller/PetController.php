@@ -36,6 +36,7 @@ use App\Service\InventoryService;
 use App\Service\MeritService;
 use App\Service\PetActivity\EatingService;
 use App\Service\PetActivityStatsService;
+use App\Service\PetAndPraiseService;
 use App\Service\PetRelationshipService;
 use App\Service\PetService;
 use App\Service\ProfanityFilterService;
@@ -43,7 +44,6 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\Typeahead\PetRelationshipTypeaheadService;
 use App\Service\Typeahead\PetTypeaheadService;
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -1118,7 +1118,7 @@ class PetController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function pet(
-        Pet $pet, ResponseService $responseService, EntityManagerInterface $em, PetService $petService
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em, PetAndPraiseService $petAndPraiseService
     )
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
@@ -1129,7 +1129,7 @@ class PetController extends PoppySeedPetsController
 
         try
         {
-            $petService->doPet($pet);
+            $petAndPraiseService->doPet($pet);
         }
         catch(\InvalidArgumentException $e)
         {
@@ -1146,7 +1146,7 @@ class PetController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function praise(
-        Pet $pet, ResponseService $responseService, EntityManagerInterface $em, PetService $petService
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em, PetAndPraiseService $petAndPraiseService
     )
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
@@ -1157,7 +1157,7 @@ class PetController extends PoppySeedPetsController
 
         try
         {
-            $petService->doPraise($pet);
+            $petAndPraiseService->doPraise($pet);
         }
         catch(\InvalidArgumentException $e)
         {

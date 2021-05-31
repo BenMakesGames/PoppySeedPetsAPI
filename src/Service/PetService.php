@@ -2,7 +2,6 @@
 namespace App\Service;
 
 use App\Entity\GreenhousePlant;
-use App\Entity\Inventory;
 use App\Entity\LunchboxItem;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
@@ -10,10 +9,8 @@ use App\Entity\PetBaby;
 use App\Entity\PetGroup;
 use App\Entity\PetRelationship;
 use App\Enum\EnumInvalidValueException;
-use App\Enum\FlavorEnum;
 use App\Enum\GatheringHolidayEnum;
 use App\Enum\HolidayEnum;
-use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
@@ -27,7 +24,6 @@ use App\Functions\ColorFunctions;
 use App\Functions\GrammarFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\FoodWithSpice;
-use App\Model\FortuneCookie;
 use App\Model\PetChanges;
 use App\Model\PetChangesSummary;
 use App\Repository\InventoryRepository;
@@ -106,6 +102,7 @@ class PetService
     private CravingService $cravingService;
     private StatusEffectService $statusEffectService;
     private EatingService $eatingService;
+    private HouseSimService $houseSimService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -123,7 +120,7 @@ class PetService
         DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService, LetterService $letterService,
         PetSummonedAwayService $petSummonedAwayService, InventoryModifierService $toolBonusService,
         WeatherService $weatherService, HoliService $holiService, Caerbannog $caerbannog, CravingService $cravingService,
-        StatusEffectService $statusEffectService, EatingService $eatingService
+        StatusEffectService $statusEffectService, EatingService $eatingService, HouseSimService $houseSimService
     )
     {
         $this->em = $em;
@@ -168,82 +165,7 @@ class PetService
         $this->cravingService = $cravingService;
         $this->statusEffectService = $statusEffectService;
         $this->eatingService = $eatingService;
-    }
-
-    public function doPet(Pet $pet)
-    {
-        if($pet->getInDaycare()) throw new \InvalidArgumentException('Pets in daycare cannot be interacted with.');
-
-        $now = new \DateTimeImmutable();
-
-        $changes = new PetChanges($pet);
-
-        if($pet->getLastInteracted() < $now->modify('-48 hours'))
-        {
-            $pet->setLastInteracted($now->modify('-20 hours'));
-            $pet->increaseSafety(15);
-            $pet->increaseLove(15);
-            $this->petExperienceService->gainAffection($pet, 10);
-        }
-        else if($pet->getLastInteracted() < $now->modify('-20 hours'))
-        {
-            $pet->setLastInteracted($now->modify('-4 hours'));
-            $pet->increaseSafety(10);
-            $pet->increaseLove(10);
-            $this->petExperienceService->gainAffection($pet, 5);
-        }
-        else if($pet->getLastInteracted() < $now->modify('-4 hours'))
-        {
-            $pet->setLastInteracted($now);
-            $pet->increaseSafety(7);
-            $pet->increaseLove(7);
-            $this->petExperienceService->gainAffection($pet, 1);
-        }
-        else
-            throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
-
-        $this->cravingService->updateCraving($pet);
-
-        $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% pet ' . '%pet:' . $pet->getId() . '.name%'. '.', 'ui/affection', $changes->compare($pet));
-        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PETTED_A_PET);
-    }
-
-    public function doPraise(Pet $pet)
-    {
-        if($pet->getInDaycare()) throw new \InvalidArgumentException('Pets in daycare cannot be interacted with.');
-
-        $now = new \DateTimeImmutable();
-
-        $changes = new PetChanges($pet);
-
-        if($pet->getLastInteracted() < $now->modify('-48 hours'))
-        {
-            $pet->setLastInteracted($now->modify('-20 hours'));
-            $pet->increaseLove(15);
-            $pet->increaseEsteem(15);
-            $this->petExperienceService->gainAffection($pet, 10);
-        }
-        else if($pet->getLastInteracted() < $now->modify('-20 hours'))
-        {
-            $pet->setLastInteracted($now->modify('-4 hours'));
-            $pet->increaseLove(10);
-            $pet->increaseEsteem(10);
-            $this->petExperienceService->gainAffection($pet, 5);
-        }
-        else if($pet->getLastInteracted() < $now->modify('-4 hours'))
-        {
-            $pet->setLastInteracted($now);
-            $pet->increaseLove(7);
-            $pet->increaseEsteem(7);
-            $this->petExperienceService->gainAffection($pet, 1);
-        }
-        else
-            throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
-
-        $this->cravingService->updateCraving($pet);
-
-        $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% praised ' . '%pet:' . $pet->getId() . '.name%'. '.', 'ui/affection', $changes->compare($pet));
-        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PRAISED_A_PET);
+        $this->houseSimService = $houseSimService;
     }
 
     public function runHour(Pet $pet)
@@ -520,13 +442,11 @@ class PetService
             return;
         }
 
-        $itemsInHouse = $this->inventoryRepository->countItemsInLocation($pet->getOwner(), LocationEnum::HOME);
+        $itemsInHouse = $this->houseSimService->getState()->getItemCount();
 
-        $quantities = $this->inventoryRepository->getInventoryQuantities($pet->getOwner(), LocationEnum::HOME, 'name');
-
-        $craftingPossibilities = $this->craftingService->getCraftingPossibilities($petWithSkills, $quantities);
-        $programmingPossibilities = $this->programmingService->getCraftingPossibilities($petWithSkills, $quantities);
-        $notCraftingPossibilities = $this->notReallyCraftsService->getCraftingPossibilities($petWithSkills, $quantities);
+        $craftingPossibilities = $this->craftingService->getCraftingPossibilities($petWithSkills);
+        $programmingPossibilities = $this->programmingService->getCraftingPossibilities($petWithSkills);
+        $notCraftingPossibilities = $this->notReallyCraftsService->getCraftingPossibilities($petWithSkills);
 
         $houseTooFull = $this->squirrel3->rngNextInt(1, 10) > $pet->getOwner()->getMaxInventory() - $itemsInHouse;
 
@@ -554,7 +474,7 @@ class PetService
                 $do = $this->squirrel3->rngNextFromArray($possibilities);
 
                 /** @var PetActivityLog $activityLog */
-                $activityLog = $do[0]->adventure($petWithSkills, $do[1]);
+                $activityLog = $do[0]->adventure($petWithSkills, $houseSim, $do[1]);
                 $activityLog->setEntry($description . ' ' . $activityLog->getEntry());
             }
 
@@ -563,10 +483,10 @@ class PetService
 
         if($this->squirrel3->rngNextInt(1, 50) === 1)
         {
-            if($this->letterService->adventure($petWithSkills))
+            if($this->letterService->adventure($petWithSkills, $houseSim))
                 return;
 
-            $this->genericAdventureService->adventure($petWithSkills);
+            $this->genericAdventureService->adventure($petWithSkills, $houseSim);
             return;
         }
 

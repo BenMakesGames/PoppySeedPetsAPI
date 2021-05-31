@@ -2,16 +2,10 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Entity\Pet;
-use App\Entity\PetActivityLog;
-use App\Entity\PetSkills;
 use App\Enum\FlavorEnum;
-use App\Enum\LocationEnum;
-use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\StoryEnum;
 use App\Enum\UserStatEnum;
-use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
@@ -22,7 +16,6 @@ use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\PetFactory;
-use App\Service\PetService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\StoryService;

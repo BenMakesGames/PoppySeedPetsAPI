@@ -15,6 +15,7 @@ use App\Enum\LocationEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Model\FoodWithSpice;
+use App\Model\HouseSim;
 use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
@@ -31,11 +32,12 @@ class InventoryService
     private $squirrel3;
     private $spiceRepository;
     private $eatingService;
+    private HouseSimService $houseSimService;
 
     public function __construct(
         ItemRepository $itemRepository, EntityManagerInterface $em, ResponseService $responseService,
         InventoryRepository $inventoryRepository, Squirrel3 $squirrel3, SpiceRepository $spiceRepository,
-        EatingService $eatingService
+        EatingService $eatingService, HouseSimService $houseSimService
     )
     {
         $this->itemRepository = $itemRepository;
@@ -45,6 +47,7 @@ class InventoryService
         $this->squirrel3 = $squirrel3;
         $this->spiceRepository = $spiceRepository;
         $this->eatingService = $eatingService;
+        $this->houseSimService = $houseSimService;
     }
 
     /**
@@ -391,6 +394,8 @@ class InventoryService
 
         $this->responseService->setReloadInventory();
 
+        $this->houseSimService->getState()->addSingleInventory($i);
+
         return $i;
     }
 
@@ -465,8 +470,16 @@ class InventoryService
 
             $inventory = $this->receiveItem($bug, $pet->getOwner(), null, $comment, $location);
 
+            if($location === LocationEnum::HOME)
+                $houseSim->addSingleInventory($inventory);
+
             if($bugName === 'Spider' && $i === 0)
-                $this->receiveItem('Cobweb', $pet->getOwner(), null, 'Cobwebs?! Some Spider must have made this...', $location);
+            {
+                $cobweb = $this->receiveItem('Cobweb', $pet->getOwner(), null, 'Cobwebs?! Some Spider must have made this...', $location);
+
+                if($location === LocationEnum::HOME)
+                    $houseSim->addSingleInventory($cobweb);
+            }
         }
 
         return $inventory;

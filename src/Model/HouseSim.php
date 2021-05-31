@@ -1,0 +1,158 @@
+<?php
+namespace App\Model;
+
+use App\Entity\Inventory;
+use App\Entity\Item;
+use App\Entity\ItemGroup;
+use App\Service\IRandom;
+
+class HouseSim implements IHouseSim
+{
+    private $inventory;
+    private $inventoryByItemId;
+
+    /**
+     * @param Inventory[] $inventory
+     */
+    public function __construct(array $inventory)
+    {
+        $this->setInventory($inventory);
+    }
+
+    /**
+     * @param Inventory[] $inventory
+     */
+    private function setInventory(array $inventory)
+    {
+        $this->inventory = $inventory;
+
+        $this->inventoryByItemId = [];
+
+        $this->addInventoryByItemId($this->inventory);
+    }
+
+    /**
+     * @param Inventory[] $inventory
+     */
+    private function addInventoryByItemId(array $inventory)
+    {
+        foreach($inventory as $i)
+        {
+            $itemId = $i->getItem()->getId();
+
+            if(array_key_exists($itemId, $this->inventoryByItemId))
+                $this->inventoryByItemId[$itemId][] = $i;
+            else
+                $this->inventoryByItemId[$itemId] = [ $i ];
+        }
+    }
+
+    public function getItemCount(): int
+    {
+        return count($this->inventory);
+    }
+
+    /**
+     * @param HouseSimRecipe $recipe
+     * @param IRandom $rng
+     * @return array|null
+     */
+    public function getItems(HouseSimRecipe $recipe, IRandom $rng): ?array
+    {
+        $items = [];
+
+        foreach($recipe->ingredients as $ingredient)
+        {
+            if($ingredient instanceof Item)
+            {
+                $itemId = $ingredient->getId();
+
+                if(array_key_exists($itemId, $this->inventoryByItemId))
+                    $items[] = $rng->rngNextFromArray($this->inventoryByItemId[$itemId]);
+                else
+                    return null;
+            }
+            else
+            {
+                if($ingredient instanceof ItemGroup)
+                    $possibleItems = $ingredient->getItems()->toArray();
+                else
+                    $possibleItems = $ingredient;
+
+                $rng->rngNextShuffle($possibleItems);
+
+                $inventory = $this->findFirstListOf($possibleItems);
+
+                if($inventory === null)
+                    return null;
+                else
+                    $items[] = $rng->rngNextFromArray($inventory);
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * @param Item[] $items
+     * @return Inventory[]|null
+     */
+    private function findFirstListOf(array $items): ?Item
+    {
+        foreach($items as $i)
+        {
+            $itemId = $i->getId();
+
+            if(array_key_exists($itemId, $this->inventoryByItemId))
+                return $this->inventoryByItemId[$itemId];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param Inventory[] $inventory
+     */
+    public function removeInventory(array $toRemove)
+    {
+        $this->setInventory(array_diff($this->inventory, $toRemove));
+
+
+
+        // careful (and slower) way to do this, checking ids.
+        // pretty sure we DON'T need to do this, since we'll always be passing references
+        // to the same Inventory object.
+        /*
+        $itemIdsToRemove = array_map(fn(Inventory $i) => $i->getId(), $toRemove);
+
+        $newInventory = array_filter(
+            $this->inventory,
+            fn(Inventory $i) => !in_array($i->getId(), $itemIdsToRemove)
+        );
+
+        $this->setInventory($newInventory);
+        */
+    }
+
+    public function addInventory(array $toAdd)
+    {
+        $this->inventory = array_merge($this->inventory, $toAdd);
+
+        $this->addInventoryByItemId($toAdd);
+    }
+
+    public function addSingleInventory(?Inventory $i)
+    {
+        if($i === null)
+            return;
+
+        $this->inventory[] = $i;
+
+        $itemId = $i->getItem()->getId();
+
+        if(array_key_exists($itemId, $this->inventoryByItemId))
+            $this->inventoryByItemId[$itemId][] = $i;
+        else
+            $this->inventoryByItemId[$itemId] = [ $i ];
+    }
+}

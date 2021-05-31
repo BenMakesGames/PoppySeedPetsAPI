@@ -17,7 +17,6 @@ use App\Repository\UserQuestRepository;
 use App\Service\EquipmentService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
-use App\Service\PetService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\StatusEffectService;
