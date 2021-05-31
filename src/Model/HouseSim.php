@@ -8,8 +8,8 @@ use App\Service\IRandom;
 
 class HouseSim implements IHouseSim
 {
-    private $inventory;
-    private $inventoryByItemId;
+    /** @var Inventory[] */ private array $inventory;
+    private array $inventoryByItemId;
 
     private IRandom $rng;
 
@@ -128,7 +128,13 @@ class HouseSim implements IHouseSim
      */
     public function removeInventory(array $toRemove)
     {
-        $this->setInventory(array_diff($this->inventory, $toRemove));
+        $newInventory = array_udiff(
+            $this->inventory,
+            $toRemove,
+            fn(Inventory $a, Inventory $b) => $a->getId() === $b->getId()
+        );
+
+        $this->setInventory($newInventory);
 
 
 
