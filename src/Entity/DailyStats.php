@@ -110,126 +110,151 @@ class DailyStats
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedTrader1Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedTrader3Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedTrader7Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedTrader28Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedTraderLifetime;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedFireplace1Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedFireplace3Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedFireplace7Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedFireplace28Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedFireplaceLifetime;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedGreenhouse1Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedGreenhouse3Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedGreenhouse7Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedGreenhouse28Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedGreenhouseLifetime;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedBeehive1Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedBeehive3Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedBeehive7Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedBeehive28Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedBeehiveLifetime;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedPortal1Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedPortal3Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedPortal7Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedPortal28Day;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"globalStats"})
      */
     private ?int $unlockedPortalLifetime;
 
