@@ -2,7 +2,6 @@
 namespace App\Command;
 
 use App\Entity\DailyStats;
-use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -14,7 +13,9 @@ class CalculateDailyStatsCommand extends Command
     private $em;
     private $logger;
 
-    public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
+    public function __construct(
+        EntityManagerInterface $em, LoggerInterface $logger
+    )
     {
         $this->em = $em;
         $this->logger = $logger;
@@ -50,8 +51,6 @@ class CalculateDailyStatsCommand extends Command
         $weekNewPlayers = $this->getNewPlayerCount($week);
         $monthNewPlayers = $this->getNewPlayerCount($month);
 
-        var_dump($oneDayAverages);
-
         $dailyStats = (new DailyStats())
             ->setDate($today->modify('-1 day'))
 
@@ -71,6 +70,36 @@ class CalculateDailyStatsCommand extends Command
             ->setNewPlayers3Day($threeDayNewPlayers['new_users'])
             ->setNewPlayers7Day($weekNewPlayers['new_users'])
             ->setNewPlayers28Day($monthNewPlayers['new_users'])
+
+            ->setUnlockedTrader1Day($this->getUnlocked('trader', $oneDay))
+            ->setUnlockedTrader3Day($this->getUnlocked('trader', $threeDay))
+            ->setUnlockedTrader7Day($this->getUnlocked('trader', $week))
+            ->setUnlockedTrader28Day($this->getUnlocked('trader', $month))
+            ->setUnlockedTraderLifetime($this->getLifetimeUnlocked('trader'))
+
+            ->setUnlockedFireplace1Day($this->getUnlocked('fireplace', $oneDay))
+            ->setUnlockedFireplace3Day($this->getUnlocked('fireplace', $threeDay))
+            ->setUnlockedFireplace7Day($this->getUnlocked('fireplace', $week))
+            ->setUnlockedFireplace28Day($this->getUnlocked('fireplace', $month))
+            ->setUnlockedFireplaceLifetime($this->getLifetimeUnlocked('fireplace'))
+
+            ->setUnlockedGreenhouse1Day($this->getUnlocked('greenhouse', $oneDay))
+            ->setUnlockedGreenhouse3Day($this->getUnlocked('greenhouse', $threeDay))
+            ->setUnlockedGreenhouse7Day($this->getUnlocked('greenhouse', $week))
+            ->setUnlockedGreenhouse28Day($this->getUnlocked('greenhouse', $month))
+            ->setUnlockedGreenhouseLifetime($this->getLifetimeUnlocked('greenhouse'))
+
+            ->setUnlockedBeehive1Day($this->getUnlocked('beehive', $oneDay))
+            ->setUnlockedBeehive3Day($this->getUnlocked('beehive', $threeDay))
+            ->setUnlockedBeehive7Day($this->getUnlocked('beehive', $week))
+            ->setUnlockedBeehive28Day($this->getUnlocked('beehive', $month))
+            ->setUnlockedBeehiveLifetime($this->getLifetimeUnlocked('beehive'))
+
+            ->setUnlockedPortal1Day($this->getUnlocked('hollow_earth', $oneDay))
+            ->setUnlockedPortal3Day($this->getUnlocked('hollow_earth', $threeDay))
+            ->setUnlockedPortal7Day($this->getUnlocked('hollow_earth', $week))
+            ->setUnlockedPortal28Day($this->getUnlocked('hollow_earth', $month))
+            ->setUnlockedPortalLifetime($this->getLifetimeUnlocked('hollow_earth'))
         ;
 
         $this->em->persist($dailyStats);
@@ -79,7 +108,7 @@ class CalculateDailyStatsCommand extends Command
         return Command::SUCCESS;
     }
 
-    private function getNewPlayerCount(string $firstDate)
+    public function getNewPlayerCount(string $firstDate)
     {
         return $this->em->getConnection()
             ->executeQuery('
@@ -91,7 +120,7 @@ class CalculateDailyStatsCommand extends Command
         ;
     }
 
-    private function getAverages(string $firstDate)
+    public function getAverages(string $firstDate)
     {
         return $this->em->getConnection()
             ->executeQuery('
@@ -105,7 +134,33 @@ class CalculateDailyStatsCommand extends Command
         ;
     }
 
-    private function getLifeTime()
+    public function getUnlocked(string $featureFieldSuffix, string $firstDate): int
+    {
+        return (int)$this->em->getConnection()
+            ->executeQuery('
+                SELECT COUNT(user.id) AS qty
+                FROM user
+                WHERE
+                    unlocked_' . $featureFieldSuffix . ' IS NOT NULL
+                    AND user.last_activity>="' . $firstDate . '"
+            ')
+            ->fetchAssociative()['qty']
+        ;
+    }
+
+    public function getLifetimeUnlocked(string $featureFieldSuffix): int
+    {
+        return (int)$this->em->getConnection()
+            ->executeQuery('
+                SELECT COUNT(user.id) AS qty
+                FROM user
+                WHERE unlocked_' . $featureFieldSuffix . ' IS NOT NULL
+            ')
+            ->fetchAssociative()['qty']
+        ;
+    }
+
+    public function getLifeTime()
     {
         return $this->em->getConnection()
             ->executeQuery('

@@ -108,6 +108,131 @@ class DailyStats
      */
     private $newPlayers28Day;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedTrader1Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedTrader3Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedTrader7Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedTrader28Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedTraderLifetime;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedFireplace1Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedFireplace3Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedFireplace7Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedFireplace28Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedFireplaceLifetime;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedGreenhouse1Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedGreenhouse3Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedGreenhouse7Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedGreenhouse28Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedGreenhouseLifetime;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedBeehive1Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedBeehive3Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedBeehive7Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedBeehive28Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedBeehiveLifetime;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedPortal1Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedPortal3Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedPortal7Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedPortal28Day;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $unlockedPortalLifetime;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -290,6 +415,405 @@ class DailyStats
     {
         $this->newPlayers28Day = $newPlayers28Day;
 
+        return $this;
+    }
+
+    public function getUnlockedFireplace1Day(): ?int
+    {
+        return $this->unlockedFireplace1Day;
+    }
+
+    public function setUnlockedFireplace1Day(?int $unlockedFireplace1Day): self
+    {
+        $this->unlockedFireplace1Day = $unlockedFireplace1Day;
+
+        return $this;
+    }
+
+    public function getUnlockedFireplace3Day(): ?int
+    {
+        return $this->unlockedFireplace3Day;
+    }
+
+    public function setUnlockedFireplace3Day(?int $unlockedFireplace3Day): self
+    {
+        $this->unlockedFireplace3Day = $unlockedFireplace3Day;
+
+        return $this;
+    }
+
+    public function getUnlockedFireplace7Day(): ?int
+    {
+        return $this->unlockedFireplace7Day;
+    }
+
+    public function setUnlockedFireplace7Day(?int $unlockedFireplace7Day): self
+    {
+        $this->unlockedFireplace7Day = $unlockedFireplace7Day;
+
+        return $this;
+    }
+
+    public function getUnlockedFireplace28Day(): ?int
+    {
+        return $this->unlockedFireplace28Day;
+    }
+
+    public function setUnlockedFireplace28Day(?int $unlockedFireplace28Day): self
+    {
+        $this->unlockedFireplace28Day = $unlockedFireplace28Day;
+
+        return $this;
+    }
+
+    public function getUnlockedTrader1Day()
+    {
+        return $this->unlockedTrader1Day;
+    }
+
+    public function setUnlockedTrader1Day($unlockedTrader1Day): self
+    {
+        $this->unlockedTrader1Day = $unlockedTrader1Day;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedTrader3Day(): ?int
+    {
+        return $this->unlockedTrader3Day;
+    }
+
+    /**
+     * @param int|null $unlockedTrader3Day
+     */
+    public function setUnlockedTrader3Day(?int $unlockedTrader3Day): self
+    {
+        $this->unlockedTrader3Day = $unlockedTrader3Day;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedTrader7Day(): ?int
+    {
+        return $this->unlockedTrader7Day;
+    }
+
+    /**
+     * @param int|null $unlockedTrader7Day
+     */
+    public function setUnlockedTrader7Day(?int $unlockedTrader7Day): self
+    {
+        $this->unlockedTrader7Day = $unlockedTrader7Day;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedTrader28Day(): ?int
+    {
+        return $this->unlockedTrader28Day;
+    }
+
+    /**
+     * @param int|null $unlockedTrader28Day
+     */
+    public function setUnlockedTrader28Day(?int $unlockedTrader28Day): self
+    {
+        $this->unlockedTrader28Day = $unlockedTrader28Day;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedTraderLifetime(): ?int
+    {
+        return $this->unlockedTraderLifetime;
+    }
+
+    /**
+     * @param int|null $unlockedTraderLifetime
+     */
+    public function setUnlockedTraderLifetime(?int $unlockedTraderLifetime): self
+    {
+        $this->unlockedTraderLifetime = $unlockedTraderLifetime;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedFireplaceLifetime(): ?int
+    {
+        return $this->unlockedFireplaceLifetime;
+    }
+
+    /**
+     * @param int|null $unlockedFireplaceLifetime
+     */
+    public function setUnlockedFireplaceLifetime(?int $unlockedFireplaceLifetime): self
+    {
+        $this->unlockedFireplaceLifetime = $unlockedFireplaceLifetime;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedGreenhouse1Day(): ?int
+    {
+        return $this->unlockedGreenhouse1Day;
+    }
+
+    /**
+     * @param int|null $unlockedGreenhouse1Day
+     */
+    public function setUnlockedGreenhouse1Day(?int $unlockedGreenhouse1Day): self
+    {
+        $this->unlockedGreenhouse1Day = $unlockedGreenhouse1Day;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedGreenhouse3Day(): ?int
+    {
+        return $this->unlockedGreenhouse3Day;
+    }
+
+    /**
+     * @param int|null $unlockedGreenhouse3Day
+     */
+    public function setUnlockedGreenhouse3Day(?int $unlockedGreenhouse3Day): self
+    {
+        $this->unlockedGreenhouse3Day = $unlockedGreenhouse3Day;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedGreenhouse7Day(): ?int
+    {
+        return $this->unlockedGreenhouse7Day;
+    }
+
+    /**
+     * @param int|null $unlockedGreenhouse7Day
+     */
+    public function setUnlockedGreenhouse7Day(?int $unlockedGreenhouse7Day): self
+    {
+        $this->unlockedGreenhouse7Day = $unlockedGreenhouse7Day;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedGreenhouse28Day(): ?int
+    {
+        return $this->unlockedGreenhouse28Day;
+    }
+
+    /**
+     * @param int|null $unlockedGreenhouse28Day
+     */
+    public function setUnlockedGreenhouse28Day(?int $unlockedGreenhouse28Day): self
+    {
+        $this->unlockedGreenhouse28Day = $unlockedGreenhouse28Day;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedGreenhouseLifetime(): ?int
+    {
+        return $this->unlockedGreenhouseLifetime;
+    }
+
+    /**
+     * @param int|null $unlockedGreenhouseLifetime
+     */
+    public function setUnlockedGreenhouseLifetime(?int $unlockedGreenhouseLifetime): self
+    {
+        $this->unlockedGreenhouseLifetime = $unlockedGreenhouseLifetime;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedBeehive1Day(): ?int
+    {
+        return $this->unlockedBeehive1Day;
+    }
+
+    /**
+     * @param int|null $unlockedBeehive1Day
+     */
+    public function setUnlockedBeehive1Day(?int $unlockedBeehive1Day): self
+    {
+        $this->unlockedBeehive1Day = $unlockedBeehive1Day;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedBeehive3Day(): ?int
+    {
+        return $this->unlockedBeehive3Day;
+    }
+
+    /**
+     * @param int|null $unlockedBeehive3Day
+     */
+    public function setUnlockedBeehive3Day(?int $unlockedBeehive3Day): self
+    {
+        $this->unlockedBeehive3Day = $unlockedBeehive3Day;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedBeehive7Day(): ?int
+    {
+        return $this->unlockedBeehive7Day;
+    }
+
+    /**
+     * @param int|null $unlockedBeehive7Day
+     */
+    public function setUnlockedBeehive7Day(?int $unlockedBeehive7Day): self
+    {
+        $this->unlockedBeehive7Day = $unlockedBeehive7Day;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedBeehive28Day(): ?int
+    {
+        return $this->unlockedBeehive28Day;
+    }
+
+    /**
+     * @param int|null $unlockedBeehive28Day
+     */
+    public function setUnlockedBeehive28Day(?int $unlockedBeehive28Day): self
+    {
+        $this->unlockedBeehive28Day = $unlockedBeehive28Day;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedBeehiveLifetime(): ?int
+    {
+        return $this->unlockedBeehiveLifetime;
+    }
+
+    /**
+     * @param int|null $unlockedBeehiveLifetime
+     */
+    public function setUnlockedBeehiveLifetime(?int $unlockedBeehiveLifetime): self
+    {
+        $this->unlockedBeehiveLifetime = $unlockedBeehiveLifetime;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedPortal1Day(): ?int
+    {
+        return $this->unlockedPortal1Day;
+    }
+
+    /**
+     * @param int|null $unlockedPortal1Day
+     */
+    public function setUnlockedPortal1Day(?int $unlockedPortal1Day): self
+    {
+        $this->unlockedPortal1Day = $unlockedPortal1Day;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedPortal3Day(): ?int
+    {
+        return $this->unlockedPortal3Day;
+    }
+
+    /**
+     * @param int|null $unlockedPortal3Day
+     */
+    public function setUnlockedPortal3Day(?int $unlockedPortal3Day): self
+    {
+        $this->unlockedPortal3Day = $unlockedPortal3Day;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedPortal7Day(): ?int
+    {
+        return $this->unlockedPortal7Day;
+    }
+
+    /**
+     * @param int|null $unlockedPortal7Day
+     */
+    public function setUnlockedPortal7Day(?int $unlockedPortal7Day): self
+    {
+        $this->unlockedPortal7Day = $unlockedPortal7Day;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedPortal28Day(): ?int
+    {
+        return $this->unlockedPortal28Day;
+    }
+
+    /**
+     * @param int|null $unlockedPortal28Day
+     */
+    public function setUnlockedPortal28Day(?int $unlockedPortal28Day): self
+    {
+        $this->unlockedPortal28Day = $unlockedPortal28Day;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUnlockedPortalLifetime(): ?int
+    {
+        return $this->unlockedPortalLifetime;
+    }
+
+    /**
+     * @param int|null $unlockedPortalLifetime
+     */
+    public function setUnlockedPortalLifetime(?int $unlockedPortalLifetime): self
+    {
+        $this->unlockedPortalLifetime = $unlockedPortalLifetime;
         return $this;
     }
 }
