@@ -1,6 +1,10 @@
 framework:
     rate_limiter:
+        psp_burst:
+            policy: 'sliding_window'
+            limit: 5
+            interval: '1 second'
         psp_default:
             policy: 'sliding_window'
             limit: 10
-            interval: '1 second'
+            interval: '10 seconds'

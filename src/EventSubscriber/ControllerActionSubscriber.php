@@ -1,22 +1,16 @@
 <?php
 namespace App\EventSubscriber;
 
-use App\Annotations\DefaultRateLimiter;
 use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\User;
 use App\Service\HouseService;
 use Doctrine\Common\Annotations\Reader;
-use phpDocumentor\Reflection\Types\Array_;
-use phpDocumentor\Reflection\Types\Callable_;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Security\Core\Security;
@@ -32,21 +26,21 @@ class ControllerActionSubscriber implements EventSubscriberInterface
     }
 
     private $security;
-    private $cache;
     private $houseService;
     private $annotationReader;
-    private $defaultRateLimiterFactory;
+    private RateLimiterFactory $defaultRateLimiterFactory;
+    private RateLimiterFactory $burstRateLimiterFactory;
 
     public function __construct(
-        Security $security, AdapterInterface $cache, HouseService $houseService, Reader $annotationReader,
-        RateLimiterFactory $pspDefaultLimiter
+        Security $security, HouseService $houseService, Reader $annotationReader,
+        RateLimiterFactory $pspDefaultLimiter, RateLimiterFactory $pspBurstLimiter
     )
     {
         $this->security = $security;
-        $this->cache = $cache;
         $this->houseService = $houseService;
         $this->annotationReader = $annotationReader;
         $this->defaultRateLimiterFactory = $pspDefaultLimiter;
+        $this->burstRateLimiterFactory = $pspBurstLimiter;
     }
 
     public function beforeFilter(ControllerEvent $event)
@@ -68,14 +62,15 @@ class ControllerActionSubscriber implements EventSubscriberInterface
         if(!$user)
             return;
 
-        $limiter = $this->defaultRateLimiterFactory->create($user->getId());
+        $burstLimiter = $this->burstRateLimiterFactory->create($user->getId());
+        $defaultLimiter = $this->defaultRateLimiterFactory->create($user->getId());
 
-        // the argument of consume() is the number of tokens to consume
-        // and returns an object of type Limit
-        if (false === $limiter->consume(1)->isAccepted()) {
+        $burst = $burstLimiter->consume(1);
+        $default = $defaultLimiter->consume(1);
+
+        if (!$burst->isAccepted() || !$default->isAccepted()) {
             throw new TooManyRequestsHttpException();
         }
-
     }
 
     private function checkHouseHours(ControllerEvent $event)
