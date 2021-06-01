@@ -128,20 +128,6 @@ class HouseSim implements IHouseSim
      */
     public function removeInventory(array $toRemove)
     {
-        $newInventory = array_udiff(
-            $this->inventory,
-            $toRemove,
-            fn(Inventory $a, Inventory $b) => $a->getId() <=> $b->getId()
-        );
-
-        $this->setInventory($newInventory);
-
-
-
-        // careful (and slower) way to do this, checking ids.
-        // pretty sure we DON'T need to do this, since we'll always be passing references
-        // to the same Inventory object.
-        /*
         $itemIdsToRemove = array_map(fn(Inventory $i) => $i->getId(), $toRemove);
 
         $newInventory = array_filter(
@@ -150,7 +136,6 @@ class HouseSim implements IHouseSim
         );
 
         $this->setInventory($newInventory);
-        */
     }
 
     public function addInventory(array $toAdd)
