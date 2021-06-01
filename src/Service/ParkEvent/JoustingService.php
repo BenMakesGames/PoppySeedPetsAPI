@@ -436,7 +436,7 @@ class JoustingService implements ParkEventInterface
             ->setPet($pet)
             ->setEntry($log)
             ->setChanges($changes->compare($pet))
-            ->setIcon('icons/activity-log/park')
+            ->setIcon('icons/activity-logs/park')
             ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT);
 
         $this->em->persist($log);

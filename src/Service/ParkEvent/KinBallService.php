@@ -224,7 +224,7 @@ class KinBallService implements ParkEventInterface
                     ->setPet($participant->pet)
                     ->setEntry($activityLogEntry)
                     ->setChanges($state->compare($participant->pet))
-                    ->setIcon('icons/activity-log/park')
+                    ->setIcon('icons/activity-logs/park')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
                 ;
 
