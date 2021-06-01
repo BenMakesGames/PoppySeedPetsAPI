@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
@@ -108,7 +109,7 @@ class GrocerController extends PoppySeedPetsController
             throw new UnprocessableEntityHttpException('Did you forget to select something to buy?');
 
         $existingInventoryCount = $inventoryService->countTotalInventory($user, $buyTo);
-        $maxInventory = $buyTo === LocationEnum::BASEMENT ? 10000 : 100;
+        $maxInventory = $buyTo === LocationEnum::BASEMENT ? User::MAX_BASEMENT_INVENTORY : User::MAX_HOUSE_INVENTORY;
 
         if($existingInventoryCount + $totalQuantity > $maxInventory)
         {

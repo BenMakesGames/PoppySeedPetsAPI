@@ -109,6 +109,8 @@ class HouseService
             }
 
             $this->houseSimService->end();
+
+            $this->em->flush();
         }
     }
 
@@ -125,8 +127,6 @@ class HouseService
             if($pet->getHouseTime()->getActivityTime() >= 60)
             {
                 $this->petService->runHour($pet);
-
-                $this->em->flush();
             }
 
             $hungOut = false;
@@ -134,8 +134,6 @@ class HouseService
             if($pet->getHouseTime()->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
             {
                 $hungOut = $this->petService->runSocialTime($pet);
-
-                $this->em->flush();
             }
 
             if($this->petCanStillProcess($pet, $hungOut))

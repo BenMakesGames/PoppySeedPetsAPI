@@ -8,6 +8,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\PetBaby;
 use App\Entity\PetGroup;
 use App\Entity\PetRelationship;
+use App\Entity\User;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\GatheringHolidayEnum;
 use App\Enum\HolidayEnum;
@@ -26,7 +27,6 @@ use App\Model\ComputedPetSkills;
 use App\Model\FoodWithSpice;
 use App\Model\PetChanges;
 use App\Model\PetChangesSummary;
-use App\Repository\InventoryRepository;
 use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
@@ -70,7 +70,6 @@ class PetService
     private $craftingService;
     private $programmingService;
     private $userStatsRepository;
-    private $inventoryRepository;
     private $treasureMapService;
     private $genericAdventureService;
     private $protocol7Service;
@@ -108,15 +107,14 @@ class PetService
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
         PetRelationshipService $petRelationshipService, PetRepository $petRepository, FishingService $fishingService,
         HuntingService $huntingService, GatheringService $gatheringService, CraftingService $craftingService,
-        UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
-        TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService,
+        UserStatsRepository $userStatsRepository, TreasureMapService $treasureMapService, GenericAdventureService $genericAdventureService,
         Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
         PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService,
         PregnancyService $pregnancyService, Squirrel3 $squirrel3, ChocolateMansion $chocolateMansion,
         PetGroupService $petGroupService, PetExperienceService $petExperienceService, DreamingService $dreamingService,
         MagicBeanstalkService $beanStalkService, GatheringHolidayAdventureService $gatheringHolidayAdventureService,
         HeartDimensionService $heartDimensionService, PetRelationshipRepository $petRelationshipRepository,
-        GuildService $guildService, InventoryService $inventoryService, BurntForestService $burntForestService,
+        GuildService $guildService, BurntForestService $burntForestService, InventoryService $inventoryService,
         DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService, LetterService $letterService,
         PetSummonedAwayService $petSummonedAwayService, InventoryModifierService $toolBonusService,
         WeatherService $weatherService, HoliService $holiService, Caerbannog $caerbannog, CravingService $cravingService,
@@ -134,7 +132,6 @@ class PetService
         $this->gatheringService = $gatheringService;
         $this->craftingService = $craftingService;
         $this->userStatsRepository = $userStatsRepository;
-        $this->inventoryRepository = $inventoryRepository;
         $this->treasureMapService = $treasureMapService;
         $this->genericAdventureService = $genericAdventureService;
         $this->protocol7Service = $protocol7Service;
@@ -151,8 +148,8 @@ class PetService
         $this->heartDimensionService = $heartDimensionService;
         $this->petRelationshipRepository = $petRelationshipRepository;
         $this->guildService = $guildService;
-        $this->inventoryService = $inventoryService;
         $this->burntForestService = $burntForestService;
+        $this->inventoryService = $inventoryService;
         $this->deepSeaService = $deepSeaService;
         $this->petSummonedAwayService = $petSummonedAwayService;
         $this->toolBonusService = $toolBonusService;
@@ -448,11 +445,11 @@ class PetService
         $programmingPossibilities = $this->programmingService->getCraftingPossibilities($petWithSkills);
         $notCraftingPossibilities = $this->notReallyCraftsService->getCraftingPossibilities($petWithSkills);
 
-        $houseTooFull = $this->squirrel3->rngNextInt(1, 10) > $pet->getOwner()->getMaxInventory() - $itemsInHouse;
+        $houseTooFull = $this->squirrel3->rngNextInt(1, 10) > User::MAX_HOUSE_INVENTORY - $itemsInHouse;
 
         if($houseTooFull)
         {
-            if($itemsInHouse >= $pet->getOwner()->getMaxInventory())
+            if($itemsInHouse >= User::MAX_HOUSE_INVENTORY)
                 $description = '%user:' . $pet->getOwner()->getId() . '.Name\'s% house is crazy-full.';
             else
                 $description = '%user:' . $pet->getOwner()->getId() . '.Name\'s% house is getting pretty full.';

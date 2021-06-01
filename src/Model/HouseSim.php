@@ -131,7 +131,7 @@ class HouseSim implements IHouseSim
         $newInventory = array_udiff(
             $this->inventory,
             $toRemove,
-            fn(Inventory $a, Inventory $b) => $a->getId() === $b->getId()
+            fn(Inventory $a, Inventory $b) => $a->getId() <=> $b->getId()
         );
 
         $this->setInventory($newInventory);

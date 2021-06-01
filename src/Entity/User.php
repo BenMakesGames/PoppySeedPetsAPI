@@ -17,6 +17,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class User implements UserInterface
 {
+    public const MAX_HOUSE_INVENTORY = 100;
+    public const MAX_BASEMENT_INVENTORY = 10000;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -82,12 +85,6 @@ class User implements UserInterface
      * @Groups({"myAccount"})
      */
     private $moneys = 0;
-
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"myAccount"})
-     */
-    private $maxInventory = 100;
 
     /**
      * @ORM\Column(type="integer")
@@ -458,18 +455,6 @@ class User implements UserInterface
 
         if(!$this->unlockedMarket)
             $this->setUnlockedMarket();
-
-        return $this;
-    }
-
-    public function getMaxInventory(): int
-    {
-        return $this->maxInventory;
-    }
-
-    public function setMaxInventory(int $maxInventory): self
-    {
-        $this->maxInventory = $maxInventory;
 
         return $this;
     }

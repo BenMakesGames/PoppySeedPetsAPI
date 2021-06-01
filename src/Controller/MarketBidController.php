@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\MarketBid;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\InventoryRepository;
@@ -66,14 +67,14 @@ class MarketBidController extends PoppySeedPetsController
                 throw new UnprocessableEntityHttpException('You must select a location for the item to go to.');
         }
 
-        if($itemsAtHome >= 100)
+        if($itemsAtHome >= User::MAX_HOUSE_INVENTORY)
         {
             if(!$user->getUnlockedBasement())
                 throw new UnprocessableEntityHttpException('Your house is already overflowing with items! You\'ll need to clear some out before you can create any new bids.');
 
             $itemsInBasement = $inventoryService->countTotalInventory($user, LocationEnum::BASEMENT);
 
-            if($itemsInBasement >= 10000)
+            if($itemsInBasement >= User::MAX_BASEMENT_INVENTORY)
                 throw new UnprocessableEntityHttpException('Your house and basement are already overflowing with items! You\'ll need to clear some space before you can create any new bids.');
         }
 

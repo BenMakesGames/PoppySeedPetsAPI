@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\Inventory;
 use App\Entity\Item;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
@@ -135,7 +136,7 @@ class MarketController extends PoppySeedPetsController
         $itemsAtHome = $inventoryRepository->countItemsInLocation($user, LocationEnum::HOME);
         $placeItemsIn = LocationEnum::HOME;
 
-        if($itemsAtHome >= 100)
+        if($itemsAtHome >= User::MAX_HOUSE_INVENTORY)
         {
             if(!$user->getUnlockedBasement())
                 throw new UnprocessableEntityHttpException('Your house has ' . $itemsAtHome . ' items; you\'ll need to make some space, first!');
@@ -149,7 +150,7 @@ class MarketController extends PoppySeedPetsController
                 'Whaaaat?!',
             ]);
 
-            if($itemsInBasement >= 10000)
+            if($itemsInBasement >= User::MAX_BASEMENT_INVENTORY)
                 throw new UnprocessableEntityHttpException('Your house has ' . $itemsAtHome . ', and your basement has ' . $itemsInBasement . ' items! (' . $dang . ') You\'ll need to make some space, first...');
 
             $placeItemsIn = LocationEnum::BASEMENT;

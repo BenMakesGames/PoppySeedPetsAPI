@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
@@ -274,18 +275,18 @@ class InventoryController extends PoppySeedPetsController
                 {
                     $itemsInBuyersBasement = $inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::BASEMENT);
 
-                    if($itemsInBuyersBasement < 10000)
+                    if($itemsInBuyersBasement < User::MAX_BASEMENT_INVENTORY)
                         $targetLocation = LocationEnum::BASEMENT;
                 }
                 else // assume home as fallback/default
                 {
                     $itemsInBuyersHome = $inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::HOME);
 
-                    if($itemsInBuyersHome >= 100)
+                    if($itemsInBuyersHome >= User::MAX_HOUSE_INVENTORY)
                     {
                         $itemsInBuyersBasement = $inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::BASEMENT);
 
-                        if($itemsInBuyersBasement < 10000)
+                        if($itemsInBuyersBasement < User::MAX_BASEMENT_INVENTORY)
                             $targetLocation = LocationEnum::BASEMENT;
                     }
                 }
@@ -388,13 +389,13 @@ class InventoryController extends PoppySeedPetsController
 
         if($location === LocationEnum::HOME)
         {
-            if ($itemsInTargetLocation + count($inventory) > $user->getMaxInventory())
+            if ($itemsInTargetLocation + count($inventory) > User::MAX_HOUSE_INVENTORY)
                 throw new UnprocessableEntityHttpException('You do not have enough space in your house!');
         }
 
         if($location === LocationEnum::BASEMENT)
         {
-            if ($itemsInTargetLocation + count($inventory) > 10000)
+            if ($itemsInTargetLocation + count($inventory) > User::MAX_BASEMENT_INVENTORY)
                 throw new UnprocessableEntityHttpException('You do not have enough space in the basement!');
         }
 
