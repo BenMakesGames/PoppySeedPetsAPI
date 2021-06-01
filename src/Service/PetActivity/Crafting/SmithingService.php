@@ -296,7 +296,7 @@ class SmithingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make Tri-color Scissors, but totally broke the ' . $lostItem . '! :( All that\'s left is the blade (in the form of an Iron Bar - how convenient!)', '');
 
-            $this->inventoryService->petCollectsItem('Iron Bar', $pet, $pet->getName() . ' all the remains of a totally-broken ' . $lostItem . '...', $activityLog);
+            $this->inventoryService->petCollectsItem('Iron Bar', $pet, $pet->getName() . ' gathered up these remains of a totally-broken ' . $lostItem . '...', $activityLog);
 
             return $activityLog;
         }
