@@ -34,37 +34,37 @@ class IncreaseTimeCommand extends Command
     {
         // pet logic...
         $this->em->getConnection()->executeQuery('
-            LOCK TABLES pet_house_time WRITE, pet WRITE;
+            START TRANSACTION;
             UPDATE pet_house_time LEFT JOIN pet ON pet_id=pet.id SET `activity_time` = `activity_time` + 1 WHERE in_daycare = 0 AND `activity_time` < 2880;
             UPDATE pet_house_time SET `social_energy` = `social_energy` + 1 WHERE `social_energy` < 2880;
-            UNLOCK TABLES;
+            COMMIT;
         ');
 
         // pet group logic...
         $this->em->getConnection()->executeQuery('
-            LOCK TABLES pet_group WRITE;
+            START TRANSACTION;
             UPDATE pet_group SET `social_energy` = `social_energy` + 1 WHERE `social_energy` < 2880;
-            UNLOCK TABLES;
+            COMMIT;
         ');
 
         // fireplace logic...
         $this->em->getConnection()->executeQuery('
-            LOCK TABLES fireplace WRITE;
+            START TRANSACTION;
             UPDATE fireplace SET longest_streak = current_streak + 1 WHERE current_streak >= longest_streak;
             UPDATE fireplace SET heat = heat - 1, current_streak = current_streak + 1, points = points + 1 WHERE heat > 1;
             UPDATE fireplace SET heat = 0, current_streak = 0, points = points + 1 WHERE heat = 1;
-            UNLOCK TABLES;
+            COMMIT;
         ');
 
         // delete expired sessions...
         $this->em->getConnection()->executeQuery(
-            'DELETE FROM user_session WHERE session_expiration<:now',
+            'START TRANSACTION; DELETE FROM user_session WHERE session_expiration<:now; COMMIT;',
             [ 'now' => (new \DateTimeImmutable())->format('Y-m-d H:i:s') ]
         );
 
         // delete old device stats...
         $this->em->getConnection()->executeQuery(
-            'DELETE FROM device_stats WHERE time<:oneMonthAgo',
+            'START TRANSACTION; DELETE FROM device_stats WHERE time<:oneMonthAgo; COMMIT;',
             [ 'oneMonthAgo' => (new \DateTimeImmutable())->modify('-1 month')->format('Y-m-d') ]
         );
 
