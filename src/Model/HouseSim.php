@@ -110,7 +110,7 @@ class HouseSim implements IHouseSim
      * @param Item[] $items
      * @return Inventory[]|null
      */
-    private function findFirstListOf(array $items): ?Item
+    private function findFirstListOf(array $items): ?array
     {
         foreach($items as $i)
         {
