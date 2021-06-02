@@ -6,5 +6,5 @@ framework:
             interval: '1 second'
         psp_default:
             policy: 'sliding_window'
-            limit: 12
+            limit: 15
             interval: '10 seconds'
