@@ -55,9 +55,7 @@ class GreenhouseController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getGreenhouse(
-        ResponseService $responseService, GreenhousePlantRepository $greenhousePlantRepository,
-        InventoryRepository $inventoryRepository, UserQuestRepository $userQuestRepository, EntityManagerInterface $em,
-        NormalizerInterface $normalizer, Squirrel3 $squirrel3
+        ResponseService $responseService, GreenhouseService $greenhouseService
     )
     {
         $user = $this->getUser();
@@ -65,36 +63,8 @@ class GreenhouseController extends PoppySeedPetsController
         if(!$user->getGreenhouse())
             throw new AccessDeniedHttpException('You haven\'t purchased a Greenhouse plot yet.');
 
-        $weeds = $userQuestRepository->findOrCreate($user, 'Greenhouse Weeds', (new \DateTimeImmutable())->modify('+8 hours')->format('Y-m-d H:i:s'));
-
-        $weedTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $weeds->getValue());
-
-        if($weedTime > new \DateTimeImmutable())
-            $weedText = null;
-        else
-        {
-            $weedText = $squirrel3->rngNextFromArray([
-                'Don\'t need \'em; don\'t want \'em!',
-                'Get outta\' here, weeds!',
-                'Weeds can gtfo!',
-                'WEEEEEEDS!! *shakes fist*',
-                'Exterminate! EXTERMINATE!',
-                'Destroy all weeds!',
-            ]);
-        }
-
-        if(!$weeds->getId())
-            $em->flush();
-
-        $fertilizers = $inventoryRepository->findFertilizers($user);
-
         return $responseService->success(
-            [
-                'greenhouse' => $user->getGreenhouse(),
-                'weeds' => $weedText,
-                'plants' => $greenhousePlantRepository->findBy([ 'owner' => $user->getId() ]),
-                'fertilizer' => $normalizer->normalize($fertilizers, null, [ 'groups' => [ SerializationGroupEnum::GREENHOUSE_FERTILIZER ] ]),
-            ],
+            $greenhouseService->getGreenhouseResponseData($user),
             [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE ]
         );
     }
@@ -163,7 +133,8 @@ class GreenhouseController extends PoppySeedPetsController
     public function feedComposter(
         ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
         InventoryService $inventoryService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
-        ItemRepository $itemRepository, SpiceRepository $spiceRepository, Squirrel3 $squirrel3
+        ItemRepository $itemRepository, SpiceRepository $spiceRepository, Squirrel3 $squirrel3,
+        GreenhouseService $greenhouseService
     )
     {
         $user = $this->getUser();
@@ -298,7 +269,10 @@ class GreenhouseController extends PoppySeedPetsController
                 $responseService->addFlashMessage('That wasn\'t quite enough to make a bag of fertilizer... but it\'s progress!');
         }
 
-        return $responseService->success();
+        return $responseService->success(
+            $greenhouseService->getGreenhouseResponseData($user),
+            [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE ]
+        );
     }
 
     /**
@@ -525,7 +499,10 @@ class GreenhouseController extends PoppySeedPetsController
 
         $responseService->addFlashMessage($message);
 
-        return $responseService->success();
+        return $responseService->success(
+            $greenhouseService->getGreenhouseResponseData($user),
+            [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE ]
+        );
     }
 
     /**
@@ -534,7 +511,8 @@ class GreenhouseController extends PoppySeedPetsController
      */
     public function fertilizePlant(
         GreenhousePlant $plant, ResponseService $responseService, Request $request, EntityManagerInterface $em,
-        InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository
+        InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository,
+        GreenhouseService $greenhouseService
     )
     {
         $user = $this->getUser();
@@ -563,7 +541,10 @@ class GreenhouseController extends PoppySeedPetsController
         $em->remove($fertilizer);
         $em->flush();
 
-        return $responseService->success();
+        return $responseService->success(
+            $greenhouseService->getGreenhouseResponseData($user),
+            [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE ]
+        );
     }
 
     /**
@@ -678,7 +659,7 @@ class GreenhouseController extends PoppySeedPetsController
      */
     public function plantSeed(
         ResponseService $responseService, InventoryRepository $inventoryRepository, Request $request,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, GreenhouseService $greenhouseService
     )
     {
         $user = $this->getUser();
@@ -729,7 +710,10 @@ class GreenhouseController extends PoppySeedPetsController
         $em->remove($seed);
         $em->flush();
 
-        return $responseService->success();
+        return $responseService->success(
+            $greenhouseService->getGreenhouseResponseData($user),
+            [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE ]
+        );
     }
 
     /**

@@ -5,16 +5,22 @@ use App\Entity\Greenhouse;
 use App\Entity\GreenhousePlant;
 use App\Entity\Merit;
 use App\Entity\PetSpecies;
+use App\Entity\User;
 use App\Enum\BirdBathBirdEnum;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
+use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Repository\GreenhousePlantRepository;
+use App\Repository\InventoryRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
+use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class GreenhouseService
 {
@@ -24,11 +30,17 @@ class GreenhouseService
     private $em;
     private $meritRepository;
     private $userStatsRepository;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private UserQuestRepository $userQuestRepository;
+    private GreenhousePlantRepository $greenhousePlantRepository;
+    private InventoryRepository $inventoryRepository;
+    private NormalizerInterface $normalizer;
 
     public function __construct(
         InventoryService $inventoryService, PetRepository $petRepository, PetFactory $petFactory, Squirrel3 $squirrel3,
-        EntityManagerInterface $em, MeritRepository $meritRepository, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, MeritRepository $meritRepository, UserStatsRepository $userStatsRepository,
+        UserQuestRepository $userQuestRepository, GreenhousePlantRepository $greenhousePlantRepository,
+        InventoryRepository $inventoryRepository, NormalizerInterface $normalizer
     )
     {
         $this->inventoryService = $inventoryService;
@@ -38,6 +50,10 @@ class GreenhouseService
         $this->meritRepository = $meritRepository;
         $this->userStatsRepository = $userStatsRepository;
         $this->squirrel3 = $squirrel3;
+        $this->userQuestRepository = $userQuestRepository;
+        $this->greenhousePlantRepository = $greenhousePlantRepository;
+        $this->inventoryRepository = $inventoryRepository;
+        $this->normalizer = $normalizer;
     }
 
     public function approachBird(Greenhouse $greenhouse): string
@@ -124,5 +140,43 @@ class GreenhouseService
         }
 
         return $message;
+    }
+
+    public function getGreenhouseResponseData(User $user)
+    {
+        $fertilizers = $this->inventoryRepository->findFertilizers($user);
+
+        return [
+            'greenhouse' => $user->getGreenhouse(),
+            'weeds' => $this->getWeedText($user),
+            'plants' => $this->greenhousePlantRepository->findBy([ 'owner' => $user->getId() ]),
+            'fertilizer' => $this->normalizer->normalize($fertilizers, null, [ 'groups' => [ SerializationGroupEnum::GREENHOUSE_FERTILIZER ] ]),
+        ];
+    }
+
+    public function getWeedText(User $user)
+    {
+        $weeds = $this->userQuestRepository->findOrCreate($user, 'Greenhouse Weeds', (new \DateTimeImmutable())->modify('+8 hours')->format('Y-m-d H:i:s'));
+
+        $weedTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $weeds->getValue());
+
+        if($weedTime > new \DateTimeImmutable())
+            $weedText = null;
+        else
+        {
+            $weedText = $this->squirrel3->rngNextFromArray([
+                'Don\'t need \'em; don\'t want \'em!',
+                'Get outta\' here, weeds!',
+                'Weeds can gtfo!',
+                'WEEEEEEDS!! *shakes fist*',
+                'Exterminate! EXTERMINATE!',
+                'Destroy all weeds!',
+            ]);
+        }
+
+        if(!$weeds->getId())
+            $this->em->flush();
+
+        return $weedText;
     }
 }
