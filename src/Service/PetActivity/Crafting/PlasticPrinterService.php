@@ -63,7 +63,7 @@ class PlasticPrinterService
             if($this->houseSimService->hasInventory('String'))
                 $possibilities[] = new ActivityCallback($this, 'createPlasticFishingRod', 10);
 
-            if($this->houseSimService->hasInventory('Green Dye'))
+            if($this->houseSimService->hasInventory('Green Dye') && $this->houseSimService->hasInventory('Yellow Dye'))
                 $possibilities[] = new ActivityCallback($this, 'createAlienLaser', 10);
 
             if($this->houseSimService->hasInventory('Black Feathers'))
