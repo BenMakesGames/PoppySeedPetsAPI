@@ -11,22 +11,28 @@ use App\Model\ItemQuantity;
 use App\Model\NoHouseSim;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 class HouseSimService
 {
     // services
     private InventoryRepository $inventoryRepository;
     private ItemRepository $itemRepository;
-    private IRandom $rng;
+    private EntityManagerInterface $em;
+    private IRandom $squirrel3;
 
     // data
     private IHouseSim $houseState;
 
-    public function __construct(InventoryRepository $inventoryRepository, ItemRepository $itemRepository, Squirrel3 $rng)
+    public function __construct(
+        InventoryRepository $inventoryRepository, ItemRepository $itemRepository, EntityManagerInterface $em,
+        Squirrel3 $squirrel3
+    )
     {
         $this->inventoryRepository = $inventoryRepository;
-        $this->rng = $rng;
         $this->itemRepository = $itemRepository;
+        $this->em = $em;
+        $this->squirrel3 = $squirrel3;
 
         $this->houseState = new NoHouseSim();
     }
@@ -38,11 +44,20 @@ class HouseSimService
             'location' => LocationEnum::HOME
         ]);
 
-        $this->houseState = new HouseSim($this->rng, $inventory);
+        $this->houseState = new HouseSim($this->squirrel3, $inventory);
     }
 
     public function end()
     {
+        $toRemove = $this->houseState->getInventoryToRemove();
+        $toPersist = $this->houseState->getInventoryToPersist();
+
+        foreach($toRemove as $i)
+            $this->em->remove($i);
+
+        foreach($toPersist as $i)
+            $this->em->persist($i);
+
         $this->houseState = new NoHouseSim();
     }
 
@@ -64,9 +79,7 @@ class HouseSimService
             $ingredient->quantity = $quantity;
         }
 
-        $items = $this->getState()->getInventory(new HouseSimRecipe([ $ingredient ]));
-
-        return $items !== null;
+        return $this->getState()->hasInventory(new HouseSimRecipe([ $ingredient ]));
     }
 
 }

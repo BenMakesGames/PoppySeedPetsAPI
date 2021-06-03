@@ -10,7 +10,9 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
+use App\Service\HouseSimService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -21,11 +23,12 @@ class HalloweenSmithingService
     private $inventoryService;
     private $responseService;
     private $itemRepository;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private HouseSimService $houseSimService;
 
     public function __construct(
         PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        ItemRepository $itemRepository, Squirrel3 $squirrel3
+        ItemRepository $itemRepository, Squirrel3 $squirrel3, HouseSimService $houseSimService
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -33,6 +36,7 @@ class HalloweenSmithingService
         $this->responseService = $responseService;
         $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
+        $this->houseSimService = $houseSimService;
     }
 
     public function createPumpkinBucket(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -56,7 +60,7 @@ class HalloweenSmithingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::SMITH, true);
 
-            $itemUsed = $this->inventoryService->loseOneOf($buckets, $pet->getOwner(), LocationEnum::HOME);
+            $itemUsed = $this->houseSimService->getState()->loseOneOf($buckets);
             $itemUsedItem = $this->itemRepository->findOneByName($itemUsed);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);

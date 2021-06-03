@@ -24,20 +24,16 @@ class DeepSeaService
     private $responseService;
     private $inventoryService;
     private $petExperienceService;
-    private $transactionService;
-    private $userQuestRepository;
     private $squirrel3;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3
+        Squirrel3 $squirrel3
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
-        $this->transactionService = $transactionService;
-        $this->userQuestRepository = $userQuestRepository;
         $this->squirrel3 = $squirrel3;
     }
 

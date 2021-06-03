@@ -4,12 +4,15 @@ namespace App\Model;
 use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Entity\ItemGroup;
+use App\Functions\ArrayFunctions;
 use App\Service\IRandom;
 
 class HouseSim implements IHouseSim
 {
     /** @var Inventory[] */ private array $inventory;
-    private array $inventoryByItemId;
+    /** @var Inventory[] */ private array $inventoryToRemoveFromDatabase = [];
+
+    private array $itemQuantitiesByItemId = [];
 
     private IRandom $rng;
 
@@ -29,24 +32,24 @@ class HouseSim implements IHouseSim
     {
         $this->inventory = $inventory;
 
-        $this->inventoryByItemId = [];
+        $this->itemQuantitiesByItemId = [];
 
-        $this->addInventoryByItemId($this->inventory);
+        $this->addInventoryToItemQuantities($this->inventory);
     }
 
     /**
      * @param Inventory[] $inventory
      */
-    private function addInventoryByItemId(array $inventory)
+    private function addInventoryToItemQuantities(array $inventory)
     {
         foreach($inventory as $i)
         {
             $itemId = $i->getItem()->getId();
 
-            if(array_key_exists($itemId, $this->inventoryByItemId))
-                $this->inventoryByItemId[$itemId][] = $i;
+            if(array_key_exists($itemId, $this->itemQuantitiesByItemId))
+                $this->itemQuantitiesByItemId[$itemId]++;
             else
-                $this->inventoryByItemId[$itemId] = [ $i ];
+                $this->itemQuantitiesByItemId[$itemId] = 1;
         }
     }
 
@@ -57,33 +60,25 @@ class HouseSim implements IHouseSim
 
     /**
      * @param HouseSimRecipe $recipe
-     * @param IRandom $rng
-     * @return array|null
      */
-    public function getInventory(HouseSimRecipe $recipe): ?array
+    public function hasInventory(HouseSimRecipe $recipe): bool
     {
-        $items = [];
-
         foreach($recipe->ingredients as $ingredient)
         {
             if($ingredient instanceof Item)
             {
                 $itemId = $ingredient->getId();
 
-                if(array_key_exists($itemId, $this->inventoryByItemId))
-                    $items[] = $this->rng->rngNextFromArray($this->inventoryByItemId[$itemId]);
-                else
-                    return null;
+                if(!array_key_exists($itemId, $this->itemQuantitiesByItemId))
+                    return false;
             }
             else if($ingredient instanceof ItemQuantity)
             {
                 $itemId = $ingredient->item->getId();
                 $quantity = $ingredient->quantity;
 
-                if(array_key_exists($itemId, $this->inventoryByItemId) && count($this->inventoryByItemId[$itemId]) >= $quantity)
-                    $items = $this->rng->rngNextSubsetFromArray($this->inventoryByItemId[$itemId], $quantity);
-                else
-                    return null;
+                if(!array_key_exists($itemId, $this->itemQuantitiesByItemId) || $this->itemQuantitiesByItemId[$itemId] < $quantity)
+                    return false;
             }
             else
             {
@@ -92,71 +87,120 @@ class HouseSim implements IHouseSim
                 else
                     $possibleItems = $ingredient;
 
-                $this->rng->rngNextShuffle($possibleItems);
-
-                $inventory = $this->findFirstListOf($possibleItems);
-
-                if($inventory === null)
-                    return null;
-                else
-                    $items[] = $this->rng->rngNextFromArray($inventory);
+                if(!ArrayFunctions::any(
+                    $possibleItems,
+                    fn(Item $i) => array_key_exists($i->getId(), $this->itemQuantitiesByItemId)
+                ))
+                    return false;
             }
         }
 
-        return $items;
+        return true;
     }
 
     /**
-     * @param Item[] $items
-     * @return Inventory[]|null
+     * @param Item[]|string[] $items
      */
-    private function findFirstListOf(array $items): ?array
+    public function loseOneOf(array $items): string
     {
-        foreach($items as $i)
-        {
-            $itemId = $i->getId();
-
-            if(array_key_exists($itemId, $this->inventoryByItemId))
-                return $this->inventoryByItemId[$itemId];
-        }
-
-        return null;
-    }
-
-    /**
-     * @param Inventory[] $inventory
-     */
-    public function removeInventory(array $toRemove)
-    {
-        $itemIdsToRemove = array_map(fn(Inventory $i) => $i->getId(), $toRemove);
-
-        $newInventory = array_filter(
-            $this->inventory,
-            fn(Inventory $i) => !in_array($i->getId(), $itemIdsToRemove)
+        $items = array_map(
+            fn($item) => is_string($item) ? $item : $item->getName(),
+            $items
         );
 
-        $this->setInventory($newInventory);
+        $this->rng->rngNextShuffle($items);
+
+        /** @var Inventory $itemToRemove */
+        $itemToRemove = ArrayFunctions::find_one(
+            $this->inventory,
+            fn(Inventory $i) => in_array($i->getItem()->getName(), $items)
+        );
+
+        if(!$itemToRemove)
+            throw new \Exception('Cannot use ' . ArrayFunctions::list_nice($items, ', ', ', or ') . '; none exist in your house!');
+
+        $itemId = $itemToRemove->getItem()->getId();
+
+        if($this->itemQuantitiesByItemId[$itemId] === 1)
+            unset($this->itemQuantitiesByItemId[$itemId]);
+        else
+            $this->itemQuantitiesByItemId[$itemId]--;
+
+        if($itemToRemove->getId())
+            $this->inventoryToRemoveFromDatabase[] = $itemToRemove;
+
+        $this->inventory = array_filter(
+            $this->inventory,
+            fn(Inventory $i) => $i !== $itemToRemove
+        );
+
+        return $itemToRemove->getItem()->getName();
     }
 
-    public function addInventory(array $toAdd)
+    /**
+     * @param Item|string $item
+     */
+    public function loseItem($item, $quantity = 1)
     {
-        $this->inventory = array_merge($this->inventory, $toAdd);
+        if(!is_string($item))
+            $item = $item->getName();
 
-        $this->addInventoryByItemId($toAdd);
+        $inventoryToRemoveFromHouseSim = [];
+
+        for($i = 0; $i < $quantity; $i++)
+        {
+            /** @var Inventory $itemToRemove */
+            $itemToRemove = ArrayFunctions::find_one($this->inventory, fn(Inventory $i) => $i->getItem()->getName() === $item);
+
+            if(!$itemToRemove)
+                throw new \Exception('Cannot use ' . $quantity . 'x ' . $item . '; not enough exist in your house!');
+
+            $itemId = $itemToRemove->getItem()->getId();
+
+            if($this->itemQuantitiesByItemId[$itemId] === 1)
+                unset($this->itemQuantitiesByItemId[$itemId]);
+            else
+                $this->itemQuantitiesByItemId[$itemId]--;
+
+            if($itemToRemove->getId())
+                $this->inventoryToRemoveFromDatabase[] = $itemToRemove;
+
+            $inventoryToRemoveFromHouseSim[] = $itemToRemove;
+        }
+
+        $this->inventory = array_filter(
+            $this->inventory,
+            fn(Inventory $i) => !ArrayFunctions::find_one($inventoryToRemoveFromHouseSim, fn($j) => $i === $j)
+        );
     }
 
-    public function addSingleInventory(?Inventory $i)
+    public function addInventory(?Inventory $i): bool
     {
         if($i === null)
-            return;
+            return true;
 
         $this->inventory[] = $i;
 
         $itemId = $i->getItem()->getId();
 
-        if(array_key_exists($itemId, $this->inventoryByItemId))
-            $this->inventoryByItemId[$itemId][] = $i;
+        if(array_key_exists($itemId, $this->itemQuantitiesByItemId))
+            $this->itemQuantitiesByItemId[$itemId]++;
         else
-            $this->inventoryByItemId[$itemId] = [ $i ];
+            $this->itemQuantitiesByItemId[$itemId] = 1;
+
+        return true;
+    }
+
+    public function getInventoryToRemove(): array
+    {
+        return $this->inventoryToRemoveFromDatabase;
+    }
+
+    public function getInventoryToPersist(): array
+    {
+        return array_filter(
+            $this->inventory,
+            fn($i) => $i->getId() === null
+        );
     }
 }

@@ -8,11 +8,10 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\PetChanges;
-use App\Service\CalendarService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
-use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,26 +23,22 @@ class BandService
     private $em;
     private $petRelationshipService;
     private $inventoryService;
-    private $responseService;
     private $petExperienceService;
     private $transactionService;
-    private $squirrel3;
-    private $calendarService;
+    private IRandom $squirrel3;
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, InventoryService $inventoryService,
-        ResponseService $responseService, PetExperienceService $petExperienceService, TransactionService $transactionService,
-        Squirrel3 $squirrel3, CalendarService $calendarService
+        PetExperienceService $petExperienceService, TransactionService $transactionService,
+        Squirrel3 $squirrel3
     )
     {
         $this->em = $em;
         $this->petRelationshipService = $petRelationshipService;
         $this->inventoryService = $inventoryService;
-        $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
         $this->squirrel3 = $squirrel3;
-        $this->calendarService = $calendarService;
     }
 
     private const ADJECTIVE_LIST = [

@@ -10,7 +10,9 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
+use App\Service\HouseSimService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -22,23 +24,23 @@ class SilverSmithingService
     private $inventoryService;
     private $responseService;
     private $itemRepository;
-    private $transactionService;
     private $coinSmithingService;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private HouseSimService $houseSimService;
 
     public function __construct(
         PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        ItemRepository $itemRepository, TransactionService $transactionService, CoinSmithingService $coinSmithingService,
-        Squirrel3 $squirrel3
+        ItemRepository $itemRepository, CoinSmithingService $coinSmithingService, Squirrel3 $squirrel3,
+        HouseSimService $houseSimService
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->itemRepository = $itemRepository;
-        $this->transactionService = $transactionService;
         $this->coinSmithingService = $coinSmithingService;
         $this->squirrel3 = $squirrel3;
+        $this->houseSimService = $houseSimService;
     }
 
     public function spillSilver(ComputedPetSkills $petWithSkills, Item $triedToMake): PetActivityLog
@@ -46,7 +48,7 @@ class SilverSmithingService
         $pet = $petWithSkills->getPet();
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
-        $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+        $this->houseSimService->getState()->loseItem('Silver Bar', 1);
         $pet->increaseEsteem(-1);
         $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 12));
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
@@ -73,7 +75,7 @@ class SilverSmithingService
         else if($roll >= 12)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
-            $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Silver Bar', 1);
 
             $keys = $this->squirrel3->rngNextInt(1, 7) === 1 ? 2 : 1;
 
@@ -124,7 +126,7 @@ class SilverSmithingService
         else if($roll >= $making['difficulty'])
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
-            $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Silver Bar', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged ' . $makingItem->getNameWithArticle() . ' from a Silver Bar.', $making['image'])
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $making['difficulty'])
@@ -156,7 +158,7 @@ class SilverSmithingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a trident out of Crown Coral, but shattered the coral completely :(', '');
 
-            $this->inventoryService->loseItem('Crown Coral', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Crown Coral', 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-$this->squirrel3->rngNextInt(2, 4));
 
@@ -165,8 +167,8 @@ class SilverSmithingService
         else if($roll >= 15)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::SMITH, true);
-            $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Crown Coral', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Silver Bar', 1);
+            $this->houseSimService->getState()->loseItem('Crown Coral', 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Coral Trident.', '')
@@ -194,7 +196,7 @@ class SilverSmithingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to improve a "Rustic" Magnifying Glass, but burnt it. All that\'s left now is the Glass...', '');
 
-            $this->inventoryService->loseItem('"Rustic" Magnifying Glass', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('"Rustic" Magnifying Glass', 1);
             $this->inventoryService->petCollectsItem('Glass', $pet, $pet->getName() . ' burned a "Rustic" Magnifying Glass; this is all that remained.', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-2);
@@ -204,8 +206,8 @@ class SilverSmithingService
         else if($roll >= 15)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::SMITH, true);
-            $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('"Rustic" Magnifying Glass', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Silver Bar', 1);
+            $this->houseSimService->getState()->loseItem('"Rustic" Magnifying Glass', 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created an Elvish Magnifying Glass.', '')
@@ -241,8 +243,8 @@ class SilverSmithingService
         else if($roll >= 16)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::SMITH, true);
-            $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Leaf Spear', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Silver Bar', 1);
+            $this->houseSimService->getState()->loseItem('Leaf Spear', 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% machined some silver components onto a Leaf Spear, making it a Sylvan Fishing Rod!', '')
@@ -268,7 +270,7 @@ class SilverSmithingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
 
-            $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Glass', 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-2);
             $pet->increaseSafety(-4);
@@ -277,9 +279,9 @@ class SilverSmithingService
         else if($roll >= 15)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::SMITH, true);
-            $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Glass', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Silica Grounds', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Silver Bar', 1);
+            $this->houseSimService->getState()->loseItem('Glass', 1);
+            $this->houseSimService->getState()->loseItem('Silica Grounds', 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created an Hourglass.', '')
@@ -307,7 +309,7 @@ class SilverSmithingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a keyblade, but accidentally tore the White Cloth :|', '');
 
-            $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('White Cloth', 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(-1);
 
@@ -316,9 +318,9 @@ class SilverSmithingService
         else if($roll >= 15)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::SMITH, true);
-            $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Gold Key', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('White Cloth', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Silver Bar', 1);
+            $this->houseSimService->getState()->loseItem('Gold Key', 1);
+            $this->houseSimService->getState()->loseItem('White Cloth', 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Gold Keyblade.', '');
@@ -352,8 +354,8 @@ class SilverSmithingService
         else if($roll >= 22)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::SMITH, true);
-            $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Wand of Lightning', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Silver Bar', 1);
+            $this->houseSimService->getState()->loseItem('Wand of Lightning', 1);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% added a silver-iron blade to a Wand of Lightning, creating a Lightning Axe.', '')

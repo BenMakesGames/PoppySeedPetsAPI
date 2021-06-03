@@ -3,7 +3,6 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
@@ -12,7 +11,6 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SpiritCompanionStarEnum;
 use App\Enum\StatusEffectEnum;
-use App\Enum\TradeGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
@@ -23,13 +21,13 @@ use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\EquipmentService;
+use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\InventoryModifierService;
 use App\Service\Squirrel3;
 use App\Service\StatusEffectService;
-use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class TreasureMapService
@@ -45,12 +43,13 @@ class TreasureMapService
     private $squirrel3;
     private $itemRepository;
     private $equipmentService;
+    private HouseSimService $houseSimService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         EntityManagerInterface $em, PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
         StatusEffectService $statusEffectService, InventoryModifierService $toolBonusService, Squirrel3 $squirrel3,
-        ItemRepository $itemRepository, EquipmentService $equipmentService
+        ItemRepository $itemRepository, EquipmentService $equipmentService, HouseSimService $houseSimService
     )
     {
         $this->responseService = $responseService;
@@ -64,6 +63,7 @@ class TreasureMapService
         $this->squirrel3 = $squirrel3;
         $this->itemRepository = $itemRepository;
         $this->equipmentService = $equipmentService;
+        $this->houseSimService = $houseSimService;
     }
 
     public function doCetguelisTreasureMap(ComputedPetSkills $petWithSkills)
@@ -334,8 +334,10 @@ class TreasureMapService
     {
         $changes = new PetChanges($pet);
 
-        if($this->inventoryService->loseItem('Fluff', $pet->getOwner(), LocationEnum::HOME, 1) === 1)
+        if($this->houseSimService->hasInventory('Fluff', 1))
         {
+            $this->houseSimService->getState()->loseItem('Fluff', 1);
+
             // had fluff!
             $fluffTradedStat = $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER);
 

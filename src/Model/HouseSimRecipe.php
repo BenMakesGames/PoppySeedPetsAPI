@@ -10,12 +10,12 @@ use App\Entity\ItemGroup;
 class HouseSimRecipe
 {
     /**
-     * @var <Item|ItemQuantity|Item[]|ItemGroup>[]
+     * @var Item[]|ItemQuantity[]|Item[][]|ItemGroup[]
      */
     public $ingredients;
 
     /**
-     * @param <Item|ItemQuantity|Item[]|ItemGroup>[] $ingredients
+     * @param Item[]|ItemQuantity[]|Item[][]|ItemGroup[] $ingredients
      */
     public function __construct($ingredients)
     {

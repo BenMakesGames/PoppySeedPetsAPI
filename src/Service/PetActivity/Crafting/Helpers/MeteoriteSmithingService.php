@@ -1,16 +1,15 @@
 <?php
 namespace App\Service\PetActivity\Crafting\Helpers;
 
-use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
-use App\Functions\ArrayFunctions;
 use App\Model\ComputedPetSkills;
-use App\Repository\ItemRepository;
+use App\Service\HouseSimService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -20,19 +19,19 @@ class MeteoriteSmithingService
     private $petExperienceService;
     private $inventoryService;
     private $responseService;
-    private $itemRepository;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private HouseSimService $houseSimService;
 
     public function __construct(
         PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        ItemRepository $itemRepository, Squirrel3 $squirrel3
+        HouseSimService $houseSimService, Squirrel3 $squirrel3
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
-        $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
+        $this->houseSimService = $houseSimService;
     }
 
     public function createIlumetsa(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -47,7 +46,7 @@ class MeteoriteSmithingService
             ]);
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
-            $this->inventoryService->loseItem($lostItem, $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem($lostItem, 1);
             $pet->increaseEsteem(-1);
             $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 24));
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
@@ -56,9 +55,9 @@ class MeteoriteSmithingService
         else if($roll >= 25)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
-            $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Gold Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Meteorite', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Iron Bar', 1);
+            $this->houseSimService->getState()->loseItem('Gold Bar', 1);
+            $this->houseSimService->getState()->loseItem('Meteorite', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged Ilumetsa from gold, iron, and a chunk of Meteorite.', 'items/tool/hammer/red')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 25)

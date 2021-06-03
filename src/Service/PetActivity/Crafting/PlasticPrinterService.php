@@ -95,19 +95,19 @@ class PlasticPrinterService
 
             if($this->squirrel3->rngNextInt(1, 2) === 1)
             {
-                $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->houseSimService->getState()->loseItem('String', 1);
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Plastic Fishing Rod, but broke the String :(', 'icons/activity-logs/broke-string');
             }
             else
             {
-                $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->houseSimService->getState()->loseItem('Plastic', 1);
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Plastic Fishing Rod, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
             }
         }
         else if($roll >= 12)
         {
-            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('String', 1);
+            $this->houseSimService->getState()->loseItem('Plastic', 1);
 
             $pet->increaseEsteem(2);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
@@ -138,12 +138,12 @@ class PlasticPrinterService
 
             if($this->squirrel3->rngNextInt(1, 2) === 1)
             {
-                $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->houseSimService->getState()->loseItem('Plastic', 1);
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make another boomerang blade for a Nonsenserang, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
             }
             else
             {
-                $this->inventoryService->loseItem('Plastic Boomerang', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->houseSimService->getState()->loseItem('Plastic Boomerang', 1);
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to weld two Plastic Boomerangs together, but warped one of them beyond repair :( Well, at least it\'s still useful as a chunk of Plastic...', '');
                 $this->inventoryService->petCollectsItem('Plastic', $pet, $pet->getName() . ' accidentally melted a Plastic Boomerang. This is all that remains.', $activityLog);
                 return $activityLog;
@@ -151,8 +151,8 @@ class PlasticPrinterService
         }
         else if($roll >= 14)
         {
-            $this->inventoryService->loseItem('Plastic Boomerang', $pet->getOwner(), LocationEnum::HOME, 2);
-            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Plastic Boomerang', 2);
+            $this->houseSimService->getState()->loseItem('Plastic', 1);
 
             $pet->increaseEsteem(2);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
@@ -178,7 +178,7 @@ class PlasticPrinterService
 
         if($roll <= 3)
         {
-            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Plastic', 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
 
@@ -186,8 +186,8 @@ class PlasticPrinterService
         }
         else if($roll >= 16)
         {
-            $this->inventoryService->loseItem('Black Feathers', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Black Feathers', 1);
+            $this->houseSimService->getState()->loseItem('Plastic', 1);
 
             $getExtraStuff = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal())
                 >= 21
@@ -233,7 +233,7 @@ class PlasticPrinterService
 
         if($roll <= 3)
         {
-            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Plastic', 1);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
@@ -242,8 +242,8 @@ class PlasticPrinterService
         }
         else if($roll >= 12)
         {
-            $this->inventoryService->loseItem('Iron Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Iron Bar', 1);
+            $this->houseSimService->getState()->loseItem('Plastic', 1);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
@@ -273,7 +273,7 @@ class PlasticPrinterService
 
             $lostItem = $this->squirrel3->rngNextFromArray([ 'Plastic', 'Yellow Dye', 'Green Dye' ]);
 
-            $this->inventoryService->loseItem($lostItem, $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem($lostItem, 1);
 
             if($lostItem === 'Plastic')
             {
@@ -286,9 +286,9 @@ class PlasticPrinterService
         }
         else if($roll >= 14)
         {
-            $this->inventoryService->loseItem('Green Dye', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Yellow Dye', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Green Dye', 1);
+            $this->houseSimService->getState()->loseItem('Yellow Dye', 1);
+            $this->houseSimService->getState()->loseItem('Plastic', 1);
             $pet->increaseEsteem(2);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
@@ -343,7 +343,7 @@ class PlasticPrinterService
 
         if($roll <= 3)
         {
-            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Plastic', 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
 
@@ -354,7 +354,7 @@ class PlasticPrinterService
         }
         else if($roll >= 10)
         {
-            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Plastic', 1);
 
             $pet->increaseEsteem(2);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
@@ -402,7 +402,7 @@ class PlasticPrinterService
 
         if($roll <= 3)
         {
-            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Plastic', 1);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
@@ -411,7 +411,7 @@ class PlasticPrinterService
         }
         else if($roll >= 13)
         {
-            $this->inventoryService->loseItem('Plastic', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Plastic', 1);
 
             $pet->increaseEsteem(2);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
@@ -429,5 +429,4 @@ class PlasticPrinterService
             return $this->printerActingUp($pet);
         }
     }
-
 }

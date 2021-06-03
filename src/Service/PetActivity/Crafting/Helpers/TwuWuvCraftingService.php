@@ -9,7 +9,9 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
+use App\Service\HouseSimService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -20,26 +22,26 @@ class TwuWuvCraftingService
     private $petExperienceService;
     private $inventoryService;
     private $responseService;
-    private $transactionService;
     private $itemRepository;
     private $coinSmithingService;
     private $silverSmithingService;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private HouseSimService $houseSimService;
 
     public function __construct(
         PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        TransactionService $transactionService, ItemRepository $itemRepository, CoinSmithingService $coinSmithingService,
+        ItemRepository $itemRepository, CoinSmithingService $coinSmithingService, HouseSimService $houseSimService,
         SilverSmithingService $silverSmithingService, Squirrel3 $squirrel3
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
-        $this->transactionService = $transactionService;
         $this->itemRepository = $itemRepository;
         $this->coinSmithingService = $coinSmithingService;
         $this->silverSmithingService = $silverSmithingService;
         $this->squirrel3 = $squirrel3;
+        $this->houseSimService = $houseSimService;
     }
 
     public function createWedBawwoon(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -53,7 +55,7 @@ class TwuWuvCraftingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
 
-            $this->inventoryService->loseItem('Red Balloon', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Red Balloon', 1);
             $this->petExperienceService->gainExp($pet, 1, [PetSkillEnum::CRAFTS]);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Wed Bawwoon, but accidentally popped the balloon :( Only a String remains.', 'icons/activity-logs/broke-string');
             $this->inventoryService->petCollectsItem('String', $pet, 'The remains of a Red Balloon.', $activityLog);
@@ -62,8 +64,8 @@ class TwuWuvCraftingService
         else if($roll >= 14)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('Red Balloon', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Twu Wuv', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Red Balloon', 1);
+            $this->houseSimService->getState()->loseItem('Twu Wuv', 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Wed Bawwoon with the power of Twu Wuv!', '');
@@ -91,7 +93,7 @@ class TwuWuvCraftingService
             {
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
 
-                $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
+                $this->houseSimService->getState()->loseItem('String', 1);
                 $this->petExperienceService->gainExp($pet, 1, [PetSkillEnum::CRAFTS]);
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge Cupid, but broke the String :(', 'icons/activity-logs/broke-string');
             }
@@ -108,9 +110,9 @@ class TwuWuvCraftingService
         else if($roll >= 16)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
-            $this->inventoryService->loseItem('String', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Silver Bar', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Twu Wuv', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('String', 1);
+            $this->houseSimService->getState()->loseItem('Silver Bar', 1);
+            $this->houseSimService->getState()->loseItem('Twu Wuv', 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged Cupid with the power of Twu Wuv!', '');

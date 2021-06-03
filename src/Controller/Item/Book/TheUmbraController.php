@@ -49,7 +49,7 @@ Though many things have been forgotten by humans, some knowledge has held on thr
 Daggers, knives, and other implements of blood are often involved in ritual. Their purpose holds meaning, and that meaning holds power. Such objects are well suited to housing Umbral forces.
 
 * The Ceremony of Fire gives its invoker the strength and tenacity of fire. Place a piece of Firestone on a ceremonial implement, and bind the two with the threads of creation.
-* The Ceremony of Sand and Sea - popular among old sailors and explorers - grants command over nature. Wrap a Sand Dollar in a piece of Seaweed, and place them on the ceremonial implement. Bind them with Quintessence. 
+* The Ceremony of Sand and Sea - popular among old sailors and explorers - grants command over nature. Wrap some Silica Grounds in a piece of Seaweed, and the bundle on the ceremonial implement. Bind them with Quintessence. 
 * The Ceremony of Shadows allows its invoker to move unseen. I\'m sure I don\'t need to tell you how history has used this ritual. Place a piece of Blackonite on a ceremonial implement, and bind them.
 
 ### Summoning

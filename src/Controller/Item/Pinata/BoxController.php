@@ -506,8 +506,6 @@ class BoxController extends PoppySeedPetsItemController
         $this->validateInventory($inventory, 'box/pepperbox/#/disassemble');
         $this->validateHouseSpace($inventory, $inventoryService);
 
-        $newInventory = [];
-
         $peppers = $squirrel3->rngNextInt(4, $squirrel3->rngNextInt(6, 10));
 
         $description = $user->getName() . ' got this by taking apart ' . $inventory->getItem()->getNameWithArticle() . '.';
@@ -515,7 +513,7 @@ class BoxController extends PoppySeedPetsItemController
 
         for($i = 0; $i < $peppers; $i++)
         {
-            $newInventory[] = $inventoryService->receiveItem('Spicy Peps', $user, $user, $description, $location, $inventory->getLockedToOwner())
+            $inventoryService->receiveItem('Spicy Peps', $user, $user, $description, $location, $inventory->getLockedToOwner())
                 ->setSpice($inventory->getSpice())
             ;
         }

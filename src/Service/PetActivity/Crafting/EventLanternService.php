@@ -57,7 +57,7 @@ class EventLanternService
             $this->itemRepository->findBy([ 'name' => [ 'Candle', 'Jar of Fireflies' ]])
         ]);
 
-        $items = $this->houseSimService->getState()->getInventory($recipe);
+        $items = $this->houseSimService->getState()->hasInventory($recipe);
 
         if($items)
         {
@@ -104,7 +104,7 @@ class EventLanternService
 
         if($roll <= 2)
         {
-            $this->inventoryService->loseItem('Paper', $pet->getOwner(), LocationEnum::HOME, 1);
+            $this->houseSimService->getState()->loseItem('Paper', 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
             $pet->increaseEsteem(-1);
@@ -118,9 +118,9 @@ class EventLanternService
         }
         else // success!
         {
-            $this->inventoryService->loseItem('Crooked Fishing Rod', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseItem('Paper', $pet->getOwner(), LocationEnum::HOME, 1);
-            $this->inventoryService->loseOneOf([ 'Jar of Fireflies', 'Candle' ], $pet->getOwner(), LocationEnum::HOME);
+            $this->houseSimService->getState()->loseItem('Crooked Fishing Rod', 1);
+            $this->houseSimService->getState()->loseItem('Paper', 1);
+            $this->houseSimService->getState()->loseOneOf([ 'Jar of Fireflies', 'Candle' ]);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
 

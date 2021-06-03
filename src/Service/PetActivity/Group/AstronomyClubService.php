@@ -22,19 +22,17 @@ class AstronomyClubService
     private $petExperienceService;
     private $em;
     private $inventoryService;
-    private $responseService;
     private $petRelationshipService;
     private $squirrel3;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
-        ResponseService $responseService, PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3
+        PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->em = $em;
         $this->inventoryService = $inventoryService;
-        $this->responseService = $responseService;
         $this->petRelationshipService = $petRelationshipService;
         $this->squirrel3 = $squirrel3;
     }

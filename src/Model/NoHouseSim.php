@@ -2,31 +2,53 @@
 namespace App\Model;
 
 use App\Entity\Inventory;
+use App\Entity\Item;
 
 class NoHouseSim implements IHouseSim
 {
     public function getInventoryCount(): int
     {
-        return 0;
+        $this->throwException();
     }
 
-    public function getInventory(HouseSimRecipe $recipe): ?array
+    public function hasInventory(HouseSimRecipe $recipe): bool
     {
-        return null;
+        $this->throwException();
     }
 
     /**
-     * @param Inventory[] $inventory
+     * @param Item|string $item
      */
-    public function removeInventory(array $toRemove)
+    public function loseItem($item, $quantity = 1)
     {
+        $this->throwException();
     }
 
-    public function addInventory(array $toAdd)
+    /**
+     * @param Item[]|string[] $items
+     */
+    public function loseOneOf(array $items): string
     {
+        $this->throwException();
     }
 
-    public function addSingleInventory(?Inventory $i)
+    public function addInventory(?Inventory $i): bool
     {
+        return false;
+    }
+
+    public function getInventoryToRemove(): array
+    {
+        $this->throwException();
+    }
+
+    public function getInventoryToPersist(): array
+    {
+        $this->throwException();
+    }
+
+    private function throwException()
+    {
+        throw new \Exception('Ben did a bad programming thing. He\'s been emailed...');
     }
 }

@@ -6,7 +6,9 @@ use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Repository\ItemRepository;
 use App\Repository\SpiceRepository;
+use App\Service\HouseSimService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 
@@ -16,11 +18,12 @@ class EvericeMeltingService
     private $itemRepository;
     private $spiceRepository;
     private $responseService;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private HouseSimService $houseSimService;
 
     public function __construct(
         InventoryService $inventoryService, ItemRepository $itemRepository, SpiceRepository $spiceRepository,
-        ResponseService $responseService, Squirrel3 $squirrel3
+        ResponseService $responseService, Squirrel3 $squirrel3, HouseSimService $houseSimService
     )
     {
         $this->inventoryService = $inventoryService;
@@ -28,11 +31,12 @@ class EvericeMeltingService
         $this->spiceRepository = $spiceRepository;
         $this->responseService = $responseService;
         $this->squirrel3 = $squirrel3;
+        $this->houseSimService = $houseSimService;
     }
 
     public function doMeltEverice(Pet $pet, string $description): PetActivityLog
     {
-        $this->inventoryService->loseItem('Everice', $pet->getOwner(), LocationEnum::HOME, 1);
+        $this->houseSimService->getState()->loseItem('Everice', 1);
 
         if($this->squirrel3->rngNextBool())
         {

@@ -2,13 +2,32 @@
 namespace App\Model;
 
 use App\Entity\Inventory;
+use App\Entity\Item;
 
 interface IHouseSim
 {
     public function getInventoryCount(): int;
-    public function getInventory(HouseSimRecipe $recipe): ?array;
+    public function hasInventory(HouseSimRecipe $recipe): bool;
 
-    public function removeInventory(array $toRemove);
-    public function addInventory(array $toAdd);
-    public function addSingleInventory(?Inventory $i);
+    /**
+     * @param Item|string $item
+     */
+    public function loseItem($item, $quantity = 1);
+
+    /**
+     * @param Item[]|string[] $items
+     */
+    public function loseOneOf(array $items): string;
+
+    public function addInventory(?Inventory $i): bool;
+
+    /**
+     * @return Inventory[]
+     */
+    public function getInventoryToRemove(): array;
+
+    /**
+     * @return Inventory[]
+     */
+    public function getInventoryToPersist(): array;
 }

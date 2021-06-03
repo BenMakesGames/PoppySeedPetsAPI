@@ -2,7 +2,6 @@
 namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
-use App\Enum\HolidayEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
@@ -15,7 +14,6 @@ use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
-use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class Caerbannog
