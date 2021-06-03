@@ -420,7 +420,7 @@ class PetRelationshipService
             {
                 case RelationshipEnum::BROKE_UP:
                 case RelationshipEnum::DISLIKE:
-                    throw new \Exception('Pets which do not like each other should not be hanging out privately! Some kind of bug has occurred!');
+                    throw new \Exception('Pets which do not like each other (#' . $p1->getPet()->getId() . ' & #' . $p2->getPet()->getId() . ') should not be hanging out privately! Some kind of bug has occurred!');
 
                 case RelationshipEnum::FRIENDLY_RIVAL:
                     return $this->friendlyRivalsService->hangOutPrivatelyAsFriendlyRivals($p1, $p2);
