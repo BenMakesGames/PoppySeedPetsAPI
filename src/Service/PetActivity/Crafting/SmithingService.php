@@ -859,7 +859,7 @@ class SmithingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
             $this->houseSimService->getState()->loseItem('Iron Sword', 1);
-            $this->houseSimService->getState()->loseItem('Fluf', 1);
+            $this->houseSimService->getState()->loseItem('Fluff', 1);
             $this->houseSimService->getState()->loseItem('Scales', 1);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
@@ -896,7 +896,7 @@ class SmithingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
             $this->houseSimService->getState()->loseItem('Iron Sword', 1);
-            $this->houseSimService->getState()->loseItem('Fluf', 1);
+            $this->houseSimService->getState()->loseItem('Fluff', 1);
             $this->houseSimService->getState()->loseItem('Dark Scales', 1);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);

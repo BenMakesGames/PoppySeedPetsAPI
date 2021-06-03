@@ -2571,7 +2571,7 @@ class MagicBindingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            $this->houseSimService->getState()->loseItem('Fluf', 1);
+            $this->houseSimService->getState()->loseItem('Fluff', 1);
             $this->houseSimService->getState()->loseOneOf([ 'Snakebite', 'Wood\'s Metal' ]);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(3);
