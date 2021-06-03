@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Inventory;
 use App\Entity\Item;
+use App\Entity\ItemGroup;
 use App\Entity\User;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
@@ -99,37 +100,20 @@ class InventoryRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findAnyOneOf(User $owner, array $itemNames, array $locationsToCheck = Inventory::CONSUMABLE_LOCATIONS): ?Inventory
+    public function findAnyOneFromItemGroup(User $owner, string $itemGroupName, array $locationsToCheck = Inventory::CONSUMABLE_LOCATIONS): ?Inventory
     {
         return $this->createQueryBuilder('i')
             ->andWhere('i.owner=:user')
             ->andWhere('i.location IN (:consumableLocations)')
             ->leftJoin('i.item', 'item')
-            ->andWhere('item.name IN (:itemNames)')
+            ->join('item.itemGroups', 'g')
+            ->andWhere('g.name = :itemGroupName')
             ->setParameter('user', $owner)
             ->setParameter('consumableLocations', $locationsToCheck)
-            ->setParameter('itemNames', $itemNames)
+            ->setParameter('itemGroupName', $itemGroupName)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
-        ;
-    }
-
-    public function userHasAnyOneOf(User $owner, array $itemNames, array $locationsToCheck = Inventory::CONSUMABLE_LOCATIONS): bool
-    {
-        return $this->createQueryBuilder('i')
-            ->select('COUNT(i.id)')
-            ->andWhere('i.owner=:user')
-            ->andWhere('i.location IN (:consumableLocations)')
-            ->leftJoin('i.item', 'item')
-            ->andWhere('item.name IN (:itemNames)')
-            ->setParameter('user', $owner)
-            ->setParameter('consumableLocations', $locationsToCheck)
-            ->setParameter('itemNames', $itemNames)
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getSingleScalarResult()
-            > 0 // <-- this part is really important :P
         ;
     }
 

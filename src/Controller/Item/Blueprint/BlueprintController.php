@@ -10,6 +10,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
+use App\Repository\ItemGroupRepository;
 use App\Repository\PetRepository;
 use App\Service\BeehiveService;
 use App\Service\PetExperienceService;
@@ -123,20 +124,12 @@ class BlueprintController extends PoppySeedPetsItemController
 
         $user = $this->getUser();
 
-        $magnifyingGlasses = [
-            '"Rustic" Magnifying Glass',
-            'Elvish Magnifying Glass',
-            'Rijndael',
-            'Shiny Pail',
-            'Upside-down Shiny Pail'
-        ];
-
         if($user->getUnlockedBeehive())
         {
             throw new UnprocessableEntityHttpException('You\'ve already got a Beehive!');
         }
 
-        $magnifyingGlass = $inventoryRepository->findAnyOneOf($user, $magnifyingGlasses, [
+        $magnifyingGlass = $inventoryRepository->findAnyOneFromItemGroup($user, 'Magnifying Glass', [
             LocationEnum::HOME,
             LocationEnum::BASEMENT,
             LocationEnum::MANTLE,
