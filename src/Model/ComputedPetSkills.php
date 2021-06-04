@@ -277,6 +277,9 @@ class ComputedPetSkills
     {
         $skill = new TotalPetSkill();
         $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->climbingBonus() : 0;
+        $skill->statusEffects =
+            (($this->pet->hasMerit(MeritEnum::PREHENSILE_TONGUE) && $this->pet->hasStatusEffect(StatusEffectEnum::ANTI_GRAVD)) ? 3 : 0)
+        ;
 
         return $skill;
     }
