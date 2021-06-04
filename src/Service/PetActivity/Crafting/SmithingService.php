@@ -1022,7 +1022,7 @@ class SmithingService
         if($roll === 1)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
-            $this->houseSimService->getState()->loseItem('Iron Ore', 1);
+            $this->houseSimService->getState()->loseItem('Charcoal', 1);
             $pet->increaseEsteem(-1);
             $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 24));
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
