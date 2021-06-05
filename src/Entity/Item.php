@@ -136,6 +136,11 @@ class Item
      */
     private $itemGroups;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $cannotBeThrownOut = false;
+
     public function __construct()
     {
         $this->itemGroups = new ArrayCollection();
@@ -461,6 +466,18 @@ class Item
         if ($this->itemGroups->removeElement($itemGroup)) {
             $itemGroup->removeItem($this);
         }
+
+        return $this;
+    }
+
+    public function getCannotBeThrownOut(): ?bool
+    {
+        return $this->cannotBeThrownOut;
+    }
+
+    public function setCannotBeThrownOut(bool $cannotBeThrownOut): self
+    {
+        $this->cannotBeThrownOut = $cannotBeThrownOut;
 
         return $this;
     }

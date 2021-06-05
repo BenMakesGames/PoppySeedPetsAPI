@@ -116,7 +116,6 @@ class TreasureMapService
 
     public function doGoldIdol(Pet $pet)
     {
-        $activityLog = null;
         $changes = new PetChanges($pet);
 
         $pet->increaseEsteem(5);
@@ -137,6 +136,31 @@ class TreasureMapService
 
         if($this->squirrel3->rngNextInt(1, 20) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);
+    }
+
+    public function doAbundantiasVault(Pet $pet)
+    {
+        $changes = new PetChanges($pet);
+
+        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% allowed themselves to be carried off by the Winged Key, to Abundantia\'s Valut. Upon arriving, they had to wait in a long ling for, like, 2 hours, during which time they filled out some exceptionally-tedious paperwork. At the end of it all, a tired-looking house fairy took the Winged Key, lead %pet:' . $pet->getId() . '.name% through a door which somehow took them right back home, performed a blessing on the house (probably their 50th of the day, based on their level of enthusiasm), and left.', '')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+        ;
+
+        $this->em->remove($pet->getTool());
+
+        $pet
+            ->setTool(null)
+            ->increaseFood(-1)
+            ->increaseEsteem(-4)
+        ;
+
+        $pet->getOwner()->setUnlockedBulkSelling();
+
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ] );
+        $this->petExperienceService->spendTime($pet, 120, PetActivityStatEnum::OTHER, null);
+
+        if($activityLog)
+            $activityLog->setChanges($changes->compare($pet));
     }
 
     public function doKeybladeTower(ComputedPetSkills $petWithSkills)

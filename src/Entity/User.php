@@ -277,6 +277,12 @@ class User implements UserInterface
      */
     private $menuOrder;
 
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"myAccount"})
+     */
+    private $unlockedBulkSelling;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -975,6 +981,18 @@ class User implements UserInterface
         }
 
         $this->menuOrder = $menuOrder;
+
+        return $this;
+    }
+
+    public function getUnlockedBulkSelling(): ?\DateTimeImmutable
+    {
+        return $this->unlockedBulkSelling;
+    }
+
+    public function setUnlockedBulkSelling(): self
+    {
+        $this->unlockedBulkSelling = new \DateTimeImmutable();
 
         return $this;
     }

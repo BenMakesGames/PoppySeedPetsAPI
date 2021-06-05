@@ -196,6 +196,29 @@ class InventoryRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param int[] $itemIds
+     * @return Inventory[]
+     */
+    public function getInventoryToSell(User $user, array $itemIds): array
+    {
+        return $this->createQueryBuilder('i')
+            ->leftJoin('i.holder', 'holder')
+            ->leftJoin('i.wearer', 'wearer')
+            ->leftJoin('i.lunchboxItem', 'lunchboxItem')
+            ->andWhere('i.owner=:user')
+            ->andWhere('i.id IN (:itemIds)')
+            ->andWhere('i.lockedToOwner = 0')
+            ->andWhere('holder IS NULL')
+            ->andWhere('wearer IS NULL')
+            ->andWhere('lunchboxItem IS NULL')
+            ->setParameter('user', $user->getId())
+            ->setParameter('itemIds', $itemIds)
+            ->getQuery()
+            ->execute()
+        ;
+    }
+
+    /**
      * @return ItemQuantity[]
      */
     public function getInventoryQuantities(User $user, int $location, $indexBy = null)

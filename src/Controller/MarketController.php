@@ -9,17 +9,20 @@ use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\DailyMarketItemAverageRepository;
 use App\Repository\InventoryRepository;
+use App\Repository\UserQuestRepository;
 use App\Service\InventoryModifierService;
 use App\Service\Filter\MarketFilterService;
 use App\Service\Filter\TransactionFilterService;
 use App\Service\InventoryService;
 use App\Service\MarketService;
+use App\Service\MuseumService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -76,9 +79,42 @@ class MarketController extends PoppySeedPetsController
         $user = $this->getUser();
 
         return $responseService->success([
-            'moneysLimit' => $user->getMaxSellPrice(),
-            'itemRequired' => $marketService->getItemToRaiseLimit($user)
+            'offeringBulkSellUpgrade' => $marketService->canOfferWingedKey($user),
+            'limits' => [
+                'moneysLimit' => $user->getMaxSellPrice(),
+                'itemRequired' => $marketService->getItemToRaiseLimit($user)
+            ]
         ]);
+    }
+
+    /**
+     * @Route("/getWingedKey", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getWingedKey(
+        ResponseService $responseService, MarketService $marketService, MuseumService $museumService,
+        InventoryService $inventoryService, UserQuestRepository $userQuestRepository,
+        EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        if(!$marketService->canOfferWingedKey($user))
+            throw new AccessDeniedHttpException();
+
+        $userQuestRepository->findOrCreate($user, 'Received Winged Key', false)
+            ->setValue(true)
+        ;
+
+        $comment = 'Begrudgingly given to ' . $user->getName() . ' by Argentelle.';
+
+        $museumService->forceDonateItem($user, 'Winged Key', $comment);
+
+        $inventoryService->receiveItem('Winged Key', $user, null, $comment, LocationEnum::HOME, true);
+
+        $em->flush();
+
+        return $responseService->success();
     }
 
     /**

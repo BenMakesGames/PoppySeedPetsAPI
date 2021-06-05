@@ -4,7 +4,10 @@ namespace App\Service;
 use App\Entity\DailyMarketInventoryTransaction;
 use App\Entity\Inventory;
 use App\Entity\User;
+use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
+use App\Repository\MarketBidRepository;
+use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -12,11 +15,25 @@ class MarketService
 {
     private $em;
     private $userStatsRepository;
+    private MarketBidRepository $marketBidRepository;
+    private InventoryService $inventoryService;
+    private TransactionService $transactionService;
+    private InventoryModifierService $inventoryModifierService;
+    private UserQuestRepository $userQuestRepository;
 
-    public function __construct(EntityManagerInterface $em, UserStatsRepository  $userStatsRepository)
+    public function __construct(
+        EntityManagerInterface $em, UserStatsRepository  $userStatsRepository, MarketBidRepository $marketBidRepository,
+        InventoryService $inventoryService, TransactionService $transactionService,
+        InventoryModifierService $inventoryModifierService, UserQuestRepository $userQuestRepository
+    )
     {
         $this->em = $em;
         $this->userStatsRepository = $userStatsRepository;
+        $this->marketBidRepository = $marketBidRepository;
+        $this->inventoryService = $inventoryService;
+        $this->transactionService = $transactionService;
+        $this->inventoryModifierService = $inventoryModifierService;
+        $this->userQuestRepository = $userQuestRepository;
     }
 
     public function getItemToRaiseLimit(User $user): ?array
@@ -76,5 +93,75 @@ class MarketService
 
         if($item->getWearer())
             $item->getWearer()->setHat(null);
+    }
+
+    public function canOfferWingedKey(User $user)
+    {
+        if($user->getUnlockedMarket() && $user->getUnlockedMuseum() && $user->getMaxSellPrice() >= 100)
+        {
+            $receivedWingedKey = $this->userQuestRepository->findOrCreate($user, 'Received Winged Key', false);
+
+            if(!$receivedWingedKey->getValue())
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool "true" if the item was scooped up by a bidder
+     */
+    public function sell(Inventory $inventory, int $price): bool
+    {
+        $user = $inventory->getOwner();
+
+        if($price <= 0)
+            $inventory->setSellPrice(null);
+        else
+        {
+            $inventory->setSellPrice($price);
+
+            $highestBid = $this->marketBidRepository->findHighestBidForItem($inventory, Inventory::calculateBuyPrice($price));
+
+            if($highestBid)
+            {
+                $this->logExchange($inventory);
+
+                $this->transactionService->getMoney($user, $price, 'Sold ' . $this->inventoryModifierService->getNameWithModifiers($inventory) . ' in the Market.');
+
+                $targetLocation = LocationEnum::HOME;
+
+                if($highestBid->getTargetLocation() === LocationEnum::BASEMENT)
+                {
+                    $itemsInBuyersBasement = $this->inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::BASEMENT);
+
+                    if($itemsInBuyersBasement < User::MAX_BASEMENT_INVENTORY)
+                        $targetLocation = LocationEnum::BASEMENT;
+                }
+                else // assume home as fallback/default
+                {
+                    $itemsInBuyersHome = $this->inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::HOME);
+
+                    if($itemsInBuyersHome >= User::MAX_HOUSE_INVENTORY)
+                    {
+                        $itemsInBuyersBasement = $this->inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::BASEMENT);
+
+                        if($itemsInBuyersBasement < User::MAX_BASEMENT_INVENTORY)
+                            $targetLocation = LocationEnum::BASEMENT;
+                    }
+                }
+
+                $this->transferItemToPlayer($inventory, $highestBid->getUser(), $targetLocation);
+
+                if($highestBid->getQuantity() > 1)
+                    $highestBid->setQuantity($highestBid->getQuantity() - 1);
+                else
+                    $this->em->remove($highestBid);
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }

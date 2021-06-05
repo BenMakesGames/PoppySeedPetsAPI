@@ -224,13 +224,12 @@ class InventoryController extends PoppySeedPetsController
     }
 
     /**
-     * @Route("/{inventory}/sellPrice", methods={"POST"}, requirements={"inventory"="\d+"})
+     * @Route("/sell", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function setSellPrice(
-        Inventory $inventory, ResponseService $responseService, Request $request, EntityManagerInterface $em,
-        MarketBidRepository $marketBidRepository, TransactionService $transactionService, MarketService $marketService,
-        InventoryModifierService $inventoryModifierService, InventoryService $inventoryService
+        ResponseService $responseService, Request $request, EntityManagerInterface $em, MarketService $marketService,
+        InventoryRepository $inventoryRepository
     )
     {
         $user = $this->getUser();
@@ -238,73 +237,40 @@ class InventoryController extends PoppySeedPetsController
         if($user->getUnlockedMarket() === null)
             throw new AccessDeniedHttpException('You have not yet unlocked this feature.');
 
-        if($inventory->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('That item does not belong to you.');
+        $itemIds = $request->request->get('items', []);
 
-        if($inventory->getLockedToOwner())
-            throw new UnprocessableEntityHttpException('This item is locked to your account. It cannot be sold, traded, etc.');
+        if(!is_array($itemIds))
+        {
+            if(!is_numeric($itemIds))
+                throw new UnprocessableEntityHttpException('You must select at least one item!');
 
-        if($inventory->getHolder() || $inventory->getWearer())
-            throw new UnprocessableEntityHttpException('This item is being held or worn by a pet!');
+            $itemIds = [ $itemIds ];
+        }
 
-        if($inventory->getLunchboxItem())
-            throw new UnprocessableEntityHttpException('This item is in a pet\'s lunchbox!');
+        if(count($itemIds) === 0)
+            throw new UnprocessableEntityHttpException('You must select at least one item!');
 
         $price = $request->request->getInt('price', 0);
 
         if($price > $user->getMaxSellPrice())
             throw new UnprocessableEntityHttpException('You cannot list items for more than ' . $user->getMaxSellPrice() . ' moneys. See the Market Manager to see if you can increase this limit!');
 
-        if($price <= 0)
-            $inventory->setSellPrice(null);
-        else
+        $inventory = $inventoryRepository->getInventoryToSell($user, $itemIds);
+
+        if(count($inventory) !== count($itemIds))
+            throw new UnprocessableEntityHttpException('One or more of the selected items do not exist! Maybe reload and try again??');
+
+        foreach($inventory as $i)
         {
-            $inventory->setSellPrice($price);
+            $soldToBidder = $marketService->sell($i, $price);
 
-            $highestBid = $marketBidRepository->findHighestBidForItem($inventory, Inventory::calculateBuyPrice($price));
-
-            if($highestBid)
-            {
-                $marketService->logExchange($inventory);
-
-                $transactionService->getMoney($user, $price, 'Sold ' . $inventoryModifierService->getNameWithModifiers($inventory) . ' in the Market.');
-
-                $targetLocation = LocationEnum::HOME;
-
-                if($highestBid->getTargetLocation() === LocationEnum::BASEMENT)
-                {
-                    $itemsInBuyersBasement = $inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::BASEMENT);
-
-                    if($itemsInBuyersBasement < User::MAX_BASEMENT_INVENTORY)
-                        $targetLocation = LocationEnum::BASEMENT;
-                }
-                else // assume home as fallback/default
-                {
-                    $itemsInBuyersHome = $inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::HOME);
-
-                    if($itemsInBuyersHome >= User::MAX_HOUSE_INVENTORY)
-                    {
-                        $itemsInBuyersBasement = $inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::BASEMENT);
-
-                        if($itemsInBuyersBasement < User::MAX_BASEMENT_INVENTORY)
-                            $targetLocation = LocationEnum::BASEMENT;
-                    }
-                }
-
-                $marketService->transferItemToPlayer($inventory, $highestBid->getUser(), $targetLocation);
-
-                $responseService->setReloadInventory();
-
-                if($highestBid->getQuantity() > 1)
-                    $highestBid->setQuantity($highestBid->getQuantity() - 1);
-                else
-                    $em->remove($highestBid);
-            }
+            if($soldToBidder)
+                $em->flush();
         }
 
         $em->flush();
 
-        return $responseService->success($inventory->getSellPrice());
+        return $responseService->success($inventory[0]->getSellPrice());
     }
 
     /**
@@ -332,11 +298,11 @@ class InventoryController extends PoppySeedPetsController
         if(count($inventory) !== count($inventoryIds))
             throw new UnprocessableEntityHttpException('Some of the items could not be found??');
 
-        $recyclingService->recycleInventory($inventory);
+        $idsNotRecycled = $recyclingService->recycleInventory($inventory);
 
         $em->flush();
 
-        return $responseService->success();
+        return $responseService->success($idsNotRecycled);
     }
 
     /**

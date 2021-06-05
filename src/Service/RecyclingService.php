@@ -5,6 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\ArrayFunctions;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,11 +17,12 @@ class RecyclingService
     private $calendarService;
     private $em;
     private $userStatsRepository;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private ResponseService $responseService;
 
     public function __construct(
         UserRepository $userRepository, CalendarService $calendarService, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3
+        UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3, ResponseService $responseService
     )
     {
         $this->userRepository = $userRepository;
@@ -28,6 +30,7 @@ class RecyclingService
         $this->em = $em;
         $this->userStatsRepository = $userStatsRepository;
         $this->squirrel3 = $squirrel3;
+        $this->responseService = $responseService;
     }
 
     public function giveRecyclingPoints(User $user, int $quantity)
@@ -59,8 +62,9 @@ class RecyclingService
 
     /**
      * @param Inventory[] $inventory
+     * @return int[] IDs of items NOT recycled
      */
-    public function recycleInventory(array $inventory)
+    public function recycleInventory(array $inventory): array
     {
         $givingTree = $this->userRepository->findOneByEmail('giving-tree@poppyseedpets.com');
 
@@ -68,9 +72,19 @@ class RecyclingService
             throw new HttpException(500, 'The "Giving Tree" NPC does not exist in the database!');
 
         $givingTreeHoliday = $this->calendarService->isValentines() || $this->calendarService->isWhiteDay();
+        $questItems = [];
+        $idsNotRecycled = [];
 
         foreach($inventory as $i)
         {
+            if($i->getItem()->getCannotBeThrownOut())
+            {
+                $questItems[] = $i->getItem()->getName();
+                $idsNotRecycled[] = $i->getId();
+
+                continue;
+            }
+
             $originalOwner = $i->getOwner();
 
             if($i->getItem()->hasUseAction('bug/#/putOutside'))
@@ -97,5 +111,17 @@ class RecyclingService
 
             $this->userStatsRepository->incrementStat($originalOwner, UserStatEnum::ITEMS_RECYCLED);
         }
+
+        if(count($questItems) > 0)
+        {
+            $questItems = array_unique($questItems);
+
+            if(count($questItems) === 1)
+                $this->responseService->addFlashMessage('The ' . $questItems[0] . ' look really important! You should hold on to that...');
+            else
+                $this->responseService->addFlashMessage('The ' . ArrayFunctions::list_nice($questItems) . ' look really important! You should hold on to those...');
+        }
+
+        return $idsNotRecycled;
     }
 }

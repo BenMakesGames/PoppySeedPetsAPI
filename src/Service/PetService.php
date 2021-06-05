@@ -658,6 +658,10 @@ class PetService
             case '5-leaf Clover':
                 $this->treasureMapService->doLeprechaun($petWithSkills);
                 return true;
+
+            case 'Winged Key':
+                $this->treasureMapService->doAbundantiasVault($pet);
+                return true;
         }
 
         return false;
