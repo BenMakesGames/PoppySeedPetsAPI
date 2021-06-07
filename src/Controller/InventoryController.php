@@ -260,13 +260,21 @@ class InventoryController extends PoppySeedPetsController
         if(count($inventory) !== count($itemIds))
             throw new UnprocessableEntityHttpException('One or more of the selected items do not exist! Maybe reload and try again??');
 
+        $anySoldToBidder = false;
+
         foreach($inventory as $i)
         {
             $soldToBidder = $marketService->sell($i, $price);
 
             if($soldToBidder)
+            {
+                $anySoldToBidder = true;
                 $em->flush();
+            }
         }
+
+        if($anySoldToBidder)
+            $responseService->setReloadInventory();
 
         $em->flush();
 
