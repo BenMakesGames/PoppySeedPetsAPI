@@ -32,6 +32,7 @@ Whatever the circumstances that lead to your overabundance of milk, fret not! Th
 * Eggnog
 * Hakuna Frittata
 * Lassi
+* Mahalabia
 * Melonpan (Melonbun)
 * Naner Puddin\'
 * Pancakes
@@ -82,6 +83,14 @@ Whatever the circumstances that lead to your overabundance of milk, fret not! Th
 * Fruit (Mango, Blackberry, or Blueberry)
 
 Or, if you have Blackberry or Blueberry Yogurt, just add... Creamy Milk!
+
+#### Mahalabia
+
+A simple, sweet pudding! Try it with cardamom, clove, or Nutmeg!
+
+* Creamy Milk!
+* Rice Flour
+* Sugar 
 
 #### Melonpan (or is it Melonbun?)
 
