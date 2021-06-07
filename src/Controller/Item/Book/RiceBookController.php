@@ -30,6 +30,7 @@ class RiceBookController extends PoppySeedPetsItemController
 * Rice Flour
 * Rice Vinegar
 * Simple Sushi
+* Tamago Kake Gohan
 * Tapsilog (with Fish)
 * Tomato "Sushi"
 * Yaki Onigiri
@@ -76,6 +77,13 @@ Be sure to include the Aging Powder, or you\'ll just end up with plain ol\' Rice
 * Vinegar
 * Seaweed
 * Fish
+
+#### Tamago Kake Gohan
+Also known as "TKG"; one of the simplest dishes to make.
+
+* Rice
+* Egg
+* Soy Sauce
 
 #### Tapsilog (with Fish)
 Fried rice, well-cooked fish, and a fried egg. A complete breakfast!
