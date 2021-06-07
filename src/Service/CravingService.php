@@ -36,7 +36,7 @@ class CravingService
 
     public function updateCraving(Pet $pet)
     {
-        if($pet->hasCraving())
+        if($pet->hasCraving() && !$pet->getCraving()->isSatisfied())
             $this->maybeRemoveCraving($pet);
         else
             $this->maybeAddCraving($pet);
@@ -44,7 +44,7 @@ class CravingService
 
     private function maybeRemoveCraving(Pet $pet)
     {
-        if($pet->getCraving() && !$pet->getCraving()->isSatisfied() && ($pet->getFood() < 0 || $pet->getSafety() < 0))
+        if($pet->getFood() < 0 || $pet->getSafety() < 0)
         {
             $craving = $pet->getCraving();
             $this->em->remove($craving);

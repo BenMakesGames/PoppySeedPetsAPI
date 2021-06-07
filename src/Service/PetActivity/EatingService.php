@@ -311,6 +311,8 @@ class EatingService
                 $pet->getPregnancy()->increaseAffection($gain);
 
             $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
+
+            $this->cravingService->updateCraving($pet);
         }
 
         if(count($foodsEaten) > 0)
