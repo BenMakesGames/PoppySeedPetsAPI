@@ -461,6 +461,17 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [
+                    TraderOfferCostOrYield::createRecyclingPoints(20),
+                    TraderOfferCostOrYield::createMoney(40)
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Scroll of Dice'), 1) ],
+                'To be honest, those dice kind of give me the willies. A whole scroll of them? Yeah, no thanks!',
+                $user,
+                $quantities
+            ),
+
+            TraderOffer::createTradeOffer(
+                [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Iron Key'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Silver Key'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Key'), 1),
