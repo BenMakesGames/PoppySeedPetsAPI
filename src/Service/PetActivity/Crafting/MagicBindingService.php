@@ -214,7 +214,7 @@ class MagicBindingService
 
             if($this->houseSimService->hasInventory('Ceremonial Trident'))
             {
-                if($this->houseSimService->hasInventory('Seaweed') && $this->houseSimService->hasInventory('Sand Dollar'))
+                if($this->houseSimService->hasInventory('Seaweed') && $this->houseSimService->hasInventory('Silica Grounds'))
                     $possibilities[] = new ActivityCallback($this, 'createCeremonyOfSandAndSea', 8);
 
                 if($this->houseSimService->hasInventory('Blackonite'))
