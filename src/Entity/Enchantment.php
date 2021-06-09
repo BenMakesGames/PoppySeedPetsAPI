@@ -37,6 +37,12 @@ class Enchantment
      */
     private $effects;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Aura::class)
+     * @Groups({"myInventory", "myPet", "itemEncyclopedia", "marketItem"})
+     */
+    private $aura;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +80,18 @@ class Enchantment
     public function setEffects(ItemTool $effects): self
     {
         $this->effects = $effects;
+
+        return $this;
+    }
+
+    public function getAura(): ?Aura
+    {
+        return $this->aura;
+    }
+
+    public function setAura(?Aura $aura): self
+    {
+        $this->aura = $aura;
 
         return $this;
     }
