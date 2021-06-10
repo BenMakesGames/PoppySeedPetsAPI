@@ -237,7 +237,7 @@ class PetService
         else if($pet->getEsteem() < $esteemRestingPoint && $this->squirrel3->rngNextInt(1, 2) === 1)
             $pet->increaseEsteem(1);
 
-        $this->cravingService->updateCraving($pet);
+        $this->cravingService->maybeRemoveCraving($pet);
 
         $pregnancy = $pet->getPregnancy();
 

@@ -34,17 +34,13 @@ class CravingService
         $this->responseService = $responseService;
     }
 
-    public function updateCraving(Pet $pet)
+    public function maybeRemoveCraving(Pet $pet)
     {
-        if($pet->hasCraving() && !$pet->getCraving()->isSatisfied())
-            $this->maybeRemoveCraving($pet);
-        else
-            $this->maybeAddCraving($pet);
-    }
-
-    private function maybeRemoveCraving(Pet $pet)
-    {
-        if($pet->getFood() < 0 || $pet->getSafety() < 0)
+        if(
+            $pet->hasCraving() &&
+            !$pet->getCraving()->isSatisfied() &&
+            ($pet->getFood() < 0 || $pet->getSafety() < 0)
+        )
         {
             $craving = $pet->getCraving();
             $this->em->remove($craving);
@@ -52,9 +48,14 @@ class CravingService
         }
     }
 
-    private function maybeAddCraving(Pet $pet)
+    public function maybeAddCraving(Pet $pet)
     {
-        if($pet->getFullnessPercent() >= 0.5 && $pet->getSafety() >= 8)
+        if(
+            $pet->hasCraving() &&
+            !$pet->getCraving()->isSatisfied() &&
+            $pet->getFullnessPercent() >= 0.5 &&
+            $pet->getSafety() >= 8
+        )
         {
             $craving = $pet->getCraving();
             $fiveDaysAgo = (new \DateTimeImmutable())->modify('-5 days');

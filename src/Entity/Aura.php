@@ -31,7 +31,7 @@ class Aura
     private $image;
 
     /**
-     * @ORM\Column(type="smallint")
+     * @ORM\Column(type="float")
      * @Groups({"myPet"})
      */
     private $size;
@@ -77,12 +77,12 @@ class Aura
         return $this;
     }
 
-    public function getSize(): int
+    public function getSize(): float
     {
         return $this->size;
     }
 
-    public function setSize(int $size): self
+    public function setSize(float $size): self
     {
         $this->size = $size;
 
@@ -94,9 +94,9 @@ class Aura
         return $this->centerX;
     }
 
-    public function setCenterX(float $xOffset): self
+    public function setCenterX(float $centerX): self
     {
-        $this->xOffset = $xOffset;
+        $this->centerX = $centerX;
 
         return $this;
     }
@@ -106,9 +106,9 @@ class Aura
         return $this->centerY;
     }
 
-    public function setCenterY(float $yOffset): self
+    public function setCenterY(float $centerY): self
     {
-        $this->yOffset = $yOffset;
+        $this->centerY = $centerY;
 
         return $this;
     }

@@ -56,7 +56,7 @@ class PetAndPraiseService
         else
             throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
 
-        $this->cravingService->updateCraving($pet);
+        $this->cravingService->maybeAddCraving($pet);
 
         $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% pet ' . '%pet:' . $pet->getId() . '.name%'. '.', 'ui/affection', $changes->compare($pet));
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PETTED_A_PET);
@@ -94,7 +94,7 @@ class PetAndPraiseService
         else
             throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
 
-        $this->cravingService->updateCraving($pet);
+        $this->cravingService->maybeAddCraving($pet);
 
         $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% praised ' . '%pet:' . $pet->getId() . '.name%'. '.', 'ui/affection', $changes->compare($pet));
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PRAISED_A_PET);

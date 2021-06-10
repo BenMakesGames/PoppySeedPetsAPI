@@ -312,7 +312,7 @@ class EatingService
 
             $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
 
-            $this->cravingService->updateCraving($pet);
+            $this->cravingService->maybeAddCraving($pet);
         }
 
         if(count($foodsEaten) > 0)
