@@ -2,9 +2,15 @@
 namespace App\Controller;
 
 use App\Enum\SerializationGroupEnum;
+use App\Repository\PetRepository;
+use App\Repository\UserUnlockedAuraRepository;
 use App\Service\HattierService;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -33,8 +39,41 @@ class HattierController extends PoppySeedPetsController
      * @Route("/buy", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function applyAura(Request $request)
+    public function applyAura(
+        Request $request, PetRepository $petRepository, UserUnlockedAuraRepository $userUnlockedAuraRepository,
+        TransactionService $transactionService, EntityManagerInterface $em, ResponseService $responseService
+    )
     {
+        $petId = $request->request->get('pet');
+        $auraId = $request->request->get('aura');
 
+        if(!$petId || !$petId)
+            throw new UnprocessableEntityHttpException('A pet and style must be selected.');
+
+        $user = $this->getUser();
+
+        if($user->getMoneys() < 200)
+            throw new UnprocessableEntityHttpException('You need 200~~m~~.');
+
+        $pet = $petRepository->find($petId);
+
+        if(!$pet || $pet->getOwner()->getId() !== $user->getId())
+            throw new NotFoundHttpException('Pet not found.');
+
+        if(!$pet->getHat())
+            throw new UnprocessableEntityHttpException('That pet isn\'t wearing a hat!');
+
+        $unlockedAura = $userUnlockedAuraRepository->find($auraId);
+
+        if(!$unlockedAura || $unlockedAura->getUser()->getId() !== $user->getId())
+            throw new NotFoundHttpException('You haven\'t unlocked that Hattier style.');
+
+        $transactionService->spendMoney($user, 200, 'Bought the ' . $unlockedAura->getAura()->getAura()->getName() . ' style from the Hattier.');
+
+        $pet->getHat()->setEnchantment($unlockedAura->getAura());
+
+        $em->flush();
+
+        return $responseService->success();
     }
 }

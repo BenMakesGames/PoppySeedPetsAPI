@@ -6,9 +6,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Entity\UserUnlockedAura;
-use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
-use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Repository\EnchantmentRepository;
 use App\Repository\UserUnlockedAuraRepository;
@@ -65,7 +63,7 @@ class HattierService
                 if($unlockedAura)
                 {
                     return [
-                        'id' => $e->getId(),
+                        'id' => $unlockedAura->getId(),
                         'unlockedOn' => $unlockedAura->getUnlockedOn(),
                         'comment' => $unlockedAura->getUnlockedOn(),
                         'name' => $e->getAura()->getName(),
