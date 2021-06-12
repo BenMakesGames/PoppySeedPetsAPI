@@ -116,6 +116,8 @@ class HattierService
                         $activityLog->setEntry($activityLog->getEntry() . ' ' . $customActivityUnlockMessage);
                     else
                         $activityLog->setEntry($activityLog->getEntry() . ' (The Hattier has been unlocked! Check it out in the menu!)');
+
+                    $this->unlockStartingAuras($user);
                 }
                 else
                     $activityLog->setEntry($activityLog->getEntry() . ' (A new style has been added to the Hattier!)');
@@ -125,6 +127,34 @@ class HattierService
         }
 
         return $this->userAurasPerRequestCache[$cacheKey];
+    }
+
+    private function unlockStartingAuras(User $user)
+    {
+        $startingAuras = $this->enchantmentRepository->findBy([
+            'name' => [
+                'Bubbling',
+                '(New!)',
+                'of Squares',
+                'with Paint'
+            ],
+        ]);
+
+        foreach($startingAuras as $aura)
+        {
+            $cacheKey = $user->getId() . '-' . $aura->getId();
+
+            $unlockedAura = (new UserUnlockedAura())
+                ->setUser($user)
+                ->setAura($aura)
+                ->setComment('The Hattier has made this style available to you as a courtesy.')
+                ->setUnlockedOn(\DateTimeImmutable::createFromFormat('Y-m-d', '2019-06-22'))
+            ;
+
+            $this->em->persist($unlockedAura);
+
+            $this->userAurasPerRequestCache[$cacheKey] = $unlockedAura;
+        }
     }
 
     /**

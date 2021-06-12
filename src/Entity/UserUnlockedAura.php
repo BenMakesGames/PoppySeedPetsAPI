@@ -88,6 +88,12 @@ class UserUnlockedAura
         return $this->unlockedOn;
     }
 
+    public function setUnlockedOn(\DateTimeImmutable $unlockedOn): self
+    {
+        $this->unlockedOn = $unlockedOn;
+        return $this;
+    }
+
     public function getComment(): string
     {
         return $this->comment;
