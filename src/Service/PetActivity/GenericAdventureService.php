@@ -1,22 +1,29 @@
 <?php
 namespace App\Service\PetActivity;
 
+use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\BirdBathBirdEnum;
+use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Functions\ActivityHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
+use App\Service\HattierService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
+use App\Service\WeatherService;
 
 class GenericAdventureService
 {
@@ -27,13 +34,18 @@ class GenericAdventureService
     private $transactionService;
     private $meritRepository;
     private $itemRepository;
-    private $squirrel3;
     private $spiceRepository;
+    private IRandom $squirrel3;
+    private WeatherService $weatherService;
+    private EnchantmentRepository $enchantmentRepository;
+    private HattierService $hattierService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         UserQuestRepository $userQuestRepository, TransactionService $transactionService, MeritRepository $meritRepository,
-        ItemRepository $itemRepository, Squirrel3 $squirrel3, SpiceRepository $spiceRepository
+        ItemRepository $itemRepository, Squirrel3 $squirrel3, SpiceRepository $spiceRepository,
+        WeatherService $weatherService, EnchantmentRepository $enchantmentRepository,
+        HattierService $hattierService
     )
     {
         $this->responseService = $responseService;
@@ -45,6 +57,9 @@ class GenericAdventureService
         $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
         $this->spiceRepository = $spiceRepository;
+        $this->weatherService = $weatherService;
+        $this->enchantmentRepository = $enchantmentRepository;
+        $this->hattierService = $hattierService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -111,6 +126,30 @@ class GenericAdventureService
             $activityLog->setChanges($changes->compare($pet));
 
             return $activityLog;
+        }
+
+        if($pet->hasMerit(MeritEnum::BEHATTED))
+        {
+            // party!
+            $activityLog = $this->maybeHaveBirthdayCelebrated($pet);
+
+            if($activityLog)
+                return $activityLog;
+
+            // if it's raining, and a pet is wearing a hat...
+            if($pet->getHat() && $this->weatherService->getWeather(new \DateTimeImmutable(), $pet)->getRainfall() > 0)
+            {
+                $activityLog = $this->hattierService->petMaybeUnlockAura(
+                    $pet,
+                    'Rainy',
+                    'Immediately after stepping outside, %pet:' . $pet->getId() . '.name% was drenched with rainwater that fell from the leaves of an enormous tree! Their ' . $pet->getHat()->getItem()->getName() . ' became waterlogged, and a puddle formed at their feet...',
+                    'Immediately after stepping outside, %pet:' . $pet->getId() . '.name% was drenched with rainwater that fell from the leaves of an enormous tree! A puddle formed at their feet...',
+                    ActivityHelpers::PetName($pet) . '\'s ' . $pet->getHat()->getItem()->getName() . ' got wet in the rain, and a puddle formed at their feet...'
+                );
+
+                if($activityLog)
+                    return $activityLog;
+            }
         }
 
         if($pet->getOwner()->getGreenhouse() && $pet->getOwner()->getGreenhouse()->getHasBirdBath() && !$pet->getOwner()->getGreenhouse()->getVisitingBird() && $this->squirrel3->rngNextInt(1, 20) === 1)
@@ -231,6 +270,39 @@ class GenericAdventureService
             ->setChanges($changes->compare($pet))
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
         ;
+
+        return $activityLog;
+    }
+
+    private function maybeHaveBirthdayCelebrated(Pet $pet): ?PetActivityLog
+    {
+        if($pet->getBirthDate() >= (new \DateTimeImmutable())->modify('-372 days'))
+            return null;
+
+        $partyEnchantment = $this->enchantmentRepository->findOneByName('Party');
+
+        if($this->hattierService->userHasUnlocked($pet->getOwner(), $partyEnchantment))
+            return null;
+
+        $givenAHat = '';
+
+        if(!$pet->getHat())
+        {
+            $givenAHat = ', and a Paper Boat was placed on their head';
+            $paperHat = $this->inventoryService->petCollectsItem('Paper Boat', $pet, $pet->getName() . ' received this for their birthday from a Tell Samarzhoustian representative.', null)
+                ->setLocation(LocationEnum::WARDROBE)
+            ;
+
+            $pet->setHat($paperHat);
+        }
+
+        $activityLog = $this->hattierService->petMaybeUnlockAura(
+            $pet,
+            $partyEnchantment,
+            'While walking along a riverbank, ' . ActivityHelpers::PetName($pet) . ' was showered with confetti' . $givenAHat . '! A fish (apparently a representative from Tell Samarazhoustia) wished them a happy birthday... it\'s a little late, but still nice...? It would have been nicer if the fish didn\'t also remind ' . ActivityHelpers::PetName($pet) . ' to visit the Trader often...',
+            '',
+            ActivityHelpers::PetName($pet) . '\'s ' . $pet->getHat()->getItem()->getName() . ' got so much confetti in it, confetti was falling out all day...'
+        );
 
         return $activityLog;
     }

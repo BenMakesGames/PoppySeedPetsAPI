@@ -289,6 +289,11 @@ class User implements UserInterface
      */
     private $unlockedHattier;
 
+    /**
+     * @ORM\OneToMany(targetEntity=UserUnlockedAura::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $unlockedAuras;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -299,6 +304,7 @@ class User implements UserInterface
         $this->greenhousePlants = new ArrayCollection();
         $this->userSessions = new ArrayCollection();
         $this->pushSubscriptions = new ArrayCollection();
+        $this->unlockedAuras = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -1011,6 +1017,36 @@ class User implements UserInterface
     public function setUnlockedHattier(): self
     {
         $this->unlockedHattier = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserUnlockedAura[]
+     */
+    public function getUnlockedAuras(): Collection
+    {
+        return $this->unlockedAuras;
+    }
+
+    public function addUnlockedAura(UserUnlockedAura $unlockedAura): self
+    {
+        if (!$this->unlockedAuras->contains($unlockedAura)) {
+            $this->unlockedAuras[] = $unlockedAura;
+            $unlockedAura->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUnlockedAura(UserUnlockedAura $unlockedAura): self
+    {
+        if ($this->unlockedAuras->removeElement($unlockedAura)) {
+            // set the owning side to null (unless already changed)
+            if ($unlockedAura->getUser() === $this) {
+                $unlockedAura->setUser(null);
+            }
+        }
 
         return $this;
     }

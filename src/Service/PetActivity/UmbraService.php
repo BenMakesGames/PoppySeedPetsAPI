@@ -19,7 +19,9 @@ use App\Model\WeatherData;
 use App\Repository\DragonRepository;
 use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
+use App\Service\HattierService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\InventoryModifierService;
@@ -38,14 +40,16 @@ class UmbraService
     private $toolBonusService;
     private $strangeUmbralEncounters;
     private $dragonRepository;
-    private $squirrel3;
     private $weatherService;
+    private IRandom $squirrel3;
+    private HattierService $hattierService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, GuildService $guildService, EnchantmentRepository $enchantmentRepository,
         ItemRepository $itemRepository, InventoryModifierService $toolBonusService, StrangeUmbralEncounters $strangeUmbralEncounters,
-        DragonRepository $dragonRepository, Squirrel3 $squirrel3, WeatherService $weatherService
+        DragonRepository $dragonRepository, Squirrel3 $squirrel3, WeatherService $weatherService,
+        HattierService $hattierService
     )
     {
         $this->responseService = $responseService;
@@ -60,6 +64,7 @@ class UmbraService
         $this->dragonRepository = $dragonRepository;
         $this->squirrel3 = $squirrel3;
         $this->weatherService = $weatherService;
+        $this->hattierService = $hattierService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -583,6 +588,26 @@ class UmbraService
 
         $loot = [ 'Noetala Egg' ];
 
+        if($pet->hasMerit(MeritEnum::BEHATTED) && $this->squirrel3->rngNextInt(1, 100) === 1)
+        {
+            $activityLog = $this->hattierService->petMaybeUnlockAura(
+                $pet,
+                'Umbral',
+                ActivityHelpers::PetName($pet) . ' fell into a giant cocoon. While finding their way out, ' . ActivityHelpers::PetName($pet) . ' noticed that the swirling mists at their feet were particularly beautiful... and so just put some on their ' . $pet->getHat()->getItem()->getName() . '! (Why not!)',
+                ActivityHelpers::PetName($pet) . ' fell into a giant cocoon. While finding their way out, ' . ActivityHelpers::PetName($pet) . ' noticed that the swirling mists at their feet were particularly beautiful...',
+                ActivityHelpers::PetName($pet) . ' was captivated by the swirling mists in Noetala\'s giant cocoon...'
+            );
+
+            if($activityLog)
+            {
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+
+                return $activityLog;
+            }
+        }
+
         if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) < 15)
         {
             $pet->increaseFood(-1);
@@ -596,7 +621,7 @@ class UmbraService
                     $loot[] = 'Fluff';
 
                 $pet->increaseEsteem(3);
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% fell into a giant cocoon. While trying to find their way out, ' . $pet->getName() . ' was ambushed by one of Noetala\'s guard, but was able to defeat it!', '')
+                $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' fell into a giant cocoon. While trying to find their way out, ' . ActivityHelpers::PetName($pet) . ' was ambushed by one of Noetala\'s guard, but was able to defeat it!', '')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
                 ;
 

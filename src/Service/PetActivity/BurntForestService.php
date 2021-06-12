@@ -4,15 +4,20 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\GuildEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
+use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Repository\EnchantmentRepository;
 use App\Repository\UserQuestRepository;
+use App\Service\HattierService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -24,12 +29,15 @@ class BurntForestService
     private $responseService;
     private $inventoryService;
     private $userQuestRepository;
-    private $squirrel3;
     private $statusEffectService;
+    private IRandom $squirrel3;
+    private HattierService $hattierService;
+    private EnchantmentRepository $enchantmentRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, ResponseService $responseService, InventoryService $inventoryService,
-        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, StatusEffectService $statusEffectService
+        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, StatusEffectService $statusEffectService,
+        HattierService $hattierService, EnchantmentRepository $enchantmentRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -38,6 +46,8 @@ class BurntForestService
         $this->userQuestRepository = $userQuestRepository;
         $this->squirrel3 = $squirrel3;
         $this->statusEffectService = $statusEffectService;
+        $this->hattierService = $hattierService;
+        $this->enchantmentRepository = $enchantmentRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -258,6 +268,23 @@ class BurntForestService
                 $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::UMBRA ]);
 
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+
+                if($pet->hasMerit(MeritEnum::BEHATTED))
+                {
+                    $livingFlame = $this->enchantmentRepository->findOneByName('of Living Flame');
+
+                    if(!$this->hattierService->userHasUnlocked($pet->getOwner(), $livingFlame))
+                    {
+                        $this->hattierService->unlockAuraDuringPetActivity(
+                            $pet,
+                            $activityLog,
+                            $livingFlame,
+                            'After finishing its Charcoal, the spirit decided to follow ' . ActivityHelpers::PetName($pet) . ' home in their ' . $pet->getHat()->getItem()->getName() . '!',
+                            'After finishing its Charcoal, the spirit decided to follow ' . ActivityHelpers::PetName($pet) . ' home!',
+                            ActivityHelpers::PetName($pet) . ' fed a hungry fire spirit a bit of Charcoal, and the spirit followed them home...'
+                        );
+                    }
+                }
 
                 // triggers Hyssop letter #2
                 $oldValue = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Can Receive Letters from Fairies', 0);

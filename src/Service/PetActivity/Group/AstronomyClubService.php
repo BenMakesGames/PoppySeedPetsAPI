@@ -1,14 +1,20 @@
 <?php
 namespace App\Service\PetActivity\Group;
 
+use App\Entity\Enchantment;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetGroup;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
+use App\Repository\EnchantmentRepository;
+use App\Service\HattierService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
@@ -23,11 +29,14 @@ class AstronomyClubService
     private $em;
     private $inventoryService;
     private $petRelationshipService;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private EnchantmentRepository $enchantmentRepository;
+    private HattierService $hattierService;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3
+        PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3, HattierService $hattierService,
+        EnchantmentRepository $enchantmentRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -35,6 +44,8 @@ class AstronomyClubService
         $this->inventoryService = $inventoryService;
         $this->petRelationshipService = $petRelationshipService;
         $this->squirrel3 = $squirrel3;
+        $this->hattierService = $hattierService;
+        $this->enchantmentRepository = $enchantmentRepository;
     }
 
     private const DICTIONARY = [
@@ -234,37 +245,25 @@ class AstronomyClubService
                 $description = 'some Dark Matter';
             }
 
+            $astralEnchantment = $this->enchantmentRepository->findOneByName('Astral');
+
             foreach($group->getMembers() as $member)
             {
-                if($item !== null)
-                {
-                    $member->increaseEsteem($this->squirrel3->rngNextInt(3, 6));
+                $member->increaseEsteem($this->squirrel3->rngNextInt(3, 6));
 
-                    $activityLog = (new PetActivityLog())
-                        ->setPet($member)
-                        ->setEntry($this->formatMessage($messageTemplate, $member, $group, $description))
-                        ->setIcon(self::ACTIVITY_ICON)
-                        ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                        ->setChanges($petChanges[$member->getId()]->compare($member))
-                    ;
+                $activityLog = (new PetActivityLog())
+                    ->setPet($member)
+                    ->setEntry($this->formatMessage($messageTemplate, $member, $group, $description))
+                    ->setIcon(self::ACTIVITY_ICON)
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                    ->setChanges($petChanges[$member->getId()]->compare($member))
+                ;
 
-                    $this->inventoryService->petCollectsItem($item, $member, $this->formatMessage($messageTemplate, $member, $group, 'this'), $activityLog);
-                }
-                else
-                {
-                    if($this->squirrel3->rngNextInt(1, 3) === 1)
-                        $member->increaseLove($this->squirrel3->rngNextInt(2, 4));
-                    else
-                        $member->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
+                $this->inventoryService->petCollectsItem($item, $member, $this->formatMessage($messageTemplate, $member, $group, 'this'), $activityLog);
 
-                    $activityLog = (new PetActivityLog())
-                        ->setPet($member)
-                        ->setEntry($group->getName() . ' surveyed a portion of the sky, but didn\'t find anything interesting there...')
-                        ->setIcon(self::ACTIVITY_ICON)
-                        ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM)
-                        ->setChanges($petChanges[$member->getId()]->compare($member))
-                    ;
-                }
+                $this->maybeUnlockAuraAfterMakingDiscovery(
+                    $member, $activityLog, $astralEnchantment, $description, $group->getName(),
+                );
 
                 $this->em->persist($activityLog);
             }
@@ -300,6 +299,21 @@ class AstronomyClubService
         );
 
         $group->setLastMetOn();
+    }
+
+    private function maybeUnlockAuraAfterMakingDiscovery(Pet $pet, PetActivityLog $activityLog, Enchantment $enchantment, string $discoveredItemDescription, string $groupName)
+    {
+        if(!$pet->hasMerit(MeritEnum::BEHATTED) || $this->hattierService->userHasUnlocked($pet->getOwner(), $enchantment))
+            return;
+
+        $this->hattierService->unlockAuraDuringPetActivity(
+            $pet,
+            $activityLog,
+            $enchantment,
+            '(Wow! Space is incredible! You know what\'s also incredible? SPACE ON A HAT!)',
+            '(Wow! Space is incredible!)',
+            ActivityHelpers::PetName($pet) . ' was inspired by ' . $discoveredItemDescription . ' they found in space with ' . $groupName . '.'
+        );
     }
 
     private function formatMessage(string $template, Pet $member, PetGroup $group, string $findings)

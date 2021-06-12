@@ -8,12 +8,15 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\UserQuestRepository;
+use App\Service\HattierService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -24,17 +27,19 @@ class DeepSeaService
     private $responseService;
     private $inventoryService;
     private $petExperienceService;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private HattierService $hattierService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        Squirrel3 $squirrel3
+        Squirrel3 $squirrel3, HattierService $hattierService
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->squirrel3 = $squirrel3;
+        $this->hattierService = $hattierService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -56,10 +61,7 @@ class DeepSeaService
             case 3:
             case 4:
             case 5:
-                if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
-                    $activityLog = $this->foundAlgae($pet);
-                else
-                    $activityLog = $this->failedToUseSubmarine($pet);
+                $activityLog = $this->mostCommonAdventure($pet);
                 break;
             case 6:
                 $activityLog = $this->foundAlgae($pet);
@@ -99,6 +101,28 @@ class DeepSeaService
 
         if($this->squirrel3->rngNextInt(1, 75) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);
+    }
+
+    private function mostCommonAdventure(Pet $pet): PetActivityLog
+    {
+        if($pet->hasMerit(MeritEnum::BEHATTED) && $this->squirrel3->rngNextInt(1, 100) === 1)
+        {
+            $activityLog = $this->hattierService->petMaybeUnlockAura(
+                $pet,
+                'of Fish',
+                ActivityHelpers::PetName($pet) . ' went on a quick tour of the shelf sea, and found themselves in a huge school of fish! It was strange, and beautiful; it really left an impression on ' . ActivityHelpers::PetName($pet) . '... and their ' . $pet->getHat()->getItem()->getName() . '!',
+                ActivityHelpers::PetName($pet) . ' went on a quick tour of the shelf sea, and found themselves in a huge school of fish! It was strange, and beautiful...',
+                ActivityHelpers::PetName($pet) . ' was dazzled by a huge school of fish on the shelf sea...'
+            );
+
+            if($activityLog)
+                return $activityLog;
+        }
+
+        if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
+            return $this->foundAlgae($pet);
+
+        return $this->failedToUseSubmarine($pet);
     }
 
     private function failedToUseSubmarine(Pet $pet): PetActivityLog
