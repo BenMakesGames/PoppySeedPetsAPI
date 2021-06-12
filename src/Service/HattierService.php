@@ -65,7 +65,7 @@ class HattierService
                     return [
                         'id' => $unlockedAura->getId(),
                         'unlockedOn' => $unlockedAura->getUnlockedOn(),
-                        'comment' => $unlockedAura->getUnlockedOn(),
+                        'comment' => $unlockedAura->getComment(),
                         'name' => $e->getAura()->getName(),
                         'aura' => $e->getAura(),
                     ];
