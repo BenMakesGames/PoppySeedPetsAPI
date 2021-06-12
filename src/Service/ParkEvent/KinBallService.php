@@ -13,6 +13,8 @@ use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\KinBallTeam;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
+use App\Service\IRandom;
+use App\Service\ParkService;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
 use App\Service\PetService;
@@ -47,11 +49,13 @@ class KinBallService implements ParkEventInterface
     private $petExperienceService;
     private $transactionService;
     private $inventoryService;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private ParkService $parkService;
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, InventoryService $inventoryService, Squirrel3 $squirrel3
+        TransactionService $transactionService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        ParkService $parkService
     )
     {
         $this->em = $em;
@@ -60,6 +64,7 @@ class KinBallService implements ParkEventInterface
         $this->transactionService = $transactionService;
         $this->inventoryService = $inventoryService;
         $this->squirrel3 = $squirrel3;
+        $this->parkService = $parkService;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -171,6 +176,8 @@ class KinBallService implements ParkEventInterface
             }
         }
 
+        $this->parkService->giveOutParticipationRewards($parkEvent, $participants);
+
         return $parkEvent;
     }
 
@@ -201,6 +208,8 @@ class KinBallService implements ParkEventInterface
 
                 if($winningTeamIndex === $teamIndex)
                 {
+                    $participant->isWinner = true;
+
                     $expGain++;
                     $comment = $participant->pet->getName() . ' earned this in a game of Kin-Ball!';
                     $this->transactionService->getMoney($participant->pet->getOwner(), $firstPlaceMoneys, $comment);
@@ -229,6 +238,8 @@ class KinBallService implements ParkEventInterface
                 ;
 
                 $this->em->persist($log);
+
+                $participant->activityLog = $log;
             }
         }
 

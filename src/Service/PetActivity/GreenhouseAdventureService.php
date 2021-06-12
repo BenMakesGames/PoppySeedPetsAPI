@@ -4,10 +4,13 @@ namespace App\Service\PetActivity;
 use App\Entity\GreenhousePlant;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Repository\EnchantmentRepository;
+use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\PetService;
@@ -20,16 +23,21 @@ class GreenhouseAdventureService
     private $inventoryService;
     private $squirrel3;
     private PetExperienceService $petExperienceService;
+    private HattierService $hattierService;
+    private EnchantmentRepository $enchantmentRepository;
 
     function __construct(
         ResponseService $responseService, InventoryService $inventoryService,
-        Squirrel3 $squirrel3, PetExperienceService $petExperienceService
+        Squirrel3 $squirrel3, PetExperienceService $petExperienceService,
+        HattierService $hattierService, EnchantmentRepository $enchantmentRepository
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->squirrel3 = $squirrel3;
         $this->petExperienceService = $petExperienceService;
+        $this->hattierService = $hattierService;
+        $this->enchantmentRepository = $enchantmentRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills, GreenhousePlant $plant): PetActivityLog
@@ -73,5 +81,38 @@ class GreenhouseAdventureService
         $activityLog->setChanges($changes->compare($pet));
 
         return $activityLog;
+    }
+
+    public function maybeUnlockBeeAura(Pet $pet, PetActivityLog $activityLog, bool $beeNettingIsDeployed): bool
+    {
+        $forTheBees = $this->enchantmentRepository->findOneByName('for the Bees');
+
+        if($this->hattierService->userHasUnlocked($pet->getOwner(), $forTheBees))
+            return false;
+
+        if($beeNettingIsDeployed)
+        {
+            $this->hattierService->unlockAuraDuringPetActivity(
+                $pet,
+                $activityLog,
+                $forTheBees,
+                'On the way back home, ' . ActivityHelpers::PetName($pet) . ' spotted a worker bee caught in the bee netting, and took it home in their hat!',
+                'On the way back home, ' . ActivityHelpers::PetName($pet) . ' spotted a worker bee caught in the bee netting, and thought it\'d make a great addition to a hat (for some reason...)',
+                ActivityHelpers::PetName($pet) . ' found a worker bee caught in your Greenhouse\'s bee netting...'
+            );
+        }
+        else
+        {
+            $this->hattierService->unlockAuraDuringPetActivity(
+                $pet,
+                $activityLog,
+                $forTheBees,
+                'On the way back home, ' . ActivityHelpers::PetName($pet) . ' noticed that a worker bee had made a new home in their hat!',
+                'On the way back home, ' . ActivityHelpers::PetName($pet) . ' noticed that a worker bee had followed them home!',
+                ActivityHelpers::PetName($pet) . ' was followed home by a worker bee...'
+            );
+        }
+
+        return true;
     }
 }

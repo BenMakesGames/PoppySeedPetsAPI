@@ -36,16 +36,12 @@ class RunParkEventsCommand extends Command
     private $em;
     private $triDChessService;
     private $joustingService;
-    private $userQuestRepository;
-    private $calendarService;
-    private $inventoryService;
     private $logger;
     private $squirrel3;
 
     public function __construct(
         KinBallService $kinBallService, PetRepository $petRepository, EntityManagerInterface $em,
-        TriDChessService $triDChessService, JoustingService $joustingService, UserQuestRepository $userQuestRepository,
-        CalendarService $calendarService, InventoryService $inventoryService, LoggerInterface $logger,
+        TriDChessService $triDChessService, JoustingService $joustingService, LoggerInterface $logger,
         Squirrel3 $squirrel3
     )
     {
@@ -54,9 +50,6 @@ class RunParkEventsCommand extends Command
         $this->em = $em;
         $this->triDChessService = $triDChessService;
         $this->joustingService = $joustingService;
-        $this->userQuestRepository = $userQuestRepository;
-        $this->calendarService = $calendarService;
-        $this->inventoryService = $inventoryService;
         $this->logger = $logger;
         $this->squirrel3 = $squirrel3;
 
@@ -113,94 +106,6 @@ class RunParkEventsCommand extends Command
             );
 
             $this->em->persist($parkEvent);
-
-            $birthdayPresentsByUser = [];
-
-            $forceBalloon = null;
-            $commentExtra = null;
-
-            switch(DateFunctions::getFullMoonName($now))
-            {
-                case 'Wolf':
-                    $forceBalloon = '"Wolf" Balloon';
-                    $commentExtra = '(There\'s a Wolf Moon out today! IRL! It\'s true!)';
-                    break;
-                case 'Pink':
-                    $forceBalloon = 'Pink Balloon';
-                    $commentExtra = '(There\'s a Pink Moon out today! IRL! It\'s true!)';
-                    break;
-            }
-
-            foreach($parkEvent->getParticipants() as $pet)
-            {
-                $pet->setLastParkEvent();
-
-                if($forceBalloon || $this->squirrel3->rngNextInt(1, 10) === 1)
-                {
-                    $changes = new PetChanges($pet);
-
-                    $log = (new PetActivityLog())
-                        ->setPet($pet)
-                        ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
-                    ;
-
-                    $pet
-                        ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
-                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
-                    ;
-
-                    $comment = $pet->getName() . ' found this while participating in a ' . $parkEvent->getType() . ' event!';
-
-                    if($commentExtra)
-                        $comment .= ' ' . $commentExtra;
-
-                    $balloon = $this->inventoryService->petCollectsRandomBalloon($pet, $comment, $forceBalloon, $log);
-
-                    $log
-                        ->setEntry($pet->getName() . ' found a ' . $balloon->getItem()->getName() . ' while participating in a ' . $parkEvent->getType() . ' event!')
-                        ->setChanges($changes->compare($pet))
-                    ;
-
-                    $this->em->persist($log);
-
-                    if(!$pet->getTool())
-                    {
-                        $pet->setTool($balloon);
-                        $balloon->setLocation(LocationEnum::WARDROBE);
-                    }
-                    else if(!$pet->getHat() && $pet->hasMerit(MeritEnum::BEHATTED))
-                    {
-                        $pet->setHat($balloon);
-                        $balloon->setLocation(LocationEnum::WARDROBE);
-                    }
-                }
-
-                if($this->calendarService->isPSPBirthday())
-                {
-                    $userId = $pet->getOwner()->getId();
-
-                    if(!array_key_exists($userId, $birthdayPresentsByUser))
-                        $birthdayPresentsByUser[$userId] = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'PSP Birthday Present ' . date('Y-m-d'), 0);
-
-                    if($birthdayPresentsByUser[$userId]->getValue() < 2)
-                    {
-                        $birthdayPresentsByUser[$userId]->setValue($birthdayPresentsByUser[$userId]->getValue() + 1);
-
-                        $this->inventoryService->receiveItem(
-                            $this->squirrel3->rngNextFromArray([
-                                'Red PSP B-day Present',
-                                'Yellow PSP B-day Present',
-                                'Purple PSP B-day Present'
-                            ]),
-                            $pet->getOwner(),
-                            $pet->getOwner(),
-                            $pet->getName() . ' got this from participating in a park event!',
-                            LocationEnum::HOME,
-                            true
-                        );
-                    }
-                }
-            }
 
             $this->em->flush();
         }

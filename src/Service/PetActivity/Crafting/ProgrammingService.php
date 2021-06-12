@@ -7,10 +7,13 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
+use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Repository\EnchantmentRepository;
+use App\Service\HattierService;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -27,11 +30,13 @@ class ProgrammingService
     private IRandom $squirrel3;
     private StatusEffectService $statusEffectService;
     private HouseSimService $houseSimService;
+    private HattierService $hattierService;
+    private EnchantmentRepository $enchantmentRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         PetExperienceService $petExperienceService, StatusEffectService $statusEffectService,
-        HouseSimService $houseSimService
+        HouseSimService $houseSimService, HattierService $hattierService, EnchantmentRepository $enchantmentRepository
     )
     {
         $this->responseService = $responseService;
@@ -40,6 +45,7 @@ class ProgrammingService
         $this->squirrel3 = $squirrel3;
         $this->statusEffectService = $statusEffectService;
         $this->houseSimService = $houseSimService;
+        $this->hattierService = $hattierService;
     }
 
     /**
@@ -787,6 +793,24 @@ class ProgrammingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
             ;
             $this->inventoryService->petCollectsItem('l33t h4xx0r', $pet, $pet->getName() . ' made this.', $activityLog);
+
+            if($pet->hasMerit(MeritEnum::BEHATTED) && $roll >= 27)
+            {
+                $consoleCowboy = $this->enchantmentRepository->findOneByName('Console Cowboy\'s');
+
+                if(!$this->hattierService->userHasUnlocked($pet->getOwner(), $consoleCowboy))
+                {
+                    $this->hattierService->unlockAuraDuringPetActivity(
+                        $pet,
+                        $activityLog,
+                        $consoleCowboy,
+                        'They added some 1s and 0s to their hat, while they were at it, for maximum l33t-ness!',
+                        'It occurred to them that 1s and 0s would make great bells and whistles for a hat!',
+                        ActivityHelpers::PetName($pet) . ' thought the 1s and 0s of a l33t h4xx0r would look killer on a hat...'
+                    );
+                }
+            }
+
             return $activityLog;
         }
         else

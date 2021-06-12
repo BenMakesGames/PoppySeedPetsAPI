@@ -11,9 +11,12 @@ use App\Enum\PetSkillEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\JoustingClashResult;
+use App\Model\ParkEvent\JoustingParticipant;
 use App\Model\ParkEvent\JoustingTeam;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
+use App\Service\IRandom;
+use App\Service\ParkService;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
 use App\Service\Squirrel3;
@@ -28,6 +31,9 @@ class JoustingService implements ParkEventInterface
     /** @var JoustingTeam[] */
     private $winners;
 
+    /** @var JoustingParticipant[] */
+    private $individualParticipants;
+
     private $wins = [];
     private $defeatedBy = [];
 
@@ -40,11 +46,13 @@ class JoustingService implements ParkEventInterface
     private $petRelationshipService;
     private $transactionService;
     private $inventoryService;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private ParkService $parkService;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService,
-        TransactionService $transactionService, InventoryService $inventoryService, Squirrel3 $squirrel3
+        TransactionService $transactionService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        ParkService $parkService
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -53,6 +61,7 @@ class JoustingService implements ParkEventInterface
         $this->transactionService = $transactionService;
         $this->inventoryService = $inventoryService;
         $this->squirrel3 = $squirrel3;
+        $this->parkService = $parkService;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -81,10 +90,15 @@ class JoustingService implements ParkEventInterface
 
         $numberOfPets = count($pets);
 
+        $this->individualParticipants = [];
+
         for($x = 0; $x < $numberOfPets / 2; $x++)
         {
             $pet1 = $pets[$x];
             $pet2 = $pets[$numberOfPets - $x - 1];
+
+            $this->individualParticipants[$pet1->getId()] = new JoustingParticipant($pet1);
+            $this->individualParticipants[$pet2->getId()] = new JoustingParticipant($pet2);
 
             $this->participants[] = new JoustingTeam($pet1, $pet2);
 
@@ -112,11 +126,15 @@ class JoustingService implements ParkEventInterface
 
         $this->awardExp();
 
-        return (new ParkEvent())
+        $parkEvent = (new ParkEvent())
             ->setType(ParkEventTypeEnum::JOUSTING)
             ->addParticipants($pets)
             ->setResults($this->results)
         ;
+
+        $this->parkService->giveOutParticipationRewards($parkEvent, $this->individualParticipants);
+
+        return $parkEvent;
     }
 
     private function doRound()
@@ -440,5 +458,8 @@ class JoustingService implements ParkEventInterface
             ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT);
 
         $this->em->persist($log);
+
+        $this->individualParticipants[$pet->getId()]->activityLog = $log;
+        $this->individualParticipants[$pet->getId()]->isWinner = $team->wins === $this->round;
     }
 }

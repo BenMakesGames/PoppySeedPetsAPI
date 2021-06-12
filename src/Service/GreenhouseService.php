@@ -17,6 +17,7 @@ use App\Repository\GreenhousePlantRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
+use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,6 +36,7 @@ class GreenhouseService
     private GreenhousePlantRepository $greenhousePlantRepository;
     private InventoryRepository $inventoryRepository;
     private NormalizerInterface $normalizer;
+    private PetSpeciesRepository $petSpeciesRepository;
 
     public function __construct(
         InventoryService $inventoryService, PetRepository $petRepository, PetFactory $petFactory, Squirrel3 $squirrel3,
@@ -178,5 +180,91 @@ class GreenhouseService
             $this->em->flush();
 
         return $weedText;
+    }
+
+    public function makeDapperSwanPet(GreenhousePlant $plant): string
+    {
+        $species = $this->petSpeciesRepository->findOneBy([ 'name' => 'Dapper Swan' ]);
+
+        $colorA = $this->squirrel3->rngNextTweakedColor($this->squirrel3->rngNextFromArray([
+            'EEEEEE', 'EEDDCC', 'DDDDBB'
+        ]));
+
+        $colorB = $this->squirrel3->rngNextTweakedColor($this->squirrel3->rngNextFromArray([
+            'bb0000', '33CCFF', '009900', 'CC9933', '333333'
+        ]));
+
+        if($this->squirrel3->rngNextInt(1, 3) === 1)
+        {
+            $temp = $colorA;
+            $colorA = $colorB;
+            $colorB = $temp;
+        }
+
+        $name = $this->squirrel3->rngNextFromArray([
+            'Gosling', 'Goose', 'Honks', 'Clamshell', 'Mussel', 'Seafood', 'Nauplius', 'Mr. Beaks',
+            'Medli', 'Buff', 'Tuft', 'Tail-feather', 'Anser', 'Cygnus', 'Paisley', 'Bolo', 'Cravat',
+            'Ascot', 'Neckerchief'
+        ]);
+
+        $bonusMerit = $this->meritRepository->findOneByName(MeritEnum::MOON_BOUND);
+
+        return $this->harvestPlantAsPet($plant, $species, $colorA, $colorB, $name, $bonusMerit);
+    }
+
+    public function makeMushroomPet(GreenhousePlant $plant)
+    {
+        $species = $this->petSpeciesRepository->findOneBy([ 'name' => 'Mushroom' ]);
+
+        $colorA = $this->squirrel3->rngNextTweakedColor($this->squirrel3->rngNextFromArray([
+            'e32c2c', 'e5e5d6', 'dd8a09', 'a8443d'
+        ]));
+
+        $colorB = $this->squirrel3->rngNextTweakedColor($this->squirrel3->rngNextFromArray([
+            'd7d38b', 'e5e5d6', '716363'
+        ]));
+
+        if($this->squirrel3->rngNextInt(1, 4) === 1)
+        {
+            $temp = $colorA;
+            $colorA = $colorB;
+            $colorB = $temp;
+        }
+
+        $name = $this->squirrel3->rngNextFromArray([
+            'Cremini', 'Button', 'Portobello', 'Oyster', 'Porcini', 'Morel', 'Enoki', 'Shimeji',
+            'Shiitake', 'Maitake', 'Reishi', 'Puffball', 'Galerina', 'Gypsy', 'Milkcap', 'Bolete',
+            'Honey', 'Pinewood', 'Horse', 'Périgord', 'Tooth', 'Blewitt', 'Pom Pom', 'Ear', 'Jelly',
+            'Chestnut', 'Khumbhi', 'Helvella', 'Amanita'
+        ]);
+
+        $bonusMerit = $this->meritRepository->findOneByName(MeritEnum::DARKVISION);
+
+        return $this->harvestPlantAsPet($plant, $species, $colorA, $colorB, $name, $bonusMerit);
+    }
+
+    public function makeTomatePet(GreenhousePlant $plant)
+    {
+        $species = $this->petSpeciesRepository->findOneBy([ 'name' => 'Tomate' ]);
+
+        $colorA = $this->squirrel3->rngNextTweakedColor($this->squirrel3->rngNextFromArray([
+            'FF6622', 'FFCC22', '77FF22', 'FF2222', '7722FF'
+        ]));
+
+        $colorB = $this->squirrel3->rngNextTweakedColor($this->squirrel3->rngNextFromArray([
+            '007700', '009922', '00bb44'
+        ]));
+
+        $name = $this->squirrel3->rngNextFromArray([
+            'Alicante', 'Azoychka', 'Krim', 'Brandywine', 'Campari', 'Canario', 'Tomkin',
+            'Flamenco', 'Giulietta', 'Grandero', 'Trifele', 'Jubilee', 'Juliet', 'Kumato',
+            'Monterosa', 'Montserrat', 'Plum', 'Raf', 'Roma', 'Rutgers', 'Marzano', 'Cherry',
+            'Nebula', 'Santorini', 'Tomaccio', 'Tamatie', 'Tamaatar', 'Matomatisi', 'Yaanyo',
+            'Pomidor', 'Utamatisi'
+        ]);
+
+        $bonusMerit = $this->meritRepository->findOneByName(MeritEnum::MOON_BOUND);
+
+        return $this->harvestPlantAsPet($plant, $species, $colorA, $colorB, $name, $bonusMerit);
     }
 }

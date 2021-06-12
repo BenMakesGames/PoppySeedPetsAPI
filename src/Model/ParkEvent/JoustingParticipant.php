@@ -3,29 +3,17 @@ namespace App\Model\ParkEvent;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Enum\MeritEnum;
 
-class TriDChessParticipant implements ParkEventParticipant
+class JoustingParticipant implements ParkEventParticipant
 {
-    public Pet $pet;
-    public int $skill;
-    public bool $isWinner = false;
+    private Pet $pet;
+
+    public bool $isWinner;
     public PetActivityLog $activityLog;
 
     public function __construct(Pet $pet)
     {
         $this->pet = $pet;
-        $this->skill = self::getSkill($pet);
-    }
-
-    public static function getSkill(Pet $pet)
-    {
-        $skill = 1 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getScience();
-
-        if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
-            $skill += 2;
-
-        return $skill;
     }
 
     public function getPet(): Pet

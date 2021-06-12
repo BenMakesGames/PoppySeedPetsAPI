@@ -5,14 +5,12 @@ use App\Entity\Pet;
 
 class KinBallTeam
 {
-    /** @var string */
-    public $color;
+    public string $color;
 
     /** @var KinBallParticipant[] */
-    public $pets = [];
+    public array $pets = [];
 
-    /** @var integer  */
-    public $wins = 0;
+    public int $wins = 0;
 
     public function __construct(string $color)
     {

@@ -13,6 +13,8 @@ use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\TriDChessParticipant;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
+use App\Service\IRandom;
+use App\Service\ParkService;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
 use App\Service\Squirrel3;
@@ -43,11 +45,13 @@ class TriDChessService implements ParkEventInterface
     private $petRelationshipService;
     private $transactionService;
     private $inventoryService;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private ParkService $parkService;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService,
-        TransactionService $transactionService, InventoryService $inventoryService, Squirrel3 $squirrel3
+        TransactionService $transactionService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        ParkService $parkService
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -56,6 +60,7 @@ class TriDChessService implements ParkEventInterface
         $this->transactionService = $transactionService;
         $this->inventoryService = $inventoryService;
         $this->squirrel3 = $squirrel3;
+        $this->parkService = $parkService;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -96,11 +101,15 @@ class TriDChessService implements ParkEventInterface
             2
         );
 
-        return (new ParkEvent())
+        $parkEvent = (new ParkEvent())
             ->setType(ParkEventTypeEnum::TRI_D_CHESS)
             ->addParticipants($pets)
             ->setResults($this->results)
         ;
+
+        $this->parkService->giveOutParticipationRewards($parkEvent, $this->participants);
+
+        return $parkEvent;
     }
 
     private function doRound()
@@ -246,6 +255,8 @@ class TriDChessService implements ParkEventInterface
 
             if($wins === $this->round)
             {
+                $participant->isWinner = true;
+
                 $expGain++;
 
                 $comment = $participant->pet->getName() . ' earned this by getting 1st place in a Tri-D Chess tournament!';
@@ -287,7 +298,8 @@ class TriDChessService implements ParkEventInterface
             ;
 
             $this->em->persist($log);
+
+            $participant->activityLog = $log;
         }
     }
-
 }

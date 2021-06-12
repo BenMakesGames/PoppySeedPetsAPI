@@ -11,10 +11,12 @@ use App\Enum\MoonPhaseEnum;
 use App\Enum\PlantTypeEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\GrammarFunctions;
+use App\Repository\EnchantmentRepository;
 use App\Repository\GreenhousePlantRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
@@ -25,6 +27,7 @@ use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\GreenhouseService;
+use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\PetActivity\GreenhouseAdventureService;
 use App\Service\ResponseService;
@@ -323,92 +326,23 @@ class GreenhouseController extends PoppySeedPetsController
 
         $plant->clearGrowth();
 
+        $beesWereAround = false;
+
         if($plant->getPlant()->getName() === 'Barnacle Tree' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON)
         {
-            $species = $petSpeciesRepository->findOneBy([ 'name' => 'Dapper Swan' ]);
-
-            $colorA = $squirrel3->rngNextTweakedColor($squirrel3->rngNextFromArray([
-                'EEEEEE', 'EEDDCC', 'DDDDBB'
-            ]));
-
-            $colorB = $squirrel3->rngNextTweakedColor($squirrel3->rngNextFromArray([
-                'bb0000', '33CCFF', '009900', 'CC9933', '333333'
-            ]));
-
-            if($squirrel3->rngNextInt(1, 3) === 1)
-            {
-                $temp = $colorA;
-                $colorA = $colorB;
-                $colorB = $temp;
-            }
-
-            $name = $squirrel3->rngNextFromArray([
-                'Gosling', 'Goose', 'Honks', 'Clamshell', 'Mussel', 'Seafood', 'Nauplius', 'Mr. Beaks',
-                'Medli', 'Buff', 'Tuft', 'Tail-feather', 'Anser', 'Cygnus', 'Paisley', 'Bolo', 'Cravat',
-                'Ascot', 'Neckerchief'
-            ]);
-
-            $bonusMerit = $meritRepository->findOneByName(MeritEnum::MOON_BOUND);
-
-            $message = $greenhouseService->harvestPlantAsPet($plant, $species, $colorA, $colorB, $name, $bonusMerit);
+            $message = $greenhouseService->makeDapperSwanPet($plant);
         }
         else if($plant->getPlant()->getName() === 'Toadstool Troop' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::NEW_MOON)
         {
-            $species = $petSpeciesRepository->findOneBy([ 'name' => 'Mushroom' ]);
-
-            $colorA = $squirrel3->rngNextTweakedColor($squirrel3->rngNextFromArray([
-                'e32c2c', 'e5e5d6', 'dd8a09', 'a8443d'
-            ]));
-
-            $colorB = $squirrel3->rngNextTweakedColor($squirrel3->rngNextFromArray([
-                'd7d38b', 'e5e5d6', '716363'
-            ]));
-
-            if($squirrel3->rngNextInt(1, 4) === 1)
-            {
-                $temp = $colorA;
-                $colorA = $colorB;
-                $colorB = $temp;
-            }
-
-            $name = $squirrel3->rngNextFromArray([
-                'Cremini', 'Button', 'Portobello', 'Oyster', 'Porcini', 'Morel', 'Enoki', 'Shimeji',
-                'Shiitake', 'Maitake', 'Reishi', 'Puffball', 'Galerina', 'Gypsy', 'Milkcap', 'Bolete',
-                'Honey', 'Pinewood', 'Horse', 'Périgord', 'Tooth', 'Blewitt', 'Pom Pom', 'Ear', 'Jelly',
-                'Chestnut', 'Khumbhi', 'Helvella', 'Amanita'
-            ]);
-
-            $bonusMerit = $meritRepository->findOneByName(MeritEnum::DARKVISION);
-
-            $message = $greenhouseService->harvestPlantAsPet($plant, $species, $colorA, $colorB, $name, $bonusMerit);
+            $message = $greenhouseService->makeMushroomPet($plant);
         }
         else if($plant->getPlant()->getName() === 'Tomato Plant' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON)
         {
-            $species = $petSpeciesRepository->findOneBy([ 'name' => 'Tomate' ]);
-
-            $colorA = $squirrel3->rngNextTweakedColor($squirrel3->rngNextFromArray([
-                'FF6622', 'FFCC22', '77FF22', 'FF2222', '7722FF'
-            ]));
-
-            $colorB = $squirrel3->rngNextTweakedColor($squirrel3->rngNextFromArray([
-                '007700', '009922', '00bb44'
-            ]));
-
-            $name = $squirrel3->rngNextFromArray([
-                'Alicante', 'Azoychka', 'Krim', 'Brandywine', 'Campari', 'Canario', 'Tomkin',
-                'Flamenco', 'Giulietta', 'Grandero', 'Trifele', 'Jubilee', 'Juliet', 'Kumato',
-                'Monterosa', 'Montserrat', 'Plum', 'Raf', 'Roma', 'Rutgers', 'Marzano', 'Cherry',
-                'Nebula', 'Santorini', 'Tomaccio', 'Tamatie', 'Tamaatar', 'Matomatisi', 'Yaanyo',
-                'Pomidor', 'Utamatisi'
-            ]);
-
-            $bonusMerit = $meritRepository->findOneByName(MeritEnum::MOON_BOUND);
-
-            $message = $greenhouseService->harvestPlantAsPet($plant, $species, $colorA, $colorB, $name, $bonusMerit);
+            $message = $greenhouseService->makeTomatePet($plant);
         }
         else
         {
-            $beeFlavorChance = (!$user->getGreenhouse()->getHasBeeNetting() && $user->getBeehive())
+            $beeFlavorChance = $user->getBeehive()
                 ? log($user->getBeehive()->getWorkers(), 2.511886)
                 : 0
             ;
@@ -434,12 +368,17 @@ class GreenhouseController extends PoppySeedPetsController
 
                     if($squirrel3->rngNextInt(1, 10000) < $beeFlavorChance * 100)
                     {
-                        $user->getGreenhouse()->setCanUseBeeNetting(true);
+                        $beesWereAround = true;
 
-                        if($squirrel3->rngNextInt(1, 20) === 1)
-                            $newItem->setSpice($spiceRepository->findOneByName('of Queens'));
-                        else
-                            $newItem->setSpice($spiceRepository->findOneByName('Anthophilan'));
+                        if(!$user->getGreenhouse()->getHasBeeNetting())
+                        {
+                            $user->getGreenhouse()->setCanUseBeeNetting(true);
+
+                            if($squirrel3->rngNextInt(1, 20) === 1)
+                                $newItem->setSpice($spiceRepository->findOneByName('of Queens'));
+                            else
+                                $newItem->setSpice($spiceRepository->findOneByName('Anthophilan'));
+                        }
                     }
 
                     if(array_key_exists($lootItemName, $lootList))
@@ -491,7 +430,12 @@ class GreenhouseController extends PoppySeedPetsController
                 /** @var Pet $helper */
                 $helper = $squirrel3->rngNextFromArray($petsAtHome);
 
-                $greenhouseAdventureService->adventure($helper->getComputedSkills(), $plant);
+                $activity = $greenhouseAdventureService->adventure($helper->getComputedSkills(), $plant);
+
+                if($beesWereAround)
+                {
+                    $greenhouseAdventureService->maybeUnlockBeeAura($helper, $activity, $user->getGreenhouse()->getHasBeeNetting());
+                }
             }
         }
 
