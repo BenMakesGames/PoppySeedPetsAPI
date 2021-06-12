@@ -9,6 +9,7 @@ use App\Entity\UserUnlockedAura;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\ArrayFunctions;
 use App\Repository\EnchantmentRepository;
 use App\Repository\UserUnlockedAuraRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -47,14 +48,43 @@ class HattierService
         return $this->userAurasPerRequestCache[$cacheKey] !== null;
     }
 
-    public function getAurasAvailable(): int
+    public function getAurasAvailable(User $user): array
     {
-        return (int)$this->enchantmentRepository->createQueryBuilder('e')
-            ->select('COUNT(e.id)')
+        $allAuras = $this->enchantmentRepository->createQueryBuilder('e')
             ->andWhere('e.aura IS NOT NULL')
             ->getQuery()
-            ->getSingleScalarResult()
+            ->execute()
         ;
+
+        $unlocked = $user->getUnlockedAuras()->toArray();
+
+        return array_map(
+            function(Enchantment $e) use($unlocked) {
+                $unlockedAura = ArrayFunctions::find_one($unlocked, fn(UserUnlockedAura $a) => $a->getAura()->getId() === $e->getId());
+
+                if($unlockedAura)
+                {
+                    return [
+                        'id' => $e->getId(),
+                        'unlockedOn' => $unlockedAura->getUnlockedOn(),
+                        'comment' => $unlockedAura->getUnlockedOn(),
+                        'name' => $e->getAura()->getName(),
+                        'aura' => $e->getAura(),
+                    ];
+                }
+                else
+                {
+                    return [
+                        'id' => null,
+                        'unlockedOn' => null,
+                        'comment' => null,
+                        'name' => $e->getAura()->getName(),
+                        'aura' => null,
+                    ];
+                }
+            },
+            $allAuras
+        );
     }
 
     private $userAurasPerRequestCache = [];

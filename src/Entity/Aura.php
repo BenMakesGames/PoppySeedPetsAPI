@@ -15,6 +15,7 @@ class Aura
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"myPet", "myAura"})
      */
     private $id;
 
@@ -26,25 +27,25 @@ class Aura
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet"})
+     * @Groups({"myPet", "myAura"})
      */
     private $image;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myPet"})
+     * @Groups({"myPet", "myAura"})
      */
     private $size;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myPet"})
+     * @Groups({"myPet", "myAura"})
      */
     private $centerX;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myPet"})
+     * @Groups({"myPet", "myAura"})
      */
     private $centerY;
 

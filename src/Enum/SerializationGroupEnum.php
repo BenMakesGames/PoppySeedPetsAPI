@@ -62,4 +62,5 @@ final class SerializationGroupEnum
     public const PUBLIC_STYLE = 'publicStyle';
     public const MY_MENU = 'myMenu';
     public const MY_HOLLOW_EARTH_TILES = 'myHollowEarthTiles';
+    public const MY_AURAS = 'myAura';
 }

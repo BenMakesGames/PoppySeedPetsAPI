@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserUnlockedAuraRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=UserUnlockedAuraRepository::class)
@@ -19,6 +20,7 @@ class UserUnlockedAura
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"myAura"})
      */
     private $id;
 
@@ -31,16 +33,19 @@ class UserUnlockedAura
     /**
      * @ORM\ManyToOne(targetEntity=Enchantment::class)
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"myAura"})
      */
     private $aura;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"myAura"})
      */
     private $unlockedOn;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"myAura"})
      */
     private $comment;
 

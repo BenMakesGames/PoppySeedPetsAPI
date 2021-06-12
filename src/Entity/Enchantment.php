@@ -20,7 +20,7 @@ class Enchantment
 
     /**
      * @ORM\Column(type="string", length=20, unique=true)
-     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure"})
+     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure", "myAura"})
      */
     private $name;
 
@@ -39,7 +39,7 @@ class Enchantment
 
     /**
      * @ORM\ManyToOne(targetEntity=Aura::class)
-     * @Groups({"myInventory", "myPet", "itemEncyclopedia", "marketItem"})
+     * @Groups({"myInventory", "myPet", "itemEncyclopedia", "marketItem", "myAura"})
      */
     private $aura;
 
