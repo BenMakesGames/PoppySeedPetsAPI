@@ -120,6 +120,9 @@ class MagicBindingService
 
         if($this->houseSimService->hasInventory('Quintessence'))
         {
+            if($this->houseSimService->hasInventory('Grappling Hook') && $this->houseSimService->hasInventory('Gravitational Waves'))
+                $possibilities[] = new ActivityCallback($this, 'createGravelingHook', 8);
+
             if($this->houseSimService->hasInventory('Crooked Stick'))
             {
                 if($this->houseSimService->hasInventory('Mirror'))
@@ -2502,6 +2505,52 @@ class MagicBindingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
             ;
             $this->inventoryService->petCollectsItem('Flying Grappling Hook', $pet, $pet->getName() . ' bound this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createGravelingHook(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $scienceCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getScience()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
+
+        if($scienceCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->houseSimService->getState()->loseItem('Gravitational Waves', 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+            $pet->increaseEsteem(-1);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind some Gravitational Waves to a Grappling Hook, but lost track of the Gravitational Waves for just a second... by which point they\'d zipped almost 300 million kilometers away :|', '');
+            return $activityLog;
+        }
+        else if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->houseSimService->getState()->loseItem('Quintessence', 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(-1);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind some Gravitational Waves to a Grappling Hook, but the Quintessence was torn apart by the tidal forces, and returned to the fabric of the universe.', '');
+            return $activityLog;
+        }
+        else if($umbraCheck < 12 || $scienceCheck < 12)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::SCIENCE ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Gravitational Waves to a Grappling Hook, but couldn\'t wrap their head around working with forces governed by such different paradigms...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->houseSimService->getState()->loseItem('Quintessence', 1);
+            $this->houseSimService->getState()->loseItem('Gravitational Waves', 1);
+            $this->houseSimService->getState()->loseItem('Grappling Hook', 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA, PetSkillEnum::SCIENCE ]);
+            $pet->increaseEsteem(4);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Gravitational Waves to a Grappling Hook! Now it\'s real good at SMASHING STUFF!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+            ;
+            $this->inventoryService->petCollectsItem('Graveling Hook', $pet, $pet->getName() . ' bound this.', $activityLog);
             return $activityLog;
         }
     }
