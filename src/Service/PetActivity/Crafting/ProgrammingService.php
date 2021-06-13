@@ -46,6 +46,7 @@ class ProgrammingService
         $this->statusEffectService = $statusEffectService;
         $this->houseSimService = $houseSimService;
         $this->hattierService = $hattierService;
+        $this->enchantmentRepository = $enchantmentRepository;
     }
 
     /**
