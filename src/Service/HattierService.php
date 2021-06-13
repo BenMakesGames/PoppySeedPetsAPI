@@ -18,17 +18,18 @@ class HattierService
     private UserUnlockedAuraRepository $userUnlockedAuraRepository;
     private EntityManagerInterface $em;
     private ResponseService $responseService;
+    private CommentFormatter $commentFormatter;
 
     public function __construct(
-        EnchantmentRepository $enchantmentRepository, ResponseService $responseService,
-        UserUnlockedAuraRepository $userUnlockedAuraRepository,
-        EntityManagerInterface $em
+        EnchantmentRepository $enchantmentRepository, ResponseService $responseService, CommentFormatter $commentFormatter,
+        UserUnlockedAuraRepository $userUnlockedAuraRepository, EntityManagerInterface $em
     )
     {
         $this->enchantmentRepository = $enchantmentRepository;
         $this->userUnlockedAuraRepository = $userUnlockedAuraRepository;
         $this->em = $em;
         $this->responseService = $responseService;
+        $this->commentFormatter = $commentFormatter;
     }
 
     public function userHasUnlocked(User $user, Enchantment $enchantment): bool
@@ -65,7 +66,7 @@ class HattierService
                     return [
                         'id' => $unlockedAura->getId(),
                         'unlockedOn' => $unlockedAura->getUnlockedOn(),
-                        'comment' => $unlockedAura->getComment(),
+                        'comment' => $this->commentFormatter->format($unlockedAura->getComment()),
                         'name' => $e->getAura()->getName(),
                         'aura' => $e->getAura(),
                     ];
