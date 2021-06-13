@@ -669,11 +669,13 @@ class PetService
 
     public function runSocialTime(Pet $pet): bool
     {
-        $pet->getHouseTime()->setLastSocialHangoutAttempt();
         $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
 
         if($pet->getFood() + $pet->getAlcohol() + $pet->getJunk() < 0)
+        {
+            $pet->getHouseTime()->setCanAttemptSocialHangoutAfter((new \DateTimeImmutable())->modify('+5 minutes'));
             return false;
+        }
 
         if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM) && $this->meetRoommates($pet))
         {
@@ -731,6 +733,8 @@ class PetService
                     break;
             }
         }
+
+        $pet->getHouseTime()->setCanAttemptSocialHangoutAfter((new \DateTimeImmutable())->modify('+15 minutes'));
 
         return false;
     }

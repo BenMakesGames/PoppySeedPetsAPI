@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\Item;
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Model\HouseSim;
@@ -23,6 +24,7 @@ class HouseSimService
 
     // data
     private IHouseSim $houseState;
+    private array $petIdsThatRanSocialTime = [];
 
     public function __construct(
         InventoryRepository $inventoryRepository, ItemRepository $itemRepository, EntityManagerInterface $em,
@@ -45,6 +47,7 @@ class HouseSimService
         ]);
 
         $this->houseState = new HouseSim($this->squirrel3, $inventory);
+        $this->petIdsThatRanSocialTime = [];
     }
 
     public function end()
@@ -82,4 +85,13 @@ class HouseSimService
         return $this->getState()->hasInventory(new HouseSimRecipe([ $ingredient ]));
     }
 
+    public function setPetHasRunSocialTime(Pet $pet)
+    {
+        $this->petIdsThatRanSocialTime[] = $pet->getId();
+    }
+
+    public function getPetHasRunSocialTime(Pet $pet): bool
+    {
+        return in_array($pet->getId(), $this->petIdsThatRanSocialTime);
+    }
 }

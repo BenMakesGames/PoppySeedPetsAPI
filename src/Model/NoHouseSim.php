@@ -34,6 +34,7 @@ class NoHouseSim implements IHouseSim
 
     public function addInventory(?Inventory $i): bool
     {
+        // don't thrown an exception here, since inventory can legit be added outside of house hours
         return false;
     }
 

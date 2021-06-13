@@ -19,13 +19,12 @@ class HouseService
     private $cache;
     private $em;
     private IRandom $squirrel3;
-    private InventoryRepository $inventoryRepository;
     private HouseSimService $houseSimService;
 
     public function __construct(
         PetService $petService, PetRepository $petRepository, AdapterInterface $cache, EntityManagerInterface $em,
         UserQuestRepository $userQuestRepository, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        InventoryRepository $inventoryRepository, HouseSimService $houseSimService
+        HouseSimService $houseSimService
     )
     {
         $this->petService = $petService;
@@ -35,7 +34,6 @@ class HouseService
         $this->cache = $cache;
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
-        $this->inventoryRepository = $inventoryRepository;
         $this->houseSimService = $houseSimService;
     }
 
@@ -45,11 +43,11 @@ class HouseService
             ->select('COUNT(p.id)')
             ->join('p.houseTime', 'ht')
             ->andWhere('p.owner=:user')
-            ->andWhere('(ht.activityTime>=60 OR (ht.socialEnergy>=:minimumSocialEnergy AND ht.lastSocialHangoutAttempt<:fifteenMinutesAgo))')
+            ->andWhere('(ht.activityTime>=60 OR (ht.socialEnergy>=:minimumSocialEnergy AND ht.canAttemptSocialHangoutAfter<:now))')
             ->andWhere('p.inDaycare=0')
             ->setParameter('user', $user->getId())
             ->setParameter('minimumSocialEnergy', PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
-            ->setParameter('fifteenMinutesAgo', (new \DateTimeImmutable())->modify('-15 minutes'))
+            ->setParameter('now', new \DateTimeImmutable())
             ->getQuery()
             ->getSingleScalarResult()
         ;
@@ -88,11 +86,11 @@ class HouseService
         $petsWithTime = $this->petRepository->createQueryBuilder('p')
             ->join('p.houseTime', 'ht')
             ->andWhere('p.owner=:user')
-            ->andWhere('(ht.activityTime>=60 OR (ht.socialEnergy>=:minimumSocialEnergy AND ht.lastSocialHangoutAttempt<:fifteenMinutesAgo))')
+            ->andWhere('(ht.activityTime>=60 OR (ht.socialEnergy>=:minimumSocialEnergy AND ht.canAttemptSocialHangoutAfter<:now))')
             ->andWhere('p.inDaycare=0')
             ->setParameter('user', $user->getId())
             ->setParameter('minimumSocialEnergy', PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
-            ->setParameter('fifteenMinutesAgo', (new \DateTimeImmutable())->modify('-15 minutes'))
+            ->setParameter('now', new \DateTimeImmutable())
             ->getQuery()
             ->execute()
         ;
@@ -131,13 +129,11 @@ class HouseService
 
             $hungOut = false;
 
-            if($pet->getHouseTime()->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
+            if($this->petCanRunSocialTime($pet))
             {
+                // only one social activity per request, to avoid weird bugs...
                 $hungOut = $this->petService->runSocialTime($pet);
-
-                // not ideal, but it'll do until HouseSim can handle relationships...
-                if($hungOut)
-                    $this->em->flush();
+                $this->houseSimService->setPetHasRunSocialTime($pet);
             }
 
             if($this->petCanStillProcess($pet, $hungOut))
@@ -145,6 +141,15 @@ class HouseService
         }
 
         return $petsRemaining;
+    }
+
+    private function petCanRunSocialTime(Pet $pet)
+    {
+        return
+            $pet->getHouseTime()->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT &&
+            $pet->getHouseTime()->getCanAttemptSocialHangoutAfter() < (new \DateTimeImmutable()) &&
+            !$this->houseSimService->getPetHasRunSocialTime($pet)
+        ;
     }
 
     private function petCanStillProcess(Pet $pet, bool $hungOut): bool

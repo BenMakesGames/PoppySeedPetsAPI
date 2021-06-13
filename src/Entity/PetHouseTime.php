@@ -46,11 +46,11 @@ class PetHouseTime
     /**
      * @ORM\Column(type="datetime_immutable")
      */
-    private $lastSocialHangoutAttempt;
+    private $canAttemptSocialHangoutAfter;
 
     public function __construct()
     {
-        $this->lastSocialHangoutAttempt = (new \DateTimeImmutable())->modify('-1 day');
+        $this->canAttemptSocialHangoutAfter = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -117,14 +117,14 @@ class PetHouseTime
         return $this->timeSpent;
     }
 
-    public function getLastSocialHangoutAttempt(): ?\DateTimeImmutable
+    public function getCanAttemptSocialHangoutAfter(): ?\DateTimeImmutable
     {
-        return $this->lastSocialHangoutAttempt;
+        return $this->canAttemptSocialHangoutAfter;
     }
 
-    public function setLastSocialHangoutAttempt(): self
+    public function setCanAttemptSocialHangoutAfter(\DateTimeImmutable $dateTime): self
     {
-        $this->lastSocialHangoutAttempt = new \DateTimeImmutable();
+        $this->canAttemptSocialHangoutAfter = $dateTime;
 
         return $this;
     }
