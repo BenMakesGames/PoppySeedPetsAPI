@@ -8,10 +8,13 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
+use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
+use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
+use App\Service\HattierService;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -35,12 +38,14 @@ class MagicBindingService
     private $weatherService;
     private $statusEffectService;
     private HouseSimService $houseSimService;
+    private HattierService $hattierService;
+    private EnchantmentRepository $enchantmentRepository;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
         ItemRepository $itemRepository, EvericeMeltingService $evericeMeltingService, Squirrel3 $squirrel3,
         CoinSmithingService $coinSmithingService, WeatherService $weatherService, StatusEffectService $statusEffectService,
-        HouseSimService $houseSimService
+        HouseSimService $houseSimService, HattierService $hattierService, EnchantmentRepository $enchantmentRepository
     )
     {
         $this->inventoryService = $inventoryService;
@@ -53,6 +58,8 @@ class MagicBindingService
         $this->weatherService = $weatherService;
         $this->statusEffectService = $statusEffectService;
         $this->houseSimService = $houseSimService;
+        $this->hattierService = $hattierService;
+        $this->enchantmentRepository = $enchantmentRepository;
     }
 
     /**
@@ -117,6 +124,9 @@ class MagicBindingService
 
         if($this->houseSimService->hasInventory('Wand of Ice') && $this->houseSimService->hasInventory('Mint'))
             $possibilities[] = new ActivityCallback($this, 'createCoolMintScepter', 10);
+
+        if($this->houseSimService->hasInventory('Crystal Ball') && $this->houseSimService->hasInventory('Meteorite') && $this->houseSimService->hasInventory('Quinacridone Magenta Dye'))
+            $possibilities[] = new ActivityCallback($this, 'createNoetalasEye', 10);
 
         if($this->houseSimService->hasInventory('Quintessence'))
         {
@@ -1864,6 +1874,68 @@ class MagicBindingService
 
             $this->inventoryService->petCollectsItem('Ambrotypic Solvent', $pet, $pet->getName() . ' mixed this.', $activityLog);
             return $activityLog;
+        }
+    }
+
+    private function createNoetalasEye(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getUmbra()->getTotal());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            if($this->squirrel3->rngNextInt(1, 2) === 1)
+            {
+                $this->houseSimService->getState()->loseItem('Quinacridone Magenta Dye', 1);
+                $pet->increaseEsteem(-2);
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to fill a Crystal Ball with Quinacridone Magenta Dye, but accidentally spilled it all over the place, instead :(', 'icons/activity-logs/null');
+            }
+            else
+            {
+                $this->houseSimService->getState()->loseItem('Crystal Ball', 1);
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Crystal Ball with cosmic energy, but accidentally shattered the ball :(', 'icons/activity-logs/null');
+            }
+        }
+        else if($roll >= 18)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->houseSimService->getState()->loseItem('Crystal Ball', 1);
+            $this->houseSimService->getState()->loseItem('Quinacridone Magenta Dye', 1);
+            $this->houseSimService->getState()->loseItem('Meteorite', 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(1);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% channeled Noetala\'s watchful eye from the depths of space...', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+            ;
+            $this->inventoryService->petCollectsItem('Eye of Noetala', $pet, $pet->getName() . ' channeled this.', $activityLog);
+
+            if($pet->hasMerit(MeritEnum::BEHATTED) && $roll >= 28)
+            {
+                $watchfulEnchantment = $this->enchantmentRepository->findOneByName('Watchful');
+
+                if(!$this->hattierService->userHasUnlocked($pet->getOwner(), $watchfulEnchantment))
+                {
+                    $this->hattierService->unlockAuraDuringPetActivity(
+                        $pet,
+                        $activityLog,
+                        $watchfulEnchantment,
+                        'The watchful eye of Noetala focuses its gaze on ' . ActivityHelpers::PetName($pet) . ', attuning with their hat...',
+                        'The watchful eye of Noetala focuses its gaze on ' . ActivityHelpers::PetName($pet) . '...',
+                        ActivityHelpers::PetName($pet) . ' became aware of the watchful eye of Noetala...'
+                    );
+                }
+            }
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to become a l33t h4xx0r, but didn\'t have the right stuff. (Figuratively speaking.)', 'icons/activity-logs/confused');
         }
     }
 
