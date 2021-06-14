@@ -303,7 +303,7 @@ class GenericAdventureService
             $partyEnchantment,
             $message,
             $message,
-            ActivityHelpers::PetName($pet) . '\'s ' . $pet->getHat()->getItem()->getName() . ' got so much confetti in it, confetti was falling out all day...'
+            ActivityHelpers::PetName($pet) . '\'s got so much confetti on them, they were finding bits of confetti on their body all day...'
         );
 
         return $activityLog;
