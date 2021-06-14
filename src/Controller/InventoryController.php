@@ -74,6 +74,19 @@ class InventoryController extends PoppySeedPetsController
     }
 
     /**
+     * @Route("/summary", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getSummary(
+        ResponseService $responseService, InventoryRepository $inventoryRepository
+    )
+    {
+        $summary = $inventoryRepository->getInventorySummary($this->getUser());
+
+        return $responseService->success($summary, [ SerializationGroupEnum::MY_INVENTORY ]);
+    }
+
+    /**
      * @Route("/prepare", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */

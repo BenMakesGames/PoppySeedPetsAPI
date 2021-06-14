@@ -218,10 +218,40 @@ class InventoryRepository extends ServiceEntityRepository
         ;
     }
 
+    public function getInventorySummary(User $user): array
+    {
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->from(Inventory::class, 'inventory')
+            ->select('item,COUNT(inventory.id) AS quantity,inventory.location')
+            ->leftJoin(Item::class, 'item', 'WITH', 'inventory.item = item.id')
+            ->andWhere('inventory.owner=:user')
+            ->groupBy('item.id,inventory.location')
+            ->setParameter('user', $user->getId())
+        ;
+
+        $results = $query->getQuery()->execute();
+
+        $quantities = [];
+
+        foreach($results as $result)
+        {
+            /** @var Item $item */
+            $item = $result[0];
+
+            $quantities[] = [
+                'item' => $item,
+                'quantity' => (int)$result['quantity'],
+                'location' => (int)$result['location']
+            ];
+        }
+
+        return $quantities;
+    }
+
     /**
      * @return ItemQuantity[]
      */
-    public function getInventoryQuantities(User $user, int $location, $indexBy = null)
+    public function getInventoryQuantities(User $user, int $location)
     {
         $query = $this->getEntityManager()->createQueryBuilder()
             ->from(Inventory::class, 'inventory')
@@ -244,13 +274,7 @@ class InventoryRepository extends ServiceEntityRepository
             $quantity->item = $result[0];
             $quantity->quantity = (int)$result['quantity'];
 
-            if($indexBy)
-            {
-                $getter = 'get' . $indexBy;
-                $quantities[$quantity->item->$getter()] = $quantity;
-            }
-            else
-                $quantities[] = $quantity;
+            $quantities[$quantity->item->getName()] = $quantity;
         }
 
         return $quantities;

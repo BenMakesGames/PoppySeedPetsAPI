@@ -141,7 +141,7 @@ class TraderService
 
     public function getOffers(User $user): array
     {
-        $quantities = $this->inventoryRepository->getInventoryQuantities($user, LocationEnum::HOME, 'name');
+        $quantities = $this->inventoryRepository->getInventoryQuantities($user, LocationEnum::HOME);
 
         $dailyOffers = [
             'title' => date('l'),
