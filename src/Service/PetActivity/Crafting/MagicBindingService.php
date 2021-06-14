@@ -1877,7 +1877,7 @@ class MagicBindingService
         }
     }
 
-    private function createNoetalasEye(ComputedPetSkills $petWithSkills): PetActivityLog
+    public function createNoetalasEye(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getUmbra()->getTotal());
