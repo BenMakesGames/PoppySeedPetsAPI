@@ -296,11 +296,13 @@ class GenericAdventureService
             $pet->setHat($paperHat);
         }
 
+        $message = 'While walking along a riverbank, ' . ActivityHelpers::PetName($pet) . ' was showered with confetti' . $givenAHat . '! A fish (apparently a representative from Tell Samarazhoustia) wished them a happy birthday... it\'s a little late, but still nice...? It would have been nicer if the fish didn\'t also remind ' . ActivityHelpers::PetName($pet) . ' to visit the Trader often...';
+
         $activityLog = $this->hattierService->petMaybeUnlockAura(
             $pet,
             $partyEnchantment,
-            'While walking along a riverbank, ' . ActivityHelpers::PetName($pet) . ' was showered with confetti' . $givenAHat . '! A fish (apparently a representative from Tell Samarazhoustia) wished them a happy birthday... it\'s a little late, but still nice...? It would have been nicer if the fish didn\'t also remind ' . ActivityHelpers::PetName($pet) . ' to visit the Trader often...',
-            '',
+            $message,
+            $message,
             ActivityHelpers::PetName($pet) . '\'s ' . $pet->getHat()->getItem()->getName() . ' got so much confetti in it, confetti was falling out all day...'
         );
 
