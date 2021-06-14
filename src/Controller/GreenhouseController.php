@@ -432,7 +432,7 @@ class GreenhouseController extends PoppySeedPetsController
 
                 $activity = $greenhouseAdventureService->adventure($helper->getComputedSkills(), $plant);
 
-                if($beesWereAround)
+                if($beesWereAround && $helper->hasMerit(MeritEnum::BEHATTED))
                 {
                     $greenhouseAdventureService->maybeUnlockBeeAura($helper, $activity, $user->getGreenhouse()->getHasBeeNetting());
                 }
