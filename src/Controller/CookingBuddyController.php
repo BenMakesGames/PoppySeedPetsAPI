@@ -43,7 +43,7 @@ class CookingBuddyController extends PoppySeedPetsController
 
         $results = $knownRecipesFilterService->getResults($request->query);
 
-        $quantities = $inventoryRepository->getInventoryQuantities($user, $cookingBuddy->getLocation());
+        $quantities = $inventoryRepository->getInventoryQuantities($user, $cookingBuddy->getLocation(), 'name');
 
         // this feels kinda' gross, but I'm not sure how else to do it...
         $recipes = [];

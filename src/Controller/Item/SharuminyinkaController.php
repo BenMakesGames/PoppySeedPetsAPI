@@ -36,7 +36,7 @@ class SharuminyinkaController extends PoppySeedPetsItemController
 
         $user = $this->getUser();
 
-        $houseInventoryQuantities = $inventoryRepository->getInventoryQuantities($user, LocationEnum::HOME);
+        $houseInventoryQuantities = $inventoryRepository->getInventoryQuantities($user, LocationEnum::HOME, 'name');
 
         $exchange = TraderOffer::createTradeOffer(
             [

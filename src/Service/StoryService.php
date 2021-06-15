@@ -225,7 +225,7 @@ class StoryService
     private function getUserInventory(): array
     {
         if(!$this->userInventory)
-            $this->userInventory = $this->inventoryRepository->getInventoryQuantities($this->user, LocationEnum::HOME);
+            $this->userInventory = $this->inventoryRepository->getInventoryQuantities($this->user, LocationEnum::HOME, 'name');
 
         return $this->userInventory;
     }
