@@ -27,25 +27,25 @@ class Aura
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet", "myAura"})
+     * @Groups({"myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
      */
     private $image;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myPet", "myAura"})
+     * @Groups({"myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
      */
     private $size;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myPet", "myAura"})
+     * @Groups({"myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
      */
     private $centerX;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myPet", "myAura"})
+     * @Groups({"myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
      */
     private $centerY;
 

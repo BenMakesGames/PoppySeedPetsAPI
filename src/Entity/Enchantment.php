@@ -39,7 +39,7 @@ class Enchantment
 
     /**
      * @ORM\ManyToOne(targetEntity=Aura::class)
-     * @Groups({"myInventory", "myPet", "itemEncyclopedia", "marketItem", "myAura"})
+     * @Groups({"myInventory", "myPet", "itemEncyclopedia", "marketItem", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
      */
     private $aura;
 
