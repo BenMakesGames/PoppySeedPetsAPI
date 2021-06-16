@@ -107,6 +107,12 @@ class MagicBindingService
                 $possibilities[] = new ActivityCallback($this, 'createWunderbuss', 8);
         }
 
+        if($this->houseSimService->hasInventory('Blood Wine'))
+        {
+            if($this->houseSimService->hasInventory('Heavy Lance'))
+                $possibilities[] = new ActivityCallback($this, 'createAmbuLance', 8);
+        }
+
         if($this->houseSimService->hasInventory('Everice'))
         {
             // frostbite sucks
@@ -1432,6 +1438,51 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' created this!', $activityLog);
             return $activityLog;
         }
+    }
+
+    public function createAmbuLance(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
+
+        $makingItem = $this->itemRepository->findOneByName('Ambu Lance');
+
+        if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, false);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            $this->houseSimService->getState()->loseItem('Blood Wine', 1);
+
+            if($this->squirrel3->rngNextInt(1, 4) === 1)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to imbue a Heavy Lance with Blood Wine, but accidentally the wine! :(', '');
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to imbue a Heavy Lance with Blood Wine, but accidentally the wine! :( They were able to re-capture some of the magic that escaped, at least...', '');
+                $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' created this!', $activityLog);
+            }
+        }
+        else if($umbraCheck < 22)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to imbue a Heavy Lance with Blood Wine, but the Blood Wind proved difficult to work with!', 'icons/activity-logs/confused');
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->houseSimService->getState()->loseItem('Blood Wine', 1);
+            $this->houseSimService->getState()->loseItem('Heavy Lance', 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created an Ambu Lance!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+            ;
+            $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' created this!', $activityLog);
+        }
+
+        return $activityLog;
     }
 
     public function createRubyeye(ComputedPetSkills $petWithSkills): PetActivityLog
