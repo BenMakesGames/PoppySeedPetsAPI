@@ -490,15 +490,20 @@ class IronSmithingService
         }
     }
 
-    public function createHeavyHammer(ComputedPetSkills $petWithSkills): PetActivityLog
+    public function createHeavyTool(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        $makes = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+            'Heavy Hammer',
+            'Heavy Lance'
+        ]));
+
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + min($petWithSkills->getStrength()->getTotal(), $petWithSkills->getStamina()->getTotal()) + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($petWithSkills->getStrength()->getTotal() < 3)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make a Heavy Hammer, but they aren\'t strong enough... (The Dark Matter is WAY too heavy!)', '');
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::SMITH, false);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make ' . $makes->getNameWithArticle() . ', but they aren\'t strong enough... (The Dark Matter is WAY too heavy!)', '');
         }
         else if($roll <= 3)
         {
@@ -510,13 +515,13 @@ class IronSmithingService
                 ->increaseEsteem(-$this->squirrel3->rngNextInt(1, 2))
             ;
 
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Heavy Hammer, but dropped an Iron Bar on their toes!', '');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make ' . $makes->getNameWithArticle() . ', but dropped an Iron Bar on their toes!', '');
         }
         else if($roll <= 17)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Heavy Hammer, but the Dark Matter was being especially difficult to work with! >:(', '');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make ' . $makes->getNameWithArticle() . ', but the Dark Matter was being especially difficult to work with! >:(', '');
         }
         else
         {
@@ -527,10 +532,10 @@ class IronSmithingService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(3);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Heavy Hammer from an Iron Bar and some Dark Matter!', 'items/tool/hammer/heavy')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made ' . $makes->getNameWithArticle() . ' from an Iron Bar and some Dark Matter!', 'items/tool/hammer/heavy')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
             ;
-            $this->inventoryService->petCollectsItem('Heavy Hammer', $pet, $pet->getName() . ' created this from an Iron Bar and some Dark Matter!', $activityLog);
+            $this->inventoryService->petCollectsItem($makes, $pet, $pet->getName() . ' created this from an Iron Bar and some Dark Matter!', $activityLog);
             return $activityLog;
         }
     }

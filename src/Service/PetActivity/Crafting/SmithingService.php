@@ -132,7 +132,7 @@ class SmithingService
                 $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createGrapplingHook', 10);
 
             if($this->houseSimService->hasInventory('Dark Matter'))
-                $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createHeavyHammer', $petWithSkills->getStrength()->getTotal() >= 3 ? $weight : ceil($weight / 2));
+                $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createHeavyTool', $petWithSkills->getStrength()->getTotal() >= 3 ? $weight : ceil($weight / 2));
 
             if($this->houseSimService->hasInventory('Mirror'))
                 $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createMirrorShield', $weight);
