@@ -1468,7 +1468,7 @@ class MagicBindingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to imbue a Heavy Lance with Blood Wine, but the Blood Wind proved difficult to work with!', 'icons/activity-logs/confused');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to imbue a Heavy Lance with Blood Wine, but the Blood Wine proved difficult to work with!', 'icons/activity-logs/confused');
         }
         else
         {
