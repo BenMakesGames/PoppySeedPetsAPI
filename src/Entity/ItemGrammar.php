@@ -50,7 +50,7 @@ class ItemGrammar
         return $this->article;
     }
 
-    public function setArticle(string $article): self
+    public function setArticle(?string $article): self
     {
         $this->article = $article;
 

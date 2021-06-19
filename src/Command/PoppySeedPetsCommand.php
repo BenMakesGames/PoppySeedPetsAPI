@@ -86,6 +86,15 @@ abstract class PoppySeedPetsCommand extends Command
         return $this->ask($question);
     }
 
+    protected function askNullableString(string $prompt, ?string $defaultValue, callable $constraint = null): ?string
+    {
+        if($defaultValue === null) $defaultValue = '~';
+
+        $result = $this->askString($prompt, $defaultValue, $constraint);
+
+        return $result === '~' ? null : $result;
+    }
+
     protected function askString(string $prompt, ?string $defaultValue, callable $constraint = null): string
     {
         if($defaultValue === null) $defaultValue = '';

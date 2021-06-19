@@ -126,6 +126,9 @@ class MagicBindingService
 
             if($this->houseSimService->hasInventory('Nonsenserang') && $this->houseSimService->hasInventory('Quintessence'))
                 $possibilities[] = new ActivityCallback($this, 'createHexicle', $evericeWeight);
+
+            if($this->houseSimService->hasInventory('Heavy Hammer'))
+                $possibilities[] = new ActivityCallback($this, 'createFimbulvetr', $evericeWeight);
         }
 
         if($this->houseSimService->hasInventory('Wand of Ice') && $this->houseSimService->hasInventory('Mint'))
@@ -2813,6 +2816,45 @@ class MagicBindingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
             ;
             $this->inventoryService->petCollectsItem('Molly', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createFimbulvetr(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $skillCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal());
+
+        if($skillCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            $pet->increaseEsteem(-1);
+
+            return $this->evericeMeltingService->doMeltEverice($pet, $pet->getName() . ' tried to bind Everice to a Heavy Hammer, but uttered the wrong sounds during the ritual, and melted the Everice, instead! (Dang! Powerful magics!)');
+        }
+        else if($skillCheck < 22)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+
+            $pet->increaseSafety(-1);
+
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind Everice to a Heavy Hammer, but almost got frostbitten, and had to put it down for the time being...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->houseSimService->getState()->loseItem('Heavy Hammer', 1);
+            $this->houseSimService->getState()->loseItem('Everice', 1);
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::UMBRA ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Everice to a Heavy Hammer, creating Fimbulvetr!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+            ;
+
+            $this->inventoryService->petCollectsItem('Fimbulvetr', $pet, $pet->getName() . ' made this by binding Everice to a Heavy Hammer.', $activityLog);
             return $activityLog;
         }
     }

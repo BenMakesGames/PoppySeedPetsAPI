@@ -102,7 +102,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
     {
         if(!$item->getGrammar())
         {
-            $article = $this->askString('Article?', 'a');
+            $article = $this->askNullableString('Article?', 'a');
 
             $grammar = (new ItemGrammar())
                 ->setItem($item)
@@ -113,7 +113,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
         }
         else
         {
-            $article = $this->askString('Article?', $item->getGrammar()->getArticle());
+            $article = $this->askNullableString('Article?', $item->getGrammar()->getArticle());
 
             $item->getGrammar()->setArticle($article);
         }
