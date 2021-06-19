@@ -8,7 +8,9 @@ use App\Enum\PetSkillEnum;
 use App\Model\ComputedPetSkills;
 use App\Repository\EnchantmentRepository;
 use App\Repository\SpiceRepository;
+use App\Service\FieldGuideService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -21,11 +23,13 @@ class StrangeUmbralEncounters
     private $inventoryService;
     private $enchantmentRepository;
     private $spiceRepository;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private FieldGuideService $fieldGuideService;
 
     public function __construct(
         ResponseService $responseService, PetExperienceService $petExperienceService, InventoryService $inventoryService,
-        EnchantmentRepository $enchantmentRepository, SpiceRepository $spiceRepository, Squirrel3 $squirrel3
+        EnchantmentRepository $enchantmentRepository, SpiceRepository $spiceRepository, Squirrel3 $squirrel3,
+        FieldGuideService $fieldGuideService
     )
     {
         $this->responseService = $responseService;
@@ -34,6 +38,7 @@ class StrangeUmbralEncounters
         $this->enchantmentRepository = $enchantmentRepository;
         $this->spiceRepository = $spiceRepository;
         $this->squirrel3 = $squirrel3;
+        $this->fieldGuideService = $fieldGuideService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -81,11 +86,15 @@ class StrangeUmbralEncounters
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
-        $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, some white rain started to fall. ' . '%pet:' . $pet->getId() . '.name% looked up, and saw the Cosmic Goat flying overhead, milk flowing from its udder. They gathered up as much of the "rain" as they could.', '');
+        $discoveryMessage = 'While exploring the Umbra, some white rain started to fall. ' . '%pet:' . $pet->getId() . '.name% looked up, and saw the Cosmic Goat flying overhead, milk flowing from its udder.';
+
+        $activityLog = $this->responseService->createActivityLog($pet, $discoveryMessage . ' They gathered up as much of the "rain" as they could.', '');
 
         $cosmic = $this->spiceRepository->findOneByName('Cosmic');
 
         $this->inventoryService->petCollectsEnhancedItem('Creamy Milk', null, $cosmic, $pet, $pet->getName() . ' collected this from the Cosmic Goat, who happened to fly overhead while ' . $pet->getName() . ' was exploring the Umbra.', $activityLog);
+
+        $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Cosmic Goat', $discoveryMessage);
 
         return $activityLog;
     }
