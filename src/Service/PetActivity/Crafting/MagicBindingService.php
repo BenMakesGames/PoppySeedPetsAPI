@@ -1150,7 +1150,7 @@ class MagicBindingService
             }
             else
             {
-                $this->houseSimService->getState()->loseItem('White Feather', 1);
+                $this->houseSimService->getState()->loseItem('White Feathers', 1);
 
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Heavy Hammer, but accidentally zapped the crap out of a White Feather :(', '');
             }
@@ -1174,7 +1174,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Lightning in a Bottle', 1);
             $this->houseSimService->getState()->loseItem('Heavy Hammer', 1);
-            $this->houseSimService->getState()->loseItem('White Feather', 1);
+            $this->houseSimService->getState()->loseItem('White Feathers', 1);
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound Mjölnir!', '')
