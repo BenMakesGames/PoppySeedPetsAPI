@@ -3,14 +3,13 @@ namespace App\Model;
 
 class SummoningScrollMonster
 {
-    /** @var string */
-    public $name;
-
-    /** @var string */
-    public $majorReward;
+    public string $name;
+    public string $majorReward;
 
     /** @var string[] */
-    public $minorRewards;
+    public array $minorRewards;
+
+    public ?string $element = null;
 
     public static function CreateDragon(): SummoningScrollMonster
     {
@@ -19,6 +18,7 @@ class SummoningScrollMonster
         $monster->name = 'Dragon';
         $monster->majorReward = 'Dragon Vase';
         $monster->minorRewards = [ 'Scales', 'Gold Bar' ];
+        $monster->element = 'fire';
 
         return $monster;
     }
@@ -30,6 +30,7 @@ class SummoningScrollMonster
         $monster->name = 'Balrog';
         $monster->majorReward = 'Blackonite';
         $monster->minorRewards = [ 'Quintessence', 'Talon' ];
+        $monster->element = 'fire';
 
         return $monster;
     }
@@ -41,6 +42,7 @@ class SummoningScrollMonster
         $monster->name = 'Basabasa';
         $monster->majorReward = 'Black Feathers';
         $monster->minorRewards = [ 'Feathers', 'Talon' ];
+        $monster->element = 'fire';
 
         return $monster;
     }
@@ -52,6 +54,7 @@ class SummoningScrollMonster
         $monster->name = 'Ifrit';
         $monster->majorReward = 'Gold Crown';
         $monster->minorRewards = [ 'Quintessence', 'White Cloth' ];
+        $monster->element = 'fire';
 
         return $monster;
     }
@@ -63,6 +66,43 @@ class SummoningScrollMonster
         $monster->name = 'Cherufe';
         $monster->majorReward = 'Meteorite';
         $monster->minorRewards = [ 'Liquid-hot Magma', 'Iron Ore' ];
+        $monster->element = 'fire';
+
+        return $monster;
+    }
+
+    public static function CreateCrystallineEntity(): SummoningScrollMonster
+    {
+        $monster = new SummoningScrollMonster();
+
+        $monster->name = 'Crystalline Entity';
+        $monster->majorReward = 'Forgetting Scroll';
+        $monster->minorRewards = [ 'Glass', 'Gypsum' ];
+        $monster->element = 'electricity';
+
+        return $monster;
+    }
+
+    public static function CreateBivusRelease(): SummoningScrollMonster
+    {
+        $monster = new SummoningScrollMonster();
+
+        $monster->name = 'Bivu\'s Release';
+        $monster->majorReward = 'Collimated Lance';
+        $monster->minorRewards = [ 'Photon', 'Gravity Wave' ];
+        $monster->element = 'fire';
+
+        return $monster;
+    }
+
+    public static function CreateSpaceJelly(): SummoningScrollMonster
+    {
+        $monster = new SummoningScrollMonster();
+
+        $monster->name = 'Intergalactic Space Jelly';
+        $monster->majorReward = 'Transparent Bow';
+        $monster->minorRewards = [ 'Pectin', 'Jellyfish Jelly' ];
+        $monster->element = 'electricity';
 
         return $monster;
     }

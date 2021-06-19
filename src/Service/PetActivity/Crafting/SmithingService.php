@@ -11,7 +11,6 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
-use App\Repository\SpiceRepository;
 use App\Service\CalendarService;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
@@ -266,6 +265,9 @@ class SmithingService
         {
             if($this->houseSimService->hasInventory('Iron Bar') && $this->houseSimService->hasInventory('Gold Bar'))
                 $possibilities[] = new ActivityCallback($this->meteoriteSmithingService, 'createIlumetsa', 10);
+
+            if($this->houseSimService->hasInventory('Moon Pearl') && $this->houseSimService->hasInventory('Dark Mirror'))
+                $possibilities[] = new ActivityCallback($this->meteoriteSmithingService, 'createHorizonMirror', 10);
         }
 
         if($this->calendarService->isHalloweenCrafting())

@@ -20,6 +20,7 @@ use App\Repository\PetSpeciesRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\PetActivity\HouseMonsterService;
 use App\Service\PetExperienceService;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
@@ -57,8 +58,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
      */
     public function summonSomethingUnfriendly(
         Inventory $inventory, ResponseService $responseService, PetRepository $petRepository,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, InventoryService $inventoryService,
-        PetExperienceService $petExperienceService, Squirrel3 $squirrel3
+        EntityManagerInterface $em, HouseMonsterService $houseMonsterService, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -66,8 +66,6 @@ class SummoningScrollController extends PoppySeedPetsItemController
         $this->validateInventory($inventory, 'summoningScroll/#/unfriendly');
 
         $em->remove($inventory);
-
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $petsAtHome = $petRepository->findBy([
             'owner' => $user,
@@ -88,134 +86,46 @@ class SummoningScrollController extends PoppySeedPetsItemController
             SummoningScrollMonster::CreateCherufe(),
         ]);
 
-        $totalSkill = 0;
-        /** @var string[] $petNames */ $petNames = [];
-        /** @var Pet[] $unprotectedPets */ $unprotectedPets = [];
-        /** @var string[] $unprotectedPetNames */ $unprotectedPetNames = [];
-        /** @var PetChanges[] $petChanges */ $petChanges = [];
+        $result = $houseMonsterService->doFight('You read the scroll', $petsAtHome, $monster);
 
-        foreach($petsAtHome as $pet)
-        {
-            $petWithSkills = $pet->getComputedSkills();
-            $totalSkill += $petWithSkills->getBrawl()->getTotal() + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getStamina()->getTotal()) + $petWithSkills->getDexterity()->getTotal();
+        $em->flush();
 
-            if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
-                $totalSkill += 2;
-            else
-            {
-                $unprotectedPets[] = $pet;
-                $unprotectedPetNames[] = $pet->getName();
-            }
+        return $responseService->itemActionSuccess($result, [ 'itemDeleted' => true ]);
+    }
 
-            $petNames[] = $pet->getName();
-            $petChanges[$pet->getId()] = new PetChanges($pet);
-        }
+    /**
+     * @Route("/{inventory}/unfriendly2", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function summonSomethingFromDeepSpace(
+        Inventory $inventory, ResponseService $responseService, PetRepository $petRepository,
+        EntityManagerInterface $em, HouseMonsterService $houseMonsterService, Squirrel3 $squirrel3
+    )
+    {
+        $user = $this->getUser();
 
-        $roll = $squirrel3->rngNextInt(max(20, 1 + ($totalSkill >> 1)), 20 + $totalSkill);
+        $this->validateInventory($inventory, 'summoningScroll/#/unfriendly2');
 
-        $result = 'You read the scroll, causing ' . GrammarFunctions::indefiniteArticle($monster->name) . ' ' . $monster->name . ' to be summoned! ';
+        $em->remove($inventory);
 
-        $loot = $monster->minorRewards;
-
-        $grab = $squirrel3->rngNextFromArray([
-            'grab', 'snag', 'take'
+        $petsAtHome = $petRepository->findBy([
+            'owner' => $user,
+            'inDaycare' => false
         ]);
 
-        if($roll >= 70)
+        if(count($petsAtHome) === 0)
         {
-            $loot[] = $monster->majorReward;
-
-            foreach($monster->minorRewards as $r)
-                $loot[] = $r;
-
-            $result .= ArrayFunctions::list_nice($petNames) . ' easily ' . (count($petsAtHome) === 1 ? 'dispatches' : 'dispatch') . ' the monster, taking its ' . ArrayFunctions::list_nice($loot) . '.';
-
-            $exp = 5;
-            $won = true;
-        }
-        else if($roll >= 50)
-        {
-            $loot[] = $monster->majorReward;
-            $loot[] = $squirrel3->rngNextFromArray($monster->minorRewards);
-
-            $result .= ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'beats' : 'beat') . ' the monster back, and were rewarded with ' . ArrayFunctions::list_nice($loot) . '!';
-
-            $exp = 5;
-            $won = true;
-        }
-        else if($totalSkill < 30)
-        {
-            $result .= ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'was' : 'were') . ' completely outmatched! At least they managed to ' . $grab. ' ' . ArrayFunctions::list_nice($loot) . '...';
-
-            $exp = 2;
-            $won = false;
-        }
-        else
-        {
-            $result .= ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'fights' : 'fight') . ' their hardest, but ' . (count($petsAtHome) === 1 ? 'is' : 'are') . ' unable to defeat it! They were able to ' . $grab. ' ' . ArrayFunctions::list_nice($loot) . ', at least!';
-
-            $exp = 3;
-            $won = false;
+            return $responseService->itemActionSuccess('');
         }
 
-        foreach($petsAtHome as $pet)
-        {
-            $petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ]);
+        /** @var SummoningScrollMonster $monster */
+        $monster = $squirrel3->rngNextFromArray([
+            SummoningScrollMonster::CreateCrystallineEntity(),
+            SummoningScrollMonster::CreateBivusRelease(),
+            SummoningScrollMonster::CreateSpaceJelly(),
+        ]);
 
-            if($won)
-            {
-                $pet
-                    ->increaseSafety($squirrel3->rngNextInt(4, 8))
-                    ->increaseEsteem($squirrel3->rngNextInt(6, 10))
-                ;
-            }
-            else
-            {
-                $pet->increaseSafety(-$squirrel3->rngNextInt(4, 8));
-
-                // you can't feel bad about yourself if you didn't even have a chance... right??
-                if($totalSkill >= 40)
-                    $pet->increaseEsteem(-$squirrel3->rngNextInt(2, 4));
-                else
-                    $pet->increaseLove(-$squirrel3->rngNextInt(2, 4)); // not very cool of you to summon the thing, then, though, I guess :P
-            }
-        }
-
-        if(count($unprotectedPets) > 0)
-        {
-            $result .= "\n\n" . ArrayFunctions::list_nice($unprotectedPetNames) . ' ' . (count($unprotectedPetNames) === 1 ? 'was' : 'were') . ' unprotected from the ' . $monster->name . '\'s flames, and got singed!';
-
-            foreach($unprotectedPets as $pet)
-                $pet->increaseSafety(-$squirrel3->rngNextInt(4, 12));
-        }
-
-        if($won)
-        {
-            $message = ArrayFunctions::list_nice($petNames) . ' got this by defeating ' . GrammarFunctions::indefiniteArticle($monster->name) . ' ' . $monster->name . '.';
-            $userStatsRepository->incrementStat($user, 'Won Against Something... Unfriendly');
-        }
-        else
-        {
-            $message = ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'was' : 'were') . ' defeated by ' . GrammarFunctions::indefiniteArticle($monster->name) . ' ' . $monster->name . ', but managed to ' . $grab . ' this during the fight.';
-            $userStatsRepository->incrementStat($user, 'Lost Against Something... Unfriendly');
-        }
-
-        foreach($loot as $item)
-            $inventoryService->receiveItem($item, $user, $user, $message, LocationEnum::HOME);
-
-        foreach($petsAtHome as $pet)
-        {
-            $petExperienceService->spendTime($pet, $squirrel3->rngNextInt(5, 15), PetActivityStatEnum::HUNT, $won);
-
-            $activityLog = (new PetActivityLog())
-                ->setPet($pet)
-                ->setEntry($result)
-                ->setChanges($petChanges[$pet->getId()]->compare($pet))
-                ->setViewed()
-            ;
-
-            $em->persist($activityLog);
-        }
+        $result = $houseMonsterService->doFight('You cast your voice into the mirror', $petsAtHome, $monster);
 
         $em->flush();
 
