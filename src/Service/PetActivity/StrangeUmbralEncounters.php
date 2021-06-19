@@ -94,7 +94,7 @@ class StrangeUmbralEncounters
 
         $this->inventoryService->petCollectsEnhancedItem('Creamy Milk', null, $cosmic, $pet, $pet->getName() . ' collected this from the Cosmic Goat, who happened to fly overhead while ' . $pet->getName() . ' was exploring the Umbra.', $activityLog);
 
-        $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Cosmic Goat', $discoveryMessage);
+        //$this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Cosmic Goat', $discoveryMessage);
 
         return $activityLog;
     }
