@@ -1159,8 +1159,14 @@ class MagicBindingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseSafety(-1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Poker, but kept getting poked by it.', 'icons/activity-logs/confused');
+
+            if($this->squirrel3->rngNextFloat() >= 0.8)
+            {
+                $pet->increaseSafety(-2);
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind lightning to a Heavy Hammer, but the lightning was throwing sparks like crazy! >:|', 'icons/activity-logs/confused');
+            }
+            else
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind lightning to a Heavy Hammer, but the hammer wasn\'t having it...', 'icons/activity-logs/confused');
         }
         else // success!
         {
