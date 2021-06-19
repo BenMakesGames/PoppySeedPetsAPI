@@ -206,8 +206,14 @@ class MagicBindingService
             if($this->houseSimService->hasInventory('Feathers'))
                 $possibilities[] = new ActivityCallback($this, 'createWings', 8);
 
-            if($this->houseSimService->hasInventory('Level 2 Sword') && $this->houseSimService->hasInventory('White Feathers'))
-                $possibilities[] = new ActivityCallback($this, 'createArmor', 8);
+            if($this->houseSimService->hasInventory('White Feathers'))
+            {
+                if($this->houseSimService->hasInventory('Level 2 Sword'))
+                    $possibilities[] = new ActivityCallback($this, 'createArmor', 8);
+
+                if($this->houseSimService->hasInventory('Heavy Hammer') && $this->houseSimService->hasInventory('Lightning in a Bottle'))
+                    $possibilities[] = new ActivityCallback($this, 'createMjolnir', 8);
+            }
 
             // magic scrolls
             if($this->houseSimService->hasInventory('Paper'))
@@ -1119,6 +1125,56 @@ class MagicBindingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 19)
             ;
             $this->inventoryService->petCollectsItem('Wand of Lightning', $pet, $pet->getName() . ' enchanted this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createMjolnir(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+
+            $pet->increaseEsteem(-2);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            if($this->squirrel3->rngNextBool())
+            {
+                $this->houseSimService->getState()->loseItem('Quintessence', 1);
+
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Heavy Hammer, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+            }
+            else
+            {
+                $this->houseSimService->getState()->loseItem('White Feather', 1);
+
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Heavy Hammer, but accidentally zapped the crap out of a White Feather :(', '');
+            }
+        }
+        else if($umbraCheck < 25)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseSafety(-1);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Poker, but kept getting poked by it.', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->houseSimService->getState()->loseItem('Quintessence', 1);
+            $this->houseSimService->getState()->loseItem('Lightning in a Bottle', 1);
+            $this->houseSimService->getState()->loseItem('Heavy Hammer', 1);
+            $this->houseSimService->getState()->loseItem('White Feather', 1);
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound Mjölnir!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 25)
+            ;
+            $this->inventoryService->petCollectsItem('Mjölnir', $pet, $pet->getName() . ' enchanted this.', $activityLog);
             return $activityLog;
         }
     }
