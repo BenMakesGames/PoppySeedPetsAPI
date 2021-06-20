@@ -269,13 +269,12 @@ class ScrollController extends PoppySeedPetsItemController
         if($squirrel3->rngNextInt(1, 15) === 1) $items[] = 'Iron Ore';
         if($squirrel3->rngNextInt(1, 20) === 1) $items[] = 'Little Strongbox';
 
-        $newInventory = [];
         $location = $inventory->getLocation();
 
         sort($items);
 
         foreach($items as $item)
-            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
+            $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
 
         $em->flush();
 

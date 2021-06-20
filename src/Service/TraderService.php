@@ -607,7 +607,7 @@ class TraderService
 
     private function getMetalOffers(User $user, array $quantities): array
     {
-        $offers = [
+        return [
             TraderOffer::createTradeOffer(
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Bar'), 1),
@@ -708,8 +708,6 @@ class TraderService
                 $quantities
             ),
         ];
-
-        return $offers;
     }
 
     private function getDarkThingsOffers(User $user, array $quantities): array

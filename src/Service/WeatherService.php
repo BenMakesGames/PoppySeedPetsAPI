@@ -110,9 +110,7 @@ class WeatherService
     {
         $moisture = $this->getMoisture($hourOfYear);
 
-        $rain = 5 * max(0, $moisture - 0.3);
-
-        return $rain;
+        return 5 * max(0, $moisture - 0.3);
     }
 
     /**
@@ -128,7 +126,7 @@ class WeatherService
         $moisturePlus2 = $this->getMoisture($hourOfYear + 2);
         $moisturePlus3 = $this->getMoisture($hourOfYear + 3);
 
-        $rain = max(0,
+        return max(0,
             $moistureMinus3 / 8 +
             $moistureMinus2 / 8 +
             $moistureMinus1 / 5 +
@@ -138,8 +136,6 @@ class WeatherService
             $moisturePlus3 / 8 -
             0.18
         );
-
-        return $rain;
     }
 
     public function getMoisture(float $hourOfYear): float

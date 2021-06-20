@@ -41,7 +41,7 @@ class HattierService
             $this->userAurasPerRequestCache[$cacheKey] = $this->userUnlockedAuraRepository->findOneBy([
                 'user' => $user,
                 'aura' => $enchantment
-            ]);;
+            ]);
         }
 
         return $this->userAurasPerRequestCache[$cacheKey] !== null;
