@@ -2,21 +2,15 @@
 namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
-use App\Entity\PetActivityLog;
 use App\Entity\PetBaby;
 use App\Entity\PetRelationship;
-use App\Entity\PetSkills;
 use App\Entity\PetSpecies;
-use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\UserStatEnum;
-use App\Functions\ArrayFunctions;
-use App\Functions\ColorFunctions;
-use App\Functions\NumberFunctions;
 use App\Model\PetShelterPet;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;

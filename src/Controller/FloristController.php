@@ -1,24 +1,12 @@
 <?php
 namespace App\Controller;
 
-use App\Entity\Pet;
-use App\Entity\PetSkills;
-use App\Entity\User;
 use App\Enum\LocationEnum;
-use App\Enum\SerializationGroupEnum;
-use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\GrammarFunctions;
-use App\Repository\InventoryRepository;
-use App\Repository\PetSpeciesRepository;
-use App\Repository\UserQuestRepository;
-use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
-use App\Service\Filter\UserFilterService;
 use App\Service\FloristService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
-use App\Service\SessionService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;

@@ -1,10 +1,7 @@
 <?php
 namespace App\Controller\Item;
 
-use App\Entity\Dragon;
 use App\Entity\Inventory;
-use App\Functions\ArrayFunctions;
-use App\Functions\ColorFunctions;
 use App\Repository\DragonRepository;
 use App\Service\PetColorService;
 use App\Service\ResponseService;

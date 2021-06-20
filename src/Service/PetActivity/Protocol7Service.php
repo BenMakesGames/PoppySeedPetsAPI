@@ -1,20 +1,15 @@
 <?php
 namespace App\Service\PetActivity;
 
-use App\Entity\GuildMembership;
-use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Enum\EnumInvalidValueException;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
-use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\GuildRepository;
 use App\Repository\ItemRepository;
 use App\Repository\PetQuestRepository;
 use App\Service\InventoryService;
@@ -22,7 +17,6 @@ use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
-use Doctrine\ORM\EntityManagerInterface;
 
 class Protocol7Service
 {

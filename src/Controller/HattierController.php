@@ -47,7 +47,7 @@ class HattierController extends PoppySeedPetsController
         $petId = $request->request->get('pet');
         $auraId = $request->request->get('aura');
 
-        if(!$petId || !$petId)
+        if(!$petId || !$auraId)
             throw new UnprocessableEntityHttpException('A pet and style must be selected.');
 
         $user = $this->getUser();

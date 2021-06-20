@@ -3,17 +3,8 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
-use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
-use App\Enum\UserStatEnum;
-use App\Functions\ArrayFunctions;
-use App\Repository\InventoryRepository;
-use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
-use App\Repository\StatusEffectRepository;
-use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
-use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;

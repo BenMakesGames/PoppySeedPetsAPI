@@ -2,18 +2,8 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Entity\Pet;
-use App\Entity\PetSkills;
-use App\Entity\User;
-use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
-use App\Functions\ArrayFunctions;
-use App\Functions\ColorFunctions;
 use App\Repository\ItemRepository;
-use App\Repository\MeritRepository;
-use App\Repository\PetRepository;
-use App\Repository\PetSpeciesRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;

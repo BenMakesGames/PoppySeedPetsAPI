@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller;
 
-use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\User;
 use App\Entity\UserFollowing;
 use App\Enum\SerializationGroupEnum;
@@ -11,7 +10,6 @@ use App\Service\Filter\UserFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;

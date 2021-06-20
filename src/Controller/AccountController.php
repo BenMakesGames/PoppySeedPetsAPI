@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller;
 
-use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\User;
 use App\Entity\UserNotificationPreferences;
 use App\Entity\UserStyle;
@@ -9,7 +8,6 @@ use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
-use App\Functions\ArrayFunctions;
 use App\Functions\StringFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\MeritRepository;
@@ -17,11 +15,9 @@ use App\Repository\MuseumItemRepository;
 use App\Repository\PassphraseResetRequestRepository;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
-use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use App\Repository\UserStyleRepository;
-use App\Service\CalendarService;
 use App\Service\Filter\UserFilterService;
 use App\Service\InventoryService;
 use App\Service\PassphraseResetService;

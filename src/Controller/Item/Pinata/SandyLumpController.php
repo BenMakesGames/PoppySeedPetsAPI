@@ -3,7 +3,6 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
-use App\Functions\ArrayFunctions;
 use App\Repository\ItemRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;

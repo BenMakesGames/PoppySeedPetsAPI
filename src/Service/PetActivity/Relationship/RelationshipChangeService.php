@@ -1204,21 +1204,17 @@ class RelationshipChangeService
 
             case RelationshipEnum::FRIENDLY_RIVAL:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 0);
-                break;
 
             case RelationshipEnum::FRIEND:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 40, 0);
-                break;
 
             case RelationshipEnum::BFF:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 30, 0);
-                break;
 
             case RelationshipEnum::FWB:
                 // negotiate for a less-involved relationship
                 $p2->setRelationshipGoal($this->squirrel3->rngNextFromArray([ RelationshipEnum::BFF, RelationshipEnum::FRIEND, RelationshipEnum::FRIEND ]));
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 35, 0);
-                break;
 
             case RelationshipEnum::MATE:
                 $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! They are no longer friends >:(')->setIcon('icons/activity-logs/breakup');

@@ -13,14 +13,12 @@ use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\UserQuestRepository;
 use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
-use App\Service\TransactionService;
 
 class DeepSeaService
 {

@@ -299,7 +299,8 @@ class UmbraService
 
             return $activityLog;
         }
-        else if($roll >= 14)
+
+        if($roll >= 14)
         {
             if($this->squirrel3->rngNextInt(1, 2) === 1)
             {
@@ -323,14 +324,7 @@ class UmbraService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
-            if($hasRelevantSpirit)
-            {
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. It asked for directions, but ' . $pet->getName() . ' and ' . $pet->getSpiritCompanion()->getName() . ' didn\'t know how to help.', 'icons/activity-logs/confused')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ;
-            }
-            else
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. It asked for directions, but ' . $pet->getName() . ' didn\'t know how to help.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. It asked for directions, but ' . $pet->getName() . ' didn\'t know how to help.', 'icons/activity-logs/confused');
         }
     }
 

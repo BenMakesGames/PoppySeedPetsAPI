@@ -2,7 +2,6 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Functions\ArrayFunctions;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;

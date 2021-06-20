@@ -3,10 +3,7 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
-use App\Enum\PetSkillEnum;
-use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
-use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\UserQuestRepository;
@@ -15,10 +12,10 @@ use App\Service\ResponseService;
 use App\Service\InventoryModifierService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**

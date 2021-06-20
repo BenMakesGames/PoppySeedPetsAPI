@@ -50,10 +50,10 @@ class Caerbannog
         // TODO: other things the pet can do in here?
         $activityLog = $this->fightEvilRabbit($petWithSkills);
 
-        $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY);
-
-        if($activityLog)
-            $activityLog->setChanges($changes->compare($pet));
+        $activityLog
+            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ->setChanges($changes->compare($pet))
+        ;
 
         if($this->rng->rngNextInt(1, 75) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);

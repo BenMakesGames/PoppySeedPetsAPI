@@ -1,11 +1,8 @@
 <?php
 namespace App\Command;
 
-use App\Repository\UserRepository;
-use App\Service\JsonLogicParserService;
 use App\Service\PetActivity\Group\AstronomyClubService;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 
 class TestAstronomyClubNamesCommand extends PoppySeedPetsCommand
 {

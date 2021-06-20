@@ -3,13 +3,11 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
-use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Service\EquipmentService;
-use App\Service\InventoryService;
 use App\Service\MeritService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;

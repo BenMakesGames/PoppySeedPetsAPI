@@ -3,10 +3,8 @@ namespace App\Controller;
 
 use App\Entity\UserLetter;
 use App\Enum\SerializationGroupEnum;
-use App\Repository\UserLetterRepository;
 use App\Service\Filter\UserLetterFilterService;
 use App\Service\ResponseService;
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

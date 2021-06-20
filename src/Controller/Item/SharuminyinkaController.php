@@ -3,15 +3,10 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
-use App\Enum\UserStatEnum;
 use App\Model\TraderOffer;
 use App\Model\TraderOfferCostOrYield;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
-use App\Repository\PetRepository;
-use App\Repository\UserStatsRepository;
-use App\Service\HouseService;
-use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;

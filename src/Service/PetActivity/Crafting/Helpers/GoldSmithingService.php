@@ -1,17 +1,12 @@
 <?php
 namespace App\Service\PetActivity\Crafting\Helpers;
 
-use App\Entity\Item;
-use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Enum\EnumInvalidValueException;
-use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\ComputedPetSkills;
-use App\Model\HouseSim;
 use App\Repository\ItemRepository;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
@@ -19,7 +14,6 @@ use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
-use App\Service\TransactionService;
 
 class GoldSmithingService
 {

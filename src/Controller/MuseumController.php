@@ -2,7 +2,6 @@
 namespace App\Controller;
 
 use App\Entity\Inventory;
-use App\Entity\Item;
 use App\Entity\MuseumItem;
 use App\Entity\User;
 use App\Enum\LocationEnum;

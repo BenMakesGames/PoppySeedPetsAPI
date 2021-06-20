@@ -1,14 +1,12 @@
 <?php
 namespace App\Service\PetActivity;
 
-use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\GatheringHolidayEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
-use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;

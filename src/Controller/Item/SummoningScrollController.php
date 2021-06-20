@@ -2,26 +2,14 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Entity\Pet;
-use App\Entity\PetActivityLog;
-use App\Entity\PetSkills;
-use App\Entity\PetSpecies;
-use App\Enum\FlavorEnum;
-use App\Enum\LocationEnum;
-use App\Enum\PetActivityStatEnum;
-use App\Enum\PetSkillEnum;
 use App\Enum\UserStatEnum;
-use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
-use App\Model\PetChanges;
 use App\Model\SummoningScrollMonster;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
-use App\Service\InventoryService;
 use App\Service\PetActivity\HouseMonsterService;
-use App\Service\PetExperienceService;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;

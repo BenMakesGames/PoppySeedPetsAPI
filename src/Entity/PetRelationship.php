@@ -5,8 +5,6 @@ namespace App\Entity;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
 use App\Enum\RelationshipEnum;
-use App\Functions\ArrayFunctions;
-use App\Functions\NumberFunctions;
 use App\Service\Squirrel3;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -214,13 +212,13 @@ class PetRelationship
     {
         switch($this->currentRelationship)
         {
-            case RelationshipEnum::BROKE_UP: return -80; break;
-            case RelationshipEnum::DISLIKE: return -35; break;
-            case RelationshipEnum::FRIENDLY_RIVAL: return 0; break;
-            case RelationshipEnum::FRIEND: return 35; break;
-            case RelationshipEnum::BFF: return 65; break;
-            case RelationshipEnum::FWB: return 70; break;
-            case RelationshipEnum::MATE: return 100; break;
+            case RelationshipEnum::BROKE_UP: return -80;
+            case RelationshipEnum::DISLIKE: return -35;
+            case RelationshipEnum::FRIENDLY_RIVAL: return 0;
+            case RelationshipEnum::FRIEND: return 35;
+            case RelationshipEnum::BFF: return 65;
+            case RelationshipEnum::FWB: return 70;
+            case RelationshipEnum::MATE: return 100;
             default: return 0;
         }
     }

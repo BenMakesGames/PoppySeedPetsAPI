@@ -4,7 +4,6 @@ namespace App\Controller\Item\PetAlteration;
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Enum\MeritEnum;
-use App\Functions\ColorFunctions;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
