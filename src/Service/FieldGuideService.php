@@ -26,5 +26,8 @@ class FieldGuideService
             throw new \InvalidArgumentException('There is no Field Guide Entry named "' . $entryName . '"');
 
         $this->userFieldGuideEntryRepository->findOrCreate($user, $entry, $unlockComment);
+
+        if(!$user->getUnlockedFieldGuide())
+            $user->setUnlockedFieldGuide();
     }
 }

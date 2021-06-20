@@ -9,12 +9,15 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\ActivityHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\PetQuestRepository;
 use App\Repository\UserQuestRepository;
+use App\Service\FieldGuideService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -29,18 +32,19 @@ class ChocolateMansion
     private const QUEST_VALUE_FULL_ACCESS = 8;
 
     private $userQuestRepository;
-    private $rng;
     private $itemRepository;
     private $inventoryService;
     private $petExperienceService;
     private $responseService;
     private $petQuestRepository;
     private $em;
+    private IRandom $rng;
+    private FieldGuideService $fieldGuideService;
 
     public function __construct(
         UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, ItemRepository $itemRepository,
         InventoryService $inventoryService, PetExperienceService $petExperienceService, ResponseService $responseService,
-        PetQuestRepository $petQuestRepository, EntityManagerInterface $em
+        PetQuestRepository $petQuestRepository, EntityManagerInterface $em, FieldGuideService $fieldGuideService
     )
     {
         $this->userQuestRepository = $userQuestRepository;
@@ -51,6 +55,7 @@ class ChocolateMansion
         $this->responseService = $responseService;
         $this->petQuestRepository = $petQuestRepository;
         $this->em = $em;
+        $this->fieldGuideService = $fieldGuideService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -97,11 +102,15 @@ class ChocolateMansion
                 break;
         }
 
-
-        $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY);
-
         if($activityLog)
-            $activityLog->setChanges($changes->compare($pet));
+        {
+            $activityLog
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->setChanges($changes->compare($pet))
+            ;
+
+            $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Le Manoir de Chocolat', $this->getEntryDescription($pet));
+        }
 
         if($this->rng->rngNextInt(1, 75) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);

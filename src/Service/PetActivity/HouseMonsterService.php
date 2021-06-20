@@ -3,15 +3,14 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\GrammarFunctions;
 use App\Model\PetChanges;
 use App\Model\SummoningScrollMonster;
 use App\Repository\UserStatsRepository;
+use App\Service\FieldGuideService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -25,10 +24,11 @@ class HouseMonsterService
     private InventoryService $inventoryService;
     private EntityManagerInterface $em;
     private PetExperienceService $petExperienceService;
+    private FieldGuideService $fieldGuideService;
 
     public function __construct(
         Squirrel3 $squirrel3, UserStatsRepository $userStatsRepository, InventoryService $inventoryService,
-        EntityManagerInterface $em, PetExperienceService $petExperienceService
+        EntityManagerInterface $em, PetExperienceService $petExperienceService, FieldGuideService $fieldGuideService
     )
     {
         $this->squirrel3 = $squirrel3;
@@ -36,6 +36,7 @@ class HouseMonsterService
         $this->inventoryService = $inventoryService;
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
+        $this->fieldGuideService = $fieldGuideService;
     }
 
     /**
@@ -72,20 +73,22 @@ class HouseMonsterService
                 $unprotectedPetNames[] = $pet->getName();
             }
 
-
             $petNames[] = $pet->getName();
             $petChanges[$pet->getId()] = new PetChanges($pet);
         }
 
         $roll = $this->squirrel3->rngNextInt(max(20, 1 + ($totalSkill >> 1)), 20 + $totalSkill);
 
-        $result = $userSummonedDescription . ', causing ' . GrammarFunctions::indefiniteArticle($monster->name) . ' ' . $monster->name . ' to be summoned! ';
+        $result = $userSummonedDescription . ', causing ' . $monster->nameWithArticle . ' to be summoned! ';
 
         $loot = $monster->minorRewards;
 
         $grab = $this->squirrel3->rngNextFromArray([
             'grab', 'snag', 'take'
         ]);
+
+        if($monster->fieldGuideEntry)
+            $this->fieldGuideService->maybeUnlock($user, $monster->fieldGuideEntry, ArrayFunctions::list_nice($petNames) . ' fought ' . $monster->nameWithArticle . '!');
 
         if($roll >= 70)
         {
@@ -160,12 +163,12 @@ class HouseMonsterService
 
         if($won)
         {
-            $message = ArrayFunctions::list_nice($petNames) . ' got this by defeating ' . GrammarFunctions::indefiniteArticle($monster->name) . ' ' . $monster->name . '.';
+            $message = ArrayFunctions::list_nice($petNames) . ' got this by defeating ' . $monster->nameWithArticle . '.';
             $this->userStatsRepository->incrementStat($user, 'Won Against Something... Unfriendly');
         }
         else
         {
-            $message = ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'was' : 'were') . ' defeated by ' . GrammarFunctions::indefiniteArticle($monster->name) . ' ' . $monster->name . ', but managed to ' . $grab . ' this during the fight.';
+            $message = ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'was' : 'were') . ' defeated by ' . $monster->nameWithArticle . ', but managed to ' . $grab . ' this during the fight.';
             $this->userStatsRepository->incrementStat($user, 'Lost Against Something... Unfriendly');
         }
 

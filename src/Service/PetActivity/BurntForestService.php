@@ -14,6 +14,7 @@ use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\UserQuestRepository;
+use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -32,11 +33,12 @@ class BurntForestService
     private IRandom $squirrel3;
     private HattierService $hattierService;
     private EnchantmentRepository $enchantmentRepository;
+    private FieldGuideService $fieldGuideService;
 
     public function __construct(
         PetExperienceService $petExperienceService, ResponseService $responseService, InventoryService $inventoryService,
         UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, StatusEffectService $statusEffectService,
-        HattierService $hattierService, EnchantmentRepository $enchantmentRepository
+        HattierService $hattierService, EnchantmentRepository $enchantmentRepository, FieldGuideService $fieldGuideService
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -47,6 +49,7 @@ class BurntForestService
         $this->statusEffectService = $statusEffectService;
         $this->hattierService = $hattierService;
         $this->enchantmentRepository = $enchantmentRepository;
+        $this->fieldGuideService = $fieldGuideService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -104,7 +107,10 @@ class BurntForestService
         }
 
         if($activityLog)
+        {
             $activityLog->setChanges($changes->compare($pet));
+            $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Burnt Forest', ActivityHelpers::PetName($pet) . ' used their ' . $pet->getTool()->getFullItemName() . ' to visit the Burnt Forest.');
+        }
     }
 
     private function failToFindAnything(ComputedPetSkills $petWithSkills): PetActivityLog

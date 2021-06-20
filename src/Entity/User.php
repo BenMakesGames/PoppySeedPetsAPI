@@ -294,6 +294,12 @@ class User implements UserInterface
      */
     private $unlockedAuras;
 
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"myAccount"})
+     */
+    private $unlockedFieldGuide;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -1047,6 +1053,18 @@ class User implements UserInterface
                 $unlockedAura->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUnlockedFieldGuide(): ?\DateTimeImmutable
+    {
+        return $this->unlockedFieldGuide;
+    }
+
+    public function setUnlockedFieldGuide(): self
+    {
+        $this->unlockedFieldGuide = new \DateTimeImmutable();
 
         return $this;
     }

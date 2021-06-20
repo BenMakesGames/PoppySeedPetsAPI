@@ -110,7 +110,7 @@ class DeepSeaService
             $activityLog = $this->hattierService->petMaybeUnlockAura(
                 $pet,
                 'of Fish',
-                ActivityHelpers::PetName($pet) . ' went on a quick tour of the shelf sea, and found themselves in a huge school of fish! It was strange, and beautiful; it really left an impression on ' . ActivityHelpers::PetName($pet) . '... and their ' . $pet->getHat()->getItem()->getName() . '!',
+                ActivityHelpers::PetName($pet) . ' went on a quick tour of the shelf sea, and found themselves in a huge school of fish! It was strange, and beautiful; it really left an impression on ' . ActivityHelpers::PetName($pet) . '... and their hat!',
                 ActivityHelpers::PetName($pet) . ' went on a quick tour of the shelf sea, and found themselves in a huge school of fish! It was strange, and beautiful...',
                 ActivityHelpers::PetName($pet) . ' was dazzled by a huge school of fish on the shelf sea...'
             );

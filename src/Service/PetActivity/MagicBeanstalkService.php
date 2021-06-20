@@ -283,7 +283,7 @@ class MagicBeanstalkService
 
         if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 18)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found a white pegasus\' nest, which they raided.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found a white Pegasus\' nest, which they raided.', '');
 
             $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
 
@@ -301,7 +301,7 @@ class MagicBeanstalkService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white pegasus\' nest, but the mother was around, and it didn\'t seem safe to pick a fight up there, so %pet:' . $pet->getId() . '.name% left it alone.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white Pegasus\' nest, but the mother was around, and it didn\'t seem safe to pick a fight up there, so %pet:' . $pet->getId() . '.name% left it alone.', '');
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ]);
 
@@ -319,7 +319,7 @@ class MagicBeanstalkService
 
         if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 18)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found a white pegasus\' nest, which they raided.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found a white Pegasus\' nest, which they raided.', '');
 
             $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
 
@@ -340,7 +340,7 @@ class MagicBeanstalkService
             $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white pegasus\' nest. As a member of High Impact, they jumped at the challenge - literally! - and wrestled the mother pegasus as she flew! After a while, the pegasus, exhausted, was forced to land, and %pet:' . $pet->getId() . '.name% made off with an Egg, some Fluff, and some White Feathers!', 'guilds/high-impact');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white Pegasus\' nest. As a member of High Impact, they jumped at the challenge - literally! - and wrestled the mother Pegasus as she flew! After a while, the Pegasus, exhausted, was forced to land, and %pet:' . $pet->getId() . '.name% made off with an Egg, some Fluff, and some White Feathers!', 'guilds/high-impact');
 
             $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
             $this->inventoryService->petCollectsItem('White Feathers', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
@@ -352,7 +352,7 @@ class MagicBeanstalkService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white pegasus\' nest. As a member of High Impact, they jumped at the challenge - literally! - and wrestled the mother pegasus as she flew! The pegasus dove down, through some trees, knocking %pet:' . $pet->getId() . '.name% off with nothing to show for their efforts...', 'guilds/high-impact');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white Pegasus\' nest. As a member of High Impact, they jumped at the challenge - literally! - and wrestled the mother Pegasus as she flew! The Pegasus dove down, through some trees, knocking %pet:' . $pet->getId() . '.name% off with nothing to show for their efforts...', 'guilds/high-impact');
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
 
