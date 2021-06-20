@@ -15,7 +15,7 @@ class UserMenuService
     private const DEFAULT_ORDER = [
         'home', 'basement', 'greenhouse', 'beehive', 'dragonDen', 'hollowEarth',
         'fireplace', 'park', 'plaza', 'museum', 'market', 'grocer', 'petShelter',
-        'bookstore', 'trader', 'hattier', 'mailbox', 'painter', 'florist'
+        'bookstore', 'trader', 'hattier', 'fieldGuide', 'mailbox', 'painter', 'florist'
     ];
 
     public function __construct(
@@ -108,6 +108,9 @@ class UserMenuService
 
         if($user->getUnlockedHattier())
             $menuItems[] = new UserMenuItem('hattier', $userSortOrder, $user->getUnlockedHattier());
+
+        if($user->getUnlockedFieldGuide())
+            $menuItems[] = new UserMenuItem('fieldGuide', $userSortOrder, $user->getUnlockedFieldGuide());
 
         if($user->getUnlockedMailbox())
             $menuItems[] = new UserMenuItem('mailbox', $userSortOrder, $user->getUnlockedMailbox());

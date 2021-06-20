@@ -17,7 +17,9 @@ use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\SpiceRepository;
+use App\Service\FieldGuideService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -32,13 +34,14 @@ class GatheringService
     private $transactionService;
     private $itemRepository;
     private $spiceRepository;
-    private $squirrel3;
     private $weatherService;
+    private IRandom $squirrel3;
+    private FieldGuideService $fieldGuideService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, ItemRepository $itemRepository, SpiceRepository $spiceRepository,
-        Squirrel3 $squirrel3, WeatherService $weatherService
+        Squirrel3 $squirrel3, WeatherService $weatherService, FieldGuideService $fieldGuideService
     )
     {
         $this->responseService = $responseService;
@@ -49,6 +52,7 @@ class GatheringService
         $this->spiceRepository = $spiceRepository;
         $this->squirrel3 = $squirrel3;
         $this->weatherService = $weatherService;
+        $this->fieldGuideService = $fieldGuideService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -278,12 +282,16 @@ class GatheringService
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH, PetSkillEnum::BRAWL ]);
                 $pet->increaseEsteem($this->squirrel3->rngNextInt(1, 2));
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
+
+                $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Huge Toad', $activityLog->getEntry());
             }
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a Huge Toad inside a Hollow Log, but it got away!', '');
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH, PetSkillEnum::BRAWL ]);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
+
+                $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Huge Toad', $activityLog->getEntry());
             }
         }
         else if($pet->hasMerit(MeritEnum::BEHATTED) && $this->squirrel3->rngNextInt(1, 75) === 1)

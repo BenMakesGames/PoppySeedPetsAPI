@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserFieldGuideEntryRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=UserFieldGuideEntryRepository::class)
@@ -26,16 +27,19 @@ class UserFieldGuideEntry
     /**
      * @ORM\ManyToOne(targetEntity=FieldGuideEntry::class)
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({ "myFieldGuide" })
      */
     private $entry;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({ "myFieldGuide" })
      */
     private $discoveredOn;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({ "myFieldGuide" })
      */
     private $comment;
 

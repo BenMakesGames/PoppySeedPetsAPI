@@ -71,6 +71,11 @@ class Plant
      */
     private $name;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=FieldGuideEntry::class)
+     */
+    private $fieldGuideEntry;
+
     public function __construct()
     {
         $this->plantYields = new ArrayCollection();
@@ -222,6 +227,18 @@ class Plant
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getFieldGuideEntry(): ?FieldGuideEntry
+    {
+        return $this->fieldGuideEntry;
+    }
+
+    public function setFieldGuideEntry(?FieldGuideEntry $fieldGuideEntry): self
+    {
+        $this->fieldGuideEntry = $fieldGuideEntry;
 
         return $this;
     }

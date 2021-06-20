@@ -13,6 +13,7 @@ use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
+use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
@@ -32,11 +33,13 @@ class ProgrammingService
     private HouseSimService $houseSimService;
     private HattierService $hattierService;
     private EnchantmentRepository $enchantmentRepository;
+    private FieldGuideService $fieldGuideService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         PetExperienceService $petExperienceService, StatusEffectService $statusEffectService,
-        HouseSimService $houseSimService, HattierService $hattierService, EnchantmentRepository $enchantmentRepository
+        HouseSimService $houseSimService, HattierService $hattierService, EnchantmentRepository $enchantmentRepository,
+        FieldGuideService $fieldGuideService
     )
     {
         $this->responseService = $responseService;
@@ -47,6 +50,7 @@ class ProgrammingService
         $this->houseSimService = $houseSimService;
         $this->hattierService = $hattierService;
         $this->enchantmentRepository = $enchantmentRepository;
+        $this->fieldGuideService = $fieldGuideService;
     }
 
     /**
@@ -698,13 +702,17 @@ class ProgrammingService
             'Pointer',
         ]);
 
+        $impDiscovery = '%pet:' . $pet->getId() . '.name% started ' . $actionInterrupted . ', but an Infinity Imp popped up, and started to attack!';
+
+        $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Infinity Imp', $impDiscovery);
+
         if($scienceRoll >= $brawlRoll)
         {
             if($scienceRoll >= 20)
             {
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
                 $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ]);
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started ' . $actionInterrupted . ', but an Infinity Imp popped up, and started to attack! During the fight, ' . $pet->getName() . ' exploited a divergence in the imp\'s construction, and unraveled it, receiving ' . $loot . '!', 'icons/activity-logs/confused');
+                $activityLog = $this->responseService->createActivityLog($pet, $impDiscovery . ' During the fight, %pet:' . $pet->getId() . '.name% exploited a divergence in the imp\'s construction, and unraveled it, receiving ' . $loot . '!', 'icons/activity-logs/confused');
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' received this by unraveling an Infinity Imp.', $activityLog);
                 return $activityLog;
             }
@@ -715,7 +723,7 @@ class ProgrammingService
             {
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
                 $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ]);
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started ' . $actionInterrupted . ', but an Infinity Imp popped up, and started to attack! ' . $pet->getName() . ' slew the creature outright, and claimed its ' . $loot . '!', 'icons/activity-logs/confused');
+                $activityLog = $this->responseService->createActivityLog($pet, $impDiscovery . ' %pet:' . $pet->getId() . '.name% slew the creature outright, and claimed its ' . $loot . '!', 'icons/activity-logs/confused');
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' received this by slaying an Infinity Imp.', $activityLog);
                 return $activityLog;
             }
@@ -723,7 +731,7 @@ class ProgrammingService
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
-        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started ' . $actionInterrupted . ', but an Infinity Imp popped up, and started to attack! ' . $pet->getName() . ' ran away until the imp finally gave up and returned to the strange dimension from whence it came.', 'icons/activity-logs/confused');
+        return $this->responseService->createActivityLog($pet, $impDiscovery . ' %pet:' . $pet->getId() . '.name% ran away until the imp finally gave up and returned to the strange dimension from whence it came.', 'icons/activity-logs/confused');
     }
 
     private function createBruteForce(ComputedPetSkills $petWithSkills): PetActivityLog

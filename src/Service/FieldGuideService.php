@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 
+use App\Entity\FieldGuideEntry;
 use App\Entity\User;
 use App\Repository\FieldGuideEntryRepository;
 use App\Repository\UserFieldGuideEntryRepository;
@@ -18,12 +19,16 @@ class FieldGuideService
         $this->userFieldGuideEntryRepository = $userFieldGuideEntryRepository;
     }
 
-    public function maybeUnlock(User $user, string $entryName, string $unlockComment)
+    /**
+     * @param string|FieldGuideEntry $entry
+     */
+    public function maybeUnlock(User $user, $entry, string $unlockComment)
     {
-        $entry = $this->fieldGuideEntryRepository->findOneByName($entryName);
+        if(is_string($entry))
+            $entry = $this->fieldGuideEntryRepository->findOneByName($entry);
 
         if(!$entry)
-            throw new \InvalidArgumentException('There is no Field Guide Entry named "' . $entryName . '"');
+            throw new \InvalidArgumentException('There is no such Field Guide Entry.');
 
         $this->userFieldGuideEntryRepository->findOrCreate($user, $entry, $unlockComment);
 

@@ -54,6 +54,11 @@ class Letter
      */
     private $spice;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=FieldGuideEntry::class)
+     */
+    private $fieldGuideEntry;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -127,6 +132,18 @@ class Letter
     public function setSpice(?Spice $spice): self
     {
         $this->spice = $spice;
+
+        return $this;
+    }
+
+    public function getFieldGuideEntry(): ?FieldGuideEntry
+    {
+        return $this->fieldGuideEntry;
+    }
+
+    public function setFieldGuideEntry(?FieldGuideEntry $fieldGuideEntry): self
+    {
+        $this->fieldGuideEntry = $fieldGuideEntry;
 
         return $this;
     }

@@ -1,0 +1,45 @@
+<?php
+namespace App\Controller;
+
+use App\Entity\User;
+use App\Enum\SerializationGroupEnum;
+use App\Repository\FieldGuideEntryRepository;
+use App\Service\Filter\MuseumFilterService;
+use App\Service\Filter\UserFieldGuideEntryFilterService;
+use App\Service\ResponseService;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
+/**
+ * @Route("/fieldGuide")
+ */
+class FieldGuideController extends PoppySeedPetsController
+{
+    /**
+     * @Route("", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function userDonatedItems(
+        Request $request, ResponseService $responseService, UserFieldGuideEntryFilterService $userFieldGuideEntryFilterService,
+        FieldGuideEntryRepository $fieldGuideEntryRepository
+    )
+    {
+        $user = $this->getUser();
+
+        if($user->getUnlockedFieldGuide() === null)
+            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+
+        $userFieldGuideEntryFilterService->addRequiredFilter('user', $user->getId());
+
+        return $responseService->success(
+            [
+                'totalEntries' => $fieldGuideEntryRepository->count([]),
+                'entries' => $userFieldGuideEntryFilterService->getResults($request->query),
+            ],
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MY_FIELD_GUIDE ]
+        );
+    }
+
+}

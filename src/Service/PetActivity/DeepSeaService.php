@@ -13,6 +13,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -27,10 +28,11 @@ class DeepSeaService
     private $petExperienceService;
     private IRandom $squirrel3;
     private HattierService $hattierService;
+    private FieldGuideService $fieldGuideService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        Squirrel3 $squirrel3, HattierService $hattierService
+        Squirrel3 $squirrel3, HattierService $hattierService, FieldGuideService $fieldGuideService
     )
     {
         $this->responseService = $responseService;
@@ -38,6 +40,7 @@ class DeepSeaService
         $this->petExperienceService = $petExperienceService;
         $this->squirrel3 = $squirrel3;
         $this->hattierService = $hattierService;
+        $this->fieldGuideService = $fieldGuideService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -367,11 +370,13 @@ class DeepSeaService
     {
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
 
-        $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the deep sea, ' . '%pet:' . $pet->getId() . '.name% watched a pod of whales go by! ' . $pet->getName() . ' swam and sang along with them for a while...', 'items/tool/submarine');
+        $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the deep sea, %pet:' . $pet->getId() . '.name% watched a pod of whales go by! ' . $pet->getName() . ' swam and sang along with them for a while...', 'items/tool/submarine');
 
         $pet->increaseLove($this->squirrel3->rngNextInt(2, 4));
 
         $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::NATURE, PetSkillEnum::MUSIC ]);
+
+        $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Whales', $activityLog->getEntry());
 
         return $activityLog;
     }
@@ -486,7 +491,9 @@ class DeepSeaService
                 $this->squirrel3->rngNextFromArray([ 'Gold Bar', 'Silver Bar', 'Mermaid Egg', 'Scales', 'Fish', 'Seaweed', 'Captain\'s Log' ])
             ];
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the ocean using the Submarine, and found a sunken ship! Inside was ' . ArrayFunctions::list_nice($loot) . $andMore, 'items/tool/submarine');
+            $fleetDiscovery = '%pet:' . $pet->getId() . '.name% explored the ocean using the Submarine, and found a sunken ship!';
+
+            $activityLog = $this->responseService->createActivityLog($pet, $fleetDiscovery . ' Inside was ' . ArrayFunctions::list_nice($loot) . $andMore, 'items/tool/submarine');
 
             foreach($loot as $itemName)
                 $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in a sunken ship while exploring the ocean using the Submarine.', $activityLog);
@@ -498,6 +505,8 @@ class DeepSeaService
                 else
                     $this->inventoryService->petCollectsItem($rareTreasure, $pet, $pet->getName() . ' found this in a sunken ship while exploring the ocean using the Submarine!', $activityLog);
             }
+
+            $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Shipwrecked Fleet', $fleetDiscovery);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
         }

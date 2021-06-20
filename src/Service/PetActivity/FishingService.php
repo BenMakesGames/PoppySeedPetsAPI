@@ -12,7 +12,9 @@ use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\UserQuestRepository;
+use App\Service\FieldGuideService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -26,13 +28,14 @@ class FishingService
     private $petExperienceService;
     private $transactionService;
     private $userQuestRepository;
-    private $squirrel3;
     private $weatherService;
+    private IRandom $squirrel3;
+    private FieldGuideService $fieldGuideService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3,
-        WeatherService $weatherService
+        WeatherService $weatherService, FieldGuideService $fieldGuideService
     )
     {
         $this->responseService = $responseService;
@@ -42,6 +45,7 @@ class FishingService
         $this->userQuestRepository = $userQuestRepository;
         $this->squirrel3 = $squirrel3;
         $this->weatherService = $weatherService;
+        $this->fieldGuideService = $fieldGuideService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -391,10 +395,12 @@ class FishingService
 
         if($this->squirrel3->rngNextInt(1, 100) <= $toadChance)
         {
+            $discoveredHugeToad = '%pet:' . $pet->getId() . '.name% went fishing at a Roadside Creek, and a Huge Toad bit the line!';
+
             // toad
             if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getFishingBonus()->getTotal()) >= 7)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Roadside Creek, and a Huge Toad bit the line! ' . $pet->getName() . ' used all their strength to reel it in!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $discoveredHugeToad . ' ' . $pet->getName() . ' used all their strength to reel it in!', '');
                 $this->inventoryService->petCollectsItem('Toad Legs', $pet, 'From a Huge Toad that ' . $pet->getName() . ' fished at a Roadside Creek.', $activityLog);
 
                 if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getNature()->getTotal()) >= 15)
@@ -408,11 +414,13 @@ class FishingService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Roadside Creek, and a Huge Toad bit the line! ' . $pet->getName() . ' tried to reel it in, but it was too strong, and got away.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $discoveredHugeToad . ' ' . $pet->getName() . ' tried to reel it in, but it was too strong, and got away.', '');
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
 
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::FISH, false);
             }
+
+            $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Huge Toad', $discoveredHugeToad);
         }
         else
         {

@@ -22,6 +22,7 @@ use App\Repository\PetSpeciesRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
+use App\Service\FieldGuideService;
 use App\Service\GreenhouseService;
 use App\Service\InventoryService;
 use App\Service\PetActivity\GreenhouseAdventureService;
@@ -280,9 +281,9 @@ class GreenhouseController extends PoppySeedPetsController
     public function harvestPlant(
         GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository, PetRepository $petRepository,
-        PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository,
         UserQuestRepository $userQuestRepository, GreenhouseAdventureService $greenhouseAdventureService,
-        GreenhouseService $greenhouseService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3
+        GreenhouseService $greenhouseService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3,
+        FieldGuideService $fieldGuideService
     )
     {
         $user = $this->getUser();
@@ -295,6 +296,9 @@ class GreenhouseController extends PoppySeedPetsController
 
         if(!$plant->getIsAdult() || $plant->getProgress() < 1)
             throw new UnprocessableEntityHttpException('This plant is not yet ready to harvest.');
+
+        if($plant->getPlant()->getFieldGuideEntry())
+            $fieldGuideService->maybeUnlock($user, $plant->getPlant()->getFieldGuideEntry(), '%user:' . $user->getId() . '.Name% harvested their ' . $plant->getPlant()->getName() . '.');
 
         if(count($plant->getPlant()->getPlantYields()) === 0)
         {

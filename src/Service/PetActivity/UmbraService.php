@@ -19,6 +19,7 @@ use App\Model\WeatherData;
 use App\Repository\DragonRepository;
 use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
+use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -35,7 +36,6 @@ class UmbraService
     private $inventoryService;
     private $petExperienceService;
     private $transactionService;
-    private $enchantmentRepository;
     private $itemRepository;
     private $toolBonusService;
     private $strangeUmbralEncounters;
@@ -43,11 +43,12 @@ class UmbraService
     private $weatherService;
     private IRandom $squirrel3;
     private HattierService $hattierService;
+    private FieldGuideService $fieldGuideService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, GuildService $guildService, EnchantmentRepository $enchantmentRepository,
-        ItemRepository $itemRepository, InventoryModifierService $toolBonusService, StrangeUmbralEncounters $strangeUmbralEncounters,
+        TransactionService $transactionService, GuildService $guildService, StrangeUmbralEncounters $strangeUmbralEncounters,
+        ItemRepository $itemRepository, InventoryModifierService $toolBonusService, FieldGuideService $fieldGuideService,
         DragonRepository $dragonRepository, Squirrel3 $squirrel3, WeatherService $weatherService,
         HattierService $hattierService
     )
@@ -57,7 +58,6 @@ class UmbraService
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
         $this->guildService = $guildService;
-        $this->enchantmentRepository = $enchantmentRepository;
         $this->itemRepository = $itemRepository;
         $this->toolBonusService = $toolBonusService;
         $this->strangeUmbralEncounters = $strangeUmbralEncounters;
@@ -65,6 +65,7 @@ class UmbraService
         $this->squirrel3 = $squirrel3;
         $this->weatherService = $weatherService;
         $this->hattierService = $hattierService;
+        $this->fieldGuideService = $fieldGuideService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -341,9 +342,13 @@ class UmbraService
         {
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA, PetSkillEnum::STEALTH ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $petName . ' stumbled upon a Drizzly Bear emerging from a dark river. It shook itself off, sending rain into the material world. ' . $petName . ' caught some, and brought it home.' , '');
+            $drizzlyBearDiscovery = 'While exploring the Umbra, ' . $petName . ' stumbled upon a Drizzly Bear emerging from a dark river. It shook itself off, sending rain into the material world.';
+
+            $activityLog = $this->responseService->createActivityLog($pet, $drizzlyBearDiscovery . ' ' . $petName . ' caught some, and brought it home.' , '');
 
             $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' caught this off a Drizzly Bear shaking itself dry.', $activityLog);
+
+            $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Drizzly Bear', $drizzlyBearDiscovery);
         }
         else
         {

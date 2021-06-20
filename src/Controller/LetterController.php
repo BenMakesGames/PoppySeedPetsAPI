@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\UserLetter;
 use App\Enum\SerializationGroupEnum;
+use App\Service\FieldGuideService;
 use App\Service\Filter\UserLetterFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -41,12 +42,26 @@ class LetterController extends PoppySeedPetsController
      * @Route("/{letter}/read", methods={"PATCH"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function markRead(UserLetter $letter, EntityManagerInterface $em, ResponseService $responseService)
+    public function markRead(
+        UserLetter $letter, EntityManagerInterface $em, ResponseService $responseService,
+        FieldGuideService $fieldGuideService
+    )
     {
-        if($letter->getUser()->getId() !== $this->getUser()->getId())
+        $user = $this->getUser();
+
+        if($letter->getUser()->getId() !== $user->getId())
             throw new NotFoundHttpException();
 
         $letter->setIsRead();
+
+        if($letter->getLetter()->getFieldGuideEntry())
+        {
+            $fieldGuideService->maybeUnlock(
+                $user,
+                $letter->getLetter()->getFieldGuideEntry(),
+                '%user:' . $user->getId() . '.Name% read a letter from ' . $letter->getLetter()->getSender() . '.'
+            );
+        }
 
         $em->flush();
 
