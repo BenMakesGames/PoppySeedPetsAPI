@@ -31,7 +31,7 @@ class UserFieldGuideEntryRepository extends ServiceEntityRepository
         {
             $record = $this->findOneBy([
                 'user' => $user,
-                'fieldGuideEntry' => $entry,
+                'entry' => $entry,
             ]);
 
             if(!$record)
