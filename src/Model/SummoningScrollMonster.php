@@ -98,7 +98,7 @@ class SummoningScrollMonster
         $monster->name = 'Bivu\'s Release';
         $monster->nameWithArticle = 'Bivu\'s Release';
         $monster->majorReward = 'Collimated Lance';
-        $monster->minorRewards = [ 'Photon', 'Gravity Wave' ];
+        $monster->minorRewards = [ 'Photon', 'Gravitational Waves' ];
         $monster->element = 'fire';
         $monster->fieldGuideEntry = 'Bivu';
 
