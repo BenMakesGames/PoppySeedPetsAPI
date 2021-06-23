@@ -34,11 +34,21 @@ class CravingService
         $this->responseService = $responseService;
     }
 
+    public function petHasCraving(Pet $pet)
+    {
+        if(!$pet->hasCraving())
+            return false;
+
+        if($pet->getCraving()->isSatisfied())
+            return false;
+
+        return true;
+    }
+
     public function maybeRemoveCraving(Pet $pet)
     {
         if(
-            $pet->hasCraving() &&
-            !$pet->getCraving()->isSatisfied() &&
+            $this->petHasCraving($pet) &&
             ($pet->getFood() < 0 || $pet->getSafety() < 0)
         )
         {
@@ -51,8 +61,7 @@ class CravingService
     public function maybeAddCraving(Pet $pet)
     {
         if(
-            $pet->hasCraving() &&
-            !$pet->getCraving()->isSatisfied() &&
+            !$this->petHasCraving($pet) &&
             $pet->getFullnessPercent() >= 0.5 &&
             $pet->getSafety() >= 8
         )
