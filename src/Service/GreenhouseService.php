@@ -42,7 +42,8 @@ class GreenhouseService
         InventoryService $inventoryService, PetRepository $petRepository, PetFactory $petFactory, Squirrel3 $squirrel3,
         EntityManagerInterface $em, MeritRepository $meritRepository, UserStatsRepository $userStatsRepository,
         UserQuestRepository $userQuestRepository, GreenhousePlantRepository $greenhousePlantRepository,
-        InventoryRepository $inventoryRepository, NormalizerInterface $normalizer
+        InventoryRepository $inventoryRepository, NormalizerInterface $normalizer,
+        PetSpeciesRepository $petSpeciesRepository
     )
     {
         $this->inventoryService = $inventoryService;
@@ -56,6 +57,7 @@ class GreenhouseService
         $this->greenhousePlantRepository = $greenhousePlantRepository;
         $this->inventoryRepository = $inventoryRepository;
         $this->normalizer = $normalizer;
+        $this->petSpeciesRepository = $petSpeciesRepository;
     }
 
     public function approachBird(Greenhouse $greenhouse): string
