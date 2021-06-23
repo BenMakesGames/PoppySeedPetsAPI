@@ -174,7 +174,9 @@ class BurntForestService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
             // triggers Hyssop letter #1
-            $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Can Receive Letters from Fairies', 1);
+            $oldValue = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Can Receive Letters from Fairies', 0);
+            if($oldValue->getValue() === 0)
+                $oldValue->setValue(1);
         }
         else
         {
