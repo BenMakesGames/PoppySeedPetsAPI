@@ -34,6 +34,7 @@ class FriedBookController extends PoppySeedPetsItemController
 * Battered, Fried Fish
 * Chili Calamari
 * Deep-fried Toad Legs
+* Falafel
 * Fried Donut
 * Fried Egg
 * Fried Tomato
@@ -95,6 +96,12 @@ Let\'s fry some stuff!
 * Wheat Flour (no bread crumbs here!)
 
 If you\'re feelin\' spicy, throw in some Spicy Peps to match!
+
+#### Falafel
+
+* Oil!
+* Chickpeas (aka Garbanzo Beans)
+* Onion
 
 #### Fried Donut
 
