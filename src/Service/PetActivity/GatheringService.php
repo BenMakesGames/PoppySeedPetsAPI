@@ -4,23 +4,30 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
+use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Enum\MoonPhaseEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
+use App\Repository\MeritRepository;
+use App\Repository\PetRepository;
+use App\Repository\PetSpeciesRepository;
 use App\Repository\SpiceRepository;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
+use App\Service\PetColorService;
 use App\Service\PetExperienceService;
+use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
@@ -37,11 +44,17 @@ class GatheringService
     private $weatherService;
     private IRandom $squirrel3;
     private FieldGuideService $fieldGuideService;
+    private PetSpeciesRepository $petSpeciesRepository;
+    private PetRepository $petRepository;
+    private PetFactory $petFactory;
+    private MeritRepository $meritRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, ItemRepository $itemRepository, SpiceRepository $spiceRepository,
-        Squirrel3 $squirrel3, WeatherService $weatherService, FieldGuideService $fieldGuideService
+        Squirrel3 $squirrel3, WeatherService $weatherService, FieldGuideService $fieldGuideService,
+        PetSpeciesRepository $petSpeciesRepository, PetRepository $petRepository, PetFactory $petFactory,
+        MeritRepository $meritRepository
     )
     {
         $this->responseService = $responseService;
@@ -53,6 +66,10 @@ class GatheringService
         $this->squirrel3 = $squirrel3;
         $this->weatherService = $weatherService;
         $this->fieldGuideService = $fieldGuideService;
+        $this->petSpeciesRepository = $petSpeciesRepository;
+        $this->petRepository = $petRepository;
+        $this->petFactory = $petFactory;
+        $this->meritRepository = $meritRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -153,6 +170,56 @@ class GatheringService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
             $this->inventoryService->petCollectsItem($bone, $pet, $pet->getName() . ' found this at an Abandoned Quarry!', $activityLog);
             $pet->increaseEsteem(4);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+        }
+        else if($this->squirrel3->rngNextInt(1, 150) === 1)
+        {
+            $pobo = $this->petSpeciesRepository->findOneBy([ 'name' => 'Pobo' ]);
+
+            $poboName = $this->squirrel3->rngNextFromArray([
+                'Flit', 'Waverly', 'Mirage', 'Shadow', 'Calcium',
+                'Kneecap', 'Osteal', 'Papyrus', 'Quint', 'Debris'
+            ]);
+
+            $colorA = ColorFunctions::HSL2Hex($this->squirrel3->rngNextFloat(), 0.62, 0.53);
+
+            $newPet = $this->petFactory->createPet(
+                $pet->getOwner(), $poboName, $pobo,
+                $colorA, 'ece8d0',
+                FlavorEnum::getRandomValue($this->squirrel3),
+                $this->meritRepository->findOneByName(MeritEnum::NO_SHADOW_OR_REFLECTION)
+            );
+
+            $newPet
+                ->increaseLove(-8)
+                ->increaseSafety(10)
+                ->increaseEsteem(-8)
+                ->increaseFood(10)
+                ->setScale($this->squirrel3->rngNextInt(80, 120))
+            ;
+
+            $numberOfPetsAtHome = $this->petRepository->getNumberAtHome($pet->getOwner());
+
+            $petJoinsHouse = $numberOfPetsAtHome < $pet->getOwner()->getMaxPets();
+
+            $extraMessage = 'It followed %pet:' . $pet->getId() . '.name% home';
+
+            if($petJoinsHouse)
+            {
+                $extraMessage .= ', and made itself - well - at home!';
+            }
+            else
+            {
+                $newPet->setInDaycare(true);
+                $extraMessage .= ', but upon seeing the house was full, wafted off to the Daycare.';
+            }
+
+            $this->responseService->setReloadPets($petJoinsHouse);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to an Abandoned Quarry, and happened to find a Stereotypical Bone! But when they picked it up, it began to move on its own! IT\'S POSSESSED! ' . $extraMessage, '');
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
+            $pet->increaseSafety(-4);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
         }
         else if($petWithSkills->getStrength()->getTotal() < 4)
