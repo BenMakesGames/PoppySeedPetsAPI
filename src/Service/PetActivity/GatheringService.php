@@ -77,7 +77,7 @@ class GatheringService
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - $pet->getAlcohol() - $pet->getPsychedelic();
 
-        $maxSkill = NumberFunctions::clamp($maxSkill, 1, 23);
+        $maxSkill = NumberFunctions::clamp($maxSkill, 1, 24);
 
         $roll = $this->squirrel3->rngNextInt(1, $maxSkill);
 
@@ -138,6 +138,14 @@ class GatheringService
             case 22:
             case 23:
                 $activityLog = $this->foundDeepMicroJungle($petWithSkills);
+                break;
+            case 24:
+                if($this->fieldGuideService->hasUnlocked($pet->getOwner(), 'Île Volcan'))
+                    $activityLog = $this->foundOldSettlement($petWithSkills);
+                else if($this->squirrel3->rngNextBool())
+                    $activityLog = $this->foundMicroJungle($petWithSkills);
+                else
+                    $activityLog = $this->foundAbandonedQuarry($petWithSkills);
                 break;
         }
 
@@ -776,26 +784,7 @@ class GatheringService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
         }
 
-        if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal()) < 6)
-        {
-            if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
-            {
-                $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was hot, but their ' . $pet->getTool()->getItem()->getName() . ' protected them.')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ;
-            }
-            else
-            {
-                $pet->increaseFood(-1);
-                $pet->increaseSafety(-$this->squirrel3->rngNextInt(1, 2));
-
-                // why need to have unlocked the greenhouse? just testing that you've been playing for a while
-                if($this->squirrel3->rngNextInt(1, 20) === 1 && $pet->getOwner()->getUnlockedGreenhouse() !== null)
-                    $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and I don\'t mean in a sexy way; %pet:' . $pet->getId() . '.name% got a bit light-headed.');
-                else
-                    $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and %pet:' . $pet->getId() . '.name% got a bit light-headed.');
-            }
-        }
+        $this->maybeGetHeatstroke($petWithSkills, $activityLog, 6, 'the Micro-Jungle');
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60) + count($loot) * 5, PetActivityStatEnum::GATHER, count($loot) > 0);
 
@@ -972,26 +961,7 @@ class GatheringService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
         }
 
-        if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
-        {
-            if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
-            {
-                $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was hot, but their ' . $pet->getTool()->getItem()->getName() . ' protected them.')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ;
-            }
-            else
-            {
-                $pet->increaseFood(-1);
-                $pet->increaseSafety(-$this->squirrel3->rngNextInt(1, 2));
-
-                // why need to have unlocked the greenhouse? just testing that you've been playing for a while
-                if($this->squirrel3->rngNextInt(1, 20) === 1 && $pet->getOwner()->getUnlockedGreenhouse() !== null)
-                    $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and I don\'t mean in a sexy way; %pet:' . $pet->getId() . '.name% got a bit light-headed.');
-                else
-                    $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and %pet:' . $pet->getId() . '.name% got a bit light-headed.');
-            }
-        }
+        $this->maybeGetHeatstroke($petWithSkills, $activityLog, 8, 'the Volcano');
 
         return $activityLog;
     }
@@ -1117,30 +1087,88 @@ class GatheringService
             $this->petExperienceService->gainExp($pet, $this->squirrel3->rngNextInt(2, 3), [ PetSkillEnum::NATURE ]);
         }
 
+        $this->maybeGetHeatstroke($petWithSkills, $activityLog, 8, 'the Micro-Jungle');
+
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60) + count($allLoot) * 5, PetActivityStatEnum::GATHER, count($allLoot) > 0);
+
+        return $activityLog;
+    }
+
+    private function foundOldSettlement(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $extraLoot = [
+            'Filthy Cloth', 'Crooked Stick', 'Canned Food',
+            'String', 'Iron Bar'
+        ];
+
+        $loot = [];
+
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+
+        if($roll >= 15)
+        {
+            $loot[] = $this->squirrel3->rngNextFromArray($extraLoot);
+
+            if($roll >= 25)
+                $loot[] = 'Rusted, Busted Mechanism';
+
+            if($roll >= 35)
+                $loot[] = $this->squirrel3->rngNextFromArray($extraLoot);
+        }
+
+        sort($loot);
+
+        if(count($loot) === 0)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored deep in the island\'s Micro-Jungle, and found a ruined settlement. They looked around for a while, but didn\'t really find anything...', 'icons/activity-logs/confused');
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored deep in the island\'s Micro-Jungle, and found a ruined settlement. They looked around for a while, and scavenged up ' . ArrayFunctions::list_nice($loot) . '.', '');
+
+            foreach($loot as $itemName)
+                $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in a ruined settlement deep in the island\'s Micro-Jungle.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 2 + count($loot), [ PetSkillEnum::NATURE ]);
+        }
+
+        $this->maybeGetHeatstroke($petWithSkills, $activityLog, 8, 'the Micro-Jungle');
+
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60) + count($loot) * 5, PetActivityStatEnum::GATHER, count($loot) > 0);
+
+        return $activityLog;
+    }
+
+    private function maybeGetHeatstroke(ComputedPetSkills $petWithSkills, PetActivityLog $activityLog, int $difficulty, string $locationName)
+    {
         if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
         {
+            $pet = $petWithSkills->getPet();
+
             if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
             {
-                $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was hot, but their ' . $pet->getTool()->getItem()->getName() . ' protected them.')
+                $activityLog->setEntry($activityLog->getEntry() . ' ' . ucfirst($locationName) . ' was hot, but their ' . $pet->getTool()->getItem()->getName() . ' protected them.')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
                 ;
             }
             else
             {
-                $pet->increaseFood(-1);
-                $pet->increaseSafety(-$this->squirrel3->rngNextInt(1, 2));
+                $pet
+                    ->increaseFood(-1)
+                    ->increaseSafety(-$this->squirrel3->rngNextInt(1, 2))
+                ;
 
                 // why need to have unlocked the greenhouse? just testing that you've been playing for a while
                 if($this->squirrel3->rngNextInt(1, 20) === 1 && $pet->getOwner()->getUnlockedGreenhouse() !== null)
-                    $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and I don\'t mean in a sexy way; %pet:' . $pet->getId() . '.name% got a bit light-headed.');
+                    $activityLog->setEntry($activityLog->getEntry() . ' ' . ucfirst($locationName) . ' was CRAZY hot, and I don\'t mean in a sexy way; %pet:' . $pet->getId() . '.name% got a bit light-headed.');
                 else
-                    $activityLog->setEntry($activityLog->getEntry() . ' The Micro-Jungle was CRAZY hot, and %pet:' . $pet->getId() . '.name% got a bit light-headed.');
+                    $activityLog->setEntry($activityLog->getEntry() . ' ' . ucfirst($locationName) . ' was CRAZY hot, and %pet:' . $pet->getId() . '.name% got a bit light-headed.');
             }
         }
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60) + count($allLoot) * 5, PetActivityStatEnum::GATHER, count($allLoot) > 0);
-
-        return $activityLog;
     }
 
 }

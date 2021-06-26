@@ -430,7 +430,6 @@ class DeepSeaService
                 $pet->increaseFood(-2);
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
 
-                // why need to have unlocked the greenhouse? just testing that you've been playing for a while
                 if($this->squirrel3->rngNextInt(1, 20) === 1)
                     $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and I don\'t mean in a sexy way; %pet:' . $pet->getId() . '.name% got a bit light-headed while cramped inside the Submarine.');
                 else

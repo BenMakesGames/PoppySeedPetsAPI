@@ -35,4 +35,15 @@ class FieldGuideService
         if(!$user->getUnlockedFieldGuide())
             $user->setUnlockedFieldGuide();
     }
+
+    /**
+     * @param string|FieldGuideEntry $entry
+     */
+    public function hasUnlocked(User $user, $entry): bool
+    {
+        if(is_string($entry))
+            $entry = $this->fieldGuideEntryRepository->findOneByName($entry);
+
+        return $this->userFieldGuideEntryRepository->doesExist($user, $entry);
+    }
 }

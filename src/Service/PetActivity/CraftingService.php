@@ -337,6 +337,9 @@ class CraftingService
         if($this->houseSimService->hasInventory('Rusty Rapier'))
             $possibilities[] = new ActivityCallback($this, 'repairRustyRapier', $repairWeight);
 
+        if($this->houseSimService->hasInventory('Rusted, Busted Mechanism'))
+            $possibilities[] = new ActivityCallback($this, 'repairOldMechanism', $repairWeight);
+
         if($this->houseSimService->hasInventory('Sun-sun Flag', 2))
             $possibilities[] = new ActivityCallback($this, 'createSunSunFlagFlagSon', 10);
 
@@ -2078,6 +2081,43 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% spent a while trying to repair a Rusty Rapier, but wasn\'t able to make any progress.', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function repairOldMechanism(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + min($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getScience()->getTotal()));
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, false);
+            $this->houseSimService->getState()->loseItem('Rusted, Busted Mechanism', 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ]);
+            $pet->increaseEsteem(-4);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to repair a Rusted, Busted Mechanism, but accidentally busted it beyond repair :(', '');
+        }
+        else if($roll >= 18)
+        {
+            $loot = $this->squirrel3->rngNextFromArray([
+                'Telluriscope', 'Seismustatus', 'Espophone', 'Ferroleuvorter', 'Saccharactum',
+            ]);
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::CRAFT, true);
+            $this->houseSimService->getState()->loseItem('Rusted, Busted Mechanism', 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% repaired a Rusted, Busted Mechanism; it\'s now a fully-functional ' . $loot . '!', 'items/old-mechanism/busted')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+            ;
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' repaired this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% spent a while trying to repair a Rusted, Busted Mechanism, but wasn\'t able to make any progress.', 'icons/activity-logs/confused');
         }
     }
 
