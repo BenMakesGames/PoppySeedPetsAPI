@@ -35,19 +35,45 @@ class UserFieldGuideEntryRepository extends ServiceEntityRepository
             ]);
 
             if(!$record)
-            {
-                $record = (new UserFieldGuideEntry())
-                    ->setUser($user)
-                    ->setEntry($entry)
-                    ->setComment($comment)
-                ;
+                $record = $this->create($user, $entry, $comment);
 
-                $this->getEntityManager()->persist($record);
-            }
+            $this->userEntryPerRequestCache[$cacheKey] = $record;
+        }
+        else if($this->userEntryPerRequestCache[$cacheKey] === null)
+        {
+            $this->userEntryPerRequestCache[$cacheKey] = $this->create($user, $entry, $comment);
+        }
+
+        return $this->userEntryPerRequestCache[$cacheKey];
+    }
+
+    private function create(User $user, FieldGuideEntry $entry, string $comment): UserFieldGuideEntry
+    {
+        $record = (new UserFieldGuideEntry())
+            ->setUser($user)
+            ->setEntry($entry)
+            ->setComment($comment)
+        ;
+
+        $this->getEntityManager()->persist($record);
+
+        return $record;
+    }
+
+    public function doesExist(User $user, FieldGuideEntry $entry)
+    {
+        $cacheKey = $user->getId() . '-' . $entry->getId();
+
+        if(!array_key_exists($cacheKey, $this->userEntryPerRequestCache))
+        {
+            $record = $this->findOneBy([
+                'user' => $user,
+                'entry' => $entry,
+            ]);
 
             $this->userEntryPerRequestCache[$cacheKey] = $record;
         }
 
-        return $this->userEntryPerRequestCache[$cacheKey];
+        return $this->userEntryPerRequestCache[$cacheKey] !== null;
     }
 }
