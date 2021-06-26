@@ -298,7 +298,7 @@ class GreenhouseController extends PoppySeedPetsController
             throw new UnprocessableEntityHttpException('This plant is not yet ready to harvest.');
 
         if($plant->getPlant()->getFieldGuideEntry())
-            $fieldGuideService->maybeUnlock($user, $plant->getPlant()->getFieldGuideEntry(), '%user:' . $user->getId() . '.Name% harvested their ' . $plant->getPlant()->getName() . '.');
+            $fieldGuideService->maybeUnlock($user, $plant->getPlant()->getFieldGuideEntry(), '%user:' . $user->getId() . '.Name% harvested a ' . $plant->getPlant()->getName() . '.');
 
         if(count($plant->getPlant()->getPlantYields()) === 0)
         {

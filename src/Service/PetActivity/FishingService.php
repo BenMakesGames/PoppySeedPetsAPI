@@ -724,6 +724,8 @@ class FishingService
     {
         $pet = $petWithSkills->getPet();
 
+        $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Île Volcan', '%pet:' . $pet->getId() . '.name% went fishing at the foot of the Volcano.');
+
         $nothingBiting = $this->nothingBiting($pet, 20, 'at the foot of the Volcano');
         if($nothingBiting !== null) return $nothingBiting;
 
