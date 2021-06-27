@@ -37,6 +37,7 @@ Whatever the circumstances that lead to your overabundance of milk, fret not! Th
 * Naner Puddin\'
 * Pancakes
 * Plain Bread
+* Qatayef
 * Teas
 * Yogurt
 
@@ -128,6 +129,18 @@ Optionally, add fruit, such as berries, Reds, or Naners.
 * Wheat Flour
 * Butter
 * Yeast
+
+#### Qatayef
+
+A tasty Arabic dessert filled with nuts and cream! (It\'s a little involved, but worth the effort!)
+
+* Creamy Milk!
+* Mixed Nuts
+* Sugar
+* Yeast
+* Baking Powder
+* Wheat Flour
+* Wheat
 
 #### Teas
 
