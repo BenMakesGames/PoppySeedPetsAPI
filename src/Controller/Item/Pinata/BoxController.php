@@ -52,12 +52,12 @@ class BoxController extends PoppySeedPetsItemController
 
         $hatItem = $itemRepository->findOneByName($squirrel3->rngNextFromArray([
             'Masquerade Mask',
-            'Wings',
             'Merchant\'s Cap',
             'Wizarding Hat',
             'Gray Bow',
             'Cool Sunglasses',
-            'Sombrero'
+            'Sombrero',
+            'Judy'
         ]));
 
         $userStatsRepository->incrementStat($user, 'Opened ' . $box->getItem()->getNameWithArticle());
