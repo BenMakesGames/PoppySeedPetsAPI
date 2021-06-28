@@ -1,7 +1,7 @@
 <?php
 namespace App\Service\Filter;
 
-use App\Repository\ItemRepository;
+use App\Entity\User;
 use App\Repository\PetSpeciesRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -12,6 +12,7 @@ class PetSpeciesFilterService
     public const PAGE_SIZE = 20;
 
     private $repository;
+    private ?User $user;
 
     public function __construct(PetSpeciesRepository $petSpeciesRepository)
     {
@@ -20,26 +21,54 @@ class PetSpeciesFilterService
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
             [
-                'name' => [ 'i.nameSort' => 'asc' ], // first one is the default
-                'id' => [ 'i.id' => 'asc' ],
+                'name' => [ 's.nameSort' => 'asc' ], // first one is the default
+                'id' => [ 's.id' => 'asc' ],
             ],
             [
                 'name' => [ $this, 'filterName' ],
                 'family' => [ $this, 'filterFamily' ],
                 'canTransmigrate' => [ $this, 'filterCanTransmigrate' ],
+                'hasPet' => [ $this, 'filterHasPet' ],
             ]
         );
     }
 
     public function createQueryBuilder(): QueryBuilder
     {
-        return $this->repository->createQueryBuilder('i');
+        return $this->repository->createQueryBuilder('s');
+    }
+
+    public function setUser(?User $user)
+    {
+        $this->user = $user;
+    }
+
+    public function filterHasPet(QueryBuilder $qb, $value)
+    {
+        if(!$this->user || $value === null)
+            return;
+
+        if(!in_array('pet', $qb->getAllAliases()))
+            $qb->leftJoin('s.pets', 'pet', 'WITH', 'pet.owner=:user');
+
+        $qb
+            ->setParameter('user', $this->user)
+        ;
+
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('pet.id IS NULL');
+        else
+            $qb->andWhere('pet.id IS NOT NULL');
+
     }
 
     public function filterName(QueryBuilder $qb, $value)
     {
+        if(!$value)
+            return;
+
         $qb
-            ->andWhere('i.name LIKE :nameLike')
+            ->andWhere('s.name LIKE :nameLike')
             ->setParameter('nameLike', '%' . $value . '%')
         ;
     }
@@ -47,7 +76,7 @@ class PetSpeciesFilterService
     public function filterFamily(QueryBuilder $qb, $value)
     {
         $qb
-            ->andWhere('i.family LIKE :family')
+            ->andWhere('s.family LIKE :family')
             ->setParameter('family', $value)
         ;
     }
@@ -57,13 +86,13 @@ class PetSpeciesFilterService
         if($value)
         {
             $qb
-                ->andWhere('(i.id<=16 OR i.availableFromBreeding=1 OR i.availableFromPetShelter=1)')
+                ->andWhere('(s.id<=16 OR s.availableFromBreeding=1 OR s.availableFromPetShelter=1)')
             ;
         }
         else
         {
             $qb
-                ->andWhere('i.id>16 AND i.availableFromBreeding=0 AND i.availableFromPetShelter=0')
+                ->andWhere('s.id>16 AND s.availableFromBreeding=0 AND s.availableFromPetShelter=0')
             ;
         }
     }

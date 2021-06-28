@@ -129,6 +129,11 @@ class PetSpecies
      */
     private $nameSort;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Pet", mappedBy="species")
+     */
+    private $pets;
+
     public function getId(): ?int
     {
         return $this->id;

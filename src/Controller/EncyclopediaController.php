@@ -75,6 +75,8 @@ class EncyclopediaController extends PoppySeedPetsController
      */
     public function speciesSearch(Request $request, PetSpeciesFilterService $petSpeciesFilterService, ResponseService $responseService)
     {
+        $petSpeciesFilterService->setUser($this->getUser());
+
         return $responseService->success(
             $petSpeciesFilterService->getResults($request->query),
             [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::PET_ENCYCLOPEDIA ]
