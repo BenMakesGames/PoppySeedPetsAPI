@@ -204,6 +204,16 @@ class ItemTool
      */
     private $adventureDescription;
 
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $whenGatherApplyStatusEffect;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $whenGatherApplyStatusEffectDuration;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -428,6 +438,11 @@ class ItemTool
 
         if($this->getWhenGather())
         {
+            if($this->getWhenGatherApplyStatusEffect())
+            {
+                $modifiers[] = 'when the pet obtains ' . $this->getWhenGather()->getName() . ', it becomes ' . $this->getWhenGatherApplyStatusEffect();
+            }
+
             if($this->getWhenGatherAlsoGather())
             {
                 if($this->getWhenGatherPreventGather())
@@ -729,6 +744,30 @@ class ItemTool
     public function setAdventureDescription(?string $adventureDescription): self
     {
         $this->adventureDescription = $adventureDescription;
+
+        return $this;
+    }
+
+    public function getWhenGatherApplyStatusEffect(): ?string
+    {
+        return $this->whenGatherApplyStatusEffect;
+    }
+
+    public function setWhenGatherApplyStatusEffect(?string $whenGatherApplyStatusEffect): self
+    {
+        $this->whenGatherApplyStatusEffect = $whenGatherApplyStatusEffect;
+
+        return $this;
+    }
+
+    public function getWhenGatherApplyStatusEffectDuration(): ?int
+    {
+        return $this->whenGatherApplyStatusEffectDuration;
+    }
+
+    public function setWhenGatherApplyStatusEffectDuration(?int $whenGatherApplyStatusEffectDuration): self
+    {
+        $this->whenGatherApplyStatusEffectDuration = $whenGatherApplyStatusEffectDuration;
 
         return $this;
     }

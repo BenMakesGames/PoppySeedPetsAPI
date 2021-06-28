@@ -33,11 +33,12 @@ class InventoryService
     private $spiceRepository;
     private $eatingService;
     private HouseSimService $houseSimService;
+    private StatusEffectService $statusEffectService;
 
     public function __construct(
         ItemRepository $itemRepository, EntityManagerInterface $em, ResponseService $responseService,
         InventoryRepository $inventoryRepository, Squirrel3 $squirrel3, SpiceRepository $spiceRepository,
-        EatingService $eatingService, HouseSimService $houseSimService
+        EatingService $eatingService, HouseSimService $houseSimService, StatusEffectService $statusEffectService
     )
     {
         $this->itemRepository = $itemRepository;
@@ -48,6 +49,7 @@ class InventoryService
         $this->spiceRepository = $spiceRepository;
         $this->eatingService = $eatingService;
         $this->houseSimService = $houseSimService;
+        $this->statusEffectService = $statusEffectService;
     }
 
     /**
@@ -258,6 +260,9 @@ class InventoryService
                 // bonus gather from equipment
                 if($toolTool->getWhenGather() && $item->getName() === $toolTool->getWhenGather()->getName())
                 {
+                    if($toolTool->getWhenGatherApplyStatusEffect() && $toolTool->getWhenGatherApplyStatusEffectDuration())
+                        $this->statusEffectService->applyStatusEffect($pet, $toolTool->getWhenGatherApplyStatusEffect(), $toolTool->getWhenGatherApplyStatusEffectDuration());
+
                     if($toolTool->getWhenGatherPreventGather())
                         $cancelGather = true;
 
@@ -314,6 +319,9 @@ class InventoryService
 
                 if($bonusEffects->getWhenGather() && $item->getName() === $bonusEffects->getWhenGather()->getName())
                 {
+                    if($bonusEffects->getWhenGatherApplyStatusEffect() && $bonusEffects->getWhenGatherApplyStatusEffectDuration())
+                        $this->statusEffectService->applyStatusEffect($pet, $bonusEffects->getWhenGatherApplyStatusEffect(), $bonusEffects->getWhenGatherApplyStatusEffectDuration());
+
                     if($bonusEffects->getWhenGatherPreventGather())
                         $cancelGather = true;
 
