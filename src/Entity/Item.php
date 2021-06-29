@@ -141,6 +141,11 @@ class Item
      */
     private $cannotBeThrownOut = false;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $museumPoints;
+
     public function __construct()
     {
         $this->itemGroups = new ArrayCollection();
@@ -478,6 +483,18 @@ class Item
     public function setCannotBeThrownOut(bool $cannotBeThrownOut): self
     {
         $this->cannotBeThrownOut = $cannotBeThrownOut;
+
+        return $this;
+    }
+
+    public function getMuseumPoints(): ?int
+    {
+        return $this->museumPoints;
+    }
+
+    public function setMuseumPoints(int $museumPoints): self
+    {
+        $this->museumPoints = $museumPoints;
 
         return $this;
     }

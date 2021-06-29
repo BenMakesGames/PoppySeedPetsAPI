@@ -300,6 +300,16 @@ class User implements UserInterface
      */
     private $unlockedFieldGuide;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $museumPoints = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $museumPointsSpent = 0;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -1065,6 +1075,30 @@ class User implements UserInterface
     public function setUnlockedFieldGuide(): self
     {
         $this->unlockedFieldGuide = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getMuseumPoints(): int
+    {
+        return $this->museumPoints;
+    }
+
+    public function addMuseumPoints(int $museumPoints): self
+    {
+        $this->museumPoints += $museumPoints;
+
+        return $this;
+    }
+
+    public function getMuseumPointsSpent(): int
+    {
+        return $this->museumPointsSpent;
+    }
+
+    public function addMuseumPointsSpent(int $museumPointsSpent): self
+    {
+        $this->museumPointsSpent += $museumPointsSpent;
 
         return $this;
     }

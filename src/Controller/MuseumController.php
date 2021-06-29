@@ -14,6 +14,7 @@ use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\Filter\ItemFilterService;
 use App\Service\Filter\MuseumFilterService;
+use App\Service\MuseumService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr;
@@ -244,6 +245,8 @@ class MuseumController extends PoppySeedPetsController
         if(count($inventory) === 0)
             throw new UnprocessableEntityHttpException('Some of the selected items could not be donated? That\'s weird. Try reloading and trying again.');
 
+        $totalMuseumPoints = 0;
+
         foreach($inventory as $i)
         {
             $museumItem = (new MuseumItem())
@@ -253,14 +256,36 @@ class MuseumController extends PoppySeedPetsController
                 ->setComments($i->getComments())
             ;
 
+            $totalMuseumPoints += $i->getItem()->getMuseumPoints();
+
             $em->persist($museumItem);
             $em->remove($i);
         }
+
+        $user->addMuseumPoints($totalMuseumPoints);
 
         $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, count($inventory));
 
         $em->flush();
 
         return $responseService->success();
+    }
+
+    /**
+     * @Route("/giftShop", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getGiftShop(ResponseService $responseService, MuseumService $museumService)
+    {
+        $user = $this->getUser();
+
+        $inventory = $museumService->getGiftShopInventory($user);
+
+        return $responseService->success(
+            [
+                'pointsAvailable' => $user->getMuseumPoints() - $user->getMuseumPointsSpent(),
+                'inventory' => $inventory
+            ]
+        );
     }
 }
