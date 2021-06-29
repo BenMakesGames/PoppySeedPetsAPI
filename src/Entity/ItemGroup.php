@@ -34,7 +34,12 @@ class ItemGroup
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isCraving;
+    private $isCraving = false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isGiftShop = false;
 
     public function __construct()
     {
@@ -90,6 +95,18 @@ class ItemGroup
     public function setIsCraving(bool $isCraving): self
     {
         $this->isCraving = $isCraving;
+
+        return $this;
+    }
+
+    public function getIsGiftShop(): ?bool
+    {
+        return $this->isGiftShop;
+    }
+
+    public function setIsGiftShop(bool $isGiftShop): self
+    {
+        $this->isGiftShop = $isGiftShop;
 
         return $this;
     }
