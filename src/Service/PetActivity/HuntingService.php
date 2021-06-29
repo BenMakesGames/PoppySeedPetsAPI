@@ -661,7 +661,14 @@ class HuntingService
         {
             $moneysLost = $this->squirrel3->rngNextInt(1, 2);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
-            $this->transactionService->spendMoney($pet->getOwner(), $moneysLost, $pet->getName() . ' was outsmarted by a Thieving Magpie, who stole this money.', false);
+
+            if($this->squirrel3->rngNextInt(1, 10) === 1)
+                $description = 'who absquatulated with ' . $moneysLost . ' ' . ($moneysLost === 1 ? 'money' : 'moneys') . '.';
+            else
+                $description = 'who stole ' . $moneysLost . ' ' . ($moneysLost === 1 ? 'money' : 'moneys') . '.';
+
+            $this->transactionService->spendMoney($pet->getOwner(), $moneysLost, $pet->getName() . ' was outsmarted by a Thieving Magpie, ' . $description, false);
+
             $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::MONEYS_STOLEN_BY_THIEVING_MAGPIES, $moneysLost);
 
             $pet
@@ -671,7 +678,7 @@ class HuntingService
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was outsmarted by a Thieving Magpie, and lost ' . $moneysLost . ' ' . ($moneysLost === 1 ? 'money' : 'moneys') . '.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was outsmarted by a Thieving Magpie, ' . $description, '');
         }
         else if($this->squirrel3->rngNextInt(1, $dexSkill) >= 9)
         {
