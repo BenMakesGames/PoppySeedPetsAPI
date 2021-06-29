@@ -57,7 +57,8 @@ class BoxController extends PoppySeedPetsItemController
             'Gray Bow',
             'Cool Sunglasses',
             'Sombrero',
-            'Judy'
+            'Judy',
+            'Propeller Beanie',
         ]));
 
         $userStatsRepository->incrementStat($user, 'Opened ' . $box->getItem()->getNameWithArticle());
