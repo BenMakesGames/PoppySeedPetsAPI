@@ -88,7 +88,35 @@ class HattierService
 
     private $userAurasPerRequestCache = [];
 
-    public function unlockAura(User $user, Enchantment $enchantment, string $comment, PetActivityLog $activityLog, ?string $customActivityUnlockMessage = null): UserUnlockedAura
+    public function playerUnlockAura(User $user, Enchantment $enchantment, string $comment)
+    {
+        $cacheKey = $user->getId() . '-' . $enchantment->getId();
+
+        if(!array_key_exists($cacheKey, $this->userAurasPerRequestCache) || $this->userAurasPerRequestCache[$cacheKey] === null)
+        {
+            $unlockedAura = $this->userUnlockedAuraRepository->findOneBy([
+                'user' => $user,
+                'aura' => $enchantment
+            ]);
+
+            if(!$unlockedAura)
+            {
+                $unlockedAura = (new UserUnlockedAura())
+                    ->setUser($user)
+                    ->setAura($enchantment)
+                    ->setComment($comment)
+                ;
+
+                $this->em->persist($unlockedAura);
+            }
+
+            $this->userAurasPerRequestCache[$cacheKey] = $unlockedAura;
+        }
+
+        return $this->userAurasPerRequestCache[$cacheKey];
+    }
+
+    public function petUnlockAura(User $user, Enchantment $enchantment, string $comment, PetActivityLog $activityLog, ?string $customActivityUnlockMessage = null): UserUnlockedAura
     {
         $cacheKey = $user->getId() . '-' . $enchantment->getId();
 
@@ -187,7 +215,7 @@ class HattierService
             ;
         }
 
-        $this->unlockAura($pet->getOwner(), $enchantment, $auraUnlockMessage, $activityLog);
+        $this->petUnlockAura($pet->getOwner(), $enchantment, $auraUnlockMessage, $activityLog);
 
         return $activityLog;
     }
@@ -216,6 +244,6 @@ class HattierService
             ;
         }
 
-        $this->unlockAura($pet->getOwner(), $enchantment, $auraUnlockMessage, $activityLog);
+        $this->petUnlockAura($pet->getOwner(), $enchantment, $auraUnlockMessage, $activityLog);
     }
 }
