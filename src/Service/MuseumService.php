@@ -81,19 +81,31 @@ class MuseumService
         {
             $userDonated = $this->museumItemRepository->count([
                 'user' => $user,
-                'item' => $group->getItems()
+                'item' => $group->getItems()->toArray()
             ]);
 
-            if($userDonated >= count($group->getItems()) / 2)
+            $requiredToUnlock = ceil(count($group->getItems()) / 2);
+
+            $forSale = [];
+
+            if($userDonated >= $requiredToUnlock)
             {
                 foreach($group->getItems() as $item)
                 {
-                    $inventory[] = [
+                    $forSale[] = [
                         'item' => [ 'name' => $item->getName(), 'image' => $item->getImage() ],
                         'cost' => $item->getMuseumPoints() * 10,
                     ];
                 }
             }
+
+            $inventory[] = [
+                'category' => $group->getName(),
+                'itemsDonated' => $userDonated,
+                'requiredToUnlock' => $requiredToUnlock,
+                'inventory' => $forSale
+            ];
+
         }
 
         return $inventory;

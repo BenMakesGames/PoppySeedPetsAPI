@@ -23,14 +23,18 @@ final class Version20210629190003 extends AbstractMigration
         $this->addSql('ALTER TABLE item ADD museum_points SMALLINT NOT NULL');
         $this->addSql('ALTER TABLE user ADD museum_points INT NOT NULL');
 
+        // base value
         $this->addSql('UPDATE item SET museum_points=IF(recycle_value<5,1,FLOOR(recycle_value/5)*10)');
+
+        // exceptions
         $this->addSql('UPDATE item SET museum_points=5 WHERE name IN (
             "Red Umbrella", "Bungee Cord", "Sand Dollar", "Tower Chest", "Chocolate Chest",
-            "William, Shush"
+            "William, Shush", "White Firework", "Blue Firework", "Red Firework", "Yellow Firework"
         )');
         $this->addSql('UPDATE item SET museum_points=7 WHERE name = "Musical Scales"');
         $this->addSql('UPDATE item SET museum_points=10 WHERE name IN (
-            "Weird Beetle", "Meteorite", "Magpie\'s Deal", "Fluff Heart", "Yes, Chef!", "Nón Lá"
+            "Weird Beetle", "Meteorite", "Magpie\'s Deal", "Fluff Heart", "Yes, Chef!", "Nón Lá",
+            "Gold Dragon Ingot"
         )');
         $this->addSql('UPDATE item SET museum_points=15 WHERE name IN (
             "Cosmologer\'s Promise", "Witch\'s Hat", "Santa Hat", "Top Hat", "Fez", "Jolliest Roger",
@@ -38,12 +42,13 @@ final class Version20210629190003 extends AbstractMigration
             "Chocolate Feather Bonnet"
         )');
         $this->addSql('UPDATE item SET museum_points=20 WHERE name IN (
-            "Heartstone", "Sentient Beetle", "Renaming Scroll", "Turkey King"
+            "Heartstone", "Sentient Beetle", "Renaming Scroll", "Turkey King",
+            "Cetgueli\'s Treasure Map"
         )');
         $this->addSql('UPDATE item SET museum_points=25 WHERE name IN (
             "Heart Beetle", "Stereotypical Bone", "Fish Bones",
             "Gold Crown", "Dragon Vase", "Lengthy Scroll of Skill",
-            "Forgetting Scroll", "Behatting Scroll", "Unicorn Horn",
+            "Forgetting Scroll", "Behatting Scroll", "Unicorn Horn"
         )');
         $this->addSql('UPDATE item SET museum_points=30 WHERE name IN (
             "Dino Skull", "Double Crown"
@@ -55,18 +60,24 @@ final class Version20210629190003 extends AbstractMigration
             "Orange Bow", "Transparent Bow", "Triple Crown"
         )');
 
+        // notable item groups
         $this->addSql('UPDATE item SET museum_points=5 WHERE id IN (
             SELECT item_id FROM item_group_item
             LEFT JOIN item_group ON item_group_item.item_group_id=item_group.id
             WHERE item_group.name="Hollow Earth Booster Pack: Uncommon"
         )');
-
         $this->addSql('UPDATE item SET museum_points=15 WHERE id IN (
             SELECT item_id FROM item_group_item
             LEFT JOIN item_group ON item_group_item.item_group_id=item_group.id
             WHERE item_group.name="Hollow Earth Booster Pack: Rare"
         )');
+        $this->addSql('UPDATE item SET museum_points=50 WHERE id IN (
+            SELECT item_id FROM item_group_item
+            LEFT JOIN item_group ON item_group_item.item_group_id=item_group.id
+            WHERE item_group.name="Skill Scroll"
+        )');
 
+        // all other scrolls
         $this->addSql('UPDATE item SET museum_points=5 WHERE name LIKE "%scroll%" AND museum_points<5');
 
         $this->addSql('

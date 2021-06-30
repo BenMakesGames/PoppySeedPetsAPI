@@ -69,7 +69,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
         $this->food($item);
         $this->fertilizer($item);
         $this->fuel($item);
-        $this->recycleValue($item);
+        $this->recycleValueAndMuseumPoints($item);
 
         $this->em->flush();
 
@@ -264,8 +264,11 @@ class UpsertItemCommand extends PoppySeedPetsCommand
         $item->setFuel($this->askInt('Fuel', $item->getFuel()));
     }
 
-    private function recycleValue(Item $item)
+    private function recycleValueAndMuseumPoints(Item $item)
     {
         $item->setRecycleValue($this->askInt('Recycle Value', $item->getRecycleValue()));
+
+        // museum points must be asked for AFTER recycle value:
+        $item->setMuseumPoints($this->askInt('Museum Points', $item->getMuseumPoints() ?? max(1, floor($item->getRecycleValue() / 5) * 10)));
     }
 }

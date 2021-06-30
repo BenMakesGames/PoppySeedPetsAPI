@@ -143,6 +143,7 @@ class Item
 
     /**
      * @ORM\Column(type="smallint")
+     * @Groups({"myDonatableInventory"})
      */
     private $museumPoints;
 
