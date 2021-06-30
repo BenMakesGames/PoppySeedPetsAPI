@@ -344,7 +344,7 @@ class MuseumController extends PoppySeedPetsController
 
         $user->addMuseumPointsSpent($item['cost']);
 
-        $inventoryService->receiveItem($itemObject, $user, $user, $user->getName() . ' bought this from the Museum Gift Shop.', $targetLocation, true);
+        $inventoryService->receiveItem($itemObject, $user, null, $user->getName() . ' bought this from the Museum Gift Shop.', $targetLocation, true);
 
         if($targetLocation === LocationEnum::BASEMENT)
             $responseService->addFlashMessage('You bought ' . $itemObject->getNameWithArticle() . '; your house is full, so it\'s been sent to your basement.');
