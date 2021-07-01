@@ -8,6 +8,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
+use App\Functions\ActivityHelpers;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -781,21 +782,29 @@ class FishingService
             'Silver Ore',
         ];
 
-        if($this->squirrel3->rngNextInt(1, 50) === 1 || ($pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 50) === 1))
+        $isLucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 50) === 1;
+
+        $discoveryText = ActivityHelpers::PetName($pet) . ' went fishing at the Coral Reef';
+
+        $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Coral Reef', $discoveryText . '.');
+
+        if($isLucky || $this->squirrel3->rngNextInt(1, 50) === 1)
         {
             $item = $this->squirrel3->rngNextFromArray([
                 'Gold Bar', 'Very Strongbox', 'Rusty Rapier',
             ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at the Coral Reef, and spotted a ' . $item . '!', '');
-            $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this at the Coral Reef.', $activityLog);
+            $luckyText = $isLucky ? ' Lucky~!' : '';
+
+            $activityLog = $this->responseService->createActivityLog($pet, $discoveryText . ', and spotted a ' . $item . '!' . $luckyText, '');
+            $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this at the Coral Reef!' . $luckyText, $activityLog);
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
         }
         else if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getFishingBonus()->getTotal()) >= 24)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at the Coral Reef, and caught all kinds of stuff!', 'items/tool/fishing-rod/crooked');
+            $activityLog = $this->responseService->createActivityLog($pet, $discoveryText . ', and caught all kinds of stuff!', 'items/tool/fishing-rod/crooked');
 
             for($x = 0; $x < 3; $x++)
                 $this->inventoryService->petCollectsItem($this->squirrel3->rngNextFromArray($possibleItems), $pet, $pet->getName() . ' got this while fishing at the Coral Reef.', $activityLog);
@@ -805,7 +814,7 @@ class FishingService
         }
         else if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getFishingBonus()->getTotal()) >= 12)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at the Coral Reef, and caught a couple things!', 'items/tool/fishing-rod/crooked');
+            $activityLog = $this->responseService->createActivityLog($pet, $discoveryText . ', and caught a couple things!', 'items/tool/fishing-rod/crooked');
 
             for($x = 0; $x < 2; $x++)
                 $this->inventoryService->petCollectsItem($this->squirrel3->rngNextFromArray($possibleItems), $pet, $pet->getName() . ' got this while fishing at the Coral Reef.', $activityLog);
@@ -816,9 +825,9 @@ class FishingService
         else
         {
             if($this->squirrel3->rngNextInt(1, 2) === 1)
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at the Coral Reef, but there were a bunch of Hammerheads around.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $discoveryText . ', but there were a bunch of Hammerheads around.', '');
             else
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at the Coral Reef, but there were a bunch of Jellyfish around.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $discoveryText . ', but there were a bunch of Jellyfish around.', '');
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);

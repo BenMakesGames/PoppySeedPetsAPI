@@ -254,17 +254,24 @@ class DeepSeaService
                 $period = '.';
             }
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored a coral reef using the Submarine, and found ' . $loot . $period, 'items/tool/submarine');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the Coral Reef using the Submarine, and found ' . $loot . $period, 'items/tool/submarine');
 
-            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while exploring a reef using the Submarine' . $period, $activityLog);
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while exploring the Coral Reef using the Submarine' . $period, $activityLog);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
+
+            $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Coral Reef', '%pet:' . $pet->getId() . '.name% explored the Coral Reef using the Submarine.');
         }
         else
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started exploring a coral reef using the Submarine, but was chased off by some sharks...', '');
+            if($this->squirrel3->rngNextInt(1, 2) === 1)
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started exploring the Coral Reef using the Submarine, but was chased off by some Hammerheads...', '');
+            else
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started exploring the Coral Reef using the Submarine, but was chased off by a swarm of Jellyfish...', '');
+
+            $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Coral Reef', $activityLog->getEntry());
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
         }
