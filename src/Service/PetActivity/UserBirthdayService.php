@@ -47,7 +47,7 @@ class UserBirthdayService
         $anniversaryMuffin = $this->itemRepository->findOneByName('Anniversary Poppy Seed* Muffin');
 
         $this->inventoryService->receiveItem($anniversaryMuffin, $user, $user, $petWithSkills->getPet()->getName() . ' made this for your ' . $years . '-year Anniversary!', LocationEnum::HOME, true);
-        $this->museumService->forceDonateItem($user, $anniversaryMuffin, $petWithSkills->getPet()->getName() . ' made this for your ' . $years . '-year Anniversary!');
+        $this->museumService->forceDonateItem($user, $anniversaryMuffin, $petWithSkills->getPet()->getName() . ' made this for your ' . $years . '-year Anniversary!', $user);
 
         $birthdayPresentsReceived->setValue($birthdayPresentsReceived->getValue() + 1);
 
