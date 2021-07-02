@@ -39,13 +39,14 @@ class GenericAdventureService
     private WeatherService $weatherService;
     private EnchantmentRepository $enchantmentRepository;
     private HattierService $hattierService;
+    private UserBirthdayService $userBirthdayService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         UserQuestRepository $userQuestRepository, TransactionService $transactionService, MeritRepository $meritRepository,
         ItemRepository $itemRepository, Squirrel3 $squirrel3, SpiceRepository $spiceRepository,
-        WeatherService $weatherService, EnchantmentRepository $enchantmentRepository,
-        HattierService $hattierService
+        WeatherService $weatherService, EnchantmentRepository $enchantmentRepository, HattierService $hattierService,
+        UserBirthdayService $userBirthdayService
     )
     {
         $this->responseService = $responseService;
@@ -60,6 +61,7 @@ class GenericAdventureService
         $this->weatherService = $weatherService;
         $this->enchantmentRepository = $enchantmentRepository;
         $this->hattierService = $hattierService;
+        $this->userBirthdayService = $userBirthdayService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -104,6 +106,11 @@ class GenericAdventureService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
             ;
         }
+
+        // check for birthday event
+        $birthdayEvent = $this->userBirthdayService->doBirthday($petWithSkills);
+        if($birthdayEvent)
+            return $birthdayEvent;
 
         $level = $pet->getLevel();
         $activityLog = null;

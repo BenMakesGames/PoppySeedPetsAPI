@@ -133,6 +133,9 @@ class EatingService
             $this->statusEffectService->applyStatusEffect($pet, $statusEffect['effect'], $statusEffect['duration']);
         }
 
+        if($food->grantsSelfReflection)
+            $pet->increaseSelfReflectionPoint(1);
+
         if($this->cravingService->foodMeetsCraving($pet, $food->baseItem))
         {
             $this->cravingService->satisfyCraving($pet, $food->baseItem);
