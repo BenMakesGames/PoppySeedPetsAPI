@@ -286,7 +286,7 @@ class BurntForestService
                             $pet,
                             $activityLog,
                             $livingFlame,
-                            'After finishing its Charcoal, the spirit decided to follow ' . ActivityHelpers::PetName($pet) . ' home in their ' . $pet->getHat()->getItem()->getName() . '!',
+                            'After finishing its Charcoal, the spirit decided to follow ' . ActivityHelpers::PetName($pet) . ' home in their hat!',
                             'After finishing its Charcoal, the spirit decided to follow ' . ActivityHelpers::PetName($pet) . ' home!',
                             ActivityHelpers::PetName($pet) . ' fed a hungry fire spirit a bit of Charcoal, and the spirit followed them home...'
                         );
