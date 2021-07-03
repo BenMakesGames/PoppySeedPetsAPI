@@ -1557,11 +1557,11 @@ class MagicBindingService
 
             if($this->squirrel3->rngNextInt(1, 4) === 1)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to imbue a Heavy Lance with Blood Wine, but accidentally the wine! :(', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to imbue a Heavy Lance with Blood Wine, but accidentally spilled the wine! :(', '');
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to imbue a Heavy Lance with Blood Wine, but accidentally the wine! :( They were able to re-capture some of the magic that escaped, at least...', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to imbue a Heavy Lance with Blood Wine, but accidentally spilled the wine! :( They were able to re-capture some of the magic that escaped, at least...', '');
                 $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' created this!', $activityLog);
             }
         }

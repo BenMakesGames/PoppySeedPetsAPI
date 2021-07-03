@@ -11,13 +11,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class FindPetsUnhappyInAGroupCommand extends Command
 {
-    private $em;
     private $petRepository;
     private $petGroupService;
 
-    public function __construct(EntityManagerInterface $em, PetRepository $petRepository, PetGroupService $petGroupService)
+    public function __construct(PetRepository $petRepository, PetGroupService $petGroupService)
     {
-        $this->em = $em;
         $this->petRepository = $petRepository;
         $this->petGroupService = $petGroupService;
 

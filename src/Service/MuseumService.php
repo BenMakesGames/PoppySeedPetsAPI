@@ -35,7 +35,7 @@ class MuseumService
     /**
      * @param string|number|Item $item
      */
-    public function forceDonateItem(User $user, $item, ?string $comment): MuseumItem
+    public function forceDonateItem(User $user, $item, ?string $comment, ?User $createdBy = null): MuseumItem
     {
         if(is_string($item))
             $item = $this->itemRepository->findOneByName($item);
@@ -53,7 +53,7 @@ class MuseumService
         $museumItem = (new MuseumItem())
             ->setUser($user)
             ->setItem($item)
-            ->setCreatedBy(null)
+            ->setCreatedBy($createdBy)
         ;
 
         if($comment)

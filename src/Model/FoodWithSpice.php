@@ -22,6 +22,7 @@ class FoodWithSpice
     /** @var BonusItemChance[] */ public array $bonusItems = [];
     public $grantedSkills = [];
     public $grantedStatusEffects = [];
+    public $grantsSelfReflection = false;
     public $earthy;
     public $fruity;
     public $tannic;
@@ -68,6 +69,9 @@ class FoodWithSpice
             ];
         }
 
+        if($food->getGrantsSelfReflection())
+            $this->grantsSelfReflection = true;
+
         if($food->getLeftovers())
             $this->leftovers[] = $food->getLeftovers();
 
@@ -102,6 +106,9 @@ class FoodWithSpice
                     'duration' => $effects->getGrantedStatusEffectDuration()
                 ];
             }
+
+            if($effects->getGrantsSelfReflection())
+                $this->grantsSelfReflection = true;
 
             foreach(FlavorEnum::getValues() as $flavor)
                 $this->{$flavor} += $effects->{'get' . $flavor}();
