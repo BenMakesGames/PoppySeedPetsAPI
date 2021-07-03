@@ -127,12 +127,15 @@ class ExportItemCommand extends PoppySeedPetsCommand
         if($value === null)
             return 'NULL';
 
+        if(is_array($value))
+            return '"' . addslashes(json_encode($value)) . '"';
+
         if(is_object($value))
             return $value->getId();
 
         if(is_numeric($value))
             return $value;
 
-        return '\'' . addslashes($value) . '\'';
+        return '"' . addslashes($value) . '"';
     }
 }
