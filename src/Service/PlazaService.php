@@ -34,17 +34,6 @@ class PlazaService
         $month = (int)$now->format('m');
         $day = (int)$now->format('d');
 
-        if($year === 2021 && $month === 2 && $day <= 19)
-        {
-            $boxes[] = new AvailableHolidayBox(
-                'Twu Wuv (in exchange for a Wed Bawwoon, of course)',
-                'Twu Wuv',
-                'Received from Tess, in exchange for a Wed Bawwoon.',
-                null,
-                $this->itemRepository->findOneByName('Wed Bawwoon')
-            );
-        }
-
         if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, 'Chinese New Year, ' . $this->chineseCalendarInfo->year, false);
@@ -61,7 +50,7 @@ class PlazaService
             }
         }
 
-        if($month === 7 && $day >= 3 && $day <= 5)
+        if($this->calendarService->isJuly4th())
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, '4th of July, ' . $now->format('Y'), false);
 
@@ -76,7 +65,7 @@ class PlazaService
                 );
             }
         }
-        else if(($month === 12 && $day === 31) || ($month === 1 && $day <= 2))
+        else if($this->calendarService->isNewYearsHoliday())
         {
             $year = $month === 12 ? ((int)$now->format('Y') + 1) : (int)$now->format('Y');
 

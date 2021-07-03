@@ -155,6 +155,11 @@ class CalendarService
         return $this->monthAndDay === 919;
     }
 
+    public function isJuly4th(): bool
+    {
+        return $this->monthAndDay >= 703 && $this->monthAndDay <= 705;
+    }
+
     public function isLeapDay(): bool
     {
         return $this->monthAndDay === 229;
@@ -215,6 +220,11 @@ class CalendarService
     {
         // :(
         return $this->monthAndDay == self::HOLI_MONTH_DAYS[(int)$this->today->format('Y')];
+    }
+
+    public function isNewYearsHoliday(): bool
+    {
+        return $this->monthAndDay === 1231 || $this->monthAndDay <= 102;
     }
 
     /**
@@ -278,10 +288,10 @@ class CalendarService
         if($this->isThanksgiving())
             $events[] = HolidayEnum::THANKSGIVING;
 
-        if($this->monthAndDay === 101)
+        if($this->isNewYearsHoliday())
             $events[] = HolidayEnum::NEW_YEARS_DAY;
 
-        if($this->monthAndDay === 704)
+        if($this->isJuly4th())
             $events[] = HolidayEnum::FOURTH_OF_JULY;
 
         if($this->isBastilleDay())
