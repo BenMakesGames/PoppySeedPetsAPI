@@ -268,6 +268,7 @@ class ScrollController extends PoppySeedPetsItemController
         if($squirrel3->rngNextInt(1, 10) === 1) $items[] = 'Secret Seashell';
         if($squirrel3->rngNextInt(1, 15) === 1) $items[] = 'Iron Ore';
         if($squirrel3->rngNextInt(1, 20) === 1) $items[] = 'Little Strongbox';
+        if($squirrel3->rngNextInt(1, 45) === 1) $items[] = 'Ceremony of Sand and Sea';
 
         $location = $inventory->getLocation();
 
