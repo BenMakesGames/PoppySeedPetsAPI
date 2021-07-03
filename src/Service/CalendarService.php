@@ -137,7 +137,7 @@ class CalendarService
 
     public function isBastilleDay(): bool
     {
-        return $this->monthAndDay === 714;
+        return $this->monthAndDay >= 713 && $this->monthAndDay <= 715;
     }
 
     public function isWhiteDay(): bool
