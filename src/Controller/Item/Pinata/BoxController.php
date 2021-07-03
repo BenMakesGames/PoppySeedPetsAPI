@@ -204,7 +204,8 @@ class BoxController extends PoppySeedPetsItemController
                 $possibleItems[] = $squirrel3->rngNextFromArray([
                     '4th of July Box',
                     'New Year Box',
-                    'Chinese New Year Box'
+                    'Chinese New Year Box',
+                    'Bastille Day Box',
                     // TODO: other holiday boxes
                 ]);
             }
@@ -750,6 +751,43 @@ class BoxController extends PoppySeedPetsItemController
             $inventoryService->receiveItem('White Firework', $user, $user, $comment, $location, $lockedToOwner),
             $inventoryService->receiveItem('Blue Firework', $user, $user, $comment, $location, $lockedToOwner),
         ];
+
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+    }
+
+    /**
+     * @Route("/bastille/{inventory}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openBastilleDayBox(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService,
+        Squirrel3 $rng
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/bastille/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
+
+        $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
+
+        $location = $inventory->getLocation();
+        $lockedToOwner = $inventory->getLockedToOwner();
+
+        $items = [
+            $rng->rngNextFromArray([ 'Red Firework', 'White Firework', 'Blue Firework' ]),
+            'Frites', 'Frites',
+            'Music Note',
+            'Slice of Flan Pâtissier',
+            'Sweet Roll',
+            'Berry Cobbler',
+        ];
+
+        $newInventory = [];
+
+        foreach($items as $item)
+            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $lockedToOwner),
 
         return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
     }

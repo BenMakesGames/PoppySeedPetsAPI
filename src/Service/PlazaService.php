@@ -65,6 +65,21 @@ class PlazaService
                 );
             }
         }
+        else if($this->calendarService->isBastilleDay())
+        {
+            $gotBox = $this->userQuestRepository->findOrCreate($user, 'Bastille Day, ' . $year, false);
+
+            if(!$gotBox->getValue())
+            {
+                $boxes[] = new AvailableHolidayBox(
+                    'Bastille Day Box',
+                    'Bastille Day Box',
+                    'Received on the ' . $now->format('jS') . ' of July, ' . $year . '.',
+                    $gotBox,
+                    null
+                );
+            }
+        }
         else if($this->calendarService->isNewYearsHoliday())
         {
             $newYearYear = $month === 12 ? ($year + 1) : $year;
