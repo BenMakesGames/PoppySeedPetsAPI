@@ -787,7 +787,7 @@ class BoxController extends PoppySeedPetsItemController
         $newInventory = [];
 
         foreach($items as $item)
-            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $lockedToOwner),
+            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $lockedToOwner);
 
         return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
     }
