@@ -52,14 +52,14 @@ class PlazaService
 
         if($this->calendarService->isJuly4th())
         {
-            $gotBox = $this->userQuestRepository->findOrCreate($user, '4th of July, ' . $now->format('Y'), false);
+            $gotBox = $this->userQuestRepository->findOrCreate($user, '4th of July, ' . $year, false);
 
             if(!$gotBox->getValue())
             {
                 $boxes[] = new AvailableHolidayBox(
                     '4th of July Box',
                     '4th of July Box',
-                    'Received on the ' . $now->format('jS') . ' of July, ' . $now->format('Y') . '.',
+                    'Received on the ' . $now->format('jS') . ' of July, ' . $year . '.',
                     $gotBox,
                     null
                 );
@@ -67,16 +67,16 @@ class PlazaService
         }
         else if($this->calendarService->isNewYearsHoliday())
         {
-            $year = $month === 12 ? ((int)$now->format('Y') + 1) : (int)$now->format('Y');
+            $newYearYear = $month === 12 ? ($year + 1) : $year;
 
-            $gotBox = $this->userQuestRepository->findOrCreate($user, 'New Year, ' . $year, false);
+            $gotBox = $this->userQuestRepository->findOrCreate($user, 'New Year, ' . $newYearYear, false);
 
             if(!$gotBox->getValue())
             {
                 $boxes[] = new AvailableHolidayBox(
                     'New Year Box',
                     'New Year Box',
-                    'Received on the ' . $now->format('jS') . ' of ' . $now->format('F') . ', ' . $now->format('Y') . '.',
+                    'Received on the ' . $now->format('jS') . ' of ' . $now->format('F') . ', ' . $year . '.',
                     $gotBox,
                     null
                 );
