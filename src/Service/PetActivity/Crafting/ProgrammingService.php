@@ -135,8 +135,14 @@ class ProgrammingService
             if($this->houseSimService->hasInventory('Iron Sword'))
                 $possibilities[] = new ActivityCallback($this, 'createLightningSword', 10);
 
-            if($this->houseSimService->hasInventory('Gold Bar') && $this->houseSimService->hasInventory('Glass Pendulum'))
-                $possibilities[] = new ActivityCallback($this, 'createLivewire', 10);
+            if($this->houseSimService->hasInventory('Gold Bar'))
+            {
+                if($this->houseSimService->hasInventory('Glass Pendulum'))
+                    $possibilities[] = new ActivityCallback($this, 'createLivewire', 10);
+
+                if($this->houseSimService->hasInventory('Plastic Boomerang'))
+                    $possibilities[] = new ActivityCallback($this, 'createBuggerang', 10);
+            }
 
             if(
                 $this->houseSimService->hasInventory('Weird Beetle') &&
@@ -151,9 +157,7 @@ class ProgrammingService
             }
 
             if($this->houseSimService->hasInventory('Iron Bar') && $this->houseSimService->hasInventory('Plastic') && $this->houseSimService->hasInventory('Gravitational Waves'))
-            {
                 $possibilities[] = new ActivityCallback($this, 'createGravitonGun', 10);
-            }
         }
 
         if($this->houseSimService->hasInventory('Magic Smoke'))
@@ -974,6 +978,44 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to electrify a Glass Pendulum, but the lightning started arcing and sparking rather violently, so ' . $pet->getName() . ' decided to wait a bit...', 'icons/activity-logs/confused');
+        }
+    }
+
+    private function createBuggerang(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+
+            $this->houseSimService->getState()->loseItem('Lightning in a Bottle', 1);
+            $pet->increaseSafety(-$this->squirrel3->rngNextInt(4, 8));
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to electrify some gold, but the lightning escaped, and ' . $pet->getName() . ' got shocked :(', '');
+            return $activityLog;
+        }
+        else if($roll >= 18)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::SMITH, true);
+            $this->houseSimService->getState()->loseItem('Lightning in a Bottle', 1);
+            $this->houseSimService->getState()->loseItem('Gold Bar', 1);
+            $this->houseSimService->getState()->loseItem('Plastic Boomerang', 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(3);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% electrified some gold caps and attached them to a boomerang, creating a bug-zapping Buggerang!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+            ;
+            $description = $this->squirrel3->rngNextInt(1, 10) === 1 ? ($pet->getName() . ' scienced this. With SCIENCE.') : ($pet->getName() . ' scienced this.');
+            $this->inventoryService->petCollectsItem('Buggerang', $pet, $description, $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to electrify some gold, but the lightning started arcing and sparking rather violently, so ' . $pet->getName() . ' decided to wait a bit...', 'icons/activity-logs/confused');
         }
     }
 
