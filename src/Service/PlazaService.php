@@ -11,15 +11,11 @@ class PlazaService
     private $calendarService;
     private $chineseCalendarInfo;
     private $userQuestRepository;
-    private $itemRepository;
 
-    public function __construct(
-        CalendarService $calendarService, UserQuestRepository $userQuestRepository, ItemRepository $itemRepository
-    )
+    public function __construct(CalendarService $calendarService, UserQuestRepository $userQuestRepository)
     {
         $this->calendarService = $calendarService;
         $this->userQuestRepository = $userQuestRepository;
-        $this->itemRepository = $itemRepository;
 
         $this->chineseCalendarInfo = $calendarService->getChineseCalendarInfo();
     }
