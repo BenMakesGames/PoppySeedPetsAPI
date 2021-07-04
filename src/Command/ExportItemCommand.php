@@ -5,8 +5,12 @@ use App\Entity\Enchantment;
 use App\Entity\Item;
 use App\Entity\ItemFood;
 use App\Entity\ItemGrammar;
+use App\Entity\ItemHat;
 use App\Entity\ItemTool;
 use App\Entity\ItemTreasure;
+use App\Entity\Plant;
+use App\Entity\PlantYield;
+use App\Entity\PlantYieldItem;
 use App\Entity\Spice;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -47,15 +51,14 @@ class ExportItemCommand extends PoppySeedPetsCommand
 
         $treasure = $item->getTreasure();
         $tool = $item->getTool();
+        $hat = $item->getHat();
         $food = $item->getFood();
         $enchantment = $item->getEnchants();
         $spice = $item->getSpice();
         $grammar = $item->getGrammar();
         $plant = $item->getPlant();
 
-        $statements = [
-            'START TRANSACTION;'
-        ];
+        $statements = [];
 
         if($enchantment)
         {
@@ -77,20 +80,31 @@ class ExportItemCommand extends PoppySeedPetsCommand
         if($tool)
             $statements[] = $this->generateSql(ItemTool::class, $tool, 'tool effect');
 
+        if($hat)
+            $statements[] = $this->generateSql(ItemHat::class, $hat, 'hat');
+
         if($food)
             $statements[] = $this->generateSql(ItemFood::class, $food, 'food effect');
+
+        if($plant)
+        {
+            $statements[] = $this->generateSql(Plant::class, $plant, 'plant');
+
+            foreach($plant->getPlantYields() as $yield)
+            {
+                $statements[] = $this->generateSql(PlantYield::class, $yield, 'plant yield');
+
+                foreach($yield->getItems() as $yieldItem)
+                    $statements[] = $this->generateSql(PlantYieldItem::class, $yieldItem, 'plant yield item');
+            }
+        }
 
         $statements[] = $this->generateSql(Item::class, $item, 'the item itself!');
 
         if($grammar)
             $statements[] = $this->generateSql(ItemGrammar::class, $grammar, 'grammar');
 
-        $statements[] = 'COMMIT;';
-
-        echo implode("\n\n", $statements);
-
-        if($plant)
-            echo "\n\n**********\nHEY, LISTEN! Plant data is not supported by this tool! You'll have to export that manually! (Or update this tool...)\n**********";
+        echo "\n" . implode("\n\n", $statements);
 
         $image = substr($item->getImage(), 0, strrpos($item->getImage(), '/') + 1);
 
