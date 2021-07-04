@@ -139,6 +139,9 @@ class MagicBindingService
 
         if($this->houseSimService->hasInventory('Quintessence'))
         {
+            if($this->houseSimService->hasInventory('Red Flail') && $this->houseSimService->hasInventory('Scales'))
+                $possibilities[] = new ActivityCallback($this, 'createYggdrasil', 8);
+
             if($this->houseSimService->hasInventory('Grappling Hook') && $this->houseSimService->hasInventory('Gravitational Waves'))
                 $possibilities[] = new ActivityCallback($this, 'createGravelingHook', 8);
 
@@ -189,8 +192,6 @@ class MagicBindingService
 
             if($this->houseSimService->hasInventory('Blackonite'))
             {
-                $diceWeight = 8;
-
                 if($this->houseSimService->hasInventory('Fish Head Shovel'))
                     $possibilities[] = new ActivityCallback($this, 'createNephthys', 8);
 
@@ -2775,6 +2776,69 @@ class MagicBindingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
             ;
             $this->inventoryService->petCollectsItem('Graveling Hook', $pet, $pet->getName() . ' bound this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createYggdrasil(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+
+        if($umbraCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+
+            if($this->squirrel3->rngNextInt(1, 3) > 1)
+            {
+                $this->houseSimService->getState()->loseItem('Quintessence', 1);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+                $pet->increaseEsteem(-1);
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant some Scales, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+            }
+            else
+            {
+                $this->houseSimService->getState()->loseItem('Scales', 1);
+                $this->houseSimService->getState()->loseItem('Quintessence', 1);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+                if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getBrawl() + $petWithSkills->getDexterity()) >= 15)
+                {
+                    $pet->increaseEsteem(-2);
+                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant some Scales, but accidentally brought them to life! %pet:' . $pet->getId() . '.Name% narrowly avoided getting bitten before the snake slithered away...', '');
+                }
+                else
+                {
+                    $pet
+                        ->increaseEsteem(-2)
+                        ->increaseSafety(-4)
+                        ->increasePoison(4)
+                    ;
+
+                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant some Scales, but accidentally brought them to life! The snake slithered away, but not before delivering %pet:' . $pet->getId() . '.name% a nasty bite!', '');
+                }
+            }
+
+            return $activityLog;
+        }
+        else if($umbraCheck < 17)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant some scales, but almost accidentally brought them to life!', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->houseSimService->getState()->loseItem('Quintessence', 1);
+            $this->houseSimService->getState()->loseItem('Scales', 1);
+            $this->houseSimService->getState()->loseItem('Red Flail', 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(4);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Scales to a Red Flail, creating a Yggdrasil Branch!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
+            ;
+            $this->inventoryService->petCollectsItem('Yggdrasil Branch', $pet, $pet->getName() . ' bound this.', $activityLog);
             return $activityLog;
         }
     }

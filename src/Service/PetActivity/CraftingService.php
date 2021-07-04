@@ -158,6 +158,9 @@ class CraftingService
 
                 if($this->houseSimService->hasInventory('Corn') && $this->houseSimService->hasInventory('Rice'))
                     $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createHarvestStaff', 10);
+
+                if($this->houseSimService->hasInventory('Red'))
+                    $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createRedFlail', 10);
             }
 
             if($this->houseSimService->hasInventory('Cobweb'))

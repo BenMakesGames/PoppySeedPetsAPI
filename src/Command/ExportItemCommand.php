@@ -90,7 +90,11 @@ class ExportItemCommand extends PoppySeedPetsCommand
         echo implode("\n\n", $statements);
 
         if($plant)
-            echo "\n\n**********\nHEY, LISTEN! Plant data is not supported by this tool! You'll have to export that manually! (Or update this tool...)\n**********\n\n";
+            echo "\n\n**********\nHEY, LISTEN! Plant data is not supported by this tool! You'll have to export that manually! (Or update this tool...)\n**********";
+
+        $image = substr($item->getImage(), 0, strrpos($item->getImage(), '/') + 1);
+
+        echo "\n\n" . 'Upload image to: https://s3.console.aws.amazon.com/s3/buckets/poppyseedpets.com?region=us-east-1&prefix=assets/images/items/' . $image . "\n";
 
         return 0;
     }
