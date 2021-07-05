@@ -770,7 +770,7 @@ class UmbraService
 
         if($this->squirrel3->rngNextInt(1, 3) === 1)
         {
-            if($this->squirrel3->rngNextInt(1, 20) + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal() >= 18)
+            if($this->squirrel3->rngNextInt(1, 20) + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() >= 18)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was creeping through a frozen quag deep in the Umbra, a fox spirit leapt out of nowhere and attacked! %pet:' . $pet->getId() . '.name% fought back, liberating the creature\'s Quintessence, and... its nuts?', '')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
