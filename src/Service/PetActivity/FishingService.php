@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\DistractionLocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
@@ -32,11 +33,12 @@ class FishingService
     private $weatherService;
     private IRandom $squirrel3;
     private FieldGuideService $fieldGuideService;
+    private GatheringDistractionService $gatheringDistractions;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3,
-        WeatherService $weatherService, FieldGuideService $fieldGuideService
+        WeatherService $weatherService, FieldGuideService $fieldGuideService, GatheringDistractionService $gatheringDistractions
     )
     {
         $this->responseService = $responseService;
@@ -47,6 +49,7 @@ class FishingService
         $this->squirrel3 = $squirrel3;
         $this->weatherService = $weatherService;
         $this->fieldGuideService = $fieldGuideService;
+        $this->gatheringDistractions = $gatheringDistractions;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -288,6 +291,9 @@ class FishingService
 
     private function fishedGallopingOctopus(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::BEACH, 'looking for a good fishing spot on the beach');
+
         $pet = $petWithSkills->getPet();
         $fightSkill = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() + $petWithSkills->getBrawl(false)->getTotal() + $petWithSkills->getStrength()->getTotal());
 
@@ -485,10 +491,10 @@ class FishingService
 
     private function fishedWaterfallBasin(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $pet = $petWithSkills->getPet();
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'looking for a good fishing spot in the woods');
 
-        $nothingBiting = $this->nothingBiting($pet, 20, 'in a Waterfall Basin');
-        if($nothingBiting !== null) return $nothingBiting;
+        $pet = $petWithSkills->getPet();
 
         if($this->squirrel3->rngNextInt(1, 80) === 1 && $pet->hasMerit(MeritEnum::LUCKY))
         {
@@ -723,12 +729,12 @@ class FishingService
 
     public function fishedGhoti(ComputedPetSkills $petWithSkills)
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::VOLCANO, 'looking for a good fishing spot at the foot of the volcano');
+
         $pet = $petWithSkills->getPet();
 
         $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Île Volcan', '%pet:' . $pet->getId() . '.name% went fishing at the foot of the Volcano.');
-
-        $nothingBiting = $this->nothingBiting($pet, 20, 'at the foot of the Volcano');
-        if($nothingBiting !== null) return $nothingBiting;
 
         if($this->squirrel3->rngNextInt(1, 100) === 1 || ($pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 100) === 1))
         {
@@ -765,6 +771,9 @@ class FishingService
 
     public function fishedCoralReef(ComputedPetSkills $petWithSkills)
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::BEACH, 'looking for a good fishing spot on the beach');
+
         $pet = $petWithSkills->getPet();
 
         // no chance of nothing biting at the coral reef!
@@ -838,6 +847,9 @@ class FishingService
 
     private function fishedJellyfish(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::BEACH, 'looking for a good fishing spot on the beach');
+
         $pet = $petWithSkills->getPet();
 
         $nothingBiting = $this->nothingBiting($pet, 20, 'way out on the pier');

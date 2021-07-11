@@ -51,17 +51,7 @@ class TwuWuvCraftingService
 
         $makingItem = $this->itemRepository->findOneByName('Wed Bawwoon');
 
-        if($roll <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
-
-            $this->houseSimService->getState()->loseItem('Red Balloon', 1);
-            $this->petExperienceService->gainExp($pet, 1, [PetSkillEnum::CRAFTS]);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Wed Bawwoon, but accidentally popped the balloon :( Only a String remains.', 'icons/activity-logs/broke-string');
-            $this->inventoryService->petCollectsItem('String', $pet, 'The remains of a Red Balloon.', $activityLog);
-            return $activityLog;
-        }
-        else if($roll >= 14)
+        if($roll >= 14)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('Red Balloon', 1);

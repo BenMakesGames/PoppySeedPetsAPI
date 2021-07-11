@@ -3,8 +3,10 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\ActivityHelpers;
 use App\Model\ComputedPetSkills;
 use App\Repository\EnchantmentRepository;
 use App\Repository\SpiceRepository;
@@ -45,15 +47,62 @@ class StrangeUmbralEncounters
     {
         $pet = $petWithSkills->getPet();
 
-        switch($this->squirrel3->rngNextInt(1, 2))
+        $maxEncoutner = $pet->getLevel() >= 10 ? 3 : 2;
+
+        switch($this->squirrel3->rngNextInt(1, $maxEncoutner))
         {
             case 1:
-                return $this->encounterAgares($pet);
+                return $this->encounterWildlife($pet);
             case 2:
                 return $this->encounterCosmicGoat($pet);
+            case 3:
+                return $this->encounterAgares($pet);
         }
 
-        throw new \Exception('Ben messed up strange umbral encounters. That\'s bad, but he\'s been emailed, and will fix it soon. Sorry :|');
+        throw new \Exception('Ben messed up strange umbral encounters. That\'s bad, but he\'s been emailed, and should fix it soon. Sorry :|');
+    }
+
+    private function encounterWildlife(Pet $pet): PetActivityLog
+    {
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+
+        $encounter = $this->getRandomWildlifeEncounter($pet);
+
+        $this->petExperienceService->gainExp($pet, 1, $encounter['skills']);
+
+        return $this->responseService->createActivityLog($pet, 'While exploring the umbra, ' . ActivityHelpers::PetName($pet) . ' ' . $encounter['description'], '')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+        ;
+    }
+
+    private function getRandomWildlifeEncounter(Pet $pet): array
+    {
+        return $this->squirrel3->rngNextFromArray([
+            [
+                'description' => 'saw a family of deer spirits running across the umbral sands. ' . ActivityHelpers::PetName($pet) . ' watched for a while before returning home.',
+                'skills' => [ PetSkillEnum::UMBRA ]
+            ],
+            [
+                'description' => 'saw the Raccoon King and his entourage. ' . ActivityHelpers::PetName($pet) . ' hid behind some rocks and waited for them to pass...',
+                'skills' => [ PetSkillEnum::UMBRA, PetSkillEnum::STEALTH ]
+            ],
+            [
+                'description' => 'encountered a friendly wizard. They traveled for a while, the wizard making conversation, until they parted ways.',
+                'skills' => [ PetSkillEnum::UMBRA ]
+            ],
+            [
+                'description' => 'found a large field of wild, oversized plants. ' . ActivityHelpers::PetName($pet) . ' explored the field for a while, avoiding the more aggressive-looking plants...',
+                'skills' => [ PetSkillEnum::UMBRA ]
+            ],
+            [
+                'description' => 'felt the ground tremble. They looked around, but didn\'t see an obvious source of the shaking...',
+                'skills' => [ PetSkillEnum::UMBRA ]
+            ],
+            [
+                'description' => 'felt a strange breeze. Looking up, they saw a flock (or maybe "school"?) of translucent creatures gliding overhead.',
+                'skills' => [ PetSkillEnum::UMBRA ]
+            ]
+        ]);
     }
 
     // Agares is a spirit-duke. now you know.
@@ -72,11 +121,15 @@ class StrangeUmbralEncounters
                 ->addComment('This item was enchanted by an old man riding an alligator and holding a goshawk!')
             ;
 
-            return $this->responseService->createActivityLog($pet, 'While exploring some ruins in the Umbra, ' . '%pet:' . $pet->getId() . '.name% was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language %pet:' . $pet->getId() . '.name% didn\'t know. %pet:' . $pet->getId() . '.name%\'s ' . $pet->getTool()->getItem()->getName() . ' began to glow, and the old man left...', '');
+            return $this->responseService->createActivityLog($pet, 'While exploring some ruins in the Umbra, ' . '%pet:' . $pet->getId() . '.name% was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language %pet:' . $pet->getId() . '.name% didn\'t know. %pet:' . $pet->getId() . '.name%\'s ' . $pet->getTool()->getItem()->getName() . ' began to glow, and the old man left...', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ;
         }
         else
         {
-            return $this->responseService->createActivityLog($pet, 'While exploring some ruins in the Umbra, ' . '%pet:' . $pet->getId() . '.name% was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language %pet:' . $pet->getId() . '.name% didn\'t know. Frustrated, the old man left.', '');
+            return $this->responseService->createActivityLog($pet, 'While exploring some ruins in the Umbra, ' . '%pet:' . $pet->getId() . '.name% was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language %pet:' . $pet->getId() . '.name% didn\'t know. Frustrated, the old man left.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ;
         }
     }
 
@@ -88,7 +141,9 @@ class StrangeUmbralEncounters
 
         $discoveryMessage = 'While exploring the Umbra, some white rain started to fall. ' . '%pet:' . $pet->getId() . '.name% looked up, and saw the Cosmic Goat flying overhead, milk flowing from its udder.';
 
-        $activityLog = $this->responseService->createActivityLog($pet, $discoveryMessage . ' They gathered up as much of the "rain" as they could.', '');
+        $activityLog = $this->responseService->createActivityLog($pet, $discoveryMessage . ' They gathered up as much of the "rain" as they could.', '')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+        ;
 
         $cosmic = $this->spiceRepository->findOneByName('Cosmic');
 

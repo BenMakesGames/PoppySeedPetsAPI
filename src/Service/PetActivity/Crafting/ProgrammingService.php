@@ -248,9 +248,8 @@ class ProgrammingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
 
-            $this->houseSimService->getState()->loseItem('Plastic', 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Laser Pointer, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Laser Pointer, but the 3D Printer started acting, and %pet:' . $pet->getId() . '.name% ended up spending all their time rechecking wires and software settings...', '');
         }
         else if($roll > 15)
         {
@@ -285,9 +284,8 @@ class ProgrammingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
 
-            $this->houseSimService->getState()->loseItem('Plastic', 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Metal Detector, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Metal Detector, but the 3D Printer started acting, and %pet:' . $pet->getId() . '.name% ended up spending all their time rechecking wires and software settings...', '');
         }
         else if($roll > 15)
         {
@@ -325,19 +323,7 @@ class ProgrammingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        if($roll <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
-
-            $fiberglassItemBroken = $this->houseSimService->getState()->loseOneOf([ 'Fiberglass', 'Fiberglass Flute' ]);
-
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
-
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to alter a Metal Detector to detect Secret Seashells, but accidentally shattered the ' . $fiberglassItemBroken . ' :(', '');
-
-            return $activityLog;
-        }
-        else if($roll >= 18)
+        if($roll >= 18)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
 
@@ -399,23 +385,7 @@ class ProgrammingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        if($roll <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $this->houseSimService->getState()->loseItem('Pointer', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a Regex, but mis-scoped a Pointer :(', 'icons/activity-logs/null');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Finite State Machine', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a Regex, but lost a Finite State Machine to a stack overflow :(', 'icons/activity-logs/null');
-            }
-        }
-        else if($roll >= 14)
+        if($roll >= 14)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Pointer', 1);
@@ -441,22 +411,14 @@ class ProgrammingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        if($roll <= 2)
+        if($roll <= 2 && $pet->getFood() < 4)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
 
-            if($this->squirrel3->rngNextBool() || $pet->getFood() > 4)
-            {
-                $this->houseSimService->getState()->loseItem('Tiny Black Hole', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a Wormhole, but accidentally reduced the Tiny Black Hole to Hawking radiation! ', '');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Worms', 1);
-                $pet->increaseFood($this->squirrel3->rngNextInt(3, 6));
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to create a Wormhole, but absentmindedly ate the Worms, instead :(', '');
-            }
+            $this->houseSimService->getState()->loseItem('Worms', 1);
+            $pet->increaseFood($this->squirrel3->rngNextInt(3, 6));
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to create a Wormhole, but absentmindedly ate the Worms, instead :(', '');
         }
         else if($roll >= 17)
         {
@@ -489,18 +451,10 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
 
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $this->houseSimService->getState()->loseItem('String', 1);
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bootstrap a Compiler, but accidentally de-allocated a String, leaving a useless Pointer behind :(', 'icons/activity-logs/null');
-                $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' accidentally de-allocated a String; all that remains is this Pointer.', $activityLog);
-                return $activityLog;
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Hash Table', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bootstrap a Compiler, but accidentally caused a runaway hash collision, and lost their Hash Table :(', 'icons/activity-logs/null');
-            }
+            $this->houseSimService->getState()->loseItem('String', 1);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bootstrap a Compiler, but accidentally de-allocated a String, leaving a useless Pointer behind :(', 'icons/activity-logs/null');
+            $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' accidentally de-allocated a String; all that remains is this Pointer.', $activityLog);
+            return $activityLog;
         }
         else if($roll >= 16)
         {
@@ -529,15 +483,7 @@ class ProgrammingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + min($petWithSkills->getPerception()->getTotal(), $petWithSkills->getMusic()->getTotal()) + $petWithSkills->getScience()->getTotal());
 
-        if($roll <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-
-            $this->houseSimService->getState()->loseItem('Hash Table', 1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a Laser Guitar, but accidentally caused a runaway hash collision, and lost their Hash Table :(', 'icons/activity-logs/null');
-        }
-        else if($roll >= 18)
+        if($roll >= 18)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Hash Table', 1);
@@ -660,15 +606,7 @@ class ProgrammingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        if($roll <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-
-            $this->houseSimService->getState()->loseItem('Imaginary Number', 1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a Strange Attractor, but accidentally squared the Imaginary Number, making it real :(', '');
-        }
-        else if($roll >= 17)
+        if($roll >= 17)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Imaginary Number', 1);
@@ -743,15 +681,7 @@ class ProgrammingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        if($roll <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-
-            $this->houseSimService->getState()->loseItem('Password', 1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create Brute Force, but got the Password wrong too many times :(', '');
-        }
-        else if($roll >= 14)
+        if($roll >= 14)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Regex', 1);
@@ -777,24 +707,7 @@ class ProgrammingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        if($roll <= 2)
-        {
-            if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
-            {
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to become a l33t h4xx0r, but didn\'t have the right stuff. (At least they _remembered_ the difference between an XOR and an OR!)', 'icons/activity-logs/confused');
-            }
-            else
-            {
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
-                $this->petExperienceService->gainExp($pet, 1, [PetSkillEnum::SCIENCE]);
-
-                $this->houseSimService->getState()->loseItem('XOR', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to become a l33t h4xx0r, but confused an XOR for an OR; the XOR was lost forever :(', 'icons/activity-logs/null');
-            }
-        }
-        else if($roll >= 17)
+        if($roll >= 17)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Brute Force', 1);
@@ -839,16 +752,7 @@ class ProgrammingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        if($roll <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-
-            $this->houseSimService->getState()->loseItem('Pointer', 1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a Phishing Rod, but lost their Pointer to garbage collection :(', 'icons/activity-logs/null');
-            return $activityLog;
-        }
-        else if($roll >= 16)
+        if($roll >= 16)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Plastic Fishing Rod', 1);
@@ -875,16 +779,7 @@ class ProgrammingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        if($roll <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-
-            $this->houseSimService->getState()->loseItem('NUL', 1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a Diffie-H Key, but their NUL got reallocated :(', 'icons/activity-logs/null');
-            return $activityLog;
-        }
-        else if($roll >= 13)
+        if($roll >= 13)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Gold Key', 1);
@@ -916,9 +811,8 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
 
-            $this->houseSimService->getState()->loseItem('Lightning in a Bottle', 1);
             $pet->increaseSafety(-$this->squirrel3->rngNextInt(4, 8));
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to electrify an Iron Sword, but the lightning escaped, and ' . $pet->getName() . ' got shocked :(', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to electrify an Iron Sword, but accidentally zapped themselves, instead :(', '');
             return $activityLog;
         }
         else if($roll >= 18)
@@ -953,9 +847,8 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
 
-            $this->houseSimService->getState()->loseItem('Lightning in a Bottle', 1);
             $pet->increaseSafety(-$this->squirrel3->rngNextInt(4, 8));
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to electrify a Glass Pendulum, but the lightning escaped, and ' . $pet->getName() . ' got shocked :(', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to electrify a Glass Pendulum, but accidentally zapped themselves, instead :(', '');
             return $activityLog;
         }
         else if($roll >= 18)
@@ -991,9 +884,8 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
 
-            $this->houseSimService->getState()->loseItem('Lightning in a Bottle', 1);
             $pet->increaseSafety(-$this->squirrel3->rngNextInt(4, 8));
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to electrify some gold, but the lightning escaped, and ' . $pet->getName() . ' got shocked :(', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to electrify some gold, but accidentally zapped themselves, instead :(', '');
             return $activityLog;
         }
         else if($roll >= 18)
@@ -1063,11 +955,12 @@ class ProgrammingService
         if($roll <= 2)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
 
-            $this->houseSimService->getState()->loseItem('Magic Smoke', 1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to engineer an Alien Gun, but mishandled the Magic Smoke, which dissipated completely :(', '');
-            return $activityLog;
+            $pet->increaseSafety(-1);
+
+            $pet->increasePsychedelic($this->squirrel3->rngNextInt(1, 3));
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to engineer an Alien Gun, but accidentally breathed in a little bit of Magic Smoke! :O', '');
         }
         else if($roll >= 15)
         {
@@ -1096,16 +989,7 @@ class ProgrammingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + ceil(($petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getUmbra()->getTotal()) / 2));
 
-        if($roll <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
-
-            $this->houseSimService->getState()->loseItem('Alien Tissue', 1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to integrate Alien Tissue with a Sylvan Fishing Rod, but the Alien Tissue\'s cells were destroyed by the leaf\'s :(', '');
-            return $activityLog;
-        }
-        else if($roll >= 19)
+        if($roll >= 19)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Laser Pointer', 1);
@@ -1132,36 +1016,16 @@ class ProgrammingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        if($roll <= 3)
+        if($roll === 1)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
 
-            $effect = $this->squirrel3->rngNextInt(1, 3);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::UMBRA ]);
 
-            if($effect === 1)
-            {
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::UMBRA ]);
+            $pet->increaseSafety(-6);
+            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
 
-                $pet->increaseSafety(-6);
-                $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Bermuda Triangle, but accidentally hexed themselves, instead! :(', '');
-            }
-            else if($effect === 2)
-            {
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
-
-                $this->houseSimService->getState()->loseItem('Gravitational Waves', 1);
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Bermuda Triangle, but the Gravitational Waves dissipated :(', '');
-            }
-            else
-            {
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
-
-                $this->houseSimService->getState()->loseItem('Seaweed', 1);
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Bermuda Triangle, but the Seaweed was shredded by the intense gravitational forces :(', '');
-            }
-
-            return $activityLog;
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Bermuda Triangle, but accidentally hexed themselves, instead! :(', '');
         }
         else if($roll >= 19)
         {
@@ -1194,10 +1058,10 @@ class ProgrammingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+            $pet->increaseSafety(-1);
 
-            $this->houseSimService->getState()->loseItem('Magic Smoke', 1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to improve a Lightning Sword, but mishandled the Magic Smoke, which dissipated completely :(', '');
-            return $activityLog;
+            $pet->increasePsychedelic($this->squirrel3->rngNextInt(1, 3));
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to improve a Lightning Sword, but accidentally breathed in a little bit of Magic Smoke! :O', '');
         }
         else if($roll >= 20)
         {
@@ -1226,14 +1090,7 @@ class ProgrammingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        if($roll <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
-            $this->houseSimService->getState()->loseItem('Macintosh', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to hack a Macintosh, but ended up bricking it :(', '');
-        }
-        else if($roll >= 16)
+        if($roll >= 16)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Macintosh', 1);
@@ -1272,18 +1129,8 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
 
-            $this->houseSimService->getState()->loseItem('Lightning in a Bottle', 1);
             $pet->increaseSafety(-$this->squirrel3->rngNextInt(4, 8));
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to engineer a Graviton Gun, but the lightning escaped, and ' . $pet->getName() . ' got shocked :(', '');
-            return $activityLog;
-        }
-        else if($roll === 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
-
-            $this->houseSimService->getState()->loseItem('Gravitational Waves', 1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to engineer a Graviton Gun, but the Gravitational Waves became too weak to detect :(', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to engineer a Graviton Gun, but kept getting zapped by the Lightning in a Bottle! >:(', '');
             return $activityLog;
         }
         else if($roll >= 24)

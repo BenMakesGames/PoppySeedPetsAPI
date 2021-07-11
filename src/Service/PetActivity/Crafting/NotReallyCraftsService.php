@@ -81,14 +81,7 @@ class NotReallyCraftsService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + round($petWithSkills->getScience()->getTotal() * 2 / 3 + $petWithSkills->getNature()->getTotal() / 3));
 
-        if($roll <= 2)
-        {
-            $this->houseSimService->getState()->loseItem('Planetary Ring', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::NATURE ]);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% sifted through a Planetary Ring looking for goodies, but ended up scattering it to dust :(', '');
-        }
-        else if($roll >= 16)
+        if($roll >= 16)
         {
             $this->houseSimService->getState()->loseItem('Planetary Ring', 1);
 

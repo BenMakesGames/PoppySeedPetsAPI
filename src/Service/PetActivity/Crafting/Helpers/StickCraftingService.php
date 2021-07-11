@@ -42,24 +42,7 @@ class StickCraftingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getNature()->getTotal()));
 
-        if($roll <= 3)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $this->houseSimService->getState()->loseItem('String', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Crooked Fishing Rod, but broke the String :(', 'icons/activity-logs/broke-string');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Crooked Fishing Rod, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-
-            }
-        }
-        else if($roll >= 12)
+        if($roll >= 12)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('String', 1);
@@ -83,15 +66,7 @@ class StickCraftingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getNature()->getTotal()));
 
-        if($roll <= 3)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
-
-            $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Sunflower Stick, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-        }
-        else if($roll >= 10)
+        if($roll >= 10)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('Sunflower', 1);
@@ -120,24 +95,7 @@ class StickCraftingService
             'White Flag'
         ]));
 
-        if($roll <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(15, 30), PetActivityStatEnum::CRAFT, false);
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $this->houseSimService->getState()->loseItem('White Cloth', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                $pet->increaseEsteem(-1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make ' . $making->getNameWithArticle() . ', but accidentally tore the White Cloth into useless shapes :(', 'icons/activity-logs/torn-to-bits');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make ' . $making->getNameWithArticle() . ', but accidentally split the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-            }
-        }
-        else if($roll >= 8)
+        if($roll >= 8)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('White Cloth', 1);
@@ -161,23 +119,7 @@ class StickCraftingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $pet->getSkills()->getBrawl()));
 
-        if($roll <= 3)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $this->houseSimService->getState()->loseItem('String', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Hunting Spear, but broke the String :(', 'icons/activity-logs/broke-string');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Hunting Spear, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-            }
-        }
-        else if($roll >= 13)
+        if($roll >= 13)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('String', 1);
@@ -204,29 +146,14 @@ class StickCraftingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
-        if($roll <= 3)
+        if($roll <= 2 && $pet->getFood() < 4)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
 
-            if($pet->getFood() < $this->squirrel3->rngNextInt(0, 6))
-            {
-                $this->houseSimService->getState()->loseItem('Red', 1);
-                $pet->increaseFood(3);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Red Flail, but ate the Red...', 'icons/activity-logs/broke-string');
-            }
-            else if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $this->houseSimService->getState()->loseItem('String', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Red Flail, but broke the String :(', 'icons/activity-logs/broke-string');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Red Flail, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-            }
+            $this->houseSimService->getState()->loseItem('Red', 1);
+            $pet->increaseFood(3);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Red Flail, but ate the Red...', 'icons/activity-logs/broke-string');
         }
         else if($roll >= 13)
         {
@@ -272,23 +199,7 @@ class StickCraftingService
 
         $craftsCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
-        if($craftsCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $this->houseSimService->getState()->loseItem('Glue', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a broom, but spilled the Glue :(', '');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a broom, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-            }
-        }
-        else if($craftsCheck >= 13)
+        if($craftsCheck >= 13)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('Glue', 1);
@@ -315,23 +226,7 @@ class StickCraftingService
         $pet = $petWithSkills->getPet();
         $craftsCheck = $this->squirrel3->rngNextInt(1, 20 + max($petWithSkills->getCrafts()->getTotal(), $pet->getSkills()->getNature()) + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
-        if($craftsCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $this->houseSimService->getState()->loseItem('Cobweb', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Bug-catcher\'s Net, but a passing fly got stuck in the Cobweb, and tangled it up! >:(', '');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Bug catcher\'s Net, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-            }
-        }
-        else if($craftsCheck >= 13)
+        if($craftsCheck >= 13)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('Cobweb', 1);
@@ -356,28 +251,14 @@ class StickCraftingService
         $pet = $petWithSkills->getPet();
         $craftsCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
-        if($craftsCheck <= 2)
+        if($craftsCheck <= 2 && $pet->getFood() <= 4)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
-            if($pet->getFood() <= 4)
-            {
-                $foodEaten = $this->houseSimService->getState()->loseOneOf([ 'Rice', 'Corn' ]);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                $pet->increaseFood(4);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a Harvest Staff, but got hungry, and ate the ' . $foodEaten . ' :(', '');
-            }
-            else if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $this->houseSimService->getState()->loseItem('String', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Harvest Staff, but broke the String :(', 'icons/activity-logs/broke-string');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a staff, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-            }
+
+            $foodEaten = $this->houseSimService->getState()->loseOneOf([ 'Rice', 'Corn' ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseFood(4);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a Harvest Staff, but got hungry, and ate the ' . $foodEaten . ' :(', '');
         }
         else if($craftsCheck >= 15)
         {
@@ -406,23 +287,7 @@ class StickCraftingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $pet->getSkills()->getBrawl()));
 
-        if($roll <= 3)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $this->houseSimService->getState()->loseItem('String', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to extend a Hunting Spear, but broke the String :(', 'icons/activity-logs/broke-string');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to extend a Hunting Spear, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-            }
-        }
-        else if($roll >= 14)
+        if($roll >= 14)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('String', 1);
@@ -447,23 +312,7 @@ class StickCraftingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $pet->getSkills()->getBrawl()));
 
-        if($roll <= 3)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $this->houseSimService->getState()->loseItem('String', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to extend an Overly-long Spear, but broke the String :(', 'icons/activity-logs/broke-string');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to extend an Overly-long Spear, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-            }
-        }
-        else if($roll >= 16)
+        if($roll >= 16)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('String', 1);
@@ -488,27 +337,9 @@ class StickCraftingService
     public function createChampignon(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $quintessenceHandling = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getUmbra()->getTotal());
-
-        if($quintessenceHandling <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Champignon, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
-        if($roll <= 3)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
-
-            $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Champignon, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-        }
-        else if($roll >= 15)
+        if($roll >= 15)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
@@ -535,28 +366,7 @@ class StickCraftingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $pet->getSkills()->getBrawl()));
 
-        if($roll <= 3)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $itemLost = $this->houseSimService->getState()->loseOneOf([ 'String', 'Glue' ]);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-
-                if($itemLost === 'String')
-                    return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Wooden Sword, but broke the String :(', 'icons/activity-logs/broke-string');
-                else
-                    return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Wooden Sword, but spilt the Glue :(', '');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Wooden Sword, but broke the Crooked Stick :( Like, more than the one time needed.', 'icons/activity-logs/broke-stick');
-
-            }
-        }
-        else if($roll >= 12)
+        if($roll >= 12)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
             $itemLost = $this->houseSimService->getState()->loseOneOf([ 'String', 'Glue' ]);
@@ -582,32 +392,14 @@ class StickCraftingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
-        if($roll <= 3)
+        if($roll <= 2)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
 
-            if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal()) >= 18)
-            {
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                $pet->increaseEsteem(2);
-                $pet->increaseSafety(-4);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseSafety(-4);
 
-                if($this->squirrel3->rngNextInt(1, 4) === 1)
-                {
-                    $pet->increaseEsteem(2);
-                    return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a lens from a piece of glass, and cut themselves! :( They managed to save the glass, though! ' . $pet->getName() . ' is kind of proud of that.', 'icons/activity-logs/wounded');
-                }
-                else
-                    return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a lens from a piece of glass, and cut themselves! :( They managed to save the glass, though!', 'icons/activity-logs/wounded');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Glass', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-                $pet->increaseEsteem(-2);
-                $pet->increaseSafety(-4);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a lens from a piece of glass, but cut themselves, and dropped the glass :(', 'icons/activity-logs/wounded');
-            }
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a lens from a piece of glass, but cut themselves! :(', 'icons/activity-logs/wounded');
         }
         else if($roll >= 13)
         {
@@ -635,25 +427,7 @@ class StickCraftingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
-        if($roll <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $this->houseSimService->getState()->loseItem('Glue', 1);
-                $this->houseSimService->getState()->loseItem('Sweet Beet', 1);
-                $pet->increaseEsteem(-1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Sweet Beat, but the Glue got all over the beet, wasting both :(', '');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Sweet Beat, but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-            }
-        }
-        else if($roll >= 15)
+        if($roll >= 15)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::CRAFT, true);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);

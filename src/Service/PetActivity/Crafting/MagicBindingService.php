@@ -19,7 +19,6 @@ use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetActivity\Crafting\Helpers\CoinSmithingService;
-use App\Service\PetActivity\Crafting\Helpers\EvericeMeltingService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -32,7 +31,6 @@ class MagicBindingService
     private $responseService;
     private $petExperienceService;
     private $itemRepository;
-    private $evericeMeltingService;
     private IRandom $squirrel3;
     private $coinSmithingService;
     private $weatherService;
@@ -43,16 +41,15 @@ class MagicBindingService
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        ItemRepository $itemRepository, EvericeMeltingService $evericeMeltingService, Squirrel3 $squirrel3,
+        ItemRepository $itemRepository, Squirrel3 $squirrel3, EnchantmentRepository $enchantmentRepository,
         CoinSmithingService $coinSmithingService, WeatherService $weatherService, StatusEffectService $statusEffectService,
-        HouseSimService $houseSimService, HattierService $hattierService, EnchantmentRepository $enchantmentRepository
+        HouseSimService $houseSimService, HattierService $hattierService
     )
     {
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
         $this->itemRepository = $itemRepository;
-        $this->evericeMeltingService = $evericeMeltingService;
         $this->squirrel3 = $squirrel3;
         $this->coinSmithingService = $coinSmithingService;
         $this->weatherService = $weatherService;
@@ -328,30 +325,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStrength()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $pet->increaseEsteem(-2);
-
-            if($this->squirrel3->rngNextBool())
-            {
-                $this->houseSimService->getState()->loseItem('Witch\'s Broom', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-                $pet->increaseSafety(-2);
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Snickerblade, but accidentally set the Witch\'s Broom on fire, reducing it to Charcoal in seconds... :(', '');
-                $this->inventoryService->petCollectsItem('Charcoal', $pet, $pet->getName() . ' accidentally reduced a Witch\'s Broom into this...', $activityLog);
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Wood\'s Metal', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Snickerblade, but accidentally broke and bent the Wood\'s Metal into a useless bar of iron :(', '');
-                $this->inventoryService->petCollectsItem('Iron Bar', $pet, $pet->getName() . ' accidentally reduced a Woods\'s Metal into this...', $activityLog);
-            }
-
-            return $activityLog;
-        }
-        else if($umbraCheck < 23)
+        if($umbraCheck < 23)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
@@ -376,24 +350,13 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck === 1)
+        if($umbraCheck <= 2)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            $this->houseSimService->getState()->loseItem('Stereotypical Torch', 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(-1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Stereotypical Torch, but mishandled the Quintessence. The torch flared up, and %pet:' . $pet->getId() . '.name% dropped the torch, breaking it :( Some Charcoal was left over, at least...', '');
-            $this->inventoryService->petCollectsItem('Charcoal', $pet, $pet->getName() . ' accidentally created this while trying to enchant a Stereotypical Torch.', $activityLog);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Stereotypical Torch, but the torch flared up, and %pet:' . $pet->getId() . '.name% got burned! :(', '');
             return $activityLog;
-        }
-        else if($umbraCheck === 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Stereotypical Torch, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
         }
         else if($umbraCheck < 13)
         {
@@ -423,15 +386,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a block of glowing dice, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($umbraCheck < 15)
+        if($umbraCheck < 15)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -481,15 +436,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Mermaid Egg', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to extract Quintessence from a Mermaid Egg, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($umbraCheck < 12)
+        if($umbraCheck < 12)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -517,19 +464,11 @@ class MagicBindingService
         if($umbraCheck <= 2)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Magic Smoke', 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::SCIENCE ]);
-            $pet->increaseEsteem(-1);
+            $pet->increaseSafety(-1);
 
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $pet->increasePsychedelic($this->squirrel3->rngNextInt(1, 3));
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to extract Quintessence from Magic Smoke, but accidentally breathed the smoke in :(', '');
-            }
-            else
-            {
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to extract Quintessence from Magic Smoke, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-            }
+            $pet->increasePsychedelic($this->squirrel3->rngNextInt(1, 3));
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to extract Quintessence from Magic Smoke, but accidentally breathed a little bit of the smoke in! :O', '');
         }
         else if($umbraCheck < 12)
         {
@@ -556,15 +495,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Hourglass, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($umbraCheck < 15)
+        if($umbraCheck < 15)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -594,15 +525,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Fish Bone Shovel, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($umbraCheck < 18)
+        if($umbraCheck < 18)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
@@ -633,10 +556,9 @@ class MagicBindingService
         if($umbraCheck <= 2)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a piece of Glass, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
+            $pet->increaseEsteem(-1)->increaseSafety(-4);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a piece of Glass, but accidentally cut themselves :(', '');
         }
         else if($umbraCheck < 18)
         {
@@ -669,23 +591,14 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 3)
+        if($umbraCheck <= 2)
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
 
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $pet->increaseSafety(-6);
-                $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Ceremonial Trident, but accidentally hexed themselves, instead! :(', '');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Quintessence', 1);
-                $pet->increaseEsteem(-1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Ceremonial Trident, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-            }
+            $pet->increaseSafety(-6);
+            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Ceremonial Trident, but accidentally hexed themselves, instead! :(', '');
         }
         else if($umbraCheck < 20)
         {
@@ -737,22 +650,7 @@ class MagicBindingService
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
         $craftsCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
-        if($craftsCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
-            $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to extend a Blunderbuss but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-        }
-        else if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Blunderbuss, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($craftsCheck < 10)
+        if($craftsCheck < 10)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(46, 60), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
@@ -791,15 +689,7 @@ class MagicBindingService
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
         $craftsCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Elvish Magnifying Glass, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($craftsCheck < 12)
+        if($craftsCheck < 12)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(46, 60), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
@@ -837,15 +727,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 3)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Plastic Shovel, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($umbraCheck < 18)
+        if($umbraCheck < 18)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(46, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
@@ -886,24 +768,7 @@ class MagicBindingService
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
         $craftsCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
-        if($craftsCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
-            $this->houseSimService->getState()->loseItem('Glass', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to decorate a Painted Dumbbell but broke the Glass :(', 'icons/activity-logs/broke-glass');
-        }
-        else if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Wings', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Painted Dumbbell, but accidentally disenchanted the Wings :(', '');
-            $this->inventoryService->petCollectsItem('Feathers', $pet, 'Left over after ' . $pet->getName() . ' accidentally disenchanted some Wings...', $activityLog);
-            return $activityLog;
-        }
-        else if($craftsCheck < 10)
+        if($craftsCheck < 10)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(46, 60), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
@@ -941,25 +806,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $pet->increaseEsteem(-2);
-                $this->houseSimService->getState()->loseItem('Quintessence', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Farmer\'s Multi-tool, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-            }
-            else
-            {
-                $pet->increaseEsteem(-2);
-                $this->houseSimService->getState()->loseItem('Smallish Pumpkin', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make Gizubi\'s Shovel, but split the Smallish Pumpkin wrong, ruining the spell :(', '');
-            }
-        }
-        else if($umbraCheck < 20)
+        if($umbraCheck < 20)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -987,25 +834,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $pet->increaseEsteem(-2);
-                $this->houseSimService->getState()->loseItem('Quintessence', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Double Scythe, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-            }
-            else
-            {
-                $pet->increaseEsteem(-2);
-                $this->houseSimService->getState()->loseItem('Dark Scales', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make New Moon, but cracked the Dark Scales :(', '');
-            }
-        }
-        else if($umbraCheck < 20)
+        if($umbraCheck < 20)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -1032,25 +861,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $pet->increaseEsteem(-2);
-                $this->houseSimService->getState()->loseItem('Quintessence', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Rapier, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-            }
-            else
-            {
-                $pet->increaseEsteem(-2);
-                $this->houseSimService->getState()->loseItem('Sunflower', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make Night and Day, but accidentally tore the Sunflower :(', '');
-            }
-        }
-        else if($umbraCheck < 20)
+        if($umbraCheck < 20)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -1078,29 +889,19 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getPerception()->getTotal(), ceil($petWithSkills->getMusic()->getTotal() / 4)));
 
-        if($umbraCheck <= 2)
+        if($umbraCheck === 1)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
 
             $pet->increaseEsteem(-2);
 
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-                $this->houseSimService->getState()->loseItem('Quintessence', 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::MUSIC ]);
+            $this->houseSimService->getState()->loseItem('Musical Scales', 1);
 
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Iron Sword, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-            }
-            else
-            {
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::MUSIC ]);
-                $this->houseSimService->getState()->loseItem('Musical Scales', 1);
+            for($i = 0; $i < 6; $i++)
+                $this->inventoryService->petCollectsItem('Music Note', $pet, $pet->getName() . ' accidentally broke apart Musical Scales into Music Notes, of which this is one.', null);
 
-                for($i = 0; $i < 6; $i++)
-                    $this->inventoryService->petCollectsItem('Music Note', $pet, $pet->getName() . ' accidentally broke apart Musical Scales into Music Notes, of which this is one.', null);
-
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Dancing Sword, but accidentally dropped the Musical Scales, scattering Music Notes everywhere, and breaking one.', '');
-            }
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Dancing Sword, but accidentally dropped the Musical Scales, scattering Music Notes everywhere, and breaking one.', '');
         }
         else if($umbraCheck < 18)
         {
@@ -1132,18 +933,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-
-            $pet->increaseEsteem(-2);
-
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Poker, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($umbraCheck < 19)
+        if($umbraCheck < 19)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
@@ -1175,22 +965,11 @@ class MagicBindingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
 
-            $pet->increaseEsteem(-2);
+            $pet->increaseSafety(-4);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
-            if($this->squirrel3->rngNextBool())
-            {
-                $this->houseSimService->getState()->loseItem('Quintessence', 1);
-
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Heavy Hammer, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('White Feathers', 1);
-
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Heavy Hammer, but accidentally zapped the crap out of a White Feather :(', '');
-            }
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind some lightning to a Heavy Hammer, but accidentally zapped themselves! :(', '');
         }
         else if($umbraCheck < 25)
         {
@@ -1227,16 +1006,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-
-            $pet->increaseEsteem(-1);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant Vicious, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($umbraCheck < 24)
+        if($umbraCheck < 24)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
@@ -1275,25 +1045,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $pet->increaseEsteem(-1);
-                $this->houseSimService->getState()->loseItem('Quintessence', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Witch\'s Broom, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-            }
-            else
-            {
-                $pet->increaseEsteem(-1);
-                $this->houseSimService->getState()->loseItem('Witch-hazel', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Witch\'s Broom, but snapped the Witch-hazel in half :(', '');
-            }
-        }
-        else if($umbraCheck < 14)
+        if($umbraCheck < 14)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -1339,18 +1091,8 @@ class MagicBindingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $pet->increaseEsteem(-1);
-                $this->houseSimService->getState()->loseItem('Quintessence', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a ' . $mirror . ', but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-            }
-            else
-            {
-                $pet->increaseEsteem(-1);
-                $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a ' . $mirror . ', but broke the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-            }
+            $pet->increaseSafety(-4);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a ' . $mirror . ', but accidentally cut themselves on it! :(', '');
         }
         else if($umbraCheck < 16)
         {
@@ -1461,16 +1203,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-
-            $pet->increaseEsteem(-1);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Level 2 Sword, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($umbraCheck < 18)
+        if($umbraCheck < 18)
         {
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
@@ -1499,25 +1232,16 @@ class MagicBindingService
 
         $makingItem = $this->itemRepository->findOneByName('Wunderbuss');
 
-        if($umbraCheck <= 2)
+        if($umbraCheck === 1)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
 
-            if($this->squirrel3->rngNextBool())
-            {
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
-                $this->houseSimService->getState()->loseItem('Rainbow', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to bind a Rainbow to a Blunderbuss, but accidentally caught the light wrong; the Rainbow vanished...', 'icons/activity-logs/confused');
-            }
-            else
-            {
-                $reRoll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+            $reRoll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-                if($reRoll >= 12)
-                    return $this->coinSmithingService->makeGoldCoins($petWithSkills, $makingItem);
-                else
-                    return $this->coinSmithingService->spillGold($petWithSkills, $makingItem);
-            }
+            if($reRoll >= 12)
+                return $this->coinSmithingService->makeGoldCoins($petWithSkills, $makingItem);
+            else
+                return $this->coinSmithingService->spillGold($petWithSkills, $makingItem);
         }
         else if($umbraCheck < 30)
         {
@@ -1549,24 +1273,7 @@ class MagicBindingService
 
         $makingItem = $this->itemRepository->findOneByName('Ambu Lance');
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, false);
-
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
-            $this->houseSimService->getState()->loseItem('Blood Wine', 1);
-
-            if($this->squirrel3->rngNextInt(1, 4) === 1)
-            {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to imbue a Heavy Lance with Blood Wine, but accidentally spilled the wine! :(', '');
-            }
-            else
-            {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to imbue a Heavy Lance with Blood Wine, but accidentally spilled the wine! :( They were able to re-capture some of the magic that escaped, at least...', '');
-                $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' created this!', $activityLog);
-            }
-        }
-        else if($umbraCheck < 22)
+        if($umbraCheck < 22)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
@@ -1618,16 +1325,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-
-            $pet->increaseEsteem(-1);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Gold Tuning Fork, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($umbraCheck < 14)
+        if($umbraCheck < 14)
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
@@ -1665,16 +1363,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-
-            $pet->increaseEsteem(-1);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Compass, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($umbraCheck < 14)
+        if($umbraCheck < 14)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -1704,16 +1393,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-
-            $pet->increaseEsteem(-1);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Whisper Stone, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($umbraCheck < 14)
+        if($umbraCheck < 14)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -1739,16 +1419,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-
-            $pet->increaseEsteem(-1);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind some Wings, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($umbraCheck < 14)
+        if($umbraCheck < 14)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -1774,24 +1445,14 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 3)
+        if($umbraCheck <= 2)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $pet->increaseSafety(-6);
-                $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Gold Trifecta, but accidentally hexed themselves, instead! :(', '');
-            }
-            else
-            {
-                $pet->increaseEsteem(-1);
-                $this->houseSimService->getState()->loseItem('Quintessence', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Gold Trifecta, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-            }
-
+            $pet->increaseSafety(-6);
+            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Gold Trifecta, but accidentally hexed themselves, instead! :(', '');
         }
         else if($umbraCheck < 14)
         {
@@ -1823,24 +1484,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $skillCheck = $this->squirrel3->rngNextInt(1, 20 + min($petWithSkills->getNature()->getTotal(), $petWithSkills->getUmbra()->getTotal()) + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getPerception()->getTotal()) + $petWithSkills->getIntelligence()->getTotal());
 
-        if($skillCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::MUSIC ]);
-            $pet->increaseEsteem(-2);
-
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $this->houseSimService->getState()->loseItem('Quintessence', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind Mint to a Leaf Spear, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Mint', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind Mint to a Leaf Spear, but tore the Mint :(', '');
-            }
-        }
-        else if($skillCheck < 16)
+        if($skillCheck < 16)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA, PetSkillEnum::NATURE ]);
@@ -1874,26 +1518,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $skillCheck = $this->squirrel3->rngNextInt(1, 20 + ceil(($petWithSkills->getUmbra()->getTotal() + $petWithSkills->getMusic()->getTotal()) / 2) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($skillCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::MUSIC ]);
-            $pet->increaseEsteem(-2);
-
-            $lost = $this->squirrel3->rngNextInt(1, 2);
-
-            if($lost === 1)
-            {
-                $this->houseSimService->getState()->loseItem('Quintessence', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Music Note to a Fishing Recorder, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Music Note', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Music Note to a Fishing Recorder, but broke the note while trying to tune it :(', '');
-            }
-        }
-        else if($skillCheck < 22)
+        if($skillCheck < 22)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA, PetSkillEnum::MUSIC ]);
@@ -1924,25 +1549,7 @@ class MagicBindingService
         $craftsCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getNature()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($craftsCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-2);
-
-            $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Crooked Stick, but accidentally broke it in the process :(', '');
-        }
-        else if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-2);
-
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Crooked Stick, but mishandled the Quintessence; it evaporated back into the fabric of the universe! :(', '');
-        }
-        else if($craftsCheck < 10)
+        if($craftsCheck < 10)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::MUSIC ]);
@@ -1980,30 +1587,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $skillCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + ceil($petWithSkills->getScience()->getTotal() / 2));
 
-        if($skillCheck <= 2)
-        {
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::MUSIC ]);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-
-            $lost = $this->squirrel3->rngNextInt(1, 3);
-
-            if($lost < 3)
-            {
-                $pet->increaseEsteem(-1);
-
-                $this->houseSimService->getState()->loseItem('Quintessence', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to mix some Ambrotypic Solvent, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-            }
-            else
-            {
-                $pet->increaseEsteem(-3);
-
-                $this->houseSimService->getState()->loseItem('Silver Bar', 1);
-                $this->houseSimService->getState()->loseItem('Paint Stripper', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to mix some Ambrotypic Solvent, but got the proportions wrong, ruining the Silver Bar AND the Paint Stripper! :(', '');
-            }
-        }
-        else if($skillCheck < 14)
+        if($skillCheck < 14)
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::SCIENCE ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
@@ -2035,24 +1619,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getUmbra()->getTotal());
 
-        if($roll <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $this->houseSimService->getState()->loseItem('Quinacridone Magenta Dye', 1);
-                $pet->increaseEsteem(-2);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to fill a Crystal Ball with Quinacridone Magenta Dye, but accidentally spilled it all over the place, instead :(', 'icons/activity-logs/null');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Crystal Ball', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Crystal Ball with cosmic energy, but accidentally shattered the ball :(', 'icons/activity-logs/null');
-            }
-        }
-        else if($roll >= 18)
+        if($roll >= 18)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Crystal Ball', 1);
@@ -2097,18 +1664,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $skillCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() * 2);
 
-        if($skillCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-
-            $pet->increaseEsteem(-1);
-
-            $this->houseSimService->getState()->loseItem('Mint', 1);
-
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to infuse a Wand of Ice with Mint, but just ended up totally destroying the Mint :(', '');
-        }
-        else if($skillCheck < 16)
+        if($skillCheck < 16)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -2136,16 +1692,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $skillCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal());
 
-        if($skillCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-
-            $pet->increaseEsteem(-1);
-
-            return $this->evericeMeltingService->doMeltEverice($pet, $pet->getName() . ' tried to bind Everice to an Invisible Shovel, but uttered the wrong sounds during the ritual, and melted the Everice, instead! (Dang! Powerful magics!)');
-        }
-        else if($skillCheck < 21)
+        if($skillCheck < 21)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
@@ -2191,9 +1738,9 @@ class MagicBindingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
-            $pet->increaseEsteem(-1);
+            $pet->increaseSafety(-4);
 
-            return $this->evericeMeltingService->doMeltEverice($pet, $pet->getName() . ' tried to bind Everice to a Scythe, but uttered the wrong sounds during the ritual, and melted the Everice, instead! (Dang! Powerful magics!)');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind Everice to a Scythe, but uttered the wrong sounds during the ritual, and got frostbitten! :(', '');
         }
         else if($skillCheck < 16)
         {
@@ -2226,24 +1773,14 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $skillCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal());
 
-        if($skillCheck <= 3)
+        if($skillCheck <= 2)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $pet->increaseSafety(-6);
-                $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to transmute plastic into ice, but accidentally hexed themselves, instead! :(', '');
-            }
-            else
-            {
-                $pet->increaseEsteem(-1);
-
-                $this->houseSimService->getState()->loseItem('Quintessence', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to transmute plastic into ice, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-            }
+            $pet->increaseSafety(-6);
+            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to transmute plastic into ice, but accidentally hexed themselves, instead! :(', '');
         }
         else if($skillCheck < 16)
         {
@@ -2276,16 +1813,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-
-            $pet->increaseEsteem(-1);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a moonbeam to a Crystal Ball, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($umbraCheck < 10)
+        if($umbraCheck < 10)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -2312,23 +1840,14 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 3)
+        if($umbraCheck <= 2)
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
 
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $pet->increaseSafety(-6);
-                $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Aubergine Scepter, but accidentally hexed themselves, instead! :(', '');
-            }
-            else
-            {
-                $pet->increaseEsteem(-1);
-                $this->houseSimService->getState()->loseItem('Quintessence', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Aubergine Scepter, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-            }
+            $pet->increaseSafety(-6);
+            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Aubergine Scepter, but accidentally hexed themselves, instead! :(', '');
         }
         else if($umbraCheck < 16)
         {
@@ -2362,16 +1881,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
-
-            $pet->increaseEsteem(-1);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Sidereal Leaf Spear, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($umbraCheck < 18)
+        if($umbraCheck < 18)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -2405,23 +1915,7 @@ class MagicBindingService
 
         $scrollItem = $this->itemRepository->findOneByName($scroll);
 
-        if($craftsCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Paper', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create ' . $scrollItem->getNameWithArticle() . ', but accidentally tore the Paper in the process :(', 'icons/activity-logs/torn-to-bits');
-        }
-        else if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create ' . $scrollItem->getNameWithArticle() . ', but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($umbraCheck < 15)
+        if($umbraCheck < 15)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
@@ -2488,25 +1982,7 @@ class MagicBindingService
         $craftsCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($craftsCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a magic wand, but accidentally broke the stick :(', 'icons/activity-logs/torn-to-bits');
-        }
-        else if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Wings', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a magic wand with Wings, but accidentally tore the Wings, leaving only feathers :(', '');
-            $this->inventoryService->petCollectsItem('Feathers', $pet, $pet->getName() . ' accidentally tore some Wings, leaving only these Feathers.', $activityLog);
-            return $activityLog;
-        }
-        else if($umbraCheck < 18)
+        if($umbraCheck < 18)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
@@ -2535,25 +2011,7 @@ class MagicBindingService
         $craftsCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($craftsCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Paper', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a Monster-summoning Scroll, but accidentally tore the Paper in the process :(', 'icons/activity-logs/torn-to-bits');
-        }
-        else if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Wings', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a Monster-summoning Scroll, but accidentally tore the Wings back into Feathers :(', '');
-            $this->inventoryService->petCollectsItem('Feathers', $pet, $pet->getName() . ' accidentally tore some Wings, leaving only these Feathers.', $activityLog);
-            return $activityLog;
-        }
-        else if($umbraCheck < 18)
+        if($umbraCheck < 18)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
@@ -2585,25 +2043,7 @@ class MagicBindingService
         $craftsCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($craftsCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            $pet->increaseEsteem(-1);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a potato staff, but accidentally splintered the Crooked Stick :(', 'icons/activity-logs/broke-stick');
-        }
-        else if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Wings', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to create a potato staff, but accidentally tore the Wings back into Feathers :(', '');
-            $this->inventoryService->petCollectsItem('Feathers', $pet, $pet->getName() . ' accidentally tore some Wings, leaving only these Feathers.', $activityLog);
-            return $activityLog;
-        }
-        else if($umbraCheck < 16)
+        if($umbraCheck < 16)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
@@ -2630,17 +2070,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Wings', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Rapier, but accidentally tore the Wings back into Feathers :(', '');
-            $this->inventoryService->petCollectsItem('Feathers', $pet, $pet->getName() . ' accidentally tore some Wings, leaving only these Feathers.', $activityLog);
-            return $activityLog;
-        }
-        else if($umbraCheck < 17)
+        if($umbraCheck < 17)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
@@ -2667,17 +2097,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Wings', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Flying Bindle, but accidentally tore the Wings back into Feathers :(', '');
-            $this->inventoryService->petCollectsItem('Feathers', $pet, $pet->getName() . ' accidentally tore some Wings, leaving only these Feathers.', $activityLog);
-            return $activityLog;
-        }
-        else if($umbraCheck < 16)
+        if($umbraCheck < 16)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -2703,17 +2123,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Wings', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Flying Grappling Hook, but accidentally tore the Wings back into Feathers :(', '');
-            $this->inventoryService->petCollectsItem('Feathers', $pet, $pet->getName() . ' accidentally tore some Wings, leaving only these Feathers.', $activityLog);
-            return $activityLog;
-        }
-        else if($umbraCheck < 16)
+        if($umbraCheck < 16)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -2740,25 +2150,7 @@ class MagicBindingService
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
         $scienceCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getScience()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
-        if($scienceCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Gravitational Waves', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-            $pet->increaseEsteem(-1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind some Gravitational Waves to a Grappling Hook, but lost track of the Gravitational Waves for just a second... by which point they\'d zipped almost 300 million kilometers away :|', '');
-            return $activityLog;
-        }
-        else if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $pet->increaseEsteem(-1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind some Gravitational Waves to a Grappling Hook, but the Quintessence was torn apart by the tidal forces, and returned to the fabric of the universe.', '');
-            return $activityLog;
-        }
-        else if($umbraCheck < 12 || $scienceCheck < 12)
+        if($umbraCheck < 12 || $scienceCheck < 12)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::SCIENCE ]);
@@ -2785,43 +2177,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-
-            if($this->squirrel3->rngNextInt(1, 3) > 1)
-            {
-                $this->houseSimService->getState()->loseItem('Quintessence', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-                $pet->increaseEsteem(-1);
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant some Scales, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Scales', 1);
-                $this->houseSimService->getState()->loseItem('Quintessence', 1);
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-
-                if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getBrawl() + $petWithSkills->getDexterity()) >= 15)
-                {
-                    $pet->increaseEsteem(-2);
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant some Scales, but accidentally brought them to life! %pet:' . $pet->getId() . '.Name% narrowly avoided getting bitten before the snake slithered away...', '');
-                }
-                else
-                {
-                    $pet
-                        ->increaseEsteem(-2)
-                        ->increaseSafety(-4)
-                        ->increasePoison(4)
-                    ;
-
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant some Scales, but accidentally brought them to life! The snake slithered away, but not before delivering %pet:' . $pet->getId() . '.name% a nasty bite!', '');
-                }
-            }
-
-            return $activityLog;
-        }
-        else if($umbraCheck < 17)
+        if($umbraCheck < 17)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -2848,18 +2204,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-
-            $pet->increaseEsteem(-2);
-
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Decorated Flute, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($umbraCheck < 19)
+        if($umbraCheck < 19)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
@@ -2887,18 +2232,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
-        if($umbraCheck <= 2)
-        {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
-
-            $pet->increaseEsteem(-2);
-
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-            $this->houseSimService->getState()->loseItem('Quintessence', 1);
-
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bring some Fluff to life, but mishandled the Quintessence; it evaporated back into the fabric of the universe :(', '');
-        }
-        else if($umbraCheck < 16)
+        if($umbraCheck < 16)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -2925,7 +2259,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
-        if($umbraCheck <= 2)
+        if($umbraCheck <= 2 && $pet->getFood() < 4)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
 
@@ -2933,30 +2267,12 @@ class MagicBindingService
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
-            if($pet->getFood() < 4)
-            {
-                $pet->increaseFood(8);
-                $this->houseSimService->getState()->loseItem('Fish', 1);
+            $pet->increaseFood(8);
+            $this->houseSimService->getState()->loseItem('Fish', 1);
 
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was going to feed a Cattail, but ended up eating the Fish themselves...', '');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Moon Pearl', 1);
-
-                if($umbraCheck === 2)
-                {
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was going to further enchant a Cattail, but accidentally dropped the Moon Pearl, shattering it! They managed to grab a Photon before it could get away, at least!', '');
-                    $this->inventoryService->petCollectsItem('Photon', $pet, $pet->getName() . ' caught this escaping from a shattered Moon Pearl.', $activityLog);
-                    return $activityLog;
-                }
-                else
-                {
-                    return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was going to further enchant a Cattail, but accidentally dropped the Moon Pearl, shattering it! :(', '');
-                }
-            }
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was going to feed a Cattail, but ended up eating the Fish themselves...', '');
         }
-        else if($umbraCheck < 20)
+        if($umbraCheck < 20)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
@@ -2992,9 +2308,9 @@ class MagicBindingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
-            $pet->increaseEsteem(-1);
+            $pet->increaseSafety(-4);
 
-            return $this->evericeMeltingService->doMeltEverice($pet, $pet->getName() . ' tried to bind Everice to a Heavy Hammer, but uttered the wrong sounds during the ritual, and melted the Everice, instead! (Dang! Powerful magics!)');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind Everice to a Heavy Hammer, but uttered the wrong sounds during the ritual, and got frostbitten! :(', '');
         }
         else if($skillCheck < 22)
         {

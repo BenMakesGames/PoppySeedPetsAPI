@@ -4,6 +4,7 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
+use App\Enum\DistractionLocationEnum;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\MoonPhaseEnum;
@@ -23,6 +24,7 @@ use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\CalendarService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\InventoryModifierService;
@@ -43,10 +45,11 @@ class HuntingService
     private $petExperienceService;
     private $transactionService;
     private $toolBonusService;
-    private $squirrel3;
     private $werecreatureEncounterService;
     private $weatherService;
     private $statusEffectService;
+    private IRandom $squirrel3;
+    private GatheringDistractionService $gatheringDistractions;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
@@ -54,7 +57,7 @@ class HuntingService
         UserQuestRepository $userQuestRepository, PetExperienceService $petExperienceService,
         TransactionService $transactionService, InventoryModifierService $toolBonusService, Squirrel3 $squirrel3,
         WerecreatureEncounterService $werecreatureEncounterService, WeatherService $weatherService,
-        StatusEffectService $statusEffectService
+        StatusEffectService $statusEffectService, GatheringDistractionService $gatheringDistractions
     )
     {
         $this->responseService = $responseService;
@@ -71,6 +74,7 @@ class HuntingService
         $this->werecreatureEncounterService = $werecreatureEncounterService;
         $this->weatherService = $weatherService;
         $this->statusEffectService = $statusEffectService;
+        $this->gatheringDistractions = $gatheringDistractions;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -501,6 +505,9 @@ class HuntingService
 
     private function huntedLargeToad(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'hunting in the woods');
+
         $pet = $petWithSkills->getPet();
         $skill = 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl(false)->getTotal();
 
@@ -536,6 +543,9 @@ class HuntingService
 
     private function huntedScarecrow(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::IN_TOWN, 'hunting around town');
+
         $pet = $petWithSkills->getPet();
 
         $brawlRoll = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal());
@@ -651,6 +661,9 @@ class HuntingService
 
     private function huntedThievingMagpie(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'hunting in the woods');
+
         $pet = $petWithSkills->getPet();
         $intSkill = 10 + $petWithSkills->getIntelligence()->getTotal();
         $dexSkill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal();
@@ -735,6 +748,9 @@ class HuntingService
 
     private function huntedGhosts(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'hunting in the woods');
+
         $pet = $petWithSkills->getPet();
 
         if($this->squirrel3->rngNextInt(1, 100) === 1)
@@ -928,6 +944,9 @@ class HuntingService
 
     private function huntedSatyr(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'hunting in the woods');
+
         $pet = $petWithSkills->getPet();
 
         $brawlRoll = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal());
@@ -1029,6 +1048,9 @@ class HuntingService
 
     private function huntedPaperGolem(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::IN_TOWN, 'hunting around town');
+
         $pet = $petWithSkills->getPet();
 
         $brawlRoll = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getBrawl()->getTotal()));
@@ -1105,6 +1127,9 @@ class HuntingService
 
     private function huntedLeshyDemon(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'hunting in the woods');
+
         $pet = $petWithSkills->getPet();
 
         $skill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getBrawl()->getTotal());
@@ -1245,6 +1270,9 @@ class HuntingService
 
     private function huntedEggSaladMonstrosity(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::IN_TOWN, 'hunting around town');
+
         $pet = $petWithSkills->getPet();
 
         $skill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getBrawl()->getTotal();

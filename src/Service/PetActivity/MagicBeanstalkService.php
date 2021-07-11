@@ -12,6 +12,7 @@ use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -21,7 +22,7 @@ class MagicBeanstalkService
     private $responseService;
     private $petExperienceService;
     private $inventoryService;
-    private $squirrel3;
+    private IRandom $squirrel3;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,

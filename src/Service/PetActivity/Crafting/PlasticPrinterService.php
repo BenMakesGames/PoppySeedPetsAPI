@@ -88,23 +88,7 @@ class PlasticPrinterService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getNature()->getTotal()));
 
-        if($roll <= 3)
-        {
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
-
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $this->houseSimService->getState()->loseItem('String', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Plastic Fishing Rod, but broke the String :(', 'icons/activity-logs/broke-string');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Plastic', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Plastic Fishing Rod, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
-            }
-        }
-        else if($roll >= 12)
+        if($roll >= 12)
         {
             $this->houseSimService->getState()->loseItem('String', 1);
             $this->houseSimService->getState()->loseItem('Plastic', 1);
@@ -131,25 +115,7 @@ class PlasticPrinterService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
-        if($roll <= 3)
-        {
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
-
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $this->houseSimService->getState()->loseItem('Plastic', 1);
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make another boomerang blade for a Nonsenserang, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
-            }
-            else
-            {
-                $this->houseSimService->getState()->loseItem('Plastic Boomerang', 1);
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to weld two Plastic Boomerangs together, but warped one of them beyond repair :( Well, at least it\'s still useful as a chunk of Plastic...', '');
-                $this->inventoryService->petCollectsItem('Plastic', $pet, $pet->getName() . ' accidentally melted a Plastic Boomerang. This is all that remains.', $activityLog);
-                return $activityLog;
-            }
-        }
-        else if($roll >= 14)
+        if($roll >= 14)
         {
             $this->houseSimService->getState()->loseItem('Plastic Boomerang', 2);
             $this->houseSimService->getState()->loseItem('Plastic', 1);
@@ -176,15 +142,7 @@ class PlasticPrinterService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
-        if($roll <= 3)
-        {
-            $this->houseSimService->getState()->loseItem('Plastic', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
-
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an Evil Feather Duster, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
-        }
-        else if($roll >= 16)
+        if($roll >= 16)
         {
             $this->houseSimService->getState()->loseItem('Black Feathers', 1);
             $this->houseSimService->getState()->loseItem('Plastic', 1);
@@ -231,16 +189,7 @@ class PlasticPrinterService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
-        if($roll <= 3)
-        {
-            $this->houseSimService->getState()->loseItem('Plastic', 1);
-
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
-
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Compass, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
-        }
-        else if($roll >= 12)
+        if($roll >= 12)
         {
             $this->houseSimService->getState()->loseItem('Iron Bar', 1);
             $this->houseSimService->getState()->loseItem('Plastic', 1);
@@ -266,25 +215,7 @@ class PlasticPrinterService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
-        if($roll <= 4)
-        {
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
-
-            $lostItem = $this->squirrel3->rngNextFromArray([ 'Plastic', 'Yellow Dye', 'Green Dye' ]);
-
-            $this->houseSimService->getState()->loseItem($lostItem, 1);
-
-            if($lostItem === 'Plastic')
-            {
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to print a Toy Alien Gun, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
-            }
-            else
-            {
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to print a Toy Alien Gun, but accidentally spilt the ' . $lostItem . ' :(', '');
-            }
-        }
-        else if($roll >= 14)
+        if($roll >= 14)
         {
             $this->houseSimService->getState()->loseItem('Green Dye', 1);
             $this->houseSimService->getState()->loseItem('Yellow Dye', 1);
@@ -341,18 +272,7 @@ class PlasticPrinterService
 
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
-        if($roll <= 3)
-        {
-            $this->houseSimService->getState()->loseItem('Plastic', 1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
-
-            if($beingHalloweeny)
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wants to make a Halloween-themed bucket, so tried to make ' . $item->getNameWithArticle() . ' as a base, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
-            else
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make ' . $item->getNameWithArticle() . ', but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
-        }
-        else if($roll >= 10)
+        if($roll >= 10)
         {
             $this->houseSimService->getState()->loseItem('Plastic', 1);
 
@@ -400,16 +320,7 @@ class PlasticPrinterService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
-        if($roll <= 3)
-        {
-            $this->houseSimService->getState()->loseItem('Plastic', 1);
-
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
-
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Plastic Idol, but the base plate of the 3D Printer moved, jacking up the Plastic :(', '');
-        }
-        else if($roll >= 13)
+        if($roll >= 13)
         {
             $this->houseSimService->getState()->loseItem('Plastic', 1);
 

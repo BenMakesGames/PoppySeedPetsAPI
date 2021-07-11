@@ -50,69 +50,64 @@ class Protocol7Service
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() - $pet->getAlcohol();
 
-        $maxSkill = NumberFunctions::clamp($maxSkill, 1, 21);
-
-        $roll = $this->squirrel3->rngNextInt(1, $maxSkill);
+        // protocol 7 is weird; we do a modulo here.
+        // we don't do "distraction" encounters for protocol 7; instead, we rely on the modulo, which has the
+        // effect of making lower-ranked encounters more common than higher ones for higher-level pets.
+        $roll = $this->squirrel3->rngNextInt(0, max(1, $maxSkill)) % 20;
 
         $activityLog = null;
         $changes = new PetChanges($pet);
 
         switch($roll)
         {
+            case 0:
             case 1:
             case 2:
-            case 3:
-            case 4:
                 if(!$pet->getGuildMembership() && $this->squirrel3->rngNextInt(1, 5) === 1)
                     $activityLog = $this->guildService->joinGuildProjectE($pet);
                 else
                     $activityLog = $this->foundNothing($petWithSkills, $roll);
                 break;
+            case 3:
+            case 4:
             case 5:
-            case 6:
-            case 7:
-                if($pet->hasMerit(MeritEnum::BEHATTED) && $petWithSkills->getScience()->getTotal() >= 10)
+                if($pet->hasMerit(MeritEnum::BEHATTED) && $this->squirrel3->rngNextInt(1, 40) < $petWithSkills->getScience()->getTotal())
                     $activityLog = $this->encounterAnnabellastasia($petWithSkills);
                 else
                     $activityLog = $this->encounterGarbageCollector($petWithSkills);
                 break;
+            case 6:
+            case 7:
             case 8:
-            case 9:
-            case 10:
                 $activityLog = $this->foundLayer02($petWithSkills);
                 break;
-            case 11:
+            case 9:
                 if($pet->isInGuild(GuildEnum::CORRESPONDENCE))
                     $activityLog = $this->deliverMessagesForCorrespondence($petWithSkills);
                 else
                     $activityLog = $this->foundNothing($petWithSkills, $roll);
+                break;
+            case 10:
+            case 11:
+                $activityLog = $this->foundProtectedSector($petWithSkills);
                 break;
             case 12:
             case 13:
-                $activityLog = $this->foundProtectedSector($petWithSkills);
+                $activityLog = $this->watchOnlineVideo($petWithSkills);
                 break;
             case 14:
             case 15:
-                $activityLog = $this->watchOnlineVideo($petWithSkills);
+                $activityLog = $this->exploreInsecurePort($petWithSkills);
                 break;
             case 16:
             case 17:
-                $activityLog = $this->exploreInsecurePort($petWithSkills);
-                break;
-            case 18:
                 $activityLog = $this->repairShortedCircuit($petWithSkills);
                 break;
-            case 19:
+            case 18:
                 $activityLog = $this->exploreWalledGarden($petWithSkills);
                 break;
-            case 20:
+            case 19:
                 $activityLog = $this->foundCorruptSector($petWithSkills);
-                break;
-            case 21:
-                if($pet->isInGuild(GuildEnum::CORRESPONDENCE))
-                    $activityLog = $this->deliverMessagesForCorrespondence($petWithSkills);
-                else
-                    $activityLog = $this->foundNothing($petWithSkills, $roll);
                 break;
         }
 
@@ -451,7 +446,7 @@ class Protocol7Service
             ],
             [
                 'subject' => 'about blockchains',
-                'loot' => [ 'Password', 'Cryptocurrency Wallet', 'Cryptocurrency Wallet' ],
+                'loot' => [ 'Password', 'Hash Table', 'Cryptocurrency Wallet' ],
             ]
         ]);
 

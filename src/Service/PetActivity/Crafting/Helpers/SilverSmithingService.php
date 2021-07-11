@@ -48,12 +48,11 @@ class SilverSmithingService
         $pet = $petWithSkills->getPet();
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
-        $this->houseSimService->getState()->loseItem('Silver Bar', 1);
         $pet->increaseEsteem(-1);
         $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 12));
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
 
-        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ', but they spilled the silver and burned themselves! :(', 'icons/activity-logs/burn');
+        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ', but they accidentally burned themselves! :(', 'icons/activity-logs/burn');
     }
 
     public function createSilverKey(ComputedPetSkills $petWithSkills): PetActivityLog

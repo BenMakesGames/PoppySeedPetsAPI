@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\DistractionLocationEnum;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
@@ -48,13 +49,14 @@ class GatheringService
     private PetRepository $petRepository;
     private PetFactory $petFactory;
     private MeritRepository $meritRepository;
+    private GatheringDistractionService $gatheringDistractions;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, ItemRepository $itemRepository, SpiceRepository $spiceRepository,
         Squirrel3 $squirrel3, WeatherService $weatherService, FieldGuideService $fieldGuideService,
         PetSpeciesRepository $petSpeciesRepository, PetRepository $petRepository, PetFactory $petFactory,
-        MeritRepository $meritRepository
+        MeritRepository $meritRepository, GatheringDistractionService $gatheringDistractions
     )
     {
         $this->responseService = $responseService;
@@ -70,6 +72,7 @@ class GatheringService
         $this->petRepository = $petRepository;
         $this->petFactory = $petFactory;
         $this->meritRepository = $meritRepository;
+        $this->gatheringDistractions = $gatheringDistractions;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -337,6 +340,9 @@ class GatheringService
 
     private function foundHollowLog(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'exploring the nearby woods');
+
         $pet = $petWithSkills->getPet();
 
         $toadChance = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet)->getRainfall() > 0 ? 75 : 25;
@@ -411,6 +417,9 @@ class GatheringService
 
     private function foundBirdNest(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'exploring the nearby woods');
+
         $pet = $petWithSkills->getPet();
 
         if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 10)
@@ -450,6 +459,9 @@ class GatheringService
 
     private function foundBeach(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::BEACH, 'exploring the beach');
+
         $pet = $petWithSkills->getPet();
 
         $loot = [];
@@ -525,6 +537,9 @@ class GatheringService
 
     private function foundOvergrownGarden(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'exploring the woods');
+
         $pet = $petWithSkills->getPet();
 
         $possibleLoot = [
@@ -628,6 +643,9 @@ class GatheringService
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found an Old Iron Mine, but all the ore must have been hidden deep inside, and ' . $pet->getName() . ' didn\'t have a light.', '');
         }
 
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::UNDERGROUND, 'exploring an iron mine');
+
         if($this->squirrel3->rngNextInt(1, 20) + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getStamina()->getTotal() >= 10)
         {
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
@@ -680,6 +698,8 @@ class GatheringService
 
     private function foundMicroJungle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        // no chance for a "gathering distraction" here; that code is in doNormalMicroJungle
+
         if(DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON)
             $activityLog = $this->encounterNangTani($petWithSkills);
         else
@@ -734,6 +754,9 @@ class GatheringService
 
     private function doNormalMicroJungle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'exploring the jungle');
+
         $pet = $petWithSkills->getPet();
 
         $possibleLoot = [
@@ -793,6 +816,9 @@ class GatheringService
 
     private function foundWildHedgemaze(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'exploring the woods');
+
         $pet = $petWithSkills->getPet();
 
         $possibleLoot = [
@@ -920,6 +946,9 @@ class GatheringService
 
     private function foundVolcano(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::VOLCANO, 'exploring the island\'s volcano');
+
         $pet = $petWithSkills->getPet();
         $check = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
 
@@ -968,6 +997,9 @@ class GatheringService
 
     private function foundGypsumCave(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::UNDERGROUND, 'exploring a gypsum cave');
+
         $pet = $petWithSkills->getPet();
         $eideticMemory = $pet->hasMerit(MeritEnum::EIDETIC_MEMORY);
         $check = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
@@ -1020,6 +1052,8 @@ class GatheringService
 
     private function foundDeepMicroJungle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        // no "gathering distraction" here; that's been placed inside doNormalDeepMicroJungle
+
         if(DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON)
             $activityLog = $this->encounterNangTani($petWithSkills);
         else
@@ -1034,6 +1068,9 @@ class GatheringService
 
     private function doNormalDeepMicroJungle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::UNDERGROUND, 'exploring the deep jungle');
+
         $pet = $petWithSkills->getPet();
 
         $possibleLoot = [
@@ -1096,6 +1133,9 @@ class GatheringService
 
     private function foundOldSettlement(ComputedPetSkills $petWithSkills): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 20) === 1)
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'exploring the deep jungle');
+
         $pet = $petWithSkills->getPet();
 
         $extraLoot = [
@@ -1168,7 +1208,5 @@ class GatheringService
                     $activityLog->setEntry($activityLog->getEntry() . ' ' . ucfirst($locationName) . ' was CRAZY hot, and %pet:' . $pet->getId() . '.name% got a bit light-headed.');
             }
         }
-
     }
-
 }

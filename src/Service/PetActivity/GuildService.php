@@ -15,7 +15,6 @@ use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\GuildRepository;
 use App\Service\InventoryService;
-use App\Service\PetActivity\Guild\GizubisGardenService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -133,7 +132,7 @@ class GuildService
             case GuildEnum::TAPESTRIES: return $this->doTapestriesMission($pet);
             case GuildEnum::INNER_SANCTUM: return $this->doInnerSanctumMission($pet);
             case GuildEnum::DWARFCRAFT: return $this->doDwarfcraftMission($pet);
-            case GuildEnum::GIZUBIS_GARDEN: return $this->gizubisGardenService->doAdventure($petWithSkills);
+            case GuildEnum::GIZUBIS_GARDEN: return $this->gizubisGardenService->adventure($petWithSkills);
             case GuildEnum::HIGH_IMPACT: return $this->doHighImpactMission($pet);
             case GuildEnum::THE_UNIVERSE_FORGETS: return $this->doTheUniverseForgetsMission($pet);
             case GuildEnum::CORRESPONDENCE: return $this->doCorrespondenceMission($pet);

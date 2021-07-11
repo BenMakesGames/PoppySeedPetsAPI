@@ -1,5 +1,5 @@
 <?php
-namespace App\Service\PetActivity\Guild;
+namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
 use App\Enum\PetActivityStatEnum;
@@ -31,7 +31,7 @@ class GizubisGardenService
         $this->squirrel3 = $squirrel3;
     }
 
-    public function doAdventure(ComputedPetSkills $petWithSkills): PetActivityLog
+    public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $member = $petWithSkills->getPet()->getGuildMembership();
 

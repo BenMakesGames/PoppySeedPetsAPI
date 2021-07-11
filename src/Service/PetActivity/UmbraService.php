@@ -74,7 +74,7 @@ class UmbraService
         $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
         $skill = 10 + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal(); // psychedelics bonus is built into getUmbra()
 
-        $skill = NumberFunctions::clamp($skill, 1, 22);
+        $skill = NumberFunctions::clamp($skill, 1, 23);
 
         $roll = $this->squirrel3->rngNextInt(1, $skill);
 
@@ -102,11 +102,15 @@ class UmbraService
                 break;
 
             case 10:
+                $activityLog = $this->strangeUmbralEncounters->adventure($petWithSkills);
+                break;
+
             case 11:
+            case 12:
                 $activityLog = $this->fightEvilSpirit($petWithSkills);
                 break;
 
-            case 12:
+            case 13:
                 $dragon = $this->dragonRepository->findOneBy([ 'owner' => $pet->getOwner() ]);
 
                 if($dragon)
@@ -115,31 +119,31 @@ class UmbraService
                     $activityLog = $this->foundNothing($pet, $roll);
                 break;
 
-            case 13:
+            case 14:
                 $activityLog = $this->found2Moneys($petWithSkills, $weather);
                 break;
 
-            case 14:
             case 15:
+            case 16:
                 $activityLog = $this->fishingAtRiver($petWithSkills, $weather);
                 break;
-            case 16:
+            case 17:
                 $activityLog = $this->strangeUmbralEncounters->adventure($petWithSkills);
                 break;
-            case 17:
+            case 18:
                 $activityLog = $this->gatheringAtTheNoetala($petWithSkills);
                 break;
-            case 18:
+            case 19:
                 $activityLog = $this->foundVampireCastle($petWithSkills);
                 break;
-            case 19:
             case 20:
+            case 21:
                 $activityLog = $this->frozenQuag($petWithSkills);
                 break;
-            case 21:
+            case 22:
                 $activityLog = $this->fightAbandondero($petWithSkills);
                 break;
-            case 22:
+            case 23:
                 $activityLog = $this->foundCursedGarden($petWithSkills);
                 break;
         }
