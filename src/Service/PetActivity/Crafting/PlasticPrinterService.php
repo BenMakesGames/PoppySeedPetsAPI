@@ -22,11 +22,11 @@ use App\Service\Squirrel3;
 
 class PlasticPrinterService
 {
-    private $inventoryService;
-    private $responseService;
-    private $petExperienceService;
-    private $itemRepository;
-    private $calendarService;
+    private InventoryService $inventoryService;
+    private ResponseService $responseService;
+    private PetExperienceService $petExperienceService;
+    private ItemRepository $itemRepository;
+    private CalendarService $calendarService;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
 
@@ -86,7 +86,7 @@ class PlasticPrinterService
     public function createPlasticFishingRod(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getNature()->getTotal()));
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()) + $petWithSkills->getNature()->getTotal() - $petWithSkills->getNature()->base);
 
         if($roll >= 12)
         {
@@ -113,7 +113,7 @@ class PlasticPrinterService
     public function createNonsenserang(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll >= 14)
         {
@@ -140,7 +140,7 @@ class PlasticPrinterService
     public function createEvilFeatherDuster(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll >= 16)
         {
@@ -187,7 +187,7 @@ class PlasticPrinterService
     public function createCompass(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll >= 12)
         {
@@ -213,7 +213,7 @@ class PlasticPrinterService
     public function createAlienLaser(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll >= 14)
         {
@@ -270,7 +270,7 @@ class PlasticPrinterService
             $item = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray($allPlasticItems));
         }
 
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll >= 10)
         {
@@ -318,7 +318,7 @@ class PlasticPrinterService
     public function createPlasticIdol(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
         if($roll >= 13)
         {

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\ActivityPersonalityEnum;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
 use App\Enum\LoveLanguageEnum;
@@ -13,6 +14,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
+use App\Service\IRandom;
 use App\Service\Squirrel3;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -351,6 +353,11 @@ class Pet
      */
     private $craving;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $activityPersonality;
+
     public function __construct()
     {
         $squirrel3 = new Squirrel3();
@@ -377,6 +384,14 @@ class Pet
 
         $this->loveLanguage = LoveLanguageEnum::getRandomValue($squirrel3);
         $this->lunchboxItems = new ArrayCollection();
+
+        $this->assignActivityPersonality($squirrel3);
+    }
+
+    public function assignActivityPersonality(IRandom $squirrel3)
+    {
+        $activityPersonalities = $squirrel3->rngNextSubsetFromArray(ActivityPersonalityEnum::getValues(), 3);
+        $this->activityPersonality = $activityPersonalities[0] | $activityPersonalities[1] | $activityPersonalities[2];
     }
 
     public function getId(): ?int
@@ -1742,5 +1757,10 @@ class Pet
             return null;
 
         return $this->getCraving()->getFoodGroup()->getName();
+    }
+
+    public function hasActivityPersonality(int $personality): bool
+    {
+        return ($this->activityPersonality & $personality) === $personality;
     }
 }

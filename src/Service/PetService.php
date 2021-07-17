@@ -9,6 +9,7 @@ use App\Entity\PetBaby;
 use App\Entity\PetGroup;
 use App\Entity\PetRelationship;
 use App\Entity\User;
+use App\Enum\ActivityPersonalityEnum;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\GatheringHolidayEnum;
 use App\Enum\HolidayEnum;
@@ -33,7 +34,10 @@ use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\BurntForestService;
 use App\Service\PetActivity\Caerbannog;
 use App\Service\PetActivity\ChocolateMansion;
+use App\Service\PetActivity\Crafting\MagicBindingService;
 use App\Service\PetActivity\Crafting\NotReallyCraftsService;
+use App\Service\PetActivity\Crafting\PlasticPrinterService;
+use App\Service\PetActivity\Crafting\SmithingService;
 use App\Service\PetActivity\CraftingService;
 use App\Service\PetActivity\DeepSeaService;
 use App\Service\PetActivity\DreamingService;
@@ -60,17 +64,18 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetService
 {
-    private $em;
-    private $petRepository;
-    private $responseService;
+    private EntityManagerInterface $em;
+    private PetRepository $petRepository;
+    private ResponseService $responseService;
     private $petRelationshipService;
     private $fishingService;
     private $huntingService;
     private $gatheringService;
-    private $craftingService;
+    private CraftingService $craftingService;
+    private $magicBindingService;
     private $programmingService;
-    private $userStatsRepository;
-    private $treasureMapService;
+    private UserStatsRepository $userStatsRepository;
+    private TreasureMapService $treasureMapService;
     private $genericAdventureService;
     private $protocol7Service;
     private $umbraService;
@@ -80,28 +85,30 @@ class PetService
     private $petGroupService;
     private $petExperienceService;
     private $dreamingService;
-    private $beanStalkService;
+    private MagicBeanstalkService $beanStalkService;
     private $gatheringHolidayAdventureService;
-    private $calendarService;
+    private CalendarService $calendarService;
     private $heartDimensionService;
     private $petRelationshipRepository;
     private $guildService;
-    private $inventoryService;
+    private InventoryService $inventoryService;
     private $burntForestService;
-    private $deepSeaService;
+    private DeepSeaService $deepSeaService;
     private $petSummonedAwayService;
     private $toolBonusService;
     private $notReallyCraftsService;
     private $letterService;
-    private $squirrel3;
-    private $chocolateMansion;
-    private $weatherService;
+    private IRandom $squirrel3;
+    private ChocolateMansion $chocolateMansion;
+    private WeatherService $weatherService;
     private $holiService;
     private $caerbannog;
     private CravingService $cravingService;
     private StatusEffectService $statusEffectService;
     private EatingService $eatingService;
     private HouseSimService $houseSimService;
+    private SmithingService $smithingService;
+    private PlasticPrinterService $plasticPrinterService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -118,7 +125,8 @@ class PetService
         DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService, LetterService $letterService,
         PetSummonedAwayService $petSummonedAwayService, InventoryModifierService $toolBonusService,
         WeatherService $weatherService, HoliService $holiService, Caerbannog $caerbannog, CravingService $cravingService,
-        StatusEffectService $statusEffectService, EatingService $eatingService, HouseSimService $houseSimService
+        StatusEffectService $statusEffectService, EatingService $eatingService, HouseSimService $houseSimService,
+        MagicBindingService $magicBindingService, SmithingService $smithingService, PlasticPrinterService $plasticPrinterService
     )
     {
         $this->em = $em;
@@ -163,10 +171,15 @@ class PetService
         $this->statusEffectService = $statusEffectService;
         $this->eatingService = $eatingService;
         $this->houseSimService = $houseSimService;
+        $this->magicBindingService = $magicBindingService;
+        $this->smithingService = $smithingService;
+        $this->plasticPrinterService = $plasticPrinterService;
     }
 
     public function runHour(Pet $pet)
     {
+        $hasEventPersonality = $pet->hasActivityPersonality(ActivityPersonalityEnum::EVENTS_AND_MAPS);
+
         if($pet->getInDaycare())
             throw new \InvalidArgumentException('Pets in daycare cannot be interacted with.');
 
@@ -442,7 +455,10 @@ class PetService
         $itemsInHouse = $this->houseSimService->getState()->getInventoryCount();
 
         $craftingPossibilities = $this->craftingService->getCraftingPossibilities($petWithSkills);
+        $smithingPossibilities = $this->smithingService->getCraftingPossibilities($petWithSkills);
+        $magicBindingPossibilities = $this->magicBindingService->getCraftingPossibilities($petWithSkills);
         $programmingPossibilities = $this->programmingService->getCraftingPossibilities($petWithSkills);
+        $plasticPrinterPossibilities = $this->plasticPrinterService->getCraftingPossibilities($petWithSkills);
         $notCraftingPossibilities = $this->notReallyCraftsService->getCraftingPossibilities($petWithSkills);
 
         $houseTooFull = $this->squirrel3->rngNextInt(1, 10) > User::MAX_HOUSE_INVENTORY - $itemsInHouse;
@@ -454,7 +470,11 @@ class PetService
             else
                 $description = '%user:' . $pet->getOwner()->getId() . '.Name\'s% house is getting pretty full.';
 
-            if(count($craftingPossibilities) === 0 && count($programmingPossibilities) === 0 && count($notCraftingPossibilities) === 0)
+            if(
+                count($craftingPossibilities) + count($magicBindingPossibilities) + count($programmingPossibilities) +
+                count($notCraftingPossibilities) + count($smithingPossibilities) + count($plasticPrinterPossibilities)
+                === 0
+            )
             {
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
@@ -465,7 +485,10 @@ class PetService
                 $possibilities = [];
 
                 if(count($craftingPossibilities) > 0) $possibilities[] = [ $this->craftingService, $craftingPossibilities ];
+                if(count($magicBindingPossibilities) > 0) $possibilities[] = [ $this->craftingService, $magicBindingPossibilities ];
+                if(count($smithingPossibilities) > 0) $possibilities[] = [ $this->craftingService, $smithingPossibilities ];
                 if(count($programmingPossibilities) > 0) $possibilities[] = [ $this->programmingService, $programmingPossibilities ];
+                if(count($plasticPrinterPossibilities) > 0) $possibilities[] = [ $this->craftingService, $plasticPrinterPossibilities ];
                 if(count($notCraftingPossibilities) > 0) $possibilities[] = [ $this->notReallyCraftsService, $notCraftingPossibilities ];
 
                 $do = $this->squirrel3->rngNextFromArray($possibilities);
@@ -478,7 +501,7 @@ class PetService
             return;
         }
 
-        if($this->squirrel3->rngNextInt(1, 50) === 1)
+        if($this->squirrel3->rngNextInt(1, $hasEventPersonality ? 48 : 50) === 1)
         {
             if($this->letterService->adventure($petWithSkills))
                 return;
@@ -493,20 +516,20 @@ class PetService
                 return;
         }
 
-        if($this->squirrel3->rngNextInt(1, 50) === 1)
+        if($this->squirrel3->rngNextInt(1, $hasEventPersonality ? 48 : 50) === 1)
         {
             $activityLog = $this->givingTreeGatheringService->gatherFromGivingTree($pet);
             if($activityLog)
                 return;
         }
 
-        if($this->squirrel3->rngNextInt(1, 6) === 1 && $this->calendarService->isSaintPatricksDay())
+        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 24 : 16) && $this->calendarService->isSaintPatricksDay())
         {
             $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::SAINT_PATRICKS);
             return;
         }
 
-        if($this->squirrel3->rngNextInt(1, 4) === 1 && $this->calendarService->isEaster())
+        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 30 : 25) && $this->calendarService->isEaster())
         {
             $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::EASTER);
             return;
@@ -547,7 +570,10 @@ class PetService
         }
 
         if(count($craftingPossibilities) > 0) $petDesires['craft'] = $this->generateCraftingDesire($petWithSkills);
+        if(count($magicBindingPossibilities) > 0) $petDesires['magicBinding'] = $this->generateMagicBindingDesire($petWithSkills);
+        if(count($smithingPossibilities) > 0) $petDesires['smith'] = $this->generateSmithingDesire($petWithSkills);
         if(count($programmingPossibilities) > 0) $petDesires['program'] = $this->generateProgrammingDesire($petWithSkills);
+        if(count($plasticPrinterPossibilities) > 0) $petDesires['plasticPrinting'] = $this->generatePlasticPrintingDesire($petWithSkills);
         if(count($notCraftingPossibilities) > 0) $petDesires['notCrafting'] = $this->generateGatheringDesire($petWithSkills);
 
         $desire = $this->pickDesire($petDesires);
@@ -558,7 +584,10 @@ class PetService
             case 'hunt': $this->huntingService->adventure($petWithSkills); break;
             case 'gather': $this->gatheringService->adventure($petWithSkills); break;
             case 'craft': $this->craftingService->adventure($petWithSkills, $craftingPossibilities); break;
+            case 'magicBinding': $this->craftingService->adventure($petWithSkills, $magicBindingPossibilities); break;
+            case 'smith': $this->craftingService->adventure($petWithSkills, $smithingPossibilities); break;
             case 'program': $this->programmingService->adventure($petWithSkills, $programmingPossibilities); break;
+            case 'plasticPrinting': $this->craftingService->adventure($petWithSkills, $plasticPrinterPossibilities); break;
             case 'notCrafting': $this->notReallyCraftsService->adventure($petWithSkills, $notCraftingPossibilities); break;
             case 'hack': $this->protocol7Service->adventure($petWithSkills); break;
             case 'umbra': $this->umbraService->adventure($petWithSkills); break;
@@ -1202,11 +1231,16 @@ class PetService
     public function generateFishingDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
-        $desire = $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
+        $desire = $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getFishingBonus()->getTotal();
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getFishing();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::FISHING))
+            $desire += 4;
+        else
+            $desire += $this->squirrel3->rngNextInt(1, 4);
 
         return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
     }
@@ -1218,11 +1252,16 @@ class PetService
         if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
             return 0;
 
-        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
+        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal();
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getScience() + $pet->getTool()->getItem()->getTool()->getFishing();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::SUBMARINE))
+            $desire += 4;
+        else
+            $desire += $this->squirrel3->rngNextInt(1, 4);
 
         return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
     }
@@ -1230,11 +1269,16 @@ class PetService
     public function generateMonsterHuntingDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
-        $desire = $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
+        $desire = $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal();
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getBrawl();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::HUNTING))
+            $desire += 4;
+        else
+            $desire += $this->squirrel3->rngNextInt(1, 4);
 
         return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
     }
@@ -1246,11 +1290,58 @@ class PetService
         if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
             return 0;
 
-        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
+        $desire = $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal();
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getCrafts();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_MUNDANE))
+            $desire += 4;
+        else
+            $desire += $this->squirrel3->rngNextInt(1, 4);
+
+        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
+    }
+
+    public function generateMagicBindingDesire(ComputedPetSkills $petWithSkills): int
+    {
+        $pet = $petWithSkills->getPet();
+
+        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+            return 0;
+
+        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal();
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getUmbra();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_MAGIC))
+            $desire += 4;
+        else
+            $desire += $this->squirrel3->rngNextInt(1, 4);
+
+        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
+    }
+
+    public function generateSmithingDesire(ComputedPetSkills $petWithSkills): int
+    {
+        $pet = $petWithSkills->getPet();
+
+        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+            return 0;
+
+        $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal();
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getCrafts() + $pet->getTool()->getItem()->getTool()->getSmithing();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_SMITHING))
+            $desire += 4;
+        else
+            $desire += $this->squirrel3->rngNextInt(1, 4);
 
         return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
     }
@@ -1258,10 +1349,15 @@ class PetService
     public function generateExploreUmbraDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
-        $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
+        $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal();
 
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getUmbra();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::UMBRA))
+            $desire += 4;
+        else
+            $desire += $this->squirrel3->rngNextInt(1, 4);
 
         if($pet->hasMerit(MeritEnum::NATURAL_CHANNEL))
         {
@@ -1289,11 +1385,16 @@ class PetService
     public function generateGatheringDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
-        $desire = $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
+        $desire = $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal();
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getGathering();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::GATHERING))
+            $desire += 4;
+        else
+            $desire += $this->squirrel3->rngNextInt(1, 4);
 
         return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
     }
@@ -1301,11 +1402,16 @@ class PetService
     public function generateClimbingBeanstalkDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
-        $desire = floor(($petWithSkills->getStrength()->getTotal() + $petWithSkills->getStamina()->getTotal()) * 1.5) + ceil($petWithSkills->getNature()->getTotal() / 2) + $this->squirrel3->rngNextInt(1, 4);
+        $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getClimbingBonus()->getTotal();
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
-            $desire += $pet->getTool()->getItem()->getTool()->getNature();
+            $desire += $pet->getTool()->getItem()->getTool()->getNature() + $pet->getTool()->getItem()->getTool()->getClimbing();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::BEANSTALK))
+            $desire += 4;
+        else
+            $desire += $this->squirrel3->rngNextInt(1, 4);
 
         return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
     }
@@ -1317,11 +1423,16 @@ class PetService
         if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
             return 0;
 
-        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
+        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal();
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getScience();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::PROTOCOL_7))
+            $desire += 4;
+        else
+            $desire += $this->squirrel3->rngNextInt(1, 4);
 
         return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
     }
@@ -1333,11 +1444,37 @@ class PetService
         if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
             return 0;
 
-        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $this->squirrel3->rngNextInt(1, 4);
+        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal();
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
             $desire += $pet->getTool()->getItem()->getTool()->getScience();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_SCIENCE))
+            $desire += 4;
+        else
+            $desire += $this->squirrel3->rngNextInt(1, 4);
+
+        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
+    }
+
+    public function generatePlasticPrintingDesire(ComputedPetSkills $petWithSkills): int
+    {
+        $pet = $petWithSkills->getPet();
+
+        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+            return 0;
+
+        $desire = $petWithSkills->getIntelligence()->getTotal() + ceil(($petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal()) / 2);
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getScience();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_PLASTIC))
+            $desire += 4;
+        else
+            $desire += $this->squirrel3->rngNextInt(1, 4);
 
         return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
     }

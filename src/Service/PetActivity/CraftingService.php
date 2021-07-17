@@ -20,9 +20,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetActivity\Crafting\EventLanternService;
 use App\Service\PetActivity\Crafting\Helpers\TwuWuvCraftingService;
-use App\Service\PetActivity\Crafting\PlasticPrinterService;
-use App\Service\PetActivity\Crafting\SmithingService;
-use App\Service\PetActivity\Crafting\MagicBindingService;
 use App\Service\PetActivity\Crafting\Helpers\StickCraftingService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -34,9 +31,6 @@ class CraftingService
     private $responseService;
     private $inventoryService;
     private $petExperienceService;
-    private $smithingService;
-    private $magicBindingService;
-    private $plasticPrinterService;
     private $stickCraftingService;
     private $itemRepository;
     private $eventLanternService;
@@ -47,19 +41,14 @@ class CraftingService
     private HouseSimService $houseSimService;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, SmithingService $smithingService,
-        MagicBindingService $magicBindingService, PlasticPrinterService $plasticPrinterService,
-        PetExperienceService $petExperienceService, StickCraftingService $stickCraftingService,
-        ItemRepository $itemRepository, EventLanternService $eventLanternService, TwuWuvCraftingService $twuWuvCraftingService,
-        Squirrel3 $squirrel3, CalendarService $calendarService, WeatherService $weatherService,
-        HouseSimService $houseSimService
+        ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
+        StickCraftingService $stickCraftingService, ItemRepository $itemRepository, EventLanternService $eventLanternService,
+        TwuWuvCraftingService $twuWuvCraftingService, Squirrel3 $squirrel3, CalendarService $calendarService,
+        WeatherService $weatherService, HouseSimService $houseSimService
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
-        $this->smithingService = $smithingService;
-        $this->magicBindingService = $magicBindingService;
-        $this->plasticPrinterService = $plasticPrinterService;
         $this->petExperienceService = $petExperienceService;
         $this->stickCraftingService = $stickCraftingService;
         $this->itemRepository = $itemRepository;
@@ -318,13 +307,8 @@ class CraftingService
         if($this->houseSimService->hasInventory('Sun Flag') && $this->houseSimService->hasInventory('Sunflower Stick'))
             $possibilities[] = new ActivityCallback($this, 'createSunSunFlag', 10);
 
-        $possibilities = array_merge($possibilities, $this->smithingService->getCraftingPossibilities($petWithSkills));
-
         if($this->houseSimService->hasInventory('Plastic'))
         {
-            if($this->houseSimService->hasInventory('3D Printer'))
-                $possibilities = array_merge($possibilities, $this->plasticPrinterService->getCraftingPossibilities($petWithSkills));
-
             if($this->houseSimService->hasInventory('Smallish Pumpkin') && $this->houseSimService->hasInventory('Crooked Stick'))
                 $possibilities[] = new ActivityCallback($this, 'createDrumpkin', 10);
         }
@@ -352,7 +336,6 @@ class CraftingService
                 $possibilities[] = new ActivityCallback($this, 'createPaleFlail', 10);
         }
 
-        $possibilities = array_merge($possibilities, $this->magicBindingService->getCraftingPossibilities($petWithSkills));
         $possibilities = array_merge($possibilities, $this->eventLanternService->getCraftingPossibilities($petWithSkills));
 
         return $possibilities;
