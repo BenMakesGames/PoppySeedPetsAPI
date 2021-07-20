@@ -84,6 +84,14 @@ class GatheringDistractionService
             ];
         }
 
+        if($location === DistractionLocationEnum::WOODS || $location === DistractionLocationEnum::BEACH)
+        {
+            $distractions[] = [
+                'description' => 'they saw a HUGE turtle on the edge of the woods, just chillin\' and grazing.',
+                'skills' => [ PetSkillEnum::NATURE ],
+            ];
+        }
+
         if($location === DistractionLocationEnum::BEACH)
         {
             $distractions[] = [
@@ -96,6 +104,14 @@ class GatheringDistractionService
         {
             $distractions[] = [
                 'description' => 'they saw an army of ants traveling through the tunnels. They followed for a while, but never found out where the army was headed...',
+                'skills' => [ PetSkillEnum::NATURE ],
+            ];
+        }
+
+        if($location === DistractionLocationEnum::UNDERGROUND && $this->rng->rngNextInt(1, 5) === 1)
+        {
+            $distractions[] = [
+                'description' => 'they saw a really funny stalagmite formation-- or, wait, are they stalactites? ("Stalagmites might make it..." but what does _that_ mean?!? Stupid, useless mnemonic!)',
                 'skills' => [ PetSkillEnum::NATURE ],
             ];
         }
@@ -153,18 +169,12 @@ class GatheringDistractionService
                 'description' => 'they saw a family of huge lizards lounging on steaming rocks' . ($anyRain ? ', apparently completely unconcerned about the rain' : '') . '. They watched for a while - from a safe distance - before returning home.',
                 'skills' => [ PetSkillEnum::STEALTH, PetSkillEnum::NATURE ],
             ];
-        }
 
-        if($location === DistractionLocationEnum::VOLCANO)
-        {
             $distractions[] = [
                 'description' => 'they saw an army of ants traveling amidst steaming rocks. They followed for a while, but never found out where the army was headed...',
                 'skills' => [ PetSkillEnum::NATURE ],
             ];
-        }
 
-        if($location === DistractionLocationEnum::VOLCANO)
-        {
             $distractions[] = [
                 'description' => 'they watched as a plume of smoke escaped from the volcano\'s top. They investigated for a while, looking for the source of the smoke, or any signs of geologic activity, but didn\'t find anything conclusive...',
                 'skills' => [ PetSkillEnum::SCIENCE ],
