@@ -63,6 +63,7 @@ class GatheringDistractionService
         $distractions = [];
         $anyRain = $weather->getRainfall() > 0;
         $anyClouds = $weather->getClouds() > 0;
+        $isNight = $weather->isNight;
 
         if(
             ($location === DistractionLocationEnum::WOODS && !$anyRain) ||
@@ -80,6 +81,31 @@ class GatheringDistractionService
         {
             $distractions[] = [
                 'description' => 'they saw an army of ants attacking a beehive! They watched for a while before returning home.',
+                'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ],
+            ];
+        }
+
+        if(($location === DistractionLocationEnum::WOODS || $location === DistractionLocationEnum::IN_TOWN) && !$anyRain)
+        {
+            $winner = $this->rng->rngNextFromArray([
+                'mantis', 'spider'
+            ]);
+
+            $distractions[] = [
+                'description' => 'they saw a large spider fighting a praying mantis! After a long fight, the ' . $winner . ' claimed victory! (And a meal!)',
+                'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ],
+            ];
+        }
+
+        if($location === DistractionLocationEnum::IN_TOWN && !$anyRain && $isNight)
+        {
+            $description = $this->rng->rngNextInt(1, 4) === 1
+                ? 'they saw a praying mantis sitting on a street light, snatching up gnats and other small insects. It seemed like a pretty OP strat until a bat swooped by and nabbed the mantis!'
+                : 'they saw a praying mantis sitting on a street light, snatching up gnats and other small insects with ease.'
+            ;
+
+            $distractions[] = [
+                'description' => $description,
                 'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ],
             ];
         }
@@ -126,6 +152,20 @@ class GatheringDistractionService
             $distractions[] = [
                 'description' => $description,
                 'skills' => [ PetSkillEnum::NATURE ],
+            ];
+        }
+
+        if($location === DistractionLocationEnum::IN_TOWN)
+        {
+            $retreatingAnimals = $this->rng->rngNextFromArray([
+                'A large raccoon',
+                'Some deer',
+                'A pair of wild goats'
+            ]);
+
+            $distractions[] = [
+                'description' => 'they watched a small flock of geese cross a road' . ($anyRain ? ' in the rain' : '') . '. ' . $retreatingAnimals . ' on the other side of the road, seeing the approaching geese, ran away.',
+                'skills' => [ PetSkillEnum::NATURE ]
             ];
         }
 
