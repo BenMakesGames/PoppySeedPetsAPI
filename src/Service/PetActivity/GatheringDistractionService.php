@@ -79,8 +79,13 @@ class GatheringDistractionService
 
         if(($location === DistractionLocationEnum::WOODS || $location === DistractionLocationEnum::IN_TOWN) && !$anyRain)
         {
+            $description = $isNight
+                ? 'they saw an army of ants attacking a beehive! (A sneak attack at night?!) They watched for a while before returning home.'
+                : 'they saw an army of ants attacking a beehive! They watched for a while before returning home.'
+            ;
+
             $distractions[] = [
-                'description' => 'they saw an army of ants attacking a beehive! They watched for a while before returning home.',
+                'description' => $description,
                 'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ],
             ];
         }
@@ -118,11 +123,19 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::BEACH)
+        if($location === DistractionLocationEnum::BEACH && !$isNight)
         {
             $distractions[] = [
                 'description' => 'they saw some seagulls smashing clams against the rocks' . ($anyRain ? ' in the rain' : '') . '! They watched for a while - from a safe distance - before returning home.',
                 'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ],
+            ];
+        }
+
+        if($location === DistractionLocationEnum::BEACH && !$isNight)
+        {
+            $distractions[] = [
+                'description' => 'they saw a pair of crabs under a rock, grooming one another, and eating the various bits picked off one another!',
+                'skills' => [ PetSkillEnum::NATURE ],
             ];
         }
 
@@ -168,7 +181,7 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::IN_TOWN)
+        if($location === DistractionLocationEnum::IN_TOWN && !$isNight)
         {
             $retreatingAnimals = $this->rng->rngNextFromArray([
                 'A large raccoon',
@@ -182,7 +195,7 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::IN_TOWN && !$anyRain)
+        if($location === DistractionLocationEnum::IN_TOWN && !$anyRain && !$isNight)
         {
             $distractions[] = [
                 'description' => 'they spotted a couple scientists chatting over a meal. They listened for a while before returning home.',
@@ -208,7 +221,7 @@ class GatheringDistractionService
             ];
         }
 
-        if(($location === DistractionLocationEnum::BEACH || $location === DistractionLocationEnum::WOODS) && !$anyRain && !$anyClouds)
+        if(($location === DistractionLocationEnum::BEACH || $location === DistractionLocationEnum::WOODS) && !$anyRain && !$anyClouds && !$isNight)
         {
             $distractions[] = [
                 'description' => 'they saw a family of huge lizards bathing in a pool. They watched for a while - from a safe distance - before returning home.',
@@ -216,13 +229,16 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::VOLCANO)
+        if($location === DistractionLocationEnum::VOLCANO && !$isNight)
         {
             $distractions[] = [
                 'description' => 'they saw a family of huge lizards lounging on steaming rocks' . ($anyRain ? ', apparently completely unconcerned about the rain' : '') . '. They watched for a while - from a safe distance - before returning home.',
                 'skills' => [ PetSkillEnum::STEALTH, PetSkillEnum::NATURE ],
             ];
+        }
 
+        if($location === DistractionLocationEnum::VOLCANO)
+        {
             $distractions[] = [
                 'description' => 'they saw an army of ants traveling amidst steaming rocks. They followed for a while, but never found out where the army was headed...',
                 'skills' => [ PetSkillEnum::NATURE ],
