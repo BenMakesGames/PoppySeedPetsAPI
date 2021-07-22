@@ -250,6 +250,22 @@ class GatheringDistractionService
             ];
         }
 
+        if($location === DistractionLocationEnum::BEACH && !$isNight)
+        {
+            $distractions[] = [
+                'description' => 'they saw a seagull flying low over the ocean. Suddenly, a shark jumped out, and snatched it!',
+                'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL, PetSkillEnum::STEALTH ],
+            ];
+        }
+
+        if($location === DistractionLocationEnum::BEACH)
+        {
+            $distractions[] = [
+                'description' => 'they saw a fox running into the woods, seagull egg in maw! Sneaky thief!',
+                'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ],
+            ];
+        }
+
         if($location === DistractionLocationEnum::BEACH)
         {
             if($anyRain)
