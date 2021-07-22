@@ -4,6 +4,7 @@ namespace App\Service\PetActivity;
 use App\Entity\PetActivityLog;
 use App\Enum\DistractionLocationEnum;
 use App\Enum\EnumInvalidValueException;
+use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\ComputedPetSkills;
@@ -123,6 +124,19 @@ class GatheringDistractionService
             ];
         }
 
+        if(($location === DistractionLocationEnum::WOODS || $location === DistractionLocationEnum::IN_TOWN) && $isNight)
+        {
+            $rummageTarget = $this->rng->rngNextFromArray($location === DistractionLocationEnum::WOODS
+                ? [ 'around a bush', 'around a fallen log' ]
+                : [ 'through some trash', 'around a bush' ]
+            );
+
+            $distractions[] = [
+                'description' => "they saw a raccoon rummaging {$rummageTarget}, when a huge owl swooped in and grabbed the raccoon! The raccoon let out a short cry as it was carried away, into the darkness...",
+                'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH, PetSkillEnum::BRAWL ],
+            ];
+        }
+
         if($location === DistractionLocationEnum::BEACH && !$isNight)
         {
             $distractions[] = [
@@ -155,7 +169,7 @@ class GatheringDistractionService
             ]);
 
             $distractions[] = [
-                'description' => "they saw a glowworm eating a ${prey}; the ${prey} wasn't dead yet, but it was clearly heading that way... (Oof! Brutal!)",
+                'description' => "they saw a glowworm eating a {$prey}; the {$prey} wasn't dead yet, but it was clearly heading that way... (Oof! Brutal!)",
                 'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ],
             ];
         }
