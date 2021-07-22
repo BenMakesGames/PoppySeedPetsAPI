@@ -134,6 +134,19 @@ class GatheringDistractionService
             ];
         }
 
+        if($location === DistractionLocationEnum::UNDERGROUND)
+        {
+            $prey = $this->rng->rngNextFromArray([
+                'slug',
+                'worm'
+            ]);
+
+            $distractions[] = [
+                'description' => "they saw a glowworm eating a ${prey}; the ${prey} wasn't dead yet, but it was clearly heading that way... (Oof! Brutal!)",
+                'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ],
+            ];
+        }
+
         if($location === DistractionLocationEnum::UNDERGROUND && $this->rng->rngNextInt(1, 5) === 1)
         {
             $distractions[] = [
