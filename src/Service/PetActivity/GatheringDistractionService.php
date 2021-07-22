@@ -131,8 +131,10 @@ class GatheringDistractionService
                 : [ 'through some trash', 'around a bush' ]
             );
 
+            $darkness = $anyRain ? "darkness; any sound of struggle was drowned out by the rain" : "darkness";
+
             $distractions[] = [
-                'description' => "they saw a raccoon rummaging {$rummageTarget}, when a huge owl swooped in and grabbed the raccoon! The raccoon let out a short cry as it was carried away, into the darkness...",
+                'description' => "they saw a raccoon rummaging {$rummageTarget}, when a huge owl swooped in and grabbed the raccoon! The raccoon let out a short cry as it was carried away, into the {$darkness}...",
                 'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH, PetSkillEnum::BRAWL ],
             ];
         }
