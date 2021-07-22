@@ -253,9 +253,11 @@ class GatheringDistractionService
         if($location === DistractionLocationEnum::BEACH)
         {
             if($anyRain)
-                $description = 'they saw some breaching whales out on the ocean. They watched for a while before returning home.';
-            else
                 $description = 'through the rain they saw some breaching whales out on the ocean. They watched for a while before returning home.';
+            else if($isNight)
+                $description = 'they saw some breaching whales out on the night ocean. They watched for a while before returning home.';
+            else
+                $description = 'they saw some breaching whales out on the ocean. They watched for a while before returning home.';
 
             $distractions[] = [
                 'description' => $description,
