@@ -8,6 +8,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\PetChanges;
+use App\Service\GroupNameGenerator;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -26,11 +27,12 @@ class BandService
     private $petExperienceService;
     private $transactionService;
     private IRandom $squirrel3;
+    private GroupNameGenerator $groupNameGenerator;
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, InventoryService $inventoryService,
         PetExperienceService $petExperienceService, TransactionService $transactionService,
-        Squirrel3 $squirrel3
+        Squirrel3 $squirrel3, GroupNameGenerator $groupNameGenerator
     )
     {
         $this->em = $em;
@@ -39,6 +41,7 @@ class BandService
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
         $this->squirrel3 = $squirrel3;
+        $this->groupNameGenerator = $groupNameGenerator;
     }
 
     private const ADJECTIVE_LIST = [
@@ -135,56 +138,36 @@ class BandService
         'All',
     ];
 
-    public function generateBandName(): string
+    private const GROUP_NAME_PATTERNS = [
+        'the? %noun% %nouns%',
+        'the/my/your/our? %adjective%? %noun% %nouns%',
+        'the? %adjective%? %noun% %nouns%',
+        'from/of/for? %adjective% %nouns%',
+        'the/one? %adjective% %noun%',
+        'the? %adjective% %nouns%/%noun%',
+        'the? %adjective% %nouns%/%noun%',
+
+        'the %adjective% and the %adjective%',
+        'the %adjective% and the %adjective%',
+
+        'the %noun% , the %noun% ,/,_and the %noun%',
+
+        '%number% of_the? %nouns%',
+        '%nouns% of/and/from/over/vs/with/without %nouns%',
+        'the? %noun% from/of the %nouns%/%noun%',
+        '%adjective% and %adjective%',
+    ];
+
+    private const DICTIONARY = [
+        'noun' => self::NOUN_LIST,
+        'nouns' => self::PLURAL_NOUN_LIST,
+        'adjective' => self::ADJECTIVE_LIST,
+        'number' => self::NUMBER_LIST,
+    ];
+
+    public function generateGroupName(): string
     {
-        $pattern = $this->squirrel3->rngNextFromArray([
-            'The? %noun% %nouns%',
-            'The/My/Your/Our? %adjective%? %noun% %nouns%',
-            'The? %adjective%? %noun% %nouns%',
-            'From/Of/For? %adjective% %nouns%',
-            'The/One? %adjective% %noun%',
-            'The? %adjective% %nouns%/%noun%',
-            'The? %adjective% %nouns%/%noun%',
-
-            'The %adjective% and the %adjective%',
-            'The %adjective% and the %adjective%',
-
-            'The %noun% , the %noun% ,/,_and the %noun%',
-
-            '%number% of_the? %nouns%',
-            '%nouns% of/and/from/over/vs/with/without %nouns%',
-            'The? %noun% from/of the %nouns%/%noun%',
-            '%adjective% and %adjective%',
-        ]);
-
-        $parts = explode(' ', $pattern);
-        $newParts = [];
-        foreach($parts as $part)
-        {
-            if($part[strlen($part) - 1] === '?')
-            {
-                if($this->squirrel3->rngNextInt(1, 2) === 1)
-                    $part = substr($part, 0, strlen($part) - 1);
-                else
-                    continue;
-            }
-
-            if(strpos($part, '/') !== false)
-                $part = $this->squirrel3->rngNextFromArray(explode('/', $part));
-
-            if($part === '%noun%')
-                $newParts[] = $this->squirrel3->rngNextFromArray(self::NOUN_LIST);
-            else if($part === '%nouns%')
-                $newParts[] = $this->squirrel3->rngNextFromArray(self::PLURAL_NOUN_LIST);
-            else if($part === '%adjective%')
-                $newParts[] = $this->squirrel3->rngNextFromArray(self::ADJECTIVE_LIST);
-            else if($part === '%number%')
-                $newParts[] = $this->squirrel3->rngNextFromArray(self::NUMBER_LIST);
-            else
-                $newParts[] = $part;
-        }
-
-        return str_replace(['_', ' ,'], [' ', ','], implode(' ', $newParts));
+        return $this->groupNameGenerator->generateName(self::GROUP_NAME_PATTERNS, self::DICTIONARY, 60);
     }
 
     private const BAND_ACTIVITY_SENTIMENT_MESSAGES = [

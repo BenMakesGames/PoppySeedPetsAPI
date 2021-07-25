@@ -204,6 +204,7 @@ class PetGroup
         {
             case PetGroupTypeEnum::BAND: return 2;
             case PetGroupTypeEnum::ASTRONOMY: return 2;
+            case PetGroupTypeEnum::GAMING: return 3;
             default: throw new \Exception('Unhandled group type in group::getMinimumSize');
         }
     }
@@ -214,6 +215,7 @@ class PetGroup
         {
             case PetGroupTypeEnum::BAND: return 5;
             case PetGroupTypeEnum::ASTRONOMY: return 6;
+            case PetGroupTypeEnum::GAMING: return 5;
             default: throw new \Exception('Unhandled group type in group::getMaximumSize');
         }
     }
@@ -248,5 +250,13 @@ class PetGroup
         $this->socialEnergy -= $socialEnergy;
 
         return $this;
+    }
+
+    /**
+     * @Groups({"petGroup", "petGroupDetails"})
+     */
+    public function getMakesStuff(): bool
+    {
+        return $this->type !== PetGroupTypeEnum::GAMING;
     }
 }

@@ -7,4 +7,5 @@ class PetGroupTypeEnum
 
     public const BAND = 1;
     public const ASTRONOMY = 2;
+    public const GAMING = 3;
 }

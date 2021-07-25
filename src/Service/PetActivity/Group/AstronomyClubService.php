@@ -12,6 +12,7 @@ use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
+use App\Service\GroupNameGenerator;
 use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -32,11 +33,12 @@ class AstronomyClubService
     private IRandom $squirrel3;
     private EnchantmentRepository $enchantmentRepository;
     private HattierService $hattierService;
+    private GroupNameGenerator $groupNameGenerator;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
         PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3, HattierService $hattierService,
-        EnchantmentRepository $enchantmentRepository
+        EnchantmentRepository $enchantmentRepository, GroupNameGenerator $groupNameGenerator
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -46,11 +48,12 @@ class AstronomyClubService
         $this->squirrel3 = $squirrel3;
         $this->hattierService = $hattierService;
         $this->enchantmentRepository = $enchantmentRepository;
+        $this->groupNameGenerator = $groupNameGenerator;
     }
 
     private const DICTIONARY = [
         'prefix' => [
-            'The First', 'The Last', 'The Second', 'The Final'
+            'the First', 'the Last', 'the Second', 'the Final'
         ],
         'suffix' => [
             'Axiom', 'Law', 'Theory', 'Proposal', 'System', 'Model', 'Problem', 'Solution', 'Paradox', 'Thesis',
@@ -79,82 +82,17 @@ class AstronomyClubService
         ]
     ];
 
-    private function getPatternParts(string $pattern): array
-    {
-        $parts = explode(' ', $pattern);
-        $newParts = [];
-
-        foreach($parts as $part)
-        {
-            if($part[strlen($part) - 1] === '?')
-            {
-                if($this->squirrel3->rngNextInt(1, 2) === 1)
-                    $part = substr($part, 0, strlen($part) - 1);
-                else
-                    continue;
-            }
-
-            if(strpos($part, '/') !== false)
-                $part = $this->squirrel3->rngNextFromArray(explode('/', $part));
-
-            $newParts[] = $part;
-        }
-
-        return $newParts;
-    }
+    private const GROUP_NAME_PATTERNS = [
+        '%prefix%/the %adjective%/%color% %noun% %suffix%',
+        '%prefix%/the %number% %adjective%? %nouns% %suffix%',
+        'the? %adjective% %color%? %noun%/%nouns%',
+        'the? %number% %adjective%/%color% %nouns%',
+        '%color%/%adjective% %nouns% and %color%/%adjective% %nouns%',
+    ];
 
     public function generateGroupName(): string
     {
-        $pattern = $this->squirrel3->rngNextFromArray([
-            '%prefix%/The %adjective%/%color% %noun% %suffix%',
-            '%prefix%/The %number% %adjective%? %nouns% %suffix%',
-            'The? %adjective% %color%? %noun%/%nouns%',
-            'The? %number% %adjective%/%color% %nouns%',
-            '%color%/%adjective% %nouns% and %color%/%adjective% %nouns%',
-        ]);
-
-        $parts = $this->getPatternParts($pattern);
-
-        return $this->generateNameFromParts($parts, self::DICTIONARY, 60);
-    }
-
-    private function generateNameFromParts(array $parts, $dictionary, $maxLength): string
-    {
-        while(true)
-        {
-            $newParts = [];
-            $chosenWords = [];
-
-            foreach($parts as $part)
-            {
-                if($part[0] === '%' && $part[strlen($part) - 1] === '%')
-                {
-                    $wordType = substr($part, 1, strlen($part) - 2);
-                    $chosenWord = $this->squirrel3->rngNextFromArray($dictionary[$wordType]);
-
-                    $chosenWords[$wordType] = $chosenWord;
-
-                    $newParts[] = $chosenWord;
-                }
-                else
-                    $newParts[] = $part;
-            }
-
-            $name = str_replace(['_', ' ,'], [' ', ','], implode(' ', $newParts));
-
-            if(strlen($name) <= $maxLength)
-                return $name;
-
-            $longestWord = ArrayFunctions::max($chosenWords, function($a) {
-                return strlen($a);
-            });
-
-            $longestWordType = array_search($longestWord, $chosenWords);
-
-            $dictionary[$longestWordType] = array_filter($dictionary[$longestWordType], fn($word) =>
-                strlen($word) < strlen($longestWord)
-            );
-        }
+        return $this->groupNameGenerator->generateName(self::GROUP_NAME_PATTERNS, self::DICTIONARY, 60);
     }
 
     public function meet(PetGroup $group)

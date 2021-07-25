@@ -47,9 +47,9 @@ class Squirrel3 implements IRandom
     {
         $n = count($array);
 
-        for($i = 0; $i < $n; $i++)
+        for($i = 0; $i < $n - 1; $i++)
         {
-            $r = $i + $this->rngNextInt(0, $n - $i - 1);
+            $r = $this->rngNextInt($i, $n - 1);
             $temp = $array[$r];
             $array[$r] = $array[$i];
             $array[$i] = $temp;

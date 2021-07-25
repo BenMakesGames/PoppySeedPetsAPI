@@ -15,6 +15,7 @@ use App\Model\PetChanges;
 use App\Repository\PetRepository;
 use App\Service\PetActivity\Group\AstronomyClubService;
 use App\Service\PetActivity\Group\BandService;
+use App\Service\PetActivity\Group\GamingGroupService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr\Join;
 
@@ -24,7 +25,8 @@ class PetGroupService
 
     public const GROUP_TYPE_NAMES = [
         PetGroupTypeEnum::BAND => 'band',
-        PetGroupTypeEnum::ASTRONOMY => 'astronomy lab'
+        PetGroupTypeEnum::ASTRONOMY => 'astronomy lab',
+        PetGroupTypeEnum::GAMING => 'gaming group'
     ];
 
     private $em;
@@ -33,12 +35,13 @@ class PetGroupService
     private $petExperienceService;
     private $bandService;
     private $astronomyClubService;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private GamingGroupService $gamingGroupService;
 
     public function __construct(
         EntityManagerInterface $em, PetRepository $petRepository, ResponseService $responseService,
         PetExperienceService $petExperienceService, BandService $bandService, AstronomyClubService $astronomyClubService,
-        Squirrel3 $squirrel3
+        Squirrel3 $squirrel3, GamingGroupService $gamingGroupService
     )
     {
         $this->em = $em;
@@ -48,6 +51,7 @@ class PetGroupService
         $this->bandService = $bandService;
         $this->astronomyClubService = $astronomyClubService;
         $this->squirrel3 = $squirrel3;
+        $this->gamingGroupService = $gamingGroupService;
     }
 
     public function doGroupActivity(PetGroup $group)
@@ -68,6 +72,10 @@ class PetGroupService
 
             case PetGroupTypeEnum::ASTRONOMY:
                 $this->astronomyClubService->meet($group);
+                break;
+
+            case PetGroupTypeEnum::GAMING:
+                $this->gamingGroupService->meet($group);
                 break;
 
             default:
@@ -322,14 +330,24 @@ class PetGroupService
         }
     }
 
+    private function weightSkill(int $skill): int
+    {
+        if($skill < 5)
+            return 0;
+        else if($skill < 10)
+            return 1;
+        else if($skill < 17)
+            return 2;
+        else
+            return 3;
+    }
+
     public function createGroup(Pet $pet): ?PetGroup
     {
-        $petWithSkills = $pet->getComputedSkills();
-
         /** @var ComputedPetSkills[] $availableFriends */
-        $availableFriends = array_map(function(Pet $pet) {
+        $availableFriends = array_values(array_map(function(Pet $pet) {
             return $pet->getComputedSkills();
-        }, $this->petRepository->findFriendsWithFewGroups($pet));
+        }, $this->petRepository->findFriendsWithFewGroups($pet)));
 
         // the more groups you're in, the more friends you need to start another group
         // (reduces the chances of having duplicate-member groups)
@@ -341,13 +359,19 @@ class PetGroupService
                 'type' => PetGroupTypeEnum::BAND,
                 'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::BAND],
                 'icon' => 'groups/band',
-                'preference' => 5 + $petWithSkills->getMusic()->getTotal(),
+                'preference' => 2 + $this->weightSkill($pet->getSkills()->getMusic()),
             ],
             [
                 'type' => PetGroupTypeEnum::ASTRONOMY,
                 'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::ASTRONOMY],
                 'icon' => 'groups/astronomy',
-                'preference' => 5 + $petWithSkills->getScience()->getTotal(),
+                'preference' => 2 + $this->weightSkill($pet->getSkills()->getScience()),
+            ],
+            [
+                'type' => PetGroupTypeEnum::GAMING,
+                'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::GAMING],
+                'icon' => 'groups/gaming',
+                'preference' => 1 + ($pet->getExtroverted() + 1) * 2,
             ]
         ];
 
@@ -376,6 +400,8 @@ class PetGroupService
                     return $b->getScience() <=> $a->getScience();
                 });
                 break;
+
+            // gaming groups are totally random
 
             default:
                 $this->squirrel3->rngNextShuffle($availableFriends);
@@ -406,14 +432,16 @@ class PetGroupService
         return $group;
     }
 
-    private function generateName(int $type): string
+    public function generateName(int $type): string
     {
         switch($type)
         {
             case PetGroupTypeEnum::BAND:
-                return $this->bandService->generateBandName();
+                return $this->bandService->generateGroupName();
             case PetGroupTypeEnum::ASTRONOMY:
                 return $this->astronomyClubService->generateGroupName();
+            case PetGroupTypeEnum::GAMING:
+                return $this->gamingGroupService->generateGroupName();
             default:
                 throw new \Exception('Ben forgot to program group names for groups of type "' . $type . '"! (Bad Ben!)');
         }
