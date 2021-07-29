@@ -837,19 +837,24 @@ class UmbraService
 
         if($roll >= 20)
         {
-            $prize = $this->squirrel3->rngNextFromArray([
-                'Alien Tissue', 'Plastic', 'Silver Bar'
-            ]);
+            $possiblePrizes = [ 'Alien Tissue', 'Plastic', 'Silver Bar', 'Qabrêk Splàdj' ];
 
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+            $prizes = [ $this->squirrel3->rngNextFromArray($possiblePrizes) ];
+
+            if($roll >= 30)
+                $prizes[] = $this->squirrel3->rngNextFromArray($possiblePrizes);
+
+            $this->petExperienceService->gainExp($pet, 2 + count($prizes), [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
             $pet
                 ->increaseEsteem(3)
                 ->increaseSafety(3)
             ;
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered an Abandondero! It whipped out a laser gun, but ' . $pet->getName() . ' ' . $defeated . ', defeated it, and claimed its ' . $prize . '!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered an Abandondero! It whipped out a laser gun, but ' . $pet->getName() . ' ' . $defeated . ', defeated it, and claimed its ' . ArrayFunctions::list_nice($prizes) . '!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
             ;
-            $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' defeated an Abandondero, and took this.', $activityLog);
+
+            foreach($prizes as $prize)
+                $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' defeated an Abandondero, and took this.', $activityLog);
         }
         else
         {
