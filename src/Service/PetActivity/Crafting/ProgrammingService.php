@@ -1140,11 +1140,26 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('Plastic', 1);
             $this->houseSimService->getState()->loseItem('Iron Bar', 1);
             $this->houseSimService->getState()->loseItem('Gravitational Waves', 1);
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+
             $pet->increaseEsteem(4);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Graviton Gun! Neat!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 24)
-            ;
+
+            if($roll >= 34)
+            {
+                $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Graviton Gun! Neat! And neater still, they had enough iron left over to make a Mini Satellite Dish!', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 24)
+                ;
+
+                $this->inventoryService->petCollectsItem('Mini Satellite Dish', $pet, $pet->getName() . ' made this out of the leftovers from making a Graviton Gun!', $activityLog);
+            }
+            else
+            {
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Graviton Gun! Neat!', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 24)
+                ;
+            }
+
             $this->inventoryService->petCollectsItem('Graviton Gun', $pet, $pet->getName() . ' engineered this.', $activityLog);
             return $activityLog;
         }
