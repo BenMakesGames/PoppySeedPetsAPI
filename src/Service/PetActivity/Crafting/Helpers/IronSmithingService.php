@@ -329,8 +329,8 @@ class IronSmithingService
                 ;
                 $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from a Crooked Stick, and Iron Bar.', $activityLog);
 
-                foreach($bonusItems as $item)
-                    $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this with the leftovers from making ' . $item->getNameWithArticle() . '.', $activityLog);
+                foreach($bonusItems as $bonusItem)
+                    $this->inventoryService->petCollectsItem($bonusItem, $pet, $pet->getName() . ' created this with the leftovers from making ' . $item->getNameWithArticle() . '.', $activityLog);
             }
             else if($roll >= 23)
             {
