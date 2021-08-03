@@ -57,7 +57,7 @@ class GamingGroupService
         'nounjective' => [
             'Living Room', 'Fireside', 'Sleepover', 'Breakfast', 'Midnight', 'Refrigerator', 'Teatime',
             'Galaxy', 'Co-op', 'Basement', 'Attic', 'Table-top', 'Poppy Seed', 'D-pad',
-            'Fun-time', 'Trick', 'Action', 'Wombo-combo', 'Pen and Paper',
+            'Fun-time', 'Trick', 'Action', 'Wombo-combo', 'Pen n\' Paper',
         ],
         'noun' => [
             'Society', 'Party', 'Squad', 'Club', 'Guild', 'Order', 'Group', 'Company', 'Café', 'Diner',
