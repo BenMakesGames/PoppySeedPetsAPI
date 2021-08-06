@@ -12,6 +12,8 @@ use App\Entity\Spice;
 use App\Entity\User;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Model\FoodWithSpice;
@@ -371,6 +373,28 @@ class InventoryService
 
                     $this->responseService->setReloadInventory();
                 }
+            }
+
+            if($pet->hasStatusEffect(StatusEffectEnum::FRUIT_CLOBBERING) && $item->hasItemGroup('Fresh Fruit'))
+            {
+                $pectin = $this->itemRepository->findOneByName('Pectin');
+
+                $extraItem = (new Inventory())
+                    ->setOwner($pet->getOwner())
+                    ->setCreatedBy($pet->getOwner())
+                    ->setItem($pectin)
+                    ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' while ' . StatusEffectEnum::FRUIT_CLOBBERING . '.')
+                    ->setLocation(LocationEnum::HOME)
+                    ->setSpice($extraItemSpice)
+                    ->setEnchantment($bonus)
+                ;
+
+                $this->applySeasonalSpiceToNewItem($extraItem);
+
+                if(!$this->houseSimService->getState()->addInventory($extraItem))
+                    $this->em->persist($extraItem);
+
+                $this->responseService->setReloadInventory();
             }
 
             if($cancelGather)

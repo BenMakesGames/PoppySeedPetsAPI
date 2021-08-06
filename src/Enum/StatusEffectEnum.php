@@ -21,4 +21,5 @@ final class StatusEffectEnum
     public const BUBBLEGUMD = 'Bubblegum\'d';
     public const WEREFORM = 'Wereform';
     public const VIVACIOUS = 'Vivacious';
+    public const FRUIT_CLOBBERING = 'Fruit-clobbering';
 }

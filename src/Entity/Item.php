@@ -476,6 +476,18 @@ class Item
         return $this;
     }
 
+    public function hasItemGroup(string $itemGroupName): bool
+    {
+        foreach($this->itemGroups as $group)
+        {
+            /** @var ItemGroup $group */
+            if($group->getName() === $itemGroupName)
+                return true;
+        }
+
+        return false;
+    }
+
     public function getCannotBeThrownOut(): ?bool
     {
         return $this->cannotBeThrownOut;
