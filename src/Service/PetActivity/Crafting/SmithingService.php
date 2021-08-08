@@ -101,8 +101,14 @@ class SmithingService
                 $possibilities[] = new ActivityCallback($this, 'createMirror', $weight);
         }
 
-        if($this->houseSimService->hasInventory('Fiberglass') && $this->houseSimService->hasInventory('String'))
-            $possibilities[] = new ActivityCallback($this, 'createFiberglassBow', 10);
+        if($this->houseSimService->hasInventory('Fiberglass'))
+        {
+            if($this->houseSimService->hasInventory('String'))
+                $possibilities[] = new ActivityCallback($this, 'createFiberglassBow', 10);
+
+            if($this->houseSimService->hasInventory('Shiny Pail'))
+                $possibilities[] = new ActivityCallback($this, 'createShinyNanerPicker', 10);
+        }
 
         if($this->houseSimService->hasInventory('Iron Bar'))
         {
@@ -601,6 +607,34 @@ class SmithingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Fiberglass Bow, but couldn\'t figure it out.', 'icons/activity-logs/confused');
+        }
+    }
+
+    public function createShinyNanerPicker(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($roll >= 18)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->houseSimService->getState()->loseItem('Fiberglass', 1);
+            $this->houseSimService->getState()->loseItem('Shiny Pail', 1);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Shiny Naner-picker.', 'items/tool/bow/fiberglass')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+            ;
+            $this->inventoryService->petCollectsItem('Shiny Naner-picker', $pet, $pet->getName() . ' created this from Fiberglass, and a Shiny Pail.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Shiny Naner-picker, but the Fiberglass was proving difficult to work with...', 'icons/activity-logs/confused');
         }
     }
 

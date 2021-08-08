@@ -124,6 +124,9 @@ class CraftingService
 
         if($this->houseSimService->hasInventory('Crooked Stick'))
         {
+            if($this->houseSimService->hasInventory('Small, Yellow Plastic Bucket'))
+                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createNanerPicker', 10);
+
             if($this->houseSimService->hasInventory('Sunflower'))
                 $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createSunflowerStick', 10);
 

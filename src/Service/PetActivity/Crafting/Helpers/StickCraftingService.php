@@ -449,4 +449,29 @@ class StickCraftingService
         }
     }
 
+    public function createNanerPicker(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+
+        if($roll >= 12)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $this->houseSimService->getState()->loseItem('Small, Yellow Plastic Bucket', 1);
+            $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Naner-picker.', 'items/tool/basket/fruit-picker')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+            ;
+            $this->inventoryService->petCollectsItem('Naner-picker', $pet, $pet->getName() . ' created this by mounting a bucket on the end of a stick.' . ($this->squirrel3->rngNextInt(1, 5) === 1 ? ' Few things could be simpler!' : ''), $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to think up a way to make a stick more useful, but wasn\'t able to come up with anything.', 'icons/activity-logs/confused');
+        }
+    }
 }
