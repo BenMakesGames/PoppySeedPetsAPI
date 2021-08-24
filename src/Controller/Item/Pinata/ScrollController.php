@@ -159,7 +159,7 @@ class ScrollController extends PoppySeedPetsItemController
         ];
 
         $rareItems = [
-            'Bass Guitar', 'Maraca', 'Melodica'
+            'Bass Guitar', 'Maraca', 'Melodica', 'Sousaphone'
         ];
 
         $location = $inventory->getLocation();
