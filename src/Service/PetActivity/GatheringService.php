@@ -167,7 +167,7 @@ class GatheringService
     {
         $pet = $petWithSkills->getPet();
         $pobosFound = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Pobos Found', 0);
-        $poboChance = 150 + 200 * log10($pobosFound->getValue() + 1);
+        $poboChance = 150 + (int)(200 * log10($pobosFound->getValue() + 1));
 
         if($this->squirrel3->rngNextInt(1, 2000) < $petWithSkills->getPerception()->getTotal())
         {
