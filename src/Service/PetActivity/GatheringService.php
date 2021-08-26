@@ -23,6 +23,7 @@ use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\SpiceRepository;
+use App\Repository\UserQuestRepository;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -50,13 +51,15 @@ class GatheringService
     private PetFactory $petFactory;
     private MeritRepository $meritRepository;
     private GatheringDistractionService $gatheringDistractions;
+    private UserQuestRepository $userQuestRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, ItemRepository $itemRepository, SpiceRepository $spiceRepository,
         Squirrel3 $squirrel3, WeatherService $weatherService, FieldGuideService $fieldGuideService,
         PetSpeciesRepository $petSpeciesRepository, PetRepository $petRepository, PetFactory $petFactory,
-        MeritRepository $meritRepository, GatheringDistractionService $gatheringDistractions
+        MeritRepository $meritRepository, GatheringDistractionService $gatheringDistractions,
+        UserQuestRepository $userQuestRepository
     )
     {
         $this->responseService = $responseService;
@@ -73,6 +76,7 @@ class GatheringService
         $this->petFactory = $petFactory;
         $this->meritRepository = $meritRepository;
         $this->gatheringDistractions = $gatheringDistractions;
+        $this->userQuestRepository = $userQuestRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -162,6 +166,8 @@ class GatheringService
     private function foundAbandonedQuarry(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
+        $pobosFound = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Pobos Found', 0);
+        $poboChance = 150 + 200 * log10($pobosFound->getValue() + 1);
 
         if($this->squirrel3->rngNextInt(1, 2000) < $petWithSkills->getPerception()->getTotal())
         {
@@ -172,19 +178,9 @@ class GatheringService
             $pet->increaseEsteem(4);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::GATHER, true);
         }
-        else if($this->squirrel3->rngNextInt(1, 150) === 1)
+        else if($this->squirrel3->rngNextInt(1, $poboChance) === 1)
         {
-            $bone = $this->squirrel3->rngNextFromArray([ 'Rib', 'Stereotypical Bone' ]);
-
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to an Abandoned Quarry, and happened to find a ' . $bone . '!', '');
-
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
-            $this->inventoryService->petCollectsItem($bone, $pet, $pet->getName() . ' found this at an Abandoned Quarry!', $activityLog);
-            $pet->increaseEsteem(4);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
-        }
-        else if($this->squirrel3->rngNextInt(1, 150) === 1)
-        {
+            $pobosFound->setValue($pobosFound->getValue() + 1);
             $pobo = $this->petSpeciesRepository->findOneBy([ 'name' => 'Pobo' ]);
 
             $poboName = $this->squirrel3->rngNextFromArray([
@@ -231,6 +227,17 @@ class GatheringService
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
             $pet->increaseSafety(-4);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+        }
+        else if($this->squirrel3->rngNextInt(1, 150) === 1)
+        {
+            $bone = $this->squirrel3->rngNextFromArray([ 'Rib', 'Stereotypical Bone' ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to an Abandoned Quarry, and happened to find a ' . $bone . '!', '');
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
+            $this->inventoryService->petCollectsItem($bone, $pet, $pet->getName() . ' found this at an Abandoned Quarry!', $activityLog);
+            $pet->increaseEsteem(4);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
         }
         else if($petWithSkills->getStrength()->getTotal() < 4)
