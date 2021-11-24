@@ -318,7 +318,7 @@ class FireplaceController extends PoppySeedPetsController
 
         if(!$item)
         {
-            if(JewishCalendarFunctions::isHannukah($now))
+            if(JewishCalendarFunctions::isHanukkah($now))
                 $item = 'Dreidel';
             else
                 $item = $squirrel3->rngNextFromArray($randomRewards);

@@ -69,7 +69,7 @@ class JewishCalendarFunctions
         return [ $jewishYear, $jewishMonth, $jewishDay ];
     }
 
-    public static function isHannukah(\DateTimeInterface $dt)
+    public static function isHanukkah(\DateTimeInterface $dt)
     {
         $jdCurrent = gregoriantojd($dt->format('m'), $dt->format('d'), $dt->format('Y'));
         list($jewishYear, $jewishMonth, $jewishDay) = self::getJewishDate($dt);

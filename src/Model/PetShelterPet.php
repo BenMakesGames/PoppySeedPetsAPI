@@ -85,7 +85,7 @@ class PetShelterPet
         'Light Meat', 'Dark Meat', 'Crispy Onion', 'Sweet Potato', 'Brown Sugar', 'Pecan Pie',
     ];
 
-    public const PET_HANNUKAH_NAMES = [
+    public const PET_HANUKKAH_NAMES = [
         'Dreidel', 'Olive Oil', 'Potato', 'Pancake', 'Gelt', 'Maccabee', 'Pączki', 'Buñuelo', 'Sufganiyah',
     ];
 

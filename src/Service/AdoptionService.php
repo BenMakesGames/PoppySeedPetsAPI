@@ -116,7 +116,7 @@ class AdoptionService
         {
             if($i < $numSeasonalPets)
             {
-                list($colorA, $colorB) = $squirrel3->rngNextSubsetFromArray($this->getSeasonalColors(), 2);
+                [$colorA, $colorB] = $squirrel3->rngNextSubsetFromArray($this->getSeasonalColors(), 2);
 
                 $seasonalNames = $this->getSeasonalNames();
 
@@ -258,7 +258,7 @@ class AdoptionService
         if($monthDay >= 1223 && $monthDay <= 1225)
             return $squirrel3->rngNextInt(1, 2);
 
-        if($this->calendarService->isHannukah())
+        if($this->calendarService->isHanukkah())
             return $squirrel3->rngNextInt(1, 2);
 
         if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)
@@ -304,8 +304,8 @@ class AdoptionService
         if($monthDay >= 1223 && $monthDay <= 1225)
             return PetShelterPet::PET_CHRISTMAS_NAMES;
 
-        if($this->calendarService->isHannukah())
-            return PetShelterPet::PET_HANNUKAH_NAMES;
+        if($this->calendarService->isHanukkah())
+            return PetShelterPet::PET_HANUKKAH_NAMES;
 
         if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)
             return PetShelterPet::PET_CHINESE_ZODIAC_NAMES[$this->chineseCalendarInfo->animal];
@@ -350,7 +350,7 @@ class AdoptionService
         if($monthDay >= 1223 && $monthDay <= 1225)
             return [ 'F8F8F8', 'CC3300', '009900' ];
 
-        if($this->calendarService->isHannukah())
+        if($this->calendarService->isHanukkah())
             return [ 'F8F8F8', '0066FF' ];
 
         if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)

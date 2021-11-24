@@ -182,7 +182,7 @@ class CalendarService
         return $result;
     }
 
-    public function isHannukah(): bool
+    public function isHanukkah(): bool
     {
         $jdCurrent = gregoriantojd($this->today->format('m'), $this->today->format('d'), $this->today->format('Y'));
         [$jewishYear, $jewishMonth, $jewishDay] = JewishCalendarFunctions::getJewishDate($this->today);
@@ -276,8 +276,8 @@ class CalendarService
         if($this->isPsyPetsBirthday())
             $events[] = HolidayEnum::PSYPETS_BIRTHDAY;
 
-        if($this->isHannukah())
-            $events[] = HolidayEnum::HANNUKAH;
+        if($this->isHanukkah())
+            $events[] = HolidayEnum::HANUKKAH;
 
         if($this->isWhiteDay())
             $events[] = HolidayEnum::WHITE_DAY;

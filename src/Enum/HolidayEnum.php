@@ -12,7 +12,7 @@ class HolidayEnum
     public const EASTER = 'Easter';
     public const FOURTH_OF_JULY = '4th of July';
     public const HALLOWEEN = 'Halloween';
-    public const HANNUKAH = 'Hannukah';
+    public const HANUKKAH = 'Hanukkah';
     public const HOLI = 'Holi';
     public const NEW_YEARS_DAY = 'New Year\'s Day';
     public const PI_DAY = 'Pi Day';
