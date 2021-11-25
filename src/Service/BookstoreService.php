@@ -170,9 +170,9 @@ class BookstoreService
             'Chocomilk' => 11
         ];
 
-        if($this->calendarService->getMonthAndDay() >= 1100)
+        if($this->calendarService->isStockingStuffingSeason())
         {
-            $cafePrices[] = [ 'Eggnog' => 12 ];
+            $cafePrices['Eggnog'] = 12;
         }
 
         return $cafePrices;
@@ -188,6 +188,9 @@ class BookstoreService
         {
             $gamePrices['Formation'] = 15;
             $gamePrices['Hollow Earth Booster Pack'] = 200;
+
+            if($this->calendarService->isStockingStuffingSeason())
+                $gamePrices['Tile: Everice Cream'] = 200;
         }
 
         return $gamePrices;

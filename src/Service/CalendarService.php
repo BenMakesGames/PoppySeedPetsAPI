@@ -227,6 +227,11 @@ class CalendarService
         return $this->monthAndDay === 1231 || $this->monthAndDay <= 102;
     }
 
+    public function isStockingStuffingSeason(): bool
+    {
+        return $this->monthAndDay >= 1200 && $this->monthAndDay <= 1231;
+    }
+
     /**
      * @return string[]
      */
@@ -246,7 +251,7 @@ class CalendarService
         if($fullMoonName)
             $events[] = $fullMoonName . ' Moon';
 
-        if($this->monthAndDay >= 1200 && $this->monthAndDay <= 1231)
+        if($this->isStockingStuffingSeason())
             $events[] = HolidayEnum::STOCKING_STUFFING_SEASON;
 
         if($this->isHalloween())

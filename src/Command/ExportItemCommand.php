@@ -2,6 +2,7 @@
 namespace App\Command;
 
 use App\Entity\Enchantment;
+use App\Entity\HollowEarthTileCard;
 use App\Entity\Item;
 use App\Entity\ItemFood;
 use App\Entity\ItemGrammar;
@@ -57,6 +58,7 @@ class ExportItemCommand extends PoppySeedPetsCommand
         $spice = $item->getSpice();
         $grammar = $item->getGrammar();
         $plant = $item->getPlant();
+        $tile = $item->getHollowEarthTileCard();
 
         $statements = [];
 
@@ -98,6 +100,9 @@ class ExportItemCommand extends PoppySeedPetsCommand
                     $statements[] = $this->generateSql(PlantYieldItem::class, $yieldItem, 'plant yield item');
             }
         }
+
+        if($tile)
+            $statements[] = $this->generateSql(HollowEarthTileCard::class, $tile, 'hollow earth tile card');
 
         $statements[] = $this->generateSql(Item::class, $item, 'the item itself!');
 
