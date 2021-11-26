@@ -86,13 +86,13 @@ class CookingBuddyController extends PoppySeedPetsController
     }
 
     /**
-     * @Route("/{cookingBuddy}/prepare/{knownRecipe}", methods={"POST"})
+     * @Route("/{cookingBuddy}/prepare/{knownRecipe}/{quantity}", methods={"POST"}, requirements={"quantity"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function prepareRecipeFromMemory(
         Inventory $cookingBuddy, KnownRecipes $knownRecipe, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository,
-        CookingService $cookingService
+        CookingService $cookingService, int $quantity = 1
     )
     {
         $user = $this->getUser();
@@ -118,10 +118,10 @@ class CookingBuddyController extends PoppySeedPetsController
                     'location' => $cookingBuddy->getLocation()
                 ],
                 [],
-                $ingredient->quantity
+                $ingredient->quantity * $quantity
             );
 
-            if(count($inventory) !== $ingredient->quantity)
+            if(count($inventory) !== $ingredient->quantity * $quantity)
                 throw new UnprocessableEntityHttpException('You do not have enough ' . $ingredient->item->getName() . ' to make ' . $recipe->getName() . '.');
 
             $inventoryToUse = array_merge($inventoryToUse, $inventory);
