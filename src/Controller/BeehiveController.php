@@ -203,6 +203,8 @@ class BeehiveController extends PoppySeedPetsController
             $itemNames[] = 'Honeycomb';
         }
 
+        $extraItem = null;
+
         if($beehive->getMiscPercent() >= 1)
         {
             $beehive->setMiscProgress(0);
@@ -216,8 +218,6 @@ class BeehiveController extends PoppySeedPetsController
             $newItems = [
                 $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' took this from their Beehive.', LocationEnum::HOME)
             ];
-
-            $extraItem = null;
 
             if($beehive->getHelper())
             {
