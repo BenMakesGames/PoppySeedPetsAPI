@@ -16,6 +16,7 @@ use App\Enum\HolidayEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SocialTimeWantEnum;
 use App\Enum\SpiritCompanionStarEnum;
@@ -180,8 +181,7 @@ class PetService
     {
         $hasEventPersonality = $pet->hasActivityPersonality(ActivityPersonalityEnum::EVENTS_AND_MAPS);
 
-        if($pet->getInDaycare())
-            throw new \InvalidArgumentException('Pets in daycare cannot be interacted with.');
+        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
 
         if($pet->getHouseTime()->getActivityTime() < 60)
             throw new \InvalidArgumentException('Pet does not have enough Time. (Ben did something horrible; please let him know.)');

@@ -14,6 +14,7 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\SerializationGroupEnum;
@@ -37,6 +38,7 @@ use App\Service\MeritService;
 use App\Service\PetActivity\EatingService;
 use App\Service\PetActivityStatsService;
 use App\Service\PetAndPraiseService;
+use App\Service\PetAssistantService;
 use App\Service\PetRelationshipService;
 use App\Service\PetService;
 use App\Service\ProfanityFilterService;
@@ -80,7 +82,7 @@ class PetController extends PoppySeedPetsController
 
         $petsAtHome = $petRepository->findBy([
             'owner' => $user->getId(),
-            'inDaycare' => false,
+            'location' => PetLocationEnum::HOME
         ]);
 
         return $responseService->success($petsAtHome, [ SerializationGroupEnum::MY_PET ]);
@@ -97,7 +99,7 @@ class PetController extends PoppySeedPetsController
         $user = $this->getUser();
 
         $petFilterService->addRequiredFilter('owner', $user->getId());
-        $petFilterService->addRequiredFilter('inDaycare', 1);
+        $petFilterService->addRequiredFilter('location', PetLocationEnum::DAYCARE);
 
         $petsInDaycare = $petFilterService->getResults($request->query);
 
@@ -159,7 +161,7 @@ class PetController extends PoppySeedPetsController
             ->setParkEventType(null)
             ->setNote('')
             ->setCostume('')
-            ->setInDaycare(true)
+            ->setLocation(PetLocationEnum::DAYCARE)
             ->increaseEsteem(-5 * ($pet->getLevel() + 1))
             ->increaseSafety(-5 * ($pet->getLevel() + 1))
             ->increaseLove(-6 * ($pet->getLevel() + 1))
@@ -194,13 +196,10 @@ class PetController extends PoppySeedPetsController
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
             throw new AccessDeniedHttpException('This isn\'t your pet.');
 
-        if($pet->getInDaycare())
-            throw new UnprocessableEntityHttpException($pet->getName() . ' is already in Daycare.');
+        if(!$pet->isAtHome())
+            throw new UnprocessableEntityHttpException($pet->getName() . ' isn\'t at home...');
 
-        $pet
-            ->setParkEventType(null) // unregister from park events
-            ->setInDaycare(true)
-        ;
+        $pet->setLocation(PetLocationEnum::DAYCARE);
 
         $em->flush();
 
@@ -220,7 +219,7 @@ class PetController extends PoppySeedPetsController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new AccessDeniedHttpException('This isn\'t your pet.');
 
-        if(!$pet->getInDaycare())
+        if($pet->getLocation() !== PetLocationEnum::DAYCARE)
             throw new UnprocessableEntityHttpException($pet->getName() . ' isn\'t in Daycare...');
 
         $petsAtHome = $petRepository->getNumberAtHome($user);
@@ -228,9 +227,21 @@ class PetController extends PoppySeedPetsController
         if($petsAtHome >= $user->getMaxPets())
             throw new UnprocessableEntityHttpException('Your house has too many pets as-is.');
 
-        $pet->setInDaycare(false);
+        $pet->setLocation(LocationEnum::HOME);
 
         $em->flush();
+
+        return $responseService->success();
+    }
+
+    /**
+     * @Route("/{pet}/stopHelping", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function stopHelping(Pet $pet, PetAssistantService $petAssistantService, ResponseService $responseService)
+    {
+        $user = $this->getUser();
+        $petAssistantService->stopAssisting($user, $pet);
 
         return $responseService->success();
     }
@@ -483,8 +494,7 @@ class PetController extends PoppySeedPetsController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException('There is no such pet.');
 
-        if($pet->getInDaycare())
-            throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');
+        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
 
         if(
             $pet->hasStatusEffect(StatusEffectEnum::WEREFORM) &&
@@ -549,8 +559,7 @@ class PetController extends PoppySeedPetsController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException('There is no such pet.');
 
-        if($pet->getInDaycare())
-            throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');
+        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
 
         if(!$pet->hasMerit(MeritEnum::BEHATTED))
             throw new UnprocessableEntityHttpException($pet->getName() . ' does not have the Merit required to wear hats.');
@@ -625,8 +634,7 @@ class PetController extends PoppySeedPetsController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
 
-        if($pet->getInDaycare())
-            throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');
+        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
 
         if(!$pet->getTool())
             throw new UnprocessableEntityHttpException($pet->getName() . ' is not currently equipped.');
@@ -649,8 +657,7 @@ class PetController extends PoppySeedPetsController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
 
-        if($pet->getInDaycare())
-            throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');
+        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
 
         if(!$pet->getHat())
             throw new UnprocessableEntityHttpException($pet->getName() . ' is not currently wearing a hat.');
@@ -1124,8 +1131,7 @@ class PetController extends PoppySeedPetsController
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
             throw new AccessDeniedHttpException('You can\'t pet that pet.');
 
-        if($pet->getInDaycare())
-            throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');
+        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
 
         try
         {
@@ -1152,8 +1158,7 @@ class PetController extends PoppySeedPetsController
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
             throw new AccessDeniedHttpException('You can\'t praise that pet.');
 
-        if($pet->getInDaycare())
-            throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');
+        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
 
         try
         {
@@ -1183,8 +1188,7 @@ class PetController extends PoppySeedPetsController
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
             throw new AccessDeniedHttpException('You can\'t feed that pet.');
 
-        if($pet->getInDaycare())
-            throw new UnprocessableEntityHttpException('Pets in daycare cannot be interacted with.');
+        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
 
         $items = $request->request->get('items');
 

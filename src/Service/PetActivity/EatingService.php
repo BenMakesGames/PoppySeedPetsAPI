@@ -229,7 +229,7 @@ class EatingService
      */
     public function doFeed(Pet $pet, array $inventory): PetActivityLog
     {
-        if($pet->getInDaycare()) throw new \InvalidArgumentException('Pets in daycare cannot be interacted with.');
+        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
 
         if(ArrayFunctions::any($inventory, function(Inventory $i) { return $i->getItem()->getFood() === null; }))
             throw new \InvalidArgumentException('At least one of the items selected is not edible!');

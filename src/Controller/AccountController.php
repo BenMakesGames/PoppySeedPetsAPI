@@ -6,6 +6,7 @@ use App\Entity\UserNotificationPreferences;
 use App\Entity\UserStyle;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
+use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\StringFunctions;
@@ -486,7 +487,7 @@ class AccountController extends PoppySeedPetsController
 
         $petsAtHome = $petRepository->findBy([
             'owner' => $user->getId(),
-            'inDaycare' => false,
+            'location' => PetLocationEnum::HOME
         ]);
 
         $inventory = $inventoryRepository->findBy([
@@ -530,7 +531,7 @@ class AccountController extends PoppySeedPetsController
         NormalizerInterface $normalizer, UserStyleRepository $userStyleRepository
     )
     {
-        $pets = $petRepository->findBy([ 'owner' => $user, 'inDaycare' => false ]);
+        $pets = $petRepository->findBy([ 'owner' => $user, 'location' => PetLocationEnum::HOME ]);
         $theme = $userStyleRepository->findCurrent($user);
 
         $data = [

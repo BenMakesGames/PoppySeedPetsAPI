@@ -25,7 +25,7 @@ class PetFilterService
                 'name' => [ $this, 'filterName' ],
                 'species' => [ $this, 'filterSpecies' ],
                 'owner' => [ $this, 'filterOwner' ],
-                'inDaycare' => [ $this, 'filterInDaycare' ],
+                'location' => [ $this, 'filterLocation' ],
                 'guild' => [ $this, 'filterGuild' ],
             ]
         );
@@ -66,12 +66,12 @@ class PetFilterService
         ;
     }
 
-    public function filterInDaycare(QueryBuilder $qb, $value)
+    public function filterLocation(QueryBuilder $qb, $value)
     {
-        if(strtolower($value) === 'false' || !$value)
-            $qb->andWhere('p.inDaycare = 0');
-        else
-            $qb->andWhere('p.inDaycare = 1');
+        $qb
+            ->andWhere('p.location = :location')
+            ->setParameter('location', $value)
+        ;
     }
 
     public function filterGuild(QueryBuilder $qb, $value)

@@ -26,7 +26,7 @@ class PetAndPraiseService
 
     public function doPet(Pet $pet)
     {
-        if($pet->getInDaycare()) throw new \InvalidArgumentException('Pets in daycare cannot be interacted with.');
+        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
 
         $now = new \DateTimeImmutable();
 
@@ -64,7 +64,7 @@ class PetAndPraiseService
 
     public function doPraise(Pet $pet)
     {
-        if($pet->getInDaycare()) throw new \InvalidArgumentException('Pets in daycare cannot be interacted with.');
+        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
 
         $now = new \DateTimeImmutable();
 

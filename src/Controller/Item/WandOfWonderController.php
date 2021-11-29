@@ -5,6 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
+use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
@@ -51,7 +52,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
         /** @var Pet[] $petsAtHome */
         $petsAtHome = $petRepository->findBy([
             'owner' => $user,
-            'inDaycare' => false
+            'location' => PetLocationEnum::HOME
         ]);
 
         /** @var Pet|null $randomPet */

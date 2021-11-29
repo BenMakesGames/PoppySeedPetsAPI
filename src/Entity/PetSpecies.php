@@ -30,7 +30,7 @@ class PetSpecies
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet", "userPublicProfile", "petEncyclopedia", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "petActivityLogAndPublicPet"})
+     * @Groups({"myPet", "userPublicProfile", "petEncyclopedia", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "petActivityLogAndPublicPet", "helperPet"})
      */
     private $image;
 
@@ -42,31 +42,31 @@ class PetSpecies
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
      */
     private $handX;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
      */
     private $handY;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
      */
     private $handAngle;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petEncyclopedia", "petFriend", "petGroupDetails"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petEncyclopedia", "petFriend", "petGroupDetails", "helperPet"})
      */
     private $flipX;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
      */
     private $handBehind;
 
@@ -78,31 +78,31 @@ class PetSpecies
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent", "helperPet"})
      */
     private $pregnancyStyle;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent", "helperPet"})
      */
     private $eggImage;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
      */
     private $hatX;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
      */
     private $hatY;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
      */
     private $hatAngle;
 

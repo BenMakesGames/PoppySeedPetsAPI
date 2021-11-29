@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Enum\PetLocationEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\GrammarFunctions;
 use App\Model\SummoningScrollMonster;
@@ -57,7 +58,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
         $petsAtHome = $petRepository->findBy([
             'owner' => $user,
-            'inDaycare' => false
+            'location' => PetLocationEnum::HOME
         ]);
 
         if(count($petsAtHome) === 0)
@@ -98,7 +99,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
         $petsAtHome = $petRepository->findBy([
             'owner' => $user,
-            'inDaycare' => false
+            'location' => PetLocationEnum::HOME
         ]);
 
         if(count($petsAtHome) === 0)
@@ -191,7 +192,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
         {
-            $pet->setInDaycare(true);
+            $pet->setLocation(PetLocationEnum::DAYCARE);
 
             if($gotAReusedSentinel)
                 $message = 'You read the scroll... not ' . $squirrel3->rngNextInt(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet! But it looks like someone took care of it... has it done this before?) You put it in the Pet Shelter daycare...';
@@ -202,7 +203,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
         }
         else
         {
-            $pet->setInDaycare(false);
+            $pet->setLocation(PetLocationEnum::HOME);
 
             if($gotAReusedSentinel)
                 $message = 'You read the scroll... not ' . $squirrel3->rngNextInt(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet! But it looks like someone took care of it... has it done this before?) Well... it\'s here now, I guess...';

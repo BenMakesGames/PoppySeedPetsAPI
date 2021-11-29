@@ -310,6 +310,12 @@ class User implements UserInterface
      */
     private $museumPointsSpent = 0;
 
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"myAccount"})
+     */
+    private $canAssignHelpers = false;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -1099,6 +1105,18 @@ class User implements UserInterface
     public function addMuseumPointsSpent(int $museumPointsSpent): self
     {
         $this->museumPointsSpent += $museumPointsSpent;
+
+        return $this;
+    }
+
+    public function getCanAssignHelpers(): ?bool
+    {
+        return $this->canAssignHelpers;
+    }
+
+    public function setCanAssignHelpers(bool $canAssignHelpers): self
+    {
+        $this->canAssignHelpers = $canAssignHelpers;
 
         return $this;
     }

@@ -5,6 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\PetSkills;
 use App\Enum\FlavorEnum;
+use App\Enum\PetLocationEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Repository\ItemRepository;
@@ -148,7 +149,7 @@ class GoldRingController extends PoppySeedPetsItemController
 
             if(!$petJoinsHouse)
             {
-                $newPet->setInDaycare(true);
+                $newPet->setLocation(PetLocationEnum::DAYCARE);
                 $message .= "\n\nYour house is full, so it dashes off to the daycare.";
             }
 

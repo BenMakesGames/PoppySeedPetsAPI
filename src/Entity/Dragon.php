@@ -124,6 +124,12 @@ class Dragon
      */
     private $appearance;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Pet::class, cascade={"persist", "remove"})
+     * @Groups({"helperPet"})
+     */
+    private $helper;
+
     public function __construct()
     {
         $squirrel3 = new Squirrel3();
@@ -297,6 +303,18 @@ class Dragon
     public function setAppearance(int $appearance): self
     {
         $this->appearance = $appearance;
+
+        return $this;
+    }
+
+    public function getHelper(): ?Pet
+    {
+        return $this->helper;
+    }
+
+    public function setHelper(?Pet $helper): self
+    {
+        $this->helper = $helper;
 
         return $this;
     }

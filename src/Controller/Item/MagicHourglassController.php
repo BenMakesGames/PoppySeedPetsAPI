@@ -3,6 +3,7 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
+use App\Enum\PetLocationEnum;
 use App\Enum\UserStatEnum;
 use App\Repository\UserStatsRepository;
 use App\Service\HouseService;
@@ -56,12 +57,13 @@ class MagicHourglassController extends PoppySeedPetsItemController
                 AND ht.pet IN (
                     SELECT p.id FROM App\Entity\Pet AS p
                     WHERE p.owner=:ownerId
-                    AND p.inDaycare=0
+                    AND p.location=:home
                 )
         ');
 
         $query->execute([
-            'ownerId' => $user->getId()
+            'ownerId' => $user->getId(),
+            'home' => PetLocationEnum::HOME
         ]);
 
         $em->flush();

@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\PetLocationEnum;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
@@ -44,8 +45,9 @@ class HouseService
             ->join('p.houseTime', 'ht')
             ->andWhere('p.owner=:user')
             ->andWhere('(ht.activityTime>=60 OR (ht.socialEnergy>=:minimumSocialEnergy AND ht.canAttemptSocialHangoutAfter<:now))')
-            ->andWhere('p.inDaycare=0')
+            ->andWhere('p.location=:home')
             ->setParameter('user', $user->getId())
+            ->setParameter('home', PetLocationEnum::HOME)
             ->setParameter('minimumSocialEnergy', PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
             ->setParameter('now', new \DateTimeImmutable())
             ->getQuery()
@@ -87,8 +89,9 @@ class HouseService
             ->join('p.houseTime', 'ht')
             ->andWhere('p.owner=:user')
             ->andWhere('(ht.activityTime>=60 OR (ht.socialEnergy>=:minimumSocialEnergy AND ht.canAttemptSocialHangoutAfter<:now))')
-            ->andWhere('p.inDaycare=0')
+            ->andWhere('p.location=:home')
             ->setParameter('user', $user->getId())
+            ->setParameter('home', PetLocationEnum::HOME)
             ->setParameter('minimumSocialEnergy', PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
             ->setParameter('now', new \DateTimeImmutable())
             ->getQuery()
@@ -154,7 +157,7 @@ class HouseService
 
     private function petCanStillProcess(Pet $pet, bool $hungOut): bool
     {
-        if($pet->getInDaycare())
+        if(!$pet->isAtHome())
             return false;
 
         if($pet->getHouseTime()->getActivityTime() < 60 && $pet->getHouseTime()->getSocialEnergy() < PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)

@@ -8,6 +8,7 @@ use App\Entity\PlantYieldItem;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\MoonPhaseEnum;
+use App\Enum\PetLocationEnum;
 use App\Enum\PlantTypeEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
@@ -26,8 +27,10 @@ use App\Service\FieldGuideService;
 use App\Service\GreenhouseService;
 use App\Service\InventoryService;
 use App\Service\PetActivity\GreenhouseAdventureService;
+use App\Service\PetAssistantService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -64,7 +67,7 @@ class GreenhouseController extends PoppySeedPetsController
 
         return $responseService->success(
             $greenhouseService->getGreenhouseResponseData($user),
-            [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE ]
+            [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE, SerializationGroupEnum::HELPER_PET ]
         );
     }
 
@@ -74,12 +77,18 @@ class GreenhouseController extends PoppySeedPetsController
      */
     public function weedPlants(
         ResponseService $responseService, UserQuestRepository $userQuestRepository, EntityManagerInterface $em,
-        InventoryService $inventoryService, Squirrel3 $squirrel3
+        InventoryService $inventoryService, Squirrel3 $squirrel3, PetAssistantService $petAssistantService,
+        WeatherService $weatherService
     )
     {
         $user = $this->getUser();
 
-        $weeds = $userQuestRepository->findOrCreate($user, 'Greenhouse Weeds', (new \DateTimeImmutable())->modify('+8 hours')->format('Y-m-d H:i:s'));
+        $greenhouse = $user->getGreenhouse();
+
+        if(!$greenhouse)
+            throw new NotFoundHttpException('You don\'t have a Greenhouse plot.');
+
+        $weeds = $userQuestRepository->findOrCreate($user, 'Greenhouse Weeds', (new \DateTimeImmutable())->modify('-1 minutes')->format('Y-m-d H:i:s'));
 
         $weedTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $weeds->getValue());
 
@@ -93,11 +102,84 @@ class GreenhouseController extends PoppySeedPetsController
         else
             $itemName = $squirrel3->rngNextFromArray([ 'Dandelion', 'Crooked Stick', 'Crooked Stick' ]);
 
-        $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this while weeding their Greenhouse.', LocationEnum::HOME);
+        $foundItem = $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this while weeding their Greenhouse.', LocationEnum::HOME);
+
+        $message = 'You found ' . $foundItem->getItem()->getNameWithArticle() .' while cleaning up!';
+
+        if($greenhouse->getHelper())
+        {
+            $helper = $greenhouse->getHelper();
+            $petWithSkills = $helper->getComputedSkills();
+            $skill = $petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal();
+
+            $hasWaterPlots = $greenhouse->getMaxWaterPlants() > 0;
+            $hasDarkPlots = $greenhouse->getMaxDarkPlants() > 0;
+            $isRaining = $weatherService->getWeather(new \DateTimeImmutable(), null)->getRainfall() > 0;
+
+            $basicItems = [ 'Egg', 'Blackberries', 'Blueberries', 'Line of Ants' ];
+            $slightlyCoolerItems = [ 'Narcissus', 'Plastic', 'Paper' ];
+
+            if($hasDarkPlots)
+            {
+                $basicItems[] = 'Toadstool';
+            }
+
+            if($hasWaterPlots)
+            {
+                $basicItems[] = 'Scales';
+            }
+
+            if($isRaining)
+            {
+                $slightlyCoolerItems[] = 'Worms';
+            }
+
+            $extraItem = $petAssistantService->getExtraItem($skill,
+                $basicItems,
+                $slightlyCoolerItems,
+                [ 'Coconut', 'Dark Matter', 'Filthy Cloth' ],
+                [ 'Mango', 'Gypsum', 'Really Big Leaf', 'White Feathers' ]
+            );
+
+            $itemObject = $inventoryService->receiveItem($extraItem, $user, $user, $helper->getName() . ' found this while weeding the Greenhouse with ' . $user->getName() . '.', LocationEnum::HOME);
+
+            $message .= ' ' . $helper->getName() . ' helped, too, and found ' . $itemObject->getItem()->getNameWithArticle() . '!';
+
+            $surprisingItems = [ 'Coconut', 'Mango' ];
+            $litterItems = [ 'Plastic', 'Paper', 'Filthy Cloth' ];
+
+            if(in_array($extraItem, $surprisingItems))
+                $message .= ' (As a weed?! Weird!)';
+            else if(in_array($extraItem, $litterItems))
+                $message .= ' (Weeds are bad enough; what\'s this litter doing here?!)';
+            else
+                $message .= ' ' . $squirrel3->rngNextFromArray([ 'Noice!', 'Yoink!', '👍', '👌', 'Neat-o!', 'Okey dokey!' ]);
+        }
 
         $em->flush();
 
-        return $responseService->success($itemName);
+        return $responseService->success($message);
+    }
+
+    /**
+     * @Route("/assignHelper/{pet}", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function assignHelper(
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em,
+        PetAssistantService $petAssistantService, GreenhouseService $greenhouseService
+    )
+    {
+        $user = $this->getUser();
+
+        $petAssistantService->helpGreenhouse($user, $pet);
+
+        $em->flush();
+
+        return $responseService->success(
+            $greenhouseService->getGreenhouseResponseData($user),
+            [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE, SerializationGroupEnum::HELPER_PET ]
+        );
     }
 
     /**
@@ -270,7 +352,7 @@ class GreenhouseController extends PoppySeedPetsController
 
         return $responseService->success(
             $greenhouseService->getGreenhouseResponseData($user),
-            [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE ]
+            [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE, SerializationGroupEnum::HELPER_PET ]
         );
     }
 
@@ -417,17 +499,22 @@ class GreenhouseController extends PoppySeedPetsController
             $user->getGreenhouse()->increaseMaxPlants(3);
             $message .= ' And you\'ve been given three additional plots in the Greenhouse!';
         }
-        else if($squirrel3->rngNextInt(1, 3) === 1)
+        else
         {
-            $petsAtHome = $petRepository->findBy([
+            $eligiblePets = $petRepository->findBy([
                 'owner' => $user->getId(),
-                'inDaycare' => false
+                'location' => PetLocationEnum::HOME
             ]);
 
-            if(count($petsAtHome) > 0)
+            if($user->getGreenhouse()->getHelper())
+                $eligiblePets[] = $user->getGreenhouse()->getHelper();
+
+            $chanceOfHelp = sqrt(count($eligiblePets)) * 100;
+
+            if($squirrel3->rngNextInt(1, 550) <= $chanceOfHelp)
             {
                 /** @var Pet $helper */
-                $helper = $squirrel3->rngNextFromArray($petsAtHome);
+                $helper = $squirrel3->rngNextFromArray($eligiblePets);
 
                 $activity = $greenhouseAdventureService->adventure($helper->getComputedSkills(), $plant);
 
@@ -444,7 +531,7 @@ class GreenhouseController extends PoppySeedPetsController
 
         return $responseService->success(
             $greenhouseService->getGreenhouseResponseData($user),
-            [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE ]
+            [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE, SerializationGroupEnum::HELPER_PET ]
         );
     }
 
@@ -486,7 +573,7 @@ class GreenhouseController extends PoppySeedPetsController
 
         return $responseService->success(
             $greenhouseService->getGreenhouseResponseData($user),
-            [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE ]
+            [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE, SerializationGroupEnum::HELPER_PET ]
         );
     }
 
@@ -655,7 +742,7 @@ class GreenhouseController extends PoppySeedPetsController
 
         return $responseService->success(
             $greenhouseService->getGreenhouseResponseData($user),
-            [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE ]
+            [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE, SerializationGroupEnum::HELPER_PET ]
         );
     }
 

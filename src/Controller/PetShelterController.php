@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Enum\FlavorEnum;
+use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
@@ -129,7 +130,7 @@ class PetShelterController extends PoppySeedPetsController
         ;
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
-            $newPet->setInDaycare(true);
+            $newPet->setLocation(PetLocationEnum::DAYCARE);
 
         $transactionService->spendMoney($user, $costToAdopt, 'Adopted a new pet.');
 

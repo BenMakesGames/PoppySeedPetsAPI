@@ -74,32 +74,32 @@ class ItemTool
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
      */
     private $gripX = 0.5;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
      */
     private $gripY = 0.5;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
      */
     private $gripAngle = 0;
 
     /**
      * A fixed grip angle means that the item will ALWAYS be rendered at this angle, regardless of the attributes of the pet that holds it
      * @ORM\Column(type="boolean")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
      */
     private $gripAngleFixed = false;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
      */
     private $gripScale = 1;
 
@@ -120,7 +120,7 @@ class ItemTool
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
      */
     private $alwaysInFront = false;
 

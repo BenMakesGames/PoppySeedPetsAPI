@@ -10,6 +10,7 @@ use App\Enum\BirdBathBirdEnum;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
+use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
@@ -135,12 +136,12 @@ class GreenhouseService
         if($numberOfPetsAtHome >= $user->getMaxPets())
         {
             $message .= "\n\n" . 'Seeing no space in your house, the creature wanders off to Daycare.';
-            $harvestedPet->setInDaycare(true);
+            $harvestedPet->setLocation(PetLocationEnum::DAYCARE);
         }
         else
         {
             $message .= "\n\n" . 'The creature wastes no time in setting up residence in your house.';
-            $harvestedPet->setInDaycare(false);
+            $harvestedPet->setLocation(PetLocationEnum::HOME);
         }
 
         return $message;
@@ -160,7 +161,7 @@ class GreenhouseService
 
     public function getWeedText(User $user)
     {
-        $weeds = $this->userQuestRepository->findOrCreate($user, 'Greenhouse Weeds', (new \DateTimeImmutable())->modify('+8 hours')->format('Y-m-d H:i:s'));
+        $weeds = $this->userQuestRepository->findOrCreate($user, 'Greenhouse Weeds', (new \DateTimeImmutable())->modify('-1 minutes')->format('Y-m-d H:i:s'));
 
         $weedTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $weeds->getValue());
 

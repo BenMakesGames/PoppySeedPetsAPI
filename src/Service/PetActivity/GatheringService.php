@@ -10,6 +10,7 @@ use App\Enum\MeritEnum;
 use App\Enum\MoonPhaseEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
@@ -217,7 +218,7 @@ class GatheringService
             }
             else
             {
-                $newPet->setInDaycare(true);
+                $newPet->setLocation(PetLocationEnum::DAYCARE);
                 $extraMessage .= ', but upon seeing the house was full, wafted off to the Daycare.';
             }
 

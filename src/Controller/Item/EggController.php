@@ -4,6 +4,7 @@ namespace App\Controller\Item;
 use App\Entity\Inventory;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
+use App\Enum\PetLocationEnum;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
@@ -90,7 +91,7 @@ class EggController extends PoppySeedPetsItemController
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
         {
-            $newPet->setInDaycare(true);
+            $newPet->setLocation(PetLocationEnum::DAYCARE);
             $message .= "\n\nBut, you know, your house is full, so into the daycare it goes, I guess!";
         }
 
@@ -173,7 +174,7 @@ class EggController extends PoppySeedPetsItemController
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
         {
-            $newPet->setInDaycare(true);
+            $newPet->setLocation(PetLocationEnum::DAYCARE);
             $message .= "\n\nBut, you know, your house is full, so into the daycare it goes, I guess!";
         }
 

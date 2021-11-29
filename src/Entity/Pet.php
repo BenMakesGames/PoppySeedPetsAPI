@@ -8,6 +8,7 @@ use App\Enum\FlavorEnum;
 use App\Enum\LoveLanguageEnum;
 use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
+use App\Enum\PetLocationEnum;
 use App\Enum\PetPregnancyStyleEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
@@ -27,7 +28,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  * @ORM\Table(indexes={
  *     @ORM\Index(name="park_event_type_idx", columns={"park_event_type"}),
  *     @ORM\Index(name="park_event_order_idx", columns={"park_event_order"}),
- *     @ORM\Index(name="in_daycare_idx", columns={"in_daycare"}),
+ *     @ORM\Index(name="location_idx", columns={"location"}),
  *     @ORM\Index(name="name_idx", columns={"name"}),
  * })
  */
@@ -37,7 +38,7 @@ class Pet
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent", "petFriend", "fireplaceFuel", "petGroupDetails", "spiritCompanionPublicProfile", "guildMember", "petActivityLogAndPublicPet"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent", "petFriend", "fireplaceFuel", "petGroupDetails", "spiritCompanionPublicProfile", "guildMember", "petActivityLogAndPublicPet", "helperPet"})
      */
     private $id;
 
@@ -49,7 +50,7 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "spiritCompanionPublicProfile", "guildMember", "petActivityLogAndPublicPet"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "myInventory", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "spiritCompanionPublicProfile", "guildMember", "petActivityLogAndPublicPet", "helperPet"})
      */
     private $name;
 
@@ -80,11 +81,13 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=6)
+     * uses custom serialization method, defined below
      */
     private $colorA;
 
     /**
      * @ORM\Column(type="string", length=6)
+     * uses custom serialization method, defined below
      */
     private $colorB;
 
@@ -123,14 +126,14 @@ class Pet
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\PetSpecies")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "petActivityLogAndPublicPet"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "petActivityLogAndPublicPet", "helperPet"})
      */
     private $species;
 
     /**
      * @ORM\OneToOne(targetEntity=Inventory::class, inversedBy="holder")
      * @ORM\JoinColumn(onDelete="SET NULL")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
      */
     private $tool;
 
@@ -165,7 +168,7 @@ class Pet
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\SpiritCompanion", inversedBy="pet", cascade={"persist", "remove"})
      * @ORM\JoinColumn(onDelete="CASCADE")
-     * @Groups({"myPet", "parkEvent", "hollowEarth", "petPublicProfile", "petGroupDetails"})
+     * @Groups({"myPet", "parkEvent", "hollowEarth", "petPublicProfile", "petGroupDetails", "helperPet"})
      */
     private $spiritCompanion;
 
@@ -212,12 +215,6 @@ class Pet
     private $statusEffects;
 
     /**
-     * @ORM\Column(type="boolean")
-     * @Groups({"petPublicProfile"})
-     */
-    private $inDaycare = false;
-
-    /**
      * @ORM\Column(type="smallint")
      */
     private $sexDrive;
@@ -225,7 +222,7 @@ class Pet
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\PetBaby", inversedBy="parent", cascade={"persist", "remove"})
      * @ORM\JoinColumn(onDelete="CASCADE")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petFriend", "petGroupDetails"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petFriend", "petGroupDetails", "helperPet"})
      */
     private $pregnancy;
 
@@ -264,7 +261,7 @@ class Pet
     /**
      * @ORM\OneToOne(targetEntity=Inventory::class, inversedBy="wearer")
      * @ORM\JoinColumn(onDelete="SET NULL")
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
      */
     private $hat;
 
@@ -345,6 +342,7 @@ class Pet
 
     /**
      * @ORM\Column(type="smallint")
+     * uses custom serialization method, defined below
      */
     private $scale = 100;
 
@@ -357,6 +355,11 @@ class Pet
      * @ORM\Column(type="integer")
      */
     private $activityPersonality;
+
+    /**
+     * @ORM\Column(type="string", length=20)
+     */
+    private $location = PetLocationEnum::HOME;
 
     public function __construct()
     {
@@ -576,7 +579,7 @@ class Pet
     }
 
     /**
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "petActivityLogAndPublicPet"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "petActivityLogAndPublicPet", "helperPet"})
      * @SerializedName("colorA")
      */
     public function getPerceivedColorA(): string
@@ -594,7 +597,7 @@ class Pet
     }
 
     /**
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "petActivityLogAndPublicPet"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "petActivityLogAndPublicPet", "helperPet"})
      * @SerializedName("colorB")
      */
     public function getPerceivedColorB(): string
@@ -1214,18 +1217,6 @@ class Pet
         return null;
     }
 
-    public function getInDaycare(): ?bool
-    {
-        return $this->inDaycare;
-    }
-
-    public function setInDaycare(bool $inDaycare): self
-    {
-        $this->inDaycare = $inDaycare;
-
-        return $this;
-    }
-
     public function getSexDrive(): int
     {
         return $this->sexDrive;
@@ -1703,7 +1694,7 @@ class Pet
     }
 
     /**
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember"})
+     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "helperPet"})
      * @SerializedName("scale")
      */
     public function getPerceivedScale(): int
@@ -1762,5 +1753,28 @@ class Pet
     public function hasActivityPersonality(int $personality): bool
     {
         return ($this->activityPersonality & $personality) === $personality;
+    }
+
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+
+    public function setLocation(string $location): self
+    {
+        if(!PetLocationEnum::isAValue($location))
+            throw new EnumInvalidValueException(PetLocationEnum::class, $location);
+
+        $this->location = $location;
+
+        if($location !== PetLocationEnum::HOME)
+            $this->setParkEventType(null); // unregister from park events
+
+        return $this;
+    }
+
+    public function isAtHome(): bool
+    {
+        return $this->location === PetLocationEnum::HOME;
     }
 }

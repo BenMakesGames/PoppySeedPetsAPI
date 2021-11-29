@@ -19,31 +19,31 @@ class ItemHat
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
      */
     private $headX = 0;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
      */
     private $headY = 0;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
      */
     private $headAngle = 0;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
      */
     private $headScale = 0;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
      */
     private $headAngleFixed = 0;
 

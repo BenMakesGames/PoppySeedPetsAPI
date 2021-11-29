@@ -9,6 +9,7 @@ use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetLocationEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\UserStatEnum;
 use App\Model\PetShelterPet;
@@ -176,8 +177,8 @@ class PregnancyService
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
         {
-            $baby->setInDaycare(true);
-            $pet->setInDaycare(true);
+            $baby->setLocation(PetLocationEnum::DAYCARE);
+            $pet->setLocation(PetLocationEnum::DAYCARE);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '! (There wasn\'t enough room at Home, so the birth took place at the Pet Shelter.)', '');
         }

@@ -4,6 +4,7 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Entity\Pet;
+use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Repository\PetRepository;
 use App\Service\InventoryService;
@@ -42,7 +43,7 @@ class MoonPearlController extends PoppySeedPetsItemController
         /** @var Pet $helper */
         $helper = $squirrel3->rngNextFromArray($petRepository->findBy([
             'owner' => $user->getId(),
-            'inDaycare' => false
+            'location' => PetLocationEnum::HOME
         ]));
 
         $message = 'You shatter the Moon Pearl, yielding a couple lumps of Moon Dust, and some Silica Grounds.';

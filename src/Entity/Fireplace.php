@@ -79,6 +79,17 @@ class Fireplace
      */
     private $stockingColorB;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Pet::class, cascade={"persist", "remove"})
+     * @Groups({"helperPet"})
+     */
+    private $helper;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $soot = 0;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -111,9 +122,14 @@ class Fireplace
         return $this->heat;
     }
 
-    public function addHeat(int $heat): self
+    public function addFuel(int $fuel): self
     {
-        $this->heat = min($this->heat + $heat, self::MAX_HEAT);
+        $heatToAdd = min($fuel, self::MAX_HEAT - $this->heat);
+
+        $this->heat += $heatToAdd;
+
+        if($this->getHelper())
+            $this->soot += $heatToAdd;
 
         return $this;
     }
@@ -233,6 +249,30 @@ class Fireplace
     public function setStockingColorB(string $stockingColorB): self
     {
         $this->stockingColorB = $stockingColorB;
+
+        return $this;
+    }
+
+    public function getHelper(): ?Pet
+    {
+        return $this->helper;
+    }
+
+    public function setHelper(?Pet $helper): self
+    {
+        $this->helper = $helper;
+
+        return $this;
+    }
+
+    public function getSoot(): ?int
+    {
+        return $this->soot;
+    }
+
+    public function cleanSoot(int $soot): self
+    {
+        $this->soot = max(0, $this->soot - $soot);
 
         return $this;
     }

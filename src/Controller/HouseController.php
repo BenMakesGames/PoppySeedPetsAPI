@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Annotations\DoesNotRequireHouseHours;
 use App\Enum\LocationEnum;
+use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
@@ -65,7 +66,7 @@ class HouseController extends PoppySeedPetsController
 
             $petsAtHome = $petRepository->findBy([
                 'owner' => $user->getId(),
-                'inDaycare' => false,
+                'location' => PetLocationEnum::HOME,
             ]);
 
             $data['pets'] = $normalizer->normalize($petsAtHome, null, [ 'groups' => [ SerializationGroupEnum::MY_PET ] ]);

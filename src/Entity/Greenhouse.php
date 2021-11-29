@@ -82,6 +82,12 @@ class Greenhouse
      */
     private $hasBeeNetting = false;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Pet::class, cascade={"persist", "remove"})
+     * @Groups({"helperPet"})
+     */
+    private $helper;
+
     public function __construct()
     {
         $this->setComposterBonusCountdown();
@@ -230,6 +236,18 @@ class Greenhouse
     public function setHasBeeNetting(bool $hasBeeNetting): self
     {
         $this->hasBeeNetting = $hasBeeNetting;
+
+        return $this;
+    }
+
+    public function getHelper(): ?Pet
+    {
+        return $this->helper;
+    }
+
+    public function setHelper(?Pet $helper): self
+    {
+        $this->helper = $helper;
 
         return $this;
     }

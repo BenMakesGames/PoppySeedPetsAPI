@@ -55,7 +55,7 @@ class SpiritCompanion
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet", "parkEvent", "hollowEarth", "petPublicProfile", "petGroupDetails", "spiritCompanionPublicProfile"})
+     * @Groups({"myPet", "parkEvent", "hollowEarth", "petPublicProfile", "petGroupDetails", "spiritCompanionPublicProfile", "helperPet"})
      */
     private $image;
 

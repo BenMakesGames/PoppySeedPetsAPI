@@ -65,4 +65,5 @@ final class SerializationGroupEnum
     public const MY_HOLLOW_EARTH_TILES = 'myHollowEarthTiles';
     public const MY_AURAS = 'myAura';
     public const MY_FIELD_GUIDE = 'myFieldGuide';
+    public const HELPER_PET = 'helperPet';
 }

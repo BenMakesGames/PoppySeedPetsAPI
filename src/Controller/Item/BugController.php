@@ -3,6 +3,7 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Enum\FlavorEnum;
+use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\StoryEnum;
 use App\Enum\UserStatEnum;
@@ -249,7 +250,7 @@ class BugController extends PoppySeedPetsItemController
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
         {
-            $newPet->setInDaycare(true);
+            $newPet->setLocation(PetLocationEnum::DAYCARE);
             $message = 'The beetle trundles happily into the daycare...';
             $reloadPets = false;
         }

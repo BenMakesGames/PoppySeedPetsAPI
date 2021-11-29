@@ -74,18 +74,18 @@ class Beehive
     private $requestedItem;
 
     /**
-     * @ORM\Column(type="string", length=20, nullable=true)
-     * @Groups({"myBeehive"})
-     */
-    private $specialization;
-
-    /**
      * @ORM\ManyToOne(targetEntity=Item::class)
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"myBeehive"})
      * @var Item
      */
     private $alternateRequestedItem;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Pet::class, cascade={"persist", "remove"})
+     * @Groups({"helperPet"})
+     */
+    private $helper;
 
     public function getId(): ?int
     {
@@ -224,18 +224,6 @@ class Beehive
         return min(1, round($this->miscProgress / 2000, 2));
     }
 
-    public function getSpecialization(): ?string
-    {
-        return $this->specialization;
-    }
-
-    public function setSpecialization(?string $specialization): self
-    {
-        $this->specialization = $specialization;
-
-        return $this;
-    }
-
     public function getAlternateRequestedItem(): Item
     {
         return $this->alternateRequestedItem;
@@ -244,6 +232,18 @@ class Beehive
     public function setAlternateRequestedItem(Item $alternateRequestedItem): self
     {
         $this->alternateRequestedItem = $alternateRequestedItem;
+
+        return $this;
+    }
+
+    public function getHelper(): ?Pet
+    {
+        return $this->helper;
+    }
+
+    public function setHelper(?Pet $helper): self
+    {
+        $this->helper = $helper;
 
         return $this;
     }

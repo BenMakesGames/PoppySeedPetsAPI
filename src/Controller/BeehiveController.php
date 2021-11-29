@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 
-use App\Enum\BeehiveSpecializationEnum;
+use App\Entity\Pet;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
@@ -10,6 +10,7 @@ use App\Repository\SpiceRepository;
 use App\Service\BeehiveService;
 use App\Service\HollowEarthService;
 use App\Service\InventoryService;
+use App\Service\PetAssistantService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,37 +41,27 @@ class BeehiveController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($user->getBeehive(), [ SerializationGroupEnum::MY_BEEHIVE ]);
+        return $responseService->success($user->getBeehive(), [ SerializationGroupEnum::MY_BEEHIVE, SerializationGroupEnum::HELPER_PET ]);
     }
 
     /**
-     * @Route("/chooseSpecialization", methods={"PATCH"})
+     * @Route("/assignHelper/{pet}", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function chooseSpecialization(
-        Request $request, ResponseService $responseService, EntityManagerInterface $em
+    public function assignHelper(
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em,
+        PetAssistantService $petAssistantService
     )
     {
         $user = $this->getUser();
 
-        if(!$user->getUnlockedBeehive() || !$user->getBeehive())
-            throw new AccessDeniedHttpException('You haven\'t got a Beehive, yet!');
-
-        $beehive = $user->getBeehive();
-
-        if($beehive->getWorkers() < 2000)
-            throw new AccessDeniedHttpException('Your colony is not large enough to choose a specialization.');
-
-        $specialization = $request->request->getAlpha('specialization');
-
-        if(!BeehiveSpecializationEnum::isAValue($specialization))
-            throw new UnprocessableEntityHttpException('Please select a specialization.');
-
-        $beehive->setSpecialization($specialization);
+        $petAssistantService->helpBeehive($user, $pet);
 
         $em->flush();
 
-        return $responseService->success($beehive, [ SerializationGroupEnum::MY_BEEHIVE ]);
+        $beehive = $user->getBeehive();
+
+        return $responseService->success($beehive, [ SerializationGroupEnum::MY_BEEHIVE, SerializationGroupEnum::HELPER_PET ]);
     }
 
     /**
@@ -107,7 +98,7 @@ class BeehiveController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($beehive, [ SerializationGroupEnum::MY_BEEHIVE ]);
+        return $responseService->success($beehive, [ SerializationGroupEnum::MY_BEEHIVE, SerializationGroupEnum::HELPER_PET ]);
     }
 
     /**
@@ -145,7 +136,7 @@ class BeehiveController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($user->getBeehive(), [ SerializationGroupEnum::MY_BEEHIVE ]);
+        return $responseService->success($user->getBeehive(), [ SerializationGroupEnum::MY_BEEHIVE, SerializationGroupEnum::HELPER_PET ]);
     }
 
     /**
@@ -182,7 +173,7 @@ class BeehiveController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function harvest(
-        ResponseService $responseService, EntityManagerInterface $em,
+        ResponseService $responseService, EntityManagerInterface $em, PetAssistantService $petAssistantService,
         InventoryService $inventoryService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3
     )
     {
@@ -217,54 +208,71 @@ class BeehiveController extends PoppySeedPetsController
             $beehive->setMiscProgress(0);
 
             $possibleItems = [
-                'Fluff', 'Talon', 'Yellow Dye', 'Crooked Stick', 'Glue', 'Sugar', 'Antenna',
-                $squirrel3->rngNextFromArray([
-                    'Jar of Fireflies', 'Sugar', 'Crooked Stick'
-                ])
+                'Crooked Stick', 'Fluff', 'Yellow Dye', 'Glue', 'Sugar', 'Sugar', 'Sugar', 'Antenna',
             ];
-
-            switch($beehive->getSpecialization())
-            {
-                case BeehiveSpecializationEnum::FARMING:
-                    $possibleItems = array_merge($possibleItems, [
-                        'Wheat', 'Blueberries', 'Blackberries', 'Mixed Nuts',
-                    ]);
-                    break;
-
-                case BeehiveSpecializationEnum::FISHING:
-                    $possibleItems = array_merge($possibleItems, [
-                        'Fish', 'Fish', 'Fish', 'Fish', 'Scales', 'Jar of Fireflies'
-                    ]);
-                    break;
-
-                case BeehiveSpecializationEnum::MINING:
-                    $possibleItems = array_merge($possibleItems, [
-                        'Iron Ore', 'Silver Ore', $squirrel3->rngNextFromArray([ 'Gold Ore', 'Iron Ore' ])
-                    ]);
-                    break;
-            }
 
             $item = $squirrel3->rngNextFromArray($possibleItems);
 
-            $newItem = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' took this from their Beehive.', LocationEnum::HOME);
+            $newItems = [
+                $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' took this from their Beehive.', LocationEnum::HOME)
+            ];
 
-            if($newItem->getItem()->getName() === 'Crooked Stick' || $newItem->getItem()->getFood())
+            $extraItem = null;
+
+            if($beehive->getHelper())
             {
-                if($squirrel3->rngNextInt(1, 20) === 1)
-                    $newItem->setSpice($spiceRepository->findOneByName('of Queens'));
+                $petWithSkills = $beehive->getHelper()->getComputedSkills();
+
+                $gathering = $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal();
+                $hunting = $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal();
+
+                $total = $gathering + $hunting;
+
+                if($squirrel3->rngNextInt(1, $total) <= $gathering)
+                {
+                    $extraItem = $petAssistantService->getExtraItem($gathering,
+                        [ 'Tea Leaves', 'Blueberries', 'Blackberries', 'Grandparoot', 'Orange', 'Red' ],
+                        [ 'Onion', 'Paper', 'Naner', 'Iron Ore' ],
+                        [ 'Gypsum', 'Mixed Nuts', 'Apricot', 'Silver Ore', ],
+                        [ 'Gold Ore', 'Liquid-hot Magma' ],
+                    );
+                }
                 else
-                    $newItem->setSpice($spiceRepository->findOneByName('Anthophilan'));
+                {
+                    $extraItem = $petAssistantService->getExtraItem($hunting,
+                        [ 'Scales', 'Feathers', 'Egg' ],
+                        [ 'Toadstool', 'Talon', 'Onion' ],
+                        [ 'Toad Legs', 'Jar of Fireflies' ],
+                        [ 'Silver Bar', 'Gold Bar', 'Quintessence' ],
+                    );
+                }
+
+                $newItems[] = $inventoryService->receiveItem($extraItem, $user, $user, $beehive->getHelper()->getName() . ' helped ' . $user->getName() . '\'s bees collect this.', LocationEnum::HOME);
             }
 
-            $itemNames[] = $item;
+            foreach($newItems as $newItem)
+            {
+                if($newItem->getItem()->getName() === 'Crooked Stick' || $newItem->getItem()->getFood())
+                {
+                    if($squirrel3->rngNextInt(1, 20) === 1)
+                        $newItem->setSpice($spiceRepository->findOneByName('of Queens'));
+                    else
+                        $newItem->setSpice($spiceRepository->findOneByName('Anthophilan'));
+                }
+
+                $itemNames[] = $newItem->getFullItemName();
+            }
         }
 
         $user->getBeehive()->setInteractionPower();
 
         $em->flush();
 
-        $responseService->addFlashMessage('You received ' . ArrayFunctions::list_nice($itemNames) . '.');
+        if($extraItem)
+            $responseService->addFlashMessage('You received ' . ArrayFunctions::list_nice($itemNames) . '. (The ' . $extraItem . ' was thanks to ' . $beehive->getHelper()->getName() . '\'s help!)');
+        else
+            $responseService->addFlashMessage('You received ' . ArrayFunctions::list_nice($itemNames) . '.');
 
-        return $responseService->success($user->getBeehive(), [ SerializationGroupEnum::MY_BEEHIVE ]);
+        return $responseService->success($user->getBeehive(), [ SerializationGroupEnum::MY_BEEHIVE, SerializationGroupEnum::HELPER_PET ]);
     }
 }

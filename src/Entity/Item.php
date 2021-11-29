@@ -37,7 +37,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "myBeehive", "petGroupDetails", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids", "myHollowEarthTiles"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "myBeehive", "petGroupDetails", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids", "myHollowEarthTiles", "helperPet"})
      */
     private $image;
 
@@ -49,7 +49,7 @@ class Item
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\ItemTool")
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails", "helperPet"})
      */
     private $tool;
 
@@ -81,7 +81,7 @@ class Item
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\ItemHat", inversedBy="item", cascade={"persist", "remove"})
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails"})
+     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails", "helperPet"})
      */
     private $hat;
 

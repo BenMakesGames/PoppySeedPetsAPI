@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
@@ -138,7 +139,7 @@ class BoxController extends PoppySeedPetsItemController
         if($containsLobster)
         {
             /** @var Pet $pet */
-            $pet = $squirrel3->rngNextFromArray($petRepository->findBy([ 'owner' => $user, 'inDaycare' => false ]));
+            $pet = $squirrel3->rngNextFromArray($petRepository->findBy([ 'owner' => $user, 'location' => PetLocationEnum::HOME ]));
 
             $message .= "\n\nWait, what!? One of the rocks moved!";
 
@@ -555,7 +556,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $pets = $petRepository->findBy([
             'owner' => $user->getId(),
-            'inDaycare' => 0
+            'location' => PetLocationEnum::HOME
         ]);
 
         $petNames = [];
@@ -1327,7 +1328,7 @@ class BoxController extends PoppySeedPetsItemController
         $lockedToOwner = $box->getLockedToOwner();
 
         /** @var Pet $pet */
-        $pet = $squirrel3->rngNextFromArray($petRepository->findBy([ 'owner' => $user, 'inDaycare' => false ]));
+        $pet = $squirrel3->rngNextFromArray($petRepository->findBy([ 'owner' => $user, 'location' => PetLocationEnum::HOME ]));
 
         if($pet)
         {

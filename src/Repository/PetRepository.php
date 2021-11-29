@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Entity\PetRelationship;
 use App\Entity\PetSpecies;
 use App\Entity\User;
+use App\Enum\PetLocationEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
 use App\Service\Squirrel3;
@@ -87,11 +88,12 @@ class PetRepository extends ServiceEntityRepository
             ->leftJoin('p.statusEffects', 'statusEffects')
             ->andWhere('p.parkEventType=:eventType')
             ->andWhere('(p.lastParkEvent<:today OR p.lastParkEvent IS NULL)')
-            ->andWhere('p.inDaycare=0')
+            ->andWhere('p.location=:home')
             ->andWhere('p.lastInteracted>=:twoDaysAgo')
             ->orderBy('p.parkEventOrder', 'ASC')
             ->setMaxResults($number)
             ->setParameter('eventType', $eventType)
+            ->setParameter('home', PetLocationEnum::HOME)
             ->setParameter('today', $today->format('Y-m-d'))
             ->setParameter('twoDaysAgo', $today->modify('-48 hours')->format('Y-m-d H:i:s'))
             ->getQuery()
@@ -108,8 +110,9 @@ class PetRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->select('COUNT(p.id)')
             ->andWhere('p.owner=:owner')
-            ->andWhere('p.inDaycare=0')
+            ->andWhere('p.location=:home')
             ->setParameter('owner', $user->getId())
+            ->setParameter('home', PetLocationEnum::HOME)
             ->getQuery()
             ->getSingleScalarResult()
         ;
@@ -130,10 +133,11 @@ class PetRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.owner = :owner')
-            ->andWhere('p.inDaycare = 0')
+            ->andWhere('p.location = :home')
             ->andWhere('p.id != :thisPet')
             ->setParameter('owner', $pet->getOwner())
             ->setParameter('thisPet', $pet->getId())
+            ->setParameter('home', PetLocationEnum::HOME)
             ->getQuery()
             ->getResult()
         ;

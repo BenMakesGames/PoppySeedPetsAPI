@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\Dragon;
 use App\Entity\Fireplace;
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
@@ -14,6 +15,7 @@ use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
+use App\Service\PetAssistantService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
@@ -57,6 +59,7 @@ class FireplaceController extends PoppySeedPetsController
             [
                 SerializationGroupEnum::MY_INVENTORY,
                 SerializationGroupEnum::MY_FIREPLACE,
+                SerializationGroupEnum::HELPER_PET,
             ]
         );
     }
@@ -430,7 +433,10 @@ class FireplaceController extends PoppySeedPetsController
         else
             $responseService->addFlashMessage('You reach inside, and pull out ' . ArrayFunctions::list_nice($itemsReceived) . '!');
 
-        return $responseService->success($fireplace, [ SerializationGroupEnum::MY_FIREPLACE ]);
+        return $responseService->success($fireplace, [
+            SerializationGroupEnum::MY_FIREPLACE,
+            SerializationGroupEnum::HELPER_PET,
+        ]);
     }
 
     /**
@@ -439,7 +445,8 @@ class FireplaceController extends PoppySeedPetsController
      */
     public function feedFireplace(
         Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, InventoryService $inventoryService, PetAssistantService $petAssistantService,
+        Squirrel3 $rng
     )
     {
         $user = $this->getUser();
@@ -468,13 +475,41 @@ class FireplaceController extends PoppySeedPetsController
             // don't feed an item if doing so would waste more than half the item's fuel
             if($fireplace->getHeat() + $item->getItem()->getFuel() / 2 <= Fireplace::MAX_HEAT)
             {
-                $fireplace->addHeat($item->getItem()->getFuel());
+                $fireplace->addFuel($item->getItem()->getFuel());
                 $em->remove($item);
             }
             else
             {
                 $fuelNotUsed[] = $item->getItem()->getName();
             }
+        }
+
+        if($fireplace->getHelper() && $fireplace->getSoot() >= 18 * 60)
+        {
+            $helper = $fireplace->getHelper();
+            $petWithSkills = $helper->getComputedSkills();
+            $fireplace->cleanSoot(18 * 60);
+
+            $skill = ($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal()) * 2 + $petWithSkills->getClimbingBonus()->getTotal();
+
+            $foodItems = [ 'Fried Egg', 'Fried Tomato', 'Pan-fried Tofu', 'Mighty Fried Bananas' ];
+
+            $extraItem = $petAssistantService->getExtraItem(
+                $skill,
+                [ 'Feathers', 'Fluff', 'Spider', 'Cobweb' ],
+                [ 'Silica Grounds', 'Aging Powder', $rng->rngNextFromArray($foodItems) ],
+                [ 'Charcoal', 'Glass', 'Spider Roe' ],
+                [ 'Coke', 'Magic Smoke' ]
+            );
+
+            $loot = $inventoryService->receiveItem($extraItem, $user, $user, $helper->getName() . ' found this in ' . $user->getName() . '\'s Fireplace chimney.', LocationEnum::HOME);
+
+            $message = $helper->getName() . ' found ' . $loot->getItem()->getNameWithArticle() . ' in the chimney!';
+
+            if(in_array($loot->getItem()->getName(), $foodItems))
+                $message .= ' (Who\'s frying stuff in here?!)';
+
+            $responseService->addFlashMessage($message);
         }
 
         $em->flush();
@@ -487,7 +522,10 @@ class FireplaceController extends PoppySeedPetsController
             );
         }
 
-        return $responseService->success($user->getFireplace(), [ SerializationGroupEnum::MY_FIREPLACE ]);
+        return $responseService->success($user->getFireplace(), [
+            SerializationGroupEnum::MY_FIREPLACE,
+            SerializationGroupEnum::HELPER_PET
+        ]);
     }
 
     /**
@@ -501,5 +539,26 @@ class FireplaceController extends PoppySeedPetsController
         ]);
 
         return $responseService->success($inventory, [ SerializationGroupEnum::FIREPLACE_MANTLE ]);
+    }
+
+    /**
+     * @Route("/assignHelper/{pet}", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function assignHelper(
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em,
+        PetAssistantService $petAssistantService, InventoryRepository $inventoryRepository
+    )
+    {
+        $user = $this->getUser();
+
+        $petAssistantService->helpFireplace($user, $pet);
+
+        $em->flush();
+
+        return $responseService->success($user->getFireplace(), [
+            SerializationGroupEnum::MY_FIREPLACE,
+            SerializationGroupEnum::HELPER_PET
+        ]);
     }
 }
