@@ -227,7 +227,7 @@ class PetController extends PoppySeedPetsController
         if($petsAtHome >= $user->getMaxPets())
             throw new UnprocessableEntityHttpException('Your house has too many pets as-is.');
 
-        $pet->setLocation(LocationEnum::HOME);
+        $pet->setLocation(PetLocationEnum::HOME);
 
         $em->flush();
 
