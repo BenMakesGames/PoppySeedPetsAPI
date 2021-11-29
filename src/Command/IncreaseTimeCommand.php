@@ -35,7 +35,7 @@ class IncreaseTimeCommand extends Command
         // pet logic...
         $this->em->getConnection()->executeQuery('
             START TRANSACTION;
-            UPDATE pet_house_time LEFT JOIN pet ON pet_id=pet.id SET `activity_time` = `activity_time` + 1 WHERE in_daycare = 0 AND `activity_time` < 2880;
+            UPDATE pet_house_time LEFT JOIN pet ON pet_id=pet.id SET `activity_time` = `activity_time` + 1 WHERE location = \'home\' AND `activity_time` < 2880;
             UPDATE pet_house_time SET `social_energy` = `social_energy` + 1 WHERE `social_energy` < 2880;
             COMMIT;
         ');
