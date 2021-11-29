@@ -358,6 +358,7 @@ class Pet
 
     /**
      * @ORM\Column(type="string", length=20)
+     * @Groups({"myPetLocation"})
      */
     private $location = PetLocationEnum::HOME;
 

@@ -1376,7 +1376,7 @@ class PetController extends PoppySeedPetsController
         {
             $suggestions = $petTypeaheadService->search('name', $request->query->get('search', ''));
 
-            return $responseService->success($suggestions, [ SerializationGroupEnum::MY_PET ]);
+            return $responseService->success($suggestions, [ SerializationGroupEnum::MY_PET, SerializationGroupEnum::MY_PET_LOCATION ]);
         }
         catch(\InvalidArgumentException $e)
         {
