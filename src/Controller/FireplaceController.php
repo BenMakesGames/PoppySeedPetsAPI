@@ -24,6 +24,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @Route("/fireplace")
@@ -35,7 +36,8 @@ class FireplaceController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getFireplace(
-        InventoryRepository $inventoryRepository, ResponseService $responseService, DragonRepository $dragonRepository
+        InventoryRepository $inventoryRepository, ResponseService $responseService, DragonRepository $dragonRepository,
+        NormalizerInterface $normalizer
     )
     {
         $user = $this->getUser();
@@ -52,14 +54,9 @@ class FireplaceController extends PoppySeedPetsController
 
         return $responseService->success(
             [
-                'mantle' => $mantle,
-                'fireplace' => $user->getFireplace(),
-                'whelp' => $dragon
-            ],
-            [
-                SerializationGroupEnum::MY_INVENTORY,
-                SerializationGroupEnum::MY_FIREPLACE,
-                SerializationGroupEnum::HELPER_PET,
+                'mantle' => $normalizer->normalize($mantle, null, [ 'groups' => [ SerializationGroupEnum::MY_INVENTORY ] ]),
+                'fireplace' => $normalizer->normalize($user->getFireplace(), null, [ 'groups' => [ SerializationGroupEnum::MY_FIREPLACE, SerializationGroupEnum::HELPER_PET ] ]),
+                'whelp' => $normalizer->normalize($dragon, null, [ 'groups' => [ SerializationGroupEnum::MY_FIREPLACE ] ]),
             ]
         );
     }
