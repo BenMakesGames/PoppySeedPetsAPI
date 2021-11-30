@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\HollowEarthTile;
+use App\Enum\HollowEarthMoveDirectionEnum;
+use App\Service\Squirrel3;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,32 +21,33 @@ class HollowEarthTileRepository extends ServiceEntityRepository
         parent::__construct($registry, HollowEarthTile::class);
     }
 
-    // /**
-    //  * @return HollowEarthTile[] Returns an array of HollowEarthTile objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findAllInBounds()
     {
-        return $this->createQueryBuilder('h')
-            ->andWhere('h.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('h.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.moveDirection != :zero')
+            ->setParameter('zero', HollowEarthMoveDirectionEnum::ZERO)
             ->getQuery()
-            ->getResult()
+            ->execute()
         ;
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?HollowEarthTile
+    public function findRandom(): HollowEarthTile
     {
-        return $this->createQueryBuilder('h')
-            ->andWhere('h.exampleField = :val')
-            ->setParameter('val', $value)
+        $squirrel3 = new Squirrel3();
+
+        $numberOfTiles = (int)$this->createQueryBuilder('t')
+            ->select('COUNT(t.id)')
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getSingleScalarResult()
+        ;
+
+        $offset = $squirrel3->rngNextInt(0, $numberOfTiles - 1);
+
+        return $this->createQueryBuilder('p')
+            ->setFirstResult($offset)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleResult()
         ;
     }
-    */
 }

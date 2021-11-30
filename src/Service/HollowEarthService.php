@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class HollowEarthService
 {
-    private $hollowEarthTileRepository;
+    private HollowEarthTileRepository $hollowEarthTileRepository;
     private $em;
     private $inventoryService;
     private $petExperienceService;
@@ -93,7 +93,7 @@ class HollowEarthService
 
     public function getMap(User $player): array
     {
-        $map = $this->hollowEarthTileRepository->findAll();
+        $map = $this->hollowEarthTileRepository->findAllInBounds();
         $playerTiles = $this->hollowEarthPlayerTileRepository->findBy([ 'player' => $player ]);
         $playerTilesByTile = [];
 
@@ -167,7 +167,10 @@ class HollowEarthService
      */
     public function moveTo(HollowEarthPlayer $player, int $id): void
     {
-        $tile = $this->hollowEarthTileRepository->find($id);
+        if($id == -1)
+            $tile = $this->hollowEarthTileRepository->findRandom();
+        else
+            $tile = $this->hollowEarthTileRepository->find($id);
 
         if(!$tile)
             throw new \InvalidArgumentException('No tile found for id #' . $id);
@@ -227,13 +230,14 @@ class HollowEarthService
             case HollowEarthMoveDirectionEnum::EAST: $x++; break;
             case HollowEarthMoveDirectionEnum::SOUTH: $y++; break;
             case HollowEarthMoveDirectionEnum::WEST: $x--; break;
+            case HollowEarthMoveDirectionEnum::ZERO: break;
             default: throw new \InvalidArgumentException('Player has an unknown currentDirection: "' . $player->getCurrentDirection() . '"');
         }
 
         return $this->hollowEarthTileRepository->findOneBy([
             'x' => $x,
             'y' => $y,
-        ]);
+        ]) ?? $this->hollowEarthTileRepository->find(53);
     }
 
     /**

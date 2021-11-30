@@ -9,4 +9,5 @@ final class HollowEarthMoveDirectionEnum
     public const EAST = 'E';
     public const SOUTH = 'S';
     public const WEST = 'W';
+    public const ZERO = 'Z';
 }
