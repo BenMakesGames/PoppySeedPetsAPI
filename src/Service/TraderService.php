@@ -495,6 +495,25 @@ class TraderService
 
         $offers = $this->getDayOfWeekTrades($user, $quantities, $dayOfWeek);
 
+        if($this->calendarService->isStockingStuffingSeason())
+        {
+            $offers[] = TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Talon'), 2) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Antlers'), 1) ],
+                'These were cut from Antlerfish earlier this year. Catch and release, of course. The antlers grow back every year, mating season is already over, and the antlers actually make the fish easier targets for predators, so the system really works out for everyone! Well, except for Antlerfish predators, I suppose. They kinda\' lose out.',
+                $user,
+                $quantities
+            );
+
+            $offers[] = TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createRecyclingPoints(20) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Tawny Ears'), 1) ],
+                'I _guess_ these could be reindeer ears? That\'s my best guess, anyway. Oh: made of plastic and fluff, of course! They\'re not _real_ ears! That would be brutal.',
+                $user,
+                $quantities
+            );
+        }
+
         if($this->calendarService->isEaster())
         {
             $offers[] = TraderOffer::createTradeOffer(
