@@ -544,7 +544,7 @@ class FireplaceController extends PoppySeedPetsController
      */
     public function assignHelper(
         Pet $pet, ResponseService $responseService, EntityManagerInterface $em,
-        PetAssistantService $petAssistantService, InventoryRepository $inventoryRepository
+        PetAssistantService $petAssistantService
     )
     {
         $user = $this->getUser();
