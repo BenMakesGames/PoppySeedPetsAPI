@@ -8,6 +8,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Repository\DragonRepository;
 use App\Service\InventoryService;
+use App\Service\PetAssistantService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
@@ -66,7 +67,8 @@ The Library of Fire is always open. We look forward to seeing you!');
      */
     public function meltSeal(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, DragonRepository $dragonRepository, Squirrel3 $squirrel3
+        EntityManagerInterface $em, DragonRepository $dragonRepository, Squirrel3 $squirrel3,
+        PetAssistantService $petAssistantService
     )
     {
         $this->validateInventory($inventory, 'letterFromTheLibraryOfFire/#/meltSeal');
@@ -105,7 +107,15 @@ The Library of Fire is always open. We look forward to seeing you!');
 
             $em->persist($dragon);
 
-            $message = 'A small dragon appears on the hearth of your fireplace! (Also, the letter dissolves into Paper and Quintessence, but, like, whoa, who even cares about that? Small dragon! SMALL DRAGON!)';
+            if($fireplace->getHelper())
+            {
+                $helper = $fireplace->getHelper();
+                $petAssistantService->stopAssisting($user, $helper);
+
+                $message = 'A small dragon appears on the hearth of your fireplace! ' . $helper->getName() . ', feeling a little crowded, leaves... Oh, yeah: and the letter? It dissolves into Paper and Quintessence! (I totes understand if you need a minute to unpack everything that just transpired... it was a bit!)';
+            }
+            else
+                $message = 'A small dragon appears on the hearth of your fireplace! (Also, the letter dissolves into Paper and Quintessence, but, like, whoa, who even cares about that? Small dragon! SMALL DRAGON!)';
         }
         else
             $message = 'The letter dissolves into Paper and Quintessence. Handy.';

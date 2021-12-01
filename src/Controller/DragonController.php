@@ -2,7 +2,9 @@
 namespace App\Controller;
 
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
@@ -13,7 +15,10 @@ use App\Repository\SpiceRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\CalendarService;
 use App\Service\InventoryService;
+use App\Service\PetActivity\TreasureMapService;
+use App\Service\PetAssistantService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -83,7 +88,10 @@ class DragonController extends PoppySeedPetsController
         if(!$dragon)
             throw new NotFoundHttpException('You don\'t have an adult dragon!');
 
-        return $responseService->success($dragon, [ SerializationGroupEnum::MY_DRAGON ]);
+        return $responseService->success($dragon, [
+            SerializationGroupEnum::MY_DRAGON,
+            SerializationGroupEnum::HELPER_PET,
+        ]);
     }
 
     /**
@@ -114,7 +122,8 @@ class DragonController extends PoppySeedPetsController
         ResponseService $responseService, DragonRepository $dragonRepository, InventoryRepository $inventoryRepository,
         Request $request, EntityManagerInterface $em, InventoryService $inventoryService,
         EnchantmentRepository $enchantmentRepository, SpiceRepository $spiceRepository,
-        UserStatsRepository $userStatsRepository, CalendarService  $calendarService
+        UserStatsRepository $userStatsRepository, CalendarService $calendarService, Squirrel3 $rng,
+        TreasureMapService $treasureMapService
     )
     {
         $user = $this->getUser();
@@ -199,13 +208,119 @@ class DragonController extends PoppySeedPetsController
             if(array_key_exists('spice', $goody)) $newItem->setSpice($spiceRepository->findOneByName($goody['spice']));
         }
 
+        $totalMoneys = 0;
+        $extraItem = null;
+
+        if($dragon->getHelper())
+        {
+            $helper = $dragon->getHelper();
+            $helperSkills = $helper->getComputedSkills();
+
+            $businessSkill = $helperSkills->getIntelligence()->getTotal() +
+                ($helper->hasMerit(MeritEnum::EIDETIC_MEMORY) ? 3 : 0) +
+                ($helper->hasMerit(MeritEnum::GREGARIOUS) ? 1 : 0) +
+                ($helper->hasMerit(MeritEnum::LUCKY) ? 1 : 0)
+            ;
+
+            $moneysMultiplier = $gems * 0.5 + $gold * 0.35 + $silver * 0.25;
+            $workMultiplier = $gems * 3 + $gold * 2 + $silver;
+
+            $dragon
+                ->addEarnings($businessSkill * $moneysMultiplier)
+                ->addByproductProgress(($businessSkill + 4) * $workMultiplier)
+            ;
+
+            if($dragon->getEarnings() > 0)
+            {
+                $totalMoneys = (int)$dragon->getEarnings();
+                $dragon->addEarnings(-$totalMoneys);
+
+                $user->increaseMoneys($totalMoneys);
+            }
+
+            if($dragon->getByproductProgress() >= 100)
+            {
+                $dragon->addByproductProgress(-100);
+
+                $possibleItems = $treasureMapService->getFluffmongerFlavorFoods($helper->getFavoriteFlavor());
+
+                if($helperSkills->getNature()->getTotal() >= 5)
+                    $possibleItems[] = 'Large Bag of Fertilizer';
+
+                if($helperSkills->getScience()->getTotal() >= 5)
+                    $possibleItems[] = 'Space Junk';
+
+                if($helperSkills->getUmbra()->getTotal() >= 5 || $helper->hasMerit(MeritEnum::NATURAL_CHANNEL))
+                    $possibleItems[] = 'Quintessence';
+
+                if($helper->hasMerit(MeritEnum::LOLLIGOVORE))
+                    $possibleItems[] = 'Tentacle Fried Rice';
+
+                if($helperSkills->getSexDrive()->getTotal() >= 1)
+                    $possibleItems[] = 'Goodberries';
+
+                if($helperSkills->getMusic() >= 5)
+                    $possibleItems[] = 'Musical Scales';
+
+                if($helperSkills->getCrafts()->getTotal() >= 5)
+                    $possibleItems[] = 'Handicrafts Supply Box';
+
+                $extraItemName = $rng->rngNextFromArray($possibleItems);
+
+                $extraItem = $inventoryService->receiveItem($extraItemName, $user, $user, $user->getName() . ' received this from their dragon, ' . $dragon->getName() . ', and pet, ' . $dragon->getHelper()->getName() . '.', LocationEnum::HOME);
+            }
+        }
+
         $em->flush();
 
         $itemNames = array_map(function($goodie) { return $goodie['item']; }, $goodies);
         sort($itemNames);
 
-        $responseService->addFlashMessage($dragon->getName() . ' thanks you for your gift, and gives you ' . ArrayFunctions::list_nice($itemNames) . ' in exchange.');
+        $message = $dragon->getName() . ' thanks you for your gift, and gives you ' . ArrayFunctions::list_nice($itemNames) . ' in exchange';
 
-        return $responseService->success($dragon, [ SerializationGroupEnum::MY_DRAGON ]);
+        if($totalMoneys > 0)
+        {
+            if($extraItem)
+                $message .= ', plus ' . $totalMoneys . '~~m~~ and ' . $extraItem->getItem()->getNameWithArticle() . ' earned in investments (thanks to ' . $dragon->getHelper()->getName() . '\'s help!)';
+            else
+                $message .= ', plus ' . $totalMoneys . '~~m~~ earned in investments (thanks to ' . $dragon->getHelper()->getName() . '\'s help!)';
+        }
+        else if($extraItem)
+        {
+            $message = ', plus ' . $extraItem->getItem()->getNameWithArticle() . ', which they earned from a particularly-lucrative deal (made in no small part due to ' . $dragon->getHelper()->getName() . '\'s help!)';
+        }
+        else
+            $message .= '.';
+
+        $responseService->addFlashMessage($message);
+
+        return $responseService->success($dragon, [
+            SerializationGroupEnum::MY_DRAGON,
+            SerializationGroupEnum::HELPER_PET,
+        ]);
     }
+
+    /**
+     * @Route("/assignHelper/{pet}", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function assignHelper(
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em,
+        PetAssistantService $petAssistantService, DragonRepository $dragonRepository
+    )
+    {
+        $user = $this->getUser();
+
+        $petAssistantService->helpDragon($user, $pet);
+
+        $em->flush();
+
+        $dragon = $dragonRepository->findAdult($user);
+
+        return $responseService->success($dragon, [
+            SerializationGroupEnum::MY_DRAGON,
+            SerializationGroupEnum::HELPER_PET
+        ]);
+    }
+
 }

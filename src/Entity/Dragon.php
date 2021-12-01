@@ -130,6 +130,16 @@ class Dragon
      */
     private $helper;
 
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $earnings = 0;
+
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $byproductProgress = 0;
+
     public function __construct()
     {
         $squirrel3 = new Squirrel3();
@@ -315,6 +325,30 @@ class Dragon
     public function setHelper(?Pet $helper): self
     {
         $this->helper = $helper;
+
+        return $this;
+    }
+
+    public function getEarnings(): ?float
+    {
+        return $this->earnings;
+    }
+
+    public function addEarnings(float $earnings): self
+    {
+        $this->earnings += $earnings;
+
+        return $this;
+    }
+
+    public function getByproductProgress(): ?float
+    {
+        return $this->byproductProgress;
+    }
+
+    public function addByproductProgress(float $byproductProgress): self
+    {
+        $this->byproductProgress += $byproductProgress;
 
         return $this;
     }
