@@ -259,7 +259,7 @@ class DragonController extends PoppySeedPetsController
                 if($helperSkills->getSexDrive()->getTotal() >= 1)
                     $possibleItems[] = 'Goodberries';
 
-                if($helperSkills->getMusic() >= 5)
+                if($helperSkills->getMusic()->getTotal() >= 5)
                     $possibleItems[] = 'Musical Scales';
 
                 if($helperSkills->getCrafts()->getTotal() >= 5)
