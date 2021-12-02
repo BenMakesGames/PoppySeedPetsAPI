@@ -255,6 +255,7 @@ class ComputedPetSkills
     {
         $skill = new TotalPetSkill();
         $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->smithingBonus() : 0;
+        $skill->statusEffects = $this->pet->hasStatusEffect(StatusEffectEnum::HOT_TO_THE_TOUCH) ? 1 : 0;
 
         return $skill;
     }

@@ -245,6 +245,9 @@ class InventoryService
     {
         $item = $this->getItemWithChanceForLuckyTransformation($item);
 
+        if($pet->hasStatusEffect(StatusEffectEnum::HOT_TO_THE_TOUCH))
+            $spice = (!$spice || $this->squirrel3->rngNextInt(1, 4) == 4) ? $this->spiceRepository->findOneByName('Spicy') : $spice;
+
         if($pet->getTool())
         {
             $replacementItemNames = [];

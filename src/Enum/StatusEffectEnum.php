@@ -22,4 +22,5 @@ final class StatusEffectEnum
     public const WEREFORM = 'Wereform';
     public const VIVACIOUS = 'Vivacious';
     public const FRUIT_CLOBBERING = 'Fruit-clobbering';
+    public const HOT_TO_THE_TOUCH = 'Hot to the Touch';
 }
