@@ -3,6 +3,7 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
+use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -12,6 +13,29 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class ArtOfTofuController extends PoppySeedPetsItemController
 {
+    /**
+     * @Route("/{inventory}/upload", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function upload(
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
+    )
+    {
+        $this->validateInventory($inventory, 'artOfTofu/#/upload');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($this->getUser(), [
+            'Tofu',
+            '"Chicken" Noodle Soup (with Tofu)',
+            'Miso Soup',
+            'Pan-fried Tofu (using Butter)',
+            'Pan-fried Tofu (using Oil)',
+            'Tofu Fried Rice (A)',
+            'Tofu Fried Rice (B)',
+        ]);
+
+        return $responseService->itemActionSuccess($message);
+    }
+
     /**
      * @Route("/{inventory}/read", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
@@ -32,6 +56,11 @@ class ArtOfTofuController extends PoppySeedPetsItemController
 * Tofu
 * Mirepoix
 * Noodles
+
+#### Miso Soup
+
+* Tofu
+* Dashi
 
 #### Pan-seared Tofu
 

@@ -3,6 +3,14 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
+use App\Entity\KnownRecipes;
+use App\Entity\Recipe;
+use App\Functions\ArrayFunctions;
+use App\Repository\InventoryRepository;
+use App\Repository\KnownRecipesRepository;
+use App\Repository\RecipeRepository;
+use App\Service\CookingService;
+use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -12,6 +20,34 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class SoupController extends PoppySeedPetsItemController
 {
+    /**
+     * @Route("/{inventory}/UPLOAD", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function upload(
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
+    )
+    {
+        $this->validateInventory($inventory, 'SOUP/#/UPLOAD');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($this->getUser(), [
+            '15-bean Soup',
+            '"Chicken" Noodle Soup (with Fish)',
+            'Dashi',
+            'Fish Stew',
+            'Fishkebab Stew',
+            'Hobak-juk',
+            'Matzah Ball Soup (A)',
+            'Matzah Ball Soup (B)',
+            'Minestrone',
+            'Miso Soup',
+            'Pumpkin Soup',
+            'Tomato Soup'
+        ]);
+
+        return $responseService->itemActionSuccess(strtoupper($message));
+    }
+
     /**
      * @Route("/{inventory}/READ", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")

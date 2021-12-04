@@ -3,6 +3,7 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
+use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -12,6 +13,33 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class IceCreamController extends PoppySeedPetsItemController
 {
+    /**
+     * @Route("/{inventory}/upload", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function upload(
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
+    )
+    {
+        $this->validateInventory($inventory, 'iceCream/#/upload');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($this->getUser(), [
+            'Blackberry Ice Cream',
+            'Chocolate Ice Cream',
+            'Honeydont Ice Cream',
+            'Naner Ice Cream',
+            'Blackberry Ice Cream',
+
+            'Blackberry Ice Cream Sammy',
+            'Chocolate Ice Cream Sammy',
+            'Honeydont Ice Cream Sammy',
+            'Naner Ice Cream Sammies',
+            'Blackberry Ice Cream Sammy',
+        ]);
+
+        return $responseService->itemActionSuccess($message);
+    }
+
     /**
      * @Route("/{inventory}/read", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")

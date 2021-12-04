@@ -231,22 +231,7 @@ class CookingService
 
         if($this->hasACookingBuddy($user))
         {
-            $alreadyKnownRecipe = $this->knownRecipesRepository->findOneBy([
-                'user' => $user,
-                'recipe' => $recipe
-            ]);
-
-            if(!$alreadyKnownRecipe)
-            {
-                $knownRecipe = (new KnownRecipes())
-                    ->setUser($user)
-                    ->setRecipe($recipe)
-                ;
-
-                $this->em->persist($knownRecipe);
-
-                $this->userStatsRepository->incrementStat($user, UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY);
-            }
+            $this->learnRecipe($user, $recipe);
         }
 
         $results = new PrepareRecipeResults();
@@ -258,11 +243,55 @@ class CookingService
         return $results;
     }
 
+    public function learnRecipe(User $user, Recipe $recipe): bool
+    {
+        $alreadyKnownRecipe = $this->knownRecipesRepository->findOneBy([
+            'user' => $user,
+            'recipe' => $recipe
+        ]);
+
+        if($alreadyKnownRecipe)
+            return false;
+
+        $knownRecipe = (new KnownRecipes())
+            ->setUser($user)
+            ->setRecipe($recipe)
+        ;
+
+        $this->em->persist($knownRecipe);
+
+        $this->userStatsRepository->incrementStat($user, UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY);
+
+        return true;
+    }
+
     public function hasACookingBuddy(User $user): bool
     {
         return $this->inventoryRepository->findOneBy([
             'owner' => $user,
             'item' => [ 158, 454 ] // IDs of Cooking Buddy and Cooking "Alien"
         ]) !== null;
+    }
+
+    public function showRecipeNamesToCookingBuddy(User $user, array $recipeNames): string
+    {
+        $recipes = $this->recipeRepository->findBy([ 'name' => $recipeNames ]);
+
+        return $this->showRecipesToCookingBuddy($user, $recipes);
+    }
+
+    public function showRecipesToCookingBuddy(User $user, array $recipes): string
+    {
+        if(!$this->hasACookingBuddy($user))
+            return 'You need a Cooking Buddy to do this.';
+
+        $countLearnedRecipes = ArrayFunctions::sum($recipes, function(Recipe $recipe) use($user) {
+            return $this->learnRecipe($user, $recipe) ? 1 : 0;
+        });
+
+        if($countLearnedRecipes === 0)
+            return 'Your Cooking Buddy already knows all these recipes.';
+
+        return 'Your Cooking Buddy learned ' . $countLearnedRecipes . ' new recipe' . ($countLearnedRecipes === 1 ? '' : 's') . '.';
     }
 }

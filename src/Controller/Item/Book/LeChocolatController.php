@@ -7,6 +7,7 @@ use App\Entity\Recipe;
 use App\Functions\ArrayFunctions;
 use App\Model\ItemQuantity;
 use App\Repository\RecipeRepository;
+use App\Service\CookingService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,6 +19,38 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class LeChocolatController extends PoppySeedPetsItemController
 {
     /**
+     * @return Recipe[]
+     */
+    private function getRecipes(RecipeRepository $recipeRepository): array
+    {
+        return $recipeRepository->createQueryBuilder('r')
+            ->andWhere('r.name LIKE :chocolate')
+            ->setParameter('chocolate', '%chocolate%')
+            ->addOrderBy('r.name', 'ASC')
+            ->getQuery()
+            ->execute()
+        ;
+    }
+
+    /**
+     * @Route("/{inventory}/upload", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function upload(
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService,
+        RecipeRepository $recipeRepository
+    )
+    {
+        $this->validateInventory($inventory, 'leChocolat/#/upload');
+
+        $recipes = $this->getRecipes($recipeRepository);
+
+        $message = $cookingService->showRecipesToCookingBuddy($this->getUser(), $recipes);
+
+        return $responseService->itemActionSuccess($message);
+    }
+
+    /**
      * @Route("/{inventory}/read", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -28,14 +61,7 @@ class LeChocolatController extends PoppySeedPetsItemController
     {
         $this->validateInventory($inventory, 'leChocolat/#/read');
 
-        /** @var Recipe[] $recipes */
-        $recipes = $recipeRepository->createQueryBuilder('r')
-            ->andWhere('r.name LIKE :chocolate')
-            ->setParameter('chocolate', '%chocolate%')
-            ->addOrderBy('r.name', 'ASC')
-            ->getQuery()
-            ->execute()
-        ;
+        $recipes = $this->getRecipes($recipeRepository);
 
         $recipeTexts = [
             '# Chocolate',

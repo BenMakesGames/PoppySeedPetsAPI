@@ -3,6 +3,7 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
+use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -12,6 +13,55 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class BakingBookController extends PoppySeedPetsItemController
 {
+    /**
+     * @Route("/{inventory}/upload", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function upload(
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
+    )
+    {
+        $this->validateInventory($inventory, 'bakingBook/#/upload');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($this->getUser(), [
+            'Baking Powder',
+            'Baking Soda from Limestone',
+            'Butter',
+            'Blackberry Wine',
+            'Blueberry Wine',
+            'Wheat Flour',
+
+            'Brownie',
+            'Mini Chocolate Chip Cookies',
+            'Chocolate Lava Cake',
+            'Plain Donut',
+            'Plain Donut (B)',
+            'Frosted Donut',
+            'Flour Tortilla (A)',
+            'Flour Tortilla (B)',
+            'Graham Cracker (with Butter)',
+            'Graham Cracker (with Oil)',
+            'Melonpanbun',
+            'Meringues',
+            'Chocolate Meringues',
+            'Berry Muffins (Blackberry II)',
+            'Berry Muffins (Blueberry II)',
+            'Chocolate Chip Muffins II',
+            'Naner Bread',
+            'Pancakes',
+            'Loaf of Plain Bread',
+            'Simple Bread (A)',
+            'Shortbread Cookies',
+            'World\'s Best Sugar Cookies',
+            'World\'s Best Sugar Cookies (from Soda)',
+            'Sweet Roll',
+            'Thicc Mints (with Butter)',
+            'Thicc Mints (with Oil)',
+        ]);
+
+        return $responseService->itemActionSuccess($message);
+    }
+
     /**
      * @Route("/{inventory}/read", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
@@ -76,7 +126,7 @@ Simply grind some Wheat into a fine powder.
 
 ## Recipes
 
-#### Brownie
+#### Brownies
 
 * Baking Powder
 * Butter
