@@ -36,6 +36,13 @@ IF YOU HAPPEN TO STOR-- \*HACK; CoUgh; wheeze\* to store your Beans in threes, f
 
 Also good with Fish, instead of chicken.
 
+#### Dashi
+
+A simple stock that can be enjoyed on its own, but is also a good base for other dishes.
+
+* Fermented Fish
+* Seaweed
+
 #### Fish Stew
 
 * Fish
@@ -74,6 +81,11 @@ This strange recipe was invented by an AI. Despite being created by something wi
 * Beans
 * Tomato
 * Noodles
+
+#### Miso Soup
+
+* Dashi
+* Tofu
 
 #### Pumpkin Soup
 
