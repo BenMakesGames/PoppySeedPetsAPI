@@ -3,6 +3,7 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
+use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -12,6 +13,39 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class FishBookController extends PoppySeedPetsItemController
 {
+    /**
+     * @Route("/{inventory}/upload", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function upload(
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
+    )
+    {
+        $this->validateInventory($inventory, 'fishBook/#/upload');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($this->getUser(), [
+            'Baked Fish Fingers',
+            'Basic Fish Taco',
+            'Battered, Fried Fish (with Egg)',
+            'Battered, Fried Fish (without Egg)',
+            'Fermented Fish',
+            'Fisherman\'s Pie (Carrot)',
+            'Fisherman\'s Pie (Corn)',
+            'Fish Onigiri',
+            'Gefilte Fish',
+            'Gefilte Fish (with Celery)',
+            'Grilled Fish',
+            'Nigiri',
+            'Orange Fish',
+            'Pan-fried Fish (with Butter)',
+            'Pan-fried Fish (with Oil)',
+            'Simple Sushi',
+            'Zongzi',
+        ]);
+
+        return $responseService->itemActionSuccess($message);
+    }
+
     /**
      * @Route("/{inventory}/read", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
