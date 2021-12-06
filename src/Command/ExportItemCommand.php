@@ -12,20 +12,26 @@ use App\Entity\ItemTreasure;
 use App\Entity\Plant;
 use App\Entity\PlantYield;
 use App\Entity\PlantYieldItem;
+use App\Entity\Recipe;
 use App\Entity\Spice;
 use App\Repository\ItemRepository;
+use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
 class ExportItemCommand extends PoppySeedPetsCommand
 {
     private ItemRepository $itemRepository;
+    private RecipeRepository $recipeRepository;
     private EntityManagerInterface $em;
 
-    public function __construct(ItemRepository $itemRepository, EntityManagerInterface $em)
+    public function __construct(
+        ItemRepository $itemRepository, EntityManagerInterface $em, RecipeRepository $recipeRepository
+    )
     {
         $this->itemRepository = $itemRepository;
         $this->em = $em;
+        $this->recipeRepository = $recipeRepository;
 
         parent::__construct();
     }
@@ -49,6 +55,10 @@ class ExportItemCommand extends PoppySeedPetsCommand
 
         if(!$item)
             throw new \Exception('There is no item by that name.');
+
+        echo "\n================================================================================\n";
+        echo str_repeat(' ', 40 - mb_strlen($item->getName()) / 2) . $item->getName() . "\n";
+        echo "================================================================================\n";
 
         $treasure = $item->getTreasure();
         $tool = $item->getTool();
@@ -113,7 +123,28 @@ class ExportItemCommand extends PoppySeedPetsCommand
 
         $image = substr($item->getImage(), 0, strrpos($item->getImage(), '/') + 1);
 
-        echo "\n\n" . 'Upload image to: https://s3.console.aws.amazon.com/s3/buckets/poppyseedpets.com?region=us-east-1&prefix=assets/images/items/' . $image . "\n";
+        echo "\n\n" . 'Upload image to: https://s3.console.aws.amazon.com/s3/buckets/poppyseedpets.com?region=us-east-1&prefix=assets/images/items/' . $image . "\n\n";
+
+        $anyRecipes = $this->askBool('Do you want to export any recipes?', false);
+
+        if($anyRecipes)
+        {
+            $recipes = $this->recipeRepository->findByMakes($item);
+
+            if(!$recipes)
+                throw new \Exception('There are no recipes for this item.');
+
+            $statements = [];
+
+            foreach($recipes as $recipe)
+                $statements[] = $this->generateSql(Recipe::class, $recipe, 'recipe #' . $recipe->getId());
+
+            echo "\n" . implode("\n\n", $statements) . "\n\n";
+        }
+        else
+            echo "\n";
+
+        echo "================================================================================\n\n";
 
         return 0;
     }
