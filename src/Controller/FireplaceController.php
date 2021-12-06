@@ -493,7 +493,7 @@ class FireplaceController extends PoppySeedPetsController
 
             $extraItem = $petAssistantService->getExtraItem(
                 $skill,
-                [ 'Feathers', 'Fluff', 'Spider', 'Cobweb' ],
+                [ 'Feathers', 'Fluff', 'Spider', 'Cobweb', 'Gochujang Recipe' ],
                 [ 'Silica Grounds', 'Aging Powder', $rng->rngNextFromArray($foodItems) ],
                 [ 'Charcoal', 'Glass', 'Spider Roe' ],
                 [ 'Coke', 'Magic Smoke' ]

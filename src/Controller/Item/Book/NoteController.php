@@ -145,4 +145,19 @@ Make "sauce" made from Sugar, Butter, Naner, and rum, and pour over the ice crea
 
 Serve warm (and quickly!)');
     }
+
+    /**
+     * @Route("/gochujang/{inventory}/read", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function readGochujangRecipe(Inventory $inventory, ResponseService $responseService)
+    {
+        $this->validateInventory($inventory, 'note/gochujang/#/read');
+
+        return $responseService->itemActionSuccess('Age the following:
+
+* Spicy Peps
+* Rice
+* Bean Flour');
+    }
 }
