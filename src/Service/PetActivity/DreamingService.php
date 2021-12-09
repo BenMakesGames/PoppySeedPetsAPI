@@ -7,11 +7,12 @@ use App\Entity\PetSpecies;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
-use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Repository\DreamRepository;
 use App\Repository\ItemRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -23,11 +24,13 @@ class DreamingService
     private $petSpeciesRepository;
     private $petExperienceService;
     private $itemRepository;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private DreamRepository $dreamRepository;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetSpeciesRepository $petSpeciesRepository,
-        PetExperienceService $petExperienceService, ItemRepository $itemRepository, Squirrel3 $squirrel3
+        PetExperienceService $petExperienceService, ItemRepository $itemRepository, Squirrel3 $squirrel3,
+        DreamRepository $dreamRepository
     )
     {
         $this->inventoryService = $inventoryService;
@@ -36,6 +39,7 @@ class DreamingService
         $this->petExperienceService = $petExperienceService;
         $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
+        $this->dreamRepository = $dreamRepository;
     }
 
     private const LOCATIONS = [
@@ -56,6 +60,14 @@ class DreamingService
         'on a spaceship',
         'on the beach',
         'in some crystal caves',
+        'in a warehouse',
+        'at a water park',
+        'on a snow-capped mountain',
+        'in a laboratory',
+        'on a space station',
+        'in a crowded bar',
+        'in a junkyard',
+        'in a dilapidated arena',
     ];
 
     private const WANDERING_WORDS = [
@@ -69,6 +81,13 @@ class DreamingService
         'solving a math problem',
         'drinking %a_drink%',
         'eating %a_food%'
+    ];
+
+    public const RANDOM_PLURAL_STUFF = [
+        'bolts of silk', 'piles of treasure', 'boxes of %item%', 'people',
+        'piles of snow', 'cobwebs', 'those ball pit balls', 'ringing phones',
+        'piles of cotton candy (either the candy, or the pet; it wasn\'t clear)',
+        'tiny snails', 'piles of ice cream', 'fluttering pieces of paper'
     ];
 
     public function dream(Pet $pet): PetActivityLog
@@ -112,56 +131,7 @@ class DreamingService
         $itemName = $this->squirrel3->rngNextFromArray($possibleItems);
         $item = $this->itemRepository->findOneByName($itemName);
 
-        $dream = $this->squirrel3->rngNextFromArray([
-            [
-                'In a dream, %dreamer% was %wandering% %location1%, when they spotted %a_pet_or_monster%. It whispered something, but %dreamer% can\'t remember what, and gave %dreamer% %item%.',
-                '%a_pet_or_monster% gave this to %dreamer% in a dream.',
-            ],
-            [
-                'While %wandering% %location1% in a dream, %dreamer% spotted %item%. They reached down and grabbed it, and when they looked up, they were %location2%.',
-                '%dreamer% found this in %location1% in a dream.',
-            ],
-            [
-                '%dreamer% dreamed they tripped over %item%, and tumbled into a pit %location1%. The %item% fell in, too, and %dreamer% grabbed it, and ate it.',
-                '%dreamer% ate this while falling in a dream.',
-            ],
-            [
-                'In a dream, %dreamer% and a friend were %wandering% %location1%. The friend reached into their pocket and pulled out something covered in cloth. %dreamer% lifted up the cloth, and found %item%. When they looked up, their friend was gone.',
-                '%dreamer% received this from a friend in a dream.'
-            ],
-            [
-                '%dreamer% dreamed that they were making out with %a_species% on %surface% %location1%. %Item_with_article% got in the way, so %dreamer% tossed it aside.',
-                '%dreamer%, um, found this in a dream.'
-            ],
-            [
-                'In a dream, %dreamer% got in a fight with %a_species% %location1%. The %species% threw %item% at %dreamer%, and declared victory! >:(',
-                'A stupid %species% threw this at %dreamer% in a dream.',
-            ],
-            [
-                'In a dream, %dreamer% and a friend went out to eat, and ordered %item_with_article% and %a_food_or_drink%. When the %item% arrived, it was %more% than expected!',
-                '%dreamer% ordered this at a restaurant in a dream.',
-            ],
-            [
-                '%dreamer% saw their parents in a dream, but couldn\'t make them out. They hummed a familiar tune, and handed %dreamer% %item%.',
-                '%dreamer% got this from their parents in a dream.',
-            ],
-            [
-                'In a dream, %dreamer% found a secret compartment %location1%. They crawled inside, and arrived %location2%. On %surface%, there was %item%. %dreamer% took it.',
-                '%dreamer% found this on %surface% %location2% in a dream.',
-            ],
-            [
-                'In a dream, %dreamer% bumped into %a_pet_or_monster%, causing them to drop %item_with_article%. %dreamer% %adverb% picked it up, and tried to call out, but their voice wasn\'t working.',
-                '%dreamer% %adverb% picked this up in a dream.'
-            ],
-            [
-                'In a dream, %dreamer% was approached by a huge %item%. They %adverb% ran away; as they did so, the %item% shrank. Eventually, %dreamer% stopped, and picked it up.',
-                '%dreamer% was chased by this in a dream. (It was bigger in the dream...)'
-            ],
-            [
-                '%location1% in a dream, %dreamer% looked in a mirror. They were %more% than usual. Also, there was %item_with_article% on their head!',
-                '%dreamer% saw this on their head while looking in a mirror in a dream.'
-            ]
-        ]);
+        $dream = $this->dreamRepository->findRandom($this->squirrel3);
 
         $locations = $this->squirrel3->rngNextSubsetFromArray(self::LOCATIONS, 2);
         /** @var PetSpecies $species */
@@ -183,28 +153,23 @@ class DreamingService
             '%adverb%' => $this->squirrel3->rngNextFromArray([ 'hesitantly', 'eagerly', 'grumpily', 'apathetically' ]),
             '%pet_adjective%' => $this->squirrel3->rngNextFromArray([ 'colorful', 'suspicious-looking', 'strong', 'big', 'small', 'cute', 'dangerous-looking', 'hungry', 'lost', 'cheerful' ]),
             '%more%' => $this->squirrel3->rngNextFromArray([ 'bigger', 'more colorful', 'smaller', 'more fragrant', 'undulating more', 'paler', 'shinier', 'stickier', 'more fabulous' ]),
-            '%surface%' => $this->squirrel3->rngNextFromArray([ 'a table', 'a moss-covered rock', 'the floor', 'a pile of pillows', 'a sturdy box', 'a raw slab of acorn fugu', 'the roof of a skyscraper' ]),
-            '%planet%' => $this->squirrel3->rngNextFromArray([ 'the Moon', 'Mars', 'Pluto', 'Enceladus' ]),
-            '%a_drink%' => $this->squirrel3->rngNextFromArray([ 'a chai milkshake', 'a mango lassi', 'some tea', 'some fruit punch', 'some coconut cordial' ]),
-            '%a_food%' => $this->squirrel3->rngNextFromArray([ 'a cellular peptide cake', 'a piece of naan', 'a slice of za', 'some donburi', 'a lobster', 'some succotash', 'a bowl of chili' ]),
+            '%surface%' => $this->squirrel3->rngNextFromArray([
+                'a table', 'a moss-covered rock', 'the floor', 'a pile of pillows', 'a sturdy box',
+                'a raw slab of acorn fugu', 'the roof of a skyscraper', 'a wobbly chair', 'a huge beanbag',
+                'a pool table', 'a picnic bench'
+            ]),
+            '%planet%' => $this->squirrel3->rngNextFromArray([ 'the Moon', 'Mars', 'Pluto', 'Enceladus', 'Vesta', 'Venus', 'Phobetor' ]),
+            '%a_drink%' => $this->squirrel3->rngNextFromArray([ 'a chai milkshake', 'a mango lassi', 'some tea', 'some fruit punch', 'some coconut cordial', 'some blue milk' ]),
+            '%a_food%' => $this->squirrel3->rngNextFromArray([ 'a cellular peptide cake', 'a piece of naan', 'a slice of za', 'some donburi', 'a lobster', 'some succotash', 'a bowl of chili', 'a plate of tiny snails' ]),
             '%a_food_or_drink%' => $this->squirrel3->rngNextFromArray([ '%a_food%', '%a_drink%' ]),
             '%a_monster%' => $monsters[0],
             '%a_wandering_monster%' => $monsters[1],
             '%a_pet_or_monster%' => $this->squirrel3->rngNextFromArray([ 'a %pet_adjective% %species%', '%a_monster%' ]),
+            '%plural_stuff%' => $this->squirrel3->rngNextFromArray(self::RANDOM_PLURAL_STUFF),
         ];
 
-        // JS does it better, but:
-        $dream = array_map(function(string $description) use($replacements) {
-            do
-            {
-                $description = str_replace(array_keys($replacements), $replacements, $description, $replaced);
-            } while($replaced > 0);
-
-            return $description;
-        }, $dream);
-
-        $eventDescription = ucfirst($dream[0]);
-        $itemDescription = ucfirst($dream[1]);
+        $eventDescription = $this->applyMadlib($dream->getDescription(), $replacements);
+        $itemDescription = $this->applyMadlib($dream->getItemDescription(), $replacements);
 
         $this->inventoryService->receiveItem($itemName, $pet->getOwner(), $pet->getOwner(), $itemDescription, LocationEnum::HOME);
 
@@ -213,5 +178,15 @@ class DreamingService
         return $this->responseService->createActivityLog($pet, $eventDescription, '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
         ;
+    }
+
+    private function applyMadlib(string $text, array $replacements): string
+    {
+        do
+        {
+            $text = str_replace(array_keys($replacements), $replacements, $text, $replaced);
+        } while($replaced > 0);
+
+        return $text;
     }
 }
