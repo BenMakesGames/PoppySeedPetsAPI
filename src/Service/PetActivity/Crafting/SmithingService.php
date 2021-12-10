@@ -145,6 +145,15 @@ class SmithingService
                 $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createWaterStrider', 10);
         }
 
+        if($this->houseSimService->hasInventory('Saucepan') || $this->houseSimService->hasInventory('Upside-down Saucepan'))
+        {
+            if($this->houseSimService->hasInventory('Rice'))
+                $possibilities[] = new ActivityCallback($this, 'createRiceFryingPan', 8);
+
+            if($this->houseSimService->hasInventory('Scales'))
+                $possibilities[] = new ActivityCallback($this, 'createFishFryingPan', 10);
+        }
+
         if($this->houseSimService->hasInventory('Yellow Scissors') && $this->houseSimService->hasInventory('Green Scissors') && $this->houseSimService->hasInventory('Quinacridone Magenta Dye'))
             $possibilities[] = new ActivityCallback($this, 'createTriColorScissors', 10);
 
@@ -371,6 +380,57 @@ class SmithingService
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Red Warping Wand, but accidentally warped the Firestone away. They looked around for a while, and finally found it ' . $location . '.', 'icons/activity-logs/confused');
             }
         }
+    }
+
+    /**
+     * note: THIS method should be private, but most methods here must be public!
+     */
+    private function createFryingPan(ComputedPetSkills $petWithSkills, string $otherMaterial, string $makes): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::SMITH, false);
+
+            $this->houseSimService->getState()->loseItem($otherMaterial, 1);
+
+            $pet->increaseEsteem(-2);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to smith a ' . $makes . ', but accidentally _obliterated_ the ' . $otherMaterial . '! :(', '');
+        }
+        else if($roll < 17)
+        {
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::SMITH, false);
+
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to smith a ' . $makes . ', but kept having trouble working the ' . $otherMaterial . ' in...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->houseSimService->getState()->loseOneOf([ 'Saucepan', 'Upside-down Saucepan' ]);
+            $this->houseSimService->getState()->loseItem($otherMaterial, 1);
+
+            $pet->increaseEsteem(2);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::SMITH, true);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% smithed a ' . $makes . '!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
+            ;
+            $this->inventoryService->petCollectsItem($makes, $pet, $pet->getName() . ' made this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createFishFryingPan(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        return $this->createFryingPan($petWithSkills, 'Scales', 'Fish Frying Pan');
+    }
+
+    public function createRiceFryingPan(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        return $this->createFryingPan($petWithSkills, 'Rice', 'Rice Frying Pan');
     }
 
     public function createMirror(ComputedPetSkills $petWithSkills): PetActivityLog
