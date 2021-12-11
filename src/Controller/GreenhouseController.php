@@ -117,7 +117,7 @@ class GreenhouseController extends PoppySeedPetsController
             $isRaining = $weatherService->getWeather(new \DateTimeImmutable(), null)->getRainfall() > 0;
 
             $basicItems = [ 'Egg', 'Blackberries', 'Blueberries', 'Line of Ants' ];
-            $slightlyCoolerItems = [ 'Narcissus', 'Plastic', 'Paper' ];
+            $slightlyCoolerItems = [ 'Narcissus', 'Plastic', 'Paper', 'Pepino Dulce' ];
 
             if($hasDarkPlots)
             {
