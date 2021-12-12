@@ -16,6 +16,7 @@ use App\Repository\PetRepository;
 use App\Service\PetActivity\Group\AstronomyClubService;
 use App\Service\PetActivity\Group\BandService;
 use App\Service\PetActivity\Group\GamingGroupService;
+use App\Service\PetActivity\Group\SportsBallService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr\Join;
 
@@ -26,7 +27,8 @@ class PetGroupService
     public const GROUP_TYPE_NAMES = [
         PetGroupTypeEnum::BAND => 'band',
         PetGroupTypeEnum::ASTRONOMY => 'astronomy lab',
-        PetGroupTypeEnum::GAMING => 'gaming group'
+        PetGroupTypeEnum::GAMING => 'gaming group',
+        PetGroupTypeEnum::SPORTSBALL => 'sportsball team',
     ];
 
     private $em;
@@ -37,11 +39,12 @@ class PetGroupService
     private $astronomyClubService;
     private IRandom $squirrel3;
     private GamingGroupService $gamingGroupService;
+    private SportsBallService $sportsBallService;
 
     public function __construct(
         EntityManagerInterface $em, PetRepository $petRepository, ResponseService $responseService,
         PetExperienceService $petExperienceService, BandService $bandService, AstronomyClubService $astronomyClubService,
-        Squirrel3 $squirrel3, GamingGroupService $gamingGroupService
+        Squirrel3 $squirrel3, GamingGroupService $gamingGroupService, SportsBallService $sportsBallService
     )
     {
         $this->em = $em;
@@ -52,6 +55,7 @@ class PetGroupService
         $this->astronomyClubService = $astronomyClubService;
         $this->squirrel3 = $squirrel3;
         $this->gamingGroupService = $gamingGroupService;
+        $this->sportsBallService = $sportsBallService;
     }
 
     public function doGroupActivity(PetGroup $group)
@@ -76,6 +80,10 @@ class PetGroupService
 
             case PetGroupTypeEnum::GAMING:
                 $this->gamingGroupService->meet($group);
+                break;
+
+            case PetGroupTypeEnum::SPORTSBALL:
+                $this->sportsBallService->meet($group);
                 break;
 
             default:
@@ -372,6 +380,12 @@ class PetGroupService
                 'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::GAMING],
                 'icon' => 'groups/gaming',
                 'preference' => 1 + ($pet->getExtroverted() + 1) * 2,
+            ],
+            [
+                'type' => PetGroupTypeEnum::SPORTSBALL,
+                'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::SPORTSBALL],
+                'icon' => 'groups/gaming',
+                'preference' => 2 + $this->weightSkill($pet->getSkills()->getBrawl()),
             ]
         ];
 
@@ -391,13 +405,19 @@ class PetGroupService
         {
             case PetGroupTypeEnum::BAND:
                 usort($availableFriends, function (ComputedPetSkills $a, ComputedPetSkills $b) {
-                    return $b->getMusic() <=> $a->getMusic();
+                    return $b->getMusic()->getTotal() <=> $a->getMusic()->getTotal();
                 });
                 break;
 
             case PetGroupTypeEnum::ASTRONOMY:
                 usort($availableFriends, function (ComputedPetSkills $a, ComputedPetSkills $b) {
-                    return $b->getScience() <=> $a->getScience();
+                    return $b->getScience()->getTotal() <=> $a->getScience()->getTotal();
+                });
+                break;
+
+            case PetGroupTypeEnum::SPORTSBALL:
+                usort($availableFriends, function (ComputedPetSkills $a, ComputedPetSkills $b) {
+                    return $b->getBrawl()->getTotal() + $b->getStealth()->getTotal() / 2 <=> $a->getBrawl()->getTotal() + $b->getStealth()->getTotal() / 2;
                 });
                 break;
 
@@ -442,6 +462,8 @@ class PetGroupService
                 return $this->astronomyClubService->generateGroupName();
             case PetGroupTypeEnum::GAMING:
                 return $this->gamingGroupService->generateGroupName();
+            case PetGroupTypeEnum::SPORTSBALL:
+                return $this->sportsBallService->generateGroupName();
             default:
                 throw new \Exception('Ben forgot to program group names for groups of type "' . $type . '"! (Bad Ben!)');
         }
