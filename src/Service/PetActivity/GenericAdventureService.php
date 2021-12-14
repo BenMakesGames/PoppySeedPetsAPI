@@ -11,11 +11,13 @@ use App\Enum\PetActivityStatEnum;
 use App\Functions\ActivityHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Repository\DragonRepository;
 use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
+use App\Service\DragonHostageService;
 use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -24,6 +26,7 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use App\Service\WeatherService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class GenericAdventureService
 {
@@ -40,13 +43,17 @@ class GenericAdventureService
     private EnchantmentRepository $enchantmentRepository;
     private HattierService $hattierService;
     private UserBirthdayService $userBirthdayService;
+    private DragonRepository $dragonRepository;
+    private DragonHostageService $dragonHostageService;
+    private EntityManagerInterface $em;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         UserQuestRepository $userQuestRepository, TransactionService $transactionService, MeritRepository $meritRepository,
         ItemRepository $itemRepository, Squirrel3 $squirrel3, SpiceRepository $spiceRepository,
         WeatherService $weatherService, EnchantmentRepository $enchantmentRepository, HattierService $hattierService,
-        UserBirthdayService $userBirthdayService
+        UserBirthdayService $userBirthdayService, DragonRepository $dragonRepository, DragonHostageService $dragonHostageService,
+        EntityManagerInterface $em
     )
     {
         $this->responseService = $responseService;
@@ -62,6 +69,9 @@ class GenericAdventureService
         $this->enchantmentRepository = $enchantmentRepository;
         $this->hattierService = $hattierService;
         $this->userBirthdayService = $userBirthdayService;
+        $this->dragonRepository = $dragonRepository;
+        $this->dragonHostageService = $dragonHostageService;
+        $this->em = $em;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -168,6 +178,24 @@ class GenericAdventureService
             return $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a huge ' . $bird . ' swoop into the Greenhouse and land on the Bird Bath!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
+        }
+
+        if($pet->getOwner()->getUnlockedDragonDen() && $this->squirrel3->rngNextInt(1, 20) === 1)
+        {
+            $dragon = $this->dragonRepository->findAdult($pet->getOwner());
+
+            if($dragon && !$dragon->getHostage())
+            {
+                $hostage = $this->dragonHostageService->generateHostage();
+
+                $this->em->persist($hostage);
+
+                $dragon->setHostage($hostage);
+
+                return $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw ' . $dragon->getName() . ' flying back to their den, a ' . $hostage->getType() . ' in one claw...', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ;
+            }
         }
 
         if($level >= 10 && $this->squirrel3->rngNextInt(1, 130) === 1)

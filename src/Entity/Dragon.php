@@ -140,6 +140,12 @@ class Dragon
      */
     private $byproductProgress = 0;
 
+    /**
+     * @ORM\OneToOne(targetEntity=DragonHostage::class, mappedBy="dragon", cascade={"persist", "remove"})
+     * @Groups({"myDragon"})
+     */
+    private $hostage;
+
     public function __construct()
     {
         $squirrel3 = new Squirrel3();
@@ -349,6 +355,23 @@ class Dragon
     public function addByproductProgress(float $byproductProgress): self
     {
         $this->byproductProgress += $byproductProgress;
+
+        return $this;
+    }
+
+    public function getHostage(): ?DragonHostage
+    {
+        return $this->hostage;
+    }
+
+    public function setHostage(DragonHostage $hostage): self
+    {
+        // set the owning side of the relation if necessary
+        if ($hostage->getDragon() !== $this) {
+            $hostage->setDragon($this);
+        }
+
+        $this->hostage = $hostage;
 
         return $this;
     }
