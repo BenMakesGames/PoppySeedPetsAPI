@@ -32,7 +32,7 @@ class BakingBookController extends PoppySeedPetsItemController
             'Wheat Flour',
 
             'Brownie',
-            'Mini Chocolate Chip Cookies',
+            'Mini Chocolate Chip Cookies (A)',
             'Chocolate Lava Cake',
             'Plain Donut',
             'Plain Donut (B)',

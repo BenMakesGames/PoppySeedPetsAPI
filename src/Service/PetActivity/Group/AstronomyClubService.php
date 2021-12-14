@@ -90,6 +90,8 @@ class AstronomyClubService
         '%color%/%adjective% %nouns% and %color%/%adjective% %nouns%',
     ];
 
+    private const MAX_SKILL_ROLL = 85;
+
     public function generateGroupName(): string
     {
         return $this->groupNameGenerator->generateName(self::GROUP_NAME_PATTERNS, self::DICTIONARY, 60);
@@ -123,7 +125,8 @@ class AstronomyClubService
         if($group->getProgress() >= 100)
         {
             // we're expecting a very-maximum of 30 * 5 = 150. this will be exceptionally unlikely, however
-            $reward = $this->squirrel3->rngNextInt(0, $group->getSkillRollTotal());
+            $max = min(self::MAX_SKILL_ROLL, $group->getSkillRollTotal());
+            $reward = $this->squirrel3->rngNextInt(0, $max);
 
             $group
                 ->clearProgress()
@@ -142,7 +145,7 @@ class AstronomyClubService
             }
             else if($reward < 20) // 10%
             {
-                $item = 'NUL';
+                $item = $this->squirrel3->rngNextFromArray([ 'Pointer', 'NUL' ]);
                 $description = 'some old radio transmissions from Earth';
             }
             else if($reward < 25) // 5%
@@ -167,20 +170,25 @@ class AstronomyClubService
                 $description = 'a Paper';
                 $messageTemplate = '%group% wrote %this% based on their findings.';
             }
-            else if($reward < 55) // 5%
+            else if($reward < 60) // 10%
+            {
+                $item = 'Dark Matter';
+                $description = 'some Dark Matter';
+            }
+            else if($reward < 65) // 5%
             {
                 $item = 'Everice';
                 $description = 'a cube of Everice';
             }
-            else if($reward < 65) // 10%
+            else if($reward < 75) // 10%
             {
                 $item = 'Tiny Black Hole';
                 $description = 'a Tiny Black Hole';
             }
-            else
+            else // 10%; see self::MAX_SKILL_ROLL
             {
-                $item = 'Dark Matter';
-                $description = 'some Dark Matter';
+                $item = 'Strange Field';
+                $description = 'a Strange Field';
             }
 
             $astralEnchantment = $this->enchantmentRepository->findOneByName('Astral');
