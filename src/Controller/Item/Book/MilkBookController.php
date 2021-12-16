@@ -3,6 +3,7 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
+use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -12,6 +13,50 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class MilkBookController extends PoppySeedPetsItemController
 {
+    /**
+     * @Route("/{inventory}/upload", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function upload(
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
+    )
+    {
+        $this->validateInventory($inventory, 'milkBook/#/upload');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($this->getUser(), [
+            'Chocolate Cream Pie',
+            'Chocomilk',
+            'Creamed Corn',
+            'Eggnog',
+            'Hakuna Frittata',
+            'Blackberry Lassi (from scratch)',
+            'Blackberry Lassi',
+            'Blueberry Lassi (from scratch)',
+            'Blueberry Lassi',
+            'Mango Lassi (from scratch)',
+            'Mango Lassi',
+            'Mahalabia',
+            'Melonpanbun',
+            'Naner Puddin\'',
+            'Pancakes',
+            'Berry Pancakes (Blue)',
+            'Red Pancakes',
+            'Naner Pancakes',
+            'Berry Pancakes (Black)',
+            'Loaf of Plain Bread',
+            'Qatayef',
+            'Plain Yogurt',
+            'Tea with Mammal Extract',
+            'Tea with Mammal Extract (B)',
+            'Sweet Tea with Mammal Extract',
+            'Coffee Bean Tea with Mammal Extract',
+            'Coffee Bean Tea with Mammal Extract (B)',
+            'Sweet Coffee Bean Tea with Mammal Extract',
+        ]);
+
+        return $responseService->itemActionSuccess($message);
+    }
+
     /**
      * @Route("/{inventory}/read", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
