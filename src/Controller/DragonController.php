@@ -1,30 +1,21 @@
 <?php
 namespace App\Controller;
 
-use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Enum\LocationEnum;
-use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;
-use App\Enum\UserStatEnum;
-use App\Functions\ArrayFunctions;
 use App\Repository\DragonRepository;
-use App\Repository\EnchantmentRepository;
 use App\Repository\InventoryRepository;
-use App\Repository\SpiceRepository;
-use App\Repository\UserStatsRepository;
-use App\Service\CalendarService;
+use App\Service\DragonHostageService;
 use App\Service\DragonService;
 use App\Service\InventoryService;
-use App\Service\PetActivity\TreasureMapService;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -98,6 +89,41 @@ class DragonController extends PoppySeedPetsController
         return $responseService->success($dragon, [
             SerializationGroupEnum::MY_DRAGON,
             SerializationGroupEnum::HELPER_PET,
+        ]);
+    }
+
+    /**
+     * @Route("/dismissHostage", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function dismissHostage(
+        ResponseService $responseService, EntityManagerInterface $em, InventoryService $inventoryService,
+        DragonRepository $dragonRepository, DragonHostageService $dragonHostageService
+    )
+    {
+        $user = $this->getUser();
+
+        $dragon = $dragonRepository->findAdult($user);
+
+        if(!$dragon || !$dragon->getHostage())
+            throw new NotFoundHttpException('You don\'t have a dragon hostage...');
+
+        $hostage = $dragon->getHostage();
+
+        $loot = $dragonHostageService->generateLoot($hostage->getType());
+
+        $em->remove($hostage);
+        $dragon->setHostage(null);
+
+        $responseService->addFlashMessage($loot->flashMessage);
+
+        $inventoryService->receiveItem($loot->item, $dragon->getOwner(), $dragon->getOwner(), $loot->comment, LocationEnum::HOME, false);
+
+        $em->flush();
+
+        return $responseService->success($dragon, [
+            SerializationGroupEnum::MY_DRAGON,
+            SerializationGroupEnum::HELPER_PET
         ]);
     }
 

@@ -2,30 +2,35 @@
 namespace App\Service;
 
 use App\Entity\DragonHostage;
+use App\Entity\Item;
 use App\Enum\DragonHostageTypeEnum;
+use App\Repository\ItemRepository;
 
 class DragonHostageService
 {
     private IRandom $rng;
+    private ItemRepository $itemRepository;
 
-    public function __construct(Squirrel3 $rng)
+    public function __construct(Squirrel3 $rng, ItemRepository $itemRepository)
     {
         $this->rng = $rng;
+        $this->itemRepository = $itemRepository;
     }
 
     public function generateHostage(): DragonHostage
     {
         $type = $this->rng->rngNextFromArray(DragonHostageTypeEnum::getValues());
 
-        //$colors = $this->generateHostageColors($type);
+        $crownColor = $this->rng->rngNextFromArray(self::CROWN_COLORS);
+        $creatureColor = $this->rng->rngNextFromArray(self::HOSTAGE_COLORS[$type]);
         $name = $this->generateHostageName($type);
         $dialog = $this->generateHostageDialog($type);
 
         return (new DragonHostage())
             ->setType($type)
             ->setAppearance(1) // later, make more appearances: $this->rng->rngNextInt(1, 3)
-            /*->setColorA($colors[0])
-            ->setColorB($colors[1])*/
+            ->setColorA($crownColor)
+            ->setColorB($creatureColor)
             ->setName($name)
             ->setDialog($dialog)
         ;
@@ -36,28 +41,64 @@ class DragonHostageService
         return $this->rng->rngNextFromArray(self::HOSTAGE_NAMES[$type]);
     }
 
-    public function generateHostageDialog(string $type): string
+    public function generateHostageDialog(): string
     {
-        $dialog = $this->rng->rngNextFromArray(self::HOSTAGE_DIALOG[$type]);
+        $dialog = $this->rng->rngNextFromArray(self::HOSTAGE_DIALOG);
 
-        $outrageous = $this->rng->rngNextFromArray([ 'Outrageous!', 'Unbelievable!', 'Unhand me at once!', 'You _dare?!_' ]);
-        $parent = $this->rng->rngNextFromArray([ 'father', 'mother', 'uncle', 'aunt', 'cousins' ]);
+        $complaint = $this->rng->rngNextFromArray([ 'Outrageous! Unfathomable!', 'Fate is so cruel!', 'Is there no justice??' ]);
+        $beautiful = $this->rng->rngNextFromArray([ 'beautiful', 'handsome', 'hot', 'dexterous' ]);
+        $terrible = $this->rng->rngNextFromArray([ 'terrible', 'cruel', 'vicious', 'great and powerful' ]);
 
-        $dialog = str_replace([ '%Outrageous!%', '%parent%' ], [ $outrageous, $parent ], $dialog);
+        $dialog = str_replace(
+            [ '%Complaint!%', '%beautiful%', '%terrible%' ],
+            [ $complaint, $beautiful, $terrible ],
+            $dialog
+        );
 
         return $dialog;
     }
 
-    private const HOSTAGE_DIALOG = [
+    public function generateLoot(string $type): DragonHostageLoot
+    {
+        $item = $this->itemRepository->findOneByName($this->rng->rngNextFromArray(self::HOSTAGE_LOOT[$type]));
+
+        return new DragonHostageLoot(
+            $item,
+            'A member of ' . ucfirst($type) . ' royalty dropped this as you shooed them out of your dragon\'s den.',
+            'The ' . $type . ' made a fuss and tried to hide from you, but you eventually shooed it out of the den. After the ordeal was over, you noticed it dropped ' . $item->getNameWithArticle() . '!'
+        );
+    }
+
+    private const HOSTAGE_COLORS = [
+        DragonHostageTypeEnum::MAGPIE => [ '3d484f', '4e4642', '696969' ],
+        DragonHostageTypeEnum::RACCOON => [ '' ],
+        DragonHostageTypeEnum::SQUID => [ 'e59db9', 'e7d5b2' ],
+    ];
+
+    private const CROWN_COLORS = [
+        'a11b1b', '10a913', '7c1ae9', 'db28b2'
+    ];
+
+    private const HOSTAGE_LOOT = [
         DragonHostageTypeEnum::MAGPIE => [
-            '*squawk!* %Outrageous!% My %parent% will hear of this!',
+            'Ruby Feather',
+            'Black Feathers',
         ],
         DragonHostageTypeEnum::RACCOON => [
-            '%Outrageous!% My %parent% will hear of this!',
+            'Little Strongbox',
+            'Minor Scroll of Riches',
         ],
         DragonHostageTypeEnum::SQUID => [
-            '%Outrageous!% My %parent% will hear of this!',
-        ],
+            'Scroll of the Sea',
+            'Secret Seashell',
+        ]
+    ];
+
+    private const HOSTAGE_DIALOG = [
+        'What\'s this? It appears I\'ve been captured by a %terrible% dragon! %Complaint!% \\*sobs unconvincingly\\*',
+        'Oh, how I wish a %beautiful% knight would come and save me! I\'m in such terrible peril, after all!',
+        'Help, oh help! A %terrible% dragon has taken me well and truly hostage! I\'m much too young and %beautiful% to die!',
+        'Woe is me! Taken hostage in the prime of my life! %Complaint!% Where, oh where, is my %beautiful% knight??'
     ];
 
     private const HOSTAGE_NAMES = [
@@ -92,4 +133,18 @@ class DragonHostageService
             'Umayma', 'Zaliki',
         ],
     ];
+}
+
+class DragonHostageLoot
+{
+    public Item $item;
+    public string $comment;
+    public string $flashMessage;
+
+    public function __construct(Item $item, string $comment, string $flashMessage)
+    {
+        $this->item = $item;
+        $this->comment = $comment;
+        $this->flashMessage = $flashMessage;
+    }
 }

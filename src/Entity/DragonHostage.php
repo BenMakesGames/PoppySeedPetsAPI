@@ -19,7 +19,7 @@ class DragonHostage
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity=Dragon::class, inversedBy="hostage", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=Dragon::class, inversedBy="hostage", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $dragon;
@@ -44,8 +44,21 @@ class DragonHostage
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"myDragon"})
      */
     private $dialog;
+
+    /**
+     * @ORM\Column(type="string", length=6)
+     * @Groups({"myDragon"})
+     */
+    private $colorA;
+
+    /**
+     * @ORM\Column(type="string", length=6)
+     * @Groups({"myDragon"})
+     */
+    private $colorB;
 
     public function getId(): ?int
     {
@@ -108,6 +121,30 @@ class DragonHostage
     public function setDialog(string $dialog): self
     {
         $this->dialog = $dialog;
+
+        return $this;
+    }
+
+    public function getColorA(): ?string
+    {
+        return $this->colorA;
+    }
+
+    public function setColorA(string $colorA): self
+    {
+        $this->colorA = $colorA;
+
+        return $this;
+    }
+
+    public function getColorB(): ?string
+    {
+        return $this->colorB;
+    }
+
+    public function setColorB(string $colorB): self
+    {
+        $this->colorB = $colorB;
 
         return $this;
     }

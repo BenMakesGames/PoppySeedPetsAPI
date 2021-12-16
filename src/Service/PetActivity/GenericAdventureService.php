@@ -191,10 +191,6 @@ class GenericAdventureService
                 $this->em->persist($hostage);
 
                 $dragon->setHostage($hostage);
-
-                return $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw ' . $dragon->getName() . ' flying back to their den, a ' . $hostage->getType() . ' in one claw...', '')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ;
             }
         }
 
