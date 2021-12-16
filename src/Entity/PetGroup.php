@@ -205,6 +205,7 @@ class PetGroup
             case PetGroupTypeEnum::BAND: return 2;
             case PetGroupTypeEnum::ASTRONOMY: return 2;
             case PetGroupTypeEnum::GAMING: return 3;
+            case PetGroupTypeEnum::SPORTSBALL: return 4;
             default: throw new \Exception('Unhandled group type in group::getMinimumSize');
         }
     }
@@ -216,6 +217,7 @@ class PetGroup
             case PetGroupTypeEnum::BAND: return 5;
             case PetGroupTypeEnum::ASTRONOMY: return 6;
             case PetGroupTypeEnum::GAMING: return 5;
+            case PetGroupTypeEnum::SPORTSBALL: return 8;
             default: throw new \Exception('Unhandled group type in group::getMaximumSize');
         }
     }
