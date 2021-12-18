@@ -83,7 +83,7 @@ class PhilosophersStoneService
 
             $activityLog = $this->responseService->createActivityLog(
                 $pet,
-                ActivityHelpers::PetName($pet) . ' found the ' . $monster . ' near the Island\'s volcano, but realized they were completely outmatched. They returned home, and put away their ' . $pet->getTool()->getFullItemName() . '...',
+                ActivityHelpers::PetName($pet) . ' found the ' . $monster . ' near the island\'s volcano, but realized they were completely outmatched. They returned home, and put away their ' . $pet->getTool()->getFullItemName() . '...',
                 ''
             );
 
@@ -94,6 +94,8 @@ class PhilosophersStoneService
             $roll = $this->rng->rngNextInt(1, $skill);
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(50, 70), PetActivityStatEnum::HUNT, $roll >= 20);
+
+            $this->petExperienceService->gainExp($pet, $roll >= 20 ? 3 : 2, [ PetSkillEnum::BRAWL ]);
 
             if($roll >= 20)
             {
@@ -211,6 +213,8 @@ class PhilosophersStoneService
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(50, 70), PetActivityStatEnum::UMBRA, $roll >= 20);
 
+            $this->petExperienceService->gainExp($pet, $roll >= 20 ? 3 : 2, [ PetSkillEnum::UMBRA ]);
+
             if($roll >= 20)
             {
                 $activityLogMessage = 'The Ceremony of Fire lead ' . ActivityHelpers::PetName($pet) . ' to an ice cave in the frozen quag in the Umbra, and used their Ceremony of Fire to melt the huge Everice icicles that stood in their way.';
@@ -313,6 +317,8 @@ class PhilosophersStoneService
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(50, 70), PetActivityStatEnum::HUNT, $roll >= 20);
 
+            $this->petExperienceService->gainExp($pet, $roll >= 20 ? 3 : 2, [ PetSkillEnum::BRAWL ]);
+
             if($roll >= 20)
             {
                 $activityLogMessage =
@@ -390,6 +396,8 @@ class PhilosophersStoneService
         $changes = new PetChanges($pet);
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 120), PetActivityStatEnum::OTHER, false);
+
+        $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::SCIENCE ]);
 
         $pet
             ->increaseEsteem(12)
