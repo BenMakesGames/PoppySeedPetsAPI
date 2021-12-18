@@ -995,6 +995,14 @@ class TraderService
             ),
 
             TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Phoenix Plushy'), 1) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1) ],
+                'These things are so cute...',
+                $user,
+                $quantities
+            ),
+
+            TraderOffer::createTradeOffer(
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1),
                     TraderOfferCostOrYield::createMoney(10),
@@ -1034,6 +1042,17 @@ class TraderService
                 ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Rainbow Dolphin Plushy'), 1) ],
                 'The extra 2~~m~~ covers a tax imposed by the Great Rainbow Dolphin Empire.',
+                $user,
+                $quantities
+            ),
+
+            TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1),
+                    TraderOfferCostOrYield::createMoney(10),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Phoenix Plushy'), 1) ],
+                'A rare and beautiful bird, for a rare and beautiful customer!',
                 $user,
                 $quantities
             ),
