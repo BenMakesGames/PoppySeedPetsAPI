@@ -41,6 +41,27 @@ final class ArrayFunctions
         return null;
     }
 
+    /**
+     * @return array
+     */
+    public static function find_n(iterable $array, callable $delegate, int $quantity)
+    {
+        $results = [];
+
+        foreach($array as $item)
+        {
+            if($delegate($item))
+            {
+                $results[] = $item;
+
+                if(count($results) == $quantity)
+                    break;
+            }
+        }
+
+        return $results;
+    }
+
     public static function pick_one_weighted(iterable $array, callable $weightingDelegate)
     {
         $squirrel3 = new Squirrel3();

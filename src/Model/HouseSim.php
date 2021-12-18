@@ -145,32 +145,32 @@ class HouseSim implements IHouseSim
         if(!is_string($item))
             $item = $item->getName();
 
-        $inventoryToRemoveFromHouseSim = [];
+        /** @var Inventory[] $inventoryToRemoveFromHouseSim */
+        $inventoryToRemoveFromHouseSim = ArrayFunctions::find_n(
+            $this->inventory,
+            fn(Inventory $i) => $i->getItem()->getName() === $item,
+            $quantity
+        );
 
-        for($i = 0; $i < $quantity; $i++)
+        if(count($inventoryToRemoveFromHouseSim) < $quantity)
+            throw new \Exception('Cannot use ' . $quantity . 'x ' . $item . '; not enough exist in your house!');
+
+        $itemId = $inventoryToRemoveFromHouseSim[0]->getItem()->getId();
+
+        if($this->itemQuantitiesByItemId[$itemId] > $quantity)
+            $this->itemQuantitiesByItemId[$itemId]--;
+        else
+            unset($this->itemQuantitiesByItemId[$itemId]);
+
+        foreach($inventoryToRemoveFromHouseSim as $itemToRemove)
         {
-            /** @var Inventory $itemToRemove */
-            $itemToRemove = ArrayFunctions::find_one($this->inventory, fn(Inventory $i) => $i->getItem()->getName() === $item);
-
-            if(!$itemToRemove)
-                throw new \Exception('Cannot use ' . $quantity . 'x ' . $item . '; not enough exist in your house!');
-
-            $itemId = $itemToRemove->getItem()->getId();
-
-            if($this->itemQuantitiesByItemId[$itemId] === 1)
-                unset($this->itemQuantitiesByItemId[$itemId]);
-            else
-                $this->itemQuantitiesByItemId[$itemId]--;
-
             if($itemToRemove->getId())
                 $this->inventoryToRemoveFromDatabase[] = $itemToRemove;
-
-            $inventoryToRemoveFromHouseSim[] = $itemToRemove;
         }
 
         $this->inventory = array_filter(
             $this->inventory,
-            fn(Inventory $i) => !ArrayFunctions::find_one($inventoryToRemoveFromHouseSim, fn($j) => $i === $j)
+            fn(Inventory $i) => !ArrayFunctions::find_one($inventoryToRemoveFromHouseSim, fn(Inventory $j) => $i === $j)
         );
     }
 
