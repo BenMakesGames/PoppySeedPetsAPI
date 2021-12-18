@@ -712,7 +712,7 @@ class PetService
                 }
                 return false;
 
-            case 'Snikerblade':
+            case 'Snickerblade':
                 if($this->squirrel3->rngNextInt(1, 20) == 1)
                 {
                     $this->philosophersStoneService->seekEarthsEgg($petWithSkills);
