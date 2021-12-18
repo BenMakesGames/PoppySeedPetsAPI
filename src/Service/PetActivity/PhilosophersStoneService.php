@@ -181,7 +181,7 @@ class PhilosophersStoneService
 
         $gotTheThing = $this->petQuestRepository->findOrCreate($pet, 'Got Vesica Hydrargyrum', 0);
 
-        if($pet->hasMerit(MeritEnum::NATURAL_CHANNEL) || $petWithSkills->getUmbra()->getTotal() < 1)
+        if(!$pet->hasMerit(MeritEnum::NATURAL_CHANNEL))
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(5, 10), PetActivityStatEnum::HUNT, false);
 
