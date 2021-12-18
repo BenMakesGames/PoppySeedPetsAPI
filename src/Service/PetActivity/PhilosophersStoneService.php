@@ -4,17 +4,22 @@ namespace App\Service\PetActivity;
 
 // see /notes/ElementQuest.md
 use App\Entity\PetActivityLog;
+use App\Enum\MeritEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Repository\ItemRepository;
 use App\Repository\PetQuestRepository;
 use App\Service\EquipmentService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
+use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
 
 class PhilosophersStoneService
 {
@@ -23,10 +28,14 @@ class PhilosophersStoneService
     private ResponseService $responseService;
     private EquipmentService $equipmentService;
     private InventoryService $inventoryService;
+    private PetExperienceService $petExperienceService;
+    private ItemRepository $itemRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
         Squirrel3 $rng, PetQuestRepository $petQuestRepository, ResponseService $responseService,
-        EquipmentService $equipmentService, InventoryService $inventoryService
+        EquipmentService $equipmentService, InventoryService $inventoryService, EntityManagerInterface $em,
+        PetExperienceService $petExperienceService, ItemRepository $itemRepository
     )
     {
         $this->rng = $rng;
@@ -34,6 +43,9 @@ class PhilosophersStoneService
         $this->responseService = $responseService;
         $this->equipmentService = $equipmentService;
         $this->inventoryService = $inventoryService;
+        $this->petExperienceService = $petExperienceService;
+        $this->itemRepository = $itemRepository;
+        $this->em = $em;
     }
 
     public function seekMetatronsFire(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -67,10 +79,11 @@ class PhilosophersStoneService
 
         if($skill < 20)
         {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::HUNT, false);
 
             $activityLog = $this->responseService->createActivityLog(
                 $pet,
-                ActivityHelpers::PetName($pet) . ' found the ' . $monster . ' near the Island\'s Volcano, but realized they were completely outmatched. They returned home, and put away their ' . $pet->getTool()->getFullItemName() . '...',
+                ActivityHelpers::PetName($pet) . ' found the ' . $monster . ' near the Island\'s volcano, but realized they were completely outmatched. They returned home, and put away their ' . $pet->getTool()->getFullItemName() . '...',
                 ''
             );
 
@@ -80,11 +93,13 @@ class PhilosophersStoneService
         {
             $roll = $this->rng->rngNextInt(1, $skill);
 
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(50, 70), PetActivityStatEnum::HUNT, $roll >= 20);
+
             if($roll >= 20)
             {
                 $activityLogMessage = $useDex
-                    ? ActivityHelpers::PetName($pet) . ' took on the ' . $monster . ' near the Island\'s Volcano, and danced around its attacks before delivering a fatal blow'
-                    : ActivityHelpers::PetName($pet) . ' took on the ' . $monster . ' near the Island\'s Volcano, and deflected its attacks before delivering a fatal blow'
+                    ? ActivityHelpers::PetName($pet) . ' took on the ' . $monster . ' near the island\'s volcano, and danced around its attacks before delivering a fatal blow'
+                    : ActivityHelpers::PetName($pet) . ' took on the ' . $monster . ' near the island\'s volcano, and deflected its attacks before delivering a fatal blow'
                 ;
 
                 if($gotTheThing->getValue() == 1)
@@ -96,6 +111,8 @@ class PhilosophersStoneService
                         $activityLogMessage,
                         ''
                     );
+
+                    $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20);
 
                     $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this from the remains of the Lava Giant\'s Spirit!', $activityLog);
                     $this->inventoryService->petCollectsItem('Liquid-hot Magma', $pet, $pet->getName() . ' got this from the remains of the Lava Giant\'s Spirit!', $activityLog);
@@ -112,14 +129,21 @@ class PhilosophersStoneService
                         ''
                     );
 
+                    $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY);
+
+                    $pet->increaseEsteem(12);
+
+                    $this->em->remove($pet->getTool());
+                    $pet->setTool(null);
+
                     $this->inventoryService->petCollectsItem('Metatron\'s Fire', $pet, $pet->getName() . ' found this after defeating the Lava Giant!', $activityLog);
                 }
             }
             else
             {
                 $activityLogMessage = $useDex
-                    ? ActivityHelpers::PetName($pet) . ' took on the ' . $monster . ' near the Island\'s Volcano, but was unable to outmaneuver its attacks'
-                    : ActivityHelpers::PetName($pet) . ' took on the ' . $monster . ' near the Island\'s Volcano, but wasn\'t strong enough to counter its attacks'
+                    ? ActivityHelpers::PetName($pet) . ' took on the ' . $monster . ' near the island\'s volcano, but was unable to outmaneuver its attacks'
+                    : ActivityHelpers::PetName($pet) . ' took on the ' . $monster . ' near the island\'s volcano, but wasn\'t strong enough to counter its attacks'
                 ;
 
                 $activityLogMessage .= ', and was eventually forced to retreat.';
@@ -155,13 +179,27 @@ class PhilosophersStoneService
 
         $gotTheThing = $this->petQuestRepository->findOrCreate($pet, 'Got Vesica Hydrargyrum', 0);
 
-        $canGetTheThing = $gotTheThing->getValue() == 0;
-
-        if($skill < 20)
+        if($pet->hasMerit(MeritEnum::NATURAL_CHANNEL) || $petWithSkills->getUmbra()->getTotal() < 1)
         {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(5, 10), PetActivityStatEnum::HUNT, false);
+
             $activityLog = $this->responseService->createActivityLog(
                 $pet,
-                ActivityHelpers::PetName($pet) . ' found a ice cave in the frozen quag in the Umbra, blocked by huge, Everice icicles. The Ceremony of Fire quivered in ' . ActivityHelpers::PetName($pet) . '\'s hands, but they had no idea how to use it, so returned home and put it away.',
+                'The Ceremony of Fire tried to lead ' . ActivityHelpers::PetName($pet) . ' somewhere, but after following for a short distance, ' . ActivityHelpers::PetName($pet) . ' suddenly felt ill, as if something was tugging on the threads of their very existence. Confused, and unsettled, ' . ActivityHelpers::PetName($pet) . ' returned home and put down the trident...',
+                ''
+            );
+
+            $pet->increaseSafety(-4);
+
+            $this->equipmentService->unequipPet($pet);
+        }
+        else if($skill < 20)
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::HUNT, false);
+
+            $activityLog = $this->responseService->createActivityLog(
+                $pet,
+                'The Ceremony of Fire lead ' . ActivityHelpers::PetName($pet) . ' to an ice cave in the frozen quag in the Umbra, blocked by huge, Everice icicles. The Ceremony of Fire quivered in ' . ActivityHelpers::PetName($pet) . '\'s hands, but they had no idea how to use it, so returned home and put it away.',
                 ''
             );
 
@@ -171,9 +209,11 @@ class PhilosophersStoneService
         {
             $roll = $this->rng->rngNextInt(1, $skill);
 
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(50, 70), PetActivityStatEnum::UMBRA, $roll >= 20);
+
             if($roll >= 20)
             {
-                $activityLogMessage = ActivityHelpers::PetName($pet) . ' went into an ice cave the frozen quag in the Umbra, and used their Ceremony of Fire to melt the huge Everice icicles that stood in their way.';
+                $activityLogMessage = 'The Ceremony of Fire lead ' . ActivityHelpers::PetName($pet) . ' to an ice cave in the frozen quag in the Umbra, and used their Ceremony of Fire to melt the huge Everice icicles that stood in their way.';
 
                 if($gotTheThing->getValue() == 1)
                 {
@@ -185,12 +225,14 @@ class PhilosophersStoneService
                         ''
                     );
 
+                    $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20);
+
                     $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this from the ice cave in the frozen quag of the Umbra.', $activityLog);
                     $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this from the ice cave in the frozen quag in the Umbra.', $activityLog);
                 }
                 else
                 {
-                    $activityLogMessage .= ' They reached the heart of the cave, where a strange jewel was encased in pure Everice. The Ceremony of Fire\'s magic had to be completely spent to melt through, but in the end, ' . ActivityHelpers::PetName($pet) . ' retrieved the jewel: Vesica Hydrargyrum!';
+                    $activityLogMessage .= ' They reached the heart of the cave, where a strange jewel was encased in pure Everice. The Ceremony of Fire\'s magic had to be completely spent to melt through it, but in the end, ' . ActivityHelpers::PetName($pet) . ' retrieved the jewel: a Vesica Hydrargyrum!';
 
                     $gotTheThing->setValue(1);
 
@@ -199,6 +241,12 @@ class PhilosophersStoneService
                         $activityLogMessage,
                         ''
                     );
+
+                    $pet->getTool()->changeItem($this->itemRepository->findOneByName('Ceremonial Trident'));
+
+                    $pet->increaseEsteem(12);
+
+                    $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY);
 
                     $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this from the ice cave in the frozen quag in the Umbra.', $activityLog);
                     $this->inventoryService->petCollectsItem('Vesica Hydrargyrum', $pet, $pet->getName() . ' found this in the heart of the ice cave in the frozen quag in the Umbra!', $activityLog);
@@ -224,22 +272,147 @@ class PhilosophersStoneService
     public function seekEarthsEgg(ComputedPetSkills $petWithSkills)
     {
         // go to forest, and fight one of some random Jabberwock:
-        //    Manxome Jabberwock
-        //    Burbling Jabberwock
-        //    Uffish Jabberwock
-        //    Whiffling Jabberwock
-        // if win, and pet has never won before:
-        //    sword is shattered, receive jabberwock goods + Earth's Egg
-        // if win, and pet has won before:
-        //    receive jabberwock goods
+        // if win, and pet has never won before, defeat the Manxome Jabberwock
+        //    sword is shattered, receive Earth's Egg
+        // if win, and pet has won before, defeat one of:
+        //    Burbling Jabberwock - mermaid egg
+        //    Uffish Jabberwock - 3x Egg
+        //    Whiffling Jabberwock - egg custard
+
+        $pet = $petWithSkills->getPet();
+
+        $changes = new PetChanges($pet);
+
+        $pet->increaseFood(-1);
+
+        $skill = 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl(true)->getTotal();
+
+        $gotTheThing = $this->petQuestRepository->findOrCreate($pet, 'Got Earth\'s Egg', 0);
+
+        $aMonsterType = $gotTheThing->getValue() == 0 ? 'the Manxome' : $this->rng->rngNextFromArray([
+            'a Burbling',
+            'an Uffish',
+            'a Whiffling'
+        ]);
+
+        if($skill < 20)
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::HUNT, false);
+
+            $activityLog = $this->responseService->createActivityLog(
+                $pet,
+                ActivityHelpers::PetName($pet) . ' found ' . $aMonsterType . ' Jabberwock in the tulgey wood, but realized they were completely outmatched. They returned home, and put away their ' . $pet->getTool()->getFullItemName() . '...',
+                ''
+            );
+
+            $this->equipmentService->unequipPet($pet);
+        }
+        else
+        {
+            $roll = $this->rng->rngNextInt(1, $skill);
+
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(50, 70), PetActivityStatEnum::HUNT, $roll >= 20);
+
+            if($roll >= 20)
+            {
+                $activityLogMessage =
+                    ActivityHelpers::PetName($pet) . ' took on ' . $aMonsterType . ' Jabberwock in the tulgey wood! The two fought for a while before ' . ActivityHelpers::PetName($pet) . ' delivered the final blow with a swift snicker-snack!'
+                ;
+
+                if($aMonsterType == 'the Manxome')
+                {
+                    $activityLogMessage .= ' The Snickerblade shattered as the jabberwock fell, dropping a small pouch. After taking a moment to recover, ' . ActivityHelpers::PetName($pet) . ' opened the pouch, revealing a jewel of preternatural beauty: the Earth\'s Egg!';
+
+                    $activityLog = $this->responseService->createActivityLog(
+                        $pet,
+                        $activityLogMessage,
+                        ''
+                    );
+
+                    $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY);
+
+                    $gotTheThing->setValue(1);
+
+                    $pet->increaseEsteem(12);
+
+                    $this->em->remove($pet->getTool());
+                    $pet->setTool(null);
+
+                    $this->inventoryService->petCollectsItem('Earth\'s Egg', $pet, $pet->getName() . ' got this from ' . $aMonsterType . ' Jabberwock!', $activityLog);
+                }
+                else
+                {
+                    $loot = [
+                        'a Burbling' => [ 'description' => 'a Mermaid Egg', 'items' => [ 'Mermaid Egg' ] ],
+                        'an Uffish' => [ 'description' => 'three ordinary Eggs', 'items' => [ 'Egg', 'Egg', 'Egg' ] ],
+                        'a Whiffling' => [ 'description' => 'an Egg Custard', 'items' => [ 'Egg Custard' ] ]
+                    ][$aMonsterType];
+
+                    $activityLogMessage .= ' The jabberwock fell, dropping ' . $loot['description'] . '.';
+
+                    $activityLog = $this->responseService->createActivityLog(
+                        $pet,
+                        $activityLogMessage,
+                        ''
+                    );
+
+                    $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20);
+
+                    foreach($loot['items'] as $item)
+                        $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' got this by defeating ' . $aMonsterType . ' Jabberwock!', $activityLog);
+                }
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog(
+                    $pet,
+                    ActivityHelpers::PetName($pet) . ' took on ' . $aMonsterType . ' Jabberwock in the tulgey wood, but was overpowered, and forced to retreat!',
+                    ''
+                );
+            }
+        }
+
+        $activityLog->setChanges($changes->compare($pet));
+
+        return $activityLog;
     }
 
-    public function seekMerkabaOfAir(ComputedPetSkills $petWithSkills)
+    public function seekMerkabaOfAir(ComputedPetSkills $petWithSkills): ?PetActivityLog
     {
-        // go to top of volcano, and attempt to split a bolt of lightning in two
-        // if win, and pet has never won before:
-        //    remove tool bonus, and receive Merkaba of Air
-        // if win, and pet has won before:
-        //    receive quint, Photons, and Pointers
+        // go to top of volcano, and split a bolt of lightning in two
+        $pet = $petWithSkills->getPet();
+
+        $gotTheThing = $this->petQuestRepository->findOrCreate($pet, 'Got Merkaba of Air', 0);
+
+        if($gotTheThing->getValue() == 1)
+            return null;
+
+        $changes = new PetChanges($pet);
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 120), PetActivityStatEnum::OTHER, false);
+
+        $pet
+            ->increaseEsteem(12)
+            ->increaseSafety(-24)
+        ;
+
+        $activityLog = $this->responseService->createActivityLog(
+            $petWithSkills->getPet(),
+            ActivityHelpers::PetName($pet) . ' went to the top of the island\'s volcano, and waited for a bolt of lightning. When they sensed one was finally coming, they held their ' . $pet->getTool()->getFullItemName() . ' up into the air! In an explosion of light and sound, ' . ActivityHelpers::PetName($pet) . ' was knocked to the ground, dizzy, unable to see, or hear, and feeling as though on fire! After several minutes, their senses started to return. ' . ActivityHelpers::PetName($pet) . ' slowly stood up, and moved toward a glowing gem among the rocks: a Merkaba of Air! They picked it up, and returned home, vowing to never do this again...',
+            ''
+        );
+
+        $this->inventoryService->petCollectsItem('Merkaba of Air', $pet, $pet->getName() . ' got this by splitting a bolt of lightning in two!', $activityLog);
+
+        $pet->getTool()->setEnchantment(null);
+
+        $gotTheThing->setValue(1);
+
+        $activityLog
+            ->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY)
+            ->setChanges($changes->compare($pet))
+        ;
+
+        return $activityLog;
     }
 }

@@ -55,6 +55,7 @@ use App\Service\PetActivity\HuntingService;
 use App\Service\PetActivity\LetterService;
 use App\Service\PetActivity\MagicBeanstalkService;
 use App\Service\PetActivity\PetSummonedAwayService;
+use App\Service\PetActivity\PhilosophersStoneService;
 use App\Service\PetActivity\PoopingService;
 use App\Service\PetActivity\PregnancyService;
 use App\Service\PetActivity\Crafting\ProgrammingService;
@@ -110,6 +111,7 @@ class PetService
     private HouseSimService $houseSimService;
     private SmithingService $smithingService;
     private PlasticPrinterService $plasticPrinterService;
+    private PhilosophersStoneService $philosophersStoneService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -127,7 +129,8 @@ class PetService
         PetSummonedAwayService $petSummonedAwayService, InventoryModifierService $toolBonusService,
         WeatherService $weatherService, HoliService $holiService, Caerbannog $caerbannog, CravingService $cravingService,
         StatusEffectService $statusEffectService, EatingService $eatingService, HouseSimService $houseSimService,
-        MagicBindingService $magicBindingService, SmithingService $smithingService, PlasticPrinterService $plasticPrinterService
+        MagicBindingService $magicBindingService, SmithingService $smithingService, PlasticPrinterService $plasticPrinterService,
+        PhilosophersStoneService $philosophersStoneService
     )
     {
         $this->em = $em;
@@ -175,6 +178,7 @@ class PetService
         $this->magicBindingService = $magicBindingService;
         $this->smithingService = $smithingService;
         $this->plasticPrinterService = $plasticPrinterService;
+        $this->philosophersStoneService = $philosophersStoneService;
     }
 
     public function runHour(Pet $pet)
@@ -691,6 +695,43 @@ class PetService
             case 'Winged Key':
                 $this->treasureMapService->doAbundantiasVault($pet);
                 return true;
+
+            case 'Fimbulvetr':
+                if($this->squirrel3->rngNextInt(1, 20) == 1)
+                {
+                    $this->philosophersStoneService->seekMetatronsFire($petWithSkills);
+                    return true;
+                }
+                return false;
+
+            case 'Ceremony of Fire':
+                if($this->squirrel3->rngNextInt(1, 20) == 1)
+                {
+                    $this->philosophersStoneService->seekVesicaHydrargyrum($petWithSkills);
+                    return true;
+                }
+                return false;
+
+            case 'Snikerblade':
+                if($this->squirrel3->rngNextInt(1, 20) == 1)
+                {
+                    $this->philosophersStoneService->seekEarthsEgg($petWithSkills);
+                    return true;
+                }
+                return false;
+        }
+
+        if(!$pet->getTool()->getEnchantment())
+            return false;
+
+        switch($pet->getTool()->getEnchantment()->getName())
+        {
+            case 'Searing':
+                if($this->squirrel3->rngNextInt(1, 20) == 1)
+                {
+                    return $this->philosophersStoneService->seekMerkabaOfAir($petWithSkills) !== null;
+                }
+                return false;
         }
 
         return false;
