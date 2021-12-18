@@ -32,7 +32,7 @@ class TraderOffer
     public $comment;
 
     /**
-     * @var bool
+     * @var int
      * @Groups({"traderOffer"})
      */
     public $canMakeExchange;
@@ -53,7 +53,7 @@ class TraderOffer
         $trade->cost = $cost;
         $trade->yield = $yield;
         $trade->comment = $comment;
-        $trade->canMakeExchange = TraderOffer::userCanMakeExchange($cost, $user, $houseInventoryQuantitiesByName);
+        $trade->canMakeExchange = TraderOffer::getMaxExchanges($cost, $user, $houseInventoryQuantitiesByName);
         $trade->lockedToAccount = $lockedToAccount;
 
         return $trade;
@@ -61,35 +61,31 @@ class TraderOffer
 
     /**
      * @param TraderOfferCostOrYield[] $costs
-     * @param User $user
      * @param ItemQuantity[] $houseInventoryQuantitiesByName
-     * @return bool
      */
-    private static function userCanMakeExchange(array $costs, User $user, array $houseInventoryQuantitiesByName): bool
+    private static function getMaxExchanges(array $costs, User $user, array $houseInventoryQuantitiesByName): int
     {
+        $maxQuantity = 9999;
+
         foreach($costs as $cost)
         {
             if($cost->type === CostOrYieldTypeEnum::ITEM)
             {
                 if(!array_key_exists($cost->item->getName(), $houseInventoryQuantitiesByName))
-                    return false;
+                    return 0;
 
-                if($houseInventoryQuantitiesByName[$cost->item->getName()]->quantity < $cost->quantity)
-                    return false;
+                $maxQuantity = min($maxQuantity, (int)($houseInventoryQuantitiesByName[$cost->item->getName()]->quantity /  $cost->quantity));
             }
             else if($cost->type === CostOrYieldTypeEnum::MONEY)
-            {
-                if($user->getMoneys() < $cost->quantity)
-                    return false;
-            }
+                $maxQuantity = min($maxQuantity, (int)($user->getMoneys() / $cost->quantity));
             else if($cost->type === CostOrYieldTypeEnum::RECYCLING_POINTS)
-            {
-                if($user->getRecyclePoints() < $cost->quantity)
-                    return false;
-            }
+                $maxQuantity = min($maxQuantity, (int)($user->getRecyclePoints() / $cost->quantity));
+
+            if($maxQuantity == 0)
+                return 0;
         }
 
-        return true;
+        return $maxQuantity;
     }
 
     private static function generateID(array $cost, array $yield): string

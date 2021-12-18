@@ -86,7 +86,7 @@ class TraderService
     private $calendarService;
     private $transactionService;
     private $tradesUnlockedRepository;
-    private $squirrel3;
+    private IRandom $rng;
     private $inventoryRepository;
 
     public function __construct(
@@ -100,7 +100,7 @@ class TraderService
         $this->calendarService = $calendarService;
         $this->transactionService = $transactionService;
         $this->tradesUnlockedRepository = $tradesUnlockedRepository;
-        $this->squirrel3 = $squirrel3;
+        $this->rng = $squirrel3;
         $this->inventoryRepository = $inventoryRepository;
     }
 
@@ -861,7 +861,7 @@ class TraderService
 
     private function getCuriositiesOffers(User $user, array $quantities): array
     {
-        $moonName = $this->squirrel3->rngNextFromArray([
+        $moonName = $this->rng->rngNextFromArray([
             'Europa', 'Ganymede', 'Callisto', 'Mimas', 'Enceladus', 'Titan', 'Miranda', 'Umbriel', 'Triton'
         ]);
 
@@ -1276,36 +1276,36 @@ class TraderService
     /**
      * CAREFUL: Also used by some items, to perform transmutations.
      */
-    public function makeExchange(User $user, TraderOffer $exchange, string $itemDescription = 'Received by trading with the Trader.')
+    public function makeExchange(User $user, TraderOffer $exchange, int $quantity, string $itemDescription = 'Received by trading with the Trader.')
     {
         foreach($exchange->cost as $cost)
         {
             switch($cost->type)
             {
                 case CostOrYieldTypeEnum::ITEM:
-                    $quantity = $this->inventoryService->loseItem($cost->item, $user, LocationEnum::HOME, $cost->quantity);
+                    $quantity = $this->inventoryService->loseItem($cost->item, $user, LocationEnum::HOME, $cost->quantity * $quantity);
 
-                    if($quantity < $cost->quantity)
+                    if($quantity < $cost->quantity * $quantity)
                         throw new \InvalidArgumentException('You do not have the items needed to make this exchange. (Expected ' . $cost->quantity . ' items; only found ' . $quantity . '.)');
 
                     break;
 
                 case CostOrYieldTypeEnum::MONEY:
-                    if($user->getMoneys() < $cost->quantity)
+                    if($user->getMoneys() < $cost->quantity * $quantity)
                         throw new \InvalidArgumentException('You do not have the moneys needed to make this exchange.');
 
-                    if($this->squirrel3->rngNextInt(1, 50) === 1)
-                        $this->transactionService->spendMoney($user, $cost->quantity, 'Traded away at the Trader. (That\'s usually just called "buying", right?)');
+                    if($this->rng->rngNextInt(1, 50) === 1)
+                        $this->transactionService->spendMoney($user, $cost->quantity * $quantity, 'Traded away at the Trader. (That\'s usually just called "buying", right?)');
                     else
-                        $this->transactionService->spendMoney($user, $cost->quantity, 'Traded away at the Trader.');
+                        $this->transactionService->spendMoney($user, $cost->quantity * $quantity, 'Traded away at the Trader.');
 
                     break;
 
                 case CostOrYieldTypeEnum::RECYCLING_POINTS:
-                    if($user->getRecyclePoints() < $cost->quantity)
+                    if($user->getRecyclePoints() < $cost->quantity * $quantity)
                         throw new \InvalidArgumentException('You do not have the ♺ needed to make this exchange.');
 
-                    $user->increaseRecyclePoints(-$cost->quantity);
+                    $user->increaseRecyclePoints(-$cost->quantity * $quantity);
 
                     break;
 
@@ -1319,21 +1319,21 @@ class TraderService
             switch($yield->type)
             {
                 case CostOrYieldTypeEnum::ITEM:
-                    for($i = 0; $i < $yield->quantity; $i++)
+                    for($i = 0; $i < $yield->quantity * $quantity; $i++)
                         $this->inventoryService->receiveItem($yield->item, $user, null, $itemDescription, LocationEnum::HOME, $exchange->lockedToAccount);
 
                     break;
 
                 case CostOrYieldTypeEnum::MONEY:
-                    if($this->squirrel3->rngNextInt(1, 50) === 1)
-                        $this->transactionService->getMoney($user, $yield->quantity, 'Traded for at the Trader. (That\'s usually just called "selling", right?)');
+                    if($this->rng->rngNextInt(1, 50) === 1)
+                        $this->transactionService->getMoney($user, $yield->quantity * $quantity, 'Traded for at the Trader. (That\'s usually just called "selling", right?)');
                     else
-                        $this->transactionService->getMoney($user, $yield->quantity, 'Traded for at the Trader.');
+                        $this->transactionService->getMoney($user, $yield->quantity * $quantity, 'Traded for at the Trader.');
 
                     break;
 
                 case CostOrYieldTypeEnum::RECYCLING_POINTS:
-                    $user->increaseRecyclePoints($yield->quantity);
+                    $user->increaseRecyclePoints($yield->quantity * $quantity);
                     break;
             }
         }
@@ -1341,14 +1341,14 @@ class TraderService
 
     function recolorTrader(Trader $trader)
     {
-        $h1 = $this->squirrel3->rngNextInt(0, 255);
-        $h2 = $this->squirrel3->rngNextInt(0, 255);
-        $h3 = $this->squirrel3->rngNextInt(0, 255);
+        $h1 = $this->rng->rngNextInt(0, 255);
+        $h2 = $this->rng->rngNextInt(0, 255);
+        $h3 = $this->rng->rngNextInt(0, 255);
 
-        $l2 = $this->squirrel3->rngNextInt($this->squirrel3->rngNextInt(40, 120), 150);
+        $l2 = $this->rng->rngNextInt($this->rng->rngNextInt(40, 120), 150);
 
-        $s3 = $this->squirrel3->rngNextInt($this->squirrel3->rngNextInt(0, 40), $this->squirrel3->rngNextInt(160, 255));
-        $l3 = $this->squirrel3->rngNextInt($this->squirrel3->rngNextInt(0, 40), $this->squirrel3->rngNextInt(160, 255));
+        $s3 = $this->rng->rngNextInt($this->rng->rngNextInt(0, 40), $this->rng->rngNextInt(160, 255));
+        $l3 = $this->rng->rngNextInt($this->rng->rngNextInt(0, 40), $this->rng->rngNextInt(160, 255));
 
         if($h1 >= 30 && $h1 < 130) $h1 += 120;
         if($h2 >= 30 && $h2 < 130) $h2 += 120;
@@ -1370,8 +1370,8 @@ class TraderService
         }
 
         $trader
-            ->setColorA(ColorFunctions::HSL2Hex($h1 / 256, $this->squirrel3->rngNextInt(56, 100) / 100, 0.46))
-            ->setColorB(ColorFunctions::HSL2Hex($h2 / 256, $this->squirrel3->rngNextInt(56, 100) / 100, $l2 / 255))
+            ->setColorA(ColorFunctions::HSL2Hex($h1 / 256, $this->rng->rngNextInt(56, 100) / 100, 0.46))
+            ->setColorB(ColorFunctions::HSL2Hex($h2 / 256, $this->rng->rngNextInt(56, 100) / 100, $l2 / 255))
             ->setColorC(ColorFunctions::HSL2Hex($h3 / 256, $s3 / 255, $l3 / 255))
         ;
     }
@@ -1379,7 +1379,7 @@ class TraderService
     function generateTrader(): Trader
     {
         $trader = (new Trader())
-            ->setName($this->squirrel3->rngNextFromArray(self::TRADER_NAMES))
+            ->setName($this->rng->rngNextFromArray(self::TRADER_NAMES))
         ;
 
         $this->recolorTrader($trader);

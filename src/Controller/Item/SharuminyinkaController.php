@@ -54,7 +54,7 @@ class SharuminyinkaController extends PoppySeedPetsItemController
         }
         else
         {
-            $traderService->makeExchange($user, $exchange, $user->getName() . ' made this, using ' . $inventory->getItem()->getName() . '.');
+            $traderService->makeExchange($user, $exchange, 1, $user->getName() . ' made this, using ' . $inventory->getItem()->getName() . '.');
 
             $em->flush();
 
@@ -95,7 +95,7 @@ class SharuminyinkaController extends PoppySeedPetsItemController
         }
         else
         {
-            $traderService->makeExchange($user, $exchange, $user->getName() . ' made this, using ' . $inventory->getItem()->getName() . '.');
+            $traderService->makeExchange($user, $exchange, 1, $user->getName() . ' made this, using ' . $inventory->getItem()->getName() . '.');
 
             $em->flush();
 

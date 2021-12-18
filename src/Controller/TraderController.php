@@ -9,6 +9,7 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -62,7 +63,7 @@ class TraderController extends PoppySeedPetsController
      */
     public function makeExchange(
         string $id, TraderService $traderService, ResponseService $responseService, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository, InventoryService $inventoryService
+        UserQuestRepository $userQuestRepository, InventoryService $inventoryService, Request $request
     )
     {
         $user = $this->getUser();
@@ -70,7 +71,15 @@ class TraderController extends PoppySeedPetsController
         if(!$user->getUnlockedTrader())
             throw new AccessDeniedHttpException('You haven\'t unlocked the Trader yet.');
 
+        $quantity = $request->request->getInt('quantity', 1);
+
+        if($quantity < 1)
+            throw new UnprocessableEntityHttpException('Quantity must be 1, or more.');
+
         $exchange = $traderService->getOfferById($user, $id);
+
+        if($quantity > $exchange->canMakeExchange)
+            throw new UnprocessableEntityHttpException('You can only make this trade up to ' . $exchange->canMakeExchange . ' times.');
 
         if(!$exchange)
             throw new NotFoundHttpException('There is no such exchange available.');
@@ -78,7 +87,7 @@ class TraderController extends PoppySeedPetsController
         if(!$traderService->userCanMakeExchange($user, $exchange))
             throw new UnprocessableEntityHttpException('The items you need to make this exchange could not be found in your house.');
 
-        $traderService->makeExchange($user, $exchange);
+        $traderService->makeExchange($user, $exchange, $quantity);
 
         $message = null;
 
