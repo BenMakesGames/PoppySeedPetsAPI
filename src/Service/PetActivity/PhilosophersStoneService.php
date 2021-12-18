@@ -325,7 +325,7 @@ class PhilosophersStoneService
 
                 if($aMonsterType == 'the Manxome')
                 {
-                    $activityLogMessage .= ' The Snickerblade shattered as the jabberwock fell, dropping a small pouch. After taking a moment to recover, ' . ActivityHelpers::PetName($pet) . ' opened the pouch, revealing a jewel of preternatural beauty: the Earth\'s Egg!';
+                    $activityLogMessage .= ' The Snickerblade shattered as the jabberwock fell, and a small pouch dropped to the ground. After taking a moment to recover, ' . ActivityHelpers::PetName($pet) . ' opened the pouch, revealing a jewel of preternatural beauty: the Earth\'s Egg!';
 
                     $activityLog = $this->responseService->createActivityLog(
                         $pet,
