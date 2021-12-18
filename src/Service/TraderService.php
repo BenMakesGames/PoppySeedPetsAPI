@@ -1283,10 +1283,10 @@ class TraderService
             switch($cost->type)
             {
                 case CostOrYieldTypeEnum::ITEM:
-                    $quantity = $this->inventoryService->loseItem($cost->item, $user, LocationEnum::HOME, $cost->quantity * $quantity);
+                    $itemQuantity = $this->inventoryService->loseItem($cost->item, $user, LocationEnum::HOME, $cost->quantity * $quantity);
 
-                    if($quantity < $cost->quantity * $quantity)
-                        throw new \InvalidArgumentException('You do not have the items needed to make this exchange. (Expected ' . $cost->quantity . ' items; only found ' . $quantity . '.)');
+                    if($itemQuantity < $cost->quantity * $quantity)
+                        throw new \InvalidArgumentException('You do not have the items needed to make this exchange. (Expected ' . ($cost->quantity * $quantity) . ' items; only found ' . $itemQuantity . '.)');
 
                     break;
 
