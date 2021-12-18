@@ -140,7 +140,7 @@ class GamingGroupService
                 'winWith' => null,
                 'exp' => [ PetSkillEnum::MUSIC ],
                 'possibleLoot' => [ 'Music Note' ],
-                'lootMessage' => 'They played through a ton songs!',
+                'lootMessage' => 'They played through a ton of songs!',
             ],
             [
                 'type' => self::TYPE_BOARD,
