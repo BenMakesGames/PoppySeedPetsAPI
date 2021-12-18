@@ -33,6 +33,7 @@ class ComputedPetSkills
         $skill->merits =
             ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 1 : 0) +
             ($this->pet->hasMerit(MeritEnum::MOON_BOUND) ? DateFunctions::moonStrength(new \DateTimeImmutable()) : 0) +
+            ($this->pet->hasMerit(MeritEnum::ETERNAL) ? 1 : 0) +
             ($this->pet->hasMerit(MeritEnum::WONDROUS_STRENGTH) ? 2 : 0)
         ;
 
@@ -51,6 +52,7 @@ class ComputedPetSkills
         $skill->merits =
             ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 1 : 0) +
             ($this->pet->hasMerit(MeritEnum::MOON_BOUND) ? DateFunctions::moonStrength(new \DateTimeImmutable()) : 0) +
+            ($this->pet->hasMerit(MeritEnum::ETERNAL) ? 1 : 0) +
             ($this->pet->hasMerit(MeritEnum::WONDROUS_STAMINA) ? 2 : 0)
         ;
 
@@ -68,6 +70,7 @@ class ComputedPetSkills
         $skill->base = $this->pet->getSkills()->getDexterity();
         $skill->merits =
             ($this->pet->hasMerit(MeritEnum::PREHENSILE_TONGUE) ? 1 : 0) +
+            ($this->pet->hasMerit(MeritEnum::ETERNAL) ? 1 : 0) +
             ($this->pet->hasMerit(MeritEnum::WONDROUS_DEXTERITY) ? 2 : 0)
         ;
 
@@ -83,7 +86,10 @@ class ComputedPetSkills
     {
         $skill = new TotalPetSkill();
         $skill->base = $this->pet->getSkills()->getIntelligence();
-        $skill->merits = ($this->pet->hasMerit(MeritEnum::WONDROUS_INTELLIGENCE) ? 2 : 0);
+        $skill->merits =
+            ($this->pet->hasMerit(MeritEnum::WONDROUS_INTELLIGENCE) ? 2 : 0) +
+            ($this->pet->hasMerit(MeritEnum::ETERNAL) ? 1 : 0)
+        ;
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? -2 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::TIRED) ? -2 : 0) +
@@ -101,7 +107,10 @@ class ComputedPetSkills
     {
         $skill = new TotalPetSkill();
         $skill->base = $this->pet->getSkills()->getPerception();
-        $skill->merits = ($this->pet->hasMerit(MeritEnum::WONDROUS_PERCEPTION) ? 2 : 0);
+        $skill->merits =
+            ($this->pet->hasMerit(MeritEnum::WONDROUS_PERCEPTION) ? 2 : 0) +
+            ($this->pet->hasMerit(MeritEnum::ETERNAL) ? 1 : 0)
+        ;
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::TIRED) ? -2 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::CAFFEINATED) ? 2 : 0) +
