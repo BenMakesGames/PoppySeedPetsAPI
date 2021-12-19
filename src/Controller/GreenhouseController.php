@@ -8,13 +8,17 @@ use App\Entity\PlantYieldItem;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\MoonPhaseEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetLocationEnum;
+use App\Enum\PetSkillEnum;
 use App\Enum\PlantTypeEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\GrammarFunctions;
+use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
@@ -28,6 +32,7 @@ use App\Service\GreenhouseService;
 use App\Service\InventoryService;
 use App\Service\PetActivity\GreenhouseAdventureService;
 use App\Service\PetAssistantService;
+use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\WeatherService;
@@ -78,7 +83,7 @@ class GreenhouseController extends PoppySeedPetsController
     public function weedPlants(
         ResponseService $responseService, UserQuestRepository $userQuestRepository, EntityManagerInterface $em,
         InventoryService $inventoryService, Squirrel3 $squirrel3, PetAssistantService $petAssistantService,
-        WeatherService $weatherService
+        WeatherService $weatherService, ItemRepository $itemRepository
     )
     {
         $user = $this->getUser();
@@ -121,7 +126,7 @@ class GreenhouseController extends PoppySeedPetsController
 
             if($hasDarkPlots)
             {
-                $basicItems[] = 'Toadstool';
+                $basicItems[] = $squirrel3->rngNextFromArray([ 'Toadstool', 'Chanterelle' ]);
             }
 
             if($hasWaterPlots)
@@ -141,24 +146,31 @@ class GreenhouseController extends PoppySeedPetsController
                 [ 'Mango', 'Gypsum', 'Really Big Leaf', 'White Feathers' ]
             );
 
-            $itemObject = $inventoryService->receiveItem($extraItem, $user, $user, $helper->getName() . ' found this while weeding the Greenhouse with ' . $user->getName() . '.', LocationEnum::HOME);
-
-            $message .= ' ' . $helper->getName() . ' helped, too, and found ' . $itemObject->getItem()->getNameWithArticle() . '!';
+            $extraItemObject = $itemRepository->findOneByName($extraItem);
 
             $surprisingItems = [ 'Coconut', 'Mango' ];
             $litterItems = [ 'Plastic', 'Paper', 'Filthy Cloth' ];
 
             if(in_array($extraItem, $surprisingItems))
-                $message .= ' (As a weed?! Weird!)';
+                $extraDetail = '! (As a weed?! Weird!)';
             else if(in_array($extraItem, $litterItems))
-                $message .= ' (Weeds are bad enough; what\'s this litter doing here?!)';
+                $extraDetail = '! (Weeds are bad enough; what\'s this litter doing here?!)';
             else
-                $message .= ' ' . $squirrel3->rngNextFromArray([ 'Noice!', 'Yoink!', '👍', '👌', 'Neat-o!', 'Okey dokey!' ]);
+                $extraDetail = '.';
+
+            $changes = new PetChanges($helper);
+            $activityLogEntry = $responseService->createActivityLog($helper, ActivityHelpers::PetName($helper) . ' helped ' . $user->getName() . ' weed their Greenhouse, and found ' . $extraItemObject->getNameWithArticle() . $extraDetail, '');
+            $inventoryService->petCollectsItem($extraItemObject, $helper, $helper->getName() . ' found this while weeding the Greenhouse with ' . $user->getName() . $extraDetail, $activityLogEntry);
+
+            $activityLogEntry
+                ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
+                ->setChanges($changes->compare($helper))
+            ;
         }
 
         $em->flush();
 
-        return $responseService->success($message);
+        return $responseService->success($message . ' ' . $squirrel3->rngNextFromArray([ 'Noice!', 'Yoink!', '👍', '👌', 'Neat-o!', 'Okey dokey!' ]));
     }
 
     /**
