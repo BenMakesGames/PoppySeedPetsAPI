@@ -1,10 +1,6 @@
 framework:
     rate_limiter:
-        psp_burst:
-            policy: 'sliding_window'
-            limit: 5
-            interval: '1 second'
         psp_default:
-            policy: 'sliding_window'
-            limit: 15
-            interval: '10 seconds'
+            policy: 'token_bucket'
+            limit: 8
+            rate: { interval: '2 seconds', amount: 3 }

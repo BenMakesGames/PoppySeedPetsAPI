@@ -29,18 +29,16 @@ class ControllerActionSubscriber implements EventSubscriberInterface
     private $houseService;
     private $annotationReader;
     private RateLimiterFactory $defaultRateLimiterFactory;
-    private RateLimiterFactory $burstRateLimiterFactory;
 
     public function __construct(
         Security $security, HouseService $houseService, Reader $annotationReader,
-        RateLimiterFactory $pspDefaultLimiter, RateLimiterFactory $pspBurstLimiter
+        RateLimiterFactory $pspDefaultLimiter
     )
     {
         $this->security = $security;
         $this->houseService = $houseService;
         $this->annotationReader = $annotationReader;
         $this->defaultRateLimiterFactory = $pspDefaultLimiter;
-        $this->burstRateLimiterFactory = $pspBurstLimiter;
     }
 
     public function beforeFilter(ControllerEvent $event)
@@ -62,11 +60,9 @@ class ControllerActionSubscriber implements EventSubscriberInterface
         if(!$user)
             return;
 
-        $burstLimiter = $this->burstRateLimiterFactory->create($user->getId());
         $defaultLimiter = $this->defaultRateLimiterFactory->create($user->getId());
 
-        $burstLimiter->consume(1)->wait();
-        $defaultLimiter->consume(1)->wait();
+        $defaultLimiter->reserve(1, 2)->wait();
     }
 
     private function checkHouseHours(ControllerEvent $event)
