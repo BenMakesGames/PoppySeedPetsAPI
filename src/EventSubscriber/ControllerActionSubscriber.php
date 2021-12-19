@@ -65,8 +65,8 @@ class ControllerActionSubscriber implements EventSubscriberInterface
         $burstLimiter = $this->burstRateLimiterFactory->create($user->getId());
         $defaultLimiter = $this->defaultRateLimiterFactory->create($user->getId());
 
-        $burstLimiter->consume(1)->wait();
-        $defaultLimiter->consume(1)->wait();
+        $burstLimiter->reserve(1)->wait();
+        $defaultLimiter->reserve(1)->wait();
     }
 
     private function checkHouseHours(ControllerEvent $event)
