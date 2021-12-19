@@ -3,8 +3,11 @@ namespace App\Controller;
 
 use App\Entity\Pet;
 use App\Enum\LocationEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
+use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
 use App\Repository\SpiceRepository;
 use App\Service\BeehiveService;
@@ -221,12 +224,15 @@ class BeehiveController extends PoppySeedPetsController
 
             if($beehive->getHelper())
             {
-                $petWithSkills = $beehive->getHelper()->getComputedSkills();
+                $helper = $beehive->getHelper();
+                $petWithSkills = $helper->getComputedSkills();
 
                 $gathering = $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal();
                 $hunting = $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal();
 
                 $total = $gathering + $hunting;
+
+                $changes = new PetChanges($helper);
 
                 if($squirrel3->rngNextInt(1, $total) <= $gathering)
                 {
@@ -236,6 +242,8 @@ class BeehiveController extends PoppySeedPetsController
                         [ 'Gypsum', 'Mixed Nuts', 'Apricot', 'Silver Ore', ],
                         [ 'Gold Ore', 'Liquid-hot Magma' ],
                     );
+
+                    $verb = 'gather';
                 }
                 else
                 {
@@ -245,9 +253,18 @@ class BeehiveController extends PoppySeedPetsController
                         [ 'Toad Legs', 'Jar of Fireflies' ],
                         [ 'Silver Bar', 'Gold Bar', 'Quintessence' ],
                     );
+
+                    $verb = 'hunt';
                 }
 
-                $newItems[] = $inventoryService->receiveItem($extraItem, $user, $user, $beehive->getHelper()->getName() . ' helped ' . $user->getName() . '\'s bees collect this.', LocationEnum::HOME);
+                $activityLog = $responseService->createActivityLog($helper, ActivityHelpers::PetName($helper) . ' helped ' . $user->getName() . '\'s bees while they were out ' . $verb . 'ing, and collected ' . $extraItem . '.', '');
+
+                $inventoryService->petCollectsItem($extraItem, $helper, $helper->getName() . ' helped ' . $user->getName() . '\'s bees ' . $verb . ' this.', $activityLog);
+
+                $activityLog
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
+                    ->setChanges($changes->compare($helper))
+                ;
             }
 
             foreach($newItems as $newItem)
@@ -268,10 +285,7 @@ class BeehiveController extends PoppySeedPetsController
 
         $em->flush();
 
-        if($extraItem)
-            $responseService->addFlashMessage('You received ' . ArrayFunctions::list_nice($itemNames) . '. (The ' . $extraItem . ' was thanks to ' . $beehive->getHelper()->getName() . '\'s help!)');
-        else
-            $responseService->addFlashMessage('You received ' . ArrayFunctions::list_nice($itemNames) . '.');
+        $responseService->addFlashMessage('You received ' . ArrayFunctions::list_nice($itemNames) . '.');
 
         return $responseService->success($user->getBeehive(), [ SerializationGroupEnum::MY_BEEHIVE, SerializationGroupEnum::HELPER_PET ]);
     }
