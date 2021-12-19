@@ -89,6 +89,25 @@ class PetController extends PoppySeedPetsController
     }
 
     /**
+     * @Route("/my/{id}", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getMyPet(ResponseService $responseService, PetRepository $petRepository, int $id)
+    {
+        $user = $this->getUser();
+
+        $pet = $petRepository->findOneBy([
+            'id' => $id,
+            'owner' => $user->getId(),
+        ]);
+
+        if(!$pet)
+            throw new NotFoundHttpException();
+
+        return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
+    }
+
+    /**
      * @Route("/daycare", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
