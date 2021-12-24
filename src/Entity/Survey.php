@@ -33,6 +33,7 @@ class Survey
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"surveySummary"})
      */
     private $endDate;
 
