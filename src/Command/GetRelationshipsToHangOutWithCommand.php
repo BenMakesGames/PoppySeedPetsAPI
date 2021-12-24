@@ -15,15 +15,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class GetRelationshipsToHangOutWithCommand extends Command
 {
-    private $em;
     private $petRelationshipRepository;
     private $petRepository;
 
     public function __construct(
-        EntityManagerInterface $em, PetRelationshipRepository $petRelationshipRepository, PetRepository $petRepository
+        PetRelationshipRepository $petRelationshipRepository, PetRepository $petRepository
     )
     {
-        $this->em = $em;
         $this->petRelationshipRepository = $petRelationshipRepository;
         $this->petRepository = $petRepository;
 

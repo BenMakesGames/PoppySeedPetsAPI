@@ -11,12 +11,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ExportSpeciesForToolCommand extends Command
 {
-    private $em;
     private $petSpeciesRepository;
 
-    public function __construct(EntityManagerInterface $em, PetSpeciesRepository $petSpeciesRepository)
+    public function __construct(PetSpeciesRepository $petSpeciesRepository)
     {
-        $this->em = $em;
         $this->petSpeciesRepository = $petSpeciesRepository;
 
         parent::__construct();
