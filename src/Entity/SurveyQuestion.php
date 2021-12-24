@@ -20,7 +20,7 @@ class SurveyQuestion
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text")
      * @Groups({"surveyQuestion"})
      */
     private $title;
