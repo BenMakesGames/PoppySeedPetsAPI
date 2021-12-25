@@ -76,7 +76,7 @@ class DragonVaseController extends PoppySeedPetsItemController
             $petItem = $rng->rngNextFromArray([ 'Quintessence', 'Wings', 'Feathers' ]);
 
             if($petItem == 'Feathers')
-                $activityLog = $responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' Wings some ' . $petItem . ' that flew out of a Dragon Vase ' . $user->getName() . ' smashed, but accidentally reduced it to mere Feathers.', '');
+                $activityLog = $responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' ' . $description . ' some Wings some ' . $petItem . ' that flew out of a Dragon Vase ' . $user->getName() . ' smashed, but accidentally reduced it to mere Feathers.', '');
             else
                 $activityLog = $responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' ' . $description . ' some ' . $petItem . ' that flew out of a Dragon Vase ' . $user->getName() . ' smashed.', '');
 
