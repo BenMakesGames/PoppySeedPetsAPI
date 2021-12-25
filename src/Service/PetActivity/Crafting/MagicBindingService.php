@@ -115,6 +115,9 @@ class MagicBindingService
             // frostbite sucks
             $evericeWeight = $petWithSkills->getPet()->getSafety() < 0 ? 1 : 8;
 
+            if($this->houseSimService->hasInventory('Pinecone'))
+                $possibilities[] = new ActivityCallback($this, 'createMagicPinecone', $evericeWeight);
+
             if($this->houseSimService->hasInventory('Invisible Shovel'))
                 $possibilities[] = new ActivityCallback($this, 'createSleet', $evericeWeight);
 
@@ -1683,6 +1686,36 @@ class MagicBindingService
             ;
 
             $this->inventoryService->petCollectsItem('Cool Mint Scepter', $pet, $pet->getName() . ' made this by infusing a Wand of Ice with Mint.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createMagicPinecone(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $skillCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal());
+
+        if($skillCheck < 12)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            $pet->increaseSafety(-1);
+
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind Everice to a Pinecone, but almost got frostbitten, and had to put it down for the time being...', 'icons/activity-logs/confused');
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->houseSimService->getState()->loseItem('Pinecone', 1);
+            $this->houseSimService->getState()->loseItem('Everice', 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Everice to a Pinecone, creating a _Magic_ Pinecone!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
+            ;
+
+            $this->inventoryService->petCollectsItem('Magic Pinecone', $pet, $pet->getName() . ' made this by binding Everice to a Pinecone.', $activityLog);
             return $activityLog;
         }
     }

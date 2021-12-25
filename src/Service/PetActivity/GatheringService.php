@@ -15,7 +15,6 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
-use App\Functions\GrammarFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -25,10 +24,10 @@ use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
+use App\Service\CalendarService;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
-use App\Service\PetColorService;
 use App\Service\PetExperienceService;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
@@ -53,6 +52,7 @@ class GatheringService
     private MeritRepository $meritRepository;
     private GatheringDistractionService $gatheringDistractions;
     private UserQuestRepository $userQuestRepository;
+    private CalendarService $calendarService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
@@ -60,7 +60,7 @@ class GatheringService
         Squirrel3 $squirrel3, WeatherService $weatherService, FieldGuideService $fieldGuideService,
         PetSpeciesRepository $petSpeciesRepository, PetRepository $petRepository, PetFactory $petFactory,
         MeritRepository $meritRepository, GatheringDistractionService $gatheringDistractions,
-        UserQuestRepository $userQuestRepository
+        UserQuestRepository $userQuestRepository, CalendarService $calendarService
     )
     {
         $this->responseService = $responseService;
@@ -78,6 +78,7 @@ class GatheringService
         $this->meritRepository = $meritRepository;
         $this->gatheringDistractions = $gatheringDistractions;
         $this->userQuestRepository = $userQuestRepository;
+        $this->calendarService = $calendarService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -313,6 +314,8 @@ class GatheringService
     {
         $pet = $petWithSkills->getPet();
 
+        $getPinecone = $this->calendarService->getMonthAndDay() > 1225 && $this->squirrel3->rngNextInt(1, 3) === 1;
+
         if($this->squirrel3->rngNextInt(1, 8) >= 6)
         {
             $harvest = 'Blueberries';
@@ -332,6 +335,16 @@ class GatheringService
         {
             $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% got scratched up harvesting berries from a Thorny ' . $harvest . ' Bush.', 'icons/activity-logs/wounded');
+        }
+
+        if($getPinecone)
+        {
+            $activityLog
+                ->setEntry($activityLog->getEntry() . ' Hm-what? There was a Pinecone in the bush, too?!')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ;
+
+            $this->inventoryService->petCollectsItem('Pinecone', $pet, $pet->getName() . ' found this in a Thorny ' . $harvest . ' Bush.', $activityLog);
         }
 
         $this->inventoryService->petCollectsItem($harvest, $pet, $pet->getName() . ' harvested these from a Thorny ' . $harvest . ' Bush.', $activityLog);
@@ -432,11 +445,23 @@ class GatheringService
 
         if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 10)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stole an Egg from a Bird Nest.', '');
+            $foundPinecone = $this->calendarService->getMonthAndDay() > 1225;
+
+            if($foundPinecone)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stole an Egg from a Bird Nest. Hm-what? There was a Pinecone up there, too!', '');
+                $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY);
+            }
+            else
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stole an Egg from a Bird Nest.', '');
+
             $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
 
             if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal()) >= 10)
                 $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
+
+            if($foundPinecone)
+                $this->inventoryService->petCollectsItem('Pinecone', $pet, $pet->getName() . ' found this in a tree while stealing from a Bird Nest.', $activityLog);
 
             $pet->increaseEsteem($this->squirrel3->rngNextInt(1, 2));
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ]);
