@@ -277,7 +277,8 @@ class FireplaceController extends PoppySeedPetsController
         $randomRewards = [
             'Mint', 'Chocolate Bar', 'Charcoal', 'Cheese', 'Crystal Ball', 'Fruit Basket',
             'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die', 'Wings',
-            'Fluff', 'Paper Bag', 'Plastic Idol', 'Quintessence', 'Secret Seashell', 'Rock'
+            'Fluff', 'Paper Bag', 'Plastic Idol', 'Quintessence', 'Secret Seashell', 'Rock',
+            'Castella Cake'
         ];
 
         $rewards = [
