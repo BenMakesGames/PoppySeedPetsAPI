@@ -563,6 +563,9 @@ class FishingService
 
     private function fishedPlazaFountain(ComputedPetSkills $petWithSkills, int $bonusMoney): PetActivityLog
     {
+        if($this->squirrel3->rngNextInt(1, 5) == 1)
+            return $this->fishedPlazaFountainAndGotInFightWithMagpie($petWithSkills, $bonusMoney);
+
         $pet = $petWithSkills->getPet();
 
         if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 10)
@@ -587,6 +590,26 @@ class FishingService
             $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' fished this out of the Plaza fountain while no one was looking.');
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH ]);
+
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::FISH, true);
+
+        return $activityLog;
+    }
+
+    private function fishedPlazaFountainAndGotInFightWithMagpie(ComputedPetSkills $petWithSkills, int $bonusMoney): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 10)
+            $bonusMoney += $this->squirrel3->rngNextInt(1, 3);
+
+        $moneys = $this->squirrel3->rngNextInt(2, 9) + $bonusMoney;
+
+        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started fishing around in the Plaza fountain, and got ambushed by a Thieving Magpie! They fought the creature off, and took its ' . $moneys . ' moneys.', 'icons/activity-logs/moneys');
+
+        $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' took this from a Thieving Magpie that attacked them while they were fishing in the Plaza fountain.');
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::FISH, true);
 
