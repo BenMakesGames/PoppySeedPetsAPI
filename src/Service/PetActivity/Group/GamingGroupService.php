@@ -1,24 +1,19 @@
 <?php
 namespace App\Service\PetActivity\Group;
 
-use App\Entity\Enchantment;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetGroup;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
-use App\Functions\ActivityHelpers;
-use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Service\GroupNameGenerator;
-use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
-use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -32,10 +27,12 @@ class GamingGroupService
     private $petRelationshipService;
     private IRandom $squirrel3;
     private GroupNameGenerator $groupNameGenerator;
+    private EnchantmentRepository $enchantmentRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3, GroupNameGenerator $groupNameGenerator
+        PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3, GroupNameGenerator $groupNameGenerator,
+        EnchantmentRepository $enchantmentRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -44,6 +41,7 @@ class GamingGroupService
         $this->petRelationshipService = $petRelationshipService;
         $this->squirrel3 = $squirrel3;
         $this->groupNameGenerator = $groupNameGenerator;
+        $this->enchantmentRepository = $enchantmentRepository;
     }
 
     private const DICTIONARY = [
@@ -120,6 +118,7 @@ class GamingGroupService
     private const TYPE_BOARD = 'board';
     private const TYPE_PARTY = 'party';
     private const TYPE_TTRPG = 'TTRPG';
+    private const TYPE_LARPING = 'LARPing';
 
     public function meet(PetGroup $group)
     {
@@ -133,6 +132,7 @@ class GamingGroupService
                 'exp' => null,
                 'possibleLoot' => null,
                 'lootMessage' => null,
+                'lootEnchantments' => [ null ],
             ],
             [
                 'type' => self::TYPE_RHYTHM,
@@ -141,6 +141,7 @@ class GamingGroupService
                 'exp' => [ PetSkillEnum::MUSIC ],
                 'possibleLoot' => [ 'Music Note' ],
                 'lootMessage' => 'They played through a ton of songs!',
+                'lootEnchantments' => [ null ],
             ],
             [
                 'type' => self::TYPE_BOARD,
@@ -149,6 +150,7 @@ class GamingGroupService
                 'exp' => null,
                 'possibleLoot' => [ 'Glowing Six-sided Die' ],
                 'lootMessage' => 'Somehow they ended up with more dice than they started with...',
+                'lootEnchantments' => [ null ],
             ],
             [
                 'type' => self::TYPE_BOARD,
@@ -157,6 +159,7 @@ class GamingGroupService
                 'exp' => null,
                 'possibleLoot' => null,
                 'lootMessage' => null,
+                'lootEnchantments' => [ null ],
             ],
             [
                 'type' => self::TYPE_PARTY,
@@ -165,6 +168,7 @@ class GamingGroupService
                 'exp' => ($partyGameName === self::NAME_SCRAWLFUL_2) ? [ PetSkillEnum::CRAFTS ] : null,
                 'possibleLoot' => null,
                 'lootMessage' => null,
+                'lootEnchantments' => [ null ],
             ],
             [
                 'type' => self::TYPE_TTRPG,
@@ -173,25 +177,38 @@ class GamingGroupService
                 'exp' => null,
                 'possibleLoot' => [ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die' ],
                 'lootMessage' => 'Somehow they ended up with more dice than they started with...',
+                'lootEnchantments' => [ null ],
             ],
+            [
+                'type' => self::TYPE_LARPING,
+                'name' => 'LARPing',
+                'winWith' => null,
+                'exp' => [ PetSkillEnum::STEALTH, PetSkillEnum::CRAFTS ],
+                'possibleLoot' => [ 'Scythe', 'Hunting Spear', 'Snakebite' ],
+                'lootMessage' => 'They made their own, foam weapons to play with!',
+                'lootEnchantments' => [ 'Foam' ],
+            ]
         ]);
 
-        $message = '%pet% got together with %group% and played ';
+        $message = '%pet% got together with %group% and ';
 
         switch($game['type'])
         {
             case self::TYPE_PARTY:
             case self::TYPE_FIGHTING:
-                $message .= 'a few rounds of ' . $game['name'];
+                $message .= 'played a few rounds of ' . $game['name'];
                 break;
             case self::TYPE_RHYTHM:
-                $message .= 'some ' . $game['name'];
+                $message .= 'played some ' . $game['name'];
                 break;
             case self::TYPE_BOARD:
-                $message .= 'a game of ' . $game['name'];
+                $message .= 'played a game of ' . $game['name'];
                 break;
             case self::TYPE_TTRPG:
-                $message .= 'a ' . $game['name'] . ' one-shot';
+                $message .= 'played a ' . $game['name'] . ' one-shot';
+                break;
+            case self::TYPE_LARPING:
+                $message .= 'LARPed in the woods';
                 break;
         }
 
@@ -250,7 +267,20 @@ class GamingGroupService
                 $this->petExperienceService->gainExp($member, 1, $game['exp']);
 
             if($game['possibleLoot'] && $this->squirrel3->rngNextInt(1, 10) === 1 && !$lowestPerformer)
-                $this->inventoryService->petCollectsItem($this->squirrel3->rngNextFromArray($game['possibleLoot']), $member, $this->formatMessage($message, $member, $group) . ' ' . $game['lootMessage'], $activityLog);
+            {
+                $enchantmentName = $this->squirrel3->rngNextFromArray($game['lootEnchantments']);
+
+                $enchantment = $enchantmentName == null ? null : $this->enchantmentRepository->findOneByName($enchantmentName);
+
+                $this->inventoryService->petCollectsEnhancedItem(
+                    $this->squirrel3->rngNextFromArray($game['possibleLoot']),
+                    $enchantment,
+                    null,
+                    $member,
+                    $this->formatMessage($message, $member, $group) . ' ' . $game['lootMessage'],
+                    $activityLog
+                );
+            }
 
             $activityLog->setChanges($petChanges->compare($member));
 
