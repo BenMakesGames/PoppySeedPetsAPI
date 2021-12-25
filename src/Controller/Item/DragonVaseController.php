@@ -3,15 +3,25 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetLocationEnum;
+use App\Enum\PetSkillEnum;
+use App\Functions\ActivityHelpers;
+use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\InventoryRepository;
+use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
+use App\Service\InventoryService;
+use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\InventoryModifierService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Location;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -23,6 +33,80 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class DragonVaseController extends PoppySeedPetsItemController
 {
+    /**
+     * @Route("/{inventory}/smash", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function smash(
+        Inventory $inventory, ResponseService $responseService, Squirrel3 $rng, PetRepository $petRepository,
+        PetExperienceService $petExperienceService, InventoryService $inventoryService,
+        EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'dragonVase/#/smash');
+
+        $petsAtHome = $petRepository->findBy([
+            'owner' => $user,
+            'location' => PetLocationEnum::HOME
+        ]);
+
+        $yourItem = $rng->rngNextFromArray([ 'Quintessence', 'Wings' ]);
+
+        $inventoryService->receiveItem(
+            $yourItem,
+            $user,
+            $user,
+            $user->getName() . ' caught this as it escaped a Dragon Vase they smashed.',
+            LocationEnum::HOME,
+            false
+        );
+
+        $petNames = [];
+
+        foreach($petsAtHome as $pet)
+        {
+            $changes = new PetChanges($pet);
+
+            $skill = $rng->rngNextFromArray([ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+
+            $description = $skill == PetSkillEnum::BRAWL ? 'pounced on' : 'bound';
+
+            $petItem = $rng->rngNextFromArray([ 'Quintessence', 'Wings', 'Feathers' ]);
+
+            if($petItem == 'Feathers')
+                $activityLog = $responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' Wings some ' . $petItem . ' that flew out of a Dragon Vase ' . $user->getName() . ' smashed, but accidentally reduced it to mere Feathers.', '');
+            else
+                $activityLog = $responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' ' . $description . ' some ' . $petItem . ' that flew out of a Dragon Vase ' . $user->getName() . ' smashed.', '');
+
+            $inventoryService->petCollectsItem(
+                $petItem,
+                $pet,
+                $pet->getName() . ' ' . $description . ' this as it escaped a Dragon Vase ' . $user->getName() . ' smashed.',
+                $activityLog
+            );
+
+            $petExperienceService->gainExp($pet, 1, [ $skill ]);
+
+            $activityLog
+                ->setChanges($changes->compare($pet))
+                ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
+            ;
+
+            $petNames[] = $pet->getName();
+        }
+
+        $em->remove($inventory);
+
+        $em->flush();
+
+        if(count($petNames) > 0)
+            return $responseService->itemActionSuccess('You smashed the Dragon Vase, and caught some ' . $yourItem . ' before it escaped; ' . ArrayFunctions::list_nice($petNames) . ' helped catch some, too!', [ 'itemDeleted' => true ]);
+        else
+            return $responseService->itemActionSuccess('You smashed the Dragon Vase, and caught some ' . $yourItem . ' before it escaped.', [ 'itemDeleted' => true ]);
+    }
+
     /**
      * @Route("/{inventory}/dip", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
