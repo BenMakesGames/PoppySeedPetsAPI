@@ -32,6 +32,7 @@ class BakingBookController extends PoppySeedPetsItemController
             'Wheat Flour',
 
             'Brownie',
+            'Castella Cake',
             'Mini Chocolate Chip Cookies (A)',
             'Chocolate Lava Cake',
             'Plain Donut',
@@ -85,6 +86,7 @@ class BakingBookController extends PoppySeedPetsItemController
 #### Recipes
 
 * Brownie
+* Castella Cake
 * Chocolate Chip Cookies
 * Chocolate Lava Cake
 * Donut (Cake)
@@ -134,6 +136,16 @@ Simply grind some Wheat into a fine powder.
 * Egg
 * Sugar
 * Wheat Flour
+
+#### Castella Cake
+
+* Creamy Milk
+* Egg
+* Honeycomb
+* Sugar
+* Wheat Flour
+
+Wait, is this really a cake? Feels more like a bread, to me.
 
 #### Chocolate Chip Cookies
 
