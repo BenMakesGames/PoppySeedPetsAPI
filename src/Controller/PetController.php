@@ -1172,33 +1172,6 @@ class PetController extends PoppySeedPetsController
     }
 
     /**
-     * @Route("/{pet}/praise", methods={"POST"}, requirements={"pet"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function praise(
-        Pet $pet, ResponseService $responseService, EntityManagerInterface $em, PetAndPraiseService $petAndPraiseService
-    )
-    {
-        if($pet->getOwner()->getId() !== $this->getUser()->getId())
-            throw new AccessDeniedHttpException('You can\'t praise that pet.');
-
-        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
-
-        try
-        {
-            $petAndPraiseService->doPraise($pet);
-        }
-        catch(\InvalidArgumentException $e)
-        {
-            throw new UnprocessableEntityHttpException($e->getMessage());
-        }
-
-        $em->flush();
-
-        return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
-    }
-
-    /**
      * @Route("/{pet}/feed", methods={"POST"}, requirements={"pet"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
