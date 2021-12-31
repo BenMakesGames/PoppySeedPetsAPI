@@ -1149,7 +1149,8 @@ class PetController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function pet(
-        Pet $pet, ResponseService $responseService, EntityManagerInterface $em, PetAndPraiseService $petAndPraiseService
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $rng,
+        PetAndPraiseService $petAndPraiseService
     )
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
@@ -1168,7 +1169,10 @@ class PetController extends PoppySeedPetsController
 
         $em->flush();
 
-        return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
+        $emojis = $pet->getAffectionExpressions();
+        $emoji = mb_substr($emojis, $rng->rngNextInt(0, mb_strlen($emojis) - 1), 1);
+
+        return $responseService->success([ 'pet' => $pet, 'emoji' => $emoji ], [ SerializationGroupEnum::MY_PET ]);
     }
 
     /**

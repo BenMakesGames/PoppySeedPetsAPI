@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Enum\ActivityPersonalityEnum;
+use App\Enum\AffectionExpressionEnum;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
 use App\Enum\LoveLanguageEnum;
@@ -362,6 +363,11 @@ class Pet
      */
     private $location = PetLocationEnum::HOME;
 
+    /**
+     * @ORM\Column(type="string", length=3)
+     */
+    private $affectionExpressions;
+
     public function __construct()
     {
         $squirrel3 = new Squirrel3();
@@ -388,6 +394,8 @@ class Pet
 
         $this->loveLanguage = LoveLanguageEnum::getRandomValue($squirrel3);
         $this->lunchboxItems = new ArrayCollection();
+
+        $this->affectionExpressions = join('', $squirrel3->rngNextSubsetFromArray(AffectionExpressionEnum::getValues(), 3));
 
         $this->assignActivityPersonality($squirrel3);
     }
@@ -1777,5 +1785,17 @@ class Pet
     public function isAtHome(): bool
     {
         return $this->location === PetLocationEnum::HOME;
+    }
+
+    public function getAffectionExpressions(): ?string
+    {
+        return $this->affectionExpressions;
+    }
+
+    public function setAffectionExpressions(string $affectionExpressions): self
+    {
+        $this->affectionExpressions = $affectionExpressions;
+
+        return $this;
     }
 }
