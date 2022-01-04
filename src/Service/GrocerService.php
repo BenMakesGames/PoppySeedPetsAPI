@@ -34,6 +34,7 @@ class GrocerService
         [ 'Rice', 4 ],
         [ 'Sugar', 4 ],
         [ 'Tofu', 8 ],
+        [ 'Vinegar', 5 ],
         [ 'Wheat Flour', 4 ],
     ];
 
