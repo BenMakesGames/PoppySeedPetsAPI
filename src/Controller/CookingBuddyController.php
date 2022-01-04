@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\Inventory;
 use App\Entity\KnownRecipes;
+use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Model\ItemQuantity;
@@ -25,6 +26,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class CookingBuddyController extends PoppySeedPetsController
 {
+    private const ALLOWED_LOCATIONS = [
+        LocationEnum::HOME,
+        LocationEnum::BASEMENT,
+        LocationEnum::MANTLE
+    ];
+
     /**
      * @Route("/{cookingBuddy}", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
@@ -43,7 +50,12 @@ class CookingBuddyController extends PoppySeedPetsController
 
         $results = $knownRecipesFilterService->getResults($request->query);
 
-        $quantities = $inventoryRepository->getInventoryQuantities($user, $cookingBuddy->getLocation(), 'name');
+        $location = $request->query->getInt('location', $cookingBuddy->getLocation());
+
+        if(!in_array($location, self::ALLOWED_LOCATIONS))
+            throw new UnprocessableEntityHttpException('Cooking Buddies are only usable from the house, Basement, or Fireplace Mantle.');
+
+        $quantities = $inventoryRepository->getInventoryQuantities($user, $location, 'name');
 
         // this feels kinda' gross, but I'm not sure how else to do it...
         $recipes = [];
@@ -82,7 +94,13 @@ class CookingBuddyController extends PoppySeedPetsController
 
         $results->results = $recipes;
 
-        return $responseService->success($results, [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::KNOWN_RECIPE ]);
+        return $responseService->success(
+            [
+                'results' => $results,
+                'location' => $location,
+            ],
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::KNOWN_RECIPE ]
+        );
     }
 
     /**
@@ -92,7 +110,7 @@ class CookingBuddyController extends PoppySeedPetsController
     public function prepareRecipeFromMemory(
         Inventory $cookingBuddy, KnownRecipes $knownRecipe, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository,
-        CookingService $cookingService, int $quantity = 1
+        CookingService $cookingService, Request $request, int $quantity = 1
     )
     {
         $user = $this->getUser();
@@ -107,6 +125,11 @@ class CookingBuddyController extends PoppySeedPetsController
 
         $ingredients = $inventoryService->deserializeItemList($recipe->getIngredients());
 
+        $location = $request->request->getInt('location', $cookingBuddy->getLocation());
+
+        if(!in_array($location, self::ALLOWED_LOCATIONS))
+            throw new UnprocessableEntityHttpException('Cooking Buddies are only usable from the house, Basement, or Fireplace Mantle.');
+
         $inventoryToUse = [];
 
         foreach($ingredients as $ingredient)
@@ -115,7 +138,7 @@ class CookingBuddyController extends PoppySeedPetsController
                 [
                     'owner' => $user->getId(),
                     'item' => $ingredient->item->getId(),
-                    'location' => $cookingBuddy->getLocation()
+                    'location' => $location
                 ],
                 [],
                 $ingredient->quantity * $quantity
