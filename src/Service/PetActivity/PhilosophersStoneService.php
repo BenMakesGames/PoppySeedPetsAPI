@@ -185,7 +185,7 @@ class PhilosophersStoneService
 
             $activityLog = $this->responseService->createActivityLog(
                 $pet,
-                'The Ceremony of Fire tried to lead ' . ActivityHelpers::PetName($pet) . ' somewhere, but after following for a short distance, ' . ActivityHelpers::PetName($pet) . ' suddenly felt ill, as if something was tugging on the threads of their very existence. Confused, and unsettled, ' . ActivityHelpers::PetName($pet) . ' returned home and put down the trident...',
+                'The Ceremony of Fire tried to lead ' . ActivityHelpers::PetName($pet) . ' somewhere, but after following for a short distance, ' . ActivityHelpers::PetName($pet) . ' suddenly felt ill, as if something was tugging on the threads of their very existence. Confused, and unsettled, ' . ActivityHelpers::PetName($pet) . ' returned home and put down the trident... (The Natural Channel Merit is needed.)',
                 ''
             );
 
@@ -199,7 +199,7 @@ class PhilosophersStoneService
 
             $activityLog = $this->responseService->createActivityLog(
                 $pet,
-                'The Ceremony of Fire lead ' . ActivityHelpers::PetName($pet) . ' to an ice cave in the frozen quag in the Umbra, blocked by huge, Everice icicles. The Ceremony of Fire quivered in ' . ActivityHelpers::PetName($pet) . '\'s hands, but they had no idea how to use it, so returned home and put it away.',
+                'The Ceremony of Fire lead ' . ActivityHelpers::PetName($pet) . ' to an ice cave in the frozen quag in the Umbra, blocked by huge, Everice icicles. The Ceremony of Fire quivered in ' . ActivityHelpers::PetName($pet) . '\'s hands, but they had no idea how to use it, so returned home and put it away. (Perhaps more Umbra skill would help?)',
                 ''
             );
 

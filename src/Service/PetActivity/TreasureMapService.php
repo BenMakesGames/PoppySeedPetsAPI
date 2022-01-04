@@ -69,22 +69,15 @@ class TreasureMapService
     public function doCetguelisTreasureMap(ComputedPetSkills $petWithSkills)
     {
         $pet = $petWithSkills->getPet();
-        $activityLog = null;
         $changes = new PetChanges($pet);
 
         $followMapCheck = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getPerception()->getTotal() + $pet->getSkills()->getNature() + $petWithSkills->getIntelligence()->getTotal());
 
-        if($followMapCheck < 15)
+        if($followMapCheck < 14)
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to decipher Cetgueli\'s Treasure Map, but couldn\'t make sense of it.', 'icons/activity-logs/confused');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to follow Cetgueli\'s Treasure Map, but kept getting lost. (They\'re sure they\'re making progress, though!)', 'icons/activity-logs/confused');
             $pet->increaseEsteem(-1);
-
-            if($this->squirrel3->rngNextInt(1, 3) === 1)
-            {
-                $activityLog->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% put the treasure map down.');
-                $this->equipmentService->unequipPet($pet);
-            }
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 90), PetActivityStatEnum::GATHER, false);
         }
@@ -326,7 +319,7 @@ class TreasureMapService
     {
         if(!$pet->hasMerit(MeritEnum::PROTOCOL_7))
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% didn\'t understand what they were supposed to do with the ' . $pet->getTool()->getItem()->getName() . ', so put it down...', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% didn\'t understand what they were supposed to do with the ' . $pet->getTool()->getItem()->getName() . ', so put it down... (The Protocol-7 Merit is needed.)', '');
 
             $this->equipmentService->unequipPet($pet);
 
