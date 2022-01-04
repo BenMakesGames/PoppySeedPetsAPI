@@ -1776,9 +1776,6 @@ class Pet
 
         $this->location = $location;
 
-        if($location !== PetLocationEnum::HOME)
-            $this->setParkEventType(null); // unregister from park events
-
         return $this;
     }
 
