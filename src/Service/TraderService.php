@@ -1083,7 +1083,7 @@ class TraderService
 
         $leapDay = $this->calendarService->isLeapDay();
 
-        if($dayOfWeek === 'Mon' || $leapDay)
+        //if($dayOfWeek === 'Mon' || $leapDay)
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [
@@ -1109,7 +1109,7 @@ class TraderService
             );
         }
 
-        if($dayOfWeek === 'Tue' || $leapDay)
+        //if($dayOfWeek === 'Tue' || $leapDay)
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Laser-guided Sword'), 1) ],
@@ -1120,7 +1120,7 @@ class TraderService
             );
         }
 
-        if($dayOfWeek === 'Wed' || $leapDay)
+        //if($dayOfWeek === 'Wed' || $leapDay)
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [
@@ -1145,7 +1145,7 @@ class TraderService
             );
         }
 
-        if($dayOfWeek === 'Thu' || $leapDay)
+        //if($dayOfWeek === 'Thu' || $leapDay)
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Ceremonial Trident'), 1) ],
@@ -1156,7 +1156,7 @@ class TraderService
             );
         }
 
-        if($dayOfWeek === 'Fri' || $leapDay)
+        //if($dayOfWeek === 'Fri' || $leapDay)
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [
@@ -1187,7 +1187,7 @@ class TraderService
             );
         }
 
-        if($dayOfWeek === 'Sat' || $leapDay)
+        //if($dayOfWeek === 'Sat' || $leapDay)
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Flute'), 1) ],
@@ -1209,7 +1209,7 @@ class TraderService
             );
         }
 
-        if($dayOfWeek === 'Sun')
+        //if($dayOfWeek === 'Sun')
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Triangle'), 1) ],
