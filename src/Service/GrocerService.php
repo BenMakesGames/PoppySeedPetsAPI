@@ -8,15 +8,13 @@ class GrocerService
 {
     public const MAX_CAN_PURCHASE_PER_DAY = 20;
 
-    private $calendarService;
     private $cacheHelper;
     private $itemRepository;
 
     public function __construct(
-        CalendarService $calendarService, CacheHelper $cacheHelper, ItemRepository $itemRepository
+        CacheHelper $cacheHelper, ItemRepository $itemRepository
     )
     {
-        $this->calendarService = $calendarService;
         $this->cacheHelper = $cacheHelper;
         $this->itemRepository = $itemRepository;
     }
@@ -102,7 +100,8 @@ class GrocerService
 
         return [
             'special' => $special,
-            'cost' => $itemData[1],
+            'moneysCost' => $itemData[1],
+            'recyclingCost' => ceil($itemData[1] / 2),
             'item' => [
                 'name' => $item->getName(),
                 'image' => $item->getImage()

@@ -81,7 +81,7 @@ class TraderService
         'Ruby', 'Rubis',
     ];
 
-    private $itemRepository;
+    private ItemRepository $itemRepository;
     private $inventoryService;
     private $calendarService;
     private $transactionService;
@@ -143,11 +143,6 @@ class TraderService
     {
         $quantities = $this->inventoryRepository->getInventoryQuantities($user, LocationEnum::HOME, 'name');
 
-        $dailyOffers = [
-            'title' => date('l'),
-            'trades' => $this->getHolidayOffers($user, $quantities)
-        ];
-
         $offers = [
             [
                 'title' => 'Food',
@@ -181,10 +176,6 @@ class TraderService
                     $title = 'Portal';
                     $trades = $this->getGamingOffers($user, $quantities);
                     break;
-                case TradeGroupEnum::BOX_BOX:
-                    $title = 'Box-box';
-                    $trades = $this->getBoxBoxOffers($user, $quantities);
-                    break;
                 case TradeGroupEnum::BLEACH:
                     $title = 'Bleach';
                     $trades = $this->getBleachOffers($user, $quantities);
@@ -194,6 +185,7 @@ class TraderService
                     $trades = $this->getDigitalOffers($user, $quantities);
                     break;
                 case 3: // old "FOODS" group unlock
+                case 5: // old "BOX-BOX" group unlock
                     continue 2; // why "2"? see https://www.php.net/manual/en/control-structures.continue.php >_>
                 default:
                     throw new \Exception('You have unlocked trade group #' . $group . '... which does not exist. Ben should fix this.');
@@ -209,7 +201,15 @@ class TraderService
             return $a['title'] <=> $b['title'];
         });
 
-        array_unshift($offers, $dailyOffers);
+        $holidayOffers = $this->getSpecialOffers($user, $quantities);
+
+        if(count($holidayOffers) > 0)
+        {
+            array_unshift($offers, [
+                'title' => 'Special',
+                'trades' => $holidayOffers
+            ]);
+        }
 
         return $offers;
     }
@@ -387,48 +387,19 @@ class TraderService
         ];
     }
 
-    private function getBoxBoxOffers(User $user, array $quantities): array
-    {
-        return [
-            TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('This is Getting Ridiculous'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Box Box'), 1) ],
-                'I honestly don\'t remember what exactly is in here. Memory of a fish, I suppose.',
-                $user,
-                $quantities
-            ),
-
-            TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Flying Bindle'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Box Box'), 1) ],
-                'I honestly don\'t remember what exactly is in here. Memory of a fish, I suppose.',
-                $user,
-                $quantities
-            ),
-
-            TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Trifecta'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Box Box'), 1) ],
-                'I honestly don\'t remember what exactly is in here. Memory of a fish, I suppose.',
-                $user,
-                $quantities
-            ),
-
-            TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('l33t h4xx0r'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Box Box'), 1) ],
-                'I honestly don\'t remember what exactly is in here. Memory of a fish, I suppose.',
-                $user,
-                $quantities
-            ),
-        ];
-    }
-
     private function getGamingOffers(User $user, array $quantities): array
     {
         return [
             TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Iron Sword'), 1) ],
+                [ TraderOfferCostOrYield::createRecyclingPoints(100) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Hollow Earth Booster Pack'), 1) ],
+                'Have fun!',
+                $user,
+                $quantities
+            ),
+
+            TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createRecyclingPoints(4) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Glowing Four-sided Die'), 1) ],
                 'To be honest, those dice kind of give me the willies. And only four sides? That\'s just not right.',
                 $user,
@@ -436,7 +407,7 @@ class TraderService
             ),
 
             TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Dragon Flag'), 1) ],
+                [ TraderOfferCostOrYield::createRecyclingPoints(6) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Glowing Six-sided Die'), 1) ],
                 'To be honest, those dice kind of give me the willies.',
                 $user,
@@ -444,15 +415,7 @@ class TraderService
             ),
 
             TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Sun Flag'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Glowing Six-sided Die'), 1) ],
-                'To be honest, those dice kind of give me the willies.',
-                $user,
-                $quantities
-            ),
-
-            TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Glass Pendulum'), 1) ],
+                [ TraderOfferCostOrYield::createRecyclingPoints(8) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Glowing Eight-sided Die'), 1) ],
                 'To be honest, those dice kind of give me the willies. And _eight_ sides?? It\'s unnatural.',
                 $user,
@@ -481,19 +444,53 @@ class TraderService
                 'Do enjoy!',
                 $user,
                 $quantities
-            )
+            ),
         ];
     }
 
     /**
      * @return TraderOffer[]
      */
-    private function getHolidayOffers(User $user, array $quantities): array
+    private function getSpecialOffers(User $user, array $quantities): array
     {
         $now = new \DateTimeImmutable();
-        $dayOfWeek = $now->format('D');
 
-        $offers = $this->getDayOfWeekTrades($user, $quantities, $dayOfWeek);
+        $offers = [];
+
+        $uniqueOfferItems = $this->itemRepository->findOneForSpecialTraderOffer($user->getDailySeed());
+
+        foreach($uniqueOfferItems as $uniqueOfferItem)
+        {
+            $offers[] = TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createItem($uniqueOfferItem, 1),
+                ],
+                [
+                    TraderOfferCostOrYield::createMoney((int)($uniqueOfferItem->getRecycleValue() * 1.3334)),
+                ],
+                'It\'s a special offer, just for you.',
+                $user,
+                $quantities
+            );
+        }
+
+        if($this->calendarService->isValentinesOrAdjacent())
+        {
+            $offers[] = TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Twu Wuv'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('White Cloth'), 1),
+                    TraderOfferCostOrYield::createMoney(100),
+                ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Pink Bow'), 1),
+                ],
+                'Please enjoy the complimentary chocolate, and remember: all candies "recycled" during Valentine\'s are guaranteed to find their way to the Giving Tree, where any pet may collect them!',
+                $user,
+                $quantities,
+                true
+            );
+        }
 
         if($this->calendarService->isStockingStuffingSeason())
         {
@@ -575,8 +572,6 @@ class TraderService
             $offers[] = TraderOffer::createTradeOffer(
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Toadstool'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Tea Leaves'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff'), 1),
                 ],
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Tinfoil Hat'), 1),
@@ -592,8 +587,6 @@ class TraderService
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Scales'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Seaweed'), 1),
                     TraderOfferCostOrYield::createMoney(10),
                 ],
                 [
@@ -753,7 +746,27 @@ class TraderService
                 'Quinacridone Magenta is pretty valuable stuff. Naturally, King Nebuludwigula XIII has a few robes dyed that color.',
                 $user,
                 $quantities
-            )
+            ),
+            TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Feathers'), 3),
+                    TraderOfferCostOrYield::createMoney(5),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Quintessence'), 1) ],
+                'In Tell Samarzhoustian mythology, birds are associated with magic...',
+                $user,
+                $quantities
+            ),
+            TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Quintessence'), 1),
+                    TraderOfferCostOrYield::createMoney(5),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Feathers'), 3) ],
+                'In Tell Samarzhoustian mythology, birds are associated with magic...',
+                $user,
+                $quantities
+            ),
         ];
     }
 
@@ -762,6 +775,14 @@ class TraderService
         return [
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createMoney(100) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Deed for Greenhouse Plot'), 1) ],
+                "Oh, fun, a greenhouse! What kind of Kelp will you be gr-- oh. Right, I suppose you'll just be growing Landweed, and such.\n\nWell.\n\nHave fun with that, I suppose.",
+                $user,
+                $quantities,
+                true
+            ),
+            TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createRecyclingPoints(50) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Deed for Greenhouse Plot'), 1) ],
                 "Oh, fun, a greenhouse! What kind of Kelp will you be gr-- oh. Right, I suppose you'll just be growing Landweed, and such.\n\nWell.\n\nHave fun with that, I suppose.",
                 $user,
@@ -783,76 +804,13 @@ class TraderService
                 $quantities
             ),
             TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Painted Fishing Rod'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Paper Bag'), 1) ],
-                'I just can\'t believe humans are allowed to carry a rod without a permit.',
-                $user,
-                $quantities
-            ),
-            TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Ice Fishing'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Paper Bag'), 2) ],
-                'I just can\'t believe humans are allowed to carry a rod without a permit.',
-                $user,
-                $quantities
-            ),
-            TraderOffer::createTradeOffer(
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Limestone'), 2),
                 ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Ginger'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Grandparoot'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Carrot'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Scroll of Tell Samarzhoustian Delights'), 1),
                 ],
                 'Limestone is an important building material in Tell Samarzhoustia. We build beautiful palaces, and enormous chimera statues. Well, enormous by fish standards. You should visit, sometime.',
-                $user,
-                $quantities
-            ),
-
-            TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Crystal Ball'), 1 ) ],
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Sweet Beet'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Tomato'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Vinegar'), 1),
-                ],
-                'There\'s a lot of Silica Grounds in Tell Samarzhoustia, of course, but turning them into something beautiful is an expensive process.',
-                $user,
-                $quantities
-            ),
-            TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fiberglass'), 1 ) ],
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Corn'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Onion'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Spicy Peps'), 1),
-                ],
-                'There\'s a lot of Silica Grounds in Tell Samarzhoustia, of course, but turning them into something beautiful is an expensive process.',
-                $user,
-                $quantities
-            ),
-
-            TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Bean Milk'), 1 ) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Paper'), 1) ],
-                'We make something similar in Tell Samarzhoustia, but your Land Beans have a subtler flavor that\'s really starting to catch on.',
-                $user,
-                $quantities
-            ),
-
-            TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Tofu'), 1 ) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Paper'), 3) ],
-                'We make something similar in Tell Samarzhoustia, but your Land Beans have a subtler flavor that\'s really starting to catch on.',
-                $user,
-                $quantities
-            ),
-
-            TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Rock Candy'), 1 ) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Witch-hazel'), 1) ],
-                'As you can imagine, Rock Candy doesn\'t last long in Tell Samarzhoustia. It has to be packaged - and consumed - very carefully. It\'s all a bit bougie, really. Not that I mind: trade\'s trade!',
                 $user,
                 $quantities
             ),
@@ -1057,186 +1015,6 @@ class TraderService
                 $quantities
             ),
         ];
-    }
-
-    private function getDayOfWeekTrades(User $user, array $quantities, string $dayOfWeek): array
-    {
-        $offers = [];
-
-        if($this->calendarService->isValentinesOrAdjacent())
-        {
-            $offers[] = TraderOffer::createTradeOffer(
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Twu Wuv'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('White Cloth'), 1),
-                    TraderOfferCostOrYield::createMoney(100),
-                ],
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Pink Bow'), 1),
-                ],
-                'Please enjoy the complimentary chocolate, and remember: all candies "recycled" during Valentine\'s are guaranteed to find their way to the Giving Tree, where any pet may collect them!',
-                $user,
-                $quantities,
-                true
-            );
-        }
-
-        $leapDay = $this->calendarService->isLeapDay();
-
-        //if($dayOfWeek === 'Mon' || $leapDay)
-        {
-            $offers[] = TraderOffer::createTradeOffer(
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Wings'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Crystal Ball'), 1),
-                    TraderOfferCostOrYield::createMoney(10)
-                ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Moon Pearl'), 1) ],
-                'I don\'t know where all the Monday hate comes from. Mondays are _great_: you get Moon Pearls on Mondays!',
-                $user,
-                $quantities
-            );
-
-            $offers[] = TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Moon Pearl'), 1) ],
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Paper Bag'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Canned Food'), 1)
-                ],
-                'I don\'t know where all the Monday hate comes from. Mondays are _great_: you get to spend Moon Pearls on Mondays!',
-                $user,
-                $quantities
-            );
-        }
-
-        //if($dayOfWeek === 'Tue' || $leapDay)
-        {
-            $offers[] = TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Laser-guided Sword'), 1) ],
-                [ TraderOfferCostOrYield::createMoney(50) ],
-                'Did you know "Tuesday" is named for a god of combat, and justice?',
-                $user,
-                $quantities
-            );
-        }
-
-        //if($dayOfWeek === 'Wed' || $leapDay)
-        {
-            $offers[] = TraderOffer::createTradeOffer(
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Feathers'), 3),
-                    TraderOfferCostOrYield::createMoney(5),
-                ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Quintessence'), 1) ],
-                'What\'s the theme of today\'s trade? I\'ll never tell!',
-                $user,
-                $quantities
-            );
-
-            $offers[] = TraderOffer::createTradeOffer(
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Quintessence'), 1),
-                    TraderOfferCostOrYield::createMoney(5),
-                ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Feathers'), 3) ],
-                'What\'s the theme of today\'s trade? I\'ll never tell!',
-                $user,
-                $quantities
-            );
-        }
-
-        //if($dayOfWeek === 'Thu' || $leapDay)
-        {
-            $offers[] = TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Ceremonial Trident'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Bag of Beans'), 1) ],
-                $dayOfWeek === 'Thu' ? 'If it were up to me, today would be called Poseidon\'s Day, but it wasn\'t, so fine: Thor\'s Day it is, I guess.' : 'It\'s like all the rules go out the window on leap days!',
-                $user,
-                $quantities
-            );
-        }
-
-        //if($dayOfWeek === 'Fri' || $leapDay)
-        {
-            $offers[] = TraderOffer::createTradeOffer(
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Wheat Flower'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Quintessence'), 1),
-                ],
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Red'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Bar'), 1),
-                ],
-                'Sorry: we couldn\'t get our flippers on actual Red Gold.',
-                $user,
-                $quantities
-            );
-
-            $offers[] = TraderOffer::createTradeOffer(
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Rice Flower'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Quintessence'), 1),
-                ],
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Red'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Bar'), 1),
-                ],
-                'Sorry: we couldn\'t get our flippers on actual Red Gold.',
-                $user,
-                $quantities
-            );
-        }
-
-        //if($dayOfWeek === 'Sat' || $leapDay)
-        {
-            $offers[] = TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Flute'), 1) ],
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Plain Yogurt'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Aging Powder'), 1)
-                ],
-                'I\'m not sure what this deal is about. Those Satyrs put me up to it. They also told me to tell anyone who made this trade that you can combine Plain Yogurt, Creamy Milk, and Aging Powder to make _more_ Plain Yogurt. I told them that that\'s basically common knowledge at this point, but they insisted, so... yeah. There you go.',
-                $user,
-                $quantities
-            );
-
-            $offers[] = TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Plain Yogurt'), 2) ],
-                [ TraderOfferCostOrYield::createMoney(5) ],
-                'I\'m not sure what this deal is about. Those Satyrs put me up to it. I guess they like yogurt?',
-                $user,
-                $quantities
-            );
-        }
-
-        //if($dayOfWeek === 'Sun')
-        {
-            $offers[] = TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Triangle'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Sunflower'), 1) ],
-                'Ah: you doing some Beehive stuff? Or making one of those Night and Day swords? Well, have a happy Sunday, regardless!',
-                $user,
-                $quantities
-            );
-
-            $offers[] = TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Key'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Sunflower'), 1) ],
-                'Ah: you doing some Beehive stuff? Or making one of those Night and Day swords? Well, have a happy Sunday, regardless!',
-                $user,
-                $quantities
-            );
-
-            $offers[] = TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Telescope'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Sunflower'), 1) ],
-                'Ah: you doing some Beehive stuff? Or making one of those Night and Day swords? Well, have a happy Sunday, regardless!',
-                $user,
-                $quantities
-            );
-        }
-
-        return $offers;
     }
 
     public function userCanMakeExchange(User $user, TraderOffer $exchange): bool

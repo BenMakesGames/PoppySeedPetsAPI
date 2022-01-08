@@ -60,9 +60,13 @@ class GrocerController extends PoppySeedPetsController
     )
     {
         $buyTo = $request->request->getInt('location');
+        $payWith = strtolower($request->request->getAlpha('payWith', 'moneys'));
 
         if($buyTo !== LocationEnum::HOME && $buyTo !== LocationEnum::BASEMENT)
             throw new UnprocessableEntityHttpException('You must select a location to put the purchased items.');
+
+        if($payWith !== 'moneys' && $payWith !== 'recycling')
+            throw new UnprocessableEntityHttpException('You must choose whether to pay with moneys or with recycling points.');
 
         $inventory = $grocerService->getInventory();
 
@@ -81,7 +85,7 @@ class GrocerController extends PoppySeedPetsController
                 if($quantity > 0)
                 {
                     $totalQuantity += $quantity;
-                    $totalCost += $i['cost'] * $quantity;
+                    $totalCost += $i[$payWith . 'Cost'] * $quantity;
 
                     if(!array_key_exists($itemName, $buyingInventory))
                         $buyingInventory[$itemName] = $quantity;
@@ -119,10 +123,20 @@ class GrocerController extends PoppySeedPetsController
                 throw new UnprocessableEntityHttpException('You don\'t have enough space for ' . $totalQuantity . ' more item' . ($totalQuantity === 1 ? '' : 's') . ' in your Basement.');
         }
 
-        if($totalCost > $user->getMoneys())
-            throw new UnprocessableEntityHttpException('That would cost a total of ' . $totalCost . '~~m~~, but you only have ' . $user->getMoneys() . '~~m~~...');
+        if($payWith === 'moneys')
+        {
+            if($totalCost > $user->getMoneys())
+                throw new UnprocessableEntityHttpException('That would cost a total of ' . $totalCost . '~~m~~, but you only have ' . $user->getMoneys() . '~~m~~...');
 
-        $transactionService->spendMoney($user, $totalCost, 'Purchased ' . $totalQuantity . ' thing' . ($totalQuantity === 1 ? '' : 's') . ' from the Grocer.');
+            $transactionService->spendMoney($user, $totalCost, 'Purchased ' . $totalQuantity . ' thing' . ($totalQuantity === 1 ? '' : 's') . ' from the Grocer.');
+        }
+        else
+        {
+            if($totalCost > $user->getRecyclePoints())
+                throw new UnprocessableEntityHttpException('That would cost a total of ' . $totalCost . ' recycling points, but you only have ' . $user->getRecyclePoints() . '...');
+
+            $user->increaseRecyclePoints(-$totalCost);
+        }
 
         foreach($buyingInventory as $itemName=>$quantity)
         {

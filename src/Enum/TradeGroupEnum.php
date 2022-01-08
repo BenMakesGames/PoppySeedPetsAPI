@@ -9,7 +9,7 @@ final class TradeGroupEnum
     public const DARK_THINGS = 2;
     //public const FOODS = 3;
     public const GAMING = 4;
-    public const BOX_BOX = 5;
+    //public const BOX_BOX = 5;
     public const CURIOSITIES = 6;
     public const PLUSHIES = 7;
     public const BLEACH = 8;
