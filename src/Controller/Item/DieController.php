@@ -3,7 +3,6 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
-use App\Functions\ArrayFunctions;
 use App\Service\HollowEarthService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;

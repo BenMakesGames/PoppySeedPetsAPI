@@ -5,11 +5,13 @@ use App\Entity\HollowEarthPlayer;
 use App\Entity\HollowEarthTile;
 use App\Entity\HollowEarthTileCard;
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\HollowEarthMoveDirectionEnum;
 use App\Enum\HollowEarthRequiredActionEnum;
+use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\HollowEarthPlayerTileRepository;
 use App\Repository\HollowEarthTileRepository;
@@ -325,11 +327,11 @@ class HollowEarthService
         }
 
         if(array_key_exists('receiveItems', $event))
-            $this->receiveItems($player, $event['receiveItems'], $activityLog);
+            $this->receiveItems($player, $pet, $petChanges, $event['receiveItems'], $activityLog);
 
         // because I'm likely to screw up and forget to make it plural:
         if(array_key_exists('receiveItem', $event))
-            $this->receiveItems($player, $event['receiveItem'], $activityLog);
+            $this->receiveItems($player, $pet, $petChanges, $event['receiveItem'], $activityLog);
 
         if(array_key_exists('receiveMoneys', $event))
             $this->transactionService->getMoney($player->getUser(), $event['receiveMoneys'], $player->getChosenPet()->getName() . ' got this while exploring the Hollow Earth.');
@@ -341,15 +343,28 @@ class HollowEarthService
             $player->setCurrentAction($event);
     }
 
-    private function receiveItems(HollowEarthPlayer $player, $items, ?PetActivityLog $activityLog)
+    private function receiveItems(HollowEarthPlayer $player, Pet $pet, PetChanges $petChanges, array $items, ?PetActivityLog $activityLog)
     {
-        if(is_array($items))
+        if(!is_array($items))
+            $items = [ $items ];
+
+        if($activityLog == null)
         {
-            foreach($items as $itemName)
-                $this->inventoryService->petCollectsItem($itemName, $player->getChosenPet(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', $activityLog);
+            $currentCard = $this->getEffectiveTileCard($player, $player->getCurrentTile());
+
+            $activityLog = (new PetActivityLog())
+                ->setPet($player->getChosenPet())
+                ->setEntry('While exploring the Hollow Earth, ' . $player->getChosenPet()->getName() . ' received ' . ArrayFunctions::list_nice($items) . '.')
+                ->setIcon(($currentCard && $currentCard->getImage()) ? ('hollow-earth/tile/' . $currentCard->getImage()) : '')
+                ->setChanges($petChanges->compare($pet))
+                ->setViewed()
+            ;
+
+            $this->em->persist($activityLog);
         }
-        else
-            $this->inventoryService->petCollectsItem($items, $player->getChosenPet(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', $activityLog);
+
+        foreach($items as $itemName)
+            $this->inventoryService->petCollectsItem($itemName, $player->getChosenPet(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', $activityLog);
     }
 
     public function formatEventDescription(string $description, HollowEarthPlayer $player): string

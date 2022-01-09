@@ -5,7 +5,6 @@ use App\Entity\GreenhousePlant;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Functions\ActivityHelpers;
-use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -13,7 +12,6 @@ use App\Repository\EnchantmentRepository;
 use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
-use App\Service\PetService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 
