@@ -126,13 +126,19 @@ class MarketFilterService
         if(!in_array('food', $qb->getAllAliases()))
             $qb->leftJoin('item.food', 'food');
 
+        if(!in_array('spice', $qb->getAllAliases()))
+            $qb->leftJoin('i.spice', 'spice');
+
+        if(!in_array('spiceFood', $qb->getAllAliases()))
+            $qb->leftJoin('spice.effects', 'spiceFood');
+
         $qb
             ->andWhere('item.food IS NOT NULL')
         ;
 
         foreach($value as $stat)
         {
-            $qb->andWhere('food.' . $stat . ' > 0');
+            $qb->andWhere($qb->expr()->orX('food.' . $stat . ' > 0', 'spiceFood.' . $stat . ' > 0'));
         }
     }
 
