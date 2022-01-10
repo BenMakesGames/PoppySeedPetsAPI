@@ -343,7 +343,7 @@ class HollowEarthService
             $player->setCurrentAction($event);
     }
 
-    private function receiveItems(HollowEarthPlayer $player, Pet $pet, PetChanges $petChanges, array $items, ?PetActivityLog $activityLog)
+    private function receiveItems(HollowEarthPlayer $player, Pet $pet, PetChanges $petChanges, $items, ?PetActivityLog $activityLog)
     {
         if(!is_array($items))
             $items = [ $items ];
