@@ -28,6 +28,9 @@ class MilkBookController extends PoppySeedPetsItemController
             'Chocomilk',
             'Creamed Corn',
             'Eggnog',
+            'Blackberry Eton Mess',
+            'Blueberry Eton Mess',
+            'Goodberry Eton Mess',
             'Hakuna Frittata',
             'Blackberry Lassi (from scratch)',
             'Blackberry Lassi',
@@ -75,6 +78,7 @@ Whatever the circumstances that lead to your overabundance of milk, fret not! Th
 * Chocomilk
 * Creamed Corn
 * Eggnog
+* Eton Mess
 * Hakuna Frittata
 * Lassi
 * Mahalabia
@@ -114,6 +118,15 @@ Whatever the circumstances that lead to your overabundance of milk, fret not! Th
 * Creamy Milk!
 * Egg
 * Sugar
+
+#### Eton Mess
+
+* Creamy Milk!
+* Sugar
+* Meringue
+* Berries
+
+A layered dessert: chunks of meringue, a layer of whipped cream, and berries on top.  
 
 #### Hakuna Frittata
 
