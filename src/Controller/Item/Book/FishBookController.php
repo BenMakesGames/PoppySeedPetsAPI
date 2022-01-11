@@ -39,6 +39,7 @@ class FishBookController extends PoppySeedPetsItemController
             'Orange Fish',
             'Pan-fried Fish (with Butter)',
             'Pan-fried Fish (with Oil)',
+            'Stargazy Pie',
             'Simple Sushi',
             'Zongzi',
         ]);
@@ -77,6 +78,7 @@ class FishBookController extends PoppySeedPetsItemController
 * Nigiri
 * Orange Fish
 * Pan-fried Fish
+* Stargazy Pie
 * Sushi
 * Zongzi
 
@@ -189,6 +191,15 @@ Just grill some Fish with Charcoal!
 * Butter, or Oil
 
 That\'s it!
+
+#### Stargazy Pie
+
+* Fish
+* Egg
+* Potato
+* Pie Crust
+
+This pie is said to have saved a town from a devil, because when the devil saw that the people of the town made this pie, it worried they\'d make a pie of anything... maybe even a devil.
 
 #### Sushi
 
