@@ -42,6 +42,7 @@ class BakingBookController extends PoppySeedPetsItemController
             'Flour Tortilla (B)',
             'Graham Cracker (with Butter)',
             'Graham Cracker (with Oil)',
+            'Ladyfingers',
             'Melonpanbun',
             'Meringues',
             'Chocolate Meringues',
@@ -93,6 +94,7 @@ class BakingBookController extends PoppySeedPetsItemController
 * Donut (Yeast)
 * Flour Tortilla
 * Graham Crackers
+* Ladyfingers
 * Melon Pan
 * Meringues
 * Muffins
@@ -207,6 +209,15 @@ A versatile bread! (If you make quesadillas, don\'t forget to Butter, or Oil, th
 * Baking Soda
 * Butter (or Oil)
 * Sugar
+
+#### Ladyfingers
+
+Known in some communities as "baby fingers" (due to concerns of modesty).
+
+* Egg
+* Sugar
+* Wheat Flour
+* Baking Powder
 
 #### Melon Pan
 
