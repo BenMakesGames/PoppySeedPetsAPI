@@ -44,6 +44,19 @@ class FloristService
             ];
         }
 
+        if(
+            $this->calendarService->isValentines() ||
+            $this->calendarService->isWhiteDay()
+        )
+        {
+            $theLovelyHaberdashers = $this->itemRepository->findOneByName('Tile: Lovely Haberdashers');
+
+            $inventory[] = [
+                'item' => [ 'name' => $theLovelyHaberdashers->getName(), 'image' => $theLovelyHaberdashers->getImage() ],
+                'cost' => 50
+            ];
+        }
+
         if($user->getUnlockedHollowEarth())
         {
             $flowerBasketTile = $this->itemRepository->findOneByName('Tile: Flower Basket');

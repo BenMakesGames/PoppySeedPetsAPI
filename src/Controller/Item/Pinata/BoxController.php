@@ -52,6 +52,7 @@ class BoxController extends PoppySeedPetsItemController
         $lockedToOwner = $box->getLockedToOwner();
 
         $hatItem = $itemRepository->findOneByName($squirrel3->rngNextFromArray([
+            'Bright Top Hat',
             'Masquerade Mask',
             'Merchant\'s Cap',
             'Wizarding Hat',

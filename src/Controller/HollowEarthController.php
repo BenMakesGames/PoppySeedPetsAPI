@@ -289,6 +289,10 @@ class HollowEarthController extends PoppySeedPetsController
                     $this->continueActingPayMoney($action, $player, $request->request, $hollowEarthService, $transactionService);
                     break;
 
+                case HollowEarthActionTypeEnum::PAY_ITEM_AND_MONEY:
+                    $this->continueActingPayItemAndMoney($action, $player, $request->request, $hollowEarthService, $inventoryRepository, $em, $transactionService);
+                    break;
+
                 case HollowEarthActionTypeEnum::PET_CHALLENGE:
                     $this->continueActingPetChallenge($action, $player, $request->request, $hollowEarthService, $squirrel3);
                     break;
@@ -356,6 +360,47 @@ class HollowEarthController extends PoppySeedPetsController
                 throw new UnprocessableEntityHttpException('You do not have a ' . $action['item'] . '...');
 
             $em->remove($itemToPay);
+
+            if(array_key_exists('ifPaid', $action))
+            {
+                $hollowEarthService->doImmediateEvent($player, $action['ifPaid']);
+                $player->setCurrentAction($action['ifPaid']);
+            }
+            else
+                $player->setCurrentAction(null);
+        }
+        else if(array_key_exists('ifNotPaid', $action))
+        {
+            $hollowEarthService->doImmediateEvent($player, $action['ifNotPaid']);
+            $player->setCurrentAction($action['ifNotPaid']);
+        }
+        else
+            $player->setCurrentAction(null);
+    }
+
+    private function continueActingPayItemAndMoney(
+        array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService,
+        InventoryRepository $inventoryRepository, EntityManagerInterface $em, TransactionService $transactionService
+    )
+    {
+        if(!$params->has('payUp'))
+            throw new UnprocessableEntityHttpException('Will you give up a ' . $action['item'] . ' and ' . $action['amount'] . '~~m~~, or no?');
+
+        $payUp = $params->getBoolean('payUp');
+
+        if($payUp)
+        {
+            $itemToPay = $inventoryRepository->findOneToConsume($player->getUser(), $action['item']);
+
+            if(!$itemToPay)
+                throw new UnprocessableEntityHttpException('You do not have a ' . $action['item'] . '...');
+
+            if($player->getUser()->getMoneys() < $action['amount'])
+                throw new UnprocessableEntityHttpException('You don\'t have enough moneys...');
+
+            $em->remove($itemToPay);
+
+            $transactionService->spendMoney($player->getUser(), $action['amount'], 'Spent while exploring the Hollow Earth.');
 
             if(array_key_exists('ifPaid', $action))
             {
