@@ -794,7 +794,7 @@ class GatheringService
         $pet = $petWithSkills->getPet();
 
         $possibleLoot = [
-            'Naner', 'Naner', 'Orange', 'Orange', 'Cocoa Beans', 'Cocoa Beans', 'Coffee Beans',
+            'Naner', 'Naner', 'Orange', 'Orange', 'Cacao Fruit', 'Cacao Fruit', 'Coffee Beans',
         ];
 
         $extraLoot = [
@@ -1108,7 +1108,7 @@ class GatheringService
         $pet = $petWithSkills->getPet();
 
         $possibleLoot = [
-            'Naner', 'Naner', 'Mango', 'Mango', 'Cocoa Beans', 'Coffee Beans',
+            'Naner', 'Naner', 'Mango', 'Mango', 'Cacao Fruit', 'Coffee Beans',
         ];
 
         $foodLoot = [];

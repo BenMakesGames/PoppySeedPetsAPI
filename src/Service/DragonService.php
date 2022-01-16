@@ -129,7 +129,7 @@ class DragonService
 
         if($this->calendarService->isValentinesOrAdjacent())
         {
-            $silverGoodies[] = [ 'weight' => 10, 'item' => 'Cocoa Beans' ];
+            $silverGoodies[] = [ 'weight' => 10, 'item' => 'Cacao Fruit' ];
             $goldGoodies[] = [ 'weight' => 10, 'item' => 'Chocolate Bar' ];
             $gemGoodies[] = [ 'weight' => 10, 'item' => 'Chocolate Key' ];
         }
