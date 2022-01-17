@@ -28,6 +28,7 @@ class HollowEarthService
     private $statusEffectService;
 
     public const DICE_ITEMS = [
+        'Glowing "Two-sided Die"' => 2,
         'Dreidel' => 4,
         'Glowing Four-sided Die' => 4,
         'Glowing Six-sided Die' => 6,
