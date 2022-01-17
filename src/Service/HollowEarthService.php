@@ -32,6 +32,8 @@ class HollowEarthService
         'Glowing Four-sided Die' => 4,
         'Glowing Six-sided Die' => 6,
         'Glowing Eight-sided Die' => 8,
+        'Glowing Ten-sided Die' => 10,
+        'Glowing Twelve-sided Die' => 12,
         'Glowing Twenty-sided Die' => 20,
     ];
 

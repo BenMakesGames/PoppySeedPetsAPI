@@ -107,6 +107,9 @@ class NotReallyCraftsService
                 ]);
 
                 $exclaim = '.';
+
+                if($loot == 'Glowing Six-sided Die')
+                    $exclaim .= ' (I guess the gods DO play dice...)';
             }
 
             if($loot === 'String')
