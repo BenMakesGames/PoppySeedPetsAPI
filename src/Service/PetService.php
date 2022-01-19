@@ -626,6 +626,7 @@ class PetService
             case 'Sneqo Plushy':
             case 'Bulbun Plushy':
             case 'Peacock Plushy':
+            case 'Phoenix Plushy':
                 if($this->squirrel3->rngNextInt(1, 6) === 1 || $this->userStatsRepository->getStatValue($pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER) === 0)
                 {
                     $this->treasureMapService->doFluffmongerTrade($pet);
