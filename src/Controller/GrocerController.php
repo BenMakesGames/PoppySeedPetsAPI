@@ -168,7 +168,9 @@ class GrocerController extends PoppySeedPetsController
 
         $em->flush();
 
-        $responseService->addFlashMessage($totalQuantity . ' ' . ($totalQuantity === 1 ? 'item was' : 'items were') . ' purchased for ' . $totalCost . '~~m~~. ' . ($totalQuantity === 1 ? 'It' : 'They') . ' can be found in your ' . ($buyTo === LocationEnum::HOME ? 'House' : 'Basement') . '.');
+        $currency = $payWith === 'moneys' ? '~~m~~' : ' recycling points';
+
+        $responseService->addFlashMessage($totalQuantity . ' ' . ($totalQuantity === 1 ? 'item was' : 'items were') . ' purchased for ' . $totalCost . $currency . '. ' . ($totalQuantity === 1 ? 'It' : 'They') . ' can be found in your ' . ($buyTo === LocationEnum::HOME ? 'House' : 'Basement') . '.');
 
         return $responseService->success([
             'maxPerDay' => GrocerService::MAX_CAN_PURCHASE_PER_DAY,
