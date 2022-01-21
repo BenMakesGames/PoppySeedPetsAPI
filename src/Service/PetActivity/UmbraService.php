@@ -802,14 +802,28 @@ class UmbraService
 
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::GATHER, true);
 
-                if($pet->getTool() && $pet->getTool()->providesLight())
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra. The light of their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . ' caught on a cube of Everice, which ' . $pet->getName() . ' took!', '');
+                if($this->squirrel3->rngNextBool())
+                {
+                    if($pet->getTool() && $pet->getTool()->providesLight())
+                        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra. The light of their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . ' caught on some frost-covered Marshmallows, which ' . $pet->getName() . ' took!', '');
+                    else
+                        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra, and happened to spot some Marshmallows!', '');
+
+                    $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18);
+
+                    $this->inventoryService->petCollectsItem('Marshmallows', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
+                }
                 else
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra, and happened to spot a cube of Everice!', '');
+                {
+                    if($pet->getTool() && $pet->getTool()->providesLight())
+                        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra. The light of their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . ' caught on a cube of Everice, which ' . $pet->getName() . ' took!', '');
+                    else
+                        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra, and happened to spot a cube of Everice!', '');
 
-                $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18);
+                    $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18);
 
-                $this->inventoryService->petCollectsItem('Everice', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
+                    $this->inventoryService->petCollectsItem('Everice', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
+                }
             }
             else
             {
