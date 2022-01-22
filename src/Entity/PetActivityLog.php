@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Model\PetChangesSummary;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -70,9 +72,15 @@ class PetActivityLog
      */
     private $equippedItem;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=PetActivityLogTag::class)
+     */
+    private $tags;
+
     public function __construct()
     {
         $this->createdOn = new \DateTimeImmutable();
+        $this->tags = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -182,5 +190,29 @@ class PetActivityLog
     public function getIsPetActivity(): bool
     {
         return $this->pet !== null;
+    }
+
+    /**
+     * @return Collection|PetActivityLogTag[]
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(PetActivityLogTag $tag): self
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags[] = $tag;
+        }
+
+        return $this;
+    }
+
+    public function removeTag(PetActivityLogTag $tag): self
+    {
+        $this->tags->removeElement($tag);
+
+        return $this;
     }
 }
