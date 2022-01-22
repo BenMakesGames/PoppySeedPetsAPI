@@ -667,7 +667,7 @@ class HuntingService
                 if($foundPinecone)
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% beat up a Scarecrow, then took some of the Rice it was defending. Hm-what? A Pinecone also fell out of the Scarecrow!', '')
-                        ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting', 'Gathering', 'Special Event' ]))
+                        ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting', 'Gathering', 'Special Event', 'Stocking Stuffing Season' ]))
                     ;
                 }
                 else

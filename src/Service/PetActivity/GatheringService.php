@@ -363,7 +363,7 @@ class GatheringService
             $activityLog
                 ->setEntry($activityLog->getEntry() . ' Hm-what? There was a Pinecone in the bush, too?!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Special Event' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Special Event', 'Stocking Stuffing Season' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Pinecone', $pet, $pet->getName() . ' found this in a Thorny ' . $harvest . ' Bush.', $activityLog);
@@ -487,7 +487,7 @@ class GatheringService
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stole an Egg from a Bird Nest. Hm-what? There was a Pinecone up there, too!', '');
                 $activityLog
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering', 'Stealth', 'Special Event' ]))
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering', 'Stealth', 'Special Event', 'Stocking Stuffing Season' ]))
                 ;
             }
             else
