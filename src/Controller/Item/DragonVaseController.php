@@ -87,7 +87,7 @@ class DragonVaseController extends PoppySeedPetsItemController
                 $activityLog
             );
 
-            $petExperienceService->gainExp($pet, 1, [ $skill ]);
+            $petExperienceService->gainExp($pet, 1, [ $skill ], $activityLog);
 
             $activityLog
                 ->setChanges($changes->compare($pet))

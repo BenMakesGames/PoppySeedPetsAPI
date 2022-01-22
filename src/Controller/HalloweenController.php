@@ -7,6 +7,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Model\FoodWithSpice;
 use App\Repository\InventoryRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
 use App\Service\CalendarService;
@@ -93,7 +94,8 @@ class HalloweenController extends PoppySeedPetsController
     public function giveCandy(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
         Request $request, InventoryRepository $inventoryRepository, CalendarService $calendarService,
-        UserRepository $userRepository, Squirrel3 $squirrel3, EatingService $eatingService
+        UserRepository $userRepository, Squirrel3 $squirrel3, EatingService $eatingService,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $user = $this->getUser();
@@ -161,6 +163,7 @@ class HalloweenController extends PoppySeedPetsController
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
                 ->setIcon('ui/halloween')
                 ->setEntry($logMessage)
+                ->addTags($petActivityLogTagRepository->findByNames([ 'Special Event', 'Halloween' ]))
             ;
 
             $em->persist($log);

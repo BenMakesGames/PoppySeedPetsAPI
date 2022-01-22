@@ -13,6 +13,7 @@ use App\Functions\ActivityHelpers;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
@@ -34,11 +35,13 @@ class FishingService
     private IRandom $squirrel3;
     private FieldGuideService $fieldGuideService;
     private GatheringDistractionService $gatheringDistractions;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3,
-        WeatherService $weatherService, FieldGuideService $fieldGuideService, GatheringDistractionService $gatheringDistractions
+        WeatherService $weatherService, FieldGuideService $fieldGuideService, GatheringDistractionService $gatheringDistractions,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->responseService = $responseService;
@@ -50,6 +53,7 @@ class FishingService
         $this->weatherService = $weatherService;
         $this->fieldGuideService = $fieldGuideService;
         $this->gatheringDistractions = $gatheringDistractions;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -141,7 +145,12 @@ class FishingService
         }
 
         if($activityLog)
+        {
             $activityLog->setChanges($changes->compare($pet));
+
+            if($activityLog->getChanges()->level > 0)
+                $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
+        }
 
         if($this->squirrel3->rngNextInt(1, 75) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);

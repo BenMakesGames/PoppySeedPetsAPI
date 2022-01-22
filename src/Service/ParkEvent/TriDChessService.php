@@ -12,6 +12,7 @@ use App\Enum\SpiritCompanionStarEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\TriDChessParticipant;
 use App\Model\PetChanges;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ParkService;
@@ -47,11 +48,12 @@ class TriDChessService implements ParkEventInterface
     private $inventoryService;
     private IRandom $squirrel3;
     private ParkService $parkService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService,
         TransactionService $transactionService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        ParkService $parkService
+        ParkService $parkService, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -61,6 +63,7 @@ class TriDChessService implements ParkEventInterface
         $this->inventoryService = $inventoryService;
         $this->squirrel3 = $squirrel3;
         $this->parkService = $parkService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -295,6 +298,7 @@ class TriDChessService implements ParkEventInterface
                 ->setChanges($state->compare($participant->pet))
                 ->setIcon('icons/activity-logs/park')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Park Event', 'Tri-D Chess' ]))
             ;
 
             $this->em->persist($log);

@@ -29,6 +29,7 @@ use App\Model\ComputedPetSkills;
 use App\Model\FoodWithSpice;
 use App\Model\PetChanges;
 use App\Model\PetChangesSummary;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
@@ -112,6 +113,7 @@ class PetService
     private SmithingService $smithingService;
     private PlasticPrinterService $plasticPrinterService;
     private PhilosophersStoneService $philosophersStoneService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -130,7 +132,7 @@ class PetService
         WeatherService $weatherService, HoliService $holiService, Caerbannog $caerbannog, CravingService $cravingService,
         StatusEffectService $statusEffectService, EatingService $eatingService, HouseSimService $houseSimService,
         MagicBindingService $magicBindingService, SmithingService $smithingService, PlasticPrinterService $plasticPrinterService,
-        PhilosophersStoneService $philosophersStoneService
+        PhilosophersStoneService $philosophersStoneService, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->em = $em;
@@ -179,6 +181,7 @@ class PetService
         $this->smithingService = $smithingService;
         $this->plasticPrinterService = $plasticPrinterService;
         $this->philosophersStoneService = $philosophersStoneService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function runHour(Pet $pet)
@@ -482,7 +485,9 @@ class PetService
             {
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
-                $this->responseService->createActivityLog($pet, $description . ' %pet:' . $pet->getId() . '.name% wanted to make something, but couldn\'t find any materials to work with.', 'icons/activity-logs/house-too-full');
+                $this->responseService->createActivityLog($pet, $description . ' %pet:' . $pet->getId() . '.name% wanted to make something, but couldn\'t find any materials to work with.', 'icons/activity-logs/house-too-full')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'House Too Full' ]))
+                ;
             }
             else
             {
@@ -500,6 +505,9 @@ class PetService
                 /** @var PetActivityLog $activityLog */
                 $activityLog = $do[0]->adventure($petWithSkills, $do[1]);
                 $activityLog->setEntry($description . ' ' . $activityLog->getEntry());
+
+                if($activityLog->getChanges()->level > 0)
+                    $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
             }
 
             return;

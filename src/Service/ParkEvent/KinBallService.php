@@ -12,6 +12,7 @@ use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\KinBallTeam;
 use App\Model\PetChanges;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ParkService;
@@ -51,11 +52,12 @@ class KinBallService implements ParkEventInterface
     private $inventoryService;
     private IRandom $squirrel3;
     private ParkService $parkService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        ParkService $parkService
+        ParkService $parkService, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->em = $em;
@@ -65,6 +67,7 @@ class KinBallService implements ParkEventInterface
         $this->inventoryService = $inventoryService;
         $this->squirrel3 = $squirrel3;
         $this->parkService = $parkService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -235,6 +238,7 @@ class KinBallService implements ParkEventInterface
                     ->setChanges($state->compare($participant->pet))
                     ->setIcon('icons/activity-logs/park')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Park Event', 'Kin-ball' ]))
                 ;
 
                 $this->em->persist($log);

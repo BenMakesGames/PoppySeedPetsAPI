@@ -14,7 +14,9 @@ use App\Functions\GrammarFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\GuildRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -30,12 +32,14 @@ class GuildService
     private $petExperienceService;
     private $gizubisGardenService;
     private $statusEffectService;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         GuildRepository $guildRepository, EntityManagerInterface $em, ResponseService $responseService,
         InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        StatusEffectService $statusEffectService, GizubisGardenService $gizubisGardenService, Squirrel3 $squirrel3
+        StatusEffectService $statusEffectService, GizubisGardenService $gizubisGardenService, Squirrel3 $squirrel3,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->guildRepository = $guildRepository;
@@ -46,13 +50,14 @@ class GuildService
         $this->statusEffectService = $statusEffectService;
         $this->gizubisGardenService = $gizubisGardenService;
         $this->squirrel3 = $squirrel3;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function joinGuildProjectE(Pet $pet): PetActivityLog
     {
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
-        return $this->joinGuild(
+        $activityLog = $this->joinGuild(
             $pet,
             [
                 GuildEnum::TIMES_ARROW => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getPerception() + $pet->getSkills()->getScience() + $this->squirrel3->rngNextInt(0, 10),
@@ -65,6 +70,10 @@ class GuildService
             ],
             $pet->getName() . ' accessed Project-E, and stumbled upon The Hall of Nine - a meeting place for members of nine major Guilds.'
         );
+
+        $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Project-E', 'Guild' ]));
+
+        return $activityLog;
     }
 
     public function joinGuildUmbra(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -72,7 +81,7 @@ class GuildService
         $pet = $petWithSkills->getPet();
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
-        return $this->joinGuild(
+        $activityLog = $this->joinGuild(
             $pet,
             [
                 GuildEnum::LIGHT_AND_SHADOW => $pet->getSkills()->getPerception() + $pet->getSkills()->getUmbra() + $pet->getSkills()->getIntelligence() + $this->squirrel3->rngNextInt(0, 10),
@@ -84,6 +93,10 @@ class GuildService
             ],
             $pet->getName() . ' visited the Library of Fire, and stumbled upon a meeting between members from the nine major Guilds.'
         );
+
+        $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Guild' ]));
+
+        return $activityLog;
     }
 
     private function joinGuild(Pet $pet, array $possibilities, string $message): PetActivityLog
@@ -111,7 +124,12 @@ class GuildService
         $activityLog = $this->pickGuildActivity($petWithSkills);
 
         if($activityLog !== null)
-            $activityLog->setChanges($changes->compare($petWithSkills->getPet()));
+        {
+            $activityLog
+                ->setChanges($changes->compare($petWithSkills->getPet()))
+                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Guild' ]))
+            ;
+        }
 
         return $activityLog;
     }
@@ -139,7 +157,6 @@ class GuildService
 
             default:
                 throw new EnumInvalidValueException('GuildEnum', $pet->getGuildMembership()->getGuild()->getName());
-                break;
         }
     }
 

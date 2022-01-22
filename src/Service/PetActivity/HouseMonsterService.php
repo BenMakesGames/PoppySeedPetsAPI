@@ -9,6 +9,7 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Model\SummoningScrollMonster;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
@@ -25,10 +26,12 @@ class HouseMonsterService
     private EntityManagerInterface $em;
     private PetExperienceService $petExperienceService;
     private FieldGuideService $fieldGuideService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         Squirrel3 $squirrel3, UserStatsRepository $userStatsRepository, InventoryService $inventoryService,
-        EntityManagerInterface $em, PetExperienceService $petExperienceService, FieldGuideService $fieldGuideService
+        EntityManagerInterface $em, PetExperienceService $petExperienceService, FieldGuideService $fieldGuideService,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->squirrel3 = $squirrel3;
@@ -37,6 +40,7 @@ class HouseMonsterService
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
         $this->fieldGuideService = $fieldGuideService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     /**
@@ -179,11 +183,19 @@ class HouseMonsterService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(5, 15), PetActivityStatEnum::HUNT, $won);
 
+            $changes = $petChanges[$pet->getId()]->compare($pet);
+
+            $tags = [ 'Fighting' ];
+
+            if($changes->level > 0)
+                $tags[] = 'Level-up';
+
             $activityLog = (new PetActivityLog())
                 ->setPet($pet)
                 ->setEntry($result)
-                ->setChanges($petChanges[$pet->getId()]->compare($pet))
+                ->setChanges($changes)
                 ->setViewed()
+                ->addTags($this->petActivityLogTagRepository->findByNames($tags))
             ;
 
             $this->em->persist($activityLog);

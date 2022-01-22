@@ -14,11 +14,13 @@ use App\Enum\RelationshipEnum;
 use App\Enum\UserStatEnum;
 use App\Model\PetShelterPet;
 use App\Repository\MeritRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetColorService;
 use App\Service\PetExperienceService;
 use App\Service\PetFactory;
@@ -39,14 +41,15 @@ class PregnancyService
     private $meritRepository;
     private $petFactory;
     private $petColorService;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         EntityManagerInterface $em, InventoryService $inventoryService, PetRepository $petRepository,
         ResponseService $responseService, PetExperienceService $petExperienceService,
         UserQuestRepository $userQuestRepository, PetSpeciesRepository $petSpeciesRepository,
         UserStatsRepository $userStatsRepository, MeritRepository $meritRepository, PetFactory $petFactory,
-        PetColorService $petColorService, Squirrel3 $squirrel3
+        PetColorService $petColorService, Squirrel3 $squirrel3, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->em = $em;
@@ -61,6 +64,7 @@ class PregnancyService
         $this->petFactory = $petFactory;
         $this->petColorService = $petColorService;
         $this->squirrel3 = $squirrel3;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function getPregnant(Pet $pet1, Pet $pet2)
@@ -190,7 +194,10 @@ class PregnancyService
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '!', '');
         }
 
-        $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::GAVE_BIRTH);
+        $activityLog
+            ->addInterestingness(PetActivityLogInterestingnessEnum::GAVE_BIRTH)
+            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Pregnancy' ]))
+        ;
 
         $pet->setPregnancy(null);
 

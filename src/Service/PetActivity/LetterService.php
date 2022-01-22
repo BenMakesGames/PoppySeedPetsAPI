@@ -12,6 +12,7 @@ use App\Enum\RelationshipEnum;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\LetterRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserLetterRepository;
 use App\Repository\UserQuestRepository;
@@ -34,12 +35,13 @@ class LetterService
     private $userLetterRepository;
     private $em;
     private $squirrel3;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         UserQuestRepository $userQuestRepository, InventoryService $inventoryService, ResponseService $responseService,
         PetRepository $petRepository, PetExperienceService $petExperienceService, MuseumService $museumService,
         LetterRepository $letterRepository, UserLetterRepository $userLetterRepository,
-        EntityManagerInterface $em, Squirrel3 $squirrel3
+        EntityManagerInterface $em, Squirrel3 $squirrel3, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->userQuestRepository = $userQuestRepository;
@@ -52,6 +54,7 @@ class LetterService
         $this->userLetterRepository = $userLetterRepository;
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): ?PetActivityLog
@@ -237,6 +240,7 @@ class LetterService
 
             $courierActivity = $this->responseService->createActivityLog($courier, '%pet:' . $courier->getId() . '.name% - on a job for Correspondence - delivered a Letter from ' . $sender . ' to ' . $descriptionForCourier, 'icons/activity-logs/letter')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Guild', 'Mail' ]))
             ;
 
             $courierActivity->setChanges($courierChanges->compare($courier));
@@ -246,6 +250,7 @@ class LetterService
 
         $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a courier delivered them a Letter from ' . $sender . '! The courier was ' . $descriptionForPet, 'icons/activity-logs/letter')
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Mail' ]))
         ;
 
         $activityLog->setChanges($petChanges->compare($pet));

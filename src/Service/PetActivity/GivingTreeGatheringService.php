@@ -7,8 +7,10 @@ use App\Enum\GuildEnum;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -21,11 +23,13 @@ class GivingTreeGatheringService
     private $responseService;
     private $petExperienceService;
     private $em;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         UserRepository $userRepository, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, PetExperienceService $petExperienceService, Squirrel3 $squirrel3
+        ResponseService $responseService, PetExperienceService $petExperienceService, Squirrel3 $squirrel3,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->responseService = $responseService;
@@ -34,6 +38,7 @@ class GivingTreeGatheringService
         $this->petExperienceService = $petExperienceService;
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function gatherFromGivingTree(Pet $pet): ?PetActivityLog
@@ -77,6 +82,7 @@ class GivingTreeGatheringService
 
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited The Giving Tree, and picked up several items that other players had discarded. In honor of Gizubi\'s Tree of Life, they also took a few minutes to water the Giving Tree.', 'icons/activity-logs/giving-tree')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Giving Tree', 'Guild' ]))
                 ;
             }
             else
@@ -85,6 +91,7 @@ class GivingTreeGatheringService
 
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited The Giving Tree, and picked up several items that other players had discarded.', 'icons/activity-logs/giving-tree')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Giving Tree' ]))
                 ;
             }
         }

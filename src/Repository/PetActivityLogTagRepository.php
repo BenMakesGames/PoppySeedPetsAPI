@@ -19,32 +19,12 @@ class PetActivityLogTagRepository extends ServiceEntityRepository
         parent::__construct($registry, PetActivityLogTag::class);
     }
 
-    // /**
-    //  * @return PetActivityLogTag[] Returns an array of PetActivityLogTag objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param string[] $names
+     * @return PetActivityLogTag[]
+     */
+    public function findByNames(array $names): array
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->findBy([ 'title' => $names ]);
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?PetActivityLogTag
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

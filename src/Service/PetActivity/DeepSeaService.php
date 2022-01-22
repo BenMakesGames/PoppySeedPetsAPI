@@ -13,6 +13,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\InventoryService;
@@ -29,10 +30,12 @@ class DeepSeaService
     private IRandom $squirrel3;
     private HattierService $hattierService;
     private FieldGuideService $fieldGuideService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        Squirrel3 $squirrel3, HattierService $hattierService, FieldGuideService $fieldGuideService
+        Squirrel3 $squirrel3, HattierService $hattierService, FieldGuideService $fieldGuideService,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->responseService = $responseService;
@@ -41,6 +44,7 @@ class DeepSeaService
         $this->squirrel3 = $squirrel3;
         $this->hattierService = $hattierService;
         $this->fieldGuideService = $fieldGuideService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -98,7 +102,12 @@ class DeepSeaService
         }
 
         if($activityLog)
+        {
             $activityLog->setChanges($changes->compare($pet));
+
+            if($activityLog->getChanges()->level > 0)
+                $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
+        }
 
         if($this->squirrel3->rngNextInt(1, 75) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);

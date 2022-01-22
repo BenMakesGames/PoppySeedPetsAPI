@@ -20,6 +20,7 @@ use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\SpiceRepository;
@@ -53,6 +54,7 @@ class GatheringService
     private GatheringDistractionService $gatheringDistractions;
     private UserQuestRepository $userQuestRepository;
     private CalendarService $calendarService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
@@ -60,7 +62,8 @@ class GatheringService
         Squirrel3 $squirrel3, WeatherService $weatherService, FieldGuideService $fieldGuideService,
         PetSpeciesRepository $petSpeciesRepository, PetRepository $petRepository, PetFactory $petFactory,
         MeritRepository $meritRepository, GatheringDistractionService $gatheringDistractions,
-        UserQuestRepository $userQuestRepository, CalendarService $calendarService
+        UserQuestRepository $userQuestRepository, CalendarService $calendarService,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->responseService = $responseService;
@@ -79,6 +82,7 @@ class GatheringService
         $this->gatheringDistractions = $gatheringDistractions;
         $this->userQuestRepository = $userQuestRepository;
         $this->calendarService = $calendarService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -159,7 +163,12 @@ class GatheringService
         }
 
         if($activityLog)
+        {
             $activityLog->setChanges($changes->compare($pet));
+
+            if($activityLog->getChanges()->level > 0)
+                $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
+        }
 
         if($this->squirrel3->rngNextInt(1, 75) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);

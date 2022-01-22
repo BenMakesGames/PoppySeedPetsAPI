@@ -10,8 +10,10 @@ use App\Enum\PetSkillEnum;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -22,11 +24,12 @@ class GatheringHolidayAdventureService
     private $responseService;
     private $petExperienceService;
     private $userQuestRepository;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3
+        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->inventoryService = $inventoryService;
@@ -34,7 +37,13 @@ class GatheringHolidayAdventureService
         $this->petExperienceService = $petExperienceService;
         $this->userQuestRepository = $userQuestRepository;
         $this->squirrel3 = $squirrel3;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
+
+    private const HOLIDAY_TAGS = [
+        GatheringHolidayEnum::EASTER => 'Easter',
+        GatheringHolidayEnum::SAINT_PATRICKS => 'St. Patrick\'s',
+    ];
 
     public function adventure(ComputedPetSkills $petWithSkills, string $holiday): PetActivityLog
     {
@@ -99,7 +108,12 @@ class GatheringHolidayAdventureService
         }
 
         if($activityLog)
-            $activityLog->setChanges($changes->compare($pet));
+        {
+            $activityLog
+                ->setChanges($changes->compare($pet))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Special Event', self::HOLIDAY_TAGS[$holiday] ]))
+            ;
+        }
 
         if($this->squirrel3->rngNextInt(1, 75) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);

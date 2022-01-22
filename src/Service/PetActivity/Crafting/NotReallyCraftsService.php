@@ -12,6 +12,7 @@ use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
@@ -28,10 +29,12 @@ class NotReallyCraftsService
     private SpiceRepository $spiceRepository;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        PetExperienceService $petExperienceService, SpiceRepository $spiceRepository, HouseSimService $houseSimService
+        PetExperienceService $petExperienceService, SpiceRepository $spiceRepository, HouseSimService $houseSimService,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->responseService = $responseService;
@@ -40,6 +43,7 @@ class NotReallyCraftsService
         $this->spiceRepository = $spiceRepository;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     /**
@@ -53,7 +57,6 @@ class NotReallyCraftsService
         /** @var ActivityCallback $method */
         $method = $this->squirrel3->rngNextFromArray($possibilities);
 
-        $activityLog = null;
         $pet = $petWithSkills->getPet();
         $changes = new PetChanges($pet);
 
@@ -61,7 +64,12 @@ class NotReallyCraftsService
         $activityLog = ($method->callable)($petWithSkills);
 
         if($activityLog)
+        {
             $activityLog->setChanges($changes->compare($pet));
+
+            if($activityLog->getChanges()->level > 0)
+                $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
+        }
 
         return $activityLog;
     }

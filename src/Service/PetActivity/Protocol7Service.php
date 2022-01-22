@@ -11,6 +11,7 @@ use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetQuestRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -28,11 +29,12 @@ class Protocol7Service
     private $itemRepository;
     private $squirrel3;
     private $petQuestRepository;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, GuildService $guildService, ItemRepository $itemRepository,
-        Squirrel3 $squirrel3, PetQuestRepository $petQuestRepository
+        Squirrel3 $squirrel3, PetQuestRepository $petQuestRepository, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->responseService = $responseService;
@@ -43,6 +45,7 @@ class Protocol7Service
         $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
         $this->petQuestRepository = $petQuestRepository;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -112,7 +115,12 @@ class Protocol7Service
         }
 
         if($activityLog)
+        {
             $activityLog->setChanges($changes->compare($pet));
+
+            if($activityLog->getChanges()->level > 0)
+                $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
+        }
 
         if($this->squirrel3->rngNextInt(1, 75) === 1)
             $this->inventoryService->petAttractsRandomBug($pet, 'Beta Bug');

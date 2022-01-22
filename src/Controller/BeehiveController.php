@@ -9,6 +9,7 @@ use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
 use App\Service\BeehiveService;
 use App\Service\HollowEarthService;
@@ -177,7 +178,8 @@ class BeehiveController extends PoppySeedPetsController
      */
     public function harvest(
         ResponseService $responseService, EntityManagerInterface $em, PetAssistantService $petAssistantService,
-        InventoryService $inventoryService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3
+        InventoryService $inventoryService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $user = $this->getUser();
@@ -264,6 +266,7 @@ class BeehiveController extends PoppySeedPetsController
                 $activityLog
                     ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
                     ->setChanges($changes->compare($helper))
+                    ->addTags($petActivityLogTagRepository->findByNames([ 'Add-on Assistance', 'Beehive' ]))
                 ;
             }
 

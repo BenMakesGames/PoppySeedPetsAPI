@@ -22,6 +22,7 @@ use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\SpiceRepository;
@@ -83,7 +84,8 @@ class GreenhouseController extends PoppySeedPetsController
     public function weedPlants(
         ResponseService $responseService, UserQuestRepository $userQuestRepository, EntityManagerInterface $em,
         InventoryService $inventoryService, Squirrel3 $squirrel3, PetAssistantService $petAssistantService,
-        WeatherService $weatherService, ItemRepository $itemRepository
+        WeatherService $weatherService, ItemRepository $itemRepository,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $user = $this->getUser();
@@ -165,6 +167,7 @@ class GreenhouseController extends PoppySeedPetsController
             $activityLogEntry
                 ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
                 ->setChanges($changes->compare($helper))
+                ->addTags($petActivityLogTagRepository->findByNames([ 'Add-on Assistance', 'Greenhouse' ]))
             ;
         }
 

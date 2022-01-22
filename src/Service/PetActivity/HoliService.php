@@ -9,6 +9,7 @@ use App\Enum\RelationshipEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetQuestRepository;
 use App\Repository\PetRelationshipRepository;
 use App\Service\PetExperienceService;
@@ -24,10 +25,12 @@ class HoliService
     private $responseService;
     private $em;
     private $petExperienceService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         PetRelationshipRepository $petRelationshipRepository, PetQuestRepository $petQuestRepository,
-        ResponseService $responseService, EntityManagerInterface $em, PetExperienceService $petExperienceService
+        ResponseService $responseService, EntityManagerInterface $em, PetExperienceService $petExperienceService,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->petRelationshipRepository = $petRelationshipRepository;
@@ -35,6 +38,7 @@ class HoliService
         $this->responseService = $responseService;
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function adventure(Pet $pet): ?PetActivityLog
@@ -71,6 +75,7 @@ class HoliService
         $activityLog
             ->setChanges($changes->compare($pet))
             ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
+            // tags set in other methods
         ;
 
         return $activityLog;
@@ -82,11 +87,15 @@ class HoliService
 
         $pet->increaseLove(8);
 
-        return $this->responseService->createActivityLog(
+        $activityLog = $this->responseService->createActivityLog(
             $pet,
             ActivityHelpers::PetName($pet) . ' enjoyed watching others participate in Holi this year, but didn\'t have any relationships to repair, themselves.',
             self::HOLI_ACTIVITY_LOG_ICON
         );
+
+        $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Holi', 'Special Event' ]));
+
+        return $activityLog;
     }
 
     private function doReconcileWithPet(Pet $pet, PetRelationship $relationshipToReconcile): PetActivityLog
@@ -122,12 +131,15 @@ class HoliService
             ->increaseEsteem(4)
         ;
 
+        $tags = $this->petActivityLogTagRepository->findByNames([ 'Holi', 'Special Event', '1-on-1 Hangout' ]);
+
         $otherPetLog = (new PetActivityLog())
             ->setPet($otherPet)
             ->setEntry('In the spirit of Holi, ' . ActivityHelpers::PetName($pet) . ' talked with ' . ActivityHelpers::PetName($otherPet) . '. The two reconciled, and are now friends!')
             ->setIcon(self::HOLI_ACTIVITY_LOG_ICON)
             ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
             ->setChanges($otherPetChanges->compare($otherPet))
+            ->addTags($tags)
         ;
 
         if($pet->getOwner()->getId() === $otherPet->getOwner()->getId())
@@ -141,7 +153,10 @@ class HoliService
             self::HOLI_ACTIVITY_LOG_ICON
         );
 
-        $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION);
+        $activityLog
+            ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
+            ->addTags($tags)
+        ;
 
         return $activityLog;
     }

@@ -13,6 +13,7 @@ use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
@@ -34,11 +35,13 @@ class BurntForestService
     private HattierService $hattierService;
     private EnchantmentRepository $enchantmentRepository;
     private FieldGuideService $fieldGuideService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, ResponseService $responseService, InventoryService $inventoryService,
         UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, StatusEffectService $statusEffectService,
-        HattierService $hattierService, EnchantmentRepository $enchantmentRepository, FieldGuideService $fieldGuideService
+        HattierService $hattierService, EnchantmentRepository $enchantmentRepository, FieldGuideService $fieldGuideService,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -50,6 +53,7 @@ class BurntForestService
         $this->hattierService = $hattierService;
         $this->enchantmentRepository = $enchantmentRepository;
         $this->fieldGuideService = $fieldGuideService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -109,6 +113,10 @@ class BurntForestService
         if($activityLog)
         {
             $activityLog->setChanges($changes->compare($pet));
+
+            if($activityLog->getChanges()->level > 0)
+                $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
+
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Burnt Forest', ActivityHelpers::PetName($pet) . ' used their ' . $pet->getTool()->getFullItemName() . ' to visit the Burnt Forest.');
         }
     }

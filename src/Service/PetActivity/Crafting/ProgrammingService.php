@@ -13,6 +13,7 @@ use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\HouseSimService;
@@ -34,12 +35,13 @@ class ProgrammingService
     private HattierService $hattierService;
     private EnchantmentRepository $enchantmentRepository;
     private FieldGuideService $fieldGuideService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         PetExperienceService $petExperienceService, StatusEffectService $statusEffectService,
         HouseSimService $houseSimService, HattierService $hattierService, EnchantmentRepository $enchantmentRepository,
-        FieldGuideService $fieldGuideService
+        FieldGuideService $fieldGuideService, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->responseService = $responseService;
@@ -51,6 +53,7 @@ class ProgrammingService
         $this->hattierService = $hattierService;
         $this->enchantmentRepository = $enchantmentRepository;
         $this->fieldGuideService = $fieldGuideService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     /**
@@ -204,7 +207,12 @@ class ProgrammingService
         $activityLog = ($method->callable)($petWithSkills);
 
         if($activityLog)
+        {
             $activityLog->setChanges($changes->compare($pet));
+
+            if($activityLog->getChanges()->level > 0)
+                $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
+        }
 
         return $activityLog;
     }

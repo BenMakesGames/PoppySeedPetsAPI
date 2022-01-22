@@ -4,6 +4,7 @@ namespace App\Controller\Item\PetAlteration;
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Enum\PetSkillEnum;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,7 +25,7 @@ class LengthySkillScrollController extends PoppySeedPetsItemController
      */
     public function increaseSkill(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        PetRepository $petRepository, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $user = $this->getUser();
@@ -53,7 +54,9 @@ class LengthySkillScrollController extends PoppySeedPetsItemController
         $pet->getSkills()->increaseStat($skill);
         $pet->getSkills()->increaseStat($skill);
 
-        $responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was read ' . $inventory->getItem()->getNameWithArticle() . ', increasing their ' . ucfirst($skill) . ' to ' . $pet->getSkills()->getStat($skill) . '!', 'items/scroll/lengthy-skill');
+        $responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was read ' . $inventory->getItem()->getNameWithArticle() . ', increasing their ' . ucfirst($skill) . ' to ' . $pet->getSkills()->getStat($skill) . '!', 'items/scroll/lengthy-skill')
+            ->addTag($petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]))
+        ;
 
         $em->flush();
 

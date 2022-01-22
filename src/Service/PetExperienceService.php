@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\Pet;
+use App\Entity\PetActivityLog;
 use App\Entity\StatusEffect;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
@@ -10,6 +11,7 @@ use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Repository\ItemRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,11 +27,12 @@ class PetExperienceService
     private CalendarService $calendarService;
     private UserQuestRepository $userQuestRepository;
     private ResponseService $responseService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         PetActivityStatsService $petActivityStatsService, Squirrel3 $squirrel3, CalendarService $calendarService,
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository, ResponseService $responseService,
-        UserQuestRepository $userQuestRepository
+        UserQuestRepository $userQuestRepository, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->petActivityStatsService = $petActivityStatsService;
@@ -39,12 +42,13 @@ class PetExperienceService
         $this->calendarService = $calendarService;
         $this->userQuestRepository = $userQuestRepository;
         $this->responseService = $responseService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     /**
      * @param string[] $stats
      */
-    public function gainExp(Pet $pet, int $exp, array $stats)
+    public function gainExp(Pet $pet, int $exp, array $stats, ?PetActivityLog $activityLog = null)
     {
         if($pet->hasStatusEffect(StatusEffectEnum::INSPIRED))
             $exp++;
@@ -71,6 +75,8 @@ class PetExperienceService
 
         $pet->increaseExperience($exp);
 
+        $levelUp = $pet->getExperience() >= $pet->getExperienceToLevel();
+
         while($pet->getExperience() >= $pet->getExperienceToLevel())
         {
             $pet->decreaseExperience($pet->getExperienceToLevel());
@@ -88,6 +94,9 @@ class PetExperienceService
             else
                 $pet->getSkills()->increaseStat($statToLevel);
         }
+
+        if($activityLog && $levelUp)
+            $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
     }
 
     public function spendSocialEnergy(Pet $pet, int $energy)

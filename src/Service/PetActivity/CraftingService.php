@@ -14,6 +14,7 @@ use App\Model\ComputedPetSkills;
 use App\Model\ItemQuantity;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\CalendarService;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
@@ -39,12 +40,14 @@ class CraftingService
     private CalendarService $calendarService;
     private WeatherService $weatherService;
     private HouseSimService $houseSimService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         StickCraftingService $stickCraftingService, ItemRepository $itemRepository, EventLanternService $eventLanternService,
         TwuWuvCraftingService $twuWuvCraftingService, Squirrel3 $squirrel3, CalendarService $calendarService,
-        WeatherService $weatherService, HouseSimService $houseSimService
+        WeatherService $weatherService, HouseSimService $houseSimService,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->responseService = $responseService;
@@ -58,6 +61,7 @@ class CraftingService
         $this->calendarService = $calendarService;
         $this->weatherService = $weatherService;
         $this->houseSimService = $houseSimService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     /**
@@ -355,14 +359,18 @@ class CraftingService
         /** @var ActivityCallback $method */
         $method = $this->squirrel3->rngNextFromArray($possibilities);
 
-        $activityLog = null;
         $changes = new PetChanges($petWithSkills->getPet());
 
         /** @var PetActivityLog $activityLog */
         $activityLog = ($method->callable)($petWithSkills);
 
         if($activityLog)
+        {
             $activityLog->setChanges($changes->compare($petWithSkills->getPet()));
+
+            if($activityLog->getChanges()->level > 0)
+                $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
+        }
 
         return $activityLog;
     }

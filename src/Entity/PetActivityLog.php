@@ -200,18 +200,22 @@ class PetActivityLog
         return $this->tags;
     }
 
+    /**
+     * @param PetActivityLogTag[] $tags
+     */
+    public function addTags(array $tags): self
+    {
+        foreach($tags as $tag)
+            $this->addTag($tag);
+
+        return $this;
+    }
+
     public function addTag(PetActivityLogTag $tag): self
     {
         if (!$this->tags->contains($tag)) {
             $this->tags[] = $tag;
         }
-
-        return $this;
-    }
-
-    public function removeTag(PetActivityLogTag $tag): self
-    {
-        $this->tags->removeElement($tag);
 
         return $this;
     }

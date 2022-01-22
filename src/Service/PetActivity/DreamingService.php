@@ -10,6 +10,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Functions\GrammarFunctions;
 use App\Repository\DreamRepository;
 use App\Repository\ItemRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -26,11 +27,12 @@ class DreamingService
     private $itemRepository;
     private IRandom $squirrel3;
     private DreamRepository $dreamRepository;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetSpeciesRepository $petSpeciesRepository,
         PetExperienceService $petExperienceService, ItemRepository $itemRepository, Squirrel3 $squirrel3,
-        DreamRepository $dreamRepository
+        DreamRepository $dreamRepository, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->inventoryService = $inventoryService;
@@ -40,6 +42,7 @@ class DreamingService
         $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
         $this->dreamRepository = $dreamRepository;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     private const LOCATIONS = [
@@ -185,6 +188,7 @@ class DreamingService
 
         return $this->responseService->createActivityLog($pet, $eventDescription, '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Dream' ]))
         ;
     }
 

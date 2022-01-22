@@ -264,7 +264,7 @@ class GamingGroupService
             ;
 
             if($game['exp'])
-                $this->petExperienceService->gainExp($member, 1, $game['exp']);
+                $this->petExperienceService->gainExp($member, 1, $game['exp'], $activityLog);
 
             if($game['possibleLoot'] && $this->squirrel3->rngNextInt(1, 10) === 1 && !$lowestPerformer)
             {

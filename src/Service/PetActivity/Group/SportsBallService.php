@@ -136,7 +136,7 @@ class SportsBallService
                 PetSkillEnum::BRAWL,
                 PetSkillEnum::BRAWL,
                 PetSkillEnum::STEALTH,
-            ]);
+            ], $activityLog);
 
             if($this->squirrel3->rngNextInt(1, 10) === 1 && !$lowestPerformer)
                 $this->inventoryService->petCollectsItem($this->squirrel3->rngNextFromArray(self::POSSIBLE_LOOT), $member, $this->formatMessage($message, $member, $group) . ' A ', $activityLog);

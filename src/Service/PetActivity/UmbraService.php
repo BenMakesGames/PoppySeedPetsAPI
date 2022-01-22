@@ -19,6 +19,7 @@ use App\Model\WeatherData;
 use App\Repository\DragonRepository;
 use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\InventoryService;
@@ -44,13 +45,14 @@ class UmbraService
     private IRandom $squirrel3;
     private HattierService $hattierService;
     private FieldGuideService $fieldGuideService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, GuildService $guildService, StrangeUmbralEncounters $strangeUmbralEncounters,
         ItemRepository $itemRepository, InventoryModifierService $toolBonusService, FieldGuideService $fieldGuideService,
         DragonRepository $dragonRepository, Squirrel3 $squirrel3, WeatherService $weatherService,
-        HattierService $hattierService
+        HattierService $hattierService, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->responseService = $responseService;
@@ -66,6 +68,7 @@ class UmbraService
         $this->weatherService = $weatherService;
         $this->hattierService = $hattierService;
         $this->fieldGuideService = $fieldGuideService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -149,7 +152,12 @@ class UmbraService
         }
 
         if($activityLog)
+        {
             $activityLog->setChanges($changes->compare($pet));
+
+            if($activityLog->getChanges()->level > 0)
+                $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
+        }
     }
 
     private function foundNothing(Pet $pet, int $roll): PetActivityLog
