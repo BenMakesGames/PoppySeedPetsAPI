@@ -74,6 +74,7 @@ class PetActivityLog
 
     /**
      * @ORM\ManyToMany(targetEntity=PetActivityLogTag::class)
+     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
     private $tags;
 

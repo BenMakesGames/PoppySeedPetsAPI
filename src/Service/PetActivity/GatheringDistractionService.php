@@ -8,6 +8,7 @@ use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\ComputedPetSkills;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\FieldGuideService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -22,10 +23,12 @@ class GatheringDistractionService
     private ResponseService $responseService;
     private WeatherService $weatherService;
     private FieldGuideService $fieldGuideService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         Squirrel3 $squirrel3, PetExperienceService $petExperienceService, ResponseService $responseService,
-        WeatherService $weatherService, FieldGuideService $fieldGuideService
+        WeatherService $weatherService, FieldGuideService $fieldGuideService,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->rng = $squirrel3;
@@ -33,6 +36,7 @@ class GatheringDistractionService
         $this->responseService = $responseService;
         $this->weatherService = $weatherService;
         $this->fieldGuideService = $fieldGuideService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills, string $location, string $whileDoingDescription): PetActivityLog
@@ -55,6 +59,7 @@ class GatheringDistractionService
 
         return $this->responseService->createActivityLog($pet, $description, '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering' ]))
         ;
     }
 
@@ -119,7 +124,7 @@ class GatheringDistractionService
         if($location === DistractionLocationEnum::WOODS || $location === DistractionLocationEnum::BEACH)
         {
             $distractions[] = [
-                'description' => 'they saw a HUGE turtle on the edge of the woods, just chillin\' and grazing.',
+                'description' => 'they saw a HUGE turtle on the edge of the woods, just chillin\' and grazin\'.',
                 'skills' => [ PetSkillEnum::NATURE ],
             ];
         }

@@ -8,17 +8,23 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
+use App\Repository\PetActivityLogTagRepository;
+use App\Service\IRandom;
 use App\Service\Squirrel3;
 
 class RelationshipChangeService
 {
-    private $loveService;
-    private $squirrel3;
+    private LoveService $loveService;
+    private IRandom $squirrel3;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
-    public function __construct(LoveService $loveService, Squirrel3 $squirrel3)
+    public function __construct(
+        LoveService $loveService, Squirrel3 $squirrel3, PetActivityLogTagRepository $petActivityLogTagRepository
+    )
     {
         $this->loveService = $loveService;
         $this->squirrel3 = $squirrel3;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     /**
@@ -435,11 +441,13 @@ class RelationshipChangeService
             $p1Log = (new PetActivityLog())
                 ->setPet($p1->getPet())
                 ->setEntry($message)
+                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Break-up' ]))
             ;
 
             $p2Log = (new PetActivityLog())
                 ->setPet($p2->getPet())
                 ->setEntry($message)
+                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Break-up' ]))
             ;
 
             $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
@@ -582,12 +590,14 @@ class RelationshipChangeService
                 ->setPet($p1->getPet())
                 ->setEntry($message)
                 ->setIcon('icons/activity-logs/breakup')
+                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Break-up' ]))
             ;
 
             $p2Log = (new PetActivityLog())
                 ->setPet($p2->getPet())
                 ->setEntry($message)
                 ->setIcon('icons/activity-logs/breakup')
+                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Break-up' ]))
             ;
 
             $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);

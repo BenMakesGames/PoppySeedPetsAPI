@@ -1220,8 +1220,15 @@ class PetService
             ;
         }
 
-        $petLog->setChanges($petChanges->compare($pet->getPet()));
-        $friendLog->setChanges($friendChanges->compare($friend->getPet()));
+        $petLog
+            ->setChanges($petChanges->compare($pet->getPet()))
+            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => '1-on-1 Hangout' ]))
+        ;
+
+        $friendLog
+            ->setChanges($friendChanges->compare($friend->getPet()))
+            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => '1-on-1 Hangout' ]))
+        ;
 
         if($petLog->getPet()->getOwner()->getId() === $friendLog->getPet()->getOwner()->getId())
             $friendLog->setViewed();
