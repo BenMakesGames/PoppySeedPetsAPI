@@ -15,6 +15,7 @@ use App\Repository\DragonRepository;
 use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\DragonHostageService;
@@ -46,6 +47,7 @@ class GenericAdventureService
     private DragonRepository $dragonRepository;
     private DragonHostageService $dragonHostageService;
     private EntityManagerInterface $em;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
@@ -53,7 +55,7 @@ class GenericAdventureService
         ItemRepository $itemRepository, Squirrel3 $squirrel3, SpiceRepository $spiceRepository,
         WeatherService $weatherService, EnchantmentRepository $enchantmentRepository, HattierService $hattierService,
         UserBirthdayService $userBirthdayService, DragonRepository $dragonRepository, DragonHostageService $dragonHostageService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->responseService = $responseService;
@@ -72,6 +74,7 @@ class GenericAdventureService
         $this->dragonRepository = $dragonRepository;
         $this->dragonHostageService = $dragonHostageService;
         $this->em = $em;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -133,6 +136,7 @@ class GenericAdventureService
 
             $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a raccoon carrying a House Fairy in its mouth. The raccoon stared at %pet:' . $pet->getId() . '.name% for a moment, then dropped the House Fairy and scurried away.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fae-kind' ]))
             ;
             $inventory = $this->inventoryService->petCollectsItem('House Fairy', $pet, 'A startled raccoon dropped this while ' . $pet->getName() . ' was out.', $activityLog);
 
@@ -177,6 +181,7 @@ class GenericAdventureService
 
             return $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a huge ' . $bird . ' swoop into the Greenhouse and land on the Bird Bath!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Greenhouse' ]))
             ;
         }
 
@@ -260,22 +265,30 @@ class GenericAdventureService
         $event = $this->squirrel3->rngNextInt(1, 4);
         if($event === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they spotted a bunch of ants carrying ' . $describeReward . '! %pet:' . $pet->getId() . '.name% took the ' . $reward[1] . ', brushed the ants off, and returned home.', 'items/bug/ant-conga');
+            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they spotted a bunch of ants carrying ' . $describeReward . '! %pet:' . $pet->getId() . '.name% took the ' . $reward[1] . ', brushed the ants off, and returned home.', 'items/bug/ant-conga')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering' ]))
+            ;
             $comment = $pet->getName() . ' stole this from some ants.';
         }
         else if($event === 2)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw ' . $describeReward . ' floating downstream on a log! %pet:' . $pet->getId() . '.name% caught up to the log, and took the ' . $reward[1] . '.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw ' . $describeReward . ' floating downstream on a log! %pet:' . $pet->getId() . '.name% caught up to the log, and took the ' . $reward[1] . '.', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering' ]))
+            ;
             $comment = $pet->getName() . ' found this floating on a log.';
         }
         else if($event === 3)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw ' . $describeReward . ' poking out of a bag near a dumpster! %pet:' . $pet->getId() . '.name% took the ' . $reward[1] . ', and returned home.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw ' . $describeReward . ' poking out of a bag near a dumpster! %pet:' . $pet->getId() . '.name% took the ' . $reward[1] . ', and returned home.', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Dumpster-diving' ]))
+            ;
             $comment = $pet->getName() . ' found this near a dumpster.';
         }
         else //if($event === 4)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a raccoon carrying ' . $describeReward . ' in its mouth. The raccoon stared at %pet:' . $pet->getId() . '.name% for a moment, then dropped the ' . $reward[1] . ' and scurried away.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a raccoon carrying ' . $describeReward . ' in its mouth. The raccoon stared at %pet:' . $pet->getId() . '.name% for a moment, then dropped the ' . $reward[1] . ' and scurried away.', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering' ]))
+            ;
             $comment = 'A startled raccoon dropped this while ' . $pet->getName() . ' was out.';
         }
 
@@ -336,6 +349,8 @@ class GenericAdventureService
             $message,
             ActivityHelpers::PetName($pet) . '\'s got so much confetti on them, they were finding bits of confetti on their body all day...'
         );
+
+        $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Special Event', 'Birthday' ]));
 
         return $activityLog;
     }
