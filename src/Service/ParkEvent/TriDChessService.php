@@ -101,6 +101,7 @@ class TriDChessService implements ParkEventInterface
             '%p1% and %p2%, unfortunately, saw each other at a Tri-D Chess tournament...',
             'Met at a Tri-D Chess tournament.',
             '%p1% met %p2% at a Tri-D Chess tournament.',
+            [ 'Park Event', 'Tri-D Chess' ],
             2
         );
 
@@ -180,6 +181,7 @@ class TriDChessService implements ParkEventInterface
             '%p1% and %p2% ended up having to play a game of Tri-D Chess together...',
             'Met during a match at a Tri-D Chess tournament.',
             '%p1% and %p2% met during a match at a Tri-D Chess tournament.',
+            [ 'Park Event', 'Tri-D Chess' ],
             3
         );
 

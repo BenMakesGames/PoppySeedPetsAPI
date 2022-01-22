@@ -111,6 +111,7 @@ class JoustingService implements ParkEventInterface
                 '%p1% and %p2%, unfortunately, must work together as a team during a Jousting tournament!',
                 'Met as jousting partners in a Jousting tournament.',
                 '%p1% and %p2% met at a Jousting tournament. They were jousting partners!',
+                [ 'Park Event', 'Jousting' ],
                 100
             );
         }

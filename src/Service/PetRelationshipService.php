@@ -9,6 +9,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRelationshipRepository;
 use App\Service\PetActivity\PregnancyService;
 use App\Service\PetActivity\Relationship\FriendlyRivalsService;
@@ -29,22 +30,22 @@ class PetRelationshipService
         RelationshipEnum::MATE => 5,
     ];
 
-    private $petRelationshipRepository;
     private $em;
     private $responseService;
     private $pregnancyService;
     private $friendlyRivalsService;
     private $loveService;
     private $relationshipChangeService;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
-        PetRelationshipRepository $petRelationshipRepository, EntityManagerInterface $em, ResponseService $responseService,
-        PregnancyService $pregnancyService, FriendlyRivalsService $friendlyRivalsService, LoveService $loveService,
-        RelationshipChangeService $relationshipChangeService, Squirrel3 $squirrel3
+        EntityManagerInterface $em, ResponseService $responseService, PregnancyService $pregnancyService,
+        FriendlyRivalsService $friendlyRivalsService, LoveService $loveService,
+        RelationshipChangeService $relationshipChangeService, Squirrel3 $squirrel3,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
-        $this->petRelationshipRepository = $petRelationshipRepository;
         $this->em = $em;
         $this->responseService = $responseService;
         $this->pregnancyService = $pregnancyService;
@@ -52,6 +53,7 @@ class PetRelationshipService
         $this->loveService = $loveService;
         $this->relationshipChangeService = $relationshipChangeService;
         $this->squirrel3 = $squirrel3;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function min(string $relationship1, string $relationship2): string
@@ -105,6 +107,7 @@ class PetRelationshipService
         string $enemyDescription,
         string $meetProfileText,
         string $meetActivityLogTemplate,
+        array $groupTags,
         int $meetChance = 2
     )
     {
@@ -119,20 +122,20 @@ class PetRelationshipService
         {
             // $i + 1 prevents duplicate hang-outs
             for($j = $i + 1; $j < count($members); $j++)
-                $this->seeAtGroupGathering($members[$i], $members[$j], $hangOutDescription, $enemyDescription, $meetProfileText, $meetActivityLogTemplate, $meetChance);
+                $this->seeAtGroupGathering($members[$i], $members[$j], $hangOutDescription, $enemyDescription, $meetProfileText, $meetActivityLogTemplate, $groupTags, $meetChance);
         }
     }
 
-    public function seeAtGroupGathering(Pet $p1, Pet $p2, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetActivityLogTemplate, int $meetChance = 5)
+    public function seeAtGroupGathering(Pet $p1, Pet $p2, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetActivityLogTemplate, array $groupTags, int $meetChance = 5)
     {
         if($p1->getId() === $p2->getId()) return;
 
         $p1Relationships = $p1->getRelationshipWith($p2);
 
         if($p1Relationships)
-            $this->hangOutPublicly($p1Relationships, $p2->getRelationshipWith($p1), $hangOutDescription, $enemyDescription);
+            $this->hangOutPublicly($p1Relationships, $p2->getRelationshipWith($p1), $hangOutDescription, $enemyDescription, $groupTags);
         else if($this->squirrel3->rngNextInt(1, 100) <= $meetChance)
-            $this->introducePets($p1, $p2, $meetSummary, $meetActivityLogTemplate);
+            $this->introducePets($p1, $p2, $meetSummary, $meetActivityLogTemplate, $groupTags);
     }
 
     public function meetRoommate(Pet $pet, Pet $otherPet): ?PetRelationship
@@ -167,7 +170,7 @@ class PetRelationshipService
     /**
      * @return PetRelationship[]
      */
-    public function introducePets(Pet $pet, Pet $otherPet, string $howMetSummary, string $metActivityLogTemplate): array
+    public function introducePets(Pet $pet, Pet $otherPet, string $howMetSummary, string $metActivityLogTemplate, array $groupTags): array
     {
         if($this->loveService->isTooCloselyRelatedForSex($pet, $otherPet))
         {
@@ -275,7 +278,11 @@ class PetRelationshipService
         else
             $activityLog = $this->responseService->createActivityLog($pet, $meetDescription, 'icons/activity-logs/friend');
 
-        $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP);
+        $activityLog
+            ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
+            ->addTags($this->petActivityLogTagRepository->findByNames($groupTags))
+            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Group Hangout' ]))
+        ;
 
         // other pet
         if($otherPet->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD))
@@ -307,7 +314,11 @@ class PetRelationshipService
         else
             $otherActivityPet = $this->responseService->createActivityLog($otherPet, $meetDescription, 'icons/activity-logs/friend');
 
-        $otherActivityPet->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP);
+        $otherActivityPet
+            ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
+            ->addTags($this->petActivityLogTagRepository->findByNames($groupTags))
+            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Group Hangout' ]))
+        ;
 
         if($otherActivityPet->getPet()->getOwner()->getId() === $activityLog->getPet()->getOwner()->getId())
             $otherActivityPet->setViewed();
@@ -355,7 +366,7 @@ class PetRelationshipService
         return $values[$targetRelationship] - $values[$initialRelationship];
     }
 
-    public function hangOutPublicly(PetRelationship $p1, PetRelationship $p2, string $hangOutDescription, string $enemyDescription)
+    public function hangOutPublicly(PetRelationship $p1, PetRelationship $p2, string $hangOutDescription, string $enemyDescription, array $groupTags)
     {
         $p1->decrementTimeUntilChange(0.5);
         $p2->decrementTimeUntilChange(0.5);
@@ -392,8 +403,20 @@ class PetRelationshipService
             $icon = 'icons/activity-logs/friend';
         }
 
-        if($p1Description) $this->responseService->createActivityLog($p1->getPet(), $p1Description, $icon);
-        if($p2Description) $this->responseService->createActivityLog($p2->getPet(), $p2Description, $icon);
+        if($p1Description)
+        {
+            $this->responseService->createActivityLog($p1->getPet(), $p1Description, $icon)
+                ->addTags($this->petActivityLogTagRepository->findByNames($groupTags))
+                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Group Hangout' ]))
+            ;
+        }
+        if($p2Description)
+        {
+            $this->responseService->createActivityLog($p2->getPet(), $p2Description, $icon)
+                ->addTags($this->petActivityLogTagRepository->findByNames($groupTags))
+                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Group Hangout' ]))
+            ;
+        }
     }
 
     /**

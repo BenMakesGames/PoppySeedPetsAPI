@@ -153,6 +153,7 @@ class KinBallService implements ParkEventInterface
                 '%p1% and %p2%, unfortunately, were on the same team during a Kin-Ball game...',
                 'Met at a game of Kin-Ball. They were on the same team!',
                 '%p1% met %p2% at a game of Kin-Ball. They were on the same team!',
+                [ 'Park Event', 'Kin-Ball' ],
                 2
             );
         }
@@ -173,6 +174,7 @@ class KinBallService implements ParkEventInterface
                         '%p1% and %p2%, unfortunately, saw each other at a Kin-Ball game...',
                         'Met at a game of Kin-Ball.',
                         '%p1% met %p2% at a game of Kin-Ball.',
+                        [ 'Park Event', 'Kin-Ball' ],
                         1
                     );
                 }

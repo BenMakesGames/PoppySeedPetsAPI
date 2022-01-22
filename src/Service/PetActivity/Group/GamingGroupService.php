@@ -9,6 +9,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\GroupNameGenerator;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -28,11 +29,12 @@ class GamingGroupService
     private IRandom $squirrel3;
     private GroupNameGenerator $groupNameGenerator;
     private EnchantmentRepository $enchantmentRepository;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
         PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3, GroupNameGenerator $groupNameGenerator,
-        EnchantmentRepository $enchantmentRepository
+        EnchantmentRepository $enchantmentRepository, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -42,6 +44,7 @@ class GamingGroupService
         $this->squirrel3 = $squirrel3;
         $this->groupNameGenerator = $groupNameGenerator;
         $this->enchantmentRepository = $enchantmentRepository;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     private const DICTIONARY = [
@@ -261,6 +264,7 @@ class GamingGroupService
                 ->setEntry($this->formatMessage($messageTemplate, $member, $group))
                 ->setIcon(self::ACTIVITY_ICON)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Group Hangout', 'Gaming Group' ]))
             ;
 
             if($game['exp'])
@@ -293,6 +297,7 @@ class GamingGroupService
             '%p1% and %p2% avoided talking as much as possible while playing ' . $game['name'] . ' with ' . $group->getName() . '.',
             'Met during a ' . $group->getName() . ' gaming session.',
             '%p1% met %p2% during a ' . $group->getName() . ' gaming session.',
+            [ 'Gaming Group' ],
             100
         );
 

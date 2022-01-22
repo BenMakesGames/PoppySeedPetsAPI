@@ -120,6 +120,7 @@ class CTFService implements ParkEventInterface
                 '%p1% and %p2%, unfortunately, were on the same team during a game of Capture the Flag...',
                 'Met at a game of Capture the Flag. They were on the same team!',
                 '%p1% met %p2% at a game of Capture the Flag. They were on the same team!',
+                [ 'Park Event', 'Capture the Flag' ],
                 2
             );
         }
@@ -140,6 +141,7 @@ class CTFService implements ParkEventInterface
                         '%p1% and %p2%, unfortunately, saw each other during a game of Capture the Flag...',
                         'Met at a game of Capture the Flag.',
                         '%p1% met %p2% at a game of Capture the Flag.',
+                        [ 'Park Event', 'Capture the Flag' ],
                         1
                     );
                 }

@@ -8,6 +8,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\PetChanges;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\GroupNameGenerator;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -28,11 +29,12 @@ class BandService
     private $transactionService;
     private IRandom $squirrel3;
     private GroupNameGenerator $groupNameGenerator;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, InventoryService $inventoryService,
-        PetExperienceService $petExperienceService, TransactionService $transactionService,
-        Squirrel3 $squirrel3, GroupNameGenerator $groupNameGenerator
+        PetExperienceService $petExperienceService, TransactionService $transactionService, Squirrel3 $squirrel3,
+        GroupNameGenerator $groupNameGenerator, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->em = $em;
@@ -42,6 +44,7 @@ class BandService
         $this->transactionService = $transactionService;
         $this->squirrel3 = $squirrel3;
         $this->groupNameGenerator = $groupNameGenerator;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     private const ADJECTIVE_LIST = [
@@ -220,6 +223,7 @@ class BandService
                 ->setIcon(self::ACTIVITY_ICON)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Group Hangout', 'Band' ]))
             ;
 
             $this->em->persist($activityLog);
@@ -246,6 +250,7 @@ class BandService
                 ->setIcon(self::ACTIVITY_ICON)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Group Hangout', 'Band' ]))
             ;
 
             $this->em->persist($activityLog);
@@ -361,6 +366,7 @@ class BandService
             '%p1% and %p2% avoided talking as much as possible while playing together for ' . $group->getName() . '.',
             'Met during a ' . $group->getName() . ' jam session.',
             '%p1% met %p2% during a ' . $group->getName() . ' jam session.',
+            [ 'Band' ],
             100
         );
     }
