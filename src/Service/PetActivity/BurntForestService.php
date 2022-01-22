@@ -127,7 +127,9 @@ class BurntForestService
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::UMBRA, false);
 
-        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, but all they found were ashes...', 'icons/activity-logs/confused');
+        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, but all they found were ashes...', 'icons/activity-logs/confused')
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra' ]))
+        ;
     }
 
     private function findABitOfCharcoal(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -152,7 +154,9 @@ class BurntForestService
             ]);
         }
 
-        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the Burnt Forest for a while. They didn\'t encounter anything _super_ weird, but they did find ' . $loot . '!', '');
+        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the Burnt Forest for a while. They didn\'t encounter anything _super_ weird, but they did find ' . $loot . '!', '')
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra' ]))
+        ;
 
         $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while exploring the Burnt Forest.', $activityLog);
 
@@ -170,7 +174,9 @@ class BurntForestService
 
         if($roll >= 11)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a wounded fairy! They bandaged it up; thankful, the Fairy cast a minor blessing on ' . $pet->getName() . '!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a wounded fairy! They bandaged it up; thankful, the Fairy cast a minor blessing on ' . $pet->getName() . '!', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Fae-kind' ]))
+            ;
 
             $this->statusEffectService->applyStatusEffect($pet, $this->squirrel3->rngNextFromArray([
                 StatusEffectEnum::INSPIRED, StatusEffectEnum::ONEIRIC, StatusEffectEnum::EXTRA_EXTROVERTED
@@ -188,7 +194,9 @@ class BurntForestService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a wounded fairy! They weren\'t able to help, though. The fairy thanked them for trying, anyway...', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a wounded fairy! They weren\'t able to help, though. The fairy thanked them for trying, anyway...', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Fae-kind' ]))
+            ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
@@ -211,11 +219,15 @@ class BurntForestService
 
             if($resistsFire || $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStamina()->getTotal()) >= 10)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming tentacles! They beat the tentacles back, and got a ' . $loot . '!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming tentacles! They beat the tentacles back, and got a ' . $loot . '!', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Fighting', 'Heatstroke' ]))
+                ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming tentacles! They beat the tentacles back, and got a ' . $loot . ', but not without getting burned in the fight!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming tentacles! They beat the tentacles back, and got a ' . $loot . ', but not without getting burned in the fight!', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Fighting', 'Heatstroke' ]))
+                ;
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
             }
 
@@ -230,12 +242,16 @@ class BurntForestService
         {
             if($resistsFire || $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStamina()->getTotal()) >= 15)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming tentacles! They tried to fight, but were forced to flee...', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming tentacles! They tried to fight, but were forced to flee...', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Fighting', 'Heatstroke' ]))
+                ;
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming tentacles! They tried to fight, but got burned by one of the tentacles, and was forced to flee...', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming tentacles! They tried to fight, but got burned by one of the tentacles, and was forced to flee...', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Fighting', 'Heatstroke' ]))
+                ;
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(4, 8));
             }
 
@@ -271,12 +287,18 @@ class BurntForestService
             {
                 if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
                 {
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' realized that the spirit was just hungry, and found it a piece of Charcoal to eat, instead. Grateful, the tree offered them ' . $loot . '.', 'guilds/light-and-shadow');
+                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' realized that the spirit was just hungry, and found it a piece of Charcoal to eat, instead. Grateful, the tree offered them ' . $loot . '.', 'guilds/light-and-shadow')
+                        ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Guild' ]))
+                    ;
                     $pet->getGuildMembership()->increaseReputation();
                     $exp = 2;
                 }
                 else
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' found a piece of Charcoal, and convinced the spirit to eat that, instead. Grateful, the tree offered them ' . $loot . '.', '');
+                {
+                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' found a piece of Charcoal, and convinced the spirit to eat that, instead. Grateful, the tree offered them ' . $loot . '.', '')
+                        ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra' ]))
+                    ;
+                }
 
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' was given this by a tree in the Burnt Forest, as thanks for saving it!', $activityLog);
                 $pet->increaseLove($this->squirrel3->rngNextInt(2, 4));
@@ -308,7 +330,9 @@ class BurntForestService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' tried to find a piece of Charcoal to distract the spirit with, but couldn\'t find any...', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' tried to find a piece of Charcoal to distract the spirit with, but couldn\'t find any...', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra' ]))
+                ;
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
@@ -320,12 +344,18 @@ class BurntForestService
             {
                 if($pet->isInGuild(GuildEnum::THE_UNIVERSE_FORGETS))
                 {
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' immediately put the fire out so that it could no longer harm anyone; grateful, the tree offered them ' . $loot . '.', 'guilds/the-universe-forgets');
+                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' immediately put the fire out so that it could no longer harm anyone; grateful, the tree offered them ' . $loot . '.', 'guilds/the-universe-forgets')
+                        ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Fighting', 'Guild' ]))
+                    ;
                     $pet->getGuildMembership()->increaseReputation();
                     $exp = 2;
                 }
                 else
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' was able to put the fire out; grateful, the tree offered them ' . $loot . '.', '');
+                {
+                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' was able to put the fire out; grateful, the tree offered them ' . $loot . '.', '')
+                        ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Fighting' ]))
+                    ;
+                }
 
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' was given this by a tree in the Burnt Forest, as thanks for saving it!', $activityLog);
                 $pet->increaseLove($this->squirrel3->rngNextInt(2, 4));
@@ -335,7 +365,9 @@ class BurntForestService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' tried to put out the fire, but by the time they chased it off, the tree was already dead...', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' tried to put out the fire, but by the time they chased it off, the tree was already dead...', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Fighting' ]))
+                ;
                 $pet->increaseEsteem(-$this->squirrel3->rngNextInt(2, 4));
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
 
@@ -356,13 +388,17 @@ class BurntForestService
             if($pet->isInGuild(GuildEnum::TAPESTRIES))
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a tear in the fabric of reality! They were able to stitch it back together, and got some Quintessence!', 'guild/tapestries');
-                $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this in the Burnt Forest while repairing a tear in the fabric of reality.', $activityLog);
+                $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this in the Burnt Forest while repairing a tear in the fabric of reality.', $activityLog)
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Guild' ]))
+                ;
                 $pet->getGuildMembership()->increaseReputation();
             }
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a tear in the fabric of reality! It was a little intimidating, but they managed to harvest some Quintessence!', '');
-                $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this in the Burnt Forest from tear in the fabric of reality.', $activityLog);
+                $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this in the Burnt Forest from tear in the fabric of reality.', $activityLog)
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra' ]))
+                ;
             }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
@@ -372,9 +408,17 @@ class BurntForestService
         else
         {
             if($pet->isInGuild(GuildEnum::TAPESTRIES))
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a tear in the fabric of reality! They tried to repair it, but were worried about getting unraveled, themselves!', '');
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a tear in the fabric of reality! They tried to repair it, but were worried about getting unraveled, themselves!', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Guild' ]))
+                ;
+            }
             else
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a tear in the fabric of reality! They thought about harvesting some Quintessence, but were worried about getting unraveled, themselves!', '');
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a tear in the fabric of reality! They thought about harvesting some Quintessence, but were worried about getting unraveled, themselves!', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra' ]))
+                ;
+            }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
@@ -386,7 +430,9 @@ class BurntForestService
 
     private function breakToolBonus(Pet $pet): PetActivityLog
     {
-        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to visit the Burnt Forest, but a crack of light appeared on ' . $pet->getTool()->getItem()->getName() . ', and it lost its "' . $pet->getTool()->getEnchantment()->getName() . '" bonus! Before the crack faded, a strange piece of paper slipped out of it...', '');
+        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to visit the Burnt Forest, but a crack of light appeared on ' . $pet->getTool()->getItem()->getName() . ', and it lost its "' . $pet->getTool()->getEnchantment()->getName() . '" bonus! Before the crack faded, a strange piece of paper slipped out of it...', '')
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra' ]))
+        ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
 
@@ -412,11 +458,15 @@ class BurntForestService
 
             if($resistsFire || $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStamina()->getTotal()) >= 15)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They beat the tentacles back, and got a Tentacle, and ' . $loot . '!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They beat the tentacles back, and got a Tentacle, and ' . $loot . '!', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Fighting', 'Heatstroke' ]))
+                ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They beat the tentacles back, and got a Tentacle, and ' . $loot . ', but not without getting burned in the fight!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They beat the tentacles back, and got a Tentacle, and ' . $loot . ', but not without getting burned in the fight!', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Fighting', 'Heatstroke' ]))
+                ;
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
             }
 
@@ -433,12 +483,16 @@ class BurntForestService
         {
             if($resistsFire || $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStamina()->getTotal()) >= 20)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They tried to fight, but were forced to flee...', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They tried to fight, but were forced to flee...', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Fighting', 'Heatstroke' ]))
+                ;
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They tried to fight, but got burned by one of the tentacles, and was forced to flee...', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and encountered a mass of flaming, scaly tentacles! They tried to fight, but got burned by one of the tentacles, and was forced to flee...', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Fighting', 'Heatstroke' ]))
+                ;
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(4, 8));
             }
 
