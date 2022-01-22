@@ -27,6 +27,21 @@ final class ArrayFunctions
         return true;
     }
 
+    public static function unique(iterable $array, callable $delegate)
+    {
+        $result = [];
+
+        foreach($array as $item)
+        {
+            $key = $delegate($item);
+
+            if(!isset($result[$key]))
+                $result[$key] = $item;
+        }
+
+        return array_values($result);
+    }
+
     /**
      * @return mixed|null
      */

@@ -6,6 +6,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Functions\ArrayFunctions;
 use App\Model\PetChangesSummary;
 use App\Model\WeatherData;
 use App\Model\WeatherForecastData;
@@ -123,26 +124,14 @@ class ResponseService
 
         $unreadMessages = $this->petActivityLogRepository->findUnreadForUser($user);
 
-        $query = $this->em->createQuery('
-            UPDATE App\\Entity\\PetActivityLog l
-            SET l.viewed = 1
-            WHERE l.id IN (:messageIds)
-        ');
-
-        $messageIds = array_map(
-            fn(PetActivityLog $l) => $l->getId(),
-            $unreadMessages
-        );
-
-        $query->setParameter('messageIds', $messageIds);
-
-        $query->execute();
+        foreach($unreadMessages as $message)
+            $message->setViewed();
 
         $this->em->flush();
 
-        return array_merge(
-            $this->flashMessages,
-            $unreadMessages
+        return ArrayFunctions::unique(
+            array_merge($this->flashMessages, $unreadMessages),
+            fn(PetActivityLog $l) => $l->getEntry(),
         );
     }
 
