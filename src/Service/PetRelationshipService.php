@@ -148,7 +148,8 @@ class PetRelationshipService
                 $pet,
                 $otherPet,
                 'Met at ' . $pet->getOwner()->getName() . '\'s house as roomies!',
-                '%p1% met their new roommate, %p2%.'
+                '%p1% met their new roommate, %p2%.',
+                []
             );
         }
         else
