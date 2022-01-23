@@ -595,7 +595,7 @@ class SmithingService
             $this->inventoryService->petCollectsItem('Crystal Ball', $pet, $pet->getName() . ' created this from Glass.', $activityLog);
             $this->inventoryService->petCollectsItem('Crystal Ball', $pet, $pet->getName() . ' created this from Glass.', $activityLog);
 
-            $this->maybeMakeARainbowToo($pet, 2);
+            $this->maybeMakeARainbowToo($petWithSkills, 2);
 
             return $activityLog;
         }
@@ -613,7 +613,7 @@ class SmithingService
             ;
             $this->inventoryService->petCollectsItem('Crystal Ball', $pet, $pet->getName() . ' created this from Glass.', $activityLog);
 
-            $this->maybeMakeARainbowToo($pet, 1);
+            $this->maybeMakeARainbowToo($petWithSkills, 1);
 
             return $activityLog;
         }
