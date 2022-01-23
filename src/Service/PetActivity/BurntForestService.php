@@ -387,18 +387,18 @@ class BurntForestService
         {
             if($pet->isInGuild(GuildEnum::TAPESTRIES))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a tear in the fabric of reality! They were able to stitch it back together, and got some Quintessence!', 'guild/tapestries');
-                $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this in the Burnt Forest while repairing a tear in the fabric of reality.', $activityLog)
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a tear in the fabric of reality! They were able to stitch it back together, and got some Quintessence!', 'guild/tapestries')
                     ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Guild' ]))
                 ;
+                $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this in the Burnt Forest while repairing a tear in the fabric of reality.', $activityLog);
                 $pet->getGuildMembership()->increaseReputation();
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a tear in the fabric of reality! It was a little intimidating, but they managed to harvest some Quintessence!', '');
-                $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this in the Burnt Forest from tear in the fabric of reality.', $activityLog)
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a tear in the fabric of reality! It was a little intimidating, but they managed to harvest some Quintessence!', '')
                     ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra' ]))
                 ;
+                $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this in the Burnt Forest from tear in the fabric of reality.', $activityLog);
             }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
