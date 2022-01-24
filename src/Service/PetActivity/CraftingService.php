@@ -1647,7 +1647,7 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried enchant a Decorated Spear, but couldn\'t get an enchantment to stick.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
             ;
         }
         else // success!
@@ -1661,7 +1661,7 @@ class CraftingService
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Decorated Spear to be ' . $veilPiercer->getNameWithArticle() . '.', 'items/' . $veilPiercer->getImage())
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
             ;
             $this->inventoryService->petCollectsItem($veilPiercer, $pet, $pet->getName() . ' made this by enchanting a Decorated Spear.', $activityLog);
             return $activityLog;
