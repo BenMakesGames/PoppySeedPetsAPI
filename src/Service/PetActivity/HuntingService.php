@@ -101,7 +101,7 @@ class HuntingService
 
         if(DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON && $this->squirrel3->rngNextInt(1, 100) === 1)
         {
-            $activityLog = $this->werecreatureEncounterService->encounterWerecreature($petWithSkills, 'hunting');
+            $activityLog = $this->werecreatureEncounterService->encounterWerecreature($petWithSkills, 'hunting', [ 'Hunting' ]);
         }
         else
         {

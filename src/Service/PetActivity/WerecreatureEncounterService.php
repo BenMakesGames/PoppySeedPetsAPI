@@ -7,6 +7,7 @@ use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -21,10 +22,12 @@ class WerecreatureEncounterService
     private $responseService;
     private $inventoryService;
     private $statusEffectService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, Squirrel3 $squirrel3, ItemRepository $itemRepository,
-        ResponseService $responseService, InventoryService $inventoryService, StatusEffectService $statusEffectService
+        ResponseService $responseService, InventoryService $inventoryService, StatusEffectService $statusEffectService,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -33,9 +36,10 @@ class WerecreatureEncounterService
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->statusEffectService = $statusEffectService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
-    public function encounterWerecreature(ComputedPetSkills $petWithSkills, string $doingWhat): PetActivityLog
+    public function encounterWerecreature(ComputedPetSkills $petWithSkills, string $doingWhat, array $tags): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $message = 'Under the influence of the full moon, a werecreature leapt out and attacked %pet:' . $pet->getId() . '.name% while they were out ' . $doingWhat . '! ';
@@ -62,7 +66,9 @@ class WerecreatureEncounterService
 
                 $message .= 'However, upon seeing %pet:' . $pet->getId() . '.name%\'s silver ' . $hat->getItem()->getName() . ', the creature ran off, dropping ' . $lootItem->getNameWithArticle() . ' as it went!';
 
-                $activityLog = $this->responseService->createActivityLog($pet, $message, '');
+                $activityLog = $this->responseService->createActivityLog($pet, $message, '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
+                ;
 
                 $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' scared off a werecreature, and received this.', $activityLog);
 
@@ -92,7 +98,9 @@ class WerecreatureEncounterService
 
                 $message .= '%pet:' . $pet->getId() . '.name% brandished their silver ' . $tool->getItem()->getName() . '; the creature ran off at the sight of it, dropping ' . $lootItem->getNameWithArticle() . ' as it went!';
 
-                $activityLog = $this->responseService->createActivityLog($pet, $message, '');
+                $activityLog = $this->responseService->createActivityLog($pet, $message, '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
+                ;
 
                 $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' chased off a werecreature, and received this.', $activityLog);
 
@@ -120,7 +128,9 @@ class WerecreatureEncounterService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $message, '');
+            $activityLog = $this->responseService->createActivityLog($pet, $message, '')
+                ->addTags($this->petActivityLogTagRepository->findByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
+            ;
 
             $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' received this from a fight with a werecreature.', $activityLog);
 
@@ -140,7 +150,9 @@ class WerecreatureEncounterService
 
             $message .= '%pet:' . $pet->getId() . '.name% eventually escaped the creature, but not before being scratched and bitten! (Uh oh!)';
 
-            return $this->responseService->createActivityLog($pet, $message, '');
+            return $this->responseService->createActivityLog($pet, $message, '')
+                ->addTags($this->petActivityLogTagRepository->findByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
+            ;
         }
     }
 
