@@ -119,14 +119,18 @@ class MagicBeanstalkService
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, false);
 
-        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to climb the magic bean-stalk in %user:' . $pet->getOwner()->getId() . '.name\'s% greenhouse, but wasn\'t able to make any progress...', 'icons/activity-logs/confused');
+        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to climb the magic bean-stalk in %user:' . $pet->getOwner()->getId() . '.name\'s% greenhouse, but wasn\'t able to make any progress...', 'icons/activity-logs/confused')
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk' ]))
+        ;
     }
 
     private function getBeans(Pet $pet): PetActivityLog
     {
         $meters = $this->squirrel3->rngNextInt(10, 16) / 2;
 
-        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters. There, perhaps unsurprisingly, they found some Beans.', 'items/legume/beans');
+        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters. There, perhaps unsurprisingly, they found some Beans.', 'items/legume/beans')
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Gathering' ]))
+        ;
 
         $this->inventoryService->petCollectsItem('Beans', $pet, $pet->getName() . ' harvested this from your magic bean-stalk.', $activityLog);
         $this->inventoryService->petCollectsItem('Beans', $pet, $pet->getName() . ' harvested this from your magic bean-stalk.', $activityLog);
@@ -141,7 +145,9 @@ class MagicBeanstalkService
     {
         $meters = $this->squirrel3->rngNextInt(12, 20) / 2;
 
-        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters. They didn\'t dare go any higher, but decided to pluck a Really Big Leaf on their way back down.', '');
+        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters. They didn\'t dare go any higher, but decided to pluck a Really Big Leaf on their way back down.', '')
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Gathering' ]))
+        ;
 
         $this->inventoryService->petCollectsItem('Really Big Leaf', $pet, $pet->getName() . ' harvested this from your magic bean-stalk.', $activityLog);
 
@@ -157,13 +163,17 @@ class MagicBeanstalkService
 
         if($lucky)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as \~' . $meters . ' meters. There, they spotted a Magic Leaf! Lucky\~!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as \~' . $meters . ' meters. There, they spotted a Magic Leaf! Lucky\~!', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Gathering' ]))
+            ;
 
             $this->inventoryService->petCollectsItem('Magic Leaf', $pet, $pet->getName() . ' harvested this from your magic bean-stalk! Lucky~!', $activityLog);
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they spotted a Magic Leaf, so plucked it, and headed back down.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they spotted a Magic Leaf, so plucked it, and headed back down.', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Gathering' ]))
+            ;
 
             $this->inventoryService->petCollectsItem('Magic Leaf', $pet, $pet->getName() . ' harvested this from your magic bean-stalk.', $activityLog);
         }
@@ -182,7 +192,9 @@ class MagicBeanstalkService
 
         if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 10)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they found a bird\'s nest, which they raided.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they found a bird\'s nest, which they raided.', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Stealth' ]))
+            ;
 
             $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
 
@@ -204,7 +216,9 @@ class MagicBeanstalkService
         {
             if($this->squirrel3->rngNextInt(1, 20 + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getBrawl()->getTotal()) >= 10)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they found a bird\'s nest, guarded by its mother. It seemed a suitable challenge for a member of High Impact, so %pet:' . $pet->getId() . '.name% fought the bird, chased it off, and raided its nest.', 'guilds/high-impact');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they found a bird\'s nest, guarded by its mother. It seemed a suitable challenge for a member of High Impact, so %pet:' . $pet->getId() . '.name% fought the bird, chased it off, and raided its nest.', 'guilds/high-impact')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Fighting', 'Guild' ]))
+                ;
 
                 $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
                 $this->inventoryService->petCollectsItem('Feathers', $pet, $pet->getName() . ' stole this from a Bird Nest.', $activityLog);
@@ -225,7 +239,9 @@ class MagicBeanstalkService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they found a bird\'s nest, guarded by its mother. It seemed a suitable challenge for a member of High Impact, so %pet:' . $pet->getId() . '.name% fought the bird, but the bird fought back, and %pet:' . $pet->getId() . '.name% was forced to climb back down as fast as they could...', 'guilds/high-impact');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters. There, they found a bird\'s nest, guarded by its mother. It seemed a suitable challenge for a member of High Impact, so %pet:' . $pet->getId() . '.name% fought the bird, but the bird fought back, and %pet:' . $pet->getId() . '.name% was forced to climb back down as fast as they could...', 'guilds/high-impact')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Fighting', 'Guild' ]))
+                ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ]);
 
@@ -236,7 +252,9 @@ class MagicBeanstalkService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters. They found a bird nest, but the mother bird was around, and it didn\'t seem safe to pick a fight up there, so %pet:' . $pet->getId() . '.name% left it alone.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters. They found a bird nest, but the mother bird was around, and it didn\'t seem safe to pick a fight up there, so %pet:' . $pet->getId() . '.name% left it alone.', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Stealth' ]))
+            ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ]);
 
@@ -250,7 +268,9 @@ class MagicBeanstalkService
     {
         $meters = $this->squirrel3->rngNextInt(100, 200) / 2;
 
-        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! A huge swarm of bugs flew by, and %pet:' . $pet->getId() . '.name% had to hold on for dear life!', '');
+        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! A huge swarm of bugs flew by, and %pet:' . $pet->getId() . '.name% had to hold on for dear life!', '')
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk' ]))
+        ;
 
         $numBugs = $this->squirrel3->rngNextInt(2, 5);
 
@@ -274,7 +294,9 @@ class MagicBeanstalkService
 
         $meters = $this->squirrel3->rngNextInt(300, 1800) / 2;
 
-        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! There wasn\'t anything noteworthy up there, but it was a good work-out!', '');
+        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! There wasn\'t anything noteworthy up there, but it was a good work-out!', '')
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk' ]))
+        ;
 
         $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
 
@@ -292,7 +314,9 @@ class MagicBeanstalkService
 
         if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 18)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found a white Pegasus\' nest, which they raided.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found a white Pegasus\' nest, which they raided.', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Stealth' ]))
+            ;
 
             $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
 
@@ -310,7 +334,9 @@ class MagicBeanstalkService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white Pegasus\' nest, but the mother was around, and it didn\'t seem safe to pick a fight up there, so %pet:' . $pet->getId() . '.name% left it alone.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white Pegasus\' nest, but the mother was around, and it didn\'t seem safe to pick a fight up there, so %pet:' . $pet->getId() . '.name% left it alone.', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Stealth' ]))
+            ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ]);
 
@@ -326,30 +352,14 @@ class MagicBeanstalkService
 
         $meters = $this->squirrel3->rngNextInt(2000, 3000) / 2;
 
-        if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 18)
-        {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found a white Pegasus\' nest, which they raided.', '');
-
-            $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
-
-            $perceptionRoll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal());
-
-            if($perceptionRoll >= 18)
-                $this->inventoryService->petCollectsItem('White Feathers', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
-            else if($perceptionRoll >= 10)
-                $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
-
-            $pet->increaseEsteem($this->squirrel3->rngNextInt(1, 2));
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ]);
-
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::GATHER, true);
-        }
-        else if($this->squirrel3->rngNextInt(1, 20 + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getBrawl()->getTotal()) >= 18)
+        if($this->squirrel3->rngNextInt(1, 20 + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getBrawl()->getTotal()) >= 18)
         {
             $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white Pegasus\' nest. As a member of High Impact, they jumped at the challenge - literally! - and wrestled the mother Pegasus as she flew! After a while, the Pegasus, exhausted, was forced to land, and %pet:' . $pet->getId() . '.name% made off with an Egg, some Fluff, and some White Feathers!', 'guilds/high-impact');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white Pegasus\' nest. As a member of High Impact, they jumped at the challenge - literally! - and wrestled the mother Pegasus as she flew! After a while, the Pegasus, exhausted, was forced to land, and %pet:' . $pet->getId() . '.name% made off with an Egg, some Fluff, and some White Feathers!', 'guilds/high-impact')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Fighting' ]))
+            ;
 
             $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
             $this->inventoryService->petCollectsItem('White Feathers', $pet, $pet->getName() . ' stole this from a white Pegasus nest.', $activityLog);
@@ -361,7 +371,9 @@ class MagicBeanstalkService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white Pegasus\' nest. As a member of High Impact, they jumped at the challenge - literally! - and wrestled the mother Pegasus as she flew! The Pegasus dove down, through some trees, knocking %pet:' . $pet->getId() . '.name% off with nothing to show for their efforts...', 'guilds/high-impact');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white Pegasus\' nest. As a member of High Impact, they jumped at the challenge - literally! - and wrestled the mother Pegasus as she flew! The Pegasus dove down, through some trees, knocking %pet:' . $pet->getId() . '.name% off with nothing to show for their efforts...', 'guilds/high-impact')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Fighting' ]))
+            ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
 
@@ -379,7 +391,9 @@ class MagicBeanstalkService
 
         if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 18)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found some Everice stuck to part of the stalk, and pried a piece off.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found some Everice stuck to part of the stalk, and pried a piece off.', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Gathering' ]))
+            ;
 
             $this->inventoryService->petCollectsItem('Everice', $pet, $pet->getName() . ' pried this off your magic bean-stalk.', $activityLog);
 
@@ -390,7 +404,9 @@ class MagicBeanstalkService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found some Everice stuck to part of the stalk, but were unable to pry any off...', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! There, they found some Everice stuck to part of the stalk, but were unable to pry any off...', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Gathering' ]))
+            ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
 
@@ -410,13 +426,17 @@ class MagicBeanstalkService
         {
             if($this->squirrel3->rngNextInt(1, 10) === 1)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! A dark cloud swirled overhead, and %pet:' . $pet->getId() . '.name% was nearly struck by lightning, but managed to capture it in a bottle, instead! Oh, but wait, it wasn\'t lightning, at all! Merely lightning _bugs!_', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! A dark cloud swirled overhead, and %pet:' . $pet->getId() . '.name% was nearly struck by lightning, but managed to capture it in a bottle, instead! Oh, but wait, it wasn\'t lightning, at all! Merely lightning _bugs!_', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Gathering' ]))
+                ;
 
                 $this->inventoryService->petCollectsItem('Jar of Fireflies', $pet, $pet->getName() . ' captured this while climbing your magic bean-stalk.', $activityLog);
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! A dark cloud swirled overhead, and %pet:' . $pet->getId() . '.name% was nearly struck by lightning, but managed to capture it in a bottle, instead!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! A dark cloud swirled overhead, and %pet:' . $pet->getId() . '.name% was nearly struck by lightning, but managed to capture it in a bottle, instead!', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Gathering', 'Physics' ]))
+                ;
 
                 $this->inventoryService->petCollectsItem('Lightning in a Bottle', $pet, $pet->getName() . ' captured this while climbing your magic bean-stalk.', $activityLog);
             }
@@ -428,7 +448,9 @@ class MagicBeanstalkService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! A dark cloud swirled overhead, and ' . $pet->getName() . ' was nearly struck by lightning!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! A dark cloud swirled overhead, and ' . $pet->getName() . ' was nearly struck by lightning!', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Gathering', 'Physics' ]))
+            ;
 
             $pet->increaseSafety(-$this->squirrel3->rngNextInt(4, 8));
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
@@ -463,7 +485,9 @@ class MagicBeanstalkService
             if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal()) >= 20)
                 $loot[] = $this->squirrel3->rngNextFromArray($possibleLoot);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk all the way to the clouds, and found a huge castle! They explored it for a little while, eventually making off with ' . ArrayFunctions::list_nice($loot) . '!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk all the way to the clouds, and found a huge castle! They explored it for a little while, eventually making off with ' . ArrayFunctions::list_nice($loot) . '!', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Stealth' ]))
+            ;
 
             foreach($loot as $item)
                 $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' stole this from a giant castle above the clouds!', $activityLog);
@@ -474,7 +498,9 @@ class MagicBeanstalkService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk all the way to the clouds, and found a huge castle! They explored it for a little while, but were spotted by a giant, and forced to flee!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk all the way to the clouds, and found a huge castle! They explored it for a little while, but were spotted by a giant, and forced to flee!', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Stealth' ]))
+            ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ]);
 
