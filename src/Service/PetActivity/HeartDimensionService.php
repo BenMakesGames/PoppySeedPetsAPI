@@ -12,6 +12,7 @@ use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\EquipmentService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -27,10 +28,12 @@ class HeartDimensionService
     private $squirrel3;
     private $statusEffectService;
     private $equipmentService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        Squirrel3 $squirrel3, StatusEffectService $statusEffectService, EquipmentService $equipmentService
+        Squirrel3 $squirrel3, StatusEffectService $statusEffectService, EquipmentService $equipmentService,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->responseService = $responseService;
@@ -39,6 +42,7 @@ class HeartDimensionService
         $this->squirrel3 = $squirrel3;
         $this->statusEffectService = $statusEffectService;
         $this->equipmentService = $equipmentService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function canAdventure(Pet $pet)
@@ -55,7 +59,9 @@ class HeartDimensionService
 
         $this->equipmentService->unequipPet($pet);
 
-        return $this->responseService->createActivityLog($pet, 'There being nothing more ' . '%pet:' . $pet->getId() . '.name% can do in the Heart Dimension right now, they put the Heartstone down.', '');
+        return $this->responseService->createActivityLog($pet, 'There being nothing more ' . '%pet:' . $pet->getId() . '.name% can do in the Heart Dimension right now, they put the Heartstone down.', '')
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension' ]))
+        ;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -112,25 +118,33 @@ class HeartDimensionService
 
         if($pet->getFood() <= 4)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to fight a Demon of Turmoil in the Heart Dimension, but was too hungry.', 'icons/activity-logs/heart-dimension');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to fight a Demon of Turmoil in the Heart Dimension, but was too hungry.', 'icons/activity-logs/heart-dimension')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension' ]))
+            ;
             $this->unequipHeartstone($pet, $activityLog);
             return $activityLog;
         }
         else if($pet->getSafety() <= 4)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to fight a Demon of Turmoil in the Heart Dimension, but was too afraid.', 'icons/activity-logs/heart-dimension');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to fight a Demon of Turmoil in the Heart Dimension, but was too afraid.', 'icons/activity-logs/heart-dimension')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension' ]))
+            ;
             $this->unequipHeartstone($pet, $activityLog);
             return $activityLog;
         }
         else if($pet->getLove() <= 4)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to fight a Demon of Turmoil in the Heart Dimension, but was too lonely.', 'icons/activity-logs/heart-dimension');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to fight a Demon of Turmoil in the Heart Dimension, but was too lonely.', 'icons/activity-logs/heart-dimension')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension' ]))
+            ;
             $this->unequipHeartstone($pet, $activityLog);
             return $activityLog;
         }
         else if($pet->getEsteem() <= 4)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to fight a Demon of Turmoil in the Heart Dimension, but doubted their self.', 'icons/activity-logs/heart-dimension');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to fight a Demon of Turmoil in the Heart Dimension, but doubted their self.', 'icons/activity-logs/heart-dimension')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension' ]))
+            ;
             $this->unequipHeartstone($pet, $activityLog);
             return $activityLog;
         }
@@ -142,7 +156,9 @@ class HeartDimensionService
             ->increaseEsteem(999)
         ;
 
-        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% defeated a Demon of Turmoil in the Heart Dimension.', 'icons/activity-logs/heart-dimension');
+        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% defeated a Demon of Turmoil in the Heart Dimension.', 'icons/activity-logs/heart-dimension')
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension' ]))
+        ;
     }
 
     public function beInspired(ComputedPetSkills $petWithSkills)
@@ -153,25 +169,33 @@ class HeartDimensionService
 
         if($pet->getFood() <= 4)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to relax in the Heart Dimension, but was too hungry.', 'icons/activity-logs/heart-dimension');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to relax in the Heart Dimension, but was too hungry.', 'icons/activity-logs/heart-dimension')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension' ]))
+            ;
             $this->unequipHeartstone($pet, $activityLog);
             return $activityLog;
         }
         else if($pet->getSafety() <= 4)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to relax in the Heart Dimension, but was too afraid.', 'icons/activity-logs/heart-dimension');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to relax in the Heart Dimension, but was too afraid.', 'icons/activity-logs/heart-dimension')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension' ]))
+            ;
             $this->unequipHeartstone($pet, $activityLog);
             return $activityLog;
         }
         else if($pet->getLove() <= 4)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to relax in the Heart Dimension, but was too lonely.', 'icons/activity-logs/heart-dimension');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to relax in the Heart Dimension, but was too lonely.', 'icons/activity-logs/heart-dimension')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension' ]))
+            ;
             $this->unequipHeartstone($pet, $activityLog);
             return $activityLog;
         }
         else if($pet->getEsteem() <= 4)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to relax in the Heart Dimension, but doubted their self.', 'icons/activity-logs/heart-dimension');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to relax in the Heart Dimension, but doubted their self.', 'icons/activity-logs/heart-dimension')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension' ]))
+            ;
             $this->unequipHeartstone($pet, $activityLog);
             return $activityLog;
         }
@@ -180,7 +204,9 @@ class HeartDimensionService
 
         $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::INSPIRED, 24 * 60);
 
-        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% relaxed for a while in the Heart Dimension, and became Inspired.', 'icons/activity-logs/heart-dimension');
+        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% relaxed for a while in the Heart Dimension, and became Inspired.', 'icons/activity-logs/heart-dimension')
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension' ]))
+        ;
     }
 
     public function defeatNightmare(ComputedPetSkills $petWithSkills)
@@ -214,7 +240,9 @@ class HeartDimensionService
 
         $pet->incrementAffectionAdventures();
 
-        return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/heart-dimension');
+        return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/heart-dimension')
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension' ]))
+        ;
     }
 
     public function haveDivineVision(ComputedPetSkills $petWithSkills)
@@ -253,7 +281,9 @@ class HeartDimensionService
         else
             $pet->setNote($message);
 
-        return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/heart-dimension');
+        return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/heart-dimension')
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension' ]))
+        ;
     }
 
     public function defeatShadow(ComputedPetSkills $petWithSkills)
@@ -291,6 +321,8 @@ class HeartDimensionService
             ->incrementAffectionAdventures()
         ;
 
-        return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/heart-dimension');
+        return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/heart-dimension')
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension' ]))
+        ;
     }
 }
