@@ -74,6 +74,9 @@ class PlasticPrinterService
 
             if($this->houseSimService->hasInventory('Plastic Boomerang', 2))
                 $possibilities[] = new ActivityCallback($this, 'createNonsenserang', 10);
+
+            if($this->houseSimService->hasInventory('String') && $this->houseSimService->hasInventory('Antenna') && $this->houseSimService->hasInventory('Green Dye'))
+                $possibilities[] = new ActivityCallback($this, 'createDicerca', 12);
         }
 
         return $possibilities;
@@ -220,6 +223,38 @@ class PlasticPrinterService
         }
     }
 
+    public function createDicerca(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $skill =
+            $petWithSkills->getIntelligence()->getTotal() +
+            $petWithSkills->getDexterity() +
+            floor(($petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal()) / 2)
+        ;
+
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $skill);
+
+        if($roll >= 18)
+        {
+            $this->houseSimService->getState()->loseItem('Green Dye', 1);
+            $this->houseSimService->getState()->loseItem('Plastic', 1);
+            $this->houseSimService->getState()->loseItem('String', 1);
+            $this->houseSimService->getState()->loseItem('Antenna', 1);
+            $pet->increaseEsteem(2);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::PLASTIC_PRINT, true);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% printed up and decorated a Dicerca mask.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ '3D Printing', 'Crafting' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Dicerca', $pet, $pet->getName() . ' printed this.', $activityLog);
+            return $activityLog;
+        }
+        else
+            return $this->printerActingUp($pet);
+    }
+
     public function createAlienLaser(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
@@ -241,9 +276,7 @@ class PlasticPrinterService
             return $activityLog;
         }
         else
-        {
             return $this->printerActingUp($pet);
-        }
     }
 
     public function createPlasticCraft(ComputedPetSkills $petWithSkills): PetActivityLog
