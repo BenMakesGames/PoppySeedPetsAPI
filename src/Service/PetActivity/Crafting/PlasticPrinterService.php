@@ -229,7 +229,7 @@ class PlasticPrinterService
 
         $skill =
             $petWithSkills->getIntelligence()->getTotal() +
-            $petWithSkills->getDexterity() +
+            $petWithSkills->getDexterity()->getTotal() +
             floor(($petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal()) / 2)
         ;
 
