@@ -9,6 +9,7 @@ use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -23,11 +24,13 @@ class GreenhouseAdventureService
     private PetExperienceService $petExperienceService;
     private HattierService $hattierService;
     private EnchantmentRepository $enchantmentRepository;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     function __construct(
         ResponseService $responseService, InventoryService $inventoryService,
         Squirrel3 $squirrel3, PetExperienceService $petExperienceService,
-        HattierService $hattierService, EnchantmentRepository $enchantmentRepository
+        HattierService $hattierService, EnchantmentRepository $enchantmentRepository,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->responseService = $responseService;
@@ -36,6 +39,7 @@ class GreenhouseAdventureService
         $this->petExperienceService = $petExperienceService;
         $this->hattierService = $hattierService;
         $this->enchantmentRepository = $enchantmentRepository;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills, GreenhousePlant $plant): PetActivityLog
@@ -76,7 +80,10 @@ class GreenhouseAdventureService
             $this->inventoryService->petCollectsItem('Weird Beetle', $pet, $pet->getName() . ' found this while helping ' . $pet->getOwner()->getName() . ' harvest the ' . $plant->getPlant()->getName() . '.', $activityLog);
         }
 
-        $activityLog->setChanges($changes->compare($pet));
+        $activityLog
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Greenhouse' ]))
+            ->setChanges($changes->compare($pet))
+        ;
 
         return $activityLog;
     }
