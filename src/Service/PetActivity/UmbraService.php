@@ -304,10 +304,16 @@ class UmbraService
 
         if($hasEideticMemory || $hasRelevantSpirit)
         {
-            $messageDetail = $hasEideticMemory
-                ? $pet->getName() . ' had already memorized the lay of the land, and pointed the way'
-                : $pet->getName() . ' and ' . $pet->getSpiritCompanion()->getName() . ' were able to point the way'
-            ;
+            if($hasEideticMemory && !($hasRelevantSpirit && $this->squirrel3->rngNextBool()))
+            {
+                $messageDetail = $pet->getName() . ' had already memorized the lay of the land, and pointed the way';
+                $useSpirit = false;
+            }
+            else
+            {
+                $messageDetail = $pet->getName() . ' and ' . $pet->getSpiritCompanion()->getName() . ' were able to point the way';
+                $useSpirit = true;
+            }
 
             if($this->squirrel3->rngNextInt(1, 2) === 1)
             {
@@ -324,6 +330,9 @@ class UmbraService
                 ;
                 $pet->increaseEsteem(4);
             }
+
+            if($useSpirit)
+                $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Spirit Companion' ]));
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);

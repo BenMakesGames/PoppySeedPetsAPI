@@ -1175,6 +1175,7 @@ class PetService
 
         $this->responseService->createActivityLog($pet, $message, 'companions/' . $companion->getImage(), $changes->compare($pet))
             ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Spirit Companion' ]))
         ;
     }
 
