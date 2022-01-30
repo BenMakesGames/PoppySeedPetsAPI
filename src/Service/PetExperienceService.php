@@ -217,6 +217,7 @@ class PetExperienceService
 
         $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave Twu Wuv to %user:' . $pet->getOwner()->getId() . '.Name% for Valentine\'s Day! (Two of them! Two Twu Wuvs!)', 'items/resource/twu-wuv')
             ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Special Event', 'Valentine\'s' ]))
         ;
 
         $alreadyReceived->setValue(true);

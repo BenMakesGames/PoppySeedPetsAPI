@@ -10,6 +10,7 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -25,10 +26,12 @@ class HalloweenSmithingService
     private $itemRepository;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        ItemRepository $itemRepository, Squirrel3 $squirrel3, HouseSimService $houseSimService
+        ItemRepository $itemRepository, Squirrel3 $squirrel3, HouseSimService $houseSimService,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -37,6 +40,7 @@ class HalloweenSmithingService
         $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function createPumpkinBucket(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -68,6 +72,7 @@ class HalloweenSmithingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% applied heat to ' . $itemUsedItem->getNameWithArticle() . ', and shaped it into ' . $makes->getNameWithArticle() . '!', 'items/' . $makes->getImage())
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Smithing', 'Special Event', 'Halloween' ]))
             ;
 
             $this->inventoryService->petCollectsItem($makes, $pet, $pet->getName() . ' created this out of ' . $itemUsedItem->getNameWithArticle() . '.', $activityLog);
@@ -78,7 +83,9 @@ class HalloweenSmithingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to shape a bucket into ' . $makes->getNameWithArticle() . ', but couldn\'t get the heat just right.', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to shape a bucket into ' . $makes->getNameWithArticle() . ', but couldn\'t get the heat just right.', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Smithing', 'Special Event', 'Halloween' ]))
+            ;
         }
     }
 }

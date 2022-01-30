@@ -7,6 +7,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\ComputedPetSkills;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -21,10 +22,11 @@ class MeteoriteSmithingService
     private $responseService;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        HouseSimService $houseSimService, Squirrel3 $squirrel3
+        HouseSimService $houseSimService, Squirrel3 $squirrel3, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -32,6 +34,7 @@ class MeteoriteSmithingService
         $this->responseService = $responseService;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function createIlumetsa(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -44,7 +47,9 @@ class MeteoriteSmithingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
             $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 18));
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make something with a chunk of Meteorite, but burnt themselves trying! :(', 'icons/activity-logs/burn');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make something with a chunk of Meteorite, but burnt themselves trying! :(', 'icons/activity-logs/burn')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+            ;
         }
         else if($roll >= 25)
         {
@@ -55,6 +60,7 @@ class MeteoriteSmithingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged Ilumetsa from gold, iron, and a chunk of Meteorite.', 'items/tool/hammer/red')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 25)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Ilumetsa', $pet, $pet->getName() . ' forged this from gold, iron, and a chunk of Meteorite.', $activityLog);
@@ -68,7 +74,9 @@ class MeteoriteSmithingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make something with a chunk of Meteorite, but it was being super-difficult to work with!', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make something with a chunk of Meteorite, but it was being super-difficult to work with!', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+            ;
         }
     }
 
@@ -86,6 +94,7 @@ class MeteoriteSmithingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged a Horizon Mirror!', 'items/treasure/space-mirror')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 25)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Horizon Mirror', $pet, $pet->getName() . ' forged this.', $activityLog);
@@ -99,7 +108,9 @@ class MeteoriteSmithingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make something with a chunk of Meteorite, but it was being super-difficult to work with!', 'icons/activity-logs/confused');
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make something with a chunk of Meteorite, but it was being super-difficult to work with!', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+            ;
         }
     }
 }
