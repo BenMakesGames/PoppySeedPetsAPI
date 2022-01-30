@@ -10,6 +10,7 @@ use App\Functions\ArrayFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -24,10 +25,12 @@ class Caerbannog
     private $petExperienceService;
     private $responseService;
     private $itemRepository;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         EntityManagerInterface $em, Squirrel3 $rng, InventoryService $inventoryService, ItemRepository $itemRepository,
-        PetExperienceService $petExperienceService, ResponseService $responseService
+        PetExperienceService $petExperienceService, ResponseService $responseService,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->em = $em;
@@ -36,6 +39,7 @@ class Caerbannog
         $this->petExperienceService = $petExperienceService;
         $this->responseService = $responseService;
         $this->itemRepository = $itemRepository;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -116,7 +120,9 @@ class Caerbannog
 
             $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ]);
             $pet->increaseEsteem(ceil($exp / 2) * 2);
-            $activityLog = $this->responseService->createActivityLog($pet, $petName . ' went to the Caerbannog Cave, and encountered one of the terrifying creatures living there! ' . $petName . ' proved victorious, returning home with ' . ArrayFunctions::list_nice($loot) . '!', 'items/key/carrot');
+            $activityLog = $this->responseService->createActivityLog($pet, $petName . ' went to the Caerbannog Cave, and encountered one of the terrifying creatures living there! ' . $petName . ' proved victorious, returning home with ' . ArrayFunctions::list_nice($loot) . '!', 'items/key/carrot')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
+            ;
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
         else
@@ -125,7 +131,9 @@ class Caerbannog
             $pet->increaseSafety(-2);
             $lootItem = $this->itemRepository->findOneByName($loot[0]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $petName . ' went to the Caerbannog Cave, and encountered one of the terrifying creatures living there, and was forced to flee! (They grabbed ' . $lootItem->getNameWithArticle() . ' on their way out, at least!)', 'items/key/carrot');
+            $activityLog = $this->responseService->createActivityLog($pet, $petName . ' went to the Caerbannog Cave, and encountered one of the terrifying creatures living there, and was forced to flee! (They grabbed ' . $lootItem->getNameWithArticle() . ' on their way out, at least!)', 'items/key/carrot')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
+            ;
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
         }
 
