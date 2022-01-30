@@ -2591,7 +2591,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Fish', 1);
 
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was going to feed a Cattail, but ended up eating the Fish themselves...', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding', 'Eating' ]))
             ;
         }
         if($umbraCheck < 20)

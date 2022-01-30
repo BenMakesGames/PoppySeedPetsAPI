@@ -200,12 +200,14 @@ class PetService
             $changes = new PetChangesSummary();
             $changes->food = '+';
 
-            $this->responseService->createActivityLog(
+            $activityLog = $this->responseService->createActivityLog(
                 $pet,
                 '%pet:' . $pet->getId() . '.name% nibbled on their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . '.',
                 'icons/activity-logs/just-the-fork',
                 $changes
             );
+
+            $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Eating' ]));
         }
         else
             $pet->increaseFood(-1);
@@ -1574,7 +1576,9 @@ class PetService
 
             $this->petExperienceService->spendTime($pet, 5, PetActivityStatEnum::OTHER, null);
 
-            $this->responseService->createActivityLog($pet, '%pet:'. $pet->getId() . '.name% eats the ' . $itemOnBody . ' off their body in no time flat! (Ah~! A true Gourmand!)', '', $changes->compare($pet));
+            $this->responseService->createActivityLog($pet, '%pet:'. $pet->getId() . '.name% eats the ' . $itemOnBody . ' off their body in no time flat! (Ah~! A true Gourmand!)', '', $changes->compare($pet))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Eating' ]))
+            ;
             return false;
         }
         else if($weather->getRainfall() > 0)

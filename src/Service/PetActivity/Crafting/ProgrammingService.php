@@ -458,7 +458,7 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('Worms', 1);
             $pet->increaseFood($this->squirrel3->rngNextInt(3, 6));
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to create a Wormhole, but absentmindedly ate the Worms, instead :(', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Physics' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Physics', 'Eating' ]))
             ;
         }
         else if($roll >= 17)

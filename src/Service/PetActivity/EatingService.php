@@ -17,6 +17,7 @@ use App\Model\FoodWithSpice;
 use App\Model\FortuneCookie;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\CravingService;
 use App\Service\InventoryService;
@@ -38,12 +39,13 @@ class EatingService
     private ItemRepository $itemRepository;
     private PetExperienceService $petExperienceService;
     private UserStatsRepository $userStatsRepository;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         Squirrel3 $squirrel3, StatusEffectService $statusEffectService, CravingService $cravingService,
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
         ItemRepository $itemRepository, PetExperienceService $petExperienceService,
-        UserStatsRepository $userStatsRepository
+        UserStatsRepository $userStatsRepository, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->squirrel3 = $squirrel3;
@@ -55,6 +57,7 @@ class EatingService
         $this->itemRepository = $itemRepository;
         $this->petExperienceService = $petExperienceService;
         $this->userStatsRepository = $userStatsRepository;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     /**
@@ -239,7 +242,6 @@ class EatingService
         $petChanges = new PetChanges($pet);
         $foodsEaten = [];
         /** @var FoodWithSpice[] $favorites */ $favorites = [];
-        $tooFull = [];
         $tooPoisonous = [];
         $ateAFortuneCookie = false;
 
@@ -250,10 +252,7 @@ class EatingService
             $itemName = $food->name;
 
             if($pet->getJunk() + $pet->getFood() >= $pet->getStomachSize())
-            {
-                $tooFull[] = $itemName;
                 continue;
-            }
 
             if($pet->wantsSobriety() && ($food->alcohol > 0 || $food->caffeine > 0 || $food->psychedelic > 0))
             {
@@ -341,15 +340,24 @@ class EatingService
                 }
             }
 
-            return $this->responseService->createActivityLog($pet, $message, $icon, $petChanges->compare($pet));
+            return $this->responseService->createActivityLog($pet, $message, $icon, $petChanges->compare($pet))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Eating' ]))
+            ;
         }
         else
         {
             if(count($tooPoisonous) > 0)
-                return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but ' . $this->squirrel3->rngNextFromArray($tooPoisonous) . ' really isn\'t appealing right now.', '');
+            {
+                return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but ' . $this->squirrel3->rngNextFromArray($tooPoisonous) . ' really isn\'t appealing right now.', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Eating' ]))
+                ;
+            }
             else
-                return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but they\'re too full to eat anymore.', '');
+            {
+                return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but they\'re too full to eat anymore.', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Eating' ]))
+                ;
+            }
         }
     }
-
 }

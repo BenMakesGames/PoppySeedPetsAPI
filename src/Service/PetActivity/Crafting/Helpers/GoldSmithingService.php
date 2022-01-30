@@ -110,7 +110,7 @@ class GoldSmithingService
                     $pet->increaseFood($this->squirrel3->rngNextInt(4, 8));
 
                     return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an Aubergine Scepter, but accidentally burnt the Eggplant! %pet:' . $pet->getId() . '.name%, as a true gourmand, could not allow even an Eggplant to go to waste, and ate it!', '')
-                        ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+                        ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing', 'Eating' ]))
                     ;
                 }
                 else
@@ -271,7 +271,7 @@ class GoldSmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseFood(4);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started making a Fungal Clarinet, but ended up eating the Chanterelle...', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing', 'Eating' ]))
             ;
             return $activityLog;
         }

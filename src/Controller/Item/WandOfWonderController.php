@@ -12,6 +12,7 @@ use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
@@ -40,7 +41,8 @@ class WandOfWonderController extends PoppySeedPetsItemController
         EntityManagerInterface $em, InventoryService $inventoryService, PetRepository $petRepository,
         TransactionService $transactionService, ItemRepository $itemRepository, MeritRepository $meritRepository,
         PetExperienceService $petExperienceService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3,
-        StatusEffectService $statusEffectService, EquipmentService $equipmentService
+        StatusEffectService $statusEffectService, EquipmentService $equipmentService,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->validateInventory($inventory, 'wandOfWonder/#/point');
@@ -452,7 +454,9 @@ class WandOfWonderController extends PoppySeedPetsItemController
                     $petExperienceService->gainAffection($randomPet, 1);
                     $randomPet->increaseFood(5);
 
-                    $responseService->createActivityLog($randomPet, '', '', $changes->compare($randomPet));
+                    $responseService->createActivityLog($randomPet, '', '', $changes->compare($randomPet))
+                        ->addTags($petActivityLogTagRepository->findByNames([ 'Eating' ]))
+                    ;
                 }
                 else
                 {

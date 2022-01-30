@@ -522,6 +522,7 @@ class ChocolateMansion
         $pet = $petWithSkills->getPet();
         $description = $this->getEntryDescription($pet);
         $usedMerit = false;
+        $tags = [];
 
         if($petWithSkills->getClimbingBonus()->getTotal() > 0)
         {
@@ -547,6 +548,8 @@ class ChocolateMansion
             $description .= 'They explored the mansion\'s chocolate hedge maze, eating their way to the center! ';
             $usedMerit = true;
             $success = true;
+
+            $tags[] = 'Eating';
         }
         else
         {

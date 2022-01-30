@@ -557,7 +557,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Smallish Pumpkin', 1);
             $pet->increaseFood(6);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Drumpkin, but broke the Smallish Pumpkin :( Not wanting to waste it, %pet:' . $pet->getId() . '.name% ate the remains...)', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Smithing' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Smithing', 'Eating' ]))
             ;
         }
         else if($roll >= 15)
@@ -598,7 +598,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Potato', 1);
             $pet->increaseFood(4);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make Paper, but messed up the Potato :( (Not wanting to waste it, %pet:' . $pet->getId() . '.name% ate the remains...)', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Eating' ]))
             ;
         }
         else if($roll >= 15)
@@ -897,7 +897,7 @@ class CraftingService
             $pet->increaseEsteem(-2);
 
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started making ' . $making->getNameWithArticle() . ', but ended up eating the Chocolate Bar, instead >_>', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Eating' ]))
             ;
         }
         else if($roll >= 10)
@@ -1359,7 +1359,7 @@ class CraftingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseFood(4);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a bow out of a Naner, but was feeling hungry, so... they ate the Naner.', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Eating' ]))
             ;
         }
         else if($roll >= 11)
@@ -1400,7 +1400,7 @@ class CraftingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseFood(2);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make an Eat Your Fruits And Veggies, but was feeling hungry, so... they ate the Carrot.', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Eating' ]))
             ;
         }
         else if($roll >= 12)

@@ -173,7 +173,7 @@ class StickCraftingService
             $pet->increaseFood(3);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Red Flail, but ate the Red...', 'icons/activity-logs/broke-string')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Eating' ]))
             ;
         }
         else if($roll >= 13)
@@ -294,7 +294,7 @@ class StickCraftingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseFood(4);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a Harvest Staff, but got hungry, and ate the ' . $foodEaten . ' :(', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Eating' ]))
             ;
         }
         else if($craftsCheck >= 15)
