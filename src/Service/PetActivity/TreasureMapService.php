@@ -80,7 +80,9 @@ class TreasureMapService
         if($followMapCheck < 14)
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to follow Cetgueli\'s Treasure Map, but kept getting lost. (They\'re sure they\'re making progress, though!)', 'icons/activity-logs/confused');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to follow Cetgueli\'s Treasure Map, but kept getting lost. (They\'re sure they\'re making progress, though!)', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering' ]))
+            ;
             $pet->increaseEsteem(-1);
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 90), PetActivityStatEnum::GATHER, false);
@@ -92,7 +94,9 @@ class TreasureMapService
 
             $prize = 'Outrageously Strongbox';
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% followed Cetgueli\'s Treasure Map, and found a ' . $prize . '! (Also, the map was lost, because video games.)', 'items/map/cetgueli');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% followed Cetgueli\'s Treasure Map, and found a ' . $prize . '! (Also, the map was lost, because video games.)', 'items/map/cetgueli')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering' ]))
+            ;
 
             $this->em->remove($pet->getTool());
             $pet->setTool(null);
