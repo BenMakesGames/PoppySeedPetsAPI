@@ -1288,7 +1288,7 @@ class GatheringService
                 $loot[] = 'Rusted, Busted Mechanism';
 
             if($roll >= 35)
-                $loot[] = $this->squirrel3->rngNextFromArray($extraLoot);
+                $loot[] = 'The Beginning of the Armadillos';
         }
 
         sort($loot);
