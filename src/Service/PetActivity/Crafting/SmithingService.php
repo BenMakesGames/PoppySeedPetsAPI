@@ -84,7 +84,12 @@ class SmithingService
             $possibilities[] = new ActivityCallback($this, 'createCoke', $weight);
 
         if($this->houseSimService->hasInventory('Iron Ore'))
-            $possibilities[] = new ActivityCallback($this, 'createIronBar', $weight);
+        {
+            if($this->houseSimService->hasInventory('Moon Pearl') && $this->houseSimService->hasInventory('Gravitational Waves'))
+                $possibilities[] = new ActivityCallback($this, 'createHighTide', 10);
+            else
+                $possibilities[] = new ActivityCallback($this, 'createIronBar', $weight);
+        }
 
         if($this->houseSimService->hasInventory('Silver Ore'))
             $possibilities[] = new ActivityCallback($this, 'createSilverBar', $weight);
@@ -504,6 +509,61 @@ class SmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Mirror, but couldn\'t get the Glass smooth enough.', 'icons/activity-logs/confused')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+            ;
+        }
+    }
+
+    public function createHighTide(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + min($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()) + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($roll <= 3)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $this->houseSimService->getState()->loseItem('Gravitational Waves', 1);
+
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried smithing a High Tide, but the Gravitational Waves got away! :(', 'icons/activity-logs/wounded')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing', 'Physics' ]))
+            ;
+        }
+        else if($roll >= 18)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::SMITH, true);
+            $this->houseSimService->getState()->loseItem('Iron Ore', 1);
+            $this->houseSimService->getState()->loseItem('Moon Pearl', 1);
+            $this->houseSimService->getState()->loseItem('Gravitational Waves', 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(4);
+
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a High Tide.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing', 'Physics' ]))
+            ;
+            $this->inventoryService->petCollectsItem('High Tide', $pet, $pet->getName() . ' created this.', $activityLog);
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            if($this->squirrel3->rngNextBool())
+            {
+                $but = 'started pulverizing the Iron Ore, and almost immediately felt exhausted';
+                $pet->increaseFood(-1);
+            }
+            else
+            {
+                $but = 'kept getting stumped by the math for Gravitational Waves';
+            }
+
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a High Tide, but ' . $but . '.', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing', 'Physics' ]))
             ;
         }
     }
