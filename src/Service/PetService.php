@@ -823,8 +823,8 @@ class PetService
         $friends = $this->petRelationshipRepository->getFriends($pet);
         $commitmentLevels = array_map(fn(PetRelationship $r) => $r->getCommitment(), $friends);
 
-        $maxCommitment = max($commitmentLevels);
         $minCommitment = min($commitmentLevels);
+        $maxCommitment = max($minCommitment + 1, max($commitmentLevels));
         $commitmentRange = $maxCommitment - $minCommitment;
 
         $interpolate = fn($x) => 1 + (int)(9 * ($x - $minCommitment) / $commitmentRange);
