@@ -114,9 +114,9 @@ class DragonService
         if(count($items) < count($itemIds))
             throw new UnprocessableEntityHttpException('Some of the treasures selected... maybe don\'t exist!? That shouldn\'t happen. Reload and try again.');
 
-        $silver = ArrayFunctions::sum($items, function(Inventory $i) { return $i->getItem()->getTreasure()->getSilver(); });
-        $gold = ArrayFunctions::sum($items, function(Inventory $i) { return $i->getItem()->getTreasure()->getGold(); });
-        $gems = ArrayFunctions::sum($items, function(Inventory $i) { return $i->getItem()->getTreasure()->getGems(); });
+        $silver = ArrayFunctions::sum($items, fn(Inventory $i) => $i->getItem()->getTreasure()->getSilver());
+        $gold = ArrayFunctions::sum($items, fn(Inventory $i) => $i->getItem()->getTreasure()->getGold());
+        $gems = ArrayFunctions::sum($items, fn(Inventory $i) => $i->getItem()->getTreasure()->getGems());
 
         foreach($items as $item)
             $this->em->remove($item);
@@ -150,7 +150,7 @@ class DragonService
             $dragon->increaseSilver($silver);
 
             for($i = 0; $i < $silver; $i++)
-                $goodies[] = ArrayFunctions::pick_one_weighted($silverGoodies, function($i) { return $i['weight']; });
+                $goodies[] = ArrayFunctions::pick_one_weighted($silverGoodies, fn($i) => $i['weight']);
         }
 
         if($gold > 0)
@@ -158,7 +158,7 @@ class DragonService
             $dragon->increaseGold($gold);
 
             for($i = 0; $i < $gold; $i++)
-                $goodies[] = ArrayFunctions::pick_one_weighted($goldGoodies, function($i) { return $i['weight']; });
+                $goodies[] = ArrayFunctions::pick_one_weighted($goldGoodies, fn($i) => $i['weight']);
         }
 
         if($gems > 0)
@@ -166,7 +166,7 @@ class DragonService
             $dragon->increaseGems($gems);
 
             for($i = 0; $i < $gems; $i++)
-                $goodies[] = ArrayFunctions::pick_one_weighted($gemGoodies, function($i) { return $i['weight']; });
+                $goodies[] = ArrayFunctions::pick_one_weighted($gemGoodies, fn($i) => $i['weight']);
         }
 
         foreach($goodies as $goody)
@@ -242,7 +242,7 @@ class DragonService
 
         $this->em->flush();
 
-        $itemNames = array_map(function($goodie) { return $goodie['item']; }, $goodies);
+        $itemNames = array_map(fn($goodie) => $goodie['item'], $goodies);
         sort($itemNames);
 
         $message = $dragon->getName() . ' thanks you for your gift, and gives you ' . ArrayFunctions::list_nice($itemNames) . ' in exchange';

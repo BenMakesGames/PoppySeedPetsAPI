@@ -132,7 +132,7 @@ class PetGroupService
 
         // sort by happiness, ascending
         if(count($unhappyMembers) > 1)
-            usort($unhappyMembers, function($a, $b) { return $a['happiness'] <=> $b['happiness']; });
+            usort($unhappyMembers, fn($a, $b) => $a['happiness'] <=> $b['happiness']);
 
         /** @var Pet $unhappiestPet */
         $unhappiestPet = $unhappyMembers[0]['pet'];
@@ -211,7 +211,7 @@ class PetGroupService
             ->andWhere('p.id IN (:groupMembers)')
             ->andWhere('r2.currentRelationship NOT IN (:unhappyRelationships)')
             ->orderBy('p2s.music', 'DESC')
-            ->setParameter('groupMembers', $group->getMembers()->map(function(Pet $p) { return $p->getId(); }))
+            ->setParameter('groupMembers', $group->getMembers()->map(fn(Pet $p) => $p->getId()))
             ->setParameter('unhappyRelationships', [ RelationshipEnum::BROKE_UP, RelationshipEnum::DISLIKE ])
             ->getQuery()
             ->execute()
@@ -389,7 +389,7 @@ class PetGroupService
             ]
         ];
 
-        $groupType = ArrayFunctions::pick_one_weighted($groupTypePreferences, function($t) { return $t['preference']; });
+        $groupType = ArrayFunctions::pick_one_weighted($groupTypePreferences, fn($t) => $t['preference']);
         $type = $groupType['type'];
 
         $group = (new PetGroup())
@@ -429,7 +429,7 @@ class PetGroupService
 
         /** @var ComputedPetSkills[] $friendsToInvite */
         $friendsToInvite = array_slice($availableFriends, 0, min(count($availableFriends), $this->squirrel3->rngNextInt(2, $this->squirrel3->rngNextInt(3, 4))));
-        $friendNames = array_map(function(ComputedPetSkills $p) { return $p->getPet()->getName(); }, $friendsToInvite);
+        $friendNames = array_map(fn(ComputedPetSkills $p) => $p->getPet()->getName(), $friendsToInvite);
 
         foreach($friendsToInvite as $friend)
         {

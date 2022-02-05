@@ -35,7 +35,7 @@ abstract class TypeaheadService
 
         if(count($entities) < $maxResults)
         {
-            $ids = array_map(function($e) { return $e->getId(); }, $entities);
+            $ids = array_map(fn($e) => $e->getId(), $entities);
 
             $qb = $this->repository->createQueryBuilder('e')
                 ->andWhere('e.' . $fieldToSearch . ' LIKE :searchLike')

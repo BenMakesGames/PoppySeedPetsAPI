@@ -234,7 +234,7 @@ class EatingService
     {
         if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
 
-        if(ArrayFunctions::any($inventory, function(Inventory $i) { return $i->getItem()->getFood() === null; }))
+        if(ArrayFunctions::any($inventory, fn(Inventory $i) => $i->getItem()->getFood() === null))
             throw new \InvalidArgumentException('At least one of the items selected is not edible!');
 
         $this->squirrel3->rngNextShuffle($inventory);

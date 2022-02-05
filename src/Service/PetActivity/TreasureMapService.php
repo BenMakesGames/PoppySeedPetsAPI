@@ -437,7 +437,7 @@ class TreasureMapService
                 }
             }
 
-            $trade = ArrayFunctions::pick_one_weighted($possibleTrades, function($t) { return $t['weight']; });
+            $trade = ArrayFunctions::pick_one_weighted($possibleTrades, fn($t) => $t['weight']);
             $item = $trade['item'];
             $message = $trade['message'];
 

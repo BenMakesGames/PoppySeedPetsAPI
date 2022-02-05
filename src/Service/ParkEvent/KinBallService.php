@@ -146,7 +146,7 @@ class KinBallService implements ParkEventInterface
         // finally, give pets a chance to meet each other:
         foreach($this->teams as $teamIndex=>$team)
         {
-            $teamMembers = array_map(function(KinBallParticipant $p) { return $p->pet; }, $team->pets);
+            $teamMembers = array_map(fn(KinBallParticipant $p) => $p->pet, $team->pets);
             $this->petRelationshipService->groupGathering(
                 $teamMembers,
                 '%p1% and %p2% were on the same team for a Kin-Ball game! :)',
@@ -272,7 +272,7 @@ class KinBallService implements ParkEventInterface
 
         $possibleTeams = array_filter(
             $this->getTeamsHavingScore($defendingScore),
-            function($t) { return $t !== $this->attackingTeam; }
+            fn($t) => $t !== $this->attackingTeam
         );
 
         $this->designatedTeam = $this->squirrel3->rngNextFromArray($possibleTeams);
@@ -337,7 +337,7 @@ class KinBallService implements ParkEventInterface
             return;
 
         // if none of the teams have reached a critical score, then there's nothing to do
-        if(!ArrayFunctions::any($this->teamPoints, function(int $score) { return $score >= self::CRITICAL_SCORE; }))
+        if(!ArrayFunctions::any($this->teamPoints, fn(int $score) => $score >= self::CRITICAL_SCORE))
             return;
 
         $lowestScore = $this->getLowestScore();

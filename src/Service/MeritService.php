@@ -35,7 +35,7 @@ class MeritService
      */
     public function getUnlearnableMerits(Pet $pet): array
     {
-        $petMerits = array_map(function(Merit $m) { return $m->getName(); }, $pet->getMerits()->toArray());
+        $petMerits = array_map(fn(Merit $m) => $m->getName(), $pet->getMerits()->toArray());
         $canUnlearn = array_values(array_intersect($petMerits, [
             MeritEnum::INTROSPECTIVE,
             MeritEnum::PROTOCOL_7,

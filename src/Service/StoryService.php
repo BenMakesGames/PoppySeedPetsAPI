@@ -232,9 +232,7 @@ class StoryService
 
     private function choiceContainsExit(array $choice): bool
     {
-        return ArrayFunctions::any($choice['actions'], function($action) {
-            return $action['type'] === StoryActionTypeEnum::EXIT;
-        });
+        return ArrayFunctions::any($choice['actions'], fn($action) => $action['type'] === StoryActionTypeEnum::EXIT);
     }
 
     /**

@@ -130,8 +130,8 @@ class ArticleController extends PoppySeedPetsController
         ;
 
         $currentDesignGoals = $article->getDesignGoals()->toArray();
-        $designGoalsToAdd = ArrayFunctions::except($designGoals, $currentDesignGoals, function(DesignGoal $dg) { return $dg->getId(); });
-        $designGoalsToRemove = ArrayFunctions::except($currentDesignGoals, $designGoals, function(DesignGoal $dg) { return $dg->getId(); });
+        $designGoalsToAdd = ArrayFunctions::except($designGoals, $currentDesignGoals, fn(DesignGoal $dg) => $dg->getId());
+        $designGoalsToRemove = ArrayFunctions::except($currentDesignGoals, $designGoals, fn(DesignGoal $dg) => $dg->getId());
 
         /*
         echo 'current design goals:' . "\r\n";

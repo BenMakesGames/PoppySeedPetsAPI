@@ -137,7 +137,7 @@ class Filterer
 
     private function getGrandTotal(QueryBuilder $qb): int
     {
-        $filters = array_filter($this->requiredFilters, function($filter) { return array_key_exists($filter, $this->filterMap); }, ARRAY_FILTER_USE_KEY);
+        $filters = array_filter($this->requiredFilters, fn($filter) => array_key_exists($filter, $this->filterMap), ARRAY_FILTER_USE_KEY);
 
         foreach($filters as $filter=>$value)
             $this->filterMap[$filter]($qb, $value);

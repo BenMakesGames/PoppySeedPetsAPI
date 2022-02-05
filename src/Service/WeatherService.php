@@ -178,9 +178,7 @@ class WeatherService
         return $this->cache->getOrCompute(
             'Weather Forecast ' . $now->format('Y-m-d G'),
             \DateInterval::createFromDateString('1 hour'),
-            function() {
-                return $this->compute24HourForecast();
-            }
+            fn() => $this->compute24HourForecast()
         );
     }
 

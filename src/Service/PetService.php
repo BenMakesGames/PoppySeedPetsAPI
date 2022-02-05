@@ -789,9 +789,7 @@ class PetService
 
         while(count($wants) > 0)
         {
-            $want = ArrayFunctions::pick_one_weighted($wants, function($want) {
-                return $want['weight'];
-            });
+            $want = ArrayFunctions::pick_one_weighted($wants, fn($want) => $want['weight']);
 
             $activity = $want['activity'];
 
@@ -818,6 +816,21 @@ class PetService
         $pet->getHouseTime()->setCanAttemptSocialHangoutAfter((new \DateTimeImmutable())->modify('+15 minutes'));
 
         return false;
+    }
+
+    public function recomputeFriendRatings(Pet $pet)
+    {
+        $friends = $this->petRelationshipRepository->getFriends($pet);
+        $commitmentLevels = array_map(fn(PetRelationship $r) => $r->getCommitment(), $friends);
+
+        $maxCommitment = max($commitmentLevels);
+        $minCommitment = min($commitmentLevels);
+        $commitmentRange = $maxCommitment - $minCommitment;
+
+        $interpolate = fn($x) => 1 + (int)(9 * ($x - $minCommitment) / $commitmentRange);
+
+        foreach($friends as $friend)
+            $friend->setRating($interpolate($friend->getCommitment()));
     }
 
     private function hangOutWithFriend(Pet $pet): bool
@@ -880,7 +893,7 @@ class PetService
     {
         /** @var PetRelationship[] $friendRelationships */
         $friendRelationships = $this->petRelationshipRepository->findBy([
-            'pet' => array_map(function(PetRelationship $r) { return $r->getRelationship(); }, $relationships),
+            'pet' => array_map(fn(PetRelationship $r) => $r->getRelationship(), $relationships),
             'relationship' => $pet
         ]);
 
@@ -918,9 +931,7 @@ class PetService
         if(count($relationships) === 0)
             return null;
 
-        return ArrayFunctions::pick_one_weighted($relationships, function(PetRelationship $r) {
-            return $r->getCommitment() + 1;
-        });
+        return ArrayFunctions::pick_one_weighted($relationships, fn(PetRelationship $r) => $r->getCommitment() + 1);
     }
 
     private function hangOutWithSpiritCompanion(Pet $pet)

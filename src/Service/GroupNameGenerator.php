@@ -72,9 +72,7 @@ class GroupNameGenerator
             if(strlen($name) <= $maxLength)
                 return ucfirst($name);
 
-            $longestWord = ArrayFunctions::max($chosenWords, function($a) {
-                return strlen($a);
-            });
+            $longestWord = ArrayFunctions::max($chosenWords, fn($a) => strlen($a));
 
             $longestWordType = array_search($longestWord, $chosenWords);
 

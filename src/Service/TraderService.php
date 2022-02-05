@@ -113,7 +113,7 @@ class TraderService
             'user' => $user->getId()
         ]);
 
-        return array_map(function(TradesUnlocked $tu) { return $tu->getTrades(); }, $tradesUnlocked);
+        return array_map(fn(TradesUnlocked $tu) => $tu->getTrades(), $tradesUnlocked);
     }
 
     /**
@@ -130,7 +130,7 @@ class TraderService
 
         foreach($offers as $offerGroup)
         {
-            $exchange = ArrayFunctions::find_one($offerGroup['trades'], function(TraderOffer $o) use($id) { return $o->id === $id; });
+            $exchange = ArrayFunctions::find_one($offerGroup['trades'], fn(TraderOffer $o) => $o->id === $id);
 
             if($exchange !== null)
                 return $exchange;
@@ -197,9 +197,7 @@ class TraderService
             ];
         }
 
-        usort($offers, function($a, $b) {
-            return $a['title'] <=> $b['title'];
-        });
+        usort($offers, fn($a, $b) => $a['title'] <=> $b['title']);
 
         $holidayOffers = $this->getSpecialOffers($user, $quantities);
 

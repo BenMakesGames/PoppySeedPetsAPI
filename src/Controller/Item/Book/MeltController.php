@@ -74,9 +74,7 @@ class MeltController extends PoppySeedPetsItemController
         {
             $ingredients = $inventoryService->deserializeItemList($recipe->getIngredients());
 
-            $ingredients = array_values(array_filter($ingredients, function(ItemQuantity $q) {
-                return $q->item->getName() !== 'Liquid-hot Magma';
-            }));
+            $ingredients = array_values(array_filter($ingredients, fn(ItemQuantity $q) => $q->item->getName() !== 'Liquid-hot Magma'));
 
             if(count($ingredients) > 1)
                 continue;

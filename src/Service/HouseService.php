@@ -136,6 +136,10 @@ class HouseService
             {
                 // only one social activity per request, to avoid weird bugs...
                 $hungOut = $this->petService->runSocialTime($pet);
+
+                if($hungOut)
+                    $this->petService->recomputeFriendRatings($pet);
+
                 $this->houseSimService->setPetHasRunSocialTime($pet);
             }
 

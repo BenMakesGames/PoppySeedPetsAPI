@@ -59,7 +59,7 @@ class PlazaController extends PoppySeedPetsController
         $responseService->addFlashMessage('Here you go! One ' . $box->itemName . '!');
 
         return $responseService->success(array_map(
-            function(AvailableHolidayBox $box) { return $box->tradeDescription; },
+            fn(AvailableHolidayBox $box) => $box->tradeDescription,
             $plazaService->getAvailableHolidayBoxes($user)
         ));
     }

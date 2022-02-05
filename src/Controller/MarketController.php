@@ -240,9 +240,7 @@ class MarketController extends PoppySeedPetsController
             throw new NotFoundHttpException('An item for that price could not be found on the market. Someone may have bought it up just for you did! Sorry :| Reload the page to get the latest prices available!');
 
         /** @var Inventory $itemToBuy */
-        $itemToBuy = ArrayFunctions::min($forSale, function(Inventory $inventory) {
-            return $inventory->getSellPrice();
-        });
+        $itemToBuy = ArrayFunctions::min($forSale, fn(Inventory $inventory) => $inventory->getSellPrice());
 
         $item = $cache->getItem('Trading Inventory #' . $itemToBuy->getId());
         $item->set(true)->expiresAfter(\DateInterval::createFromDateString('1 minute'));

@@ -452,9 +452,7 @@ class GreenhouseController extends PoppySeedPetsController
                 for($i = 0; $i < $quantity; $i++)
                 {
                     /** @var PlantYieldItem $loot */
-                    $loot = ArrayFunctions::pick_one_weighted($yield->getItems(), function(PlantYieldItem $yieldItem) {
-                        return $yieldItem->getPercentChance();
-                    });
+                    $loot = ArrayFunctions::pick_one_weighted($yield->getItems(), fn(PlantYieldItem $yieldItem) => $yieldItem->getPercentChance());
 
                     $lootItem = $loot->getItem();
                     $lootItemName = $lootItem->getName();
@@ -727,7 +725,7 @@ class GreenhouseController extends PoppySeedPetsController
         if($seed === null || $seed->getItem()->getPlant() === null)
             throw new NotFoundHttpException('There is no such seed. That\'s super-weird. Can you reload and try again?');
 
-        $largestOrdinal = ArrayFunctions::max($user->getGreenhousePlants(), function(GreenhousePlant $gp) { return $gp->getOrdinal(); });
+        $largestOrdinal = ArrayFunctions::max($user->getGreenhousePlants(), fn(GreenhousePlant $gp) => $gp->getOrdinal());
         $lastOrdinal = $largestOrdinal === null ? 1 : ($largestOrdinal->getOrdinal() + 1);
 
         $plantsOfSameType = $user->getGreenhousePlants()->filter(fn(GreenhousePlant $plant) =>

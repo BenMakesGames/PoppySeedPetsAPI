@@ -178,9 +178,7 @@ class InventoryService
     {
         if(count($quantities) === 0) return '';
 
-        \usort($quantities, function(ItemQuantity $a, ItemQuantity $b) {
-            return $a->item->getId() <=> $b->item->getId();
-        });
+        usort($quantities, fn(ItemQuantity $a, ItemQuantity $b) => $a->item->getId() <=> $b->item->getId());
 
         $items = [];
 

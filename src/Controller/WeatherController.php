@@ -27,7 +27,7 @@ class WeatherController extends PoppySeedPetsController
         $data = [
             'forecast' => $weatherService->get6DayForecast(),
             'holidayBoxes' => array_map(
-                function(AvailableHolidayBox $box) { return $box->tradeDescription; },
+                fn(AvailableHolidayBox $box) => $box->tradeDescription,
                 $plazaService->getAvailableHolidayBoxes($user)
             )
         ];

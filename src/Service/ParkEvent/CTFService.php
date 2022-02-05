@@ -113,7 +113,7 @@ class CTFService implements ParkEventInterface
         // finally, give pets a chance to meet each other:
         foreach($this->teams as $team)
         {
-            $teamMembers = array_map(function(CTFParticipant $p) { return $p->pet; }, $team->members);
+            $teamMembers = array_map(fn(CTFParticipant $p) => $p->pet, $team->members);
             $this->petRelationshipService->groupGathering(
                 $teamMembers,
                 '%p1% and %p2% were on the same team for a game of Capture the Flag! :)',

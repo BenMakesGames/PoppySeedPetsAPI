@@ -87,9 +87,7 @@ class JoustingService implements ParkEventInterface
 
         $this->participants = [];
 
-        usort($pets, function(Pet $a, Pet $b) {
-            return $this->getPetSkill($a) <=> $this->getPetSkill($b);
-        });
+        usort($pets, fn(Pet $a, Pet $b) => $this->getPetSkill($a) <=> $this->getPetSkill($b));
 
         $numberOfPets = count($pets);
 
@@ -302,9 +300,7 @@ class JoustingService implements ParkEventInterface
                 [ 'name' => $team2->mount->getName(), 'team' => 2, 'roll' => $this->squirrel3->rngNextInt(1, 10 + $team2->mount->getSkills()->getStrength()) + $tieBreakers[3] ],
             ];
 
-            usort($results, function($a, $b) {
-                return $b['roll'] <=> $a['roll'];
-            });
+            usort($results, fn($a, $b) => $b['roll'] <=> $a['roll']);
 
             $winningTeam = $results[0]['team'];
             $winningPet = $results[0]['name'];

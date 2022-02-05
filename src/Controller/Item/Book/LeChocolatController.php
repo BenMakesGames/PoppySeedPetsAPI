@@ -76,9 +76,7 @@ class LeChocolatController extends PoppySeedPetsItemController
         {
             $ingredients = $inventoryService->deserializeItemList($recipe->getIngredients());
 
-            usort($ingredients, function($a, $b) {
-                return $a->item->getName() <=> $b->item->getName();
-            });
+            usort($ingredients, fn($a, $b) => $a->item->getName() <=> $b->item->getName());
 
             $items = array_map(function(ItemQuantity $q) {
                 if($q->quantity > 1)

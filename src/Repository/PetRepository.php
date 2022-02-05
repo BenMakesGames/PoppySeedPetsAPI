@@ -37,7 +37,7 @@ class PetRepository extends ServiceEntityRepository
 
         return $this->createQueryBuilder('p')
             ->andWhere('p.id IN (:petParents)')
-            ->setParameter('petParents', array_map(function(Pet $p) { return $p->getId(); }, $parents))
+            ->setParameter('petParents', array_map(fn(Pet $p) => $p->getId(), $parents))
             ->getQuery()
             ->getResult()
         ;
@@ -56,7 +56,7 @@ class PetRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->andWhere('p.mom IN (:petParents) OR p.dad IN (:petParents)')
             ->andWhere('p.id != :pet')
-            ->setParameter('petParents', array_map(function(Pet $p) { return $p->getId(); }, $parents))
+            ->setParameter('petParents', array_map(fn(Pet $p) => $p->getId(), $parents))
             ->setParameter('pet', $pet->getId())
             ->getQuery()
             ->getResult()
@@ -100,9 +100,7 @@ class PetRepository extends ServiceEntityRepository
             ->getResult()
         ;
 
-        return array_values(array_filter($pets, function(Pet $pet) {
-            return !$pet->hasStatusEffect(StatusEffectEnum::WEREFORM);
-        }));
+        return array_values(array_filter($pets, fn(Pet $pet) => !$pet->hasStatusEffect(StatusEffectEnum::WEREFORM)));
     }
 
     public function getNumberAtHome(User $user): int

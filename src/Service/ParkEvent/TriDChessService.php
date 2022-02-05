@@ -79,8 +79,8 @@ class TriDChessService implements ParkEventInterface
         if(!$this->isGoodNumberOfPets(count($pets)))
             throw new \InvalidArgumentException('The number of pets must be 8, 16, or 32.');
 
-        $this->participants = array_map(function(Pet $pet) { return new TriDChessParticipant($pet); }, $pets);
-        $this->winners = array_map(function(Pet $pet) { return new TriDChessParticipant($pet); }, $pets);
+        $this->participants = array_map(fn(Pet $pet) => new TriDChessParticipant($pet), $pets);
+        $this->winners = array_map(fn(Pet $pet) => new TriDChessParticipant($pet), $pets);
 
         foreach($this->participants as $p)
             $this->wins[$p->pet->getId()] = 0;
@@ -241,7 +241,7 @@ class TriDChessService implements ParkEventInterface
 
     private function awardExp()
     {
-        $affectionAverage = ArrayFunctions::average($this->participants, function(TriDChessParticipant $p) { return $p->pet->getAffectionLevel(); });
+        $affectionAverage = ArrayFunctions::average($this->participants, fn(TriDChessParticipant $p) => $p->pet->getAffectionLevel());
 
         $firstPlaceMoneys = 2 * count($this->participants) - $this->squirrel3->rngNextInt(0, 8); // base prize
         $firstPlaceMoneys += ceil($affectionAverage); // affection bonus

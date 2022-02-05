@@ -126,7 +126,7 @@ class ScrollController extends PoppySeedPetsItemController
             for($i = 0; $i < $numItems; $i++)
                 $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray($possibleItems), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
 
-            $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
+            $itemList = array_map(fn(Inventory $i) => $i->getItem()->getName(), $newInventory);
             sort($itemList);
 
             $em->flush();
@@ -170,7 +170,7 @@ class ScrollController extends PoppySeedPetsItemController
             $inventoryService->receiveItem($squirrel3->rngNextFromArray($rareItems), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location),
         ];
 
-        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
+        $itemList = array_map(fn(Inventory $i) => $i->getItem()->getName(), $newInventory);
         sort($itemList);
 
         $em->flush();
@@ -224,7 +224,7 @@ class ScrollController extends PoppySeedPetsItemController
         foreach($items as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
 
-        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
+        $itemList = array_map(fn(Inventory $i) => $i->getItem()->getName(), $newInventory);
         sort($itemList);
 
         $em->flush();

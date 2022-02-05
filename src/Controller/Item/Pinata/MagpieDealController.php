@@ -68,7 +68,7 @@ class MagpieDealController extends PoppySeedPetsItemController
         for($i = 0; $i < 3; $i++)
             $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Feathers', 'Egg' ]), $user, $user, $user->getName() . ' got this from a Magpie\'s Deal.', $location);
 
-        $itemList = array_map(function(Inventory $i) { return $i->getItem()->getName(); }, $newInventory);
+        $itemList = array_map(fn(Inventory $i) => $i->getItem()->getName(), $newInventory);
         sort($itemList);
 
         $em->remove($inventory);

@@ -77,6 +77,13 @@ class PetRelationship
      */
     private $commitment;
 
+    /**
+     * @ORM\Column(type="smallint")
+     * @Groups({"petFriend"})
+     * @SerializedName("commitment")
+     */
+    private $rating;
+
     public function __construct()
     {
         $squirrel3 = new Squirrel3();
@@ -265,5 +272,17 @@ class PetRelationship
             [ $this->getPet()->getName(), $this->getRelationship()->getName() ],
             $this->getMetDescription()
         );
+    }
+
+    public function getRating(): ?int
+    {
+        return $this->rating;
+    }
+
+    public function setRating(int $rating): self
+    {
+        $this->rating = $rating;
+
+        return $this;
     }
 }

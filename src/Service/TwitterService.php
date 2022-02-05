@@ -20,6 +20,6 @@ class TwitterService
         $response = $this->connection->post('statuses/update', [ 'status' => $article->getTitle() ]);
 
         if(property_exists($response, 'errors') && count($response->errors) > 0)
-            throw new \Exception(implode(' ', array_map(function($r) { return $r->message; }, $response->errors)));
+            throw new \Exception(implode(' ', array_map(fn($r) => $r->message, $response->errors)));
     }
 }

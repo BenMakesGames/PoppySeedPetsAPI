@@ -134,7 +134,7 @@ class CookingService
         // if we didn't find a recipe, check if this is a repeated recipe
         if(!$recipe)
         {
-            $smallestQuantity = ArrayFunctions::min($quantities, function(ItemQuantity $q) { return $q->quantity; })->quantity;
+            $smallestQuantity = ArrayFunctions::min($quantities, fn(ItemQuantity $q) => $q->quantity)->quantity;
 
             if($smallestQuantity === 1)
             {

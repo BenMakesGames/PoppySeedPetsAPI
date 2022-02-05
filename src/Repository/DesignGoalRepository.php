@@ -30,12 +30,10 @@ class DesignGoalRepository extends ServiceEntityRepository
             array_unique(       // unique values
                 array_filter(   //   among values >= 0
                     array_map(  //     among the string values cast to integers
-                        function($id) { return (int)$id; },
+                        fn($id) => (int)$id,
                         $params->get($fieldName, [])
                     ),
-                    function(int $id) {
-                        return $id > 0;
-                    }
+                    fn(int $id) => $id > 0
                 )
             )
         ;

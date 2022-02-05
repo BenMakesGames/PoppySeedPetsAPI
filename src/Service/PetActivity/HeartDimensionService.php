@@ -308,9 +308,7 @@ class HeartDimensionService
             ],
         ];
 
-        $doIt = ArrayFunctions::max($stats, function($v) {
-            return $v['value'];
-        });
+        $doIt = ArrayFunctions::max($stats, fn($v) => $v['value']);
 
         $this->petExperienceService->gainExp($pet, 3, [ $doIt['stat'] ]);
 
