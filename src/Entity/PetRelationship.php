@@ -82,7 +82,7 @@ class PetRelationship
      * @Groups({"petFriend"})
      * @SerializedName("commitment")
      */
-    private $rating;
+    private $rating = 0;
 
     public function __construct()
     {
