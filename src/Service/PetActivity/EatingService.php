@@ -91,6 +91,8 @@ class EatingService
                 $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $food->name . '. (Ooh! ' . ucwords($randomFlavor) . '!');
             else
                 $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $food->name . '.');
+
+            $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Eating' ]));
         }
 
         return true;

@@ -480,6 +480,8 @@ class PetRelationshipService
         $pet = $p1->getPet();
         $friend = $p2->getPet();
 
+        $extraTags = [];
+
         $petLowestNeed = $pet->getLowestNeed();
         $friendLowestNeed = $friend->getLowestNeed();
 
@@ -503,12 +505,16 @@ class PetRelationshipService
                         ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
                     ;
 
+                    $extraTags[] = 'Romance';
+
                     if($this->squirrel3->rngNextInt(1, 20) === 1)
                         $this->pregnancyService->getPregnant($pet, $friend);
                 }
                 else if($p1->getCurrentRelationship() === RelationshipEnum::MATE && $this->squirrel3->rngNextInt(1, 5) === 1)
                 {
                     $message = $this->loveService->expressLove($p1, $p2);
+
+                    $extraTags[] = 'Romance';
                 }
                 else
                 {
@@ -624,6 +630,7 @@ class PetRelationshipService
             ->setPet($pet)
             ->setEntry($message)
             ->setIcon('icons/activity-logs/friend')
+            ->addTags($this->petActivityLogTagRepository->findByNames($extraTags))
         ;
 
         $this->em->persist($p1Log);
@@ -632,6 +639,7 @@ class PetRelationshipService
             ->setPet($friend)
             ->setEntry($message)
             ->setIcon('icons/activity-logs/friend')
+            ->addTags($this->petActivityLogTagRepository->findByNames($extraTags))
         ;
 
         $this->em->persist($p2Log);
