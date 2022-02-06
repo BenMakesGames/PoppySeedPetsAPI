@@ -325,6 +325,7 @@ class BandService
                     ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Group Hangout', 'Band' ]))
                 ;
 
                 $this->em->persist($activityLog);
