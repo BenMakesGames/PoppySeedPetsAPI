@@ -821,6 +821,10 @@ class PetService
     public function recomputeFriendRatings(Pet $pet)
     {
         $friends = $this->petRelationshipRepository->getFriends($pet);
+
+        if(count($friends) == 0)
+            return;
+
         $commitmentLevels = array_map(fn(PetRelationship $r) => $r->getCommitment(), $friends);
 
         $minCommitment = min($commitmentLevels);

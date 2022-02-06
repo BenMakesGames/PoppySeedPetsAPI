@@ -22,7 +22,7 @@ final class DateFunctions
         12 => 'Cold'
     ];
 
-    // adapted from https://github.com/BenMakesGames/PsyPets/blob/master/lib/commons/moonphase.php
+    // adapted from https://github.com/BenMakesGames/PsyPets/blob/a22ba399c051f2a8ea38e9e0f48369f9606fd557/commons/moonphase.php
     // which was adapted from http://home.att.net/~srschmitt/script_moon_phase.html#contents
     // which was adapted from a BASIC program in the Astronomical Computing column of Sky & Telescope, April 1994.
     // what a history :P
@@ -83,7 +83,7 @@ final class DateFunctions
         $IP = ($JD - 2451550.1) / self::MOON_CYCLE_LENGTH;
 
         // normalize IP
-        $IP = $IP - floor($IP);
+        $IP -= floor($IP);
         if($IP < 0)
             $IP++;
 
