@@ -455,7 +455,7 @@ class TraderService
 
         $offers = [];
 
-        $uniqueOfferItems = $this->itemRepository->findOneForSpecialTraderOffer($user->getDailySeed());
+        $uniqueOfferItems = $this->itemRepository->findTwoForSpecialTraderOffer($user->getDailySeed());
 
         foreach($uniqueOfferItems as $uniqueOfferItem)
         {
@@ -885,18 +885,6 @@ class TraderService
                 ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Rings on Strings'), 1) ],
                 'This item feels kind of silly, doesn\'t it? Well, I suppose it\'s not for me to say. Oh, and thanks for the Onion Rings. I was feeling a little peckish.',
-                $user,
-                $quantities
-            ),
-
-            TraderOffer::createTradeOffer(
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Planetary Ring'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gravitational Waves'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Everice'), 1),
-                ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Icy Moon'), 1) ],
-                'Does that one look kind of like ' . $moonName . ' to you?',
                 $user,
                 $quantities
             ),

@@ -107,11 +107,11 @@ class NotReallyCraftsService
                     'Everice',
                     'Silica Grounds',
                     'Iron Ore', 'Iron Ore',
-                    'Silver Ore',
-                    'Gold Ore',
+                    $this->squirrel3->rngNextFromArray([ 'Silver Ore', 'Gold Ore' ]),
                     'Dark Matter',
                     'Glowing Six-sided Die',
-                    'String'
+                    'String',
+                    'Icy Moon',
                 ]);
 
                 $exclaim = '.';

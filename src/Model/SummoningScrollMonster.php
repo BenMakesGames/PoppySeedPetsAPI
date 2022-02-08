@@ -85,7 +85,7 @@ class SummoningScrollMonster
         $monster->name = 'Crystalline Entity';
         $monster->nameWithArticle = 'a Crystalline Entity';
         $monster->majorReward = 'Forgetting Scroll';
-        $monster->minorRewards = [ 'Glass', 'Gypsum' ];
+        $monster->minorRewards = [ 'Fiberglass', 'Gypsum' ];
         $monster->element = 'electricity';
 
         return $monster;

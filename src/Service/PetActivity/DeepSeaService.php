@@ -24,9 +24,9 @@ use App\Service\Squirrel3;
 
 class DeepSeaService
 {
-    private $responseService;
-    private $inventoryService;
-    private $petExperienceService;
+    private ResponseService $responseService;
+    private InventoryService $inventoryService;
+    private PetExperienceService $petExperienceService;
     private IRandom $squirrel3;
     private HattierService $hattierService;
     private FieldGuideService $fieldGuideService;

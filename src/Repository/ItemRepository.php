@@ -34,7 +34,7 @@ class ItemRepository extends ServiceEntityRepository
     /**
      * @return Item[]
      */
-    public function findOneForSpecialTraderOffer(int $seed): array
+    public function findTwoForSpecialTraderOffer(int $seed): array
     {
         $count = $this->createQueryBuilder('i')
             ->select('COUNT(i)')

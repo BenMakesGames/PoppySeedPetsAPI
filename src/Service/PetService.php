@@ -571,6 +571,9 @@ class PetService
         if($this->houseSimService->hasInventory('Submarine'))
             $petDesires['submarine'] = $this->generateSubmarineDesire($petWithSkills);
 
+        if($this->houseSimService->hasInventory('Icy Moon'))
+            $petDesires['icyMoon'] = $this->generateIcyMoonDesire($petWithSkills);
+
         if($pet->getOwner()->getGreenhousePlants()->exists(function(int $key, GreenhousePlant $p) {
             return
                 $p->getPlant()->getName() === 'Magic Beanstalk' &&
@@ -608,6 +611,7 @@ class PetService
             case 'beanStalk': $this->beanStalkService->adventure($petWithSkills); break;
             case 'burntForest': $this->burntForestService->adventure($petWithSkills); break;
             case 'submarine': $this->deepSeaService->adventure($petWithSkills); break;
+            case 'icyMoon': $this->icyMoonService->adventure($petWithSkills); break;
             default: $this->doNothing($pet); break;
         }
     }
