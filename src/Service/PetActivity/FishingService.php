@@ -636,14 +636,14 @@ class FishingService
             $moneys = $this->squirrel3->rngNextInt(10, 15) + $bonusMoney;
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% fished around in the Plaza fountain while no one was looking, and grabbed ' . $moneys . ' moneys! Lucky~!', 'icons/activity-logs/moneys')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fishing', 'Stealth' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fishing', 'Stealth', 'Moneys' ]))
             ;
         }
         else
         {
             $moneys = $this->squirrel3->rngNextInt(2, 9) + $bonusMoney;
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% fished around in the Plaza fountain while no one was looking, and grabbed ' . $moneys . ' moneys.', 'icons/activity-logs/moneys')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fishing', 'Stealth' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fishing', 'Stealth', 'Moneys' ]))
             ;
         }
 
@@ -669,7 +669,7 @@ class FishingService
         $moneys = $this->squirrel3->rngNextInt(2, 9) + $bonusMoney;
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started fishing around in the Plaza fountain, and got ambushed by a Thieving Magpie! They fought the creature off, and took its ' . $moneys . ' moneys.', 'icons/activity-logs/moneys')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fishing', 'Fighting' ]))
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fishing', 'Fighting', 'Moneys' ]))
         ;
 
         $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' took this from a Thieving Magpie that attacked them while they were fishing in the Plaza fountain.');

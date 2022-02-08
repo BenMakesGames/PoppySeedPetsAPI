@@ -282,7 +282,7 @@ class Protocol7Service
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E. Correspondence had some message-delivery jobs, so %pet:' . $pet->getId() . '.name% picked a couple up, earning ' . $moneys . '~~m~~ for their trouble.', '')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Project-E', 'Guild' ]))
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Project-E', 'Guild', 'Moneys' ]))
         ;
     }
 

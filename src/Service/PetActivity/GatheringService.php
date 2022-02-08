@@ -612,7 +612,7 @@ class GatheringService
                 $lootList = $loot;
                 $lootList[] = $moneys . '~~m~~';
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to a Sandy Beach, and stole ' . ArrayFunctions::list_nice($lootList) . ' while the seagulls weren\'t paying attention.', '')
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering', 'Stealth' ]))
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering', 'Stealth', 'Moneys' ]))
                 ;
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::GATHER, true);
             }

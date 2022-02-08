@@ -622,7 +622,7 @@ class HuntingService
             $moneys = $this->squirrel3->rngNextInt(1, $this->squirrel3->rngNextInt(2, $this->squirrel3->rngNextInt(3, 5)));
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% snuck up on a Scarecrow, and picked its pockets... and also its ' . $bodyPart . '! ' . $pet->getName() . ' walked away with ' . $moneys . '~~m~~, and some ' . $itemName . '.', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Stealth' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Stealth', 'Moneys' ]))
             ;
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' stole this from a Scarecrow\'s ' . $bodyPart .'.', $activityLog);
             $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' stole this from a Scarecrow.');
@@ -789,7 +789,9 @@ class HuntingService
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was outsmarted by a Thieving Magpie, ' . $description, '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was outsmarted by a Thieving Magpie, ' . $description, '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Moneys' ]))
+            ;
         }
         else if($this->squirrel3->rngNextInt(1, $dexSkill) >= 9)
         {
@@ -808,14 +810,14 @@ class HuntingService
                 {
                     $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' shot at a Thieving Magpie, forcing it to drop this money.');
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% shot at a Thieving Magpie; it dropped its ' . $moneys . ' moneys and sped away.', 'icons/activity-logs/moneys')
-                        ->addTags($this->petActivityLogTagRepository->findByNames([ 'Hunting' ]))
+                        ->addTags($this->petActivityLogTagRepository->findByNames([ 'Hunting', 'Moneys' ]))
                     ;
                 }
                 else
                 {
                     $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' pounced on a Thieving Magpie, and liberated this money.');
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% pounced on a Thieving Magpie, and liberated its ' . $moneys . ' moneys.', 'icons/activity-logs/moneys')
-                        ->addTags($this->petActivityLogTagRepository->findByNames([ 'Hunting' ]))
+                        ->addTags($this->petActivityLogTagRepository->findByNames([ 'Hunting', 'Moneys' ]))
                     ;
                 }
             }

@@ -295,6 +295,8 @@ class GenericAdventureService
         if($reward[1] === 'moneys')
         {
             $this->transactionService->getMoney($pet->getOwner(), $reward[0], $comment);
+
+            $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Moneys' ]));
         }
         else
         {

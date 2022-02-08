@@ -66,7 +66,7 @@ class CoinSmithingService
         $pet->increaseFood(-1);
 
         return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ' from a Silver Bar, but spilled some of the silver, and almost burned themselves! They used the leftovers to make ' . $moneys . '~~m~~ worth of silver coins, instead.', 'icons/activity-logs/moneys')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing', 'Moneys' ]))
         ;
     }
 
@@ -83,7 +83,7 @@ class CoinSmithingService
         $pet->increaseFood(-1);
 
         return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ' from a Gold Bar, but spilled some of the gold, and almost burned themselves! They used the leftovers to make ' . $moneys . '~~m~~ worth of gold coins, instead.', 'icons/activity-logs/moneys')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing', 'Moneys' ]))
         ;
     }
 }

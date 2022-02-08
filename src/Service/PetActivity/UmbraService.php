@@ -478,7 +478,7 @@ class UmbraService
         $this->transactionService->getMoney($pet->getOwner(), 2, $pet->getName() . ' found this on the shores of a dark river in the Umbra.');
 
         return $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted 2~~m~~. No one else was around, so...', 'icons/activity-logs/moneys')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra' ]))
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Moneys' ]))
         ;
     }
 
