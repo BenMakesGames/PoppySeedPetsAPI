@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Enum\SerializationGroupEnum;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\ResponseService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -28,5 +29,16 @@ class PetActivityLogsController extends PoppySeedPetsController
         $logs = $petActivityLogsFilterService->getResults($request->query);
 
         return $responseService->success($logs, [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::PET_ACTIVITY_LOGS_AND_PUBLIC_PET ]);
+    }
+
+    /**
+     * @Route("/getAllTags", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getAllTags(ResponseService $responseService, PetActivityLogTagRepository $petActivityLogTagRepository)
+    {
+        $tags = $petActivityLogTagRepository->findAll();
+
+        return $responseService->success($tags, [ SerializationGroupEnum::PET_ACTIVITY_LOGS ]);
     }
 }

@@ -13,6 +13,7 @@ class ActivityPersonalityEnum
     public const SUBMARINE = 1 << 4;
     public const UMBRA = 1 << 5;
     public const PROTOCOL_7 = 1 << 6;
+    public const ICY_MOON = 1 << 7;
 
     public const EVENTS_AND_MAPS = 1 << 15;
 

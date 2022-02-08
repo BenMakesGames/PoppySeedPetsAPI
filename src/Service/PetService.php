@@ -53,6 +53,7 @@ use App\Service\PetActivity\GuildService;
 use App\Service\PetActivity\HeartDimensionService;
 use App\Service\PetActivity\HoliService;
 use App\Service\PetActivity\HuntingService;
+use App\Service\PetActivity\IcyMoonService;
 use App\Service\PetActivity\LetterService;
 use App\Service\PetActivity\MagicBeanstalkService;
 use App\Service\PetActivity\PetSummonedAwayService;
@@ -114,6 +115,7 @@ class PetService
     private PlasticPrinterService $plasticPrinterService;
     private PhilosophersStoneService $philosophersStoneService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private IcyMoonService $icyMoonService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -132,7 +134,8 @@ class PetService
         WeatherService $weatherService, HoliService $holiService, Caerbannog $caerbannog, CravingService $cravingService,
         StatusEffectService $statusEffectService, EatingService $eatingService, HouseSimService $houseSimService,
         MagicBindingService $magicBindingService, SmithingService $smithingService, PlasticPrinterService $plasticPrinterService,
-        PhilosophersStoneService $philosophersStoneService, PetActivityLogTagRepository $petActivityLogTagRepository
+        PhilosophersStoneService $philosophersStoneService, PetActivityLogTagRepository $petActivityLogTagRepository,
+        IcyMoonService $icyMoonService
     )
     {
         $this->em = $em;
@@ -182,6 +185,7 @@ class PetService
         $this->plasticPrinterService = $plasticPrinterService;
         $this->philosophersStoneService = $philosophersStoneService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->icyMoonService = $icyMoonService;
     }
 
     public function runHour(Pet $pet)
@@ -572,7 +576,12 @@ class PetService
             $petDesires['submarine'] = $this->generateSubmarineDesire($petWithSkills);
 
         if($this->houseSimService->hasInventory('Icy Moon'))
-            $petDesires['icyMoon'] = $this->generateIcyMoonDesire($petWithSkills);
+        {
+            $icyMoonDesire = $this->generateIcyMoonDesire($petWithSkills);
+
+            if($icyMoonDesire > 0)
+                $petDesires['icyMoon'] = $icyMoonDesire;
+        }
 
         if($pet->getOwner()->getGreenhousePlants()->exists(function(int $key, GreenhousePlant $p) {
             return
@@ -1322,6 +1331,27 @@ class PetService
             $desire += $this->squirrel3->rngNextInt(1, 4);
 
         return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
+    }
+
+    public function generateIcyMoonDesire(ComputedPetSkills $petWithSkills): int
+    {
+        $pet = $petWithSkills->getPet();
+
+        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+            return 0;
+
+        $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - $pet->getAlcohol();
+
+        // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
+        if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            $desire += $pet->getTool()->getItem()->getTool()->getScience() + $pet->getTool()->getItem()->getTool()->getGathering();
+
+        if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::ICY_MOON))
+            $desire += 4;
+        else
+            $desire += $this->squirrel3->rngNextInt(1, 4);
+
+        return max(0, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100) * 3 / 4));
     }
 
     public function generateSubmarineDesire(ComputedPetSkills $petWithSkills): int

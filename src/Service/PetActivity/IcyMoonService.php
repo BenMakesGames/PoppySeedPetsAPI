@@ -18,6 +18,7 @@ use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
+use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -33,11 +34,12 @@ class IcyMoonService
     private FieldGuideService $fieldGuideService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private SpiceRepository $spiceRepository;
+    private HouseSimService $houseSimService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         Squirrel3 $squirrel3, FieldGuideService $fieldGuideService, SpiceRepository $spiceRepository,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        PetActivityLogTagRepository $petActivityLogTagRepository, HouseSimService $houseSimService
     )
     {
         $this->responseService = $responseService;
@@ -47,14 +49,15 @@ class IcyMoonService
         $this->fieldGuideService = $fieldGuideService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->spiceRepository = $spiceRepository;
+        $this->houseSimService = $houseSimService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
     {
         $pet = $petWithSkills->getPet();
-        $maxSkill = 5 + ceil(($petWithSkills->getStamina()->getTotal() + $petWithSkills->getPerception() + $petWithSkills->getScience()->getTotal()) / 2) - $pet->getAlcohol();
+        $maxSkill = 5 + ceil(($petWithSkills->getStamina()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal()) / 2) - $pet->getAlcohol();
 
-        $maxSkill = NumberFunctions::clamp($maxSkill, 1, 18);
+        $maxSkill = NumberFunctions::clamp($maxSkill, 1, 15);
 
         $roll = $this->squirrel3->rngNextInt(1, $maxSkill);
 
@@ -87,6 +90,7 @@ class IcyMoonService
                 $activityLog = $this->fightBabyCrystallineEntity($petWithSkills);
                 break;
             case 14:
+            case 15:
                 $activityLog = $this->exploreCore($petWithSkills);
                 break;
         }
@@ -117,7 +121,7 @@ class IcyMoonService
     {
         return $this->squirrel3->rngNextBool()
             ? null
-            : $this->spiceRepository->findOneByName([ 'Freezer-burned' ])
+            : $this->spiceRepository->findOneByName('Freezer-burned')
         ;
     }
 
@@ -203,6 +207,8 @@ class IcyMoonService
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
         }
+
+        $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Cryovolcano', ActivityHelpers::PetName($pet) . ' found a Cryovolcano on an Icy Moon.');
 
         return $activityLog;
     }
@@ -314,7 +320,6 @@ class IcyMoonService
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE, PetSkillEnum::NATURE ]);
 
-
             if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
             {
                 if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
@@ -336,6 +341,20 @@ class IcyMoonService
 
                     $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Icy Moon', 'Gathering', 'Needs Light', 'Heatstroke' ]));
                 }
+            }
+
+            if($roll >= 30)
+            {
+                $this->houseSimService->getState()->loseItem('Icy Moon', 1);
+
+                $activityLog->setEntry($activityLog->getEntry() . ' As they were leaving, the caves began to shake violenty! %pet:' . $pet->getId() . '.name% managed to start up the Tiny Rocketship, and shot out of the moon as it crumbled into pieces!')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ;
+
+                $this->inventoryService->petCollectsEnhancedItem('Everice', null, $this->getIcySpice(), $pet, 'The remains of a collapsed Icy Moon.', $activityLog);
+                $this->inventoryService->petCollectsEnhancedItem('Everice', null, $this->getIcySpice(), $pet, 'The remains of a collapsed Icy Moon.', $activityLog);
+                $this->inventoryService->petCollectsItem($this->squirrel3->rngNextFromArray([ 'Rock', 'Silica Grounds' ]), $pet, 'The remains of a collapsed Icy Moon.', $activityLog);
+                $this->inventoryService->petCollectsItem($this->squirrel3->rngNextFromArray([ 'Liquid-hot Magma', 'Firestone' ]), $pet, 'The remains of a collapsed Icy Moon.', $activityLog);
             }
         }
         else

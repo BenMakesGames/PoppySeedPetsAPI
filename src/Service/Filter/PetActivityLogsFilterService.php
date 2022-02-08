@@ -27,6 +27,7 @@ class PetActivityLogsFilterService
                 'pet' => [ $this, 'filterPet' ],
                 'date' => [ $this, 'filterDate' ],
                 'user' => [ $this, 'filterUser' ],
+                'tags' => [ $this, 'filterTags' ],
             ]
         );
     }
@@ -73,5 +74,18 @@ class PetActivityLogsFilterService
             $qb->andWhere('pet.owner=:userId');
 
         $qb->setParameter('userId', $value);
+    }
+
+    public function filterTags(QueryBuilder $qb, $value)
+    {
+        if(!in_array('tags', $qb->getAllAliases()))
+            $qb->leftJoin('l.tags', 'tags');
+
+        if(is_array($value))
+            $qb->andWhere('tags.title IN (:tags)');
+        else
+            $qb->andWhere('tags.title=:tags');
+
+        $qb->setParameter('tags', $value);
     }
 }
