@@ -201,6 +201,15 @@ class SmithingService
 
             if($this->houseSimService->hasInventory('Wand of Lightning'))
                 $possibilities[] = new ActivityCallback($this->silverSmithingService, 'createLightningAxe', $weight);
+
+            if(
+                $this->houseSimService->hasInventory('Iron Axe') &&
+                $this->houseSimService->hasInventory('String') &&
+                $this->houseSimService->hasInventory('Talon')
+            )
+            {
+                $possibilities[] = new ActivityCallback($this->silverSmithingService, 'createSharktoothAxe', $weight);
+            }
         }
 
         if($this->houseSimService->hasInventory('Gold Bar'))

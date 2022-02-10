@@ -327,6 +327,76 @@ class SilverSmithingService
         }
     }
 
+    public function createSharktoothAxe(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        $makingItem = $this->itemRepository->findOneByName('Sharktooth Axe');
+
+        if($roll == 1)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to improve an Iron Axe, but accidentally burnt the String they were using :|', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing', 'Crafting' ]))
+            ;
+
+            $this->houseSimService->getState()->loseItem('String', 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-1);
+
+            return $activityLog;
+        }
+        else if($roll == 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to improve an Iron Axe, but accidentally cracked the Talon they were using :|', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing', 'Crafting' ]))
+            ;
+
+            $this->houseSimService->getState()->loseItem('Talon', 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-1);
+
+            return $activityLog;
+        }
+        else if($roll == 3)
+        {
+            $reRoll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+            if($reRoll >= 12)
+                return $this->coinSmithingService->makeSilverCoins($petWithSkills, $makingItem);
+            else
+                return $this->spillSilver($petWithSkills, $makingItem);
+        }
+        else if($roll >= 19)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::SMITH, true);
+            $this->houseSimService->getState()->loseItem('Silver Bar', 1);
+            $this->houseSimService->getState()->loseItem('Iron Axe', 1);
+            $this->houseSimService->getState()->loseItem('White String', 1);
+            $this->houseSimService->getState()->loseItem('Talon', 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(4);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Gold Keyblade.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 19)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing', 'Crafting' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Gold Keyblade', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to silver an Iron Axe, but couldn\'t get the temperature just right...', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing', 'Crafting' ]))
+            ;
+        }
+    }
+
     public function createGoldKeyblade(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();

@@ -97,6 +97,7 @@ class IronSmithingService
             [ 'item' => 'Iron Sword', 'description' => 'an Iron Sword', 'image' => 'items/tool/sword/iron', 'difficulty' => 14, 'experience' => 1 ],
             [ 'item' => 'Flute', 'description' => 'a Flute', 'image' => 'items/tool/instrument/flute', 'difficulty' => 15, 'experience' => 2 ],
             [ 'item' => 'Dumbbell', 'description' => 'a Dumbbell', 'image' => 'items/tool/dumbbell', 'difficulty' => 12, 'experience' => 1 ],
+            [ 'item' => 'Iron Axe', 'description' => 'an Iron Axe', 'image' => 'items/tool/axe/iron', 'difficulty' => 14, 'experience' => 1 ],
         ]);
 
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());

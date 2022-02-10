@@ -148,6 +148,15 @@ class MagicBindingService
             if($this->houseSimService->hasInventory('Grappling Hook') && $this->houseSimService->hasInventory('Gravitational Waves'))
                 $possibilities[] = new ActivityCallback($this, 'createGravelingHook', 8);
 
+            if(
+                $this->houseSimService->hasInventory('Silver Bar', 1) &&
+                $this->houseSimService->hasInventory('Iron Axe', 1) &&
+                $this->houseSimService->hasInventory('Lightning in a Bottle', 1)
+            )
+            {
+                $possibilities[] = new ActivityCallback($this, 'createLightningAxe', 8);
+            }
+
             if($this->houseSimService->hasInventory('Crooked Stick'))
             {
                 if($this->houseSimService->hasInventory('Mirror'))
@@ -2670,6 +2679,47 @@ class MagicBindingService
 
             $this->inventoryService->petCollectsItem('Fimbulvetr', $pet, $pet->getName() . ' made this by binding Everice to a Heavy Hammer.', $activityLog);
             return $activityLog;
+        }
+    }
+
+    public function createLightningAxe(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($roll <= 2)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to imbue an Iron Axe with lightning, but accidentally melted it, instead!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding', 'Smithing' ]))
+            ;
+
+            $this->houseSimService->getState()->loseItem('Iron Axe', 1);
+            $this->inventoryService->petCollectsItem('Iron Bar', $pet, $pet->getName() . ' tried to enchant an Iron Axe, but it melted, instead :|', $activityLog);
+        }
+        else if($roll >= 22)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::UMBRA, true);
+            $this->houseSimService->getState()->loseItem('Silver Bar', 1);
+            $this->houseSimService->getState()->loseItem('Iron Axe', 1);
+            $this->houseSimService->getState()->loseItem('Quintessence', 1);
+            $this->houseSimService->getState()->loseItem('Lightning in a Bottle', 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% silvered an Iron Axe, and imbued with lightning, creating a Lightning Axe.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding', 'Smithing' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Lightning Axe', $pet, $pet->getName() . ' created this by adding a silver-iron blade to a Wand of Lightning.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::UMBRA, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to imbue an Iron Axe with lightning, but it wasn\'t working out...', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding', 'Smithing' ]))
+            ;
         }
     }
 }
