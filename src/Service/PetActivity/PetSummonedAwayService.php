@@ -8,7 +8,9 @@ use App\Enum\PetSkillEnum;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -19,11 +21,13 @@ class PetSummonedAwayService
     private $inventoryService;
     private $petExperienceService;
     private $itemRepository;
-    private $squirrel3;
+    private IRandom $squirrel3;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        PetExperienceService $petExperienceService, ItemRepository $itemRepository
+        PetExperienceService $petExperienceService, ItemRepository $itemRepository,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->responseService = $responseService;
@@ -31,6 +35,7 @@ class PetSummonedAwayService
         $this->petExperienceService = $petExperienceService;
         $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -99,7 +104,9 @@ class PetSummonedAwayService
 
         $this->petExperienceService->gainExp($pet, $this->squirrel3->rngNextInt(1, 3), [ PetSkillEnum::BRAWL, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
 
-        return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned');
+        return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
+        ;
     }
 
     private function doSummonedToCleanAndHost(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -112,6 +119,7 @@ class PetSummonedAwayService
                 $activity = 'help clean a mansion the day before a fancy ball';
                 $loot = $this->squirrel3->rngNextFromArray([ 'Fluff', 'Cobweb' ]);
                 $skill = null;
+                $tags = [ 'Gathering' ];
                 break;
             case 2:
                 $activity = 'serve food to guests at a fancy party in a mansion';
@@ -123,6 +131,7 @@ class PetSummonedAwayService
                     'Fig Wine', 'Bizet Cake', 'Red Wine', 'Zongzi'
                 ]);
                 $skill = null;
+                $tags = [ 'Gathering' ];
                 break;
             case 3:
                 $activity = 'play in a band at a fancy party in a mansion';
@@ -131,13 +140,16 @@ class PetSummonedAwayService
                     'Fungal Clarinet', 'Decorated Flute',
                     'Gold Triangle', 'Melodica'
                 ]);
+                $tags = [ 'Band' ];
                 break;
         }
 
         $lootItem = $this->itemRepository->findOneByName($loot);
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them ' . $activity . '. Once the task was completed, ' . $pet->getName() . ' returned home, still holding ' . $lootItem->getNameWithArticle() . '!';
 
-        $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned');
+        $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')
+            ->addTags($this->petActivityLogTagRepository->findByNames($tags))
+        ;
 
         $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' was summoned by a wizard to ' . $activity . '; they returned home with this!', $activityLog);
 
@@ -157,36 +169,45 @@ class PetSummonedAwayService
             case 1:
                 $activity = 'hold a weird-looking mirror while a laser was focused on it';
                 $skill = PetSkillEnum::SCIENCE;
+                $tags = [ 'Physics' ];
                 break;
             case 2:
                 $activity = 'mix various chemicals together while the wizard watched (from a distance, for some reason...)';
                 $skill = PetSkillEnum::SCIENCE;
+                $tags = [ 'Physics' ];
                 break;
             case 3:
                 $activity = 'look through almost a hundred photographs of the night sky, looking for bright spots';
                 $skill = PetSkillEnum::SCIENCE;
+                $tags = [ 'Physics' ];
                 break;
             case 4:
                 $activity = 'perform a very-specific dance while holding some candles';
                 $skill = PetSkillEnum::UMBRA;
+                $tags = [ 'The Umbra' ];
                 break;
             case 5:
                 $activity = 'draw a series of symbols in geometric shapes on the ground';
                 $skill = PetSkillEnum::UMBRA;
+                $tags = [ 'Magic-binding' ];
                 break;
             case 6:
                 $activity = 'keep an eye on a trapped spirit while the wizard tended to other things';
                 $skill = PetSkillEnum::UMBRA;
+                $tags = [ 'The Umbra' ];
                 break;
             case 7:
                 $activity = 'stand motionless, "like a gargoyle", and watch out for intruders for nearly one full hour';
                 $skill = PetSkillEnum::STEALTH;
+                $tags = [ 'Stealth' ];
                 break;
         }
 
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them ' . $activity . '. Once the task was completed, ' . $pet->getName() . ' returned home!';
 
-        $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned');
+        $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')
+            ->addTags($this->petActivityLogTagRepository->findByNames($tags))
+        ;
 
         $this->petExperienceService->gainExp($pet, $this->squirrel3->rngNextInt(1, 2), [ $skill ]);
 
@@ -199,7 +220,6 @@ class PetSummonedAwayService
 
         $location = null;
         $description = null;
-        $skill = null;
         $loot = null;
 
         switch($this->squirrel3->rngNextInt(1, 2))
@@ -209,17 +229,21 @@ class PetSummonedAwayService
                 $description = 'work a farm';
                 $descriptioning = 'working a farm';
                 $loot = $this->squirrel3->rngNextFromArray([ 'Rice', 'Wheat', 'Egg', 'Creamy Milk' ]);
+                $tags = [ 'Gathering' ];
                 break;
 
             case 2:
                 $location = 'a mine';
                 [$description, $descriptioning, $loot] = $this->getMiningDescriptionAndLoot();
+                $tags = [ 'Mining' ];
                 break;
         }
 
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned to ' . $location . '. The wizard that summoned them made them ' . $description . ' until the spell ended, and they were returned home! (At least they managed to pocket some ' . $loot . ' before the spell ended!)';
 
-        $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned');
+        $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')
+            ->addTags($this->petActivityLogTagRepository->findByNames($tags))
+        ;
 
         $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' was summoned by a wizard to do hard labor; while ' . $descriptioning . ', they stole this!', $activityLog);
 
