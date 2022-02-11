@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Enum\UserStatEnum;
 use App\Model\PetChanges;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
 
 class PetAndPraiseService
@@ -12,16 +13,18 @@ class PetAndPraiseService
     private CravingService $cravingService;
     private ResponseService $responseService;
     private UserStatsRepository $userStatsRepository;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, CravingService $cravingService, ResponseService $responseService,
-        UserStatsRepository $userStatsRepository
+        UserStatsRepository $userStatsRepository, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->cravingService = $cravingService;
         $this->responseService = $responseService;
         $this->userStatsRepository = $userStatsRepository;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function doPet(Pet $pet)
@@ -66,7 +69,9 @@ class PetAndPraiseService
 
         $this->cravingService->maybeAddCraving($pet);
 
-        $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% pet ' . '%pet:' . $pet->getId() . '.name%'. '.', 'ui/affection', $changes->compare($pet));
+        $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% pet ' . '%pet:' . $pet->getId() . '.name%'. '.', 'ui/affection', $changes->compare($pet))
+            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'name' => 'Petting' ]))
+        ;
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PETTED_A_PET);
     }
 
