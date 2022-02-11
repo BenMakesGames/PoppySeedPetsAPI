@@ -70,7 +70,7 @@ class PetAndPraiseService
         $this->cravingService->maybeAddCraving($pet);
 
         $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% pet ' . '%pet:' . $pet->getId() . '.name%'. '.', 'ui/affection', $changes->compare($pet))
-            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'name' => 'Petting' ]))
+            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Petting' ]))
         ;
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PETTED_A_PET);
     }
