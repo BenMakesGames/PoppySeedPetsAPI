@@ -1538,7 +1538,7 @@ class CraftingService
         else if($roll >= 15)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
-            $bucketType = $this->houseSimService->getState()->loseOneOf('Small Plastic Bucket', 'Small, Yellow Plastic Bucket');
+            $bucketType = $this->houseSimService->getState()->loseOneOf([ 'Small Plastic Bucket', 'Small, Yellow Plastic Bucket' ]);
             $this->houseSimService->getState()->loseItem('String', 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(2);
