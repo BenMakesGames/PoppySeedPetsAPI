@@ -762,6 +762,9 @@ class PetController extends PoppySeedPetsController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
 
+        if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
+            throw new UnprocessableEntityHttpException($pet->getName() . ' is Affectionless. It cannot gain Merits from affection.');
+
         if($pet->getAffectionRewardsClaimed() >= $pet->getAffectionLevel())
             throw new UnprocessableEntityHttpException('You\'ll have to raise ' . $pet->getName() . '\'s affection, first.');
 
@@ -818,6 +821,9 @@ class PetController extends PoppySeedPetsController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
 
+        if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
+            throw new UnprocessableEntityHttpException($pet->getName() . ' is Affectionless. It cannot gain Merits from affection.');
+
         if($pet->getAffectionRewardsClaimed() >= $pet->getAffectionLevel())
             throw new UnprocessableEntityHttpException('You\'ll have to raise ' . $pet->getName() . '\'s affection, first.');
 
@@ -855,6 +861,9 @@ class PetController extends PoppySeedPetsController
 
         if($pet->getSelfReflectionPoint() < 1)
             throw new UnprocessableEntityHttpException($pet->getName() . ' does not have any Self-reflection Points remaining.');
+
+        if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
+            throw new UnprocessableEntityHttpException($pet->getName() . ' is Affectionless. It\'s uninterested in changing Guilds.');
 
         if(!$pet->getGuildMembership())
             throw new UnprocessableEntityHttpException($pet->getName() . 'isn\'t in a guild!');
@@ -905,6 +914,9 @@ class PetController extends PoppySeedPetsController
 
         if($pet->getSelfReflectionPoint() < 1)
             throw new UnprocessableEntityHttpException($pet->getName() . ' does not have any Self-reflection Points remaining.');
+
+        if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
+            throw new UnprocessableEntityHttpException($pet->getName() . ' is Affectionless. It\'s uninterested in reconciling.');
 
         $friendId = $request->request->getInt('petId');
 

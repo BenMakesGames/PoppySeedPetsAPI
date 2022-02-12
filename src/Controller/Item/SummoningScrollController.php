@@ -23,24 +23,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class SummoningScrollController extends PoppySeedPetsItemController
 {
-    private const SENTINEL_NAMES = [
-        'Sentinel',
-        'Homunculus',
-        'Golem',
-        'Puppet',
-        'Guardian',
-        'Marionette',
-        'Familiar',
-        'Summon',
-        'Shield',
-        'Sentry',
-        'Substitute',
-        'Ersatz',
-        'Proxy',
-        'Placeholder',
-        'Surrogate',
-    ];
-
     /**
      * @Route("/{inventory}/unfriendly", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
@@ -150,8 +132,6 @@ class SummoningScrollController extends PoppySeedPetsItemController
                 $petSpeciesRepository->findOneBy([ 'name' => 'Sentinel' ])
             );
 
-            $pet->setName($squirrel3->rngNextFromArray(self::SENTINEL_NAMES));
-
             $gotASentinel = true;
         }
 
@@ -176,14 +156,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
 
             $pet = $petFactory->createRandomPetOfSpecies($user, $squirrel3->rngNextFromArray($allSpecies));
 
-            $pet->setScale($squirrel3->rngNextInt(80, 120));
-
-            if($pet->getSpecies()->getName() === 'Sentinel')
-            {
-                $pet->setName($squirrel3->rngNextFromArray(self::SENTINEL_NAMES));
-
-                $gotASentinel = true;
-            }
+            $gotASentinel = $pet->getSpecies()->getName() === 'Sentinel';
         }
 
         $pet->setOwner($user);

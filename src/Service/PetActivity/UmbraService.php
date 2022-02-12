@@ -208,7 +208,7 @@ class UmbraService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, 'true');
         }
-        else if($this->squirrel3->rngNextInt(1, 3) === 1 && $pet->getGuildMembership() === null)
+        else if($this->squirrel3->rngNextInt(1, 3) === 1 && $pet->getGuildMembership() === null && !$pet->hasMerit(MeritEnum::AFFECTIONLESS))
         {
             $activityLog = $this->guildService->joinGuildUmbra($petWithSkills);
         }

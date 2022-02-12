@@ -6,6 +6,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\GuildEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
@@ -101,6 +102,9 @@ class GuildService
 
     private function joinGuild(Pet $pet, array $possibilities, string $message): PetActivityLog
     {
+        if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
+            throw new \InvalidArgumentException('Pet cannot join a Guild if they have the Affectionless Merit.');
+
         arsort($possibilities);
 
         $guildName = array_key_first($possibilities);

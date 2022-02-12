@@ -88,11 +88,7 @@ class MeritService
             switch($merit)
             {
                 case MeritEnum::VOLAGAMY:
-                    $available =
-                        $pet->getSpecies()->getPregnancyStyle() != PetPregnancyStyleEnum::NONE &&
-                        (new \DateTimeImmutable())->diff($pet->getBirthDate())->days >= 14
-                    ;
-
+                    $available = (new \DateTimeImmutable())->diff($pet->getBirthDate())->days >= 14;
                     break;
 
                 case MeritEnum::INTROSPECTIVE:

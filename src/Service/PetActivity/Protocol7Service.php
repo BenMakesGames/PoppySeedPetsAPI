@@ -66,7 +66,7 @@ class Protocol7Service
             case 0:
             case 1:
             case 2:
-                if(!$pet->getGuildMembership() && $this->squirrel3->rngNextInt(1, 5) === 1)
+                if(!$pet->getGuildMembership() && $this->squirrel3->rngNextInt(1, 5) === 1 && !$pet->hasMerit(MeritEnum::AFFECTIONLESS))
                     $activityLog = $this->guildService->joinGuildProjectE($pet);
                 else
                     $activityLog = $this->foundNothing($petWithSkills, $roll);

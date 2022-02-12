@@ -8,6 +8,7 @@ use App\Entity\PetSkills;
 use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
+use App\Enum\MeritEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Model\PetShelterPet;
@@ -21,6 +22,24 @@ class PetFactory
     private $petRepository;
     private $meritRepository;
     private $squirrel3;
+
+    private const SENTINEL_NAMES = [
+        'Sentinel',
+        'Homunculus',
+        'Golem',
+        'Puppet',
+        'Guardian',
+        'Marionette',
+        'Familiar',
+        'Summon',
+        'Shield',
+        'Sentry',
+        'Substitute',
+        'Ersatz',
+        'Proxy',
+        'Placeholder',
+        'Surrogate',
+    ];
 
     public function __construct(
         EntityManagerInterface $em, PetRepository $petRepository, MeritRepository $meritRepository, Squirrel3 $squirrel3
@@ -85,17 +104,35 @@ class PetFactory
         $colorA = $this->squirrel3->rngNextTweakedColor($basePet->getColorA());
         $colorB = $this->squirrel3->rngNextTweakedColor($basePet->getColorB());
 
+        $isSagaJelling = $petSpecies->getName() === 'Sága Jelling';
+
+        $startingMerit = $isSagaJelling
+            ? $this->meritRepository->findOneByName(MeritEnum::SAGA_SAGA)
+            : $this->meritRepository->getRandomStartingMerit()
+        ;
+
+        $name = $petSpecies->getName() === 'Sentinel'
+            ? $this->squirrel3->rngNextFromArray(self::SENTINEL_NAMES)
+            : $this->squirrel3->rngNextFromArray(PetShelterPet::PET_NAMES)
+        ;
+
         $pet = $this->createPet(
             $owner,
-            $this->squirrel3->rngNextFromArray(PetShelterPet::PET_NAMES),
+            $name,
             $petSpecies,
             $colorA,
             $colorB,
             FlavorEnum::getRandomValue($this->squirrel3),
-            $this->meritRepository->getRandomStartingMerit()
+            $startingMerit
         );
 
-        $pet->setFoodAndSafety($this->squirrel3->rngNextInt(10, 12), -9);
+        $pet
+            ->setFoodAndSafety($this->squirrel3->rngNextInt(10, 12), -9)
+            ->setScale($this->squirrel3->rngNextInt(80, 120))
+        ;
+
+        if($isSagaJelling)
+            $pet->addMerit($this->meritRepository->findOneByName(MeritEnum::AFFECTIONLESS));
 
         return $pet;
     }
