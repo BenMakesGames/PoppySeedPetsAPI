@@ -227,11 +227,27 @@ class DeepSeaService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine. They caught a jellyfish while they were out there. (Yum! Jellyfish Jelly!)', 'items/tool/submarine')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Submarine', 'Fishing' ]))
-            ;
+            if($this->squirrel3->rngNextInt(1, 200) === 1)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine. They spotted a lone Jelling Polyp while they were out there, and took it home!', 'items/tool/submarine')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Submarine', 'Gathering' ]))
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+                ;
 
-            $this->inventoryService->petCollectsItem('Jellyfish Jelly', $pet, $pet->getName() . ' found this while exploring the shelf sea using the Submarine.', $activityLog);
+                $pet->increaseEsteem(6);
+
+                $this->inventoryService->petCollectsItem('Jelling Polyp', $pet, $pet->getName() . ' found this while exploring the shelf sea using the Submarine.', $activityLog);
+
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine. They caught a jellyfish while they were out there. (Yum! Jellyfish Jelly!)', 'items/tool/submarine')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Submarine', 'Fishing' ]))
+                ;
+
+                $this->inventoryService->petCollectsItem('Jellyfish Jelly', $pet, $pet->getName() . ' found this while exploring the shelf sea using the Submarine.', $activityLog);
+            }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
         }

@@ -20,6 +20,7 @@ use App\Repository\DragonRepository;
 use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
+use App\Repository\SpiceRepository;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\InventoryService;
@@ -33,26 +34,28 @@ use App\Service\WeatherService;
 
 class UmbraService
 {
-    private $responseService;
-    private $inventoryService;
-    private $petExperienceService;
-    private $transactionService;
-    private $itemRepository;
-    private $toolBonusService;
-    private $strangeUmbralEncounters;
-    private $dragonRepository;
-    private $weatherService;
+    private ResponseService $responseService;
+    private InventoryService $inventoryService;
+    private PetExperienceService $petExperienceService;
+    private TransactionService $transactionService;
+    private ItemRepository $itemRepository;
+    private InventoryModifierService $toolBonusService;
+    private StrangeUmbralEncounters $strangeUmbralEncounters;
+    private DragonRepository $dragonRepository;
+    private WeatherService $weatherService;
     private IRandom $squirrel3;
     private HattierService $hattierService;
     private FieldGuideService $fieldGuideService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private SpiceRepository $spiceRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, GuildService $guildService, StrangeUmbralEncounters $strangeUmbralEncounters,
         ItemRepository $itemRepository, InventoryModifierService $toolBonusService, FieldGuideService $fieldGuideService,
         DragonRepository $dragonRepository, Squirrel3 $squirrel3, WeatherService $weatherService,
-        HattierService $hattierService, PetActivityLogTagRepository $petActivityLogTagRepository
+        HattierService $hattierService, PetActivityLogTagRepository $petActivityLogTagRepository,
+        SpiceRepository $spiceRepository
     )
     {
         $this->responseService = $responseService;
@@ -69,6 +72,7 @@ class UmbraService
         $this->hattierService = $hattierService;
         $this->fieldGuideService = $fieldGuideService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->spiceRepository = $spiceRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -590,7 +594,22 @@ class UmbraService
 
         $roll = $this->squirrel3->rngNextInt(1, $fishingSkill);
 
-        if($roll >= 13)
+        if($this->squirrel3->rngNextInt(1, 200) == 1)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% decided to fish in a dark river, and pulled up a Jelling Polyp!', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Fishing' ]))
+                ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+            ;
+
+            $pet->increaseEsteem(6);
+
+            $spice = $this->spiceRepository->findOneByName('Cosmic');
+
+            $this->inventoryService->petCollectsEnhancedItem('Jelling Polyp', null, $spice, $pet, $pet->getName() . ' got this from fishing in the Umbra.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
+        }
+        else if($roll >= 13)
         {
             $prizes = [ 'Fish' ];
 
