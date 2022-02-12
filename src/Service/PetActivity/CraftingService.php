@@ -29,12 +29,12 @@ use App\Service\WeatherService;
 
 class CraftingService
 {
-    private $responseService;
-    private $inventoryService;
-    private $petExperienceService;
-    private $stickCraftingService;
-    private $itemRepository;
-    private $eventLanternService;
+    private ResponseService $responseService;
+    private InventoryService $inventoryService;
+    private PetExperienceService $petExperienceService;
+    private StickCraftingService $stickCraftingService;
+    private ItemRepository $itemRepository;
+    private EventLanternService $eventLanternService;
     private TwuWuvCraftingService $twuWuvCraftingService;
     private IRandom $squirrel3;
     private CalendarService $calendarService;
@@ -226,6 +226,15 @@ class CraftingService
 
             if($this->houseSimService->hasInventory('L-Square') && $this->houseSimService->hasInventory('Green Dye'))
                 $possibilities[] = new ActivityCallback($this, 'createRibbelysComposite', 10);
+
+            if(
+                $this->houseSimService->hasInventory('Small Plastic Bucket') ||
+                $this->houseSimService->hasInventory('Small, Yellow Plastic Bucket')
+            )
+            {
+                $possibilities[] = new ActivityCallback($this, 'createShortRangeTelephone', 10);
+            }
+
         }
 
         if($this->houseSimService->hasInventory('Bownaner') && $this->houseSimService->hasInventory('Carrot'))
@@ -1506,6 +1515,68 @@ class CraftingService
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a kite, but couldn\'t come up with a good design...', 'icons/activity-logs/confused')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Physics' ]))
             ;
+        }
+    }
+
+    private function createShortRangeTelephone(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(15, 45), PetActivityStatEnum::CRAFT, false);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            $this->houseSimService->getState()->loseItem('String', 1);
+
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a Short-range Telephone, but accidentally broke the String! :(', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+            ;
+        }
+        else if($roll >= 15)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $bucketType = $this->houseSimService->getState()->loseOneOf('Small Plastic Bucket', 'Small, Yellow Plastic Bucket');
+            $this->houseSimService->getState()->loseItem('String', 1);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+
+            if($bucketType === 'Small, Yellow Plastic Bucket' && $roll >= 20)
+            {
+                $extra = $this->squirrel3->rngNextInt(1, 10) === 1
+                    ? ' (That\'s totally how dye works! Yep!)'
+                    : ''
+                ;
+
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Short-range Telephone, and was even able to squeeze the Yellow Dye out of the Small, Yellow Plastic Bucket they used.' . $extra, '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ;
+
+                $this->inventoryService->petCollectsItem('Yellow Dye', $pet, $pet->getName() . ' recovered this from a Small, Yellow Plastic Bucket while making a Short-range Telephone', $activityLog);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Short-range Telephone. They tried to extract the Yellow Dye from the Small, Yellow Plastic Bucket they used, but wasn\'t able to recover a useful amount of it.', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ;
+            }
+
+            $this->inventoryService->petCollectsItem('Short-range Telephone', $pet, $pet->getName() . ' created this.', $activityLog);
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a bow out of an L-Square, but, ironically, couldn\'t get the measurements right.', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+            ;
+
         }
     }
 

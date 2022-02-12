@@ -1169,10 +1169,17 @@ class PetController extends PoppySeedPetsController
 
         $em->flush();
 
-        $emojis = $pet->getAffectionExpressions();
-        $emoji = mb_substr($emojis, $rng->rngNextInt(0, mb_strlen($emojis) - 1), 1);
+        if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
+        {
+            return $responseService->success([ 'pet' => $pet ], [ SerializationGroupEnum::MY_PET ]);
+        }
+        else
+        {
+            $emojis = $pet->getAffectionExpressions();
+            $emoji = mb_substr($emojis, $rng->rngNextInt(0, mb_strlen($emojis) - 1), 1);
 
-        return $responseService->success([ 'pet' => $pet, 'emoji' => $emoji ], [ SerializationGroupEnum::MY_PET ]);
+            return $responseService->success([ 'pet' => $pet, 'emoji' => $emoji ], [ SerializationGroupEnum::MY_PET ]);
+        }
     }
 
     /**
@@ -1443,6 +1450,9 @@ class PetController extends PoppySeedPetsController
 
         if($pet->getOwner()->getId() !== $user->getId())
             throw new AccessDeniedHttpException('That\'s not your pet.');
+
+        if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
+            throw new UnprocessableEntityHttpException($pet->getName() . ' is Affectionless. It\'s not interested in revealing its favorite flavor to you.');
 
         if($pet->getRevealedFavoriteFlavor())
             throw new UnprocessableEntityHttpException($pet->getName() . '\'s favorite flavor has already been revealed!');

@@ -4,6 +4,7 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ActivityHelpers;
@@ -49,6 +50,9 @@ class HoliService
 
         // if the pet already participated this year, cancel
         if($reconciledThisYear->getValue())
+            return null;
+
+        if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
             return null;
 
         $reconciledThisYear->setValue(true);

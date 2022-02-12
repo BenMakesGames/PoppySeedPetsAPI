@@ -25,7 +25,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class EggController extends PoppySeedPetsItemController
 {
     /**
-     * @Route("/polyp/{inventory}/hatch", methods={"POST"})
+     * @Route("/jellingPolyp/{inventory}/hatch", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function hatchPolyp(
@@ -34,7 +34,7 @@ class EggController extends PoppySeedPetsItemController
         MeritRepository $meritRepository, PetFactory $petFactory, PetColorService $petColorService
     )
     {
-        $this->validateInventory($inventory, 'egg/polyp/#/hatch');
+        $this->validateInventory($inventory, 'egg/jellingPolyp/#/hatch');
 
         $jelling = $petSpeciesRepository->findOneBy([ 'name' => 'Sága Jelling' ]);
 
@@ -47,11 +47,9 @@ class EggController extends PoppySeedPetsItemController
         if($location !== LocationEnum::HOME)
             return $responseService->itemActionSuccess('You can\'t hatch it here! Take it to your house, quick!');
 
-        $message = "A jellyfish detached";
+        $message = "A jellyfish detaches itself from the polyp, ";
 
         $em->remove($inventory);
-
-        $message .= "\n\nAnyway, it's super cute, and... really seems to like you! In fact, it's already named itself after you??";
 
         $jellingName = $squirrel3->rngNextFromArray([
             'Epistêmê',
@@ -63,6 +61,15 @@ class EggController extends PoppySeedPetsItemController
             'Hikma',
             'Dovednost',
             'Sabedoria',
+            'Chishiki',
+            'Eolas',
+            'Scil',
+            'Akamai',
+            'Jìnéng',
+            'Zhīshì',
+            'Gisul',
+            'Tiṟamai',
+            'Aṟivu',
         ]);
 
         $newPet = $petFactory->createPet(
@@ -75,15 +82,20 @@ class EggController extends PoppySeedPetsItemController
             ->increaseEsteem(10)
             ->increaseFood(-8)
             ->setScale($squirrel3->rngNextInt(80, 120))
+            ->addMerit($meritRepository->findOneByName(MeritEnum::AFFECTIONLESS))
         ;
+
+        $newPet->getHouseTime()->setSocialEnergy(-365 * 24 * 60);
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
         {
             $newPet->setLocation(PetLocationEnum::DAYCARE);
-            $message .= "\n\nBut, you know, your house is full, so into the daycare it goes, I guess!";
+            $message .= "and floats into the daycare as if swimming through the air...";
         }
+        else
+            $message .= "and floats into your house as if swimming through the air...";
 
         $petColorService->recolorPet($newPet);
 

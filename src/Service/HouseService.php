@@ -4,28 +4,33 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
+use App\Enum\PetSkillEnum;
 use App\Repository\InventoryRepository;
+use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
+use App\Service\PetActivity\SagaSagaService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class HouseService
 {
-    private $petService;
-    private $petRepository;
-    private $userQuestRepository;
-    private $inventoryService;
-    private $cache;
-    private $em;
+    private PetService $petService;
+    private PetRepository $petRepository;
+    private UserQuestRepository $userQuestRepository;
+    private InventoryService $inventoryService;
+    private AdapterInterface $cache;
+    private EntityManagerInterface $em;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
+    private SagaSagaService $sagaSagaService;
 
     public function __construct(
         PetService $petService, PetRepository $petRepository, AdapterInterface $cache, EntityManagerInterface $em,
         UserQuestRepository $userQuestRepository, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        HouseSimService $houseSimService
+        HouseSimService $houseSimService, SagaSagaService $sagaSagaService
     )
     {
         $this->petService = $petService;
@@ -36,6 +41,7 @@ class HouseService
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
+        $this->sagaSagaService = $sagaSagaService;
     }
 
     public function needsToBeRun(User $user)
@@ -143,7 +149,9 @@ class HouseService
                 $this->houseSimService->setPetHasRunSocialTime($pet);
             }
 
-            if($this->petCanStillProcess($pet, $hungOut))
+            if($pet->hasMerit(MeritEnum::SAGA_SAGA) && $this->sagaSagaService->petCompletedSagaSaga($pet))
+                break;
+            else if($this->petCanStillProcess($pet, $hungOut))
                 $petsRemaining[] = $pet;
         }
 

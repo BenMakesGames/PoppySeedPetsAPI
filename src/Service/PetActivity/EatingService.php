@@ -100,6 +100,9 @@ class EatingService
 
     public function getFavoriteFlavorStrength(Pet $pet, FoodWithSpice $food, string $randomFlavor = null): int
     {
+        if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
+            return 0;
+
         $favoriteFlavorStrength = $food->{$pet->getFavoriteFlavor()};
 
         if($randomFlavor !== null && $randomFlavor === $pet->getFavoriteFlavor())
@@ -337,7 +340,9 @@ class EatingService
                 {
                     $message .= ' ... in bed!';
 
-                    if($this->squirrel3->rngNextInt(1, 5) === 1)
+                    if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
+                        $message .= ' (' . $pet->getName() . ' seems completely unamused by this joke.)';
+                    else if($this->squirrel3->rngNextInt(1, 5) === 1)
                         $message .= ' XD';
                 }
             }

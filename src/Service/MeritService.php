@@ -5,6 +5,7 @@ use App\Entity\Merit;
 use App\Entity\Pet;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
+use App\Enum\PetPregnancyStyleEnum;
 use App\Repository\MeritRepository;
 
 class MeritService
@@ -60,6 +61,8 @@ class MeritService
             MeritEnum::MIRRORED,
             MeritEnum::BEHATTED,
             MeritEnum::SPIRIT_COMPANION,
+            MeritEnum::SAGA_SAGA,
+            MeritEnum::AFFECTIONLESS,
         ]));
 
         if(!$pet->getPregnancy() && $pet->hasMerit(MeritEnum::VOLAGAMY))
@@ -85,7 +88,11 @@ class MeritService
             switch($merit)
             {
                 case MeritEnum::VOLAGAMY:
-                    $available = (new \DateTimeImmutable())->diff($pet->getBirthDate())->days >= 14;
+                    $available =
+                        $pet->getSpecies()->getPregnancyStyle() != PetPregnancyStyleEnum::NONE &&
+                        (new \DateTimeImmutable())->diff($pet->getBirthDate())->days >= 14
+                    ;
+
                     break;
 
                 case MeritEnum::INTROSPECTIVE:

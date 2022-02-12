@@ -6,6 +6,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\StatusEffect;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
@@ -71,7 +72,7 @@ class PetExperienceService
 
         $exp = round($exp / $divideBy);
 
-        if($exp === 0) return;
+        if($exp == 0) return;
 
         $pet->increaseExperience($exp);
 
@@ -182,7 +183,8 @@ class PetExperienceService
      */
     public function gainAffection(Pet $pet, int $points)
     {
-        if($points === 0) return;
+        if($points === 0 || $pet->hasMerit(MeritEnum::AFFECTIONLESS))
+            return;
 
         $divideBy = 1;
 
@@ -191,7 +193,7 @@ class PetExperienceService
 
         $points = ceil($points / $divideBy);
 
-        if($points === 0) return;
+        if($points == 0) return;
 
         $previousAffectionLevel = $pet->getAffectionLevel();
 

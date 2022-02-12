@@ -46,6 +46,7 @@ final class MeritEnum
 
     // for Sága Jellings, only:
     public const SAGA_SAGA = 'Sága Saga';
+    public const AFFECTIONLESS = 'Affectionless';
 
     // every pet gets one (list is in MeritRepository::POSSIBLE_STARTING_MERITS)
     public const BURPS_MOTHS = 'Burps Moths';

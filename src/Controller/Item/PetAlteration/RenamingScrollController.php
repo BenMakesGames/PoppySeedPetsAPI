@@ -3,6 +3,7 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
+use App\Enum\MeritEnum;
 use App\Repository\PetRepository;
 use App\Service\ProfanityFilterService;
 use App\Service\ResponseService;
@@ -36,6 +37,9 @@ class RenamingScrollController extends PoppySeedPetsItemController
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException('There is no such pet.');
+
+        if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
+            throw new UnprocessableEntityHttpException('This pet is Affectionless. It\'s not interested in taking on a new name.');
 
         $petName = $profanityFilterService->filter(trim($request->request->get('name', '')));
 

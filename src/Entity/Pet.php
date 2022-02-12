@@ -443,6 +443,16 @@ class Pet
         return $this;
     }
 
+    public function resetAllNeeds(): self
+    {
+        $this->food = 0;
+        $this->safety = 0;
+        $this->love = 0;
+        $this->esteem = 0;
+
+        return $this;
+    }
+
     public function setFoodAndSafety(int $food, int $safety): self
     {
         $this->food = $food;
@@ -584,6 +594,12 @@ class Pet
     {
         $this->experience -= $amount;
 
+        return $this;
+    }
+
+    public function clearExp(): self
+    {
+        $this->experience = 0;
         return $this;
     }
 

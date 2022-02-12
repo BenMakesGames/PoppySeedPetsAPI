@@ -4,6 +4,7 @@ namespace App\Controller\Item;
 use App\Entity\Inventory;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
 use App\Functions\GrammarFunctions;
 use App\Repository\EnchantmentRepository;
@@ -83,7 +84,7 @@ class PhilosophersStoneController extends PoppySeedPetsItemController
             'Paracelsus', 'Vallalar', 'Kanada', 'Laozi',
         ]);
 
-        $startingMerit = $meritRepository->findOneByName('Eternal');
+        $startingMerit = $meritRepository->findOneByName(MeritEnum::ETERNAL);
 
         $pet = $petFactory->createPet($user, $name, $species, $speciesInfo['colorA'], $speciesInfo['colorB'], FlavorEnum::getRandomValue($squirrel3), $startingMerit);
 

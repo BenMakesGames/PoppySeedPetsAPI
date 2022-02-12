@@ -5,6 +5,7 @@ use App\Entity\Item;
 use App\Entity\ItemGroup;
 use App\Entity\Pet;
 use App\Entity\PetCraving;
+use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
@@ -61,6 +62,7 @@ class CravingService
     public function maybeAddCraving(Pet $pet)
     {
         if(
+            !$pet->hasMerit(MeritEnum::AFFECTIONLESS) &&
             !$this->petHasCraving($pet) &&
             $pet->getFullnessPercent() >= 0.5 &&
             $pet->getSafety() >= 8

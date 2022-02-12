@@ -763,7 +763,11 @@ class PetService
 
     public function runSocialTime(Pet $pet): bool
     {
-        $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
+        if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
+        {
+            $pet->getHouseTime()->setSocialEnergy(-365 * 24 * 60);
+            return true;
+        }
 
         if($pet->getFood() + $pet->getAlcohol() + $pet->getJunk() < 0)
         {
@@ -776,6 +780,8 @@ class PetService
             $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
             return true;
         }
+
+        $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
 
         if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM) && $weather->isHoliday(HolidayEnum::HOLI))
         {
@@ -1277,6 +1283,9 @@ class PetService
 
         foreach($otherPets as $otherPet)
         {
+            if($otherPet->hasMerit(MeritEnum::AFFECTIONLESS))
+                continue;
+
             if(!$pet->hasRelationshipWith($otherPet))
             {
                 $metNewPet = true;

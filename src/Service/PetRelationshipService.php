@@ -130,6 +130,9 @@ class PetRelationshipService
     {
         if($p1->getId() === $p2->getId()) return;
 
+        if($p1->hasMerit(MeritEnum::AFFECTIONLESS) || $p2->hasMerit(MeritEnum::AFFECTIONLESS))
+            return;
+
         $p1Relationships = $p1->getRelationshipWith($p2);
 
         if($p1Relationships)
