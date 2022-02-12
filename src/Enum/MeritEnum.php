@@ -44,6 +44,9 @@ final class MeritEnum
     public const EVERLASTING_LOVE = 'Everlasting Love';
     public const NOTHING_TO_FEAR = 'Nothing to Fear';
 
+    // for Sága Jellings, only:
+    public const SAGA_SAGA = 'Sága Saga';
+
     // every pet gets one (list is in MeritRepository::POSSIBLE_STARTING_MERITS)
     public const BURPS_MOTHS = 'Burps Moths';
     public const FRIEND_OF_THE_WORLD = 'Friend of the World'; // treats rivals as friends; treats fwbs as mates; always gives in to relationship changes

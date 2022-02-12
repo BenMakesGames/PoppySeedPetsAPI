@@ -4,6 +4,7 @@ namespace App\Controller\Item;
 use App\Entity\Inventory;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
@@ -23,6 +24,76 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class EggController extends PoppySeedPetsItemController
 {
+    /**
+     * @Route("/polyp/{inventory}/hatch", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function hatchPolyp(
+        Inventory $inventory, ResponseService $responseService, Squirrel3 $squirrel3,
+        EntityManagerInterface $em, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository,
+        MeritRepository $meritRepository, PetFactory $petFactory, PetColorService $petColorService
+    )
+    {
+        $this->validateInventory($inventory, 'egg/polyp/#/hatch');
+
+        $jelling = $petSpeciesRepository->findOneBy([ 'name' => 'Sága Jelling' ]);
+
+        if(!$jelling)
+            throw new HttpException(500, 'The species "Sága Jelling" does not exist! :| Make Ben fix this!');
+
+        $user = $this->getUser();
+        $location = $inventory->getLocation();
+
+        if($location !== LocationEnum::HOME)
+            return $responseService->itemActionSuccess('You can\'t hatch it here! Take it to your house, quick!');
+
+        $message = "A jellyfish detached";
+
+        $em->remove($inventory);
+
+        $message .= "\n\nAnyway, it's super cute, and... really seems to like you! In fact, it's already named itself after you??";
+
+        $jellingName = $squirrel3->rngNextFromArray([
+            'Epistêmê',
+            'Gyaan',
+            'Wissen',
+            'Hæfni',
+            'Visku',
+            'Mahara',
+            'Hikma',
+            'Dovednost',
+            'Sabedoria',
+        ]);
+
+        $newPet = $petFactory->createPet(
+            $user, $jellingName, $jelling, '', '', FlavorEnum::getRandomValue($squirrel3), $meritRepository->findOneByName(MeritEnum::SAGA_SAGA)
+        );
+
+        $newPet
+            ->increaseLove(10)
+            ->increaseSafety(10)
+            ->increaseEsteem(10)
+            ->increaseFood(-8)
+            ->setScale($squirrel3->rngNextInt(80, 120))
+        ;
+
+        $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
+
+        if($numberOfPetsAtHome >= $user->getMaxPets())
+        {
+            $newPet->setLocation(PetLocationEnum::DAYCARE);
+            $message .= "\n\nBut, you know, your house is full, so into the daycare it goes, I guess!";
+        }
+
+        $petColorService->recolorPet($newPet);
+
+        $em->flush();
+
+        $responseService->setReloadPets(true);
+
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
+    }
+
     /**
      * @Route("/weird-blue/{inventory}/hatch", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
@@ -103,6 +174,7 @@ class EggController extends PoppySeedPetsItemController
 
         return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
+
     /**
      * @Route("/metalBox/{inventory}/open", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
