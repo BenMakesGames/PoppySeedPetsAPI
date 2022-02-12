@@ -6,9 +6,11 @@ use App\Entity\Pet;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\UserStatEnum;
 use App\Functions\ActivityHelpers;
 use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogTagRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -21,10 +23,12 @@ class SagaSagaService
     private MeritRepository $meritRepository;
     private ResponseService $responseService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private UserStatsRepository $userStatsRepository;
 
     public function __construct(
         Squirrel3 $rng, InventoryService $inventoryService, MeritRepository $meritRepository,
-        ResponseService $responseService, PetActivityLogTagRepository $petActivityLogTagRepository
+        ResponseService $responseService, PetActivityLogTagRepository $petActivityLogTagRepository,
+        UserStatsRepository $userStatsRepository
     )
     {
         $this->rng = $rng;
@@ -32,6 +36,7 @@ class SagaSagaService
         $this->meritRepository = $meritRepository;
         $this->responseService = $responseService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function petCompletedSagaSaga(Pet $pet): bool
@@ -93,7 +98,8 @@ class SagaSagaService
 
         $this->responseService->setReloadPets(true);
 
+        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::COMPLETED_A_SAGA_SAGA);
+
         return true;
     }
-
 }

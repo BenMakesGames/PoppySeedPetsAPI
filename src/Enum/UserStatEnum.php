@@ -36,4 +36,5 @@ final class UserStatEnum
     const CANS_OF_FOOD_OPENED = 'Cans of Food Opened';
     const LOOTED_A_POT_OF_GOLD = 'Looted a Pot of Gold';
     const STRANGE_FIELDS_COLLAPSED = 'Strange Fields Collapsed';
+    const COMPLETED_A_SAGA_SAGA = 'Completed a Sága Saga';
 }
