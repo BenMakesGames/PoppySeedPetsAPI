@@ -1619,16 +1619,36 @@ class MagicBindingService
         }
         else // success!
         {
+            $getQuill = 20 < $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Feathers', 1);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Wings.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
-            ;
+
+            if($getQuill)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Wings... and made a Quill with a spare Feather.', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding', 'Crafting' ]))
+                ;
+
+                $this->inventoryService->petCollectsItem('Quill', $pet, $pet->getName() . ' made this with a spare feather while binding Wings.', $activityLog);
+
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA, PetSkillEnum::CRAFTS ]);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Wings.', '')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
+                ;
+
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
+            }
+
             $this->inventoryService->petCollectsItem('Wings', $pet, $pet->getName() . ' bound this.', $activityLog);
+
             return $activityLog;
         }
     }
@@ -2696,6 +2716,7 @@ class MagicBindingService
 
             $this->houseSimService->getState()->loseItem('Iron Axe', 1);
             $this->inventoryService->petCollectsItem('Iron Bar', $pet, $pet->getName() . ' tried to enchant an Iron Axe, but it melted, instead :|', $activityLog);
+            return $activityLog;
         }
         else if($roll >= 22)
         {
