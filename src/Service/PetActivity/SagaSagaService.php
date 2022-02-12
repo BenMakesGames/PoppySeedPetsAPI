@@ -4,9 +4,11 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Repository\MeritRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -18,15 +20,18 @@ class SagaSagaService
     private InventoryService $inventoryService;
     private MeritRepository $meritRepository;
     private ResponseService $responseService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         Squirrel3 $rng, InventoryService $inventoryService, MeritRepository $meritRepository,
-        ResponseService $responseService
+        ResponseService $responseService, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->rng = $rng;
         $this->inventoryService = $inventoryService;
         $this->meritRepository = $meritRepository;
+        $this->responseService = $responseService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function petCompletedSagaSaga(Pet $pet): bool
@@ -47,7 +52,7 @@ class SagaSagaService
         if(count($possibleSkills) === 0)
             return false;
 
-        $skill = $this->squirrel3->rngNextFromArray($possibleSkills);
+        $skill = $this->rng->rngNextFromArray($possibleSkills);
 
         $this->inventoryService->petCollectsItem('Skill Scroll: ' . $skill, $pet, $pet->getName() . ' was transformed into this scroll!', null);
 
@@ -75,11 +80,18 @@ class SagaSagaService
             ->setActivityTime(0)
         ;
 
-        $this->responseService->createActivityLog(
+        $log = $this->responseService->createActivityLog(
             $pet,
             ActivityHelpers::PetName($pet) . ' got 7 points in ' . $skill . ', and was transformed into a skill scroll! All that remains is their ghost...',
             ''
         );
+
+        $log
+            ->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY)
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Level-up' ]))
+        ;
+
+        $this->responseService->setReloadPets(true);
 
         return true;
     }
