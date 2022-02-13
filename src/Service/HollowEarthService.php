@@ -15,6 +15,7 @@ use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\HollowEarthPlayerTileRepository;
 use App\Repository\HollowEarthTileRepository;
+use App\Repository\PetActivityLogTagRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HollowEarthService
@@ -26,6 +27,7 @@ class HollowEarthService
     private $transactionService;
     private $hollowEarthPlayerTileRepository;
     private $statusEffectService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public const DICE_ITEMS = [
         'Glowing "Two-sided Die"' => 2,
@@ -41,7 +43,8 @@ class HollowEarthService
     public function __construct(
         HollowEarthTileRepository $hollowEarthTileRepository, EntityManagerInterface $em, InventoryService $inventoryService,
         PetExperienceService $petExperienceService, TransactionService $transactionService,
-        HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository, StatusEffectService $statusEffectService
+        HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository, StatusEffectService $statusEffectService,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->hollowEarthTileRepository = $hollowEarthTileRepository;
@@ -51,6 +54,7 @@ class HollowEarthService
         $this->transactionService = $transactionService;
         $this->hollowEarthPlayerTileRepository = $hollowEarthPlayerTileRepository;
         $this->statusEffectService = $statusEffectService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function unlockHollowEarth(User $user): void
@@ -323,6 +327,7 @@ class HollowEarthService
                 ->setEntry($description)
                 ->setIcon(($currentCard && $currentCard->getImage()) ? ('hollow-earth/tile/' . $currentCard->getImage()) : '')
                 ->setChanges($petChanges->compare($pet))
+                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Hollow Earth' ]))
                 ->setViewed()
             ;
 
@@ -359,6 +364,7 @@ class HollowEarthService
                 ->setPet($player->getChosenPet())
                 ->setEntry('While exploring the Hollow Earth, ' . $player->getChosenPet()->getName() . ' received ' . ArrayFunctions::list_nice($items) . '.')
                 ->setIcon(($currentCard && $currentCard->getImage()) ? ('hollow-earth/tile/' . $currentCard->getImage()) : '')
+                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Hollow Earth' ]))
                 ->setChanges($petChanges->compare($pet))
                 ->setViewed()
             ;
