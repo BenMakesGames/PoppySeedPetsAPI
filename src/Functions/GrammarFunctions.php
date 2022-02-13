@@ -82,4 +82,31 @@ final class GrammarFunctions
     {
         return $number . self::ordinal($number);
     }
+
+    public static function stretchWord(string $word, int $stretchLength = 3): string
+    {
+        $newWord = '';
+        $wordLength = mb_strlen($word);
+        $wordLower = mb_strtolower($word);
+
+        $isVowel = fn($letter) => $letter == 'a' || $letter == 'e' || $letter == 'i' || $letter == 'o' || $letter == 'u' || $letter == 'y';
+
+        for($i = 0; $i < $wordLength; $i++)
+        {
+            $newWord .= substr($word, $i, 1);
+
+            if(
+                $isVowel(mb_substr($wordLower, $i, 1)) &&
+                (
+                    $i == $wordLength - 1 ||
+                    !$isVowel(mb_substr($wordLower, $i + 1, 1))
+                )
+            )
+            {
+                $newWord .= str_repeat(mb_substr($wordLower, $i, 1), $stretchLength - 1);
+            }
+        }
+
+        return $newWord;
+    }
 }

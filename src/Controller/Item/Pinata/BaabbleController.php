@@ -82,13 +82,7 @@ class BaabbleController extends PoppySeedPetsItemController
 
         $weirdItem = $squirrel3->rngNextFromArray(self::WEIRD_STUFF);
 
-        if($squirrel3->rngNextInt(1, 20) === 1)
-        {
-            $items[] = 'Blue Bow';
-            $noteworthy = [ 'Blue Bow', $weirdItem ];
-        }
-        else
-            $noteworthy = [ $squirrel3->rngNextFromArray($items), $weirdItem ];
+        $noteworthy = [ $squirrel3->rngNextFromArray($items), $weirdItem ];
 
         shuffle($noteworthy);
 

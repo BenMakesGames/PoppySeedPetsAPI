@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\GrammarFunctions;
 use App\Functions\JewishCalendarFunctions;
 use App\Repository\DragonRepository;
 use App\Repository\InventoryRepository;
@@ -424,12 +425,27 @@ class FireplaceController extends PoppySeedPetsController
         else
             $fireplace->spendPoints($numItems * 8 * 60);
 
-        $em->flush();
-
         if($fireplace->getHeat() >= 2 * 60 && $squirrel3->rngNextInt(1, 3) === 1)
             $responseService->addFlashMessage('You reach inside while the fire is still burning, just like a totally normal person would do, and pull out ' . ArrayFunctions::list_nice($itemsReceived) . '!');
         else
             $responseService->addFlashMessage('You reach inside, and pull out ' . ArrayFunctions::list_nice($itemsReceived) . '!');
+
+        if($numItems > 0 && $fireplace->getGnomePoints() >= 24)
+        {
+            $fireplace->spendGnomePoints(24);
+
+            $inventoryService->receiveItem('Gnome\'s Favor', $user, $user, $user->getName() . ' was given this by a Fireplace Gnome!', LocationEnum::HOME);
+
+            $gnomishMessage = $squirrel3->rngNextFromArray([
+                'A gnome stumbles out of the fireplace and thanks you for your gifts before falling into a gap in the hearth\'s brickwork.',
+                'A gnome pokes its head out of a gap in the hearth\'s brickwork, teeters for a bit, then gives you a thumbs up before vanishing in the darkness...',
+                'A gnome wobbles past you, into the fireplace, and trips into a gap in the hearth\'s brickwork, vanishing. You hear a fading "yeaaah, ' . GrammarFunctions::stretchWord($user->getName()) . '!" echo through the fireplace.'
+            ]);
+
+            $responseService->addFlashMessage($gnomishMessage . ' (You received a Gnome\'s Favor!)');
+        }
+
+        $em->flush();
 
         return $responseService->success($fireplace, [
             SerializationGroupEnum::MY_FIREPLACE,
@@ -473,7 +489,8 @@ class FireplaceController extends PoppySeedPetsController
             // don't feed an item if doing so would waste more than half the item's fuel
             if($fireplace->getHeat() + $item->getItem()->getFuel() / 2 <= Fireplace::MAX_HEAT)
             {
-                $fireplace->addFuel($item->getItem()->getFuel());
+                $alcohol = $item->getItem()->getFood() ? $item->getItem()->getFood()->getAlcohol() * 4 : 0;
+                $fireplace->addFuel($item->getItem()->getFuel(), $alcohol);
                 $em->remove($item);
             }
             else
