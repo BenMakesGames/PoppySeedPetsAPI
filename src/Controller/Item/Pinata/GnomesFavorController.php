@@ -142,7 +142,7 @@ class GnomesFavorController extends PoppySeedPetsItemController
             'Hourglass',
             'Spice Rack',
             'Sand Dollar',
-            $rng->rngNextFromArray('Password', 'Cryptocrurrency Wallet'),
+            $rng->rngNextFromArray([ 'Password', 'Cryptocrurrency Wallet' ]),
         ];
 
         shuffle($possibleItems);
