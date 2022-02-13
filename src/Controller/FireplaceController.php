@@ -439,7 +439,7 @@ class FireplaceController extends PoppySeedPetsController
             $gnomishMessage = $squirrel3->rngNextFromArray([
                 'A gnome stumbles out of the fireplace and thanks you for your gifts before falling into a gap in the hearth\'s brickwork.',
                 'A gnome pokes its head out of a gap in the hearth\'s brickwork, teeters for a bit, then gives you a thumbs up before vanishing in the darkness...',
-                'A gnome wobbles past you, into the fireplace, and trips into a gap in the hearth\'s brickwork, vanishing. You hear a fading "yeaaah, ' . GrammarFunctions::stretchWord($user->getName()) . '!" echo through the fireplace.'
+                'A gnome wobbles past you, into the fireplace, and trips into a gap in the hearth\'s brickwork, vanishing. You hear a fading "yeaaah, ' . GrammarFunctions::stretchWord($user->getName()) . '!" echo from the fireplace.'
             ]);
 
             $responseService->addFlashMessage($gnomishMessage . ' (You received a Gnome\'s Favor!)');
