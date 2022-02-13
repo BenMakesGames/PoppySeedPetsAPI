@@ -12,6 +12,7 @@ use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
 use App\Service\PetActivity\Group\AstronomyClubService;
 use App\Service\PetActivity\Group\BandService;
@@ -40,11 +41,13 @@ class PetGroupService
     private IRandom $squirrel3;
     private GamingGroupService $gamingGroupService;
     private SportsBallService $sportsBallService;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         EntityManagerInterface $em, PetRepository $petRepository, ResponseService $responseService,
         PetExperienceService $petExperienceService, BandService $bandService, AstronomyClubService $astronomyClubService,
-        Squirrel3 $squirrel3, GamingGroupService $gamingGroupService, SportsBallService $sportsBallService
+        Squirrel3 $squirrel3, GamingGroupService $gamingGroupService, SportsBallService $sportsBallService,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->em = $em;
@@ -56,6 +59,7 @@ class PetGroupService
         $this->squirrel3 = $squirrel3;
         $this->gamingGroupService = $gamingGroupService;
         $this->sportsBallService = $sportsBallService;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function doGroupActivity(PetGroup $group)
@@ -167,6 +171,7 @@ class PetGroupService
                 ->setEntry($message)
                 ->setChanges($changes->compare($member))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
+                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Group Hangout' ]))
             ;
 
             // if the group has many pets from the same house, we should mark subsequent messages
@@ -249,6 +254,7 @@ class PetGroupService
                 ->setEntry($message)
                 ->setPet($member)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Group Hangout' ]))
             ;
 
             if(!in_array($member->getOwner()->getId(), $usersAlerted))
@@ -279,6 +285,7 @@ class PetGroupService
                 ->setPet($member)
                 ->setChanges($changes->compare($member))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
+                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Group Hangout' ]))
             ;
 
             $this->em->persist($log);
@@ -327,6 +334,7 @@ class PetGroupService
                 ->setPet($member)
                 ->setChanges($changes->compare($member))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Group Hangout' ]))
             ;
 
             if(!in_array($member->getOwner()->getId(), $usersAlerted))
@@ -440,6 +448,7 @@ class PetGroupService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
                 ->setPet($friendPet)
                 ->setEntry($friendPet->getName() . ' was invited to join ' . $pet->getName() . '\'s new ' . self::GROUP_TYPE_NAMES[$type] . ', ' . $group->getName() . '!')
+                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Group Hangout' ]))
             ;
 
             $this->em->persist($log);
