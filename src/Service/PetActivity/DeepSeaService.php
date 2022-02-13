@@ -13,6 +13,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Repository\EnchantmentRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
@@ -31,11 +32,12 @@ class DeepSeaService
     private HattierService $hattierService;
     private FieldGuideService $fieldGuideService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private EnchantmentRepository $enchantmentRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         Squirrel3 $squirrel3, HattierService $hattierService, FieldGuideService $fieldGuideService,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        PetActivityLogTagRepository $petActivityLogTagRepository, EnchantmentRepository $enchantmentRepository
     )
     {
         $this->responseService = $responseService;
@@ -45,6 +47,7 @@ class DeepSeaService
         $this->hattierService = $hattierService;
         $this->fieldGuideService = $fieldGuideService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->enchantmentRepository = $enchantmentRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -532,6 +535,7 @@ class DeepSeaService
             $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 50) === 1;
 
             $rareTreasure = null;
+            $rareTreasureEnchantment = null;
             $andMore = '!';
 
             if($lucky || $this->squirrel3->rngNextInt(1, 100) === 1)
@@ -559,9 +563,15 @@ class DeepSeaService
                     $rareTreasure = 'Barnacles';
                     $andMore = '; oh, and some Barnacles, too!';
                 }
+                else if($this->squirrel3->rngNextInt(1, 10) === 1)
+                {
+                    $rareTreasure = 'No Right Turns';
+                    $rareTreasureEnchantment = $this->enchantmentRepository->findOneByName('Seaweed-covered');
+                    $andMore = '; oh, and a "No Right Turns" sign, too?';
+                }
                 else
                 {
-                    $loot[] = $this->squirrel3->rngNextFromArray(['Silver Bar', 'Gold Ring']);
+                    $loot[] = $this->squirrel3->rngNextFromArray([ 'Silver Bar', 'Gold Ring' ]);
                 }
             }
 
@@ -582,9 +592,9 @@ class DeepSeaService
             if($rareTreasure)
             {
                 if($lucky)
-                    $this->inventoryService->petCollectsItem($rareTreasure, $pet, $pet->getName() . ' found this in a sunken ship while exploring the ocean using the Submarine! Lucky~!', $activityLog);
+                    $this->inventoryService->petCollectsEnhancedItem($rareTreasure, $rareTreasureEnchantment, null, $pet, $pet->getName() . ' found this in a sunken ship while exploring the ocean using the Submarine! Lucky~!', $activityLog);
                 else
-                    $this->inventoryService->petCollectsItem($rareTreasure, $pet, $pet->getName() . ' found this in a sunken ship while exploring the ocean using the Submarine!', $activityLog);
+                    $this->inventoryService->petCollectsEnhancedItem($rareTreasure, $rareTreasureEnchantment, null, $pet, $pet->getName() . ' found this in a sunken ship while exploring the ocean using the Submarine!', $activityLog);
             }
 
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Shipwrecked Fleet', $fleetDiscovery);

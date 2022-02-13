@@ -18,6 +18,7 @@ use App\Functions\DateFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogTagRepository;
@@ -38,13 +39,13 @@ use App\Service\WeatherService;
 
 class GatheringService
 {
-    private $responseService;
-    private $inventoryService;
-    private $petExperienceService;
-    private $transactionService;
-    private $itemRepository;
-    private $spiceRepository;
-    private $weatherService;
+    private ResponseService $responseService;
+    private InventoryService $inventoryService;
+    private PetExperienceService $petExperienceService;
+    private TransactionService $transactionService;
+    private ItemRepository $itemRepository;
+    private SpiceRepository $spiceRepository;
+    private WeatherService $weatherService;
     private IRandom $squirrel3;
     private FieldGuideService $fieldGuideService;
     private PetSpeciesRepository $petSpeciesRepository;
@@ -55,6 +56,7 @@ class GatheringService
     private UserQuestRepository $userQuestRepository;
     private CalendarService $calendarService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private EnchantmentRepository $enchantmentRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
@@ -63,7 +65,7 @@ class GatheringService
         PetSpeciesRepository $petSpeciesRepository, PetRepository $petRepository, PetFactory $petFactory,
         MeritRepository $meritRepository, GatheringDistractionService $gatheringDistractions,
         UserQuestRepository $userQuestRepository, CalendarService $calendarService,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        PetActivityLogTagRepository $petActivityLogTagRepository, EnchantmentRepository $enchantmentRepository
     )
     {
         $this->responseService = $responseService;
@@ -83,6 +85,7 @@ class GatheringService
         $this->userQuestRepository = $userQuestRepository;
         $this->calendarService = $calendarService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->enchantmentRepository = $enchantmentRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -1299,9 +1302,10 @@ class GatheringService
 
             if($roll >= 35)
                 $loot[] = 'The Beginning of the Armadillos';
-        }
 
-        sort($loot);
+            if($this->squirrel3->rngNextInt(1, 25) === 1)
+                $loot[] = 'No Right Turns';
+        }
 
         if(count($loot) === 0)
         {
@@ -1312,12 +1316,19 @@ class GatheringService
         }
         else
         {
+            sort($loot);
+
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored deep in the island\'s Micro-Jungle, and found a ruined settlement. They looked around for a while, and scavenged up ' . ArrayFunctions::list_nice($loot) . '.', '')
                 ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Gathering' ]))
             ;
 
             foreach($loot as $itemName)
-                $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in a ruined settlement deep in the island\'s Micro-Jungle.', $activityLog);
+            {
+                $item = $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in a ruined settlement deep in the island\'s Micro-Jungle.', $activityLog);
+
+                if($itemName === 'No Right Turns')
+                    $item->setEnchantment($this->enchantmentRepository->findOneByName('Thorn-covered'));
+            }
 
             $this->petExperienceService->gainExp($pet, 2 + count($loot), [ PetSkillEnum::NATURE ]);
         }
