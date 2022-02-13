@@ -198,11 +198,6 @@ class CalendarService
         return $this->monthAndDay >= 213 && $this->monthAndDay <= 215;
     }
 
-    public function isValentines(): bool
-    {
-        return $this->monthAndDay === 214;
-    }
-
     public function isEaster(): bool
     {
         $easter = \DateTimeImmutable::createFromFormat('U', easter_date((int)$this->today->format('Y')));

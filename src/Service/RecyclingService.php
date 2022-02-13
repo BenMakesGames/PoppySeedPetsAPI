@@ -71,7 +71,7 @@ class RecyclingService
         if(!$givingTree)
             throw new HttpException(500, 'The "Giving Tree" NPC does not exist in the database!');
 
-        $givingTreeHoliday = $this->calendarService->isValentines() || $this->calendarService->isWhiteDay();
+        $givingTreeHoliday = $this->calendarService->isValentinesOrAdjacent() || $this->calendarService->isWhiteDay();
         $questItems = [];
         $idsNotRecycled = [];
 

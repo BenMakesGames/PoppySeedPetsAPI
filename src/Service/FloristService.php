@@ -30,7 +30,7 @@ class FloristService
         ];
 
         if(
-            $this->calendarService->isValentines() ||
+            $this->calendarService->isValentinesOrAdjacent() ||
             $this->calendarService->isWhiteDay() ||
             $this->calendarService->isEaster() ||
             $this->calendarService->isHalloween()
@@ -45,7 +45,7 @@ class FloristService
         }
 
         if(
-            $this->calendarService->isValentines() ||
+            $this->calendarService->isValentinesOrAdjacent() ||
             $this->calendarService->isWhiteDay()
         )
         {

@@ -247,7 +247,7 @@ class AdoptionService
         if($this->calendarService->isEaster())
             return $squirrel3->rngNextInt(1, 2);
 
-        if($this->calendarService->isValentines() || $this->calendarService->isWhiteDay())
+        if($this->calendarService->isValentinesOrAdjacent() || $this->calendarService->isWhiteDay())
             return 2;
 
         // winter solstice, more or less
@@ -290,7 +290,7 @@ class AdoptionService
         if($this->calendarService->isEaster())
             return PetShelterPet::PET_EASTER_NAMES;
 
-        if($this->calendarService->isValentines())
+        if($this->calendarService->isValentinesOrAdjacent())
             return PetShelterPet::PET_VALENTINES_NAMES;
 
         if($this->calendarService->isWhiteDay())
@@ -336,7 +336,7 @@ class AdoptionService
         if($this->calendarService->isEaster())
             return [ 'FFCCFF', '99CCFF', 'FFFF99', 'FF9999' ];
 
-        if($this->calendarService->isValentines())
+        if($this->calendarService->isValentinesOrAdjacent())
             return [ 'F17B7B', 'F8F8F8', 'FF0000', 'EF85FF' ];
 
         if($this->calendarService->isWhiteDay())
