@@ -124,8 +124,22 @@ class ResponseService
 
         $unreadMessages = $this->petActivityLogRepository->findUnreadForUser($user);
 
-        foreach($unreadMessages as $message)
-            $message->setViewed();
+        // for whatever reason, doing this results in fewer serialization deadlocks
+        // compared to foreach($unreadMessages as $message) $message->setViewed();
+        $query = $this->em->createQuery('
+            UPDATE App\\Entity\\PetActivityLog l
+            SET l.viewed = 1
+            WHERE l.id IN (:messageIds)
+        ');
+
+        $messageIds = array_map(
+            fn(PetActivityLog $l) => $l->getId(),
+            $unreadMessages
+        );
+
+        $query->setParameter('messageIds', $messageIds);
+
+        $query->execute();
 
         $this->em->flush();
 
