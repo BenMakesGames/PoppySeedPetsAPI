@@ -163,6 +163,8 @@ class FortuneCookie
         'We should not expect from others what we cannot do ourselves.',
         'It is much easier to be critical than to be correct.',
         'No act of kindness, however small, is ever wasted.',
-        'Punctuality is the politeness of kings and the duty of gentle people everywhere.'
+        'Punctuality is the politeness of kings and the duty of gentle people everywhere.',
+        'Magnanimity will bring you universal respect.',
+        'Many opportunities are open; take advantage of them!',
     ];
 }
