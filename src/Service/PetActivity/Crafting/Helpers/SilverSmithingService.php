@@ -376,7 +376,7 @@ class SilverSmithingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::SMITH, true);
             $this->houseSimService->getState()->loseItem('Silver Bar', 1);
             $this->houseSimService->getState()->loseItem('Iron Axe', 1);
-            $this->houseSimService->getState()->loseItem('White String', 1);
+            $this->houseSimService->getState()->loseItem('String', 1);
             $this->houseSimService->getState()->loseItem('Talon', 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(4);

@@ -25,7 +25,7 @@ class TwuWuvCraftingService
     private $responseService;
     private $itemRepository;
     private $coinSmithingService;
-    private $silverSmithingService;
+    private SilverSmithingService $silverSmithingService;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
