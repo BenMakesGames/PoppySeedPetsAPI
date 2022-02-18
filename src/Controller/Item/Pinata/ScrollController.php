@@ -424,8 +424,8 @@ class ScrollController extends PoppySeedPetsItemController
 
         $possibleItems = [
             'Smallish Pumpkin', 'Tomato', 'Ginger', 'Hot Potato', 'Toad Legs', 'Spicy Peps', 'Naner', 'Sweet Beet',
-            'Seaweed', 'Apricot', 'Corn', 'Mango', 'Pamplemousse', 'Carrot', 'Celery', 'Red', 'Egg', 'Beans', 'Wheat',
-            'Rice', 'Creamy Milk', 'Orange', 'Fish', 'Onion', 'Chanterelle'
+            'Seaweed', 'Apricot', 'Corn', 'Mango', 'Pamplemousse', 'Carrot', 'Celery', 'Red', 'Beans', 'Wheat',
+            'Rice', 'Creamy Milk', 'Orange', 'Fish', 'Onion', 'Chanterelle', 'Pineapple'
         ];
 
         $location = $inventory->getLocation();

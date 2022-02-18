@@ -842,7 +842,8 @@ class GatheringService
                 'Honeydont Ice Cream',
                 'Coconut',
                 'Orange',
-                'Mango'
+                'Mango',
+                'Pineapple',
             ]));
 
             $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
