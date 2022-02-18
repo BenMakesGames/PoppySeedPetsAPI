@@ -34,6 +34,8 @@ class NoteController extends PoppySeedPetsItemController
             ->addComment($user->getName() . ' erased the message that had been written on this Paper.')
         ;
 
+        $responseService->setReloadInventory();
+
         $em->flush();
 
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
