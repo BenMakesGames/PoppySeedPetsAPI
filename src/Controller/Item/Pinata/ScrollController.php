@@ -94,7 +94,8 @@ class ScrollController extends PoppySeedPetsItemController
 
             $item = $squirrel3->rngNextFromArray([
                 'Pamplemousse', 'Blackberries', 'Naner', 'Blueberries',
-                'Red', 'Orange', 'Apricot', 'Melowatern', 'Honeydont', 'Tomato', 'Spicy Peps'
+                'Red', 'Orange', 'Apricot', 'Melowatern', 'Honeydont', 'Tomato', 'Spicy Peps',
+                'Pineapple',
             ]);
 
             $numItems = $squirrel3->rngNextInt(5, $squirrel3->rngNextInt(6, 12));
