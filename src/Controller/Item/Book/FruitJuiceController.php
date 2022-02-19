@@ -61,8 +61,8 @@ Just add Yellow or Green Dye to some Sugar water! It\'s called "0% juice", and t
 
 Finally, a normal one!
 
-* Purple Corn (no! wait! trust me!)
-* Pineapple (see?)
+* Purple Corn (stay with me!)
+* Pineapple
 * Red
 * Sugar
 
