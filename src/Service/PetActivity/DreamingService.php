@@ -103,6 +103,7 @@ class DreamingService
             'Giant Turkey Leg', 'Ginger',
             'Honeydont',
             'Oil', 'Orange',
+            'Pineapple',
             'Purple Violet',
             'Red',
             'Seaweed', 'Smallish Pumpkin',

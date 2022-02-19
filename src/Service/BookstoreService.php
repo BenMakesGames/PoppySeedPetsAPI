@@ -231,6 +231,7 @@ class BookstoreService
 
             if($cookedSomething->getValue() >= 35)
             {
+                $bookPrices['Juice'] = 15;
                 $bookPrices['Pie Recipes'] = 15;
                 $bookPrices['We All Scream'] = 15;
             }
