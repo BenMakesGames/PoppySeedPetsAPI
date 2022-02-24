@@ -26,7 +26,7 @@ class HolidayEnum
     public const WHITE_DAY = 'White Day';
 
     // weird events?
-    public const LEONIDS = 'Leonids';
+    public const LEONIDS = 'The Leonids Meteor Shower';
 
     // full moons
     public const BLUE_MOON = 'Blue Moon';
