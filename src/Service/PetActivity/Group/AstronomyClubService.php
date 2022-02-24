@@ -12,6 +12,7 @@ use App\Functions\ActivityHelpers;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\PetActivityLogTagRepository;
+use App\Service\CalendarService;
 use App\Service\GroupNameGenerator;
 use App\Service\HattierService;
 use App\Service\InventoryService;
@@ -34,12 +35,13 @@ class AstronomyClubService
     private HattierService $hattierService;
     private GroupNameGenerator $groupNameGenerator;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private CalendarService $calendarService;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
         PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3, HattierService $hattierService,
         EnchantmentRepository $enchantmentRepository, GroupNameGenerator $groupNameGenerator,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        PetActivityLogTagRepository $petActivityLogTagRepository, CalendarService $calendarService
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -51,6 +53,7 @@ class AstronomyClubService
         $this->enchantmentRepository = $enchantmentRepository;
         $this->groupNameGenerator = $groupNameGenerator;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->calendarService = $calendarService;
     }
 
     private const DICTIONARY = [
@@ -124,7 +127,29 @@ class AstronomyClubService
             ->increaseSkillRollTotal($skill)
         ;
 
-        if($group->getProgress() >= 100)
+        if($this->calendarService->isLeonidPeakOrAdjacent())
+        {
+            $messageTemplate = '%pet% watched the Leonids with %group%, and collected some of their Stardust!';
+
+            foreach($group->getMembers() as $member)
+            {
+                $member->increaseEsteem($this->squirrel3->rngNextInt(3, 6));
+
+                $activityLog = (new PetActivityLog())
+                    ->setPet($member)
+                    ->setEntry($this->formatMessage($messageTemplate, $member, $group, ''))
+                    ->setIcon(self::ACTIVITY_ICON)
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
+                    ->setChanges($petChanges[$member->getId()]->compare($member))
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Group Hangout', 'Astronomy Lab' ]))
+                ;
+
+                $this->inventoryService->petCollectsItem('Stardust', $member, $this->formatMessage($messageTemplate, $member, $group, 'this'), $activityLog);
+
+                $this->em->persist($activityLog);
+            }
+        }
+        else if($group->getProgress() >= 100)
         {
             // we're expecting a very-maximum of 30 * 5 = 150. this will be exceptionally unlikely, however
             $max = min(self::MAX_SKILL_ROLL, $group->getSkillRollTotal());
