@@ -207,7 +207,8 @@ class ComputedPetSkills
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 3 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::HEX_HEXED) ? 6 - $this->pet->getSkills()->getUmbra() : 0) +
-            ceil($this->pet->getPsychedelic() * 5 / $this->pet->getMaxPsychedelic())
+            ceil($this->pet->getPsychedelic() * 5 / $this->pet->getMaxPsychedelic()) +
+            $this->pet->hasStatusEffect(StatusEffectEnum::OUT_OF_THIS_WORLD) ? 1 : 0
         ;
 
         return $skill;
@@ -237,7 +238,8 @@ class ComputedPetSkills
         $skill->base = $this->pet->getSkills()->getScience();
         $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->scienceBonus() : 0;
         $skill->statusEffects =
-            ($this->pet->hasStatusEffect(StatusEffectEnum::HEX_HEXED) ? 6 - $this->pet->getSkills()->getScience() : 0)
+            ($this->pet->hasStatusEffect(StatusEffectEnum::HEX_HEXED) ? 6 - $this->pet->getSkills()->getScience() : 0) +
+            $this->pet->hasStatusEffect(StatusEffectEnum::OUT_OF_THIS_WORLD) ? 1 : 0
         ;
 
         return $skill;

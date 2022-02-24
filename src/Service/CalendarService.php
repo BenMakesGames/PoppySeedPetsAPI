@@ -227,6 +227,18 @@ class CalendarService
         return $this->monthAndDay >= 1200 && $this->monthAndDay <= 1231;
     }
 
+    public function isLeonidPeakOrAdjacent(): bool
+    {
+        $year = (int)$this->today->format('Y');
+
+        $leonidPeakDay = array_key_exists($year, self::LEONID_PEAK_DAYS)
+            ? self::LEONID_PEAK_DAYS[$year]
+            : self::LEONID_PEAK_DAY_DEFAULT
+        ;
+
+        return abs($this->monthAndDay - $leonidPeakDay) <= 1;
+    }
+
     /**
      * @return string[]
      */
@@ -305,6 +317,9 @@ class CalendarService
         if($this->isHoli())
             $events[] = HolidayEnum::HOLI;
 
+        if($this->isLeonidPeakOrAdjacent())
+            $events[] = HolidayEnum::LEONIDS;
+
         if($dt)
             $this->setToday($oldToday);
 
@@ -326,4 +341,12 @@ class CalendarService
         2032 => 327,
         2033 => 316,
     ];
+
+    public const LEONID_PEAK_DAY_DEFAULT = 1117;
+
+    public const LEONID_PEAK_DAYS = [
+        // for years which are omitted, LEONID_PEAK_DAY_DEFAULT is assumed
+        2022 => 1119,
+    ];
+
 }

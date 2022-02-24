@@ -25,6 +25,9 @@ class HolidayEnum
     public const VALENTINES = 'Valentine\'s';
     public const WHITE_DAY = 'White Day';
 
+    // weird events?
+    public const LEONIDS = 'Leonids';
+
     // full moons
     public const BLUE_MOON = 'Blue Moon';
     public const WOLF_MOON = 'Wolf Moon';

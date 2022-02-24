@@ -24,4 +24,5 @@ final class StatusEffectEnum
     public const FRUIT_CLOBBERING = 'Fruit-clobbering';
     public const HOT_TO_THE_TOUCH = 'Hot to the Touch';
     public const HOPPIN = 'Hoppin\'';
+    public const OUT_OF_THIS_WORLD = 'Out of this World';
 }

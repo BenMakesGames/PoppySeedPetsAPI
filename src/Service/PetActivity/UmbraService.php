@@ -21,6 +21,7 @@ use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
+use App\Service\CalendarService;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\InventoryService;
@@ -48,6 +49,8 @@ class UmbraService
     private FieldGuideService $fieldGuideService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private SpiceRepository $spiceRepository;
+    private LeonidsService $leonidsService;
+    private CalendarService $calendarService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
@@ -55,7 +58,7 @@ class UmbraService
         ItemRepository $itemRepository, InventoryModifierService $toolBonusService, FieldGuideService $fieldGuideService,
         DragonRepository $dragonRepository, Squirrel3 $squirrel3, WeatherService $weatherService,
         HattierService $hattierService, PetActivityLogTagRepository $petActivityLogTagRepository,
-        SpiceRepository $spiceRepository
+        SpiceRepository $spiceRepository, LeonidsService $leonidsService, CalendarService $calendarService
     )
     {
         $this->responseService = $responseService;
@@ -73,86 +76,97 @@ class UmbraService
         $this->fieldGuideService = $fieldGuideService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->spiceRepository = $spiceRepository;
+        $this->leonidsService = $leonidsService;
+        $this->calendarService = $calendarService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
     {
         $pet = $petWithSkills->getPet();
-        $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
-        $skill = 10 + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal(); // psychedelics bonus is built into getUmbra()
-
-        $skill = NumberFunctions::clamp($skill, 1, 23);
-
-        $roll = $this->squirrel3->rngNextInt(1, $skill);
 
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        switch($roll)
+        if($this->calendarService->isLeonidPeakOrAdjacent() && $this->squirrel3->rngNextInt(1, 4) === 1)
         {
-            case 1:
-            case 2:
-            case 3:
-                $activityLog = $this->foundNothing($pet, $roll);
-                break;
-            case 4:
-            case 5:
-            case 6:
-                $activityLog = $this->foundScragglyBush($petWithSkills);
-                break;
-            case 7:
-            case 8:
-                $activityLog = $this->helpedLostSoul($petWithSkills);
-                break;
-            case 9:
-                $activityLog = $this->found2Moneys($petWithSkills, $weather);
-                break;
+            $activityLog = $this->leonidsService->adventure($petWithSkills);
+        }
+        else
+        {
+            $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
 
-            case 10:
-                $activityLog = $this->strangeUmbralEncounters->adventure($petWithSkills);
-                break;
+            $skill = 10 + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal(); // psychedelics bonus is built into getUmbra()
 
-            case 11:
-            case 12:
-                $activityLog = $this->fightEvilSpirit($petWithSkills);
-                break;
+            $skill = NumberFunctions::clamp($skill, 1, 23);
 
-            case 13:
-                $dragon = $this->dragonRepository->findOneBy([ 'owner' => $pet->getOwner() ]);
+            $roll = $this->squirrel3->rngNextInt(1, $skill);
 
-                if($dragon)
-                    $activityLog = $this->visitLibraryOfFire($petWithSkills);
-                else
+            switch($roll)
+            {
+                case 1:
+                case 2:
+                case 3:
                     $activityLog = $this->foundNothing($pet, $roll);
-                break;
+                    break;
+                case 4:
+                case 5:
+                case 6:
+                    $activityLog = $this->foundScragglyBush($petWithSkills);
+                    break;
+                case 7:
+                case 8:
+                    $activityLog = $this->helpedLostSoul($petWithSkills);
+                    break;
+                case 9:
+                    $activityLog = $this->found2Moneys($petWithSkills, $weather);
+                    break;
 
-            case 14:
-                $activityLog = $this->found2Moneys($petWithSkills, $weather);
-                break;
+                case 10:
+                    $activityLog = $this->strangeUmbralEncounters->adventure($petWithSkills);
+                    break;
 
-            case 15:
-            case 16:
-                $activityLog = $this->fishingAtRiver($petWithSkills, $weather);
-                break;
-            case 17:
-                $activityLog = $this->strangeUmbralEncounters->adventure($petWithSkills);
-                break;
-            case 18:
-                $activityLog = $this->gatheringAtTheNoetala($petWithSkills);
-                break;
-            case 19:
-                $activityLog = $this->foundVampireCastle($petWithSkills);
-                break;
-            case 20:
-            case 21:
-                $activityLog = $this->frozenQuag($petWithSkills);
-                break;
-            case 22:
-                $activityLog = $this->fightAbandondero($petWithSkills);
-                break;
-            case 23:
-                $activityLog = $this->foundCursedGarden($petWithSkills);
-                break;
+                case 11:
+                case 12:
+                    $activityLog = $this->fightEvilSpirit($petWithSkills);
+                    break;
+
+                case 13:
+                    $dragon = $this->dragonRepository->findOneBy([ 'owner' => $pet->getOwner() ]);
+
+                    if($dragon)
+                        $activityLog = $this->visitLibraryOfFire($petWithSkills);
+                    else
+                        $activityLog = $this->foundNothing($pet, $roll);
+                    break;
+
+                case 14:
+                    $activityLog = $this->found2Moneys($petWithSkills, $weather);
+                    break;
+
+                case 15:
+                case 16:
+                    $activityLog = $this->fishingAtRiver($petWithSkills, $weather);
+                    break;
+                case 17:
+                    $activityLog = $this->strangeUmbralEncounters->adventure($petWithSkills);
+                    break;
+                case 18:
+                    $activityLog = $this->gatheringAtTheNoetala($petWithSkills);
+                    break;
+                case 19:
+                    $activityLog = $this->foundVampireCastle($petWithSkills);
+                    break;
+                case 20:
+                case 21:
+                    $activityLog = $this->frozenQuag($petWithSkills);
+                    break;
+                case 22:
+                    $activityLog = $this->fightAbandondero($petWithSkills);
+                    break;
+                case 23:
+                    $activityLog = $this->foundCursedGarden($petWithSkills);
+                    break;
+            }
         }
 
         if($activityLog)
