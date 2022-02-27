@@ -59,11 +59,11 @@ class HattierController extends PoppySeedPetsController
             if($user->getMoneys() < 200)
                 throw new UnprocessableEntityHttpException('You need 200~~m~~.');
         }
-        /*else if($payWith === 'recycling')
+        else if($payWith === 'recycling')
         {
-            if($user->getRecyclePoints() < 400)
-                throw new UnprocessableEntityHttpException('You need 400 recycling points.');
-        }*/
+            if($user->getRecyclePoints() < 100)
+                throw new UnprocessableEntityHttpException('You need 100 recycling points.');
+        }
         else
         {
             throw new UnprocessableEntityHttpException('You must choose whether to pay with moneys or with recycling points.');
@@ -82,7 +82,10 @@ class HattierController extends PoppySeedPetsController
         if(!$unlockedAura || $unlockedAura->getUser()->getId() !== $user->getId())
             throw new NotFoundHttpException('You haven\'t unlocked that Hattier style.');
 
-        $transactionService->spendMoney($user, 200, 'Bought the ' . $unlockedAura->getAura()->getAura()->getName() . ' style from the Hattier.');
+        if($payWith === 'moneys')
+            $transactionService->spendMoney($user, 200, 'Bought the ' . $unlockedAura->getAura()->getAura()->getName() . ' style from the Hattier.');
+        else
+            $user->increaseRecyclePoints(-100);
 
         $pet->getHat()->setEnchantment($unlockedAura->getAura());
 
