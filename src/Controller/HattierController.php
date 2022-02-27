@@ -44,6 +44,8 @@ class HattierController extends PoppySeedPetsController
         TransactionService $transactionService, EntityManagerInterface $em, ResponseService $responseService
     )
     {
+        $payWith = strtolower($request->request->getAlpha('payWith', 'moneys'));
+
         $petId = $request->request->get('pet');
         $auraId = $request->request->get('aura');
 
@@ -52,8 +54,20 @@ class HattierController extends PoppySeedPetsController
 
         $user = $this->getUser();
 
-        if($user->getMoneys() < 200)
-            throw new UnprocessableEntityHttpException('You need 200~~m~~.');
+        if($payWith === 'moneys')
+        {
+            if($user->getMoneys() < 200)
+                throw new UnprocessableEntityHttpException('You need 200~~m~~.');
+        }
+        /*else if($payWith === 'recycling')
+        {
+            if($user->getRecyclePoints() < 400)
+                throw new UnprocessableEntityHttpException('You need 400 recycling points.');
+        }*/
+        else
+        {
+            throw new UnprocessableEntityHttpException('You must choose whether to pay with moneys or with recycling points.');
+        }
 
         $pet = $petRepository->find($petId);
 
