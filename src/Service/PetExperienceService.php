@@ -29,11 +29,13 @@ class PetExperienceService
     private UserQuestRepository $userQuestRepository;
     private ResponseService $responseService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private HattierService $hattierService;
 
     public function __construct(
         PetActivityStatsService $petActivityStatsService, Squirrel3 $squirrel3, CalendarService $calendarService,
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository, ResponseService $responseService,
-        UserQuestRepository $userQuestRepository, PetActivityLogTagRepository $petActivityLogTagRepository
+        UserQuestRepository $userQuestRepository, PetActivityLogTagRepository $petActivityLogTagRepository,
+        HattierService $hattierService
     )
     {
         $this->petActivityStatsService = $petActivityStatsService;
@@ -44,6 +46,7 @@ class PetExperienceService
         $this->userQuestRepository = $userQuestRepository;
         $this->responseService = $responseService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->hattierService = $hattierService;
     }
 
     /**
@@ -94,10 +97,24 @@ class PetExperienceService
             }
             else
                 $pet->getSkills()->increaseStat($statToLevel);
+
+            if($pet->getLevel() == 50)
+                $this->unlockLevel50Style($pet);
         }
 
         if($activityLog && $levelUp)
             $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
+    }
+
+    private function unlockLevel50Style(Pet $pet)
+    {
+        $this->hattierService->petMaybeUnlockAura(
+            $pet,
+            'Impactful',
+            '%pet:' . $pet->getId() . '.name% has reached level 50?! Incredible. Truly _Wow!_',
+            '%pet:' . $pet->getId() . '.name% has reached level 50?! Incredible. Truly _Wow!_',
+            ActivityHelpers::PetName($pet) . ' has reached level 50! Incredible. Truly _Wow!_ (And I\'m sure the Hattier would agree!)'
+        );
     }
 
     public function spendSocialEnergy(Pet $pet, int $energy)

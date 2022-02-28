@@ -32,8 +32,14 @@ class HattierService
         $this->commentFormatter = $commentFormatter;
     }
 
-    public function userHasUnlocked(User $user, Enchantment $enchantment): bool
+    /**
+     * @param string|Enchantment $enchantment
+     */
+    public function userHasUnlocked(User $user, $enchantment): bool
     {
+        if(is_string($enchantment))
+            $enchantment = $this->enchantmentRepository->findOneByName($enchantment);
+
         $cacheKey = $user->getId() . '-' . $enchantment->getId();
 
         if(!array_key_exists($cacheKey, $this->userAurasPerRequestCache))

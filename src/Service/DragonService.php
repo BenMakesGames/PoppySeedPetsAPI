@@ -74,13 +74,15 @@ class DragonService
     private TreasureMapService $treasureMapService;
     private InventoryRepository $inventoryRepository;
     private DragonRepository $dragonRepository;
+    private HattierService $hattierService;
+    private ResponseService $responseService;
 
     public function __construct(
         EntityManagerInterface $em, InventoryService $inventoryService,
         EnchantmentRepository $enchantmentRepository, SpiceRepository $spiceRepository,
         UserStatsRepository $userStatsRepository, CalendarService $calendarService, Squirrel3 $rng,
         TreasureMapService $treasureMapService, InventoryRepository $inventoryRepository,
-        DragonRepository $dragonRepository
+        DragonRepository $dragonRepository, HattierService $hattierService, ResponseService $responseService
     )
     {
         $this->em = $em;
@@ -93,6 +95,8 @@ class DragonService
         $this->treasureMapService = $treasureMapService;
         $this->inventoryRepository = $inventoryRepository;
         $this->dragonRepository = $dragonRepository;
+        $this->hattierService = $hattierService;
+        $this->responseService = $responseService;
     }
 
     /**
@@ -163,10 +167,15 @@ class DragonService
 
         if($gems > 0)
         {
+            $previousGems = $dragon->getGems();
+
             $dragon->increaseGems($gems);
 
             for($i = 0; $i < $gems; $i++)
                 $goodies[] = ArrayFunctions::pick_one_weighted($gemGoodies, fn($i) => $i['weight']);
+
+            if($previousGems < 50 && $dragon->getGems() >= 50)
+                $this->unlockWhiteDiamondHattierStyle($user);
         }
 
         foreach($goodies as $goody)
@@ -262,5 +271,16 @@ class DragonService
             $message .= '.';
 
         return $message;
+    }
+
+    private function unlockWhiteDiamondHattierStyle(User $user)
+    {
+        $enchantment = $this->enchantmentRepository->findOneByName('with White Diamonds');
+
+        $user->increaseRecyclePoints(100);
+
+        $this->hattierService->playerUnlockAura($user, $enchantment, 'You received this from your dragon, for donating 50 gems.');
+
+        $this->responseService->addFlashMessage('50 whole gems! Your dragon bestows an aura of White Diamonds upon you and your pets! (You can find it at the Hattier\'s!) Oh: and 100 recycling points! Dang! Nice!');
     }
 }

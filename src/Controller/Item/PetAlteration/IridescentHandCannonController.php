@@ -4,9 +4,11 @@ namespace App\Controller\Item\PetAlteration;
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Enum\MeritEnum;
+use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
+use App\Service\HattierService;
 use App\Service\PetColorService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -29,7 +31,8 @@ class IridescentHandCannonController extends PoppySeedPetsItemController
     public function fireHandCannon(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository, ItemRepository $itemRepository, MeritRepository $meritRepository,
-        PetColorService $petColorChangingService, Squirrel3 $squirrel3
+        PetColorService $petColorChangingService, Squirrel3 $squirrel3, HattierService $hattierService,
+        EnchantmentRepository $enchantmentRepository
     )
     {
         $user = $this->getUser();
@@ -102,6 +105,14 @@ class IridescentHandCannonController extends PoppySeedPetsItemController
                 ->addComment($comment)
                 ->setModifiedOn()
             ;
+        }
+
+        $rainbowEye = $enchantmentRepository->findOneByName('Rainboweye');
+
+        if(!$hattierService->userHasUnlocked($user, $rainbowEye))
+        {
+            $hattierService->playerUnlockAura($user, $rainbowEye, 'You\'ve got an eye for color... and color has an eye for you?? Well, in any case, you received this aura by using an Iridescent Hand Cannon!');
+            $responseService->addFlashMessage('You\'ve got an eye for color... and color has an eye for you! (A new aura is available for you at the Hattier\'s!)');
         }
 
         $em->flush();

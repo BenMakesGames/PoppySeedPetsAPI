@@ -19,6 +19,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\GrammarFunctions;
 use App\Model\PetChanges;
+use App\Repository\EnchantmentRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
@@ -30,6 +31,7 @@ use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\FieldGuideService;
 use App\Service\GreenhouseService;
+use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\PetActivity\GreenhouseAdventureService;
 use App\Service\PetAssistantService;
@@ -380,7 +382,8 @@ class GreenhouseController extends PoppySeedPetsController
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository, PetRepository $petRepository,
         UserQuestRepository $userQuestRepository, GreenhouseAdventureService $greenhouseAdventureService,
         GreenhouseService $greenhouseService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3,
-        FieldGuideService $fieldGuideService
+        FieldGuideService $fieldGuideService, EnchantmentRepository $enchantmentRepository,
+        HattierService $hattierService
     )
     {
         $user = $this->getUser();
@@ -511,6 +514,15 @@ class GreenhouseController extends PoppySeedPetsController
         {
             $user->getGreenhouse()->increaseMaxPlants(3);
             $message .= ' And you\'ve been given three additional plots in the Greenhouse!';
+        }
+        else if($plantsHarvested->getValue() === 1000)
+        {
+            $vinesAura = $enchantmentRepository->findOneByName('of Wild Growth');
+
+            $responseService->addFlashMessage('After harvesting the ' . $plant->getPlant()->getName() . ', an odd-looking fairy pops out and bestows a wreath of vines to you. "As you give life to the Earth, you give life to my people. Please, accept this gift for all you have done for us!" (A new style is available at the Hattier\'s! _And_ you somehow got 100 recycling points?! Sure; why not!)');
+            $user->increaseRecyclePoints(100);
+
+            $hattierService->playerUnlockAura($user, $vinesAura, 'A fairy gave you this after you harvested your 1000th plant!');
         }
         else
         {
