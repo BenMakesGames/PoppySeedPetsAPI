@@ -1477,7 +1477,10 @@ class PetService
         else
             $desire += $this->squirrel3->rngNextInt(1, 4);
 
-        if($pet->hasMerit(MeritEnum::NATURAL_CHANNEL))
+        if(
+            $pet->hasMerit(MeritEnum::NATURAL_CHANNEL) ||
+            ($pet->getTool() && $pet->getTool()->getItem()->getTool() && $pet->getTool()->getItem()->getTool()->getAdventureDescription() === 'The Umbra')
+        )
         {
             if($pet->getPsychedelic() > $pet->getMaxPsychedelic() / 2)
                 return ceil($desire * $pet->getPsychedelic() * 2 / $pet->getMaxPsychedelic());
