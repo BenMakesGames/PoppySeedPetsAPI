@@ -1,6 +1,7 @@
 <?php
 namespace App\Service\PetActivity;
 
+use App\Entity\Item;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetSpecies;
@@ -137,9 +138,27 @@ class DreamingService
 
         $dream = $this->dreamRepository->findRandom($this->squirrel3);
 
-        $locations = $this->squirrel3->rngNextSubsetFromArray(self::LOCATIONS, 2);
         /** @var PetSpecies $species */
         $species = $this->squirrel3->rngNextFromArray($this->petSpeciesRepository->findAll());
+
+        $replacements = $this->generateReplacementsDictionary($item, $pet, $species);
+
+        $eventDescription = $this->applyMadlib($dream->getDescription(), $replacements);
+        $itemDescription = $this->applyMadlib($dream->getItemDescription(), $replacements);
+
+        $this->inventoryService->receiveItem($itemName, $pet->getOwner(), $pet->getOwner(), $itemDescription, LocationEnum::HOME);
+
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+
+        return $this->responseService->createActivityLog($pet, $eventDescription, '')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Dream' ]))
+        ;
+    }
+
+    public function generateReplacementsDictionary(Item $item, Pet $pet, PetSpecies $species): array
+    {
+        $locations = $this->squirrel3->rngNextSubsetFromArray(self::LOCATIONS, 2);
 
         $monsters = [
             [ 'a' => 'a goblin', 'the' => 'the goblin' ],
@@ -151,8 +170,8 @@ class DreamingService
 
         $this->squirrel3->rngNextShuffle($monsters);
 
-        $replacements = [
-            '%item%' => $itemName,
+        return [
+            '%item%' => $item->getName(),
             '%item_with_article%' => $item->getNameWithArticle(),
             '%Item_with_article%' => ucfirst($item->getNameWithArticle()),
             '%dreamer%' => $pet->getName(),
@@ -179,21 +198,9 @@ class DreamingService
             '%a_pet_or_monster%' => $this->squirrel3->rngNextFromArray([ 'a %pet_adjective% %species%', '%a_monster%' ]),
             '%plural_stuff%' => $this->squirrel3->rngNextFromArray(self::RANDOM_PLURAL_STUFF),
         ];
-
-        $eventDescription = $this->applyMadlib($dream->getDescription(), $replacements);
-        $itemDescription = $this->applyMadlib($dream->getItemDescription(), $replacements);
-
-        $this->inventoryService->receiveItem($itemName, $pet->getOwner(), $pet->getOwner(), $itemDescription, LocationEnum::HOME);
-
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
-
-        return $this->responseService->createActivityLog($pet, $eventDescription, '')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Dream' ]))
-        ;
     }
 
-    private function applyMadlib(string $text, array $replacements): string
+    public function applyMadlib(string $text, array $replacements): string
     {
         do
         {

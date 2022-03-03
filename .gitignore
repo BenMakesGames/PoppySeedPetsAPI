@@ -20,3 +20,8 @@
 ###< symfony/web-server-bundle ###
 /.idea
 /deploy
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
