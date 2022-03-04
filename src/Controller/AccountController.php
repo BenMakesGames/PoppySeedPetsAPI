@@ -34,10 +34,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
@@ -52,7 +52,7 @@ class AccountController extends PoppySeedPetsController
     public function register(
         Request $request, EntityManagerInterface $em, ResponseService $responseService,
         SessionService $sessionService, UserRepository $userRepository, PetSpeciesRepository $petSpeciesRepository,
-        UserPasswordEncoderInterface $userPasswordEncoder, InventoryService $inventoryService,
+        UserPasswordHasherInterface $userPasswordEncoder, InventoryService $inventoryService,
         ProfanityFilterService $profanityFilterService, MeritRepository $meritRepository, PetFactory $petFactory,
         Squirrel3 $squirrel3
     )
@@ -113,7 +113,7 @@ class AccountController extends PoppySeedPetsController
             ->setName($name)
         ;
 
-        $user->setPassword($userPasswordEncoder->encodePassword($user, $passPhrase));
+        $user->setPassword($userPasswordEncoder->hashPassword($user, $passPhrase));
 
         $session = $sessionService->logIn($user);
 
@@ -183,7 +183,7 @@ class AccountController extends PoppySeedPetsController
      * @Route("/logIn", methods={"POST"})
      */
     public function logIn(
-        Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $userPasswordEncoder,
+        Request $request, UserRepository $userRepository, UserPasswordHasherInterface $userPasswordEncoder,
         SessionService $sessionService, EntityManagerInterface $em, ResponseService $responseService,
         UserStyleRepository $userStyleRepository
     )
@@ -238,7 +238,7 @@ class AccountController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function updateEmail(
-        Request $request, ResponseService $responseService, UserPasswordEncoderInterface $passwordEncoder,
+        Request $request, ResponseService $responseService, UserPasswordHasherInterface $passwordEncoder,
         UserRepository $userRepository
     )
     {
@@ -282,7 +282,7 @@ class AccountController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function updatePassphrase(
-        Request $request, ResponseService $responseService, UserPasswordEncoderInterface $passwordEncoder,
+        Request $request, ResponseService $responseService, UserPasswordHasherInterface $passwordEncoder,
         EntityManagerInterface $em
     )
     {
@@ -296,7 +296,7 @@ class AccountController extends PoppySeedPetsController
         if(\mb_strlen($newPassphrase) < 10)
             throw new UnprocessableEntityHttpException('Passphrase must be at least 10 characters long.');
 
-        $user->setPassword($passwordEncoder->encodePassword($user, $newPassphrase));
+        $user->setPassword($passwordEncoder->hashPassword($user, $newPassphrase));
 
         $em->flush();
 
@@ -439,7 +439,7 @@ class AccountController extends PoppySeedPetsController
      */
     public function resetPassphrase(
         string $code, Request $request, PassphraseResetRequestRepository $passwordResetRequestRepository,
-        UserPasswordEncoderInterface $userPasswordEncoder, EntityManagerInterface $em, ResponseService $responseService
+        UserPasswordHasherInterface $userPasswordEncoder, EntityManagerInterface $em, ResponseService $responseService
     )
     {
         $passphrase = trim($request->request->get('passphrase', ''));
@@ -454,7 +454,7 @@ class AccountController extends PoppySeedPetsController
 
         $user = $resetRequest->getUser();
 
-        $user->setPassword($userPasswordEncoder->encodePassword($user, $passphrase));
+        $user->setPassword($userPasswordEncoder->hashPassword($user, $passphrase));
 
         $em->remove($resetRequest);
 

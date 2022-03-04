@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class ResetPassphraseCommand extends Command
 {
@@ -19,7 +19,7 @@ class ResetPassphraseCommand extends Command
     private $squirrel3;
 
     public function __construct(
-        EntityManagerInterface $em, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder,
+        EntityManagerInterface $em, UserRepository $userRepository, UserPasswordHasherInterface $passwordEncoder,
         Squirrel3 $squirrel3
     )
     {
@@ -61,7 +61,7 @@ class ResetPassphraseCommand extends Command
             $terminalCharacters[$this->squirrel3->rngNextInt(0, strlen($terminalCharacters) - 1)]
         ;
 
-        $user->setPassword($this->passwordEncoder->encodePassword($user, $password));
+        $user->setPassword($this->passwordEncoder->hashPassword($user, $password));
 
         $this->em->flush();
 
