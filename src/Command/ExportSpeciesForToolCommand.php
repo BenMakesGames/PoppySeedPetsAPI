@@ -28,7 +28,7 @@ class ExportSpeciesForToolCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $species = $this->petSpeciesRepository->findAll();
 
@@ -47,5 +47,7 @@ class ExportSpeciesForToolCommand extends Command
         }, $species);
 
         echo \GuzzleHttp\json_encode($pets);
+
+        return 0;
     }
 }

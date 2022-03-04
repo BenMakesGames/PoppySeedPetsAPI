@@ -1,7 +1,7 @@
 <?php
 namespace App\EventSubscriber;
 
-use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\Security;
 
 class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterface
 {
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::CONTROLLER => 'startRequest',
@@ -25,7 +25,7 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
     private $cache;
     private $user;
 
-    public function __construct(Security $security, AdapterInterface $cache)
+    public function __construct(Security $security, CacheItemPoolInterface $cache)
     {
         $this->security = $security;
         $this->cache = $cache;

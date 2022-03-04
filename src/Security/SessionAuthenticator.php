@@ -39,12 +39,12 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
         $this->sessionService = $sessionService;
     }
 
-    public function supports(Request $request)
+    public function supports(Request $request): bool
     {
         return $request->headers->has('Authorization') && substr($request->headers->get('Authorization'), 0, 7) === 'Bearer ';
     }
 
-    public function getCredentials(Request $request)
+    public function getCredentials(Request $request): array
     {
         return [
             'sessionId' => substr($request->headers->get('Authorization'), 7)
@@ -84,17 +84,17 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
         return $user;
     }
 
-    public function checkCredentials($credentials, UserInterface $user)
+    public function checkCredentials($credentials, UserInterface $user): bool
     {
         return true;
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey): ?Response
     {
         return null;
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         $data = [
             'success' => false,
@@ -104,7 +104,7 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
         return new JsonResponse($data, Response::HTTP_FORBIDDEN);
     }
 
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function start(Request $request, AuthenticationException $authException = null): Response
     {
         $data = [
             'success' => false,
@@ -114,7 +114,7 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
         return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
     }
 
-    public function supportsRememberMe()
+    public function supportsRememberMe(): bool
     {
         return false;
     }

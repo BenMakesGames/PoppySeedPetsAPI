@@ -28,7 +28,7 @@ class FixMismatchedRelationshipsCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $statement = $this->em->getConnection()->prepare('
             SELECT *
@@ -42,7 +42,7 @@ class FixMismatchedRelationshipsCommand extends Command
         if(count($results) === 0)
         {
             echo 'No mismatched relationships were found.';
-            return;
+            return 0;
         }
 
         $completed = [];
@@ -100,5 +100,7 @@ class FixMismatchedRelationshipsCommand extends Command
         echo 'Committing changes... ';
         $this->em->flush();
         echo 'done!' . "\n";
+
+        return 0;
     }
 }

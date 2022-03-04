@@ -6,14 +6,11 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
-use App\Enum\PetSkillEnum;
-use App\Repository\InventoryRepository;
-use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\PetActivity\SagaSagaService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Psr\Cache\CacheItemPoolInterface;
 
 class HouseService
 {
@@ -21,14 +18,14 @@ class HouseService
     private PetRepository $petRepository;
     private UserQuestRepository $userQuestRepository;
     private InventoryService $inventoryService;
-    private AdapterInterface $cache;
+    private CacheItemPoolInterface $cache;
     private EntityManagerInterface $em;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
     private SagaSagaService $sagaSagaService;
 
     public function __construct(
-        PetService $petService, PetRepository $petRepository, AdapterInterface $cache, EntityManagerInterface $em,
+        PetService $petService, PetRepository $petRepository, CacheItemPoolInterface $cache, EntityManagerInterface $em,
         UserQuestRepository $userQuestRepository, InventoryService $inventoryService, Squirrel3 $squirrel3,
         HouseSimService $houseSimService, SagaSagaService $sagaSagaService
     )

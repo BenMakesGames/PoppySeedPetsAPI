@@ -36,7 +36,7 @@ class AssignActivityPersonalitiesCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
 

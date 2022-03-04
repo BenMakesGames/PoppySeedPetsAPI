@@ -32,7 +32,7 @@ class UserLetterNormalizer implements ContextAwareNormalizerInterface
         return $data;
     }
 
-    public function supportsNormalization($data, string $format = null, array $context = [])
+    public function supportsNormalization($data, string $format = null, array $context = []): bool
     {
         return $data instanceof UserLetter;
     }

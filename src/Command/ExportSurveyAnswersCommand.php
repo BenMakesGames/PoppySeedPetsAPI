@@ -45,7 +45,7 @@ class ExportSurveyAnswersCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $guid = $input->getArgument('guid');
 
@@ -54,7 +54,7 @@ class ExportSurveyAnswersCommand extends Command
         if(!$survey)
         {
             $output->writeln('Survey not found.');
-            return;
+            return 1;
         }
 
         $qb = $this->surveyQuestionAnswerRepository->createQueryBuilder('a');

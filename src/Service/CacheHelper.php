@@ -1,13 +1,13 @@
 <?php
 namespace App\Service;
 
-use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Psr\Cache\CacheItemPoolInterface;
 
 class CacheHelper
 {
     private $cache;
 
-    public function __construct(AdapterInterface $cache)
+    public function __construct(CacheItemPoolInterface $cache)
     {
         $this->cache = $cache;
     }

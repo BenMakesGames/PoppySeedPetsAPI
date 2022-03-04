@@ -28,7 +28,7 @@ class ExportRelationshipNetworkCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $relationships = $this->petRelationshipRepository->findAll();
 
@@ -56,5 +56,7 @@ class ExportRelationshipNetworkCommand extends Command
             'links' => $links,
             'nodes' => $pets
         ]);
+
+        return Command::SUCCESS;
     }
 }

@@ -20,7 +20,7 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -151,7 +151,7 @@ class MarketController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function buy(
-        Request $request, ResponseService $responseService, AdapterInterface $cache, EntityManagerInterface $em,
+        Request $request, ResponseService $responseService, CacheItemPoolInterface $cache, EntityManagerInterface $em,
         InventoryRepository $inventoryRepository, Squirrel3 $squirrel3, TransactionService $transactionService,
         MarketService $marketService, InventoryModifierService $bonusService
     )

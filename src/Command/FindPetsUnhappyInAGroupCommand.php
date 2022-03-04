@@ -30,7 +30,7 @@ class FindPetsUnhappyInAGroupCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var Pet[] $pets */
         $pets = $this->petRepository->createQueryBuilder('p')
@@ -60,5 +60,7 @@ class FindPetsUnhappyInAGroupCommand extends Command
         }
 
         echo \GuzzleHttp\json_encode($results, JSON_PRETTY_PRINT);
+
+        return 0;
     }
 }

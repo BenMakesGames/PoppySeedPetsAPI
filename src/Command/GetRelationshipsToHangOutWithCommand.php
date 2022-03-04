@@ -37,7 +37,7 @@ class GetRelationshipsToHangOutWithCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $petId = (int)$input->getArgument('pet');
 
@@ -63,5 +63,7 @@ class GetRelationshipsToHangOutWithCommand extends Command
 
             $output->writeln('* ' . $friend->getName() . ' (#' . $friend->getId() . ')');
         }
+
+        return Command::SUCCESS;
     }
 }
