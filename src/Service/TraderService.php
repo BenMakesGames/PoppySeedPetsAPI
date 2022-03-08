@@ -13,6 +13,7 @@ use App\Model\TraderOffer;
 use App\Model\TraderOfferCostOrYield;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
+use App\Repository\MuseumItemRepository;
 use App\Repository\TradesUnlockedRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
@@ -88,11 +89,12 @@ class TraderService
     private $tradesUnlockedRepository;
     private IRandom $rng;
     private $inventoryRepository;
+    private MuseumItemRepository $museumItemRepository;
 
     public function __construct(
         ItemRepository $itemRepository, InventoryService $inventoryService, CalendarService $calendarService,
         TransactionService $transactionService, TradesUnlockedRepository $tradesUnlockedRepository, Squirrel3 $squirrel3,
-        InventoryRepository $inventoryRepository
+        InventoryRepository $inventoryRepository, MuseumItemRepository $museumItemRepository
     )
     {
         $this->itemRepository = $itemRepository;
@@ -102,6 +104,7 @@ class TraderService
         $this->tradesUnlockedRepository = $tradesUnlockedRepository;
         $this->rng = $squirrel3;
         $this->inventoryRepository = $inventoryRepository;
+        $this->museumItemRepository = $museumItemRepository;
     }
 
     /**
@@ -768,51 +771,74 @@ class TraderService
         ];
     }
 
+    private function stillOfferingDeedForGreenhousePlot(User $user): bool
+    {
+        if(!$user->getUnlockedGreenhouse())
+            return true;
+
+        $deedForGreenhousePlot = $this->itemRepository->findOneByName('Deed for Greenhouse Plot');
+
+        if(!$this->museumItemRepository->hasUserDonated($user, $deedForGreenhousePlot))
+            return true;
+
+        return false;
+    }
+
     private function getFoodsOffers(User $user, array $quantities): array
     {
-        return [
-            TraderOffer::createTradeOffer(
+        $offers = [];
+
+        if($this->stillOfferingDeedForGreenhousePlot($user))
+        {
+            $deedForGreenhousePlot = $this->itemRepository->findOneByName('Deed for Greenhouse Plot');
+
+            $offers[] = TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createMoney(100) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Deed for Greenhouse Plot'), 1) ],
+                [ TraderOfferCostOrYield::createItem($deedForGreenhousePlot, 1) ],
                 "Oh, fun, a greenhouse! What kind of Kelp will you be gr-- oh. Right, I suppose you'll just be growing Landweed, and such.\n\nWell.\n\nHave fun with that, I suppose.",
                 $user,
                 $quantities,
                 true
-            ),
-            TraderOffer::createTradeOffer(
+            );
+            $offers[] = TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createRecyclingPoints(50) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Deed for Greenhouse Plot'), 1) ],
                 "Oh, fun, a greenhouse! What kind of Kelp will you be gr-- oh. Right, I suppose you'll just be growing Landweed, and such.\n\nWell.\n\nHave fun with that, I suppose.",
                 $user,
                 $quantities,
                 true
-            ),
-            TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Moon Pearl'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Cooking Buddy'), 1) ],
-                'That\'s no knock-off! Tell Samarzhoustia trades directly with the Eridanus Federation!',
-                $user,
-                $quantities
-            ),
-            TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Moon Pearl'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Composter'), 1) ],
-                'That\'s no knock-off! Tell Samarzhoustia trades directly with the Eridanus Federation!',
-                $user,
-                $quantities
-            ),
-            TraderOffer::createTradeOffer(
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Limestone'), 2),
-                ],
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Scroll of Tell Samarzhoustian Delights'), 1),
-                ],
-                'Limestone is an important building material in Tell Samarzhoustia. We build beautiful palaces, and enormous chimera statues. Well, enormous by fish standards. You should visit, sometime.',
-                $user,
-                $quantities
-            ),
-        ];
+            );
+        }
+
+        $offers[] = TraderOffer::createTradeOffer(
+            [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Moon Pearl'), 1) ],
+            [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Cooking Buddy'), 1) ],
+            'That\'s no knock-off! Tell Samarzhoustia trades directly with the Eridanus Federation!',
+            $user,
+            $quantities
+        );
+
+        $offers[] = TraderOffer::createTradeOffer(
+            [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Moon Pearl'), 1) ],
+            [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Composter'), 1) ],
+            'That\'s no knock-off! Tell Samarzhoustia trades directly with the Eridanus Federation!',
+            $user,
+            $quantities
+        );
+
+        $offers[] = TraderOffer::createTradeOffer(
+            [
+                TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Limestone'), 2),
+            ],
+            [
+                TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Scroll of Tell Samarzhoustian Delights'), 1),
+            ],
+            'Limestone is an important building material in Tell Samarzhoustia. We build beautiful palaces, and enormous chimera statues. Well, enormous by fish standards. You should visit, sometime.',
+            $user,
+            $quantities
+        );
+
+        return $offers;
     }
 
     private function getCuriositiesOffers(User $user, array $quantities): array
