@@ -15,6 +15,7 @@ use App\Model\ItemQuantity;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
+use App\Repository\SpiceRepository;
 use App\Service\CalendarService;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
@@ -41,12 +42,13 @@ class CraftingService
     private WeatherService $weatherService;
     private HouseSimService $houseSimService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private SpiceRepository $spiceRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         StickCraftingService $stickCraftingService, ItemRepository $itemRepository, EventLanternService $eventLanternService,
         TwuWuvCraftingService $twuWuvCraftingService, Squirrel3 $squirrel3, CalendarService $calendarService,
-        WeatherService $weatherService, HouseSimService $houseSimService,
+        WeatherService $weatherService, HouseSimService $houseSimService, SpiceRepository $spiceRepository,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
@@ -62,6 +64,7 @@ class CraftingService
         $this->weatherService = $weatherService;
         $this->houseSimService = $houseSimService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->spiceRepository = $spiceRepository;
     }
 
     /**
@@ -235,6 +238,8 @@ class CraftingService
                 $possibilities[] = new ActivityCallback($this, 'createShortRangeTelephone', 10);
             }
 
+            if($this->houseSimService->hasInventory('"Rustic" Magnifying Glass') && $this->houseSimService->hasInventory('Black Feathers'))
+                $possibilities[] = new ActivityCallback($this, 'createCrowsEye', 10);
         }
 
         if($this->houseSimService->hasInventory('Bownaner') && $this->houseSimService->hasInventory('Carrot'))
@@ -1574,6 +1579,54 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a bow out of an L-Square, but, ironically, couldn\'t get the measurements right.', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+            ;
+
+        }
+    }
+
+    private function createCrowsEye(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(15, 45), PetActivityStatEnum::CRAFT, false);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+
+            $this->houseSimService->getState()->loseItem('String', 1);
+
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a Crow\'s Eye, but accidentally broke the String they were trying to use! :(', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+            ;
+        }
+        else if($roll >= 20)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->houseSimService->getState()->loseItem('"Rustic" Magnifying Glass', 1);
+            $this->houseSimService->getState()->loseItem('String', 1);
+            $this->houseSimService->getState()->loseItem('Black Feathers', 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(3);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Crow\'s Eye... with Roadkill?!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+            ;
+
+            $roadkill = $this->spiceRepository->findOneByName('with Roadkill');
+
+            $this->inventoryService->petCollectsEnhancedItem('Crow\'s Eye', null, $roadkill, $pet, $pet->getName() . ' created this.', $activityLog);
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Crow\'s Eye, but felt they were missing a certain... je ne sais quoi.', 'icons/activity-logs/confused')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
             ;
 
