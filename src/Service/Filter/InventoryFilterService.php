@@ -39,6 +39,9 @@ class InventoryFilterService
                 'bonus' => [ $this, 'filterBonus' ],
                 'aHat' => [ $this, 'filterAHat' ],
                 'hasDonated' => [ $this, 'filterHasDonated' ],
+                'isFuel' => [ $this, 'filterIsFuel' ],
+                'isFertilizer' => [ $this, 'filterIsFertilizer' ],
+                'isTreasure' => [ $this, 'filterIsTreasure' ],
             ],
             [
                 'nameExactMatch'
@@ -205,5 +208,29 @@ class InventoryFilterService
             $qb->andWhere('donations.id IS NULL');
         else
             $qb->andWhere('donations.id IS NOT NULL');
+    }
+
+    public function filterIsFuel(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('item.fuel = 0');
+        else
+            $qb->andWhere('item.fuel > 0');
+    }
+
+    public function filterIsFertilizer(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('item.fertilizer = 0');
+        else
+            $qb->andWhere('item.fertilizer > 0');
+    }
+
+    public function filterIsTreasure(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('item.treasure IS NULL');
+        else
+            $qb->andWhere('item.treasure IS NOT NULL');
     }
 }

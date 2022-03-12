@@ -42,6 +42,9 @@ class MarketFilterService
                 'aHat' => [ $this, 'filterAHat' ],
                 'hasDonated' => [ $this, 'filterHasDonated' ],
                 'itemGroup' => [ $this, 'filterItemGroup' ],
+                'isFuel' => [ $this, 'filterIsFuel' ],
+                'isFertilizer' => [ $this, 'filterIsFertilizer' ],
+                'isTreasure' => [ $this, 'filterIsTreasure' ],
             ],
             [
                 'nameExactMatch'
@@ -220,5 +223,29 @@ class MarketFilterService
             ->andWhere('itemGroup.name=:itemGroupName')
             ->setParameter('itemGroupName', $value)
         ;
+    }
+
+    public function filterIsFuel(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('item.fuel = 0');
+        else
+            $qb->andWhere('item.fuel > 0');
+    }
+
+    public function filterIsFertilizer(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('item.fertilizer = 0');
+        else
+            $qb->andWhere('item.fertilizer > 0');
+    }
+
+    public function filterIsTreasure(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('item.treasure IS NULL');
+        else
+            $qb->andWhere('item.treasure IS NOT NULL');
     }
 }

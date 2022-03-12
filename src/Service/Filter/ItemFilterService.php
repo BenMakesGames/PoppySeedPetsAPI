@@ -41,6 +41,9 @@ class ItemFilterService
                 'aHat' => [ $this, 'filterAHat' ],
                 'hasDonated' => [ $this, 'filterHasDonated' ],
                 'itemGroup' => [ $this, 'filterItemGroup' ],
+                'isFuel' => [ $this, 'filterIsFuel' ],
+                'isFertilizer' => [ $this, 'filterIsFertilizer' ],
+                'isTreasure' => [ $this, 'filterIsTreasure' ],
             ],
             [
                 'nameExactMatch'
@@ -220,5 +223,29 @@ class ItemFilterService
             ->andWhere('itemGroup.name=:itemGroupName')
             ->setParameter('itemGroupName', $value)
         ;
+    }
+
+    public function filterIsFuel(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('i.fuel = 0');
+        else
+            $qb->andWhere('i.fuel > 0');
+    }
+
+    public function filterIsFertilizer(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('i.fertilizer = 0');
+        else
+            $qb->andWhere('i.fertilizer > 0');
+    }
+
+    public function filterIsTreasure(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('i.treasure IS NULL');
+        else
+            $qb->andWhere('i.treasure IS NOT NULL');
     }
 }
