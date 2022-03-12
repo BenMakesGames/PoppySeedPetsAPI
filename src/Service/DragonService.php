@@ -149,6 +149,9 @@ class DragonService
 
         $goodies = [];
 
+        $previousSilver = $dragon->getSilver();
+        $previousGold = $dragon->getGold();
+
         if($silver > 0)
         {
             $dragon->increaseSilver($silver);
@@ -165,6 +168,11 @@ class DragonService
                 $goodies[] = ArrayFunctions::pick_one_weighted($goldGoodies, fn($i) => $i['weight']);
         }
 
+        if($dragon->getSilver() >= 200 && $dragon->getGold() >= 200 && ($previousGold < 200 || $previousSilver < 200))
+        {
+            $this->unlockLoadedHattierStyle($user);
+        }
+
         if($gems > 0)
         {
             $previousGems = $dragon->getGems();
@@ -176,6 +184,9 @@ class DragonService
 
             if($previousGems < 50 && $dragon->getGems() >= 50)
                 $this->unlockWhiteDiamondHattierStyle($user);
+
+            if($previousGems < 100 && $dragon->getGems() >= 100)
+                $this->unlockBlackDiamondHattierStyle($user);
         }
 
         foreach($goodies as $goody)
@@ -282,5 +293,27 @@ class DragonService
         $this->hattierService->playerUnlockAura($user, $enchantment, 'You received this from your dragon, for donating 50 gems.');
 
         $this->responseService->addFlashMessage('50 whole gems! Your dragon bestows an aura of White Diamonds upon you and your pets! (You can find it at the Hattier\'s!) Oh: and 100 recycling points! Dang! Nice!');
+    }
+
+    private function unlockBlackDiamondHattierStyle(User $user)
+    {
+        $enchantment = $this->enchantmentRepository->findOneByName('with Black Diamonds');
+
+        $user->increaseRecyclePoints(100);
+
+        $this->hattierService->playerUnlockAura($user, $enchantment, 'You received this from your dragon, for donating 100 gems.');
+
+        $this->responseService->addFlashMessage('100 entire gems! Your dragon bestows an aura of Black Diamonds upon you and your pets! (You can find it at the Hattier\'s!) Oh: and 100 recycling points! Wow! Super!');
+    }
+
+    private function unlockLoadedHattierStyle(User $user)
+    {
+        $enchantment = $this->enchantmentRepository->findOneByName('Loaded');
+
+        $user->increaseRecyclePoints(100);
+
+        $this->hattierService->playerUnlockAura($user, $enchantment, 'You received this from your dragon, for donating 200 gold and 200 silver.');
+
+        $this->responseService->addFlashMessage('200 gold and 200 silver! Your dragon bestows an aura of Coins upon you and your pets! (You can find it at the Hattier\'s!) Oh: and 100 recycling points! Goodness! Fantastic!');
     }
 }
