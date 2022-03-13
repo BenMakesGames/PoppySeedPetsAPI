@@ -136,6 +136,9 @@ class SmithingService
                 $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createSaucepan', 7);
             }
 
+            if($this->houseSimService->hasInventory('Wings') && $this->houseSimService->hasInventory('Laser-guided Sword'))
+                $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createMeatSeekingClaymore', $weight);
+
             if($this->houseSimService->hasInventory('Crooked Stick'))
                 $possibilities[] = new ActivityCallback($this->ironSmithingService, 'createScythe', 10);
 

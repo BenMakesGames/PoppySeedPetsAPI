@@ -40,6 +40,52 @@ class IronSmithingService
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
+    public function createMeatSeekingClaymore(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($roll <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+            $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 24));
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to extend the blade of a Laser-guided Sword, but got burnt while trying! :(', 'icons/activity-logs/burn')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+            ;
+        }
+        else if($roll >= 25)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->houseSimService->getState()->loseItem('Iron Bar', 1);
+            $this->houseSimService->getState()->loseItem('Wings', 1);
+            $this->houseSimService->getState()->loseItem('Laser-guided Sword', 1);
+
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(6);
+
+            $article = $this->squirrel3->rngNextInt(1, 10) === 1 ? 'a humble' : 'a';
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Meat-seeking Claymore from ' . $article . ' Laser-guided Sword.', 'items/tool/sword/laser-guided-and-winged')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 25)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+            ;
+
+            $this->inventoryService->petCollectsItem('Meat-seeking Claymore', $pet, $pet->getName() . ' created this from ' . $article . ' Laser-guided Sword!', $activityLog);
+
+            return $activityLog;
+
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to add Wings to a Laser-guided Sword, but they were proving difficult to handle...', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+            ;
+        }
+    }
+
     public function createIronKey(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
