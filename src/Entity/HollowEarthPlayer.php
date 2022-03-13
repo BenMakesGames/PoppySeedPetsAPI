@@ -56,6 +56,36 @@ class HollowEarthPlayer
      */
     private $currentDirection;
 
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"hollowEarth"})
+     */
+    private $jade = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"hollowEarth"})
+     */
+    private $incense = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"hollowEarth"})
+     */
+    private $salt = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"hollowEarth"})
+     */
+    private $amber = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"hollowEarth"})
+     */
+    private $fruit = 0;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -185,6 +215,66 @@ class HollowEarthPlayer
             throw new EnumInvalidValueException(HollowEarthMoveDirectionEnum::class, $currentDirection);
 
         $this->currentDirection = $currentDirection;
+
+        return $this;
+    }
+
+    public function getJade(): ?int
+    {
+        return $this->jade;
+    }
+
+    public function setJade(int $jade): self
+    {
+        $this->jade = $jade;
+
+        return $this;
+    }
+
+    public function getIncense(): ?int
+    {
+        return $this->incense;
+    }
+
+    public function setIncense(int $incense): self
+    {
+        $this->incense = $incense;
+
+        return $this;
+    }
+
+    public function getSalt(): ?int
+    {
+        return $this->salt;
+    }
+
+    public function setSalt(int $salt): self
+    {
+        $this->salt = $salt;
+
+        return $this;
+    }
+
+    public function getAmber(): ?int
+    {
+        return $this->amber;
+    }
+
+    public function setAmber(int $amber): self
+    {
+        $this->amber = $amber;
+
+        return $this;
+    }
+
+    public function getFruit(): ?int
+    {
+        return $this->fruit;
+    }
+
+    public function setFruit(int $fruit): self
+    {
+        $this->fruit = $fruit;
 
         return $this;
     }
