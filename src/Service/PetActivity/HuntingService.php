@@ -1325,7 +1325,7 @@ class HuntingService
             {
                 $extraItem = $this->squirrel3->rngNextFromArray([
                     'Crooked Stick',
-                    'Tea Leaves',
+                    'Feathers',
                     'Quintessence',
                     'Witch-hazel'
                 ]);
