@@ -24,6 +24,7 @@ use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\CalendarService;
+use App\Service\FieldGuideService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -52,6 +53,7 @@ class HuntingService
     private IRandom $squirrel3;
     private GatheringDistractionService $gatheringDistractions;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private FieldGuideService $fieldGuideService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
@@ -60,7 +62,7 @@ class HuntingService
         TransactionService $transactionService, InventoryModifierService $toolBonusService, Squirrel3 $squirrel3,
         WerecreatureEncounterService $werecreatureEncounterService, WeatherService $weatherService,
         StatusEffectService $statusEffectService, GatheringDistractionService $gatheringDistractions,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        PetActivityLogTagRepository $petActivityLogTagRepository, FieldGuideService $fieldGuideService
     )
     {
         $this->responseService = $responseService;
@@ -79,6 +81,7 @@ class HuntingService
         $this->statusEffectService = $statusEffectService;
         $this->gatheringDistractions = $gatheringDistractions;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->fieldGuideService = $fieldGuideService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -1288,10 +1291,10 @@ class HuntingService
 
         $pet = $petWithSkills->getPet();
 
-        $skill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getBrawl()->getTotal());
+        $skill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getClimbingBonus() * 2;
+        $getExtraItem = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getNature()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15;
 
         $pet->increaseFood(-1);
-        $getExtraItem = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getNature()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15;
 
         if($this->squirrel3->rngNextInt(1, $skill) >= 18)
         {
@@ -1299,11 +1302,24 @@ class HuntingService
             $pet->increaseEsteem(2);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL, PetSkillEnum::NATURE ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Leshy Demon, but was able to defeat it.', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
-            ;
+            if($this->squirrel3->rngNextInt(1, 5) === 1)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was out hunting, something started throwing sticks and throwing branches at them! %pet:' . $pet->getId() . '.name% spotted an Argopelter in the trees! They chased after the creature, and defeated it with one of its own sticks!', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
+                ;
 
-            $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' plucked this from a Leshy Demon.', $activityLog);
+                $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' beat up an Argopelter with the help of this stick, which the Argopelter had thrown at them!', $activityLog);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was out hunting, something started throwing sticks and throwing branches at them! %pet:' . $pet->getId() . '.name% spotted an Argopelter in the trees! They chased after the creature, and quickly defeated it before it could get away!', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
+                ;
+
+                $this->inventoryService->petCollectsItem('Crooked Stick', $pet, 'An Argopelter threw this at ' . $pet->getName() . '!', $activityLog);
+            }
+
+            $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Argopelter', 'While ' . $pet->getName() . ' was out hunting, an Argopelter began throwing sticks and thorny branches at them...');
 
             if($getExtraItem)
             {
@@ -1314,30 +1330,39 @@ class HuntingService
                     'Witch-hazel'
                 ]);
 
-                $this->inventoryService->petCollectsItem($extraItem, $pet, $pet->getName() . ' pulled this out of a Leshy Demon\'s root cage.', $activityLog);
+                $this->inventoryService->petCollectsItem($extraItem, $pet, $pet->getName() . ' took this from a defeated Argopelter.', $activityLog);
             }
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
         }
         else
         {
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
 
-            if($getExtraItem)
+            $pet->increaseSafety(-1);
+
+            if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Leshy Demon! ' . $pet->getName() . ' was able to break off one of its many Crooked Sticks, but was eventually forced to flee.', '')
+                $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was out hunting in the woods, something started throwing sticks and thorny branches at them! %pet:' . $pet->getId() . '.name% never saw their tormenter, but it was surely an Agropelter.', '')
                     ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
                 ;
-
-                $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' broke this off of a Leshy Demon before running from it.', $activityLog);
             }
             else
             {
-                $pet->increaseSafety(-1);
-                $pet->increaseEsteem(-1);
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Leshy Demon, and forced to flee!', '')
+                $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was out hunting in the woods, something started throwing sticks and thorny branches at them! %pet:' . $pet->getId() . '.name% looked around for their tormenter, but didn\'t see anything...', '')
                     ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
                 ;
+                $pet->increaseEsteem(-1);
+            }
+
+            if($getExtraItem)
+            {
+                $activityLog->setEntry($activityLog->getEntry() . ' They found one of the sticks that had been thrown at them, and returned home.');
+
+                if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
+                    $this->inventoryService->petCollectsItem('Crooked Stick', $pet, 'This was thrown at ' . $pet->getName() . ' while they were out hunting, probably by an Argopelter.', $activityLog);
+                else
+                    $this->inventoryService->petCollectsItem('Crooked Stick', $pet, 'This was thrown at ' . $pet->getName() . ' while they were out hunting, by an unseen assailant.', $activityLog);
             }
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
