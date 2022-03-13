@@ -105,7 +105,7 @@ class IronSmithingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
             $this->houseSimService->getState()->loseItem('Iron Bar', 1);
 
-            $keys = $this->squirrel3->rngNextInt(1, 5) === 1 ? 2 : 1;
+            $keys = $roll >= 27 ? 2 : 1;
 
             if($keys === 2)
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged *two* Iron Keys from an Iron Bar!', 'items/key/iron');

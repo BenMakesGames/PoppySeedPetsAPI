@@ -355,7 +355,7 @@ class GoldSmithingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
             $this->houseSimService->getState()->loseItem('Gold Bar', 1);
 
-            $keys = $this->squirrel3->rngNextInt(1, 10) === 1 ? 2 : 1;
+            $keys = $roll >= 29 ? 2 : 1;
 
             if($keys === 2)
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged *two* Gold Keys from a Gold Bar!', 'items/key/gold');

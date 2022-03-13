@@ -81,7 +81,7 @@ class SilverSmithingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
             $this->houseSimService->getState()->loseItem('Silver Bar', 1);
 
-            $keys = $this->squirrel3->rngNextInt(1, 7) === 1 ? 2 : 1;
+            $keys = $roll >= 28 ? 2 : 1;
 
             if($keys === 2)
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged *two* Silver Keys from a Silver Bar!', 'items/key/silver');
