@@ -128,6 +128,10 @@ class HollowEarthService
                 'image' => $card ? $card->getImage() : null,
                 'fixed' => $tile->getCard() && $tile->getCard()->getType()->getName() === 'Fixed',
                 'types' => $tile->getTypes()->map(fn($t) => $t->getName()),
+                'availableGoods' => $tile->getGoods(),
+                'goodsSide' => $tile->getGoodsSide(),
+                'selectedGoods' => $playerTile ? $playerTile->getGoods() : null,
+                'isTradingDepot' => $tile->getIsTradingDepot(),
             ];
         }
 

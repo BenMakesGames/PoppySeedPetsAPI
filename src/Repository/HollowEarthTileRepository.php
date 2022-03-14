@@ -21,6 +21,9 @@ class HollowEarthTileRepository extends ServiceEntityRepository
         parent::__construct($registry, HollowEarthTile::class);
     }
 
+    /**
+     * @return HollowEarthTile[]
+     */
     public function findAllInBounds()
     {
         return $this->createQueryBuilder('t')

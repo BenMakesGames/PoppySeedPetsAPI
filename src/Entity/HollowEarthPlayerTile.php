@@ -39,6 +39,11 @@ class HollowEarthPlayerTile
      */
     private $card;
 
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $goods;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -76,6 +81,18 @@ class HollowEarthPlayerTile
     public function setCard(?HollowEarthTileCard $card): self
     {
         $this->card = $card;
+
+        return $this;
+    }
+
+    public function getGoods(): ?string
+    {
+        return $this->goods;
+    }
+
+    public function setGoods(?string $goods): self
+    {
+        $this->goods = $goods;
 
         return $this;
     }

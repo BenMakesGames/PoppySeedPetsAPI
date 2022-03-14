@@ -86,6 +86,12 @@ class HollowEarthPlayer
      */
     private $fruit = 0;
 
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"hollowEarth"})
+     */
+    private $showGoods = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -219,62 +225,79 @@ class HollowEarthPlayer
         return $this;
     }
 
-    public function getJade(): ?int
+    public function getJade(): int
     {
         return $this->jade;
     }
 
-    public function setJade(int $jade): self
+    public function increaseJade(int $jade): self
     {
-        $this->jade = $jade;
+        $this->jade += $jade;
+        $this->showGoods = true;
 
         return $this;
     }
 
-    public function getIncense(): ?int
+    public function getIncense(): int
     {
         return $this->incense;
     }
 
-    public function setIncense(int $incense): self
+    public function increaseIncense(int $incense): self
     {
-        $this->incense = $incense;
+        $this->incense += $incense;
+        $this->showGoods = true;
 
         return $this;
     }
 
-    public function getSalt(): ?int
+    public function getSalt(): int
     {
         return $this->salt;
     }
 
-    public function setSalt(int $salt): self
+    public function increaseSalt(int $salt): self
     {
-        $this->salt = $salt;
+        $this->salt += $salt;
+        $this->showGoods = true;
 
         return $this;
     }
 
-    public function getAmber(): ?int
+    public function getAmber(): int
     {
         return $this->amber;
     }
 
-    public function setAmber(int $amber): self
+    public function increaseAmber(int $amber): self
     {
-        $this->amber = $amber;
+        $this->amber += $amber;
+        $this->showGoods = true;
 
         return $this;
     }
 
-    public function getFruit(): ?int
+    public function getFruit(): int
     {
         return $this->fruit;
     }
 
-    public function setFruit(int $fruit): self
+    public function increaseFruit(int $fruit): self
     {
-        $this->fruit = $fruit;
+        $this->fruit += $fruit;
+        $this->showGoods = true;
+
+        return $this;
+    }
+
+    public function getShowGoods(): ?bool
+    {
+        return $this->showGoods;
+    }
+
+    public function setShowGoods(bool $showGoods): self
+    {
+        $this->showGoods = $showGoods;
 
         return $this;
     }

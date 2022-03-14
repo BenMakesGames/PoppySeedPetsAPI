@@ -47,6 +47,22 @@ class HollowEarthTile
      */
     private $card;
 
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     * @Groups({"hollowEarth"})
+     */
+    private $goodsSide;
+
+    /**
+     * @ORM\Column(type="simple_array", nullable=true)
+     */
+    private $goods = [];
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isTradingDepot;
+
     public function __construct()
     {
         $this->types = new ArrayCollection();
@@ -125,6 +141,42 @@ class HollowEarthTile
     public function setCard(?HollowEarthTileCard $card): self
     {
         $this->card = $card;
+
+        return $this;
+    }
+
+    public function getGoodsSide(): ?string
+    {
+        return $this->goodsSide;
+    }
+
+    public function setGoodsSide(?string $goodsSide): self
+    {
+        $this->goodsSide = $goodsSide;
+
+        return $this;
+    }
+
+    public function getGoods(): ?array
+    {
+        return $this->goods;
+    }
+
+    public function setGoods(?array $goods): self
+    {
+        $this->goods = $goods;
+
+        return $this;
+    }
+
+    public function getIsTradingDepot(): ?bool
+    {
+        return $this->isTradingDepot;
+    }
+
+    public function setIsTradingDepot(bool $isTradingDepot): self
+    {
+        $this->isTradingDepot = $isTradingDepot;
 
         return $this;
     }
