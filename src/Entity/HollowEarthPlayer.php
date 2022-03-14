@@ -233,7 +233,6 @@ class HollowEarthPlayer
     public function increaseJade(int $jade): self
     {
         $this->jade += $jade;
-        $this->showGoods = true;
 
         return $this;
     }
@@ -246,7 +245,6 @@ class HollowEarthPlayer
     public function increaseIncense(int $incense): self
     {
         $this->incense += $incense;
-        $this->showGoods = true;
 
         return $this;
     }
@@ -259,7 +257,6 @@ class HollowEarthPlayer
     public function increaseSalt(int $salt): self
     {
         $this->salt += $salt;
-        $this->showGoods = true;
 
         return $this;
     }
@@ -272,7 +269,6 @@ class HollowEarthPlayer
     public function increaseAmber(int $amber): self
     {
         $this->amber += $amber;
-        $this->showGoods = true;
 
         return $this;
     }
@@ -285,19 +281,18 @@ class HollowEarthPlayer
     public function increaseFruit(int $fruit): self
     {
         $this->fruit += $fruit;
-        $this->showGoods = true;
 
         return $this;
     }
 
-    public function getShowGoods(): ?bool
+    public function getShowGoods(): bool
     {
         return $this->showGoods;
     }
 
-    public function setShowGoods(bool $showGoods): self
+    public function setShowGoods(): self
     {
-        $this->showGoods = $showGoods;
+        $this->showGoods = true;
 
         return $this;
     }

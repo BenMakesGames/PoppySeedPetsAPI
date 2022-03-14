@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\HollowEarthPlayer;
+use App\Entity\HollowEarthPlayerTile;
 use App\Entity\HollowEarthTile;
 use App\Entity\HollowEarthTileCard;
 use App\Entity\Inventory;
@@ -13,8 +14,11 @@ use App\Enum\HollowEarthMoveDirectionEnum;
 use App\Enum\HollowEarthRequiredActionEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
+use App\Model\TraderOffer;
+use App\Model\TraderOfferCostOrYield;
 use App\Repository\HollowEarthPlayerTileRepository;
 use App\Repository\HollowEarthTileRepository;
+use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -28,6 +32,8 @@ class HollowEarthService
     private $hollowEarthPlayerTileRepository;
     private $statusEffectService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private ResponseService $responseService;
+    private ItemRepository $itemRepository;
 
     public const DICE_ITEMS = [
         'Glowing "Two-sided Die"' => 2,
@@ -44,7 +50,8 @@ class HollowEarthService
         HollowEarthTileRepository $hollowEarthTileRepository, EntityManagerInterface $em, InventoryService $inventoryService,
         PetExperienceService $petExperienceService, TransactionService $transactionService,
         HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository, StatusEffectService $statusEffectService,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        PetActivityLogTagRepository $petActivityLogTagRepository, ResponseService $responseService,
+        ItemRepository $itemRepository
     )
     {
         $this->hollowEarthTileRepository = $hollowEarthTileRepository;
@@ -55,6 +62,8 @@ class HollowEarthService
         $this->hollowEarthPlayerTileRepository = $hollowEarthPlayerTileRepository;
         $this->statusEffectService = $statusEffectService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->responseService = $responseService;
+        $this->itemRepository = $itemRepository;
     }
 
     public function unlockHollowEarth(User $user): void
@@ -262,7 +271,14 @@ class HollowEarthService
     {
         $player->setCurrentTile($tile);
 
-        $card = $this->getEffectiveTileCard($player, $tile);
+        $playerTile = $this->getCurrentPlayerTile($player, $tile);
+
+        if($playerTile && $playerTile->getGoods())
+        {
+            $this->collectGoods($player, $playerTile->getGoods(), $player->getMovesRemaining() === 0);
+        }
+
+        $card = $playerTile ? $playerTile->getCard() : $tile->getCard();
 
         if(!$card)
             return;
@@ -276,12 +292,36 @@ class HollowEarthService
         }
     }
 
-    private function getEffectiveTileCard(HollowEarthPlayer $player, HollowEarthTile $tile): ?HollowEarthTileCard
+    private function collectGoods(HollowEarthPlayer $player, string $goods, bool $getDouble)
     {
-        $playerTile = $this->hollowEarthPlayerTileRepository->findOneBy([
+        $quantity = $getDouble ? 2 : 1;
+
+        switch($goods)
+        {
+            case 'jade': $player->increaseJade($quantity); break;
+            case 'incense': $player->increaseIncense($quantity); break;
+            case 'salt': $player->increaseSalt($quantity); break;
+            case 'amber': $player->increaseAmber($quantity); break;
+            case 'fruit': $player->increaseFruit($quantity); break;
+            default: throw new \InvalidArgumentException('Unknown good type.');
+        }
+
+        $this->responseService->addFlashMessage('Collected ' . $quantity . ' ' . ucfirst($goods) . '.');
+
+        $player->setShowGoods();
+    }
+
+    private function getCurrentPlayerTile(HollowEarthPlayer $player, HollowEarthTile $tile): ?HollowEarthPlayerTile
+    {
+        return $this->hollowEarthPlayerTileRepository->findOneBy([
             'player' => $player->getUser(),
             'tile' => $tile,
         ]);
+    }
+
+    private function getEffectiveTileCard(HollowEarthPlayer $player, HollowEarthTile $tile): ?HollowEarthTileCard
+    {
+        $playerTile = $this->getCurrentPlayerTile($player, $tile);
 
         return $playerTile ? $playerTile->getCard() : $tile->getCard();
     }
@@ -403,6 +443,17 @@ class HollowEarthService
             'player' => $user->getHollowEarthPlayer(),
             'map' => $map,
             'dice' => $dice,
+        ];
+    }
+
+    public function getTrades()
+    {
+        return [
+            [
+                'id' => 1,
+                'item' => $this->itemRepository->findOneByName('Hollow Earth Booster Pack'),
+                'cost' => [  ],
+            ],
         ];
     }
 }

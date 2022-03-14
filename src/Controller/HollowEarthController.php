@@ -228,6 +228,9 @@ class HollowEarthController extends PoppySeedPetsController
         if(!$tile || !$tile->getGoods() || count($tile->getGoods()) === 0)
             throw new UnprocessableEntityHttpException('You are not on a tile that produces goods.');
 
+        if($player->getCurrentAction() || $player->getMovesRemaining() > 0)
+            throw new UnprocessableEntityHttpException('You can\'t change goods while you\'re moving!');
+
         if(!in_array($selectedGoods, $tile->getGoods()))
             throw new UnprocessableEntityHttpException('This tile is not capable of producing that type of good.');
 
@@ -254,6 +257,26 @@ class HollowEarthController extends PoppySeedPetsController
         $em->flush();
 
         return $responseService->success();
+    }
+
+    /**
+     * @Route("/trades", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getTrades(ResponseService $responseService, HollowEarthService $hollowEarthService)
+    {
+        $user = $this->getUser();
+        $player = $user->getHollowEarthPlayer();
+
+        $tile = $player->getCurrentTile();
+
+        if(!$tile || !$tile->getIsTradingDepot())
+            throw new UnprocessableEntityHttpException('You are not on a trade depot!');
+
+        if($player->getCurrentAction() || $player->getMovesRemaining() > 0)
+            throw new UnprocessableEntityHttpException('You can\'t trade while you\'re moving!');
+
+        $trades = $hollowEarthService->getTrades();
     }
 
     /**
