@@ -451,8 +451,33 @@ class HollowEarthService
         return [
             [
                 'id' => 1,
-                'item' => $this->itemRepository->findOneByName('Hollow Earth Booster Pack'),
-                'cost' => [  ],
+                'item' => 'Potion of Brawling',
+                'cost' => [ 'jade' => 4, 'fruit' => 4 ], // 4 jade, 4 fruit + 1 extra in 3 go-arounds
+            ],
+            [
+                'id' => 1,
+                'item' => 'Potion of Crafts',
+                'cost' => [ 'jade' => 4, 'incense' => 4 ], // 4 jade, 4 incense in 4 go-arounds + 4 extra
+            ],
+            [
+                'id' => 1,
+                'item' => 'Potion of Music',
+                'cost' => [ 'incense' => 4, 'fruit' => 4 ], // 4 incense & 2 fruit + 2 fruit & 1 extra in 3 go-arounds
+            ],
+            [
+                'id' => 1,
+                'item' => 'Potion of Nature',
+                'cost' => [ 'fruit' => 4, 'salt' => 4 ], // 3 go-arounds with 1 extras
+            ],
+            [
+                'id' => 1,
+                'item' => 'Potion of Science',
+                'cost' => [ 'amber' => 4, 'salt' => 4 ], // 4 go-arounds with 4 extras
+            ],
+            [
+                'id' => 1,
+                'item' => 'Potion of Stealth',
+                'cost' => [ 'incense' => 4, 'salt' => 4 ], // 4 go arounds with 4 extras
             ],
         ];
     }
