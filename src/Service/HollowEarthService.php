@@ -6,6 +6,7 @@ use App\Entity\HollowEarthPlayerTile;
 use App\Entity\HollowEarthTile;
 use App\Entity\HollowEarthTileCard;
 use App\Entity\Inventory;
+use App\Entity\Item;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
@@ -446,39 +447,93 @@ class HollowEarthService
         ];
     }
 
-    public function getTrades()
+    public function getTrade(HollowEarthPlayer $player, string $tradeId)
     {
+        return ArrayFunctions::find_one($this->getTrades($player), fn($t) => $t['id'] === $tradeId);
+    }
+
+    public function getTrades(HollowEarthPlayer $player)
+    {
+        $items = $this->itemRepository->findBy([
+            'name' => [
+                'Potion of Brawling',
+                'Potion of Crafts',
+                'Potion of Music',
+                'Potion of Nature',
+                'Potion of Science',
+                'Potion of Stealth',
+                'Potion of Umbra',
+            ]
+        ]);
+
         return [
             [
-                'id' => 1,
-                'item' => 'Potion of Brawling',
+                'id' => 'skillpotion1',
+                'item' => $this->serializeItem($items, 'Potion of Brawling'),
                 'cost' => [ 'jade' => 4, 'fruit' => 4 ], // 4 jade, 4 fruit + 1 extra in 3 go-arounds
+                'maxQuantity' => $this->computeMaxQuantity($player, 4, 0, 0, 0, 4),
             ],
             [
-                'id' => 1,
-                'item' => 'Potion of Crafts',
+                'id' => 'skillpotion2',
+                'item' => $this->serializeItem($items, 'Potion of Crafts'),
                 'cost' => [ 'jade' => 4, 'incense' => 4 ], // 4 jade, 4 incense in 4 go-arounds + 4 extra
+                'maxQuantity' => $this->computeMaxQuantity($player, 4, 4, 0, 0, 0),
             ],
             [
-                'id' => 1,
-                'item' => 'Potion of Music',
+                'id' => 'skillpotion3',
+                'item' => $this->serializeItem($items, 'Potion of Music'),
                 'cost' => [ 'incense' => 4, 'fruit' => 4 ], // 4 incense & 2 fruit + 2 fruit & 1 extra in 3 go-arounds
+                'maxQuantity' => $this->computeMaxQuantity($player, 0, 4, 0, 0, 4),
             ],
             [
-                'id' => 1,
-                'item' => 'Potion of Nature',
+                'id' => 'skillpotion4',
+                'item' => $this->serializeItem($items, 'Potion of Nature'),
                 'cost' => [ 'fruit' => 4, 'salt' => 4 ], // 3 go-arounds with 1 extras
+                'maxQuantity' => $this->computeMaxQuantity($player, 0, 0, 4, 0, 4),
             ],
             [
-                'id' => 1,
-                'item' => 'Potion of Science',
+                'id' => 'skillpotion5',
+                'item' => $this->serializeItem($items, 'Potion of Science'),
                 'cost' => [ 'amber' => 4, 'salt' => 4 ], // 4 go-arounds with 4 extras
+                'maxQuantity' => $this->computeMaxQuantity($player, 0, 0, 4, 4, 0),
             ],
             [
-                'id' => 1,
-                'item' => 'Potion of Stealth',
+                'id' => 'skillpotion6',
+                'item' => $this->serializeItem($items, 'Potion of Stealth'),
                 'cost' => [ 'incense' => 4, 'salt' => 4 ], // 4 go arounds with 4 extras
+                'maxQuantity' => $this->computeMaxQuantity($player, 0, 0, 4, 4, 0),
             ],
+            [
+                'id' => 'skillpotion7',
+                'item' => $this->serializeItem($items, 'Potion of Umbra'),
+                'cost' => [ 'incense' => 4, 'amber' => 4 ], // 3 go arounds, with 1 extra
+                'maxQuantity' => $this->computeMaxQuantity($player, 0, 4, 0, 4, 0),
+            ],
+        ];
+    }
+
+    private function computeMaxQuantity(HollowEarthPlayer $player, int $jade, int $incense, int $salt, int $amber, int $fruit): int
+    {
+        return min(
+            $jade == 0 ? 100 : floor($player->getJade() / $jade),
+            $incense == 0 ? 100 : floor($player->getIncense() / $incense),
+            $salt == 0 ? 100 : floor($player->getSalt() / $salt),
+            $amber == 0 ? 100 : floor($player->getAmber() / $amber),
+            $fruit == 0 ? 100 : floor($player->getFruit() / $fruit),
+        );
+    }
+
+    /**
+     * @param Item[] $items
+     */
+    private function serializeItem(array $items, string $itemName)
+    {
+        /** @var Item $item */
+        $item = ArrayFunctions::find_one($items, fn(Item $i) => $i->getName() === $itemName);
+
+        return [
+            'name' => $item->getName(),
+            'image' => $item->getImage(),
         ];
     }
 }
