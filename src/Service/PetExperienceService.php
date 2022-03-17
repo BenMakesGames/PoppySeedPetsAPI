@@ -81,11 +81,22 @@ class PetExperienceService
 
         $levelUp = $pet->getExperience() >= $pet->getExperienceToLevel();
 
+        $focusStatusEffect = $levelUp ? $this->getPetFocusingStatusEffect($pet) : null;
+
         while($pet->getExperience() >= $pet->getExperienceToLevel())
         {
             $pet->decreaseExperience($pet->getExperienceToLevel());
 
-            $statToLevel = $this->squirrel3->rngNextFromArray($stats);
+            if($focusStatusEffect && $pet->getSkills()->getStat($focusStatusEffect->skill) >= 10)
+            {
+                $statToLevel = $focusStatusEffect->skill;
+
+                $pet->removeStatusEffect($pet->getStatusEffect($focusStatusEffect->statusEffect));
+            }
+            else
+            {
+                $statToLevel = $this->squirrel3->rngNextFromArray($stats);
+            }
 
             if($pet->getSkills()->getStat($statToLevel) >= 20)
             {
@@ -104,6 +115,29 @@ class PetExperienceService
 
         if($activityLog && $levelUp)
             $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
+    }
+
+    private function getPetFocusingStatusEffect(Pet $pet): ?FocusingStatusEffect
+    {
+        $possibleEffects = [
+            [ 'brawl', StatusEffectEnum::FOCUSED_BRAWL ],
+            [ 'nature', StatusEffectEnum::FOCUSED_NATURE ],
+            [ 'crafts', StatusEffectEnum::FOCUSED_CRAFTS ],
+            [ 'stealth', StatusEffectEnum::FOCUSED_STEALTH ],
+            [ 'science', StatusEffectEnum::FOCUSED_SCIENCE ],
+            [ 'music', StatusEffectEnum::FOCUSED_MUSIC ],
+            [ 'umbra', StatusEffectEnum::FOCUSED_UMBRA ],
+        ];
+
+        foreach($possibleEffects as $effect)
+        {
+            $statusEffect = $pet->getStatusEffect($effect[1]);
+
+            if($statusEffect)
+                return new FocusingStatusEffect($effect[0], $effect[1]);
+        }
+
+        return null;
     }
 
     private function unlockLevel50Style(Pet $pet)
@@ -243,4 +277,16 @@ class PetExperienceService
 
         return true;
     }
+}
+
+class FocusingStatusEffect
+{
+    function __construct(string $skill, string $statusEffect)
+    {
+        $this->skill = $skill;
+        $this->statusEffect = $statusEffect;
+    }
+
+    public string $skill;
+    public string $statusEffect;
 }

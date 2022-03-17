@@ -163,6 +163,44 @@ class BoxController extends PoppySeedPetsItemController
     }
 
     /**
+     * @Route("/smallOres/{box}/loot", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openSmallOreBox(
+        Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
+        EntityManagerInterface $em, Squirrel3 $squirrel3
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($box, 'box/smallOres/#/loot');
+        $this->validateHouseSpace($box, $inventoryService);
+
+        $location = $box->getLocation();
+        $lockedToOwner = $box->getLockedToOwner();
+
+        $possibleOres = [
+            'Iron Ore', 'Iron Ore', 'Iron Ore',
+            'Silver Ore', 'Silver Ore', 'Silver Ore',
+            'Gold Ore', 'Gold Ore',
+            'XOR',
+        ];
+
+        $numberOfItems = $squirrel3->rngNextInt(1, 3) == 1 ? 2 : 3;
+
+        for($i = 0; $i < $numberOfItems; $i++)
+            $inventoryService->receiveItem($squirrel3->rngNextFromArray($possibleOres), $user, $box->getCreatedBy(), 'Found inside ' . $box->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
+
+        $em->remove($box);
+
+        $message = 'Sifting through the box, you found ' . $numberOfItems . ' good chunks of ore!';
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
+    }
+
+    /**
      * @Route("/box/{inventory}/open", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */

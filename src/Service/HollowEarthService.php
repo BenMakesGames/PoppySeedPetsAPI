@@ -463,6 +463,11 @@ class HollowEarthService
                 'Potion of Science',
                 'Potion of Stealth',
                 'Potion of Umbra',
+                'Fruits & Veggies Box',
+                'Small Box of Ores',
+                'Magic Smoke',
+                'Quintessence',
+                'Bag of Beans',
             ]
         ]);
 
@@ -509,6 +514,36 @@ class HollowEarthService
                 'cost' => [ 'incense' => 4, 'amber' => 4 ], // 3 go arounds, with 1 extra
                 'maxQuantity' => $this->computeMaxQuantity($player, 0, 4, 0, 4, 0),
             ],
+            [
+                'id' => 'magic1',
+                'item' => $this->serializeItem($items, 'Magic Smoke'),
+                'cost' => [ 'jade' => 2 ],
+                'maxQuantity' => $this->computeMaxQuantity($player, 2, 0, 0, 0, 0),
+            ],
+            [
+                'id' => 'magic2',
+                'item' => $this->serializeItem($items, 'Quintessence'),
+                'cost' => [ 'incense' => 2 ],
+                'maxQuantity' => $this->computeMaxQuantity($player, 0, 2, 0, 0, 0),
+            ],
+            [
+                'id' => 'box2',
+                'item' => $this->serializeItem($items, 'Small Box of Ores'),
+                'cost' => [ 'salt' => 2 ],
+                'maxQuantity' => $this->computeMaxQuantity($player, 0, 0, 2, 0, 0),
+            ],
+            [
+                'id' => 'box1',
+                'item' => $this->serializeItem($items, 'Fruits & Veggies Box'),
+                'cost' => [ 'amber' => 2 ],
+                'maxQuantity' => $this->computeMaxQuantity($player, 0, 0, 0, 2, 0),
+            ],
+            [
+                'id' => 'box3',
+                'item' => $this->serializeItem($items, 'Bag of Beans'),
+                'cost' => [ 'fruit' => 2 ],
+                'maxQuantity' => $this->computeMaxQuantity($player, 0, 0, 0, 0, 2),
+            ]
         ];
     }
 

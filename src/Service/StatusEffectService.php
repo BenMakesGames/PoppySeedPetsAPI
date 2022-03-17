@@ -43,6 +43,8 @@ class StatusEffectService
             ->setTimeRemaining(min($statusEffect->getTotalDuration(), $statusEffect->getTimeRemaining() + $durationInMinutes))
         ;
 
+        $statusEffectsToRemove = [];
+
         if($status === StatusEffectEnum::WEREFORM)
         {
             $itemsDropped = [];
@@ -72,6 +74,16 @@ class StatusEffectService
             else
                 $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% turned into a Werecreature!', '');
         }
+        else if(mb_substr($status, 0, 8) === 'Focused ')
+        {
+            $statusEffectsToRemove = array_merge(
+                $statusEffectsToRemove,
+                array_filter($pet->getStatusEffects()->toArray(), fn(StatusEffect $se) => mb_substr($se->getStatus(), 0, 8) === 'Focused ' && $se->getStatus() !== $status)
+            );
+        }
+
+        foreach($statusEffectsToRemove as $statusEffect)
+            $pet->removeStatusEffect($statusEffect);
     }
 
     public function getStatusEffectMaxDuration(string $status)

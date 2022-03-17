@@ -25,4 +25,11 @@ final class StatusEffectEnum
     public const HOT_TO_THE_TOUCH = 'Hot to the Touch';
     public const HOPPIN = 'Hoppin\'';
     public const OUT_OF_THIS_WORLD = 'Out of this World';
+    public const FOCUSED_BRAWL = 'Focused (Brawl)';
+    public const FOCUSED_NATURE = 'Focused (Nature)';
+    public const FOCUSED_CRAFTS = 'Focused (Crafts)';
+    public const FOCUSED_SCIENCE = 'Focused (Science)';
+    public const FOCUSED_MUSIC = 'Focused (Music)';
+    public const FOCUSED_STEALTH = 'Focused (Stealth)';
+    public const FOCUSED_UMBRA = 'Focused (Umbra)';
 }

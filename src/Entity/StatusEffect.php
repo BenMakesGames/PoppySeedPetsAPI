@@ -37,12 +37,12 @@ class StatusEffect
     /**
      * @ORM\Column(type="integer")
      */
-    private $totalDuration;
+    private $totalDuration = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $timeRemaining;
+    private $timeRemaining = 0;
 
     public function getId(): ?int
     {
@@ -61,7 +61,7 @@ class StatusEffect
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): string
     {
         return $this->status;
     }
@@ -76,7 +76,7 @@ class StatusEffect
         return $this;
     }
 
-    public function getTotalDuration(): ?int
+    public function getTotalDuration(): int
     {
         return $this->totalDuration;
     }
@@ -88,7 +88,7 @@ class StatusEffect
         return $this;
     }
 
-    public function getTimeRemaining(): ?int
+    public function getTimeRemaining(): int
     {
         return $this->timeRemaining;
     }
@@ -110,6 +110,13 @@ class StatusEffect
             StatusEffectEnum::OIL_COVERED,
             StatusEffectEnum::BITTEN_BY_A_WERECREATURE,
             StatusEffectEnum::WEREFORM,
+            StatusEffectEnum::FOCUSED_NATURE,
+            StatusEffectEnum::FOCUSED_SCIENCE,
+            StatusEffectEnum::FOCUSED_STEALTH,
+            StatusEffectEnum::FOCUSED_UMBRA,
+            StatusEffectEnum::FOCUSED_CRAFTS,
+            StatusEffectEnum::FOCUSED_BRAWL,
+            StatusEffectEnum::FOCUSED_MUSIC,
         ]))
         {
             return $this;

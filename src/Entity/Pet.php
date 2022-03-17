@@ -1220,7 +1220,7 @@ class Pet
      */
     public function getStatuses(): array
     {
-        return array_map(fn(StatusEffect $se) => $se->getStatus(), $this->statusEffects->toArray());
+        return array_values(array_map(fn(StatusEffect $se) => $se->getStatus(), $this->statusEffects->toArray()));
     }
 
     /**
