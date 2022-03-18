@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Enum\EnumInvalidValueException;
+use App\Enum\PollinatorEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -57,6 +59,12 @@ class GreenhousePlant
      * @Groups({"greenhousePlant"})
      */
     private $ordinal;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     * @Groups({"greenhousePlant"})
+     */
+    private $pollinators;
 
     public function __construct()
     {
@@ -217,6 +225,21 @@ class GreenhousePlant
     public function setOrdinal(int $ordinal): self
     {
         $this->ordinal = $ordinal;
+
+        return $this;
+    }
+
+    public function getPollinators(): ?string
+    {
+        return $this->pollinators;
+    }
+
+    public function setPollinators(?string $pollinators): self
+    {
+        if($pollinators != null && !PollinatorEnum::isAValue($pollinators))
+            throw new EnumInvalidValueException(PollinatorEnum::class, $pollinators);
+
+        $this->pollinators = $pollinators;
 
         return $this;
     }

@@ -12,6 +12,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\PlantTypeEnum;
+use App\Enum\PollinatorEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ActivityHelpers;
@@ -72,6 +73,8 @@ class GreenhouseController extends PoppySeedPetsController
 
         if(!$user->getGreenhouse())
             throw new AccessDeniedHttpException('You haven\'t purchased a Greenhouse plot yet.');
+
+        $greenhouseService->maybeAssignPollinators($user);
 
         return $responseService->success(
             $greenhouseService->getGreenhouseResponseData($user),
@@ -423,9 +426,19 @@ class GreenhouseController extends PoppySeedPetsController
             throw new UnprocessableEntityHttpException($plant->getPlant()->getName() . ' cannot be harvested!');
         }
 
-        $plant->clearGrowth();
+        $pollinators = $plant->getPollinators();
 
-        $beesWereAround = false;
+        if($pollinators === PollinatorEnum::BUTTERFLIES)
+            $user->getGreenhouse()->setButterfliesDismissedOn(new \DateTimeImmutable());
+        if($pollinators === PollinatorEnum::BEES_1)
+            $user->getGreenhouse()->setBeesDismissedOn(new \DateTimeImmutable());
+        if($pollinators === PollinatorEnum::BEES_2)
+            $user->getGreenhouse()->setBees2DismissedOn(new \DateTimeImmutable());
+
+        $plant
+            ->setPollinators(null)
+            ->clearGrowth()
+        ;
 
         if($plant->getPlant()->getName() === 'Barnacle Tree' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON)
         {
@@ -441,11 +454,6 @@ class GreenhouseController extends PoppySeedPetsController
         }
         else
         {
-            $beeFlavorChance = $user->getBeehive()
-                ? log($user->getBeehive()->getWorkers(), 2.511886)
-                : 0
-            ;
-
             $lootList = [];
 
             foreach($plant->getPlant()->getPlantYields() as $yield)
@@ -461,22 +469,10 @@ class GreenhouseController extends PoppySeedPetsController
                     $lootItemName = $lootItem->getName();
                     $plantName = $plant->getPlant()->getName();
 
-                    $newItem = $inventoryService->receiveItem($lootItem, $user, $user, $user->getName() . ' harvested this from ' . GrammarFunctions::indefiniteArticle($plantName) . ' ' . $plantName . '.', LocationEnum::HOME);
+                    $item = $inventoryService->receiveItem($lootItem, $user, $user, $user->getName() . ' harvested this from ' . GrammarFunctions::indefiniteArticle($plantName) . ' ' . $plantName . '.', LocationEnum::HOME);
 
-                    if($squirrel3->rngNextInt(1, 10000) < $beeFlavorChance * 100)
-                    {
-                        $beesWereAround = true;
-
-                        if(!$user->getGreenhouse()->getHasBeeNetting())
-                        {
-                            $user->getGreenhouse()->setCanUseBeeNetting(true);
-
-                            if($squirrel3->rngNextInt(1, 20) === 1)
-                                $newItem->setSpice($spiceRepository->findOneByName('of Queens'));
-                            else
-                                $newItem->setSpice($spiceRepository->findOneByName('Anthophilan'));
-                        }
-                    }
+                    if($pollinators)
+                        $greenhouseService->applyPollinatorSpice($item, $pollinators);
 
                     if(array_key_exists($lootItemName, $lootList))
                         $lootList[$lootItemName]++;
@@ -500,7 +496,10 @@ class GreenhouseController extends PoppySeedPetsController
                     : $user->getName() . ' harvested this from ' . GrammarFunctions::indefiniteArticle($plantName) . ' ' . $plantName . '...'
                 ;
 
-                $inventoryService->receiveItem('Mint', $user, $user, $comment, LocationEnum::HOME);
+                $item = $inventoryService->receiveItem('Mint', $user, $user, $comment, LocationEnum::HOME);
+
+                if($pollinators)
+                    $greenhouseService->applyPollinatorSpice($item, $pollinators);
 
                 $message = 'You harvested ' . ArrayFunctions::list_nice_quantities($lootList) . '... and some Mint!';
             }
@@ -543,9 +542,9 @@ class GreenhouseController extends PoppySeedPetsController
 
                 $activity = $greenhouseAdventureService->adventure($helper->getComputedSkills(), $plant);
 
-                if($beesWereAround && $helper->hasMerit(MeritEnum::BEHATTED))
+                if(($pollinators === PollinatorEnum::BEES_1 || $pollinators === PollinatorEnum::BEES_2) && $helper->hasMerit(MeritEnum::BEHATTED))
                 {
-                    $greenhouseAdventureService->maybeUnlockBeeAura($helper, $activity, $user->getGreenhouse()->getHasBeeNetting());
+                    $greenhouseAdventureService->maybeUnlockBeeAura($helper, $activity);
                 }
             }
         }
@@ -630,6 +629,15 @@ class GreenhouseController extends PoppySeedPetsController
             if($squirrel3->rngNextInt(1, 2) === 1)
                 $inventoryService->receiveItem('Fluff', $user, $user, 'Dropped by a startled goat.', LocationEnum::HOME);
         }
+
+        $pollinators = $plant->getPollinators();
+
+        if($pollinators === PollinatorEnum::BUTTERFLIES)
+            $user->getGreenhouse()->setButterfliesDismissedOn(new \DateTimeImmutable());
+        if($pollinators === PollinatorEnum::BEES_1)
+            $user->getGreenhouse()->setBeesDismissedOn(new \DateTimeImmutable());
+        if($pollinators === PollinatorEnum::BEES_2)
+            $user->getGreenhouse()->setBees2DismissedOn(new \DateTimeImmutable());
 
         $em->remove($plant);
         $em->flush();
@@ -769,53 +777,5 @@ class GreenhouseController extends PoppySeedPetsController
             $greenhouseService->getGreenhouseResponseData($user),
             [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE, SerializationGroupEnum::HELPER_PET ]
         );
-    }
-
-    /**
-     * @Route("/beeNetting/deploy", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function deployBeeNetting(ResponseService $responseService)
-    {
-        $user = $this->getUser();
-        $greenhouse = $user->getGreenhouse();
-
-        if($greenhouse === null)
-            throw new AccessDeniedHttpException('You don\'t have a greenhouse!');
-
-        if(!$greenhouse->getCanUseBeeNetting())
-            throw new AccessDeniedHttpException('You haven\'t unlocked this feature, yet...');
-
-        $greenhouse->setHasBeeNetting(true);
-
-        $responseService->addFlashMessage('(No more weird bee spices up in here!)');
-
-        return $responseService->success();
-    }
-
-    /**
-     * @Route("/beeNetting/putAway", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function putAwayBeeNetting(ResponseService $responseService, Squirrel3 $squirrel3)
-    {
-        $user = $this->getUser();
-        $greenhouse = $user->getGreenhouse();
-
-        if($greenhouse === null)
-            throw new AccessDeniedHttpException('You don\'t have a greenhouse!');
-
-        if(!$greenhouse->getCanUseBeeNetting())
-            throw new AccessDeniedHttpException('You haven\'t unlocked this feature, yet...');
-
-        $greenhouse->setHasBeeNetting(false);
-
-        $responseService->addFlashMessage($squirrel3->rngNextFromArray([
-            '(Hook me up with those bee spices!)',
-            '(Gimme them bee spices!)',
-            $squirrel3->rngNextFromArray([ '(Bee spices, bee mine!)', '(Bee spices, bee mine! (See what I did there?))' ])
-        ]));
-
-        return $responseService->success();
     }
 }

@@ -76,6 +76,11 @@ class Plant
      */
     private $fieldGuideEntry;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $noPollinators;
+
     public function __construct()
     {
         $this->plantYields = new ArrayCollection();
@@ -239,6 +244,18 @@ class Plant
     public function setFieldGuideEntry(?FieldGuideEntry $fieldGuideEntry): self
     {
         $this->fieldGuideEntry = $fieldGuideEntry;
+
+        return $this;
+    }
+
+    public function getNoPollinators(): ?bool
+    {
+        return $this->noPollinators;
+    }
+
+    public function setNoPollinators(bool $noPollinators): self
+    {
+        $this->noPollinators = $noPollinators;
 
         return $this;
     }

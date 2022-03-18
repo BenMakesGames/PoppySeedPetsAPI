@@ -3,6 +3,8 @@ namespace App\Service;
 
 use App\Entity\Greenhouse;
 use App\Entity\GreenhousePlant;
+use App\Entity\Inventory;
+use App\Entity\Item;
 use App\Entity\Merit;
 use App\Entity\PetSpecies;
 use App\Entity\User;
@@ -11,6 +13,7 @@ use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
+use App\Enum\PollinatorEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
@@ -19,6 +22,7 @@ use App\Repository\InventoryRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
+use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,13 +42,14 @@ class GreenhouseService
     private InventoryRepository $inventoryRepository;
     private NormalizerInterface $normalizer;
     private PetSpeciesRepository $petSpeciesRepository;
+    private SpiceRepository $spiceRepository;
 
     public function __construct(
         InventoryService $inventoryService, PetRepository $petRepository, PetFactory $petFactory, Squirrel3 $squirrel3,
         EntityManagerInterface $em, MeritRepository $meritRepository, UserStatsRepository $userStatsRepository,
         UserQuestRepository $userQuestRepository, GreenhousePlantRepository $greenhousePlantRepository,
         InventoryRepository $inventoryRepository, NormalizerInterface $normalizer,
-        PetSpeciesRepository $petSpeciesRepository
+        PetSpeciesRepository $petSpeciesRepository, SpiceRepository $spiceRepository
     )
     {
         $this->inventoryService = $inventoryService;
@@ -59,6 +64,7 @@ class GreenhouseService
         $this->inventoryRepository = $inventoryRepository;
         $this->normalizer = $normalizer;
         $this->petSpeciesRepository = $petSpeciesRepository;
+        $this->spiceRepository = $spiceRepository;
     }
 
     public function approachBird(Greenhouse $greenhouse): string
@@ -100,6 +106,18 @@ class GreenhouseService
         $this->userStatsRepository->incrementStat($user, UserStatEnum::LARGE_BIRDS_APPROACHED);
 
         return $message;
+    }
+
+    public function applyPollinatorSpice(Inventory $item, string $pollinators)
+    {
+        if($pollinators === PollinatorEnum::BEES_1 || $pollinators === PollinatorEnum::BEES_2)
+            $spiceName = $this->squirrel3->rngNextInt(1, 20) === 1 ? 'of Queens' : 'Anthophilan';
+        else if($pollinators === PollinatorEnum::BUTTERFLIES)
+            $spiceName = $this->squirrel3->rngNextFromArray([ 'Fortified', 'Nectarous' ]);
+        else
+            throw new \InvalidArgumentException('Programmer foolishness did not account for all pollinators when applying spices!');
+
+        $item->setSpice($this->spiceRepository->findOneByName($spiceName));
     }
 
     public function harvestPlantAsPet(GreenhousePlant $plant, PetSpecies $species, string $colorA, string $colorB, string $name, ?Merit $bonusMerit): string
@@ -145,6 +163,46 @@ class GreenhouseService
         }
 
         return $message;
+    }
+
+    public function maybeAssignPollinators(User $user)
+    {
+        $twoHoursAgo = (new \DateTimeImmutable())->sub(\DateInterval::createFromDateString('2 hours'));
+
+        if($user->getGreenhouse()->getButterfliesDismissedOn() <= $twoHoursAgo)
+            $this->maybeAssignPollinator($user, PollinatorEnum::BUTTERFLIES);
+
+        if($user->getUnlockedBeehive() && $user->getGreenhouse()->getBeesDismissedOn() <= $twoHoursAgo)
+            $this->maybeAssignPollinator($user, PollinatorEnum::BEES_1);
+
+        if($user->getUnlockedBeehive() && $user->getBeehive()->getWorkers() >= 500 && $user->getGreenhouse()->getBees2DismissedOn() <= $twoHoursAgo)
+            $this->maybeAssignPollinator($user, PollinatorEnum::BEES_2);
+    }
+
+    private function maybeAssignPollinator(User $user, string $pollinator)
+    {
+        // must not already have this pollinator present
+        if(ArrayFunctions::any($user->getGreenhousePlants(), fn(GreenhousePlant $p) => $p->getPollinators() == $pollinator))
+            return false;
+
+        // must have at least 3 generally-pollinatable plants
+        $availablePlants = array_filter($user->getGreenhousePlants()->toArray(), fn(GreenhousePlant $p) => !$p->getPlant()->getNoPollinators());
+
+        if($availablePlants < 3)
+            return false;
+
+        // must have at least 1 plant available
+        $availablePlants = array_filter($availablePlants, fn(GreenhousePlant $p) => $p->getPollinators() == null);
+
+        if(count($availablePlants) === 0)
+            return false;
+
+        /** @var GreenhousePlant $plant */
+        $plant = $this->squirrel3->rngNextFromArray($availablePlants);
+
+        $plant->setPollinators($pollinator);
+
+        return true;
     }
 
     public function getGreenhouseResponseData(User $user)

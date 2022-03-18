@@ -147,6 +147,9 @@ class BlueprintController extends PoppySeedPetsItemController
 
         $user->setUnlockedBeehive();
 
+        if($user->getGreenhouse())
+            $user->getGreenhouse()->setBeesDismissedOn(new \DateTimeImmutable());
+
         $beehiveService->createBeehive($user);
 
         $your = 'your';

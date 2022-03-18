@@ -71,26 +71,32 @@ class Greenhouse
     private $composterBonusCountdown = 0;
 
     /**
-     * @ORM\Column(type="boolean")
-     * @Groups({"myGreenhouse"})
-     */
-    private $canUseBeeNetting = false;
-
-    /**
-     * @ORM\Column(type="boolean")
-     * @Groups({"myGreenhouse"})
-     */
-    private $hasBeeNetting = false;
-
-    /**
      * @ORM\OneToOne(targetEntity=Pet::class, cascade={"persist", "remove"})
      * @Groups({"helperPet"})
      */
     private $helper;
 
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     */
+    private $butterfliesDismissedOn;
+
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     */
+    private $beesDismissedOn;
+
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     */
+    private $bees2DismissedOn;
+
     public function __construct()
     {
         $this->setComposterBonusCountdown();
+        $this->butterfliesDismissedOn = new \DateTimeImmutable();
+        $this->beesDismissedOn = new \DateTimeImmutable();
+        $this->bees2DismissedOn = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -216,30 +222,6 @@ class Greenhouse
         return $this;
     }
 
-    public function getCanUseBeeNetting(): ?bool
-    {
-        return $this->canUseBeeNetting;
-    }
-
-    public function setCanUseBeeNetting(bool $canUseBeeNetting): self
-    {
-        $this->canUseBeeNetting = $canUseBeeNetting;
-
-        return $this;
-    }
-
-    public function getHasBeeNetting(): ?bool
-    {
-        return $this->hasBeeNetting;
-    }
-
-    public function setHasBeeNetting(bool $hasBeeNetting): self
-    {
-        $this->hasBeeNetting = $hasBeeNetting;
-
-        return $this;
-    }
-
     public function getHelper(): ?Pet
     {
         return $this->helper;
@@ -248,6 +230,42 @@ class Greenhouse
     public function setHelper(?Pet $helper): self
     {
         $this->helper = $helper;
+
+        return $this;
+    }
+
+    public function getButterfliesDismissedOn(): ?\DateTimeImmutable
+    {
+        return $this->butterfliesDismissedOn;
+    }
+
+    public function setButterfliesDismissedOn(\DateTimeImmutable $butterfliesDismissedOn): self
+    {
+        $this->butterfliesDismissedOn = $butterfliesDismissedOn;
+
+        return $this;
+    }
+
+    public function getBeesDismissedOn(): ?\DateTimeImmutable
+    {
+        return $this->beesDismissedOn;
+    }
+
+    public function setBeesDismissedOn(\DateTimeImmutable $beesDismissedOn): self
+    {
+        $this->beesDismissedOn = $beesDismissedOn;
+
+        return $this;
+    }
+
+    public function getBees2DismissedOn(): ?\DateTimeImmutable
+    {
+        return $this->bees2DismissedOn;
+    }
+
+    public function setBees2DismissedOn(\DateTimeImmutable $bees2DismissedOn): self
+    {
+        $this->bees2DismissedOn = $bees2DismissedOn;
 
         return $this;
     }

@@ -88,35 +88,21 @@ class GreenhouseAdventureService
         return $activityLog;
     }
 
-    public function maybeUnlockBeeAura(Pet $pet, PetActivityLog $activityLog, bool $beeNettingIsDeployed): bool
+    public function maybeUnlockBeeAura(Pet $pet, PetActivityLog $activityLog): bool
     {
         $forTheBees = $this->enchantmentRepository->findOneByName('for the Bees');
 
         if($this->hattierService->userHasUnlocked($pet->getOwner(), $forTheBees))
             return false;
 
-        if($beeNettingIsDeployed)
-        {
-            $this->hattierService->unlockAuraDuringPetActivity(
-                $pet,
-                $activityLog,
-                $forTheBees,
-                'On the way back home, ' . ActivityHelpers::PetName($pet) . ' spotted a worker bee caught in the bee netting, and took it home in their hat!',
-                'On the way back home, ' . ActivityHelpers::PetName($pet) . ' spotted a worker bee caught in the bee netting, and thought it\'d make a great addition to a hat (for some reason...)',
-                ActivityHelpers::PetName($pet) . ' found a worker bee caught in your Greenhouse\'s bee netting...'
-            );
-        }
-        else
-        {
-            $this->hattierService->unlockAuraDuringPetActivity(
-                $pet,
-                $activityLog,
-                $forTheBees,
-                'On the way back home, ' . ActivityHelpers::PetName($pet) . ' noticed that a worker bee had made a new home in their hat!',
-                'On the way back home, ' . ActivityHelpers::PetName($pet) . ' noticed that a worker bee had followed them home!',
-                ActivityHelpers::PetName($pet) . ' was followed home by a worker bee...'
-            );
-        }
+        $this->hattierService->unlockAuraDuringPetActivity(
+            $pet,
+            $activityLog,
+            $forTheBees,
+            'On the way back home, ' . ActivityHelpers::PetName($pet) . ' noticed that a worker bee had made a new home in their hat!',
+            'On the way back home, ' . ActivityHelpers::PetName($pet) . ' noticed that a worker bee had followed them home!',
+            ActivityHelpers::PetName($pet) . ' was followed home by a worker bee...'
+        );
 
         return true;
     }
