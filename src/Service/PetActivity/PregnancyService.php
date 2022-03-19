@@ -220,8 +220,6 @@ class PregnancyService
         ;
 
         $this->userStatsRepository->incrementStat($user, UserStatEnum::PETS_BIRTHED);
-
-        $this->inventoryService->receiveItem('Renaming Scroll', $pet->getOwner(), $pet->getOwner(), 'You received this when ' . $baby->getName() . ' was born.', LocationEnum::HOME, false);
     }
 
     private const CANONICALIZED_FORBIDDEN_COMBINED_NAMES = [

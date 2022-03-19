@@ -89,12 +89,20 @@ class GreenhouseService
 
             case BirdBathBirdEnum::RAVEN:
                 $this->inventoryService->receiveItem('Black Feathers', $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
-                $message = 'As you approach the raven, it turns to face you. You freeze, and stare at each other for a few seconds before the raven flies off in a flurry of Black Feathers!';
+                $this->inventoryService->receiveItem('Black Feathers', $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
+                $extraItem = $this->squirrel3->rngNextFromArray([
+                    'Juice Box',
+                    $this->squirrel3->rngNextFromArray([ 'Winged Key', 'Piece of Cetgueli\'s Map' ]),
+                    $this->squirrel3->rngNextFromArray([ 'Magic Smoke', 'Lightning in a Bottle' ]),
+                ]);
+                $extraInventory = $this->inventoryService->receiveItem($extraItem, $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
+                $message = 'As you approach the raven, it turns to face you. You freeze, and stare at each other for a few seconds before the raven flies off in a flurry of Black Feathers! Also, it apparently left ' . $extraInventory->getItem()->getNameWithArticle() . ' behind? \'Kay...';
                 break;
 
             case BirdBathBirdEnum::TOUCAN:
                 $this->inventoryService->receiveItem('Cereal Box', $user, $user, 'Left behind by a huge toucan that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
-                $message = 'As you approach the toucan, it turns to face you. You freeze, and stare at each other for a few seconds before the toucan flies off, leaving a Cereal Box behind.';
+                $this->inventoryService->receiveItem('Scroll of Fruit', $user, $user, 'Left behind by a huge toucan that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
+                $message = 'As you approach the toucan, it turns to face you. You freeze, and stare at each other for a few seconds before the toucan flies off, leaving behind a box of cereal, and a scroll of fruit...';
                 break;
 
             default:
