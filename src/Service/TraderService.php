@@ -478,20 +478,11 @@ class TraderService
         if($this->calendarService->isPsyPetsBirthday())
         {
             $offers[] = TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('"Roy" Plushy'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1) ],
-                'These things are so cute...',
-                $user,
-                $quantities
-            );
-
-            $offers[] = TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fluff Heart'), 1),
-                    TraderOfferCostOrYield::createMoney(10),
+                    TraderOfferCostOrYield::createMoney(20),
                 ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('"Roy" Plushy'), 1) ],
-                'This is a special offer for PsyPets\' birthday. Cool bonus: unlike other plushies, you can wear this as a hat. For some reason.',
+                'This is a special offer for PsyPets\' birthday. Tess and Mia insisted. Oh, but cool bonus: unlike other plushies, you can wear this as a hat. Not sure why that is, really...',
                 $user,
                 $quantities
             );
