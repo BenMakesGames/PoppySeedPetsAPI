@@ -142,6 +142,9 @@ class MagicBindingService
 
         if($this->houseSimService->hasInventory('Quintessence'))
         {
+            if($this->houseSimService->hasInventory('Viscaria') && $this->houseSimService->hasInventory('Jar of Fireflies'))
+                $possibilities[] = new ActivityCallback($this, 'createLullablade', 8);
+
             if($this->houseSimService->hasInventory('Red Flail') && $this->houseSimService->hasInventory('Scales'))
                 $possibilities[] = new ActivityCallback($this, 'createYggdrasil', 8);
 
@@ -2538,6 +2541,46 @@ class MagicBindingService
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
             ;
             $this->inventoryService->petCollectsItem('Yggdrasil Branch', $pet, $pet->getName() . ' bound this.', $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createLullablade(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $craftsCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+
+        if($craftsCheck <= 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $this->houseSimService->getState()->loseItem('Jar of Fireflies', 1);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had an idea for a dreamy blade made of fireflies, but when handling the Jar of Fireflies, accidentally let them all out!', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
+            ;
+        }
+        else if($umbraCheck < 17)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had an idea for a dreamy blade made of Viscaria, but couldn\'t figure out the right enchantment to use...', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
+            ;
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->houseSimService->getState()->loseItem('Quintessence', 1);
+            $this->houseSimService->getState()->loseItem('Viscaria', 1);
+            $this->houseSimService->getState()->loseItem('Jar of Fireflies', 1);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(4);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a Lullablade!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Lullablade', $pet, $pet->getName() . ' bound this.', $activityLog);
             return $activityLog;
         }
     }
