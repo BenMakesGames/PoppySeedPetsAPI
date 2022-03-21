@@ -135,6 +135,11 @@ class CalendarService
         return $this->monthAndDay === 321;
     }
 
+    public function isAprilFools(): bool
+    {
+        return $this->monthAndDay === 401;
+    }
+
     public function isBastilleDay(): bool
     {
         return $this->monthAndDay >= 713 && $this->monthAndDay <= 715;
@@ -287,6 +292,9 @@ class CalendarService
 
         if($this->isPsyPetsBirthday())
             $events[] = HolidayEnum::PSYPETS_BIRTHDAY;
+
+        if($this->isAprilFools())
+            $events[] = HolidayEnum::APRIL_FOOLS;
 
         if($this->isHanukkah())
             $events[] = HolidayEnum::HANUKKAH;

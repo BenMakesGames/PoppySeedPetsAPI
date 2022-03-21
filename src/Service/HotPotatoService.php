@@ -5,12 +5,13 @@ use App\Entity\Inventory;
 use App\Enum\LocationEnum;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class HotPotatoService
 {
-    private $userRepository;
-    private $em;
-    private $responseService;
+    private UserRepository $userRepository;
+    private EntityManagerInterface $em;
+    private ResponseService $responseService;
 
     public function __construct(
         UserRepository $userRepository, EntityManagerInterface $em, ResponseService $responseService
@@ -21,7 +22,7 @@ class HotPotatoService
         $this->responseService = $responseService;
     }
 
-    public function countTosses(Inventory $inventory)
+    public function countTosses(Inventory $inventory): int
     {
         $numberOfTosses = 0;
 
@@ -34,7 +35,7 @@ class HotPotatoService
         return $numberOfTosses;
     }
 
-    public function tossItem(Inventory $inventory)
+    public function tossItem(Inventory $inventory): JsonResponse
     {
         $owner = $inventory->getOwner();
 

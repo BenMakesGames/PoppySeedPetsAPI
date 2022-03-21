@@ -93,6 +93,7 @@ class StatusEffectService
             case StatusEffectEnum::CAFFEINATED:
                 return 8 * 60;
             case StatusEffectEnum::EGGPLANT_CURSED:
+            case StatusEffectEnum::GLITTER_BOMBED:
                 return 48 * 60;
             case StatusEffectEnum::HEX_HEXED:
                 return 6 * 60;
