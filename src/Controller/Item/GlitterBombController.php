@@ -48,10 +48,15 @@ class GlitterBombController extends PoppySeedPetsItemController
 
             if(count($pets) === 0)
                 return $responseService->itemActionSuccess('You get ready to toss the Glitter Bomb, but it explodes, getting glitter all over you. (Your pets would have presumably also been affected, but they\'re not here, so...)', [ 'itemDeleted' => true ]);
-            else if(count($pets) === 1)
-                return $responseService->itemActionSuccess('You get ready to toss the Glitter Bomb, but it explodes, getting glitter all over you, and ' . $pets[0]->getName() . '.', [ 'itemDeleted' => true ]);
             else
-                return $responseService->itemActionSuccess('You get ready to toss the Glitter Bomb, but it explodes, getting glitter all over you, and, more importantly, your pets.', [ 'itemDeleted' => true ]);
+            {
+                $responseService->setReloadPets();
+
+                if(count($pets) === 1)
+                    return $responseService->itemActionSuccess('You get ready to toss the Glitter Bomb, but it explodes, getting glitter all over you, and ' . $pets[0]->getName() . '.', [ 'itemDeleted' => true ]);
+                else
+                    return $responseService->itemActionSuccess('You get ready to toss the Glitter Bomb, but it explodes, getting glitter all over you, and, more importantly, your pets.', [ 'itemDeleted' => true ]);
+            }
         }
         else
         {

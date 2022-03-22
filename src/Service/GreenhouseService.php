@@ -102,11 +102,11 @@ class GreenhouseService
             case BirdBathBirdEnum::TOUCAN:
                 $this->inventoryService->receiveItem('Cereal Box', $user, $user, 'Left behind by a huge toucan that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
                 $this->inventoryService->receiveItem('Scroll of Fruit', $user, $user, 'Left behind by a huge toucan that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
-                $message = 'As you approach the toucan, it turns to face you. You freeze, and stare at each other for a few seconds before the toucan flies off, leaving behind a box of cereal, and a scroll of fruit...';
+                $message = 'As you approach the toucan, it turns to face you. You freeze, and stare at each other for a few seconds before the toucan flies off, leaving behind a Cereal Box, and a Scroll of Fruit! (Presumably as part of a complete breakfast!)';
                 break;
 
             default:
-                throw new \Exception('Ben has done something wrong, and not accounted for this type of bird!');
+                throw new \Exception('Ben has done something wrong, and not accounted for this type of bird in the code! BEN! HOW COULD LET US DOWN LIKE THIS???');
         }
 
         $greenhouse->setVisitingBird(null);

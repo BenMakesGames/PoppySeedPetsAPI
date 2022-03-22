@@ -25,9 +25,33 @@ class FloristService
         $inventory = [
             [
                 'item' => [ 'name' => $flowerbomb->getName(), 'image' => $flowerbomb->getImage() ],
-                'cost' => $fullMoonName === 'Flower' ? 75 : 150,
+                'cost' => ($fullMoonName === 'Flower' || $this->calendarService->isAprilFools()) ? 75 : 150,
             ]
         ];
+
+        if($this->calendarService->isAprilFools())
+        {
+            $glitterBomb = $this->itemRepository->findOneByName('Glitter Bomb');
+
+            $inventory[] = [
+                'item' => [ 'name' => $glitterBomb->getName(), 'image' => $glitterBomb->getImage() ],
+                'cost' => 20
+            ];
+
+            $jestersCap = $this->itemRepository->findOneByName('Jester\'s Cap');
+
+            $inventory[] = [
+                'item' => [ 'name' => $jestersCap->getName(), 'image' => $jestersCap->getImage() ],
+                'cost' => 20
+            ];
+
+            $foolsSpice = $this->itemRepository->findOneByName('Fool\'s Spice');
+
+            $inventory[] = [
+                'item' => [ 'name' => $foolsSpice->getName(), 'image' => $foolsSpice->getImage() ],
+                'cost' => 5
+            ];
+        }
 
         if(
             $this->calendarService->isValentinesOrAdjacent() ||
