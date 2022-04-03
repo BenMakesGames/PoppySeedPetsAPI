@@ -481,7 +481,7 @@ class InventoryService
 
         if($pet->getTool())
         {
-            if($pet->getTool() && $pet->getTool()->getItem()->getTool())
+            if($pet->getTool()->getItem()->getTool())
             {
                 if($pet->getTool()->getItem()->getTool()->getAttractsBugs())
                 {

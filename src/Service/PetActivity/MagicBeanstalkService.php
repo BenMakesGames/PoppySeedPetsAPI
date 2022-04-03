@@ -272,10 +272,20 @@ class MagicBeanstalkService
             ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk' ]))
         ;
 
-        $numBugs = $this->squirrel3->rngNextInt(2, 5);
+        $repelsBugs =
+            $pet->getTool() && (
+                ($pet->getTool()->getItem()->getTool() && $pet->getTool()->getItem()->getTool()->getPreventsBugs()) ||
+                ($pet->getTool()->getEnchantment() && $pet->getTool()->getEnchantment()->getEffects()->getPreventsBugs())
+            )
+        ;
 
-        for($i = 0; $i < $numBugs; $i++)
-            $this->inventoryService->petCollectsItem('Stink Bug', $pet, 'A swarm of these flew past ' . $pet->getName() . ' while they were climbing ' . $pet->getOwner()->getName() . '\'s magic bean-stalk. I guess this one hitched a ride back down.', $activityLog);
+        if(!$repelsBugs)
+        {
+            $numBugs = $this->squirrel3->rngNextInt(2, 5);
+
+            for($i = 0; $i < $numBugs; $i++)
+                $this->inventoryService->petCollectsItem('Stink Bug', $pet, 'A swarm of these flew past ' . $pet->getName() . ' while they were climbing ' . $pet->getOwner()->getName() . '\'s magic bean-stalk. I guess this one hitched a ride back down.', $activityLog);
+        }
 
         $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 8));
 
