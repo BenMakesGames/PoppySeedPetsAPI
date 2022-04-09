@@ -34,21 +34,16 @@ class PlazaController extends PoppySeedPetsController
         $requestedBox = $request->request->get('box');
 
         /** @var AvailableHolidayBox $box */
-        $box = ArrayFunctions::find_one($availableBoxes, fn(AvailableHolidayBox $box) => $box->tradeDescription === $requestedBox);
+        $box = ArrayFunctions::find_one($availableBoxes, fn(AvailableHolidayBox $box) => $box->nameWithQuantity === $requestedBox);
 
         if(!$box)
             throw new UnprocessableEntityHttpException('No holiday box is available right now...');
 
-        if($box->itemToExchange)
-        {
-            if(!$inventoryService->loseItem($box->itemToExchange, $user, LocationEnum::HOME, 1))
-                throw new UnprocessableEntityHttpException('You need ' . $box->itemToExchange->getNameWithArticle() . '. (Make sure it\'s in your house, not in your Basement.)');
-        }
-
         if($box->userQuestEntity)
             $box->userQuestEntity->setValue(true);
 
-        $inventoryService->receiveItem($box->itemName, $user, $user, $box->comment, LocationEnum::HOME, true);
+        for($i = 0; $i < $box->quantity; $i++)
+            $inventoryService->receiveItem($box->itemName, $user, $user, $box->comment, LocationEnum::HOME, true);
 
         // TODO: after 2021-07-05, we can remove the "if" statement (but leave the body!)
         if((new \DateTimeImmutable())->format('Ymd') > 20210705)
@@ -56,7 +51,7 @@ class PlazaController extends PoppySeedPetsController
 
         $em->flush();
 
-        $responseService->addFlashMessage('Here you go! One ' . $box->itemName . '!');
+        $responseService->addFlashMessage('Here you go! Your ' . $box->tradeDescription . '!');
 
         return $responseService->success(array_map(
             fn(AvailableHolidayBox $box) => $box->tradeDescription,

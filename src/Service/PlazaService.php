@@ -3,7 +3,6 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Model\AvailableHolidayBox;
-use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 
 class PlazaService
@@ -37,11 +36,27 @@ class PlazaService
             if(!$gotBox->getValue())
             {
                 $boxes[] = new AvailableHolidayBox(
+                    'a Chinese New Year Box',
                     'Chinese New Year Box',
-                    'Chinese New Year Box',
+                    'Chinese New Year Box', 1,
                     'Received for the ' . $this->chineseCalendarInfo->year . ' Chinese New Year.',
-                    $gotBox,
-                    null
+                    $gotBox
+                );
+            }
+        }
+
+        if($this->calendarService->isEarthDay())
+        {
+            $gotEarthDaySeed = $this->userQuestRepository->findOrCreate($user, 'Earth Day, ' . $year, false);
+
+            if(!$gotEarthDaySeed->getValue())
+            {
+                $boxes[] = new AvailableHolidayBox(
+                    'two Earth Tree Seeds',
+                    'two Earth Tree Seeds',
+                    'Earth Tree Seed', 2,
+                    'Received for Earth Day, ' . $year . '.',
+                    $gotEarthDaySeed
                 );
             }
         }
@@ -53,11 +68,11 @@ class PlazaService
             if(!$gotBox->getValue())
             {
                 $boxes[] = new AvailableHolidayBox(
+                    'a 4th of July Box',
                     '4th of July Box',
-                    '4th of July Box',
+                    '4th of July Box', 1,
                     'Received on the ' . $now->format('jS') . ' of July, ' . $year . '.',
-                    $gotBox,
-                    null
+                    $gotBox
                 );
             }
         }
@@ -68,11 +83,11 @@ class PlazaService
             if(!$gotBox->getValue())
             {
                 $boxes[] = new AvailableHolidayBox(
+                    'a Bastille Day Box',
                     'Bastille Day Box',
-                    'Bastille Day Box',
+                    'Bastille Day Box', 1,
                     'Received on the ' . $now->format('jS') . ' of July, ' . $year . '.',
-                    $gotBox,
-                    null
+                    $gotBox
                 );
             }
         }
@@ -85,11 +100,11 @@ class PlazaService
             if(!$gotBox->getValue())
             {
                 $boxes[] = new AvailableHolidayBox(
+                    'a New Year Box',
                     'New Year Box',
-                    'New Year Box',
+                    'New Year Box', 1,
                     'Received on the ' . $now->format('jS') . ' of ' . $now->format('F') . ', ' . $year . '.',
-                    $gotBox,
-                    null
+                    $gotBox
                 );
             }
         }

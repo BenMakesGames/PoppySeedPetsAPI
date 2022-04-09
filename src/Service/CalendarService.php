@@ -170,6 +170,11 @@ class CalendarService
         return $this->monthAndDay === 229;
     }
 
+    public function isEarthDay(): bool
+    {
+        return $this->monthAndDay >= 420 && $this->monthAndDay <= 422;
+    }
+
     public function getChineseCalendarInfo(): ChineseCalendarInfo
     {
         $info = (new \Overtrue\ChineseCalendar\Calendar())
@@ -316,6 +321,9 @@ class CalendarService
 
         if($this->isBastilleDay())
             $events[] = HolidayEnum::BASTILLE_DAY;
+
+        if($this->isEarthDay())
+            $events[] = HolidayEnum::EARTH_DAY;
 
         $chineseCalendarInfo = $this->getChineseCalendarInfo();
 

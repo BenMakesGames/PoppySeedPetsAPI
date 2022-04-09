@@ -25,6 +25,7 @@ class HolidayEnum
     public const VALENTINES = 'Valentine\'s';
     public const WHITE_DAY = 'White Day';
     public const APRIL_FOOLS = 'April Fools\'';
+    public const EARTH_DAY = 'Earth Day';
 
     // weird events?
     public const LEONIDS = 'The Leonids Meteor Shower';

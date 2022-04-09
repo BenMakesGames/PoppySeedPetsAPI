@@ -55,29 +55,31 @@ class GreenhouseAdventureService
 
         $this->petExperienceService->gainAffection($pet, 1);
 
+        $harvestOrReplant = $plant->getPlant()->getName() === 'Earth Tree' ? 'replant' : 'harvest';
+
         if($roll <= 8)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had fun helping %user:' . $pet->getOwner()->getId() . '.name% harvest the ' . $plant->getPlant()->getName() . '.', 'ui/affection');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had fun helping %user:' . $pet->getOwner()->getId() . '.name% ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . '.', 'ui/affection');
         }
         else if($roll <= 10)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had fun helping %user:' . $pet->getOwner()->getId() . '.name% harvest the ' . $plant->getPlant()->getName() . ', and found a Crooked Stick!', 'ui/affection');
-            $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' found this while helping ' . $pet->getOwner()->getName() . ' harvest the ' . $plant->getPlant()->getName() . '.', $activityLog);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had fun helping %user:' . $pet->getOwner()->getId() . '.name% ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . ', and found a Crooked Stick!', 'ui/affection');
+            $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' found this while helping ' . $pet->getOwner()->getName() . ' ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . '.', $activityLog);
         }
         else if($roll <= 12)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had fun helping %user:' . $pet->getOwner()->getId() . '.name% harvest the ' . $plant->getPlant()->getName() . ', and found a Chanterelle!', 'ui/affection');
-            $this->inventoryService->petCollectsItem('Chanterelle', $pet, $pet->getName() . ' found this while helping ' . $pet->getOwner()->getName() . ' harvest the ' . $plant->getPlant()->getName() . '.', $activityLog);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had fun helping %user:' . $pet->getOwner()->getId() . '.name% ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . ', and found a Chanterelle!', 'ui/affection');
+            $this->inventoryService->petCollectsItem('Chanterelle', $pet, $pet->getName() . ' found this while helping ' . $pet->getOwner()->getName() . ' ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . '.', $activityLog);
         }
         else if($roll <= 13)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had fun helping %user:' . $pet->getOwner()->getId() . '.name% harvest the ' . $plant->getPlant()->getName() . ', and found some Witch-hazel!', 'ui/affection');
-            $this->inventoryService->petCollectsItem('Witch-hazel', $pet, $pet->getName() . ' found this while helping ' . $pet->getOwner()->getName() . ' harvest the ' . $plant->getPlant()->getName() . '.', $activityLog);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had fun helping %user:' . $pet->getOwner()->getId() . '.name% ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . ', and found some Witch-hazel!', 'ui/affection');
+            $this->inventoryService->petCollectsItem('Witch-hazel', $pet, $pet->getName() . ' found this while helping ' . $pet->getOwner()->getName() . ' ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . '.', $activityLog);
         }
         else if($roll <= 15)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had fun helping %user:' . $pet->getOwner()->getId() . '.name% harvest the ' . $plant->getPlant()->getName() . ', and found a Weird Beetle!', 'ui/affection');
-            $this->inventoryService->petCollectsItem('Weird Beetle', $pet, $pet->getName() . ' found this while helping ' . $pet->getOwner()->getName() . ' harvest the ' . $plant->getPlant()->getName() . '.', $activityLog);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% had fun helping %user:' . $pet->getOwner()->getId() . '.name% ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . ', and found a Weird Beetle!', 'ui/affection');
+            $this->inventoryService->petCollectsItem('Weird Beetle', $pet, $pet->getName() . ' found this while helping ' . $pet->getOwner()->getName() . ' ' . $harvestOrReplant . ' the ' . $plant->getPlant()->getName() . '.', $activityLog);
         }
 
         $activityLog

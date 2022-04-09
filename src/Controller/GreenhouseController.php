@@ -10,7 +10,6 @@ use App\Enum\MeritEnum;
 use App\Enum\MoonPhaseEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetLocationEnum;
-use App\Enum\PetSkillEnum;
 use App\Enum\PlantTypeEnum;
 use App\Enum\PollinatorEnum;
 use App\Enum\SerializationGroupEnum;
@@ -23,10 +22,8 @@ use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
-use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
-use App\Repository\PetSpeciesRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
@@ -36,7 +33,6 @@ use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\PetActivity\GreenhouseAdventureService;
 use App\Service\PetAssistantService;
-use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\WeatherService;
@@ -47,7 +43,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @Route("/greenhouse")
@@ -422,8 +417,23 @@ class GreenhouseController extends PoppySeedPetsController
                     return $responseService->success();
                 }
             }
+            else
+                throw new UnprocessableEntityHttpException($plant->getPlant()->getName() . ' cannot be harvested!');
+        }
 
-            throw new UnprocessableEntityHttpException($plant->getPlant()->getName() . ' cannot be harvested!');
+        if($plant->getPlant()->getName() === 'Earth Tree')
+        {
+            $user->increaseRecyclePoints(25);
+
+            $responseService->addFlashMessage('You carry the tree out to where Tess is planting new trees on the island, and plant the Earth Tree. She gives you 25 recycling points for your help taking care of the Earth!');
+
+            $leaves = $enchantmentRepository->findOneByName('Leafy');
+
+            if(!$hattierService->userHasUnlocked($user, $leaves))
+            {
+                $hattierService->playerUnlockAura($user, $leaves, 'You unlocked this by replanting an Earth Tree!');
+                $responseService->addFlashMessage('As you\'re replanting the Earth Tree, several leaves fall off of it, giving you an idea for a sweet Hattier styling...');
+            }
         }
 
         $pollinators = $plant->getPollinators();
@@ -535,7 +545,7 @@ class GreenhouseController extends PoppySeedPetsController
 
             $chanceOfHelp = sqrt(count($eligiblePets)) * 100;
 
-            if($squirrel3->rngNextInt(1, 550) <= $chanceOfHelp)
+            if($squirrel3->rngNextInt(1, 550) <= $chanceOfHelp || $plant->getPlant()->getName() === 'Earth Tree')
             {
                 /** @var Pet $helper */
                 $helper = $squirrel3->rngNextFromArray($eligiblePets);
@@ -548,6 +558,9 @@ class GreenhouseController extends PoppySeedPetsController
                 }
             }
         }
+
+        if($plant->getPlant()->getName() === 'Earth Tree')
+            $em->remove($plant);
 
         $em->flush();
 
