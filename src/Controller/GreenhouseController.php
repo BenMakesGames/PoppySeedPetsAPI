@@ -464,6 +464,7 @@ class GreenhouseController extends PoppySeedPetsController
         }
         else
         {
+            $plantName = $plant->getPlant()->getName();
             $lootList = [];
 
             foreach($plant->getPlant()->getPlantYields() as $yield)
@@ -477,7 +478,6 @@ class GreenhouseController extends PoppySeedPetsController
 
                     $lootItem = $loot->getItem();
                     $lootItemName = $lootItem->getName();
-                    $plantName = $plant->getPlant()->getName();
 
                     $item = $inventoryService->receiveItem($lootItem, $user, $user, $user->getName() . ' harvested this from ' . GrammarFunctions::indefiniteArticle($plantName) . ' ' . $plantName . '.', LocationEnum::HOME);
 
