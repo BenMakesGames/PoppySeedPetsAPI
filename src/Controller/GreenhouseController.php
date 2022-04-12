@@ -417,8 +417,8 @@ class GreenhouseController extends PoppySeedPetsController
                     return $responseService->success();
                 }
             }
-            else
-                throw new UnprocessableEntityHttpException($plant->getPlant()->getName() . ' cannot be harvested!');
+
+            throw new UnprocessableEntityHttpException($plant->getPlant()->getName() . ' cannot be harvested!');
         }
 
         if($plant->getPlant()->getName() === 'Earth Tree')
