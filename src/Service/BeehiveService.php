@@ -3,7 +3,6 @@ namespace App\Service;
 
 use App\Entity\Beehive;
 use App\Entity\User;
-use App\Functions\ArrayFunctions;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 

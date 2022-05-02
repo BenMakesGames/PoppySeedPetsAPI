@@ -711,6 +711,7 @@ class BoxController extends PoppySeedPetsItemController
             'Orange', 'Pamplemousse', 'Plain Yogurt', 'Quintessence', 'Red', 'Rice', 'Seaweed', 'Secret Seashell',
             'Silica Grounds', 'Smallish Pumpkin', 'Sugar', 'Toad Legs', 'Tomato', 'Wheat Flour',
             'World\'s Best Sugar Cookie', 'Glowing Four-sided Die', 'Mint', 'Mixed Nuts', 'Canned Food',
+            'Yellowy Lime'
         ]));
 
         $openedStat = $userStatsRepository->incrementStat($user, 'Opened ' . $inventory->getItem()->getNameWithArticle());

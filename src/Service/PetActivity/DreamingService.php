@@ -112,6 +112,7 @@ class DreamingService
             'Sweet Beet', 'Sweet Coffee Bean Tea with Mammal Extract',
             'Tentacle', 'Tentacle Onigiri', 'Tomato "Sushi"', 'Trout Yogurt',
             'Wheat Flower', 'Witch-hazel',
+            'Yellowy Lime'
         ];
 
         if($pet->getFood() + $pet->getJunk() > 0)

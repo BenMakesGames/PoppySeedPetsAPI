@@ -704,7 +704,7 @@ class GatheringService
                 $loot[] = $this->squirrel3->rngNextFromArray($possibleLoot);
 
             if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
-                $loot[] = $this->squirrel3->rngNextFromArray([ 'Avocado', 'Red', 'Orange', 'Apricot' ]);
+                $loot[] = $this->squirrel3->rngNextFromArray([ 'Avocado', 'Red', 'Orange', 'Apricot', 'Yellowy Lime' ]);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::NATURE ]);
 
@@ -842,6 +842,7 @@ class GatheringService
                 'Honeydont Ice Cream',
                 'Coconut',
                 'Orange',
+                'Yellowy Lime',
                 'Mango',
                 'Pineapple',
             ]));
@@ -883,7 +884,7 @@ class GatheringService
         ];
 
         $extraLoot = [
-            'Nutmeg', 'Spicy Peps'
+            'Nutmeg', 'Spicy Peps', 'Yellowy Lime'
         ];
 
         $loot = [];

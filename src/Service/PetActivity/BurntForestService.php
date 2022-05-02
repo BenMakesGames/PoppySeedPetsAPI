@@ -278,7 +278,7 @@ class BurntForestService
         $loot = $this->squirrel3->rngNextFromArray([
             'Crooked Stick',
             'Quintessence',
-            $this->squirrel3->rngNextFromArray([ 'Red', 'Orange', 'Pamplemousse', 'Apricot', 'Naner' ])
+            $this->squirrel3->rngNextFromArray([ 'Red', 'Orange', 'Pamplemousse', 'Apricot', 'Naner', 'Yellowy Lime' ])
         ]);
 
         if($umbraRoll > $brawlRoll)

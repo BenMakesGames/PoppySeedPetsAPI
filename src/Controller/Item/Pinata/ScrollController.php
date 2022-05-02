@@ -88,14 +88,14 @@ class ScrollController extends PoppySeedPetsItemController
 
             return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
         }
-        else if($r === 2 || $r === 3)
+        else if($r === 2 || $r === 3) // get a bunch of the same item
         {
             $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
             $item = $squirrel3->rngNextFromArray([
                 'Pamplemousse', 'Blackberries', 'Naner', 'Blueberries',
                 'Red', 'Orange', 'Apricot', 'Melowatern', 'Honeydont', 'Tomato', 'Spicy Peps',
-                'Pineapple',
+                'Pineapple', 'Yellowy Lime'
             ]);
 
             $numItems = $squirrel3->rngNextInt(5, $squirrel3->rngNextInt(6, 12));
@@ -110,13 +110,16 @@ class ScrollController extends PoppySeedPetsItemController
 
             return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
         }
-        else
+        else // get a bunch of different items
         {
             $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
             $possibleItems = [
-                'Fruits & Veggies Box', 'Pamplemousse', 'Blackberries', 'Naner', 'Blueberries',
-                'Red', 'Orange', 'Apricot', 'Melowatern', 'Honeydont', 'Tomato', 'Spicy Peps'
+                'Fruits & Veggies Box',
+
+                'Pamplemousse', 'Blackberries', 'Naner', 'Blueberries',
+                'Red', 'Orange', 'Apricot', 'Melowatern', 'Honeydont', 'Tomato', 'Spicy Peps',
+                'Pineapple', 'Yellowy Lime'
             ];
 
             $numItems = $squirrel3->rngNextInt(5, $squirrel3->rngNextInt(6, $squirrel3->rngNextInt(7, 15)));
