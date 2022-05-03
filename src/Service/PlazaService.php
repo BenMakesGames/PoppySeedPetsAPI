@@ -99,8 +99,8 @@ class PlazaService
             {
                 $boxes[] = new AvailableHolidayBox(
                     'a Cinco de Mayo Box',
-                    'Cinco de Mayo',
-                    'Cinco de Mayo', 1,
+                    'Cinco de Mayo Box',
+                    'Cinco de Mayo Box', 1,
                     'Received on the ' . $now->format('jS') . ' of May, ' . $year . '.',
                     $gotBox
                 );
