@@ -247,6 +247,7 @@ class BoxController extends PoppySeedPetsItemController
                     'New Year Box',
                     'Chinese New Year Box',
                     'Bastille Day Box',
+                    'Cinco de Mayo Box',
                     // TODO: other holiday boxes
                 ]);
             }
@@ -837,6 +838,37 @@ class BoxController extends PoppySeedPetsItemController
 
         foreach($items as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $lockedToOwner);
+
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+    }
+
+    /**
+     * @Route("/may5/{inventory}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openCincoDeMayoBox(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/may5/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
+
+        $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
+
+        $location = $inventory->getLocation();
+        $lockedToOwner = $inventory->getLockedToOwner();
+
+        $newInventory = [
+            $inventoryService->receiveItem('Basic Fish Taco', $user, $user, $comment, $location, $lockedToOwner),
+            $inventoryService->receiveItem('Spicy Peps', $user, $user, $comment, $location, $lockedToOwner),
+            $inventoryService->receiveItem('Yellowy Lime', $user, $user, $comment, $location, $lockedToOwner),
+            $inventoryService->receiveItem('Elote', $user, $user, $comment, $location, $lockedToOwner),
+            $inventoryService->receiveItem('Music Note', $user, $user, $comment, $location, $lockedToOwner),
+            $inventoryService->receiveItem('Red Firework', $user, $user, $comment, $location, $lockedToOwner),
+        ];
 
         return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
     }

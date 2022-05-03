@@ -91,6 +91,21 @@ class PlazaService
                 );
             }
         }
+        else if($this->calendarService->isCincoDeMayo())
+        {
+            $gotBox = $this->userQuestRepository->findOrCreate($user, 'Cinco de Mayo, ' . $year, false);
+
+            if(!$gotBox->getValue())
+            {
+                $boxes[] = new AvailableHolidayBox(
+                    'a Cinco de Mayo Box',
+                    'Cinco de Mayo',
+                    'Cinco de Mayo', 1,
+                    'Received on the ' . $now->format('jS') . ' of May, ' . $year . '.',
+                    $gotBox
+                );
+            }
+        }
         else if($this->calendarService->isNewYearsHoliday())
         {
             $newYearYear = $month === 12 ? ($year + 1) : $year;

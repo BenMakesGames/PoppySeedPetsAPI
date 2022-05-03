@@ -145,6 +145,11 @@ class CalendarService
         return $this->monthAndDay >= 713 && $this->monthAndDay <= 715;
     }
 
+    public function isCincoDeMayo(): bool
+    {
+        return $this->monthAndDay >= 504 && $this->monthAndDay <= 506;
+    }
+
     public function isWhiteDay(): bool
     {
         return $this->monthAndDay === 314;
@@ -324,6 +329,9 @@ class CalendarService
 
         if($this->isEarthDay())
             $events[] = HolidayEnum::EARTH_DAY;
+
+        if($this->isCincoDeMayo())
+            $events[] = HolidayEnum::CINCO_DE_MAYO;
 
         $chineseCalendarInfo = $this->getChineseCalendarInfo();
 
