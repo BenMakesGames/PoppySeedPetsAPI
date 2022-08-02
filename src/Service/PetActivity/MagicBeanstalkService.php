@@ -20,9 +20,9 @@ use App\Service\Squirrel3;
 
 class MagicBeanstalkService
 {
-    private $responseService;
-    private $petExperienceService;
-    private $inventoryService;
+    private ResponseService $responseService;
+    private PetExperienceService $petExperienceService;
+    private InventoryService $inventoryService;
     private IRandom $squirrel3;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 

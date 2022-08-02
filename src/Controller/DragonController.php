@@ -4,6 +4,8 @@ namespace App\Controller;
 use App\Entity\Pet;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Functions\ArrayFunctions;
+use App\Functions\RequestFunctions;
 use App\Repository\DragonRepository;
 use App\Repository\InventoryRepository;
 use App\Service\DragonHostageService;
@@ -73,12 +75,7 @@ class DragonController extends PoppySeedPetsController
     {
         $user = $this->getUser();
 
-        if(!$request->request->has('treasure'))
-            throw new UnprocessableEntityHttpException('No items were selected to give???');
-
-        $itemIds = $request->request->get('treasure');
-
-        if(!is_array($itemIds)) $itemIds = [ $itemIds ];
+        $itemIds = RequestFunctions::getUniqueIdsOrThrow($request, 'treasure', 'No items were selected to give???');
 
         $message = $dragonService->giveTreasures($user, $itemIds);
 

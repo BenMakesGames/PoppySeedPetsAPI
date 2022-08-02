@@ -11,6 +11,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\JewishCalendarFunctions;
+use App\Functions\RequestFunctions;
 use App\Repository\DragonRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
@@ -163,12 +164,7 @@ class FireplaceController extends PoppySeedPetsController
         if(!$whelp)
             throw new AccessDeniedHttpException('You haven\'t got a Dragon Whelp, yet!');
 
-        if(!$request->request->has('food'))
-            throw new UnprocessableEntityHttpException('No items were selected as food???');
-
-        $itemIds = $request->request->get('food');
-
-        if(!is_array($itemIds)) $itemIds = [ $itemIds ];
+        $itemIds = RequestFunctions::getUniqueIdsOrThrow($request, 'food', 'No items were selected as food???');
 
         /** @var Inventory[] $items */
         $items = $inventoryRepository->findBy([
@@ -468,12 +464,7 @@ class FireplaceController extends PoppySeedPetsController
         if(!$user->getUnlockedFireplace() || !$user->getFireplace())
             throw new AccessDeniedHttpException('You haven\'t got a Fireplace, yet!');
 
-        if(!$request->request->has('fuel'))
-            throw new UnprocessableEntityHttpException('No items were selected as fuel???');
-
-        $itemIds = $request->request->get('fuel');
-
-        if(!is_array($itemIds)) $itemIds = [ $itemIds ];
+        $itemIds = RequestFunctions::getUniqueIdsOrThrow($request, 'fuel', 'No items were selected as fuel???');
 
         $items = $inventoryRepository->findFuel($user, $itemIds);
 

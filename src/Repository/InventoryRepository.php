@@ -118,6 +118,7 @@ class InventoryRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param int[] $inventoryIds
      * @return Inventory[]
      */
     public function findFertilizers(User $user, ?array $inventoryIds = null)

@@ -5,7 +5,7 @@ use App\Service\Squirrel3;
 
 final class ArrayFunctions
 {
-    public static function any(iterable $array, callable $delegate)
+    public static function any(iterable $array, callable $delegate): bool
     {
         foreach($array as $item)
         {
@@ -16,7 +16,7 @@ final class ArrayFunctions
         return false;
     }
 
-    public static function all(iterable $array, callable $delegate)
+    public static function all(iterable $array, callable $delegate): bool
     {
         foreach($array as $item)
         {
@@ -111,7 +111,7 @@ final class ArrayFunctions
         throw new \Exception('This should not be possible.');
     }
 
-    public static function list_nice_quantities(array $quantities, string $separator = ', ', string $lastSeparator = ', and ')
+    public static function list_nice_quantities(array $quantities, string $separator = ', ', string $lastSeparator = ', and '): string
     {
         $list = [];
 
@@ -129,7 +129,7 @@ final class ArrayFunctions
     /**
      * @param string[] $strings
      */
-    public static function list_nice(iterable $strings, string $separator = ', ', string $lastSeparator = ', and ')
+    public static function list_nice(iterable $strings, string $separator = ', ', string $lastSeparator = ', and '): string
     {
         if(count($strings) === 0)
             return '';

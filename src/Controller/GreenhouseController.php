@@ -18,6 +18,7 @@ use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\GrammarFunctions;
+use App\Functions\RequestFunctions;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\InventoryRepository;
@@ -241,12 +242,7 @@ class GreenhouseController extends PoppySeedPetsController
         if(!$user->getGreenhouse()->getHasComposter())
             throw new AccessDeniedHttpException('Your don\'t have a composter yet!');
 
-        if(!$request->request->has('food'))
-            throw new UnprocessableEntityHttpException('No items were selected as fuel???');
-
-        $itemIds = $request->request->get('food');
-
-        if(!is_array($itemIds)) $itemIds = [ $itemIds ];
+        $itemIds = RequestFunctions::getUniqueIdsOrThrow($request, 'food', 'No items were selected as fuel???');
 
         $items = $inventoryRepository->findFertilizers($user, $itemIds);
 
