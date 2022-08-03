@@ -54,32 +54,29 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
             {
                 $event->setResponse($this->responseService->error(429, [ "You've made an awful lot of requests recently! Too many to be human! (The game thinks you're a bot; if you're not a bot, please let Ben know! https://docs.google.com/forms/d/e/1FAIpQLSczeBLNsktkSBbPZjyooHw5sEVJOBimJDS6xgEgIgFJvgqM8A/viewform?usp=sf_link )" ]));
             }
+            else if($e->getStatusCode() === 404)
+            {
+                if(strpos($e->getMessage(), 'App\\Entity\\Inventory') !== false)
+                    $message = 'That item doesn\'t exist... weird. Maybe it got used up? Reload and try again.';
+                else if(strpos($e->getMessage(), 'App\\Entity\\Pet') !== false)
+                    $message = 'That pet doesn\'t exist... weird. Reload and try again?';
+                else
+                    $message = 'The thing you were trying to interact with doesn\'t exist! That generally shouldn\'t happen... reload and try again?';
+
+                $event->setResponse($this->responseService->error(
+                    Response::HTTP_NOT_FOUND,
+                    [ $message ]
+                ));
+            }
             else
             {
-                if($e->getMessage())
-                    $message = $e->getMessage();
-                else
-                    $message = $this->getGenericErrorCodeString($e) . ' Reload and try again; if the problem persists, let Ben know, so he can fix it! :P';
+                $message = 'Hrm: something\'s gone awry. Reload and try again; if the problem persists, let Ben know, so he can fix it!';
 
                 $event->setResponse($this->responseService->error(
                     $e->getStatusCode(),
                     [ $message ]
                 ));
             }
-        }
-        else if($e instanceof EntityNotFoundException)
-        {
-            if(strpos($e->getMessage(), 'App\\Entity\\Inventory') !== false)
-                $message = 'That item doesn\'t exist... weird. Maybe it got used up? Reload and try again.';
-            else if(strpos($e->getMessage(), 'App\\Entity\\Pet') !== false)
-                $message = 'That pet doesn\'t exist... weird. Reload and try again?';
-            else
-                $message = 'The thing you were trying to interact with doesn\'t exist! That generally shouldn\'t happen... reload and try again?';
-
-            $event->setResponse($this->responseService->error(
-                Response::HTTP_NOT_FOUND,
-                [ $message ]
-            ));
         }
         else if($this->kernel->getEnvironment() !== 'dev')
         {
