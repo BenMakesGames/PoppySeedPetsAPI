@@ -10,13 +10,16 @@ class GrocerService
 
     private $cacheHelper;
     private $itemRepository;
+    private CalendarService $calendarService;
 
     public function __construct(
-        CacheHelper $cacheHelper, ItemRepository $itemRepository
+        CacheHelper $cacheHelper, ItemRepository $itemRepository,
+        CalendarService $calendarService
     )
     {
         $this->cacheHelper = $cacheHelper;
         $this->itemRepository = $itemRepository;
+        $this->calendarService = $calendarService;
     }
 
     private const ITEMS = [
@@ -83,8 +86,15 @@ class GrocerService
     {
         $inventory = [];
 
-        $specialIndex = RandomFunctions::squirrel3Noise($day, 78934) % count(self::SPECIALS);
-        $special = self::SPECIALS[$specialIndex];
+        if($this->calendarService->isJelephantDay())
+        {
+            $special = [ 'Jelephant Aminal Crackers', 8 ];
+        }
+        else
+        {
+            $specialIndex = RandomFunctions::squirrel3Noise($day, 78934) % count(self::SPECIALS);
+            $special = self::SPECIALS[$specialIndex];
+        }
 
         $inventory[] = $this->createInventoryData($special, true);
 

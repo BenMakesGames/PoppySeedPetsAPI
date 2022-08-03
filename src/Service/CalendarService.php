@@ -24,6 +24,11 @@ class CalendarService
         $this->monthAndDay = (int)$this->today->format('nd');
     }
 
+    public function isJelephantDay(): bool
+    {
+        return $this->monthAndDay === 812;
+    }
+
     public function isNoombatDay(): bool
     {
         // if it's not November, just get outta' here
@@ -332,6 +337,12 @@ class CalendarService
 
         if($this->isCincoDeMayo())
             $events[] = HolidayEnum::CINCO_DE_MAYO;
+
+        if($this->isNoombatDay())
+            $events[] = HolidayEnum::NOOMBAT_DAY;
+
+        if($this->isJelephantDay())
+            $events[] = HolidayEnum::JELEPHANT_DAY;
 
         $chineseCalendarInfo = $this->getChineseCalendarInfo();
 
