@@ -54,9 +54,9 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
             {
                 $event->setResponse($this->responseService->error(429, [ "You've made an awful lot of requests recently! Too many to be human! (The game thinks you're a bot; if you're not a bot, please let Ben know! https://docs.google.com/forms/d/e/1FAIpQLSczeBLNsktkSBbPZjyooHw5sEVJOBimJDS6xgEgIgFJvgqM8A/viewform?usp=sf_link )" ]));
             }
-            else if($e->getStatusCode() === 422)
+            else if($e->getStatusCode() === 422 || $e->getStatusCode() == 403 || $e->getStatusCode() == 401)
             {
-                $event->setResponse($this->responseService->error(422, [ $e->getMessage() ]));
+                $event->setResponse($this->responseService->error($e->getStatusCode(), [ $e->getMessage() ]));
             }
             else if($e->getStatusCode() === 404)
             {
