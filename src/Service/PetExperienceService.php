@@ -52,12 +52,12 @@ class PetExperienceService
     /**
      * @param string[] $stats
      */
-    public function gainExp(Pet $pet, int $exp, array $stats, ?PetActivityLog $activityLog = null)
+    public function gainExp(Pet $pet, int $exp, array $stats, ?PetActivityLog $activityLog = null): bool
     {
         if($pet->hasStatusEffect(StatusEffectEnum::INSPIRED))
             $exp++;
 
-        if($exp < 0) return;
+        if($exp < 0) return false;
 
         if($pet->getTool() && ArrayFunctions::any($stats, fn(string $stat) => $pet->getTool()->focusesSkill($stat)))
         {
@@ -75,7 +75,7 @@ class PetExperienceService
 
         $exp = round($exp / $divideBy);
 
-        if($exp == 0) return;
+        if($exp == 0) return false;
 
         $pet->increaseExperience($exp);
 
@@ -107,7 +107,12 @@ class PetExperienceService
                 $newItem->setLockedToOwner(true);
             }
             else
+            {
                 $pet->getSkills()->increaseStat($statToLevel);
+                $activityLog->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% leveled up! +1 ' . ucfirst($statToLevel) . '!')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
+                ;
+            }
 
             if($pet->getLevel() == 50)
                 $this->unlockLevel50Style($pet);
@@ -115,6 +120,8 @@ class PetExperienceService
 
         if($activityLog && $levelUp)
             $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
+
+        return $levelUp;
     }
 
     private function getPetFocusingStatusEffect(Pet $pet): ?FocusingStatusEffect
