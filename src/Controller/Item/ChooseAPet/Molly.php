@@ -16,9 +16,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @Route("/item/proboscis")
+ * @Route("/item/molly")
  */
-class Proboscis extends ChooseAPetController
+class Molly extends ChooseAPetController
 {
     /**
      * @Route("/{inventory}", methods={"POST"})
@@ -35,34 +35,41 @@ class Proboscis extends ChooseAPetController
         IRandom $rng
     )
     {
-        $this->validateInventory($inventory, 'proboscis/#');
+        $this->validateInventory($inventory, 'molly/#');
 
         $pet = $this->getPet($request, $petRepository);
         $skills = $pet->getComputedSkills();
 
-        $sugarQuantity = 2 + floor(($skills->getNature() + $skills->getDexterity()) / 2);
-        $honeyCombQuantity = 0;
+        $quantity = 2 + floor(($skills->getNature() + $skills->getDexterity()) / 3);
 
-        if($sugarQuantity >= 4)
-        {
-            $honeyCombQuantity = $rng->rngNextInt(0, $sugarQuantity / 2 - 1);
-            $sugarQuantity -= $honeyCombQuantity * 2;
-        }
+        $milkQuantity = $quantity < 4 ? 1 : $rng->rngNextInt(1, floor($quantity / 2));
+        $fluffQuantity = max(1, $quantity - $milkQuantity);
 
-        $actionDescription = "drank from the flowers of the island, and amassed {$sugarQuantity} Sugar";
+        $loot = [];
 
-        if($honeyCombQuantity > 0)
-            $actionDescription .= ", and {$honeyCombQuantity} Honeycomb";
+        if($milkQuantity > 0)
+            $loot[] = "{$milkQuantity}× Milk";
+
+        if($fluffQuantity > 0)
+            $loot[] = "{$fluffQuantity}× Fluff";
+
+        $babies = $rng->rngNextInt(3, 5);
+        $babyItem = $rng->rngNextBool() ? 'Catmouse Figurine' : 'Tentacat Figurine';
+
+        $actionDescription = "helped the Molly give birth to a litter of... {$babies} {$babyItem}s?? It was a surprisingly-messy affair, during which they collected " . ArrayFunctions::list_nice($loot) . "...";
 
         $activityLog = $responseService->createActivityLog($pet, "%pet:{$pet->getId()}% $actionDescription!", '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
         ;
 
-        for($i = 0; $i < $sugarQuantity; $i++)
-            $inventoryService->petCollectsItem('Sugar', $pet, "{$pet->getName()} used a Proboscis to drink from the flowers of the island, and got this!", $activityLog);
+        for($i = 0; $i < $milkQuantity; $i++)
+            $inventoryService->petCollectsItem('Milk', $pet, "{$pet->getName()} collected this while helping a Molly \"give birth\" to some {$babyItem}s...", $activityLog);
 
-        for($i = 0; $i < $honeyCombQuantity; $i++)
-            $inventoryService->petCollectsItem('Honeycomb', $pet, "{$pet->getName()} used a Proboscis to drink from the flowers of the island, and got this!", $activityLog);
+        for($i = 0; $i < $fluffQuantity; $i++)
+            $inventoryService->petCollectsItem('Fluff', $pet, "{$pet->getName()} collected this while helping a Molly \"give birth\" to some {$babyItem}s...", $activityLog);
+
+        for($i = 0; $i < $babies; $i++)
+            $inventoryService->petCollectsItem($babyItem, $pet, "{$pet->getName()} helped a Molly \"give birth\" to this...", $activityLog);
 
         if(!$petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog))
             $activityLog->setViewed();
