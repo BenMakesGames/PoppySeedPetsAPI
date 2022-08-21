@@ -109,9 +109,13 @@ class PetExperienceService
             else
             {
                 $pet->getSkills()->increaseStat($statToLevel);
-                $activityLog->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% leveled up! +1 ' . ucfirst($statToLevel) . '!')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
-                ;
+
+                if($activityLog)
+                {
+                    $activityLog->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% leveled up! +1 ' . ucfirst($statToLevel) . '!')
+                        ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
+                    ;
+                }
             }
 
             if($pet->getLevel() == 50)
