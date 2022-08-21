@@ -2,22 +2,18 @@
 
 namespace App\Controller\Item\ChooseAPet;
 
-use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
-use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
-use App\Functions\ArrayFunctions;
-use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
-use App\Service\InventoryService;
 use App\Service\IRandom;
-use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/lassoscope")
@@ -39,7 +35,7 @@ class Lassoscope extends ChooseAPetController
         IRandom $rng
     )
     {
-        $this->validateInventory($inventory, 'lassoscope/#');
+        $this->validateInventory($inventory, 'lassoscope');
 
         $pet = $this->getPet($request, $petRepository);
 

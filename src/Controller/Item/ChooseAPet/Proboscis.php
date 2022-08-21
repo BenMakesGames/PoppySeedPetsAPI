@@ -2,18 +2,19 @@
 
 namespace App\Controller\Item\ChooseAPet;
 
-use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
-use App\Functions\ArrayFunctions;
 use App\Repository\PetRepository;
+use App\Service\CommentFormatter;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/proboscis")
@@ -32,15 +33,16 @@ class Proboscis extends ChooseAPetController
         EntityManagerInterface $em,
         InventoryService $inventoryService,
         PetExperienceService $petExperienceService,
+        CommentFormatter $commentFormatter,
         IRandom $rng
     )
     {
-        $this->validateInventory($inventory, 'proboscis/#');
+        $this->validateInventory($inventory, 'proboscis');
 
         $pet = $this->getPet($request, $petRepository);
         $skills = $pet->getComputedSkills();
 
-        $sugarQuantity = 2 + floor(($skills->getNature() + $skills->getDexterity()) / 2);
+        $sugarQuantity = 2 + floor(($skills->getNature()->getTotal() + $skills->getDexterity()->getTotal()) / 2);
         $honeyCombQuantity = 0;
 
         if($sugarQuantity >= 4)
@@ -54,7 +56,7 @@ class Proboscis extends ChooseAPetController
         if($honeyCombQuantity > 0)
             $actionDescription .= ", and {$honeyCombQuantity} Honeycomb";
 
-        $activityLog = $responseService->createActivityLog($pet, "%pet:{$pet->getId()}% $actionDescription!", '')
+        $activityLog = $responseService->createActivityLog($pet, "%pet:{$pet->getId()}.name% {$actionDescription}!", '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
         ;
 
@@ -71,7 +73,7 @@ class Proboscis extends ChooseAPetController
         $em->flush();
 
         return $responseService->itemActionSuccess(
-            "{$pet->getName()} {$actionDescription}!",
+            $commentFormatter->format($activityLog->getEntry()),
             [ 'itemDeleted' => true ]
         );
     }

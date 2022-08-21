@@ -2,20 +2,17 @@
 
 namespace App\Controller\Item\ChooseAPet;
 
-use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
-use App\Enum\PetSkillEnum;
-use App\Functions\ArrayFunctions;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
-use App\Service\InventoryService;
 use App\Service\IRandom;
-use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/yggdrasilBranch")
@@ -36,7 +33,7 @@ class YggdrasilBranch extends ChooseAPetController
         IRandom $rng
     )
     {
-        $this->validateInventory($inventory, 'yggdrasilBranch/#');
+        $this->validateInventory($inventory, 'yggdrasilBranch');
 
         $pet = $this->getPet($request, $petRepository);
 
@@ -50,6 +47,9 @@ class YggdrasilBranch extends ChooseAPetController
 
         $merit = $meritRepository->findOneByName($randomMerit);
 
+        if(!$merit)
+            throw new \Exception("Merit not found: {$randomMerit}");
+
         if($pet->hasMerit($randomMerit))
         {
             $leaves = $rng->rngNextFromArray([
@@ -59,16 +59,16 @@ class YggdrasilBranch extends ChooseAPetController
                 'vanishes'
             ]);
 
-            $itemActionDescription = 'ate the fruit of the Yggdrasil Branch, and their ' . $randomMerit . ' ' . $leaves . '!';
+            $itemActionDescription = "ate the fruit of the Yggdrasil Branch, and their {$randomMerit} {$leaves}!";
             $pet->removeMerit($merit);
         }
         else
         {
             $pet->addMerit($merit);
-            $itemActionDescription = 'ate the fruit of the Yggdrasil Branch, and was blessed with ' . $randomMerit . '!';
+            $itemActionDescription = "ate the fruit of the Yggdrasil Branch, and was blessed with {$randomMerit}!";
         }
 
-        $responseService->createActivityLog($pet, "%pet:{$pet->getId()}% $itemActionDescription", '')
+        $responseService->createActivityLog($pet, "%pet:{$pet->getId()}.name% {$itemActionDescription}", '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
             ->setViewed()
         ;

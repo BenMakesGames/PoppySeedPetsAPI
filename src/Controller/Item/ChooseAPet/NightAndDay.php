@@ -2,18 +2,20 @@
 
 namespace App\Controller\Item\ChooseAPet;
 
-use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\PetRepository;
+use App\Service\CommentFormatter;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/nightAndDay")
@@ -32,10 +34,11 @@ class NightAndDay extends ChooseAPetController
         EntityManagerInterface $em,
         InventoryService $inventoryService,
         PetExperienceService $petExperienceService,
+        CommentFormatter $commentFormatter,
         IRandom $rng
     )
     {
-        $this->validateInventory($inventory, 'nightAndDay/#');
+        $this->validateInventory($inventory, 'nightAndDay');
 
         $pet = $this->getPet($request, $petRepository);
 
@@ -54,7 +57,7 @@ class NightAndDay extends ChooseAPetController
         $messageMiddle = "focused {$subject}, and the {$inventory->getFullItemName()} turned into";
         $itemList = ArrayFunctions::list_nice($pairOfItems);
 
-        $activityLog = $responseService->createActivityLog($pet, "%pet:{$pet->getId()}% $messageMiddle {$itemList}!", '')
+        $activityLog = $responseService->createActivityLog($pet, "%pet:{$pet->getId()}.name% {$messageMiddle} {$itemList}!", '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
         ;
 
@@ -68,7 +71,7 @@ class NightAndDay extends ChooseAPetController
         $em->flush();
 
         return $responseService->itemActionSuccess(
-            "{$pet->getName()} {$messageMiddle} {$itemList}!",
+            $commentFormatter->format($activityLog->getEntry()),
             [ 'itemDeleted' => true ]
         );
     }

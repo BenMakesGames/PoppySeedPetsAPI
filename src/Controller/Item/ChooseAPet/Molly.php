@@ -2,18 +2,20 @@
 
 namespace App\Controller\Item\ChooseAPet;
 
-use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\PetRepository;
+use App\Service\CommentFormatter;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/molly")
@@ -32,15 +34,16 @@ class Molly extends ChooseAPetController
         EntityManagerInterface $em,
         InventoryService $inventoryService,
         PetExperienceService $petExperienceService,
+        CommentFormatter $commentFormatter,
         IRandom $rng
     )
     {
-        $this->validateInventory($inventory, 'molly/#');
+        $this->validateInventory($inventory, 'molly');
 
         $pet = $this->getPet($request, $petRepository);
         $skills = $pet->getComputedSkills();
 
-        $quantity = 2 + floor(($skills->getNature() + $skills->getDexterity()) / 3);
+        $quantity = 2 + floor(($skills->getNature()->getTotal() + $skills->getDexterity()->getTotal()) / 3);
 
         $milkQuantity = $quantity < 4 ? 1 : $rng->rngNextInt(1, floor($quantity / 2));
         $fluffQuantity = max(1, $quantity - $milkQuantity);
@@ -58,12 +61,12 @@ class Molly extends ChooseAPetController
 
         $actionDescription = "helped the Molly give birth to a litter of... {$babies} {$babyItem}s?? It was a surprisingly-messy affair, during which they collected " . ArrayFunctions::list_nice($loot) . "...";
 
-        $activityLog = $responseService->createActivityLog($pet, "%pet:{$pet->getId()}% $actionDescription!", '')
+        $activityLog = $responseService->createActivityLog($pet, "%pet:{$pet->getId()}.name% ${actionDescription}", '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
         ;
 
         for($i = 0; $i < $milkQuantity; $i++)
-            $inventoryService->petCollectsItem('Milk', $pet, "{$pet->getName()} collected this while helping a Molly \"give birth\" to some {$babyItem}s...", $activityLog);
+            $inventoryService->petCollectsItem('Creamy Milk', $pet, "{$pet->getName()} collected this while helping a Molly \"give birth\" to some {$babyItem}s...", $activityLog);
 
         for($i = 0; $i < $fluffQuantity; $i++)
             $inventoryService->petCollectsItem('Fluff', $pet, "{$pet->getName()} collected this while helping a Molly \"give birth\" to some {$babyItem}s...", $activityLog);
@@ -78,7 +81,7 @@ class Molly extends ChooseAPetController
         $em->flush();
 
         return $responseService->itemActionSuccess(
-            "{$pet->getName()} {$actionDescription}!",
+            $commentFormatter->format($activityLog->getEntry()),
             [ 'itemDeleted' => true ]
         );
     }
