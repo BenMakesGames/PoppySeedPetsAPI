@@ -5,6 +5,7 @@ namespace App\Controller\Item\ChooseAPet;
 use App\Entity\Inventory;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
+use App\Model\PetChanges;
 use App\Repository\PetRepository;
 use App\Service\CommentFormatter;
 use App\Service\InventoryService;
@@ -40,6 +41,7 @@ class Proboscis extends ChooseAPetController
         $this->validateInventory($inventory, 'proboscis');
 
         $pet = $this->getPet($request, $petRepository);
+        $petChanges = new PetChanges($pet);
         $skills = $pet->getComputedSkills();
 
         $sugarQuantity = 2 + floor(($skills->getNature()->getTotal() + $skills->getDexterity()->getTotal()) / 2);
@@ -66,8 +68,12 @@ class Proboscis extends ChooseAPetController
         for($i = 0; $i < $honeyCombQuantity; $i++)
             $inventoryService->petCollectsItem('Honeycomb', $pet, "{$pet->getName()} used a Proboscis to drink from the flowers of the island, and got this!", $activityLog);
 
-        if(!$petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog))
-            $activityLog->setViewed();
+        $petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
+
+        $activityLog
+            ->setViewed()
+            ->setChanges($petChanges->compare($pet))
+        ;
 
         $em->remove($inventory);
         $em->flush();

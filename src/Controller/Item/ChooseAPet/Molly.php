@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\PetChanges;
 use App\Repository\PetRepository;
 use App\Service\CommentFormatter;
 use App\Service\InventoryService;
@@ -41,6 +42,7 @@ class Molly extends ChooseAPetController
         $this->validateInventory($inventory, 'molly');
 
         $pet = $this->getPet($request, $petRepository);
+        $petChanges = new PetChanges($pet);
         $skills = $pet->getComputedSkills();
 
         $quantity = 2 + floor(($skills->getNature()->getTotal() + $skills->getDexterity()->getTotal()) / 3);
@@ -74,8 +76,12 @@ class Molly extends ChooseAPetController
         for($i = 0; $i < $babies; $i++)
             $inventoryService->petCollectsItem($babyItem, $pet, "{$pet->getName()} helped a Molly \"give birth\" to this...", $activityLog);
 
-        if(!$petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog))
-            $activityLog->setViewed();
+        $petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
+
+        $activityLog
+            ->setViewed()
+            ->setChanges($petChanges->compare($pet))
+        ;
 
         $em->remove($inventory);
         $em->flush();

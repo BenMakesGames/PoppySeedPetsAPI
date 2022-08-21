@@ -5,6 +5,7 @@ namespace App\Controller\Item\ChooseAPet;
 use App\Entity\Inventory;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Model\PetChanges;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Service\IRandom;
@@ -36,6 +37,7 @@ class YggdrasilBranch extends ChooseAPetController
         $this->validateInventory($inventory, 'yggdrasilBranch');
 
         $pet = $this->getPet($request, $petRepository);
+        $petChanges = new PetChanges($pet);
 
         $randomMerit = $rng->rngNextFromArray([
             MeritEnum::WONDROUS_STRENGTH,
@@ -71,6 +73,7 @@ class YggdrasilBranch extends ChooseAPetController
         $responseService->createActivityLog($pet, "%pet:{$pet->getId()}.name% {$itemActionDescription}", '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
             ->setViewed()
+            ->setChanges($petChanges->compare($pet))
         ;
 
         $em->remove($inventory);

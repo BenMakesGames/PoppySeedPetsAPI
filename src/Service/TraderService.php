@@ -240,6 +240,16 @@ class TraderService
             ),
             TraderOffer::createTradeOffer(
                 [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Black Flag'), 1),
+                    TraderOfferCostOrYield::createMoney(10)
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('White Flag'), 1) ],
+                'Not the flag design you were looking for? You should try the Flag of Tell Samarzhoustia!',
+                $user,
+                $quantities
+            ),
+            TraderOffer::createTradeOffer(
+                [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Black Feathers'), 1),
                     TraderOfferCostOrYield::createMoney(10)
                 ],

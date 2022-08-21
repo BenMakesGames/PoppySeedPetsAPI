@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Model\PetChanges;
 use App\Repository\PetRepository;
 use App\Service\CommentFormatter;
 use App\Service\InventoryService;
@@ -41,6 +42,7 @@ class NightAndDay extends ChooseAPetController
         $this->validateInventory($inventory, 'nightAndDay');
 
         $pet = $this->getPet($request, $petRepository);
+        $petChanges = new PetChanges($pet);
 
         $pairOfItems = $rng->rngNextFromArray([
             [ 'Black Baabble', 'White Baabble' ],
@@ -64,8 +66,12 @@ class NightAndDay extends ChooseAPetController
         foreach($pairOfItems as $item)
             $inventoryService->petCollectsItem($item, $pet, "{$pet->getName()} {$messageMiddle} this!", $activityLog);
 
-        if(!$petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog))
-            $activityLog->setViewed();
+        $petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+
+        $activityLog
+            ->setViewed()
+            ->setChanges($petChanges->compare($pet))
+        ;
 
         $em->remove($inventory);
         $em->flush();
