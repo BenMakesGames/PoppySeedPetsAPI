@@ -129,13 +129,13 @@ class MonthlyStoryAdventureService
         $this->em->persist($completedStep);
     }
 
-    private function getAdventureLoot(MonthlyStoryAdventureStep $step, array $pets, callable $petSkillFn, string $freeLoot, array $lootTable): array
+    private function getAdventureLoot(MonthlyStoryAdventureStep $step, array $pets, callable $petSkillFn, int $roll, string $freeLoot, array $lootTable): array
     {
         $loot = $this->getFixedLoot($step);
 
         $loot[] = $freeLoot;
 
-        $totalSkill = ArrayFunctions::sum($pets, $petSkillFn) + $this->rng->rngNextInt(-10, 10);
+        $totalSkill = ArrayFunctions::sum($pets, $petSkillFn) + $roll - 10;;
 
         $extraBits = floor($totalSkill / 5);
 
@@ -173,18 +173,39 @@ class MonthlyStoryAdventureService
         }
     }
 
+    private function describeAdventure(MonthlyStoryAdventureStep $step, int $roll, array $loot)
+    {
+        $text = $step->getNarrative() ?? '';
+
+        if($roll > 0 && count($loot) > 0)
+        {
+            if($text != '') $text .= "\n\n";
+
+            $text .= "(The pets roll for loot, and get a {$roll}! After adding their skill points, you award them " . ArrayFunctions::list_nice($loot) . '.)';
+        }
+        else if(count($loot) > 0)
+        {
+            if($text != '') $text .= "\n\n";
+
+            $text .= "(You award your pets " . ArrayFunctions::list_nice($loot) . '!)';
+        }
+
+        return $text;
+    }
+
 
     /**
      * @param ComputedPetSkills[] $pets
      */
     private function doCollectStone(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        $text = $step->getNarrative() ?? '';
+        $roll = $this->rng->rngNextInt(1, 20);
 
         $loot = $this->getAdventureLoot(
             $step,
             $pets,
             fn(ComputedPetSkills $pet) => $pet->getStrength() + $pet->getStamina() + $pet->getPerception() + $pet->getGatheringBonus(),
+            $roll,
             'Rock',
             [
                 'Rock', 'Rock',
@@ -192,6 +213,8 @@ class MonthlyStoryAdventureService
                 'Iron Ore', 'Gypsum'
             ],
         );
+
+        $text = $this->describeAdventure($step, $roll, $loot);
 
         return new AdventureResult($text, $loot);
     }
@@ -201,18 +224,21 @@ class MonthlyStoryAdventureService
      */
     private function doGather(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        $text = $step->getNarrative() ?? '';
+        $roll = $this->rng->rngNextInt(1, 20);
 
         $loot = $this->getAdventureLoot(
             $step,
             $pets,
             fn(ComputedPetSkills $pet) => $pet->getDexterity() + $pet->getNature() + $pet->getGatheringBonus(),
+            $roll,
             'Nature Box',
             [
                 'Wheat', 'Rice', 'Orange', 'Naner', 'Red', 'Fluff', 'Crooked Stick', 'Coconut',
                 'Blackberries', 'Blueberries', 'Sweet Beet'
             ],
         );
+
+        $text = $this->describeAdventure($step, $roll, $loot);
 
         return new AdventureResult($text, $loot);
     }
@@ -222,15 +248,18 @@ class MonthlyStoryAdventureService
      */
     private function doHunt(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        $text = $step->getNarrative() ?? '';
+        $roll = $this->rng->rngNextInt(1, 20);
 
         $loot = $this->getAdventureLoot(
             $step,
             $pets,
             fn(ComputedPetSkills $pet) => ceil(($pet->getStrength() + $pet->getDexterity()) / 2) + $pet->getBrawl(),
+            $roll,
             'Monster Box',
             [ 'Feathers', 'Fluff', 'Talon', 'Scales', 'Egg', 'Fish' ]
         );
+
+        $text = $this->describeAdventure($step, $roll, $loot);
 
         return new AdventureResult($text, $loot);
     }
@@ -240,15 +269,18 @@ class MonthlyStoryAdventureService
      */
     private function doMineGold(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        $text = $step->getNarrative() ?? '';
+        $roll = $this->rng->rngNextInt(1, 20);
 
         $loot = $this->getAdventureLoot(
             $step,
             $pets,
             fn(ComputedPetSkills $pet) => ceil(($pet->getStrength() + $pet->getStamina()) / 2) + $pet->getNature() + $pet->getGatheringBonus(),
+            $roll,
             'Gold Ore',
             [ 'Gold Ore', 'Gold Ore', 'Silver Ore', 'Iron Ore' ]
         );
+
+        $text = $this->describeAdventure($step, $roll, $loot);
 
         return new AdventureResult($text, $loot);
     }
@@ -270,7 +302,10 @@ class MonthlyStoryAdventureService
      */
     private function doStory(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        return new AdventureResult($step->getNarrative() ?? '', $this->getFixedLoot($step));
+        $loot = $this->getFixedLoot($step);
+        $text = $this->describeAdventure($step, 0, $loot);
+
+        return new AdventureResult($text, $loot);
     }
 
     /**
@@ -278,7 +313,10 @@ class MonthlyStoryAdventureService
      */
     private function doTreasureHunt(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        return new AdventureResult($step->getNarrative() ?? '', $this->getFixedLoot($step));
+        $loot = $this->getFixedLoot($step);
+        $text = $this->describeAdventure($step, 0, $loot);
+
+        return new AdventureResult($text, $loot);
     }
 
     /**
@@ -286,15 +324,18 @@ class MonthlyStoryAdventureService
      */
     private function doWanderingMonster(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        $text = $step->getNarrative() ?? '';
+        $roll = $this->rng->rngNextInt(1, 20);
 
         $loot = $this->getAdventureLoot(
             $step,
             $pets,
             fn(ComputedPetSkills $pet) => ceil(($pet->getStrength() + $pet->getDexterity()) / 2) + $pet->getBrawl(),
+            $roll,
             'Monster Box',
             [ 'Feathers', 'Fluff', 'Talon', 'Scales', 'Egg' ]
         );
+
+        $text = $this->describeAdventure($step, $roll, $loot);
 
         return new AdventureResult($text, $loot);
     }
