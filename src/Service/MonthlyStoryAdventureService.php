@@ -21,18 +21,20 @@ class MonthlyStoryAdventureService
     private UserMonthlyStoryAdventureStepCompletedRepository $userMonthlyStoryAdventureStepCompletedRepository;
     private InventoryService $inventoryService;
     private EntityManagerInterface $em;
+    private IRandom $rng;
 
     public function __construct(
         MonthlyStoryAdventureStepRepository $monthlyStoryAdventureStepRepository,
         UserMonthlyStoryAdventureStepCompletedRepository $userMonthlyStoryAdventureStepCompletedRepository,
         InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
         $this->monthlyStoryAdventureStepRepository = $monthlyStoryAdventureStepRepository;
         $this->userMonthlyStoryAdventureStepCompletedRepository = $userMonthlyStoryAdventureStepCompletedRepository;
         $this->inventoryService = $inventoryService;
         $this->em = $em;
+        $this->rng = $squirrel3;
     }
 
     public function isStepCompleted(User $user, MonthlyStoryAdventureStep $step): bool
@@ -127,6 +129,22 @@ class MonthlyStoryAdventureService
         $this->em->persist($completedStep);
     }
 
+    private function getAdventureLoot(MonthlyStoryAdventureStep $step, array $pets, callable $petSkillFn, string $freeLoot, array $lootTable): array
+    {
+        $loot = $this->getFixedLoot($step);
+
+        $loot[] = $freeLoot;
+
+        $totalSkill = ArrayFunctions::sum($pets, $petSkillFn) + $this->rng->rngNextInt(-10, 10);
+
+        $extraBits = floor($totalSkill / 5);
+
+        for($i = 0; $i < $extraBits; $i++)
+            $loot[] = $this->rng->rngNextFromArray($lootTable);
+
+        return $loot;
+    }
+
     private function getFixedLoot(MonthlyStoryAdventureStep $step): array
     {
         if(!$step->getTreasure())
@@ -162,9 +180,20 @@ class MonthlyStoryAdventureService
     private function doCollectStone(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
         $text = $step->getNarrative() ?? '';
-        $loot = $this->getFixedLoot($step);
 
-        $totalSkill = ArrayFunctions::sum($pets, fn(ComputedPetSkills $pet) => $pet->getStrength() + $pet->getStamina() + $pet->getPerception() + $pet->getGatheringBonus());
+        $loot = $this->getAdventureLoot(
+            $step,
+            $pets,
+            fn(ComputedPetSkills $pet) => $pet->getStrength() + $pet->getStamina() + $pet->getPerception() + $pet->getGatheringBonus(),
+            'Rock',
+            [
+                'Rock', 'Rock',
+                'Silica Grounds', 'Limestone',
+                'Iron Ore', 'Gypsum'
+            ],
+        );
+
+        return new AdventureResult($text, $loot);
     }
 
     /**
@@ -173,11 +202,19 @@ class MonthlyStoryAdventureService
     private function doGather(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
         $text = $step->getNarrative() ?? '';
-        $loot = $this->getFixedLoot($step);
 
-        $totalSkill = ArrayFunctions::sum($pets, fn(ComputedPetSkills $pet) => $pet->getDexterity() + $pet->getNature() + $pet->getGatheringBonus());
-        // TODO: get basic fruits & veggies & wheat & stuff based on pet skills
+        $loot = $this->getAdventureLoot(
+            $step,
+            $pets,
+            fn(ComputedPetSkills $pet) => $pet->getDexterity() + $pet->getNature() + $pet->getGatheringBonus(),
+            'Nature Box',
+            [
+                'Wheat', 'Rice', 'Orange', 'Naner', 'Red', 'Fluff', 'Crooked Stick', 'Coconut',
+                'Blackberries', 'Blueberries', 'Sweet Beet'
+            ],
+        );
 
+        return new AdventureResult($text, $loot);
     }
 
     /**
@@ -186,12 +223,16 @@ class MonthlyStoryAdventureService
     private function doHunt(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
         $text = $step->getNarrative() ?? '';
-        $loot = $this->getFixedLoot($step);
 
-        $loot[] = 'Monster Box';
-        // TODO: get animal products based on pet skills
+        $loot = $this->getAdventureLoot(
+            $step,
+            $pets,
+            fn(ComputedPetSkills $pet) => ceil(($pet->getStrength() + $pet->getDexterity()) / 2) + $pet->getBrawl(),
+            'Monster Box',
+            [ 'Feathers', 'Fluff', 'Talon', 'Scales', 'Egg', 'Fish' ]
+        );
 
-        $totalSkill = ArrayFunctions::sum($pets, fn(ComputedPetSkills $pet) => ceil(($pet->getStrength() + $pet->getDexterity()) / 2) + $pet->getBrawl());
+        return new AdventureResult($text, $loot);
     }
 
     /**
@@ -200,11 +241,16 @@ class MonthlyStoryAdventureService
     private function doMineGold(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
         $text = $step->getNarrative() ?? '';
-        $loot = $this->getFixedLoot($step);
 
-        // TODO: get gold (and a few other metals) based on pet skills
-        $totalSkill = ArrayFunctions::sum($pets, fn(ComputedPetSkills $pet) => ceil(($pet->getStrength() + $pet->getStamina()) / 2) + $pet->getNature() + $pet->getGatheringBonus());
+        $loot = $this->getAdventureLoot(
+            $step,
+            $pets,
+            fn(ComputedPetSkills $pet) => ceil(($pet->getStrength() + $pet->getStamina()) / 2) + $pet->getNature() + $pet->getGatheringBonus(),
+            'Gold Ore',
+            [ 'Gold Ore', 'Gold Ore', 'Silver Ore', 'Iron Ore' ]
+        );
 
+        return new AdventureResult($text, $loot);
     }
 
     /**
@@ -241,10 +287,15 @@ class MonthlyStoryAdventureService
     private function doWanderingMonster(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
         $text = $step->getNarrative() ?? '';
-        $loot = $this->getFixedLoot($step);
-        $loot[] = 'Monster Box';
 
-        $totalSkill = ArrayFunctions::sum($pets, fn(ComputedPetSkills $pet) => ceil(($pet->getStrength() + $pet->getDexterity()) / 2) + $pet->getBrawl());
-        // TODO: get animal products based on pet skills
+        $loot = $this->getAdventureLoot(
+            $step,
+            $pets,
+            fn(ComputedPetSkills $pet) => ceil(($pet->getStrength() + $pet->getDexterity()) / 2) + $pet->getBrawl(),
+            'Monster Box',
+            [ 'Feathers', 'Fluff', 'Talon', 'Scales', 'Egg' ]
+        );
+
+        return new AdventureResult($text, $loot);
     }
 }
