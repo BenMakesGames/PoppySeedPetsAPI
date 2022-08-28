@@ -235,6 +235,7 @@ class BoxController extends PoppySeedPetsItemController
                 'Jukebox',
                 'Pepperbox',
                 'Juice Box',
+                'Twilight Box',
             ];
 
             if($squirrel3->rngNextInt(1, 4) === 0)
