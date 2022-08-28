@@ -6,7 +6,9 @@ use App\Controller\PoppySeedPetsController;
 use App\Entity\MonthlyStoryAdventure;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\MonthlyStoryAdventureRepository;
+use App\Service\Filter\MonthlyStoryAdventureFilterService;
 use App\Service\ResponseService;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -20,19 +22,14 @@ class Search extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function handle(
-        MonthlyStoryAdventureRepository $monthlyStoryAdventureRepository,
+        MonthlyStoryAdventureFilterService $filterService,
+        Request $request,
         ResponseService $responseService
     )
     {
-        $stories = $monthlyStoryAdventureRepository->findAll();
-
-        $results = array_map(fn(MonthlyStoryAdventure $story) => [
-            'id' => $story->getId(),
-            'title' => $story->getTitle(),
-            'releaseYear' => $story->getReleaseYear(),
-            'releaseMonth' => $story->getReleaseMonth()
-        ], $stories);
-
-        return $responseService->success($results);
+        return $responseService->success(
+            $filterService->getResults($request->query),
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::STAR_KINDRED_STORY ]
+        );
     }
 }

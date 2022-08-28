@@ -6,6 +6,7 @@ use App\Repository\MonthlyStoryAdventureRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=MonthlyStoryAdventureRepository::class)
@@ -16,31 +17,37 @@ class MonthlyStoryAdventure
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({ "starKindredStory" })
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({ "starKindredStory" })
      */
     private $title;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({ "starKindredStory" })
      */
     private $summary;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({ "starKindredStory" })
      */
     private $releaseNumber;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({ "starKindredStory" })
      */
     private $releaseYear;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({ "starKindredStory" })
      */
     private $releaseMonth;
 
