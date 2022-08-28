@@ -71,4 +71,7 @@ final class SerializationGroupEnum
     public const SURVEY_QUESTION = 'surveyQuestion';
     public const SURVEY_QUESTION_ANSWER = 'surveyQuestionAnswer';
     public const STAR_KINDRED_STORY = 'starKindredStory';
+    public const STAR_KINDRED_STORY_DETAILS = 'starKindredStoryDetails';
+    public const STAR_KINDRED_STORY_STEP_AVAILABLE = 'starKindredStoryStepAvailable';
+    public const STAR_KINDRED_STORY_STEP_COMPLETE = 'starKindredStoryStepComplete';
 }

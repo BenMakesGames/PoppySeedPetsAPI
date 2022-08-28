@@ -41,18 +41,19 @@ class MonthlyStoryAdventure
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({ "starKindredStory" })
+     * @Groups({ "starKindredStory", "starKindredStoryDetails" })
      */
     private $releaseYear;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({ "starKindredStory" })
+     * @Groups({ "starKindredStory", "starKindredStoryDetails" })
      */
     private $releaseMonth;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({ "starKindredStoryDetails" })
      */
     private $isDark;
 
