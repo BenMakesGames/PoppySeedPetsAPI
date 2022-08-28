@@ -13,7 +13,7 @@ class UserMenuService
     private $em;
 
     private const DEFAULT_ORDER = [
-        'home', 'basement', 'greenhouse', 'beehive', 'dragonDen', 'hollowEarth',
+        'home', 'basement', 'greenhouse', 'beehive', 'dragonDen', 'hollowEarth', 'starKindred',
         'fireplace', 'park', 'plaza', 'museum', 'market', 'grocer', 'petShelter',
         'bookstore', 'trader', 'hattier', 'fieldGuide', 'mailbox', 'painter', 'florist'
     ];
@@ -80,6 +80,8 @@ class UserMenuService
 
         if($user->getUnlockedHollowEarth())
             $menuItems[] = new UserMenuItem('hollowEarth', $userSortOrder, $user->getUnlockedHollowEarth());
+
+        $menuItems[] = new UserMenuItem('starKindred', $userSortOrder, null);
 
         if($user->getUnlockedFireplace())
             $menuItems[] = new UserMenuItem('fireplace', $userSortOrder, $user->getUnlockedFireplace());
