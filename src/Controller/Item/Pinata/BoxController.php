@@ -36,6 +36,45 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class BoxController extends PoppySeedPetsItemController
 {
     /**
+     * @Route("/twilight/{box}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openTwilightBox(
+        Inventory $box, ResponseService $responseService,
+        EntityManagerInterface $em, InventoryService $inventoryService
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($box, 'box/twilight/#/open');
+
+        $location = $box->getLocation();
+        $lockedToOwner = $box->getLockedToOwner();
+
+        $items = [ 'Grandparoot', 'Cobweb' ];
+
+        $possibleItems = [
+            'Quinacridone Magenta Dye', 'Moon Pearl', 'Jar of Fireflies', 'Twilight Fertilizer',
+            'Candle', 'Dreamwalker\'s Tea', 'Eggplant', 'Glowing Protojelly'
+        ];
+
+        shuffle($possibleItems);
+
+        for($i = 0; $i < 4; $i++)
+            $items[] = $possibleItems[$i];
+
+        foreach($items as $item)
+            $inventoryService->receiveItem($item, $user, $box->getCreatedBy(), 'Found inside ' . $box->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
+
+        $em->remove($box);
+        $em->flush();
+
+        $message = 'Rummaging through the box, you find ' . ArrayFunctions::list_nice($items, ', ', ', aaaaaand... ') . '!';
+
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
+    }
+
+    /**
      * @Route("/hat/{box}/open", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
