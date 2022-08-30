@@ -36,6 +36,48 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class BoxController extends PoppySeedPetsItemController
 {
     /**
+     * @Route("/twilight/{box}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openTwilightBox(
+        Inventory $box, ResponseService $responseService,
+        EntityManagerInterface $em, InventoryService $inventoryService
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($box, 'box/twilight/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
+
+        $location = $box->getLocation();
+        $lockedToOwner = $box->getLockedToOwner();
+
+        $items = [ 'Grandparoot', 'Cobweb' ];
+
+        $possibleItems = [
+            'Quinacridone Magenta Dye', 'Moon Pearl', 'Jar of Fireflies', 'Twilight Fertilizer',
+            'Candle', 'Dreamwalker\'s Tea', 'Eggplant', 'Glowing Protojelly'
+        ];
+
+        shuffle($possibleItems);
+
+        for($i = 0; $i < 4; $i++)
+            $items[] = $possibleItems[$i];
+
+        shuffle($items);
+
+        foreach($items as $item)
+            $inventoryService->receiveItem($item, $user, $box->getCreatedBy(), 'Found inside ' . $box->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
+
+        $em->remove($box);
+        $em->flush();
+
+        $message = 'Rummaging through the box, you find ' . ArrayFunctions::list_nice($items, ', ', ', aaaaaand... ') . '!';
+
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
+    }
+
+    /**
      * @Route("/hat/{box}/open", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -1099,6 +1141,53 @@ class BoxController extends PoppySeedPetsItemController
         $em->remove($key);
 
         return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+    }
+
+    /**
+     * @Route("/goldChest/{inventory}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openGoldChest(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
+        InventoryModifierService $toolBonusService
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/goldChest/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
+
+        $key = $inventoryRepository->findOneToConsume($user, 'Gold Key');
+
+        if(!$key)
+            throw new UnprocessableEntityHttpException('You need a Gold Key to unlock a Gold Chest!');
+
+        $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
+
+        $possibleItems = [
+            'Major Scroll of Riches',
+            'Minor Scroll of Riches',
+            'Gold Triangle',
+            'Tile: Gold Vein',
+            '"Gold" Idol',
+            'Gold Ring'
+        ];
+
+        $items = $squirrel3->rngNextSubsetFromArray($possibleItems, 3);
+        $items[] = 'Gold Bar';
+        $items[] = 'Gold Bar';
+        sort($items);
+
+        $newInventory = [];
+        $location = $inventory->getLocation();
+
+        foreach($items as $item)
+            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $inventory->getLockedToOwner());
+
+        $em->remove($key);
+
+        return $this->countRemoveFlushAndRespond('You used a Gold Key to open the Gold Chest, and revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
     }
 
     /**
