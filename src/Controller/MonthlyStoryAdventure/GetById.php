@@ -29,7 +29,7 @@ class GetById extends PoppySeedPetsController
     )
     {
         $complete = $userMonthlyStoryAdventureStepCompletedRepository->findComplete($this->getUser());
-        $available = $monthlyStoryAdventureStepRepository->findAvailable($this->getUser());
+        $available = $monthlyStoryAdventureStepRepository->findAvailable($this->getUser(), $complete);
 
         return $responseService->success(
             [
