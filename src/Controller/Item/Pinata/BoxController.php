@@ -139,8 +139,10 @@ class BoxController extends PoppySeedPetsItemController
 
         if($containsLobster)
         {
+            $pets = $petRepository->findBy([ 'owner' => $user, 'location' => PetLocationEnum::HOME ]);
+
             /** @var Pet $pet */
-            $pet = $squirrel3->rngNextFromArray($petRepository->findBy([ 'owner' => $user, 'location' => PetLocationEnum::HOME ]));
+            $pet = count($pets) == 0 ? null : $squirrel3->rngNextFromArray($pets);
 
             $message .= "\n\nWait, what!? One of the rocks moved!";
 
