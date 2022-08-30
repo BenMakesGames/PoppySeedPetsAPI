@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\MonthlyStoryAdventure;
 use App\Entity\UserMonthlyStoryAdventureStepCompleted;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
@@ -73,4 +74,16 @@ class UserMonthlyStoryAdventureStepCompletedRepository extends ServiceEntityRepo
         ;
     }
     */
+
+    public function findComplete(User $user, MonthlyStoryAdventure $adventure)
+    {
+        return $this->createQueryBuilder('c')
+            ->join('c.adventureStep', 's')
+            ->andWhere('c.user = :user')
+            ->andWhere('s.adventure = :adventure')
+            ->setParameter('user', $user)
+            ->setParameter('adventure', $adventure)
+            ->getQuery()
+            ->execute();
+    }
 }

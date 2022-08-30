@@ -7,6 +7,7 @@ use App\Entity\MonthlyStoryAdventure;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\MonthlyStoryAdventureRepository;
 use App\Repository\MonthlyStoryAdventureStepRepository;
+use App\Repository\UserMonthlyStoryAdventureStepCompletedRepository;
 use App\Service\ResponseService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -23,17 +24,18 @@ class GetById extends PoppySeedPetsController
     public function handle(
         MonthlyStoryAdventure $story,
         MonthlyStoryAdventureStepRepository $monthlyStoryAdventureStepRepository,
+        UserMonthlyStoryAdventureStepCompletedRepository $userMonthlyStoryAdventureStepCompletedRepository,
         ResponseService $responseService
     )
     {
-        $complete = $monthlyStoryAdventureStepRepository->findComplete($this->getUser());
+        $complete = $userMonthlyStoryAdventureStepCompletedRepository->findComplete($this->getUser());
         $available = $monthlyStoryAdventureStepRepository->findAvailable($this->getUser());
 
         return $responseService->success(
             [
                 'story' => $story,
-                'stepsAvailable' => $complete,
-                'stepsComplete' => $available,
+                'stepsAvailable' => $available,
+                'stepsComplete' => $complete,
             ],
             [
                 SerializationGroupEnum::STAR_KINDRED_STORY_DETAILS,
