@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserMonthlyStoryAdventureStepCompletedRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=UserMonthlyStoryAdventureStepCompletedRepository::class)
@@ -26,11 +27,13 @@ class UserMonthlyStoryAdventureStepCompleted
     /**
      * @ORM\ManyToOne(targetEntity=MonthlyStoryAdventureStep::class)
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({ "starKindredStoryStepComplete" })
      */
     private $adventureStep;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({ "starKindredStoryStepComplete" })
      */
     private $completedOn;
 

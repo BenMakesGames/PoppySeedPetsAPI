@@ -6,6 +6,7 @@ use App\Repository\MonthlyStoryAdventureStepRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=MonthlyStoryAdventureStepRepository::class)
@@ -16,6 +17,7 @@ class MonthlyStoryAdventureStep
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({ "starKindredStoryStepAvailable" })
      */
     private $id;
 
@@ -27,11 +29,13 @@ class MonthlyStoryAdventureStep
 
     /**
      * @ORM\Column(type="string", length=30)
+     * @Groups({ "starKindredStoryStepAvailable" })
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", length=20)
+     * @Groups({ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" })
      */
     private $type;
 
@@ -47,21 +51,25 @@ class MonthlyStoryAdventureStep
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" })
      */
     private $x;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" })
      */
     private $y;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({ "starKindredStoryStepAvailable" })
      */
     private $minPets;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({ "starKindredStoryStepAvailable" })
      */
     private $maxPets;
 
@@ -82,6 +90,7 @@ class MonthlyStoryAdventureStep
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
+     * @Groups({ "starKindredStoryStepAvailable" })
      */
     private $pinOverride;
 

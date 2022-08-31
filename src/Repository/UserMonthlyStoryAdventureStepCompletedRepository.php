@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\MonthlyStoryAdventure;
+use App\Entity\User;
 use App\Entity\UserMonthlyStoryAdventureStepCompleted;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,7 +21,10 @@ class UserMonthlyStoryAdventureStepCompletedRepository extends ServiceEntityRepo
         parent::__construct($registry, UserMonthlyStoryAdventureStepCompleted::class);
     }
 
-    public function findComplete(User $user, MonthlyStoryAdventure $adventure)
+    /**
+     * @return UserMonthlyStoryAdventureStepCompleted[]
+     */
+    public function findComplete(User $user, MonthlyStoryAdventure $adventure): array
     {
         return $this->createQueryBuilder('c')
             ->join('c.adventureStep', 's')
