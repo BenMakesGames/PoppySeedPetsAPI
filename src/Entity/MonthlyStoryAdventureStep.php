@@ -17,7 +17,7 @@ class MonthlyStoryAdventureStep
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({ "starKindredStoryStepAvailable" })
+     * @Groups({ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" })
      */
     private $id;
 
