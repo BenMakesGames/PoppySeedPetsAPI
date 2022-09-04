@@ -84,6 +84,6 @@ class WrappedSwordController extends PoppySeedPetsItemController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You unwrap the wrapped sword... it\'s ' . $sword->getNameWithArticle() . '! (You keep the cloth, too, of course!)', [ 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You unwrap the wrapped sword... it\'s ' . $sword->getItem()->getNameWithArticle() . '! (You keep the cloth, too, of course!)', [ 'itemDeleted' => true ]);
     }
 }

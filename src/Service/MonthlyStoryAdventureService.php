@@ -207,25 +207,33 @@ class MonthlyStoryAdventureService
         {
             if($text != '') $text .= "\n\n";
 
-            /** @var ComputedPetSkills $petSkills */
-            $petSkills = $this->rng->rngNextFromArray($pets);
-            $pet = $petSkills->getPet();
-
-            if($pet->getOwner()->getUnlockedHattier())
-                $text .= "(Inspired by the story, {$pet->getName()} created a new hat styling: {$step->getAura()->getName()}! Find it at the Hattier!)";
-            else
-                $text .= "(Inspired by the story, {$pet->getName()} created a new hat styling?! What!? (The Hattier has been unlocked! Check it out in the menu!))";
-
-            $this->hattierService->petMaybeUnlockAura(
-                $pet,
-                $step->getAura(),
-                'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!',
-                'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!',
-                'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!'
-            );
+            $text .= $this->awardAura($pets, $step);
         }
 
         return $text;
+    }
+
+    /**
+     * @param ComputedPetSkills[] $pets
+     */
+    private function awardAura(array $pets, MonthlyStoryAdventureStep $step)
+    {
+        /** @var ComputedPetSkills $petSkills */
+        $petSkills = $this->rng->rngNextFromArray($pets);
+        $pet = $petSkills->getPet();
+
+        $this->hattierService->petMaybeUnlockAura(
+            $pet,
+            $step->getAura(),
+            'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!',
+            'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!',
+            'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!'
+        );
+
+        if($pet->getOwner()->getUnlockedHattier())
+            return "(Inspired by the story, {$pet->getName()} created a new hat styling: {$step->getAura()->getName()}! Find it at the Hattier!)";
+        else
+            return "(Inspired by the story, {$pet->getName()} created a new hat styling?! What!? (The Hattier has been unlocked! Check it out in the menu!))";
     }
 
 
@@ -342,14 +350,21 @@ class MonthlyStoryAdventureService
 
         $text = $step->getNarrative() ?? '';
 
+        if($text != '') $text .= "\n\n";
+
         if(count($loot) > 0)
+            $text .= "(You award your pets " . ArrayFunctions::list_nice($loot) . ", and a {$plushy} named {$recruitName} to represent the new recruit!)";
+        else
+            $text .= "(You award your pets a {$plushy} named {$recruitName} to represent the new recruit!)";
+
+        $loot[] = $plushy;
+
+        if($step->getAura())
         {
             if($text != '') $text .= "\n\n";
 
-            $text .= "(You award your pets " . ArrayFunctions::list_nice($loot) . ", and a {$plushy} named {$recruitName} to represent the new recruit!)";
+            $text .= $this->awardAura($pets, $step);
         }
-
-        $loot[] = $plushy;
 
         return new AdventureResult($text, $loot);
     }
