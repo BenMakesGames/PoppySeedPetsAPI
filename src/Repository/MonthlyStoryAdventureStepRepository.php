@@ -26,7 +26,7 @@ class MonthlyStoryAdventureStepRepository extends ServiceEntityRepository
      * @param UserMonthlyStoryAdventureStepCompleted[] $completed
      * @return MonthlyStoryAdventureStep[]
      */
-    public function findAvailable(User $user, MonthlyStoryAdventure $adventure, array $completed): array
+    public function findAvailable(MonthlyStoryAdventure $adventure, array $completed): array
     {
         $qb = $this->createQueryBuilder('s');
 
@@ -35,12 +35,28 @@ class MonthlyStoryAdventureStepRepository extends ServiceEntityRepository
 
         $qb = $qb
             ->andWhere('s.adventure = :adventure')
-            ->andWhere($qb->expr()->orX('s.previousStep IS NULL', 's.previousStep IN (:completedSteps)'))
-            ->andWhere('s.id NOT IN (:completedAdventureStepIds)')
             ->setParameter('adventure', $adventure)
-            ->setParameter('completedSteps', $completedSteps)
-            ->setParameter('completedAdventureStepIds', $completedAdventureStepIds)
         ;
+
+        if(count($completedSteps) > 0)
+        {
+            $qb = $qb
+                ->andWhere($qb->expr()->orX('s.previousStep IS NULL', 's.previousStep IN (:completedSteps)'))
+                ->setParameter('completedSteps', $completedSteps)
+            ;
+        }
+        else
+        {
+            $qb = $qb->andWhere('s.previousStep IS NULL');
+        }
+
+        if(count($completedAdventureStepIds) > 0)
+        {
+            $qb = $qb
+                ->andWhere('s.id NOT IN (:completedAdventureStepIds)')
+                ->setParameter('completedAdventureStepIds', $completedAdventureStepIds)
+            ;
+        }
 
         return $qb->getQuery()->execute();
     }
