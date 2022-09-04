@@ -129,19 +129,6 @@ class PetController extends PoppySeedPetsController
     }
 
     /**
-     * @Route("/search", methods={"GET"})
-     */
-    public function search(PetFilterService $petFilterService, Request $request, ResponseService $responseService)
-    {
-        $results = $petFilterService->getResults($request->query);
-
-        return $responseService->success($results, [
-            SerializationGroupEnum::FILTER_RESULTS,
-            SerializationGroupEnum::PET_PUBLIC_PROFILE
-        ]);
-    }
-
-    /**
      * @Route("/{pet}", methods={"GET"}, requirements={"pet"="\d+"})
      */
     public function profile(Pet $pet, ResponseService $responseService)

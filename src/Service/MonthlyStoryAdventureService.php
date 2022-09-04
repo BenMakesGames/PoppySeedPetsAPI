@@ -40,8 +40,10 @@ class MonthlyStoryAdventureService
     public function isStepCompleted(User $user, MonthlyStoryAdventureStep $step): bool
     {
         $completedStep = $this->userMonthlyStoryAdventureStepCompletedRepository->createQueryBuilder('c')
-            ->andWhere('c.user=:user', $user->getId())
-            ->andWhere('c.adventureStep=:adventureStep', $step->getId())
+            ->andWhere('c.user=:user')
+            ->andWhere('c.adventureStep=:adventureStep')
+            ->setParameter('user', $user)
+            ->setParameter('adventureStep', $step)
             ->getQuery()
             ->getSingleResult();
 
