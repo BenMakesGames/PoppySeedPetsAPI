@@ -171,7 +171,7 @@ class MonthlyStoryAdventureService
             case 'Ship': return [ 'Paper Boat' ];
             case 'SkeletalRemains': return [ 'Dino Skull' ];
             case 'BlackFlag': return [ 'Black Flag' ];
-            case 'ShalurianLighthouse': return []; // TODO
+            case 'ShalurianLighthouse': return [ 'Scroll of the Sea' ];
             case 'Rainbow': return [ 'Rainbow' ];
 
             case 'SmallMushrooms':
@@ -239,7 +239,7 @@ class MonthlyStoryAdventureService
         $loot = $this->getAdventureLoot(
             $step,
             $pets,
-            fn(ComputedPetSkills $pet) => $pet->getStrength() + $pet->getStamina() + $pet->getPerception() + $pet->getGatheringBonus(),
+            fn(ComputedPetSkills $pet) => $pet->getStrength()->getTotal() + $pet->getStamina()->getTotal() + $pet->getPerception()->getTotal() + $pet->getGatheringBonus()->getTotal(),
             $roll,
             'Rock',
             [
