@@ -47,7 +47,7 @@ class BoxController extends PoppySeedPetsItemController
         $user = $this->getUser();
 
         $this->validateInventory($box, 'box/twilight/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        $this->validateHouseSpace($box, $inventoryService);
 
         $location = $box->getLocation();
         $lockedToOwner = $box->getLockedToOwner();
