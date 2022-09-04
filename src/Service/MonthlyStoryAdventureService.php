@@ -172,6 +172,9 @@ class MonthlyStoryAdventureService
             case 'SmallMushrooms':
             case 'LargeMushroom':
                 return [ 'Toadstool' ];
+
+            default:
+                throw new \Exception("Bad Ben! He didn't code support for this adventure's treasure: \"{$step->getTreasure()}\"!");
         }
     }
 
