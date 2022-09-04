@@ -5,10 +5,13 @@ namespace App\Controller\MonthlyStoryAdventure;
 use App\Controller\PoppySeedPetsController;
 use App\Entity\MonthlyStoryAdventureStep;
 use App\Entity\User;
+use App\Enum\LocationEnum;
 use App\Enum\StoryAdventureTypeEnum;
 use App\Repository\MonthlyStoryAdventureRepository;
 use App\Repository\MonthlyStoryAdventureStepRepository;
 use App\Repository\PetRepository;
+use App\Repository\UserQuestRepository;
+use App\Service\InventoryService;
 use App\Service\MonthlyStoryAdventureService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,10 +36,23 @@ class GoOnAdventure extends PoppySeedPetsController
         MonthlyStoryAdventureService $adventureService,
         PetRepository $petRepository,
         EntityManagerInterface $em,
-        ResponseService $responseService
+        ResponseService $responseService,
+        InventoryService $inventoryService,
+        UserQuestRepository $userQuestRepository
     )
     {
         $user = $this->getUser();
+
+        $today = (new \DateTimeImmutable())->format('Y-m-d');
+        $playedStarKindred = $userQuestRepository->findOrCreate($user, 'Played ★Kindred', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
+
+        if($today === $playedStarKindred->getValue())
+            throw new UnprocessableEntityHttpException('There\'s only time for one ★Kindred adventure per day. THEM\'S JUST THE RULES.');
+
+        $playedStarKindred->setValue($today);
+
+        if($inventoryService->countTotalInventory($user, LocationEnum::HOME) > 150)
+            throw new UnprocessableEntityHttpException('Your house is far too cluttered to play ★Kindred!');
 
         if($adventureService->isStepCompleted($user, $step))
             throw new UnprocessableEntityHttpException('You already completed that step!');

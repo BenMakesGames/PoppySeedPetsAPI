@@ -114,7 +114,7 @@ class MonthlyStoryAdventureService
         }
 
         foreach($results->loot as $item)
-            $this->inventoryService->receiveItem($item, $user, $user, '%user:' . $user->getId() . '.Name% gave this to their pets during a game of ★Kindred.', LocationEnum::HOME);
+            $this->inventoryService->receiveItem($item, $user, $user, $user->getName() . ' gave this to their pets during a game of ★Kindred.', LocationEnum::HOME);
 
         $this->markStepComplete($user, $step);
 
@@ -161,7 +161,7 @@ class MonthlyStoryAdventureService
             case 'TwilightChest': return [ 'Twilight Box' ];
             case 'TreasureMap': return [ 'Piece of Cetgueli\'s Map' ];
             case 'WrappedSword': return [ 'Wrapped Sword' ];
-            case 'RubyChest': return []; // TODO
+            case 'RubyChest': return [ 'Ruby Chest' ];
             case 'BoxOfOres': return [ 'Box of Ores' ];
             case 'CrystallizedQuint': return [ 'Quintessence' ];
             case 'Ship': return [ 'Paper Boat' ];

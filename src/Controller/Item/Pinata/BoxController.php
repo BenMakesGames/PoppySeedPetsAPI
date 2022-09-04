@@ -55,7 +55,7 @@ class BoxController extends PoppySeedPetsItemController
         $items = [ 'Grandparoot', 'Cobweb' ];
 
         $possibleItems = [
-            'Quinacridone Magenta Dye', 'Moon Pearl', 'Jar of Fireflies', 'Twilight Fertilizer',
+            'Quinacridone Magenta Dye', 'Moon Pearl', 'Jar of Fireflies', 'Quintessence',
             'Candle', 'Dreamwalker\'s Tea', 'Eggplant', 'Glowing Protojelly'
         ];
 
@@ -1278,6 +1278,45 @@ class BoxController extends PoppySeedPetsItemController
         $em->remove($key);
 
         return $this->countRemoveFlushAndRespond('You used a Gold Key to open the Gold Chest, and revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+    }
+
+    /**
+     * @Route("/rubyChest/{inventory}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openRubyChest(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
+        InventoryModifierService $toolBonusService
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/rubyChest/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
+
+        $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
+
+        $possibleItems = [
+            'Ruby Feather',
+            'Key Ring',
+            'Major Scroll of Riches',
+            'Secret Seashell',
+            'Hollow Earth Booster Pack',
+        ];
+
+        $items = $squirrel3->rngNextSubsetFromArray($possibleItems, 3);
+        $items[] = 'Quintessence';
+        $items[] = 'Quintessence';
+        sort($items);
+
+        $newInventory = [];
+        $location = $inventory->getLocation();
+
+        foreach($items as $item)
+            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $inventory->getLockedToOwner());
+
+        return $this->countRemoveFlushAndRespond('You opened the Ruby Chest... whoa: it\'s got', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
     }
 
     /**

@@ -8,6 +8,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Repository\MonthlyStoryAdventureRepository;
 use App\Repository\MonthlyStoryAdventureStepRepository;
 use App\Repository\UserMonthlyStoryAdventureStepCompletedRepository;
+use App\Repository\UserQuestRepository;
 use App\Service\ResponseService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -25,17 +26,24 @@ class GetById extends PoppySeedPetsController
         MonthlyStoryAdventure $story,
         MonthlyStoryAdventureStepRepository $monthlyStoryAdventureStepRepository,
         UserMonthlyStoryAdventureStepCompletedRepository $userMonthlyStoryAdventureStepCompletedRepository,
-        ResponseService $responseService
+        ResponseService $responseService, UserQuestRepository $userQuestRepository
     )
+
     {
-        $complete = $userMonthlyStoryAdventureStepCompletedRepository->findComplete($this->getUser(), $story);
+        $user = $this->getUser();
+
+        $complete = $userMonthlyStoryAdventureStepCompletedRepository->findComplete($user, $story);
         $available = $monthlyStoryAdventureStepRepository->findAvailable($story, $complete);
+        $playedStarKindred = $userQuestRepository->findOrCreate($user, 'Played ★Kindred', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
+
+        $canNextPlayOn = \DateTimeImmutable::createFromFormat('Y-m-d', $playedStarKindred->getValue())->add(\DateInterval::createFromDateString('1 day'));
 
         return $responseService->success(
             [
                 'story' => $story,
                 'stepsAvailable' => $available,
                 'stepsComplete' => $complete,
+                'canNextPlayOn' => $canNextPlayOn->format('Y-m-d')
             ],
             [
                 SerializationGroupEnum::STAR_KINDRED_STORY_DETAILS,
