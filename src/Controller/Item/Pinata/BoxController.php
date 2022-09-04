@@ -280,6 +280,8 @@ class BoxController extends PoppySeedPetsItemController
                 'Pepperbox',
                 'Juice Box',
                 'Twilight Box',
+                'Nature Box',
+                'Monster Box',
             ];
 
             if($squirrel3->rngNextInt(1, 4) === 0)
@@ -429,6 +431,94 @@ class BoxController extends PoppySeedPetsItemController
 
         for($i = 0; $i < 4; $i++)
             $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Carrot', 'Onion', 'Celery', 'Carrot', 'Sweet Beet' ]), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
+
+        if($spice)
+        {
+            shuffle($newInventory);
+
+            for($i = 0; $i < count($newInventory) / 3; $i++)
+                $newInventory[$i]->setSpice($spice);
+        }
+
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+    }
+
+    /**
+     * @Route("/nature/{inventory}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openNatureBox(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository,
+        InventoryModifierService $toolBonusService
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/nature/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
+
+        /** @var Inventory[] $newInventory */
+        $newInventory = [];
+
+        $location = $inventory->getLocation();
+        $spice = $inventory->getSpice();
+
+        $quantities = [2, 3, 4];
+        shuffle($quantities);
+
+        for($i = 0; $i < $quantities[0]; $i++)
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Crooked Stick', 'Tea Leaves', 'Grandparoot', 'Wheat', 'Rice', 'Ginger', 'Spicy Peps', 'Red Clover' ]), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
+
+        for($i = 0; $i < $quantities[1]; $i++)
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Orange', 'Red', 'Blackberries', 'Blueberries', 'Cacao Fruit', 'Avocado' ]), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
+
+        for($i = 0; $i < $quantities[2]; $i++)
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Carrot', 'Onion', 'Celery', 'Carrot', 'Sweet Beet', 'Potato', 'Corn' ]), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
+
+        if($spice)
+        {
+            shuffle($newInventory);
+
+            for($i = 0; $i < count($newInventory) / 3; $i++)
+                $newInventory[$i]->setSpice($spice);
+        }
+
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+    }
+
+    /**
+     * @Route("/monster/{inventory}/open", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function openMonsterBox(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository,
+        InventoryModifierService $toolBonusService
+    )
+    {
+        $user = $this->getUser();
+
+        $this->validateInventory($inventory, 'box/monster/#/open');
+        $this->validateHouseSpace($inventory, $inventoryService);
+
+        /** @var Inventory[] $newInventory */
+        $newInventory = [];
+
+        $location = $inventory->getLocation();
+        $spice = $inventory->getSpice();
+
+        $quantities = [2, 3, 4];
+        shuffle($quantities);
+
+        for($i = 0; $i < $quantities[0]; $i++)
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Egg', 'Fluff', 'Feathers', 'Talon', 'Duck Sauce', 'Worms' ]), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
+
+        for($i = 0; $i < $quantities[1]; $i++)
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Fish', 'Scales', 'Toad Legs', 'Tentacle', 'Sand Dollar', 'Jellyfish Jelly' ]), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
+
+        for($i = 0; $i < $quantities[2]; $i++)
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Creamy Milk', 'Butter', 'Plain Yogurt', 'Oil', 'Mayo(nnaise)' ]), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 
         if($spice)
         {

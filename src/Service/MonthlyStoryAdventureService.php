@@ -40,6 +40,7 @@ class MonthlyStoryAdventureService
     public function isStepCompleted(User $user, MonthlyStoryAdventureStep $step): bool
     {
         $completedStep = $this->userMonthlyStoryAdventureStepCompletedRepository->createQueryBuilder('c')
+            ->select('COUNT(c.id) AS qty')
             ->andWhere('c.user=:user')
             ->andWhere('c.adventureStep=:adventureStep')
             ->setParameter('user', $user)
@@ -47,7 +48,7 @@ class MonthlyStoryAdventureService
             ->getQuery()
             ->getSingleResult();
 
-        return $completedStep != null;
+        return $completedStep['qty'] > 0;
     }
 
     public function isPreviousStepCompleted(User $user, MonthlyStoryAdventureStep $step): bool
@@ -70,7 +71,7 @@ class MonthlyStoryAdventureService
     /**
      * @param Pet[] $pets
      */
-    public function completeStep(User $user, MonthlyStoryAdventureStep $step, array $pets)
+    public function completeStep(User $user, MonthlyStoryAdventureStep $step, array $pets): string
     {
         $petSkills = array_map(fn(Pet $pet) => $pet->getComputedSkills(), $pets);
 
@@ -234,7 +235,7 @@ class MonthlyStoryAdventureService
         $loot = $this->getAdventureLoot(
             $step,
             $pets,
-            fn(ComputedPetSkills $pet) => $pet->getDexterity() + $pet->getNature() + $pet->getGatheringBonus(),
+            fn(ComputedPetSkills $pet) => $pet->getDexterity()->getTotal() + $pet->getNature()->getTotal() + $pet->getGatheringBonus()->getTotal(),
             $roll,
             'Nature Box',
             [
@@ -258,7 +259,7 @@ class MonthlyStoryAdventureService
         $loot = $this->getAdventureLoot(
             $step,
             $pets,
-            fn(ComputedPetSkills $pet) => ceil(($pet->getStrength() + $pet->getDexterity()) / 2) + $pet->getBrawl(),
+            fn(ComputedPetSkills $pet) => ceil(($pet->getStrength()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
             $roll,
             'Monster Box',
             [ 'Feathers', 'Fluff', 'Talon', 'Scales', 'Egg', 'Fish' ]
@@ -279,7 +280,7 @@ class MonthlyStoryAdventureService
         $loot = $this->getAdventureLoot(
             $step,
             $pets,
-            fn(ComputedPetSkills $pet) => ceil(($pet->getStrength() + $pet->getStamina()) / 2) + $pet->getNature() + $pet->getGatheringBonus(),
+            fn(ComputedPetSkills $pet) => ceil(($pet->getStrength()->getTotal() + $pet->getStamina()->getTotal()) / 2) + $pet->getNature()->getTotal() + $pet->getGatheringBonus()->getTotal(),
             $roll,
             'Gold Ore',
             [ 'Gold Ore', 'Gold Ore', 'Silver Ore', 'Iron Ore' ]
@@ -356,7 +357,7 @@ class MonthlyStoryAdventureService
         $loot = $this->getAdventureLoot(
             $step,
             $pets,
-            fn(ComputedPetSkills $pet) => ceil(($pet->getStrength() + $pet->getDexterity()) / 2) + $pet->getBrawl(),
+            fn(ComputedPetSkills $pet) => ceil(($pet->getStrength()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
             $roll,
             'Monster Box',
             [ 'Feathers', 'Fluff', 'Talon', 'Scales', 'Egg' ]

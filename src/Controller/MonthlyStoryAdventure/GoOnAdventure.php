@@ -10,6 +10,8 @@ use App\Repository\MonthlyStoryAdventureRepository;
 use App\Repository\MonthlyStoryAdventureStepRepository;
 use App\Repository\PetRepository;
 use App\Service\MonthlyStoryAdventureService;
+use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -29,7 +31,9 @@ class GoOnAdventure extends PoppySeedPetsController
         Request $request,
         MonthlyStoryAdventureStep $step,
         MonthlyStoryAdventureService $adventureService,
-        PetRepository $petRepository
+        PetRepository $petRepository,
+        EntityManagerInterface $em,
+        ResponseService $responseService
     )
     {
         $user = $this->getUser();
@@ -58,6 +62,12 @@ class GoOnAdventure extends PoppySeedPetsController
         if(count($pets) != count($petIds))
             throw new NotFoundHttpException('One or more of the selected pets could not be found.');
 
-        $adventureService->completeStep($user, $step, $pets);
+        $message = $adventureService->completeStep($user, $step, $pets);
+
+        $em->flush();
+
+        return $responseService->success([
+            'text' => $message
+        ]);
     }
 }
