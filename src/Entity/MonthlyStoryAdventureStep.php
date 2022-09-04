@@ -84,7 +84,7 @@ class MonthlyStoryAdventureStep
     private $treasure;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Aura::class)
+     * @ORM\ManyToOne(targetEntity=Enchantment::class)
      */
     private $aura;
 
@@ -247,12 +247,12 @@ class MonthlyStoryAdventureStep
         return $this;
     }
 
-    public function getAura(): ?Aura
+    public function getAura(): ?Enchantment
     {
         return $this->aura;
     }
 
-    public function setAura(?Aura $aura): self
+    public function setAura(?Enchantment $aura): self
     {
         $this->aura = $aura;
 

@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\Entity\Aura;
+use App\Entity\Enchantment;
 use App\Entity\MonthlyStoryAdventureStep;
 use App\Entity\Pet;
 use App\Entity\User;
@@ -22,12 +24,13 @@ class MonthlyStoryAdventureService
     private InventoryService $inventoryService;
     private EntityManagerInterface $em;
     private IRandom $rng;
+    private HattierService $hattierService;
 
     public function __construct(
         MonthlyStoryAdventureStepRepository $monthlyStoryAdventureStepRepository,
         UserMonthlyStoryAdventureStepCompletedRepository $userMonthlyStoryAdventureStepCompletedRepository,
         InventoryService $inventoryService,
-        EntityManagerInterface $em, Squirrel3 $squirrel3
+        EntityManagerInterface $em, Squirrel3 $squirrel3, HattierService $hattierService
     )
     {
         $this->monthlyStoryAdventureStepRepository = $monthlyStoryAdventureStepRepository;
@@ -35,6 +38,7 @@ class MonthlyStoryAdventureService
         $this->inventoryService = $inventoryService;
         $this->em = $em;
         $this->rng = $squirrel3;
+        $this->hattierService = $hattierService;
     }
 
     public function isStepCompleted(User $user, MonthlyStoryAdventureStep $step): bool
@@ -179,7 +183,10 @@ class MonthlyStoryAdventureService
         }
     }
 
-    private function describeAdventure(MonthlyStoryAdventureStep $step, int $roll, array $loot)
+    /**
+     * @param ComputedPetSkills[] $pets
+     */
+    private function describeAdventure(array $pets, MonthlyStoryAdventureStep $step, int $roll, array $loot): string
     {
         $text = $step->getNarrative() ?? '';
 
@@ -194,6 +201,28 @@ class MonthlyStoryAdventureService
             if($text != '') $text .= "\n\n";
 
             $text .= "(You award your pets " . ArrayFunctions::list_nice($loot) . '!)';
+        }
+
+        if($step->getAura())
+        {
+            if($text != '') $text .= "\n\n";
+
+            /** @var ComputedPetSkills $petSkills */
+            $petSkills = $this->rng->rngNextFromArray($pets);
+            $pet = $petSkills->getPet();
+
+            if($pet->getOwner()->getUnlockedHattier())
+                $text .= "(Inspired by the story, {$pet->getName()} created a new hat styling: {$step->getAura()->getName()}! Find it at the Hattier!)";
+            else
+                $text .= "(Inspired by the story, {$pet->getName()} created a new hat styling?! What!? (The Hattier has been unlocked! Check it out in the menu!))";
+
+            $this->hattierService->petMaybeUnlockAura(
+                $pet,
+                $step->getAura(),
+                'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!',
+                'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!',
+                'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!'
+            );
         }
 
         return $text;
@@ -220,7 +249,7 @@ class MonthlyStoryAdventureService
             ],
         );
 
-        $text = $this->describeAdventure($step, $roll, $loot);
+        $text = $this->describeAdventure($pets, $step, $roll, $loot);
 
         return new AdventureResult($text, $loot);
     }
@@ -244,7 +273,7 @@ class MonthlyStoryAdventureService
             ],
         );
 
-        $text = $this->describeAdventure($step, $roll, $loot);
+        $text = $this->describeAdventure($pets, $step, $roll, $loot);
 
         return new AdventureResult($text, $loot);
     }
@@ -265,7 +294,7 @@ class MonthlyStoryAdventureService
             [ 'Feathers', 'Fluff', 'Talon', 'Scales', 'Egg', 'Fish' ]
         );
 
-        $text = $this->describeAdventure($step, $roll, $loot);
+        $text = $this->describeAdventure($pets, $step, $roll, $loot);
 
         return new AdventureResult($text, $loot);
     }
@@ -286,7 +315,7 @@ class MonthlyStoryAdventureService
             [ 'Gold Ore', 'Gold Ore', 'Silver Ore', 'Iron Ore' ]
         );
 
-        $text = $this->describeAdventure($step, $roll, $loot);
+        $text = $this->describeAdventure($pets, $step, $roll, $loot);
 
         return new AdventureResult($text, $loot);
     }
@@ -317,7 +346,7 @@ class MonthlyStoryAdventureService
         {
             if($text != '') $text .= "\n\n";
 
-            $text .= "(You award your pets " . ArrayFunctions::list_nice($loot) . ", and a {$plushy} named {$recruitName} to represent the new recruit!";
+            $text .= "(You award your pets " . ArrayFunctions::list_nice($loot) . ", and a {$plushy} named {$recruitName} to represent the new recruit!)";
         }
 
         $loot[] = $plushy;
@@ -331,7 +360,7 @@ class MonthlyStoryAdventureService
     private function doStory(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
         $loot = $this->getFixedLoot($step);
-        $text = $this->describeAdventure($step, 0, $loot);
+        $text = $this->describeAdventure($pets, $step, 0, $loot);
 
         return new AdventureResult($text, $loot);
     }
@@ -342,7 +371,7 @@ class MonthlyStoryAdventureService
     private function doTreasureHunt(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
         $loot = $this->getFixedLoot($step);
-        $text = $this->describeAdventure($step, 0, $loot);
+        $text = $this->describeAdventure($pets, $step, 0, $loot);
 
         return new AdventureResult($text, $loot);
     }
@@ -363,7 +392,7 @@ class MonthlyStoryAdventureService
             [ 'Feathers', 'Fluff', 'Talon', 'Scales', 'Egg' ]
         );
 
-        $text = $this->describeAdventure($step, $roll, $loot);
+        $text = $this->describeAdventure($pets, $step, $roll, $loot);
 
         return new AdventureResult($text, $loot);
     }
