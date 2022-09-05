@@ -10,7 +10,7 @@ trait FilterService
     /**
      * @var Filterer
      */
-    private $filterer;
+    private Filterer $filterer;
 
     public function getResults(ParameterBag $parameters): FilterResults
     {

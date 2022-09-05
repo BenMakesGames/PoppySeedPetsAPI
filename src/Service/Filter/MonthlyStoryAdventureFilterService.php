@@ -10,7 +10,7 @@ class MonthlyStoryAdventureFilterService
 
     public const PAGE_SIZE = 12;
 
-    private $repository;
+    private MonthlyStoryAdventureRepository $repository;
 
     public function __construct(MonthlyStoryAdventureRepository $monthlyStoryAdventureRepository)
     {

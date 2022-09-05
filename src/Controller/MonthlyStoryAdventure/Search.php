@@ -3,9 +3,7 @@
 namespace App\Controller\MonthlyStoryAdventure;
 
 use App\Controller\PoppySeedPetsController;
-use App\Entity\MonthlyStoryAdventure;
 use App\Enum\SerializationGroupEnum;
-use App\Repository\MonthlyStoryAdventureRepository;
 use App\Service\Filter\MonthlyStoryAdventureFilterService;
 use App\Service\ResponseService;
 use Symfony\Component\HttpFoundation\Request;

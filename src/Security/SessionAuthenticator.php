@@ -1,9 +1,7 @@
 <?php
 namespace App\Security;
 
-use App\Repository\UserRepository;
 use App\Repository\UserSessionRepository;
-use App\Service\HouseService;
 use App\Service\ResponseService;
 use App\Service\SessionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,27 +11,25 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
-class SessionAuthenticator extends AbstractGuardAuthenticator
+class SessionAuthenticator extends AbstractAuthenticator
 {
-    private $userRepository;
-    private $em;
-    private $houseService;
-    private $userSessionRepository;
-    private $responseService;
-    private $sessionService;
+    private EntityManagerInterface $em;
+    private UserSessionRepository $userSessionRepository;
+    private ResponseService $responseService;
+    private SessionService $sessionService;
 
     public function __construct(
-        UserRepository $userRepository, EntityManagerInterface $em, HouseService $houseService,
-        UserSessionRepository $userSessionRepository, ResponseService $responseService, SessionService $sessionService
+        EntityManagerInterface $em, UserSessionRepository $userSessionRepository,
+        ResponseService $responseService, SessionService $sessionService
     )
     {
-        $this->userRepository = $userRepository;
         $this->em = $em;
-        $this->houseService = $houseService;
         $this->userSessionRepository = $userSessionRepository;
         $this->responseService = $responseService;
         $this->sessionService = $sessionService;
@@ -44,19 +40,12 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
         return $request->headers->has('Authorization') && substr($request->headers->get('Authorization'), 0, 7) === 'Bearer ';
     }
 
-    public function getCredentials(Request $request): array
+    public function authenticate(Request $request): Passport
     {
-        return [
-            'sessionId' => substr($request->headers->get('Authorization'), 7)
-        ];
-    }
-
-    public function getUser($credentials, UserProviderInterface $userProvider): ?UserInterface
-    {
-        $sessionId = $credentials['sessionId'];
+        $sessionId = substr($request->headers->get('Authorization'), 7);
 
         if (!$sessionId) {
-            return null;
+            throw new CustomUserMessageAuthenticationException();
         }
 
         $session = $this->userSessionRepository->findOneBySessionId($sessionId);
@@ -81,15 +70,10 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
         $user->setLastActivity();
         $this->em->flush();
 
-        return $user;
+        return new SelfValidatingPassport(new UserBadge($user->getEmail()));
     }
 
-    public function checkCredentials($credentials, UserInterface $user): bool
-    {
-        return true;
-    }
-
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey): ?Response
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         return null;
     }
@@ -102,21 +86,6 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
         ];
 
         return new JsonResponse($data, Response::HTTP_FORBIDDEN);
-    }
-
-    public function start(Request $request, AuthenticationException $authException = null): Response
-    {
-        $data = [
-            'success' => false,
-            'errors' => [ 'You must be logged in to do that. (Curious! Reload the page and try again, maybe?)' ]
-        ];
-
-        return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
-    }
-
-    public function supportsRememberMe(): bool
-    {
-        return false;
     }
 
 }

@@ -20,9 +20,8 @@ security:
             logout: ~
             stateless: true
 
-            guard:
-                authenticators:
-                    - App\Security\SessionAuthenticator
+            custom_authenticators:
+                - App\Security\SessionAuthenticator
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
