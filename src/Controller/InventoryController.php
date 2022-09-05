@@ -370,7 +370,7 @@ class InventoryController extends PoppySeedPetsController
         if(count($inventory) !== count($inventoryIds))
             throw new UnprocessableEntityHttpException('Some of the items could not be found??');
 
-        $itemsInTargetLocation = (int)$inventoryRepository->countItemsInLocation($user, $location);
+        $itemsInTargetLocation = $inventoryRepository->countItemsInLocation($user, $location);
 
         if($location === LocationEnum::HOME)
         {

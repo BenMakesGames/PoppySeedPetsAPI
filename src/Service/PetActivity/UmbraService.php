@@ -51,6 +51,7 @@ class UmbraService
     private SpiceRepository $spiceRepository;
     private LeonidsService $leonidsService;
     private CalendarService $calendarService;
+    private GuildService $guildService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,

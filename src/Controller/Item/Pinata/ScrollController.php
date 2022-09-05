@@ -102,7 +102,7 @@ class ScrollController extends PoppySeedPetsItemController
             $location = $inventory->getLocation();
 
             for($i = 0; $i < $numItems; $i++)
-                $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
+                $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
 
             $em->flush();
 

@@ -11,12 +11,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DeviceStatsCommand extends Command
 {
-    private $em;
-    private $deviceStatsRepository;
+    private DeviceStatsRepository $deviceStatsRepository;
 
-    public function __construct(EntityManagerInterface $em, DeviceStatsRepository $deviceStatsRepository)
+    public function __construct(DeviceStatsRepository $deviceStatsRepository)
     {
-        $this->em = $em;
         $this->deviceStatsRepository = $deviceStatsRepository;
 
         parent::__construct();

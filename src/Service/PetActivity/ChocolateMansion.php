@@ -481,7 +481,6 @@ class ChocolateMansion
 
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
         $difficulty = 16;
-        $loot = null;
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, $roll >= $difficulty);
 
@@ -539,8 +538,7 @@ class ChocolateMansion
             ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering', 'Stealth' ]))
         ;
 
-        if($loot)
-            $this->inventoryService->petCollectsItem($loot, $pet, $comment, $activityLog);
+        $this->inventoryService->petCollectsItem($loot, $pet, $comment, $activityLog);
 
         return $activityLog;
     }

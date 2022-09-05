@@ -31,7 +31,6 @@ use Doctrine\ORM\EntityManagerInterface;
 class PregnancyService
 {
     private $em;
-    private $inventoryService;
     private $petRepository;
     private $responseService;
     private $petExperienceService;
@@ -45,7 +44,7 @@ class PregnancyService
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
-        EntityManagerInterface $em, InventoryService $inventoryService, PetRepository $petRepository,
+        EntityManagerInterface $em, PetRepository $petRepository,
         ResponseService $responseService, PetExperienceService $petExperienceService,
         UserQuestRepository $userQuestRepository, PetSpeciesRepository $petSpeciesRepository,
         UserStatsRepository $userStatsRepository, MeritRepository $meritRepository, PetFactory $petFactory,
@@ -53,7 +52,6 @@ class PregnancyService
     )
     {
         $this->em = $em;
-        $this->inventoryService = $inventoryService;
         $this->petRepository = $petRepository;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;

@@ -27,29 +27,28 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class StoryService
 {
-    private $em;
-    private $storyRepository;
-    private $storySectionRepository;
-    private $userQuestRepository;
-    private $inventoryService;
-    private $inventoryRepository;
-    private $itemRepository;
-    private $jsonLogicParserService;
-    private $userStatsRepository;
-    private $responseService;
-    private $museumService;
+    private EntityManagerInterface $em;
+    private StoryRepository $storyRepository;
+    private StorySectionRepository $storySectionRepository;
+    private UserQuestRepository $userQuestRepository;
+    private InventoryService $inventoryService;
+    private InventoryRepository $inventoryRepository;
+    private JsonLogicParserService $jsonLogicParserService;
+    private UserStatsRepository $userStatsRepository;
+    private ResponseService $responseService;
+    private MuseumService $museumService;
 
-    /** @var User */ private $user;
-    /** @var UserQuest */ private $step;
-    /** @var Story */ private $story;
-    /** @var StorySection */ private $currentSection;
-    /** @var ItemQuantity[] */ private $userInventory;
+    private User $user;
+    private UserQuest $step;
+    private Story $story;
+    private StorySection $currentSection;
+    /** @var ItemQuantity[] */ private array $userInventory;
 
-    /** @var Inventory */ private $callingInventory;
+    private Inventory $callingInventory;
 
     public function __construct(
         EntityManagerInterface $em, StoryRepository $storyRepository, StorySectionRepository $storySectionRepository,
-        UserQuestRepository $userQuestRepository, InventoryService $inventoryService, ItemRepository $itemRepository,
+        UserQuestRepository $userQuestRepository, InventoryService $inventoryService,
         JsonLogicParserService $jsonLogicParserService, UserStatsRepository $userStatsRepository,
         InventoryRepository $inventoryRepository, ResponseService $responseService, MuseumService $museumService
     )
@@ -59,7 +58,6 @@ class StoryService
         $this->storySectionRepository = $storySectionRepository;
         $this->userQuestRepository = $userQuestRepository;
         $this->inventoryService = $inventoryService;
-        $this->itemRepository = $itemRepository;
         $this->jsonLogicParserService = $jsonLogicParserService;
         $this->userStatsRepository = $userStatsRepository;
         $this->inventoryRepository = $inventoryRepository;
@@ -68,10 +66,6 @@ class StoryService
     }
 
     /**
-     * @param User $user
-     * @param int $storyId
-     * @param ParameterBag $request
-     * @return StoryStep
      * @throws \Exception
      */
     public function doStory(User $user, int $storyId, ParameterBag $request, Inventory $callingInventory = null): StoryStep

@@ -142,7 +142,7 @@ class MonthlyStoryAdventureService
 
         $loot[] = $freeLoot;
 
-        $totalSkill = ArrayFunctions::sum($pets, $petSkillFn) + $roll - 10;;
+        $totalSkill = ArrayFunctions::sum($pets, $petSkillFn) + $roll - 10;
 
         $extraBits = floor($totalSkill / 5);
 

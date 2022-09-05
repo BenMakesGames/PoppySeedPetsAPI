@@ -63,7 +63,6 @@ class PetBaby
 
     public function __construct()
     {
-        $this->parents = new ArrayCollection();
     }
 
     public function getId(): ?int

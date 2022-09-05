@@ -357,9 +357,7 @@ class CraftingService
                 $possibilities[] = new ActivityCallback($this, 'createPaleFlail', 10);
         }
 
-        $possibilities = array_merge($possibilities, $this->eventLanternService->getCraftingPossibilities($petWithSkills));
-
-        return $possibilities;
+        return array_merge($possibilities, $this->eventLanternService->getCraftingPossibilities($petWithSkills));
     }
 
     /**

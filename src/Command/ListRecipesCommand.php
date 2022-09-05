@@ -13,17 +13,15 @@ use Symfony\Component\Console\Input\InputOption;
 
 class ListRecipesCommand extends PoppySeedPetsCommand
 {
-    private $em;
-    private $recipeRepository;
-    private $inventoryService;
-    private $itemRepository;
+    private RecipeRepository $recipeRepository;
+    private InventoryService $inventoryService;
+    private ItemRepository $itemRepository;
 
     public function __construct(
-        EntityManagerInterface $em, RecipeRepository $recipeRepository, InventoryService $inventoryService,
+        RecipeRepository $recipeRepository, InventoryService $inventoryService,
         ItemRepository $itemRepository
     )
     {
-        $this->em = $em;
         $this->recipeRepository = $recipeRepository;
         $this->inventoryService = $inventoryService;
         $this->itemRepository = $itemRepository;

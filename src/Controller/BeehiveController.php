@@ -208,8 +208,6 @@ class BeehiveController extends PoppySeedPetsController
             $itemNames[] = 'Honeycomb';
         }
 
-        $extraItem = null;
-
         if($beehive->getMiscPercent() >= 1)
         {
             $beehive->setMiscProgress(0);

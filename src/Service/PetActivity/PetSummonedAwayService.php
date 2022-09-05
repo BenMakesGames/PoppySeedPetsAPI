@@ -142,6 +142,8 @@ class PetSummonedAwayService
                 ]);
                 $tags = [ 'Band' ];
                 break;
+            default:
+                throw new \Exception('Bad random number result.');
         }
 
         $lootItem = $this->itemRepository->findOneByName($loot);

@@ -9,12 +9,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ExportRelationshipNetworkCommand extends Command
 {
-    private $em;
-    private $petRelationshipRepository;
+    private PetRelationshipRepository $petRelationshipRepository;
 
-    public function __construct(EntityManagerInterface $em, PetRelationshipRepository $petRelationshipRepository)
+    public function __construct(PetRelationshipRepository $petRelationshipRepository)
     {
-        $this->em = $em;
         $this->petRelationshipRepository = $petRelationshipRepository;
 
         parent::__construct();

@@ -254,7 +254,7 @@ class AdoptionService
         if($monthDay === 1221 || $monthDay === 1222)
             return ceil($totalPets / 2);
 
-        // christmas colors
+        // Christmas colors
         if($monthDay >= 1223 && $monthDay <= 1225)
             return $squirrel3->rngNextInt(1, 2);
 
@@ -300,7 +300,7 @@ class AdoptionService
         if($monthDay === 1221 || $monthDay === 1222)
             return PetShelterPet::PET_SOLSTICE_NAMES;
 
-        // christmas colors
+        // Christmas colors
         if($monthDay >= 1223 && $monthDay <= 1225)
             return PetShelterPet::PET_CHRISTMAS_NAMES;
 
@@ -346,7 +346,7 @@ class AdoptionService
         if($monthDay === 1221 || $monthDay === 1222)
             return [ 'F8F8F8', '94C6F8' ];
 
-        // christmas colors
+        // Christmas colors
         if($monthDay >= 1223 && $monthDay <= 1225)
             return [ 'F8F8F8', 'CC3300', '009900' ];
 

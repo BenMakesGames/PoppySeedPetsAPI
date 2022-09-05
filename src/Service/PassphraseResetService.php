@@ -9,14 +9,12 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PassphraseResetService
 {
-    private $mailer;
-    private $userRepository;
-    private $em;
+    private \Swift_Mailer $mailer;
+    private EntityManagerInterface $em;
 
-    public function __construct(\Swift_Mailer $mailer, UserRepository $userRepository, EntityManagerInterface $em)
+    public function __construct(\Swift_Mailer $mailer, EntityManagerInterface $em)
     {
         $this->mailer = $mailer;
-        $this->userRepository = $userRepository;
         $this->em = $em;
     }
 

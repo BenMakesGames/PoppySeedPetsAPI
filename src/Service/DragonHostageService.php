@@ -24,7 +24,7 @@ class DragonHostageService
         $crownColor = $this->rng->rngNextFromArray(self::CROWN_COLORS);
         $creatureColor = $this->rng->rngNextFromArray(self::HOSTAGE_COLORS[$type]);
         $name = $this->generateHostageName($type);
-        $dialog = $this->generateHostageDialog($type);
+        $dialog = $this->generateHostageDialog();
 
         return (new DragonHostage())
             ->setType($type)
@@ -49,13 +49,11 @@ class DragonHostageService
         $beautiful = $this->rng->rngNextFromArray([ 'beautiful', 'handsome', 'hot', 'dexterous' ]);
         $terrible = $this->rng->rngNextFromArray([ 'terrible', 'cruel', 'vicious', 'great and powerful' ]);
 
-        $dialog = str_replace(
+        return str_replace(
             [ '%Complaint!%', '%beautiful%', '%terrible%' ],
             [ $complaint, $beautiful, $terrible ],
             $dialog
         );
-
-        return $dialog;
     }
 
     public function generateLoot(string $type): DragonHostageLoot

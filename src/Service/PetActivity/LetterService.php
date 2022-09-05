@@ -230,6 +230,8 @@ class LetterService
                         $pet->increaseLove($this->squirrel3->rngNextInt(4, 8))->increaseSafety($this->squirrel3->rngNextInt(2, 4));
                         $courier->increaseLove($this->squirrel3->rngNextInt(4, 8))->increaseSafety($this->squirrel3->rngNextInt(2, 4));
                         break;
+                    default:
+                        throw new \Exception("Unknown relationship type \"{$relationship->getCurrentRelationship()}\"");
                 }
             }
             else

@@ -120,7 +120,6 @@ ij_vue_interpolation_new_line_before_end_delimiter = true
 ij_vue_interpolation_wrap = off
 ij_vue_keep_indents_on_empty_lines = false
 ij_vue_spaces_within_interpolation_expressions = true
-ij_vue_uniform_indent = true
 
 [.editorconfig]
 ij_editorconfig_align_group_field_declarations = false
@@ -841,7 +840,6 @@ ij_html_space_after_tag_name = false
 ij_html_space_around_equality_in_attribute = false
 ij_html_space_inside_empty_tag = true
 ij_html_text_wrap = normal
-ij_html_uniform_ident = false
 
 [{*.markdown,*.md}]
 ij_markdown_force_one_space_after_blockquote_symbol = true

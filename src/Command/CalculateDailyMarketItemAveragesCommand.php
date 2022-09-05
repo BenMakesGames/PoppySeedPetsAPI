@@ -55,7 +55,7 @@ class CalculateDailyMarketItemAveragesCommand extends Command
                 ) AS averages
                 GROUP BY averages.item_id            
             ')
-            ->fetchAll(FetchMode::ASSOCIATIVE)
+            ->fetchAllAssociative()
         ;
 
         $this->em->getConnection()->executeQuery('TRUNCATE daily_market_inventory_transaction');

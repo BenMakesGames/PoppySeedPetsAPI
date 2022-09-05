@@ -36,8 +36,7 @@ class FixMismatchedRelationshipsCommand extends Command
             LEFT JOIN pet_relationship AS pr2 ON pr1.pet_id=pr2.relationship_id AND pr1.relationship_id=pr2.pet_id
             WHERE pr1.current_relationship!=pr2.current_relationship
         ');
-        $statement->execute();
-        $results = $statement->fetchAll(\PDO::FETCH_NUM);
+        $results = $statement->executeQuery()->fetchAllAssociative();
 
         if(count($results) === 0)
         {

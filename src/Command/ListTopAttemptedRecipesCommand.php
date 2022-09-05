@@ -15,17 +15,15 @@ use Symfony\Component\Console\Input\InputOption;
 
 class ListTopAttemptedRecipesCommand extends PoppySeedPetsCommand
 {
-    private $recipeRepository;
-    private $recipeAttemptedRepository;
-    private $inventoryService;
+    private RecipeAttemptedRepository $recipeAttemptedRepository;
+    private InventoryService $inventoryService;
 
     public function __construct(
-        RecipeRepository $recipeRepository, RecipeAttemptedRepository $recipeAttemptedRepository,
+        RecipeAttemptedRepository $recipeAttemptedRepository,
         InventoryService $inventoryService
     )
     {
         $this->recipeAttemptedRepository = $recipeAttemptedRepository;
-        $this->recipeRepository = $recipeRepository;
         $this->inventoryService = $inventoryService;
 
         parent::__construct();

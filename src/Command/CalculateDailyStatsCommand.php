@@ -10,15 +10,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CalculateDailyStatsCommand extends Command
 {
-    private $em;
-    private $logger;
+    private EntityManagerInterface $em;
 
     public function __construct(
-        EntityManagerInterface $em, LoggerInterface $logger
+        EntityManagerInterface $em
     )
     {
         $this->em = $em;
-        $this->logger = $logger;
 
         parent::__construct();
     }

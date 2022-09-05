@@ -45,12 +45,10 @@ class PetActivityStatsService
         PetActivityStatEnum::OTHER => 'Other',
     ];
 
-    private $petActivityStatsRepository;
-    private $em;
+    private EntityManagerInterface $em;
 
     public function __construct(PetActivityStatsRepository $petActivityStatsRepository, EntityManagerInterface $em)
     {
-        $this->petActivityStatsRepository = $petActivityStatsRepository;
         $this->em = $em;
     }
 

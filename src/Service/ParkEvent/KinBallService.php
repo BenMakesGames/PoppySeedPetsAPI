@@ -30,26 +30,22 @@ class KinBallService implements ParkEventInterface
     public const CRITICAL_SCORE = 3;
 
     /** @var KinBallTeam[] */
-    private $teams;
+    private array $teams;
 
-    /** @var string */
-    private $results = '';
+    private string $results = '';
 
-    /** @var integer */
-    private $attackingTeam;
+    private int $attackingTeam;
+    private int $designatedTeam;
 
-    /** @var integer */
-    private $designatedTeam;
-
-    private $teamWins = [ 0, 0, 0 ];
+    private array $teamWins = [ 0, 0, 0 ];
     private $activeTeams;
     private $teamPoints;
 
-    private $em;
-    private $petRelationshipService;
-    private $petExperienceService;
-    private $transactionService;
-    private $inventoryService;
+    private EntityManagerInterface $em;
+    private PetRelationshipService $petRelationshipService;
+    private PetExperienceService $petExperienceService;
+    private TransactionService $transactionService;
+    private InventoryService $inventoryService;
     private IRandom $squirrel3;
     private ParkService $parkService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;

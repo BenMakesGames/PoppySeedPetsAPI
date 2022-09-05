@@ -202,7 +202,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
             $tool->setGripAngleFixed($this->confirm('Grip angle fixed?', $tool->getGripAngleFixed()));
 
             foreach(ItemTool::MODIFIER_FIELDS as $modifier)
-                $tool->{'set' . $modifier}($this->askInt(ucfirst($modifier) . '', $tool->{'get' . $modifier}()));
+                $tool->{'set' . $modifier}($this->askInt(ucfirst($modifier), $tool->{'get' . $modifier}()));
 
             $tool->setProvidesLight($this->askBool('Provides light?', $tool->getProvidesLight()));
             $tool->setProtectionFromHeat($this->askBool('Protects from heat?', $tool->getProtectionFromHeat()));

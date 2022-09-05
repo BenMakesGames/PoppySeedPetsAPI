@@ -7,15 +7,6 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class TestChineseCalendar extends PoppySeedPetsCommand
 {
-    private $calendarService;
-
-    public function __construct(CalendarService $calendarService)
-    {
-        $this->calendarService = $calendarService;
-
-        parent::__construct();
-    }
-
     protected function configure()
     {
         $this

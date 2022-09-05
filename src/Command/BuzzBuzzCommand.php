@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class BuzzBuzzCommand extends Command
 {
-    private $em;
+    private EntityManagerInterface $em;
 
     public function __construct(EntityManagerInterface $em)
     {
