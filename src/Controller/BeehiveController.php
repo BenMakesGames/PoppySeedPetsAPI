@@ -234,7 +234,12 @@ class BeehiveController extends PoppySeedPetsController
 
                 $changes = new PetChanges($helper);
 
-                if($squirrel3->rngNextInt(1, $total) <= $gathering)
+                if($total < 2)
+                    $doGatherAction = $squirrel3->rngNextBool();
+                else
+                    $doGatherAction = $squirrel3->rngNextInt(1, $total) <= $gathering;
+
+                if($doGatherAction)
                 {
                     $extraItem = $petAssistantService->getExtraItem($gathering,
                         [ 'Tea Leaves', 'Blueberries', 'Blackberries', 'Grandparoot', 'Orange', 'Red' ],
