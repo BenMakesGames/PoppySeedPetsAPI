@@ -178,6 +178,10 @@ class MonthlyStoryAdventureService
             case 'LargeMushroom':
                 return [ 'Toadstool' ];
 
+            case 'PurpleGrass': return [ 'Quinacridone Magenta Dye' ];
+            case 'EnormousTibia': return [ 'Stereotypical Bone' ];
+            case 'FishBag': return [ 'Fish Bag' ];
+
             default:
                 throw new \Exception("Bad Ben! He didn't code support for this adventure's treasure: \"{$step->getTreasure()}\"!");
         }
