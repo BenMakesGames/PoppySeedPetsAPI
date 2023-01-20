@@ -158,7 +158,7 @@ class HouseSim implements IHouseSim
         $itemId = $inventoryToRemoveFromHouseSim[0]->getItem()->getId();
 
         if($this->itemQuantitiesByItemId[$itemId] > $quantity)
-            $this->itemQuantitiesByItemId[$itemId]--;
+            $this->itemQuantitiesByItemId[$itemId] -= $quantity;
         else
             unset($this->itemQuantitiesByItemId[$itemId]);
 
