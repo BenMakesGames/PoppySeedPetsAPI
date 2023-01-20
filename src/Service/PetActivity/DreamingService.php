@@ -194,9 +194,11 @@ class DreamingService
             '%a_food%' => $this->squirrel3->rngNextFromArray([ 'a cellular peptide cake', 'a piece of naan', 'a slice of za', 'some donburi', 'a lobster', 'some succotash', 'a bowl of chili', 'a plate of tiny snails' ]),
             '%a_food_or_drink%' => $this->squirrel3->rngNextFromArray([ '%a_food%', '%a_drink%' ]),
             '%a_monster%' => $monsters[0]['a'],
+            '%A_monster%' => ucfirst($monsters[0]['a']),
             '%the_monster%' => $monsters[0]['the'],
             '%a_wandering_monster%' => $monsters[1]['a'],
             '%a_pet_or_monster%' => $this->squirrel3->rngNextFromArray([ 'a %pet_adjective% %species%', '%a_monster%' ]),
+            '%A_pet_or_monster%' => $this->squirrel3->rngNextFromArray([ 'A %pet_adjective% %species%', '%A_monster%' ]),
             '%plural_stuff%' => $this->squirrel3->rngNextFromArray(self::RANDOM_PLURAL_STUFF),
         ];
     }
