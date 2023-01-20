@@ -178,6 +178,8 @@ class DreamingService
             '%dreamer%' => $pet->getName(),
             '%location1%' => $locations[0],
             '%location2%' => $locations[1],
+            '%Location1%' => ucfirst($locations[0]),
+            '%Location2%' => ucfirst($locations[1]),
             '%wandering%' => $this->squirrel3->rngNextFromArray(self::WANDERING_WORDS),
             '%species%' => $species->getName(),
             '%a_species%' => GrammarFunctions::indefiniteArticle($species->getName()) . ' ' . $species->getName(),
