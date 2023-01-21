@@ -35,7 +35,7 @@ class HotPotatoService
         return $numberOfTosses;
     }
 
-    public function tossItem(Inventory $inventory): JsonResponse
+    public function tossItem(Inventory $inventory, ?string $messageStart = null): JsonResponse
     {
         $owner = $inventory->getOwner();
 
@@ -54,6 +54,9 @@ class HotPotatoService
 
         $this->em->flush();
 
-        return $this->responseService->itemActionSuccess('You toss the ' . $inventory->getFullItemName() . ' to <a href="/poppyopedia/resident/' . $target->getId() . '">' . $target->getName() . '</a>!', [ 'itemDeleted' => true ]);
+        if($messageStart == null)
+            $messageStart = 'You toss the ' . $inventory->getFullItemName();
+
+        return $this->responseService->itemActionSuccess($messageStart . ' to <a href="/poppyopedia/resident/' . $target->getId() . '">' . $target->getName() . '</a>!', [ 'itemDeleted' => true ]);
     }
 }

@@ -6,6 +6,7 @@ use App\Service\HotPotatoService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -103,6 +104,36 @@ class HotPotatoController extends PoppySeedPetsItemController
         else
         {
             return $hotPotatoService->tossItem($inventory);
+        }
+    }
+
+    /**
+     * @Route("/{inventory}/tossHongbao", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function tossHongbao(
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        Squirrel3 $squirrel3, HotPotatoService $hotPotatoService, TransactionService $transactionService
+    )
+    {
+        $this->validateInventory($inventory, 'hotPotato/#/tossHongbao');
+
+        $user = $this->getUser();
+
+        if($squirrel3->rngNextInt(1, 5) === 1)
+        {
+            $money = $squirrel3->rngNextInt(10, 20);
+
+            $transactionService->getMoney($user, $money, "Found this inside {$inventory->getItem()->getNameWithArticle()}.");
+
+            $em->remove($inventory);
+            $em->flush();
+
+            return $responseService->itemActionSuccess("You try to open the {$inventory->getItem()->getName()}, and succeed! (Just like a real envelope _should_ work!) There's {$money}~~m~~ inside, which you pocket.", [ 'itemDeleted' => true ]);
+        }
+        else
+        {
+            return $hotPotatoService->tossItem($inventory, "You try to open the {$inventory->getItem()->getName()}, but, mysteriously, it refuses. Eventually you give up, and toss it");
         }
     }
 }

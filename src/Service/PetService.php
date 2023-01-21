@@ -553,6 +553,12 @@ class PetService
             return;
         }
 
+        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 10 : 7) && $this->calendarService->isChineseNewYear())
+        {
+            $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::CHINESE_NEW_YEAR);
+            return;
+        }
+
         if($pet->getGuildMembership() && $this->squirrel3->rngNextInt(1, 35) === 1)
         {
             if($this->guildService->doGuildActivity($petWithSkills))

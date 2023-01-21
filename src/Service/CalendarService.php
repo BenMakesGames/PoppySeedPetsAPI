@@ -259,6 +259,13 @@ class CalendarService
         return abs($this->monthAndDay - $leonidPeakDay) <= 1;
     }
 
+    public function isChineseNewYear(): bool
+    {
+        $chineseCalendarInfo = $this->getChineseCalendarInfo();
+
+        return $chineseCalendarInfo->month === 1 && $chineseCalendarInfo->day <= 6;
+    }
+
     /**
      * @return string[]
      */
@@ -344,9 +351,7 @@ class CalendarService
         if($this->isJelephantDay())
             $events[] = HolidayEnum::JELEPHANT_DAY;
 
-        $chineseCalendarInfo = $this->getChineseCalendarInfo();
-
-        if($chineseCalendarInfo->month === 1 && $chineseCalendarInfo->day <= 6)
+        if($this->isChineseNewYear())
             $events[] = HolidayEnum::CHINESE_NEW_YEAR;
 
         if($this->isHoli())

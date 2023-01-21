@@ -7,4 +7,5 @@ class GatheringHolidayEnum
 
     const EASTER = 'Easter';
     const SAINT_PATRICKS = 'Saint Patrick\'s';
+    const CHINESE_NEW_YEAR = 'Chinese New Year';
 }

@@ -43,6 +43,7 @@ class GatheringHolidayAdventureService
     private const HOLIDAY_TAGS = [
         GatheringHolidayEnum::EASTER => 'Easter',
         GatheringHolidayEnum::SAINT_PATRICKS => 'St. Patrick\'s',
+        GatheringHolidayEnum::CHINESE_NEW_YEAR => 'Chinese New Year'
     ];
 
     public function adventure(ComputedPetSkills $petWithSkills, string $holiday): PetActivityLog
@@ -127,6 +128,7 @@ class GatheringHolidayAdventureService
         {
             case GatheringHolidayEnum::EASTER: return $plural ? 'plastic eggs' : 'plastic egg';
             case GatheringHolidayEnum::SAINT_PATRICKS: return $plural ? 'clovers' : 'clover';
+            case GatheringHolidayEnum::CHINESE_NEW_YEAR: return $plural ? 'moneys envelopes' : 'moneys envelope';
             default: throw new EnumInvalidValueException(GatheringHolidayEnum::class, $holiday);
         }
     }
@@ -215,8 +217,16 @@ class GatheringHolidayAdventureService
                 if($item) $item->setLockedToOwner(true);
             }
         }
+        else if($holiday === GatheringHolidayEnum::CHINESE_NEW_YEAR)
+        {
+            for($i = 0; $i < $numItems; $i++)
+            {
+                $item = $this->inventoryService->petCollectsItem('Red Envelope', $pet, $pet->getName() . ' found this ' . $where . '!', $activityLog)
+                    ->setLockedToOwner(true);
+            }
+        }
         else
-            throw new EnumInvalidValueException(GatheringHolidayEnum::class, $holiday);
+            throw new \Exception("Oops! Ben forgot to code holiday adventure logic for {$holiday}!");
 
         return $activityLog;
     }
