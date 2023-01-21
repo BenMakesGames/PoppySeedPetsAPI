@@ -162,7 +162,7 @@ class LeonidsService
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they encountered a large raccoon spirit, gathering Stardust. It snarled at ' . $this->getActivityLogPrefix($pet) . ', but they calmed it down, and helped it gather some Stardust (it\'s the Light and Shadow way)! In addition to getting some Stardust of their own, the spirit gave ' . ActivityHelpers::PetName($pet) . ' some Quintesence as thanks!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they encountered a large raccoon spirit, gathering Stardust. It snarled at ' . ActivityHelpers::PetName($pet) . ', but they calmed it down, and helped it gather some Stardust (it\'s the Light and Shadow way)! In addition to getting some Stardust of their own, the spirit gave ' . ActivityHelpers::PetName($pet) . ' some Quintesence as thanks!', '')
                 ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Guild' ]))
             ;
 
@@ -181,12 +181,12 @@ class LeonidsService
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
-                $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they encountered a large raccoon spirit, gathering Stardust. It snarled at ' . $this->getActivityLogPrefix($pet) . ', but they calmed it down, and helped it gather some Stardust (it\'s the Light and Shadow way)! In addition to getting some Stardust of their own, the spirit gave ' . ActivityHelpers::PetName($pet) . ' some Quintesence as thanks!', '')
+                $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they encountered a large raccoon spirit, gathering Stardust. It snarled at ' . ActivityHelpers::PetName($pet) . ', but they calmed it down, and helped it gather some Stardust (it\'s the Light and Shadow way)! In addition to getting some Stardust of their own, the spirit gave ' . ActivityHelpers::PetName($pet) . ' some Quintesence as thanks!', '')
                     ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Fighting' ]))
                 ;
 
                 $loot = $this->rng->rngNextFromArray([ 'Fluff', 'Talon', 'Quintessence' ]);
-                $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' got this by defeating an angry raccoon spirit they encountered in the Umbra while gathering Stardust! It snarled at ' . $this->getActivityLogPrefix($pet) . ', and attacked, but ' . $this->getActivityLogPrefix($pet) . ' overpowered the spirit, and drove it away!', $activityLog);
+                $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' got this by defeating an angry raccoon spirit they encountered in the Umbra while gathering Stardust! It snarled at ' . $pet->getName() . ', and attacked, but ' . $pet->getName() . ' overpowered the spirit, and drove it away!', $activityLog);
                 $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' gathered this from fallen Leonids in the Umbra, after defeating a large raccoon spirit!', $activityLog);
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA, PetSkillEnum::BRAWL ], $activityLog);
@@ -195,7 +195,7 @@ class LeonidsService
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
-                $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they encountered a large raccoon spirit, gathering Stardust. It snarled at ' . $this->getActivityLogPrefix($pet) . ', and attacked; after a long fight in the Stardust, ' . $this->getActivityLogPrefix($pet) . ' was forced to retreat!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they encountered a large raccoon spirit, gathering Stardust. It snarled at ' . ActivityHelpers::PetName($pet) . ', and attacked; after a long fight in the Stardust, ' . ActivityHelpers::PetName($pet) . ' was forced to retreat!', '');
 
                 $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' got this all over themselves during a fight with a large raccoon spirit in the Umbra!', $activityLog);
 
