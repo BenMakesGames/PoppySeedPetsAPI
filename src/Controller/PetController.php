@@ -19,8 +19,10 @@ use App\Enum\PetSkillEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\StatusEffectEnum;
+use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
+use App\Model\PetShelterPet;
 use App\Repository\GuildRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\MeritRepository;
@@ -142,7 +144,7 @@ class PetController extends PoppySeedPetsController
      */
     public function releasePet(
         Pet $pet, Request $request, ResponseService $responseService, UserPasswordHasherInterface $passwordEncoder,
-        EntityManagerInterface $em, UserRepository $userRepository, PetRepository $petRepository
+        EntityManagerInterface $em, UserRepository $userRepository, PetRepository $petRepository, Squirrel3 $rng
     )
     {
         $user = $this->getUser();
@@ -161,6 +163,7 @@ class PetController extends PoppySeedPetsController
         $state = new PetChanges($pet);
 
         $pet
+            ->setName($rng->rngNextFromArray(PetShelterPet::PET_NAMES)) // to prevent people from releasing rude names for other players to pick up
             ->setTool(null)
             ->setHat(null)
             ->setOwner($userRepository->findOneByEmail('the-wilds@poppyseedpets.com'))
@@ -182,7 +185,7 @@ class PetController extends PoppySeedPetsController
 
         $activityLog = (new PetActivityLog())
             ->setPet($pet)
-            ->setEntry($user->getName() . ' gave up ' . $pet->getName() . ', releasing them to The Wilds.')
+            ->setEntry($user->getName() . ' gave up ' . ActivityHelpers::PetName($pet) . ', releasing them to The Wilds.')
             ->setChanges($state->compare($pet))
         ;
 
