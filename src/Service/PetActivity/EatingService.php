@@ -205,7 +205,10 @@ class EatingService
                 $this->inventoryService->petCollectsItem($item, $pet, $comment, $activityLog);
             }
 
-            $activityLog->setChanges($changes->compare($pet));
+            $activityLog
+                ->setChanges($changes->compare($pet))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Lucky Food' ]))
+            ;
         }
 
         if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && $this->squirrel3->rngNextInt(1, 200) < $food->food + $food->junk)
