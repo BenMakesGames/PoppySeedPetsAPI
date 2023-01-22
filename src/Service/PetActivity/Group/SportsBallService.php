@@ -8,6 +8,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\PetChanges;
+use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\GroupNameGenerator;
 use App\Service\InventoryService;
@@ -28,11 +29,12 @@ class SportsBallService
     private IRandom $squirrel3;
     private GroupNameGenerator $groupNameGenerator;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private ItemRepository $itemRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
         PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3, GroupNameGenerator $groupNameGenerator,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        PetActivityLogTagRepository $petActivityLogTagRepository, ItemRepository $itemRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -42,6 +44,7 @@ class SportsBallService
         $this->squirrel3 = $squirrel3;
         $this->groupNameGenerator = $groupNameGenerator;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->itemRepository = $itemRepository;
     }
 
     private const DICTIONARY = [
@@ -143,8 +146,12 @@ class SportsBallService
                 PetSkillEnum::STEALTH,
             ], $activityLog);
 
-            if($this->squirrel3->rngNextInt(1, 10) === 1 && !$lowestPerformer)
-                $this->inventoryService->petCollectsItem($this->squirrel3->rngNextFromArray(self::POSSIBLE_LOOT), $member, $this->formatMessage($message, $member, $group) . ' A ', $activityLog);
+            if($this->squirrel3->rngNextInt(1, 10) === 1 && $member->getId() !== $lowestPerformer)
+            {
+                $loot = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray(self::POSSIBLE_LOOT));
+                $activityLog->setEntry($activityLog->getEntry() . ' ' . $member->getName() . ' accidentally brought ' . $loot->getNameWithArticle() . ' home after the game. (Oops! (Oh well.))');
+                $this->inventoryService->petCollectsItem($loot, $member, $this->formatMessage($message, $member, $group), $activityLog);
+            }
 
             $activityLog->setChanges($petChanges->compare($member));
 
