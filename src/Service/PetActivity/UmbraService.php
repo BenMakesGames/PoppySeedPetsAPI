@@ -446,7 +446,7 @@ class UmbraService
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a Little Strongbox! Lucky~!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Lucky~!' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Little Strongbox', $pet, $pet->getName() . ' found this on the shores of a dark river in the Umbra.', $activityLog);
@@ -475,7 +475,7 @@ class UmbraService
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a ' . $die . '! Lucky~!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Lucky~!' ]))
             ;
 
             $this->inventoryService->petCollectsItem($die, $pet, $pet->getName() . ' found this on the shores of a dark river in the Umbra.', $activityLog);

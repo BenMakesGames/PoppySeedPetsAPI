@@ -1234,7 +1234,10 @@ class HuntingService
             ]);
 
             if($this->squirrel3->rngNextInt(1, 10) === 1 && $pet->hasMerit(MeritEnum::LUCKY))
+            {
                 $this->inventoryService->petCollectsItem($recipe, $pet, $pet->getName() . ' got this by unfolding a Paper Golem. Lucky~!', $activityLog);
+                $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Lucky~!' ]));
+            }
             else if($this->squirrel3->rngNextInt(1, 20) === 1)
                 $this->inventoryService->petCollectsItem($recipe, $pet, $pet->getName() . ' got this by unfolding a Paper Golem.', $activityLog);
             else
@@ -1258,7 +1261,7 @@ class HuntingService
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to unfold a Paper Golem, but got a nasty paper cut! During the fight, however, a small, glowing die rolled out from within the folds of the golem! Lucky~! ' . $pet->getName() . ' grabbed it before fleeing.', '')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting', 'Crafting' ]))
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting', 'Crafting', 'Lucky~!' ]))
                 ;
 
                 $this->inventoryService->petCollectsItem('Glowing Six-sided Die', $pet, 'While ' . $pet->getName() . ' was fighting a Paper Golem, this fell out from it! Lucky~!', $activityLog);

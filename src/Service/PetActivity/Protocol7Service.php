@@ -704,7 +704,7 @@ class Protocol7Service
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector, and managed to recover a Lo-res Crown from it! Lucky~!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Project-E' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Project-E', 'Lucky~!' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Lo-res Crown', $pet, $pet->getName() . ' recovered this from a corrupt sector of Project-E! Lucky~!', $activityLog);
@@ -770,7 +770,8 @@ class Protocol7Service
 
             if($lucky)
             {
-                $activityLog->setEntry($activityLog->getEntry() . ' Lucky~!');
+                $activityLog->setEntry($activityLog->getEntry() . ' Lucky~!')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Lucky~!' ]));
                 $itemComment .= ' Lucky~!';
             }
 

@@ -1201,6 +1201,7 @@ class SmithingService
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% refined some Charcoal into Coke, and what\'s this?! There was a piece of ' . $rareStone . ' inside! Lucky~!', 'items/resource/coke')
                         ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                        ->addTags($this->petActivityLogTagRepository->findByNames([ 'Lucky~!' ]))
                     ;
                 }
                 else
@@ -1216,7 +1217,10 @@ class SmithingService
             if($getRareStone)
             {
                 if($attributeLuckiness)
+                {
                     $this->inventoryService->petCollectsItem($rareStone, $pet, $pet->getName() . ' found this while refining Charcoal into Coke! Lucky~!', $activityLog);
+                    $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Lucky~!' ]));
+                }
                 else
                     $this->inventoryService->petCollectsItem($rareStone, $pet, $pet->getName() . ' found this while refining Charcoal into Coke!', $activityLog);
             }
@@ -1357,9 +1361,12 @@ class SmithingService
                 : 'While %pet:' . $pet->getId() . '.name% was making some Crystal Balls, they happened to catch the light just right, and caught a Rainbow, too!'
             ;
 
+            $tags = [ 'Physics' ];
+            if($lucky) $tags[] = 'Lucky~!';
+
             $activityLog = $this->responseService->createActivityLog($pet, $message . $luckySuffix, '')
                 ->addInterestingness($lucky ? PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT : PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Physics' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames($tags))
             ;
 
             $this->inventoryService->petCollectsItem('Rainbow', $pet, $pet->getName() . ' captured this while making a Crystal Ball!' . $luckySuffix, $activityLog);

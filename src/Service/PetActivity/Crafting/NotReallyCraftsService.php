@@ -129,9 +129,12 @@ class NotReallyCraftsService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::NATURE ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
 
+            $tags = [ 'Gathering', 'Physics' ];
+            if($lucky) $tags[] = 'Lucky~!';
+
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% sifted through a Planetary Ring, and found ' . $loot . $exclaim, '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering', 'Physics' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames($tags))
             ;
 
             $this->inventoryService->petCollectsEnhancedItem($loot, null, $spice, $pet, $pet->getName() . ' found this in a Planetary Ring.', $activityLog);

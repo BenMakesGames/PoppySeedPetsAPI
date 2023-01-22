@@ -727,6 +727,7 @@ class GatheringService
                 $activityLog
                     ->setEntry($activityLog->getEntry() . ' (Honeydont?! Lucky~!)')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Lucky~!' ]))
                 ;
             }
 
@@ -759,6 +760,7 @@ class GatheringService
         {
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
             $pet->increaseFood(-1);
+            $tags = [ 'Mining', 'Light Needed' ];
 
             if($pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 20) === 1)
             {
@@ -770,6 +772,7 @@ class GatheringService
                     $loot = 'Silver Ore';
 
                 $punctuation = '! Lucky~!';
+                $tags[] = 'Lucky~!';
             }
             else if($this->squirrel3->rngNextInt(1, 50) === 1)
             {
@@ -791,7 +794,7 @@ class GatheringService
             }
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found an Old Iron Mine, and dug up some ' . $loot . $punctuation, '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Mining', 'Light Needed' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames($tags))
             ;
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' dug this out of an Old Iron Mine' . $punctuation, $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::GATHER, true);
@@ -983,16 +986,19 @@ class GatheringService
             else
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to the Wild Hedgemaze. It turns out mazes are way easier with a perfect memory! ' . $pet->getName() . ' found ' . ArrayFunctions::list_nice($loot) . '.', '');
 
+            $tags = [ 'Gathering' ];
+
             if($lucky)
             {
                 $activityLog
                     ->setEntry($activityLog->getEntry() . ' (Melowatern!? Lucky~!)')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
                 ;
+                $tags[] = 'Lucky~!';
             }
 
             $activityLog
-                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Gathering' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames($tags))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
@@ -1055,9 +1061,9 @@ class GatheringService
             else if($this->squirrel3->rngNextInt(1, 100) == 1)
                 $loot[] = 'Melowatern';
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered through a Wild Hedgemaze, and found ' . ArrayFunctions::list_nice($loot) . '.', '')
-                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Gathering' ]))
-            ;
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered through a Wild Hedgemaze, and found ' . ArrayFunctions::list_nice($loot) . '.', '');
+
+            $tags = [ 'Gathering' ];
 
             if($lucky)
             {
@@ -1065,7 +1071,10 @@ class GatheringService
                     ->setEntry($activityLog->getEntry() . ' (Melowatern!? Lucky~!)')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
                 ;
+                $tags[] = 'Lucky~!';
             }
+
+            $activityLog->addTags($this->petActivityLogTagRepository->findByNames($tags));
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
 

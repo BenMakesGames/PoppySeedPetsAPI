@@ -164,7 +164,7 @@ class MagicBeanstalkService
         if($lucky)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as \~' . $meters . ' meters. There, they spotted a Magic Leaf! Lucky\~!', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Gathering' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Gathering', 'Lucky~!' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Magic Leaf', $pet, $pet->getName() . ' harvested this from your magic bean-stalk! Lucky~!', $activityLog);

@@ -513,7 +513,7 @@ class FishingService
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out fishing, and reeled in... some Fish Bones!? (Lucky~??)', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fishing' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fishing', 'Lucky~!' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $this->inventoryService->petCollectsItem('Fish Bones', $pet, $pet->getName() . ' was out fishing, and one of these got caught on the line!? (Lucky~??)', $activityLog);
@@ -549,7 +549,7 @@ class FishingService
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Waterfall Basin, and reeled in a Little Strongbox! Lucky~!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fishing' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fishing', 'Lucky~!' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $this->inventoryService->petCollectsItem('Little Strongbox', $pet, $pet->getName() . ' was fishing in a Waterfall Basin, and one of these got caught on the line! Lucky~!', $activityLog);
@@ -636,7 +636,7 @@ class FishingService
             $moneys = $this->squirrel3->rngNextInt(10, 15) + $bonusMoney;
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% fished around in the Plaza fountain while no one was looking, and grabbed ' . $moneys . ' moneys! Lucky~!', 'icons/activity-logs/moneys')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fishing', 'Stealth', 'Moneys' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fishing', 'Stealth', 'Moneys', 'Lucky~!' ]))
             ;
         }
         else
@@ -924,8 +924,11 @@ class FishingService
 
             $luckyText = $isLucky ? ' Lucky~!' : '';
 
+            $tags = [ 'Fishing' ];
+            if($isLucky) $tags[] = 'Lucky~!';
+
             $activityLog = $this->responseService->createActivityLog($pet, $discoveryText . ', and spotted a ' . $item . '!' . $luckyText, '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fishing' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames($tags))
             ;
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this at the Coral Reef!' . $luckyText, $activityLog);
 
