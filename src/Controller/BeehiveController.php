@@ -9,6 +9,7 @@ use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
+use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
 use App\Service\BeehiveService;
@@ -74,7 +75,7 @@ class BeehiveController extends PoppySeedPetsController
      */
     public function feedItem(
         ResponseService $responseService, EntityManagerInterface $em, BeehiveService $beehiveService,
-        InventoryService $inventoryService, Request $request
+        InventoryService $inventoryService, Request $request, ItemRepository $itemRepository
     )
     {
         $user = $this->getUser();
@@ -95,7 +96,17 @@ class BeehiveController extends PoppySeedPetsController
         ;
 
         if($inventoryService->loseItem($itemToFeed, $user, LocationEnum::HOME, 1) === 0)
-            throw new UnprocessableEntityHttpException('You do not have ' . $itemToFeed->getNameWithArticle() . ' in your house.');
+        {
+            if(!$user->getUnlockedBasement())
+                throw new UnprocessableEntityHttpException('You do not have ' . $itemToFeed->getNameWithArticle() . ' in your house!');
+
+            if($inventoryService->loseItem($itemToFeed, $user, LocationEnum::BASEMENT, 1) === 0)
+                throw new UnprocessableEntityHttpException('You do not have ' . $itemToFeed->getNameWithArticle() . ' in your house, or your basement!');
+            else
+                $responseService->addFlashMessage('You give the queen ' . $itemToFeed->getNameWithArticle() . ' from your basement. Her bees immediately whisk it away into the hive!');
+        }
+        else
+            $responseService->addFlashMessage('You give the queen ' . $itemToFeed->getNameWithArticle() . ' from your house. Her bees immediately whisk it away into the hive!');
 
         $beehiveService->fedRequestedItem($beehive, $alternate);
         $beehive->setInteractionPower();
