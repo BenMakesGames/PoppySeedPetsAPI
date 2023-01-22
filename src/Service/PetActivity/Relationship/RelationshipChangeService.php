@@ -386,6 +386,8 @@ class RelationshipChangeService
 
         [ $p1ChangesMind, $p2ChangesMind ] = $this->determineWhoChangesTheirMind($p1, $p2, $chanceP1ChangesMind, $chanceP2ChangesMind);
 
+        $tags = [ 'Relationship Change' ];
+
         if($p1ChangesMind)
         {
             $originalGoal = $p1->getRelationshipGoal();
@@ -437,22 +439,24 @@ class RelationshipChangeService
         else // break up
         {
             $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$p1->getRelationshipGoal()] . '; ' . $p2->getPet()->getName() . ' was really upset! After arguing for a while, the two broke up entirely! :(';
+            $tags[] = 'Break-up';
 
             $p1Log = (new PetActivityLog())
                 ->setPet($p1->getPet())
                 ->setEntry($message)
-                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Break-up' ]))
             ;
 
             $p2Log = (new PetActivityLog())
                 ->setPet($p2->getPet())
                 ->setEntry($message)
-                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Break-up' ]))
             ;
 
             $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
             $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
         }
+
+        $p1Log->addTags($this->petActivityLogTagRepository->findByNames($tags));
+        $p2Log->addTags($this->petActivityLogTagRepository->findByNames($tags));
 
         return [ $p1Log, $p2Log ];
     }
@@ -536,6 +540,8 @@ class RelationshipChangeService
 
         [$p1ChangesMind, $p2ChangesMind] = $this->determineWhoChangesTheirMind($p1, $p2, $chanceP1ChangesMind, $chanceP2ChangesMind);
 
+        $tags = [ 'Relationship Change' ];
+
         if($p1ChangesMind)
         {
             if($p1IsFriendOfTheWorld)
@@ -585,24 +591,26 @@ class RelationshipChangeService
         else // break up
         {
             $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' doesn\'t want that. After arguing for a while, the two broke up entirely! :\'(';
+            $tags[] = 'Break-up';
 
             $p1Log = (new PetActivityLog())
                 ->setPet($p1->getPet())
                 ->setEntry($message)
                 ->setIcon('icons/activity-logs/breakup')
-                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Break-up' ]))
             ;
 
             $p2Log = (new PetActivityLog())
                 ->setPet($p2->getPet())
                 ->setEntry($message)
                 ->setIcon('icons/activity-logs/breakup')
-                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Break-up' ]))
             ;
 
             $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
             $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
         }
+
+        $p1Log->addTags($this->petActivityLogTagRepository->findByNames($tags));
+        $p2Log->addTags($this->petActivityLogTagRepository->findByNames($tags));
 
         return [ $p1Log, $p2Log ];
     }
