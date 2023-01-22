@@ -60,7 +60,7 @@ class HeartDimensionService
         $this->equipmentService->unequipPet($pet);
 
         return $this->responseService->createActivityLog($pet, 'There being nothing more ' . '%pet:' . $pet->getId() . '.name% can do in the Heart Dimension right now, they put the Heartstone down.', '')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension' ]))
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension', 'Adventure!' ]))
         ;
     }
 
@@ -95,6 +95,7 @@ class HeartDimensionService
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
             ->setChanges($changes->compare($pet))
         ;
 

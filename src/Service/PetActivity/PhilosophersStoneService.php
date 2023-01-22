@@ -12,6 +12,7 @@ use App\Functions\ActivityHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetQuestRepository;
 use App\Service\EquipmentService;
 use App\Service\InventoryService;
@@ -31,11 +32,13 @@ class PhilosophersStoneService
     private PetExperienceService $petExperienceService;
     private ItemRepository $itemRepository;
     private EntityManagerInterface $em;
+    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         Squirrel3 $rng, PetQuestRepository $petQuestRepository, ResponseService $responseService,
         EquipmentService $equipmentService, InventoryService $inventoryService, EntityManagerInterface $em,
-        PetExperienceService $petExperienceService, ItemRepository $itemRepository
+        PetExperienceService $petExperienceService, ItemRepository $itemRepository,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->rng = $rng;
@@ -46,6 +49,7 @@ class PhilosophersStoneService
         $this->petExperienceService = $petExperienceService;
         $this->itemRepository = $itemRepository;
         $this->em = $em;
+        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function seekMetatronsFire(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -158,7 +162,10 @@ class PhilosophersStoneService
             }
         }
 
-        $activityLog->setChanges($changes->compare($pet));
+        $activityLog
+            ->setChanges($changes->compare($pet))
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
+        ;
 
         return $activityLog;
     }
@@ -266,7 +273,10 @@ class PhilosophersStoneService
             }
         }
 
-        $activityLog->setChanges($changes->compare($pet));
+        $activityLog
+            ->setChanges($changes->compare($pet))
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
+        ;
 
         return $activityLog;
     }
@@ -376,7 +386,10 @@ class PhilosophersStoneService
             }
         }
 
-        $activityLog->setChanges($changes->compare($pet));
+        $activityLog
+            ->setChanges($changes->compare($pet))
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
+        ;
 
         return $activityLog;
     }
@@ -416,6 +429,7 @@ class PhilosophersStoneService
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY)
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
             ->setChanges($changes->compare($pet))
         ;
 

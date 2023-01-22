@@ -56,6 +56,7 @@ class Caerbannog
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
             ->setChanges($changes->compare($pet))
         ;
 

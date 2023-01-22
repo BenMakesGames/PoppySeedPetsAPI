@@ -111,7 +111,7 @@ class ChocolateMansion
             $activityLog
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))
-                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Le Manoir de Chocolat' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Le Manoir de Chocolat', 'Adventure!' ]))
             ;
 
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Le Manoir de Chocolat', $this->getEntryDescription($pet));
