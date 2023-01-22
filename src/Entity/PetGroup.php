@@ -259,6 +259,6 @@ class PetGroup
      */
     public function getMakesStuff(): bool
     {
-        return $this->type !== PetGroupTypeEnum::GAMING;
+        return $this->type === PetGroupTypeEnum::BAND || $this->type === PetGroupTypeEnum::ASTRONOMY;
     }
 }
