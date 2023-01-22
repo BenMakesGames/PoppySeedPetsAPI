@@ -1,0 +1,67 @@
+<?php
+namespace App\Controller\Following;
+
+use App\Controller\PoppySeedPetsController;
+use App\Entity\UserFollowing;
+use App\Repository\UserFollowingRepository;
+use App\Repository\UserRepository;
+use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use App\Annotations\DoesNotRequireHouseHours;
+
+/**
+ * @Route("/following")
+ */
+class FollowController extends PoppySeedPetsController
+{
+    /**
+     * @DoesNotRequireHouseHours()
+     * @Route("", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function add(
+        Request $request, UserRepository $userRepository, UserFollowingRepository $userFollowingRepository,
+        ResponseService $responseService, EntityManagerInterface $em
+    )
+    {
+        $user = $this->getUser();
+        $followingId = $request->request->getInt('following');
+        $note = $request->request->get('note', null);
+
+        if($followingId === $user->getId())
+            throw new UnprocessableEntityHttpException('I mean... that\'s kind of a given (I hope!?)');
+
+        $following = $userRepository->find($followingId);
+
+        if(!$following)
+            throw new NotFoundHttpException('Could not find a person with that number.');
+
+        $alreadyFollowing = $userFollowingRepository->findOneBy([
+            'user' => $user,
+            'following' => $following
+        ]);
+
+        if($alreadyFollowing)
+            throw new UnprocessableEntityHttpException('You\'re already following that person.');
+
+        $newFriend = (new UserFollowing())
+            ->setUser($user)
+            ->setFollowing($following)
+            ->setNote($note)
+        ;
+
+        $em->persist($newFriend);
+
+        if($user->getUnlockedFlorist() === null)
+            $user->setUnlockedFlorist();
+
+        $em->flush();
+
+        return $responseService->success();
+    }
+}

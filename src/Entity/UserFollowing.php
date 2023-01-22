@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserFollowingRepository")
@@ -19,6 +20,7 @@ class UserFollowing
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="following")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"myFollowers"})
      */
     private $user;
 
