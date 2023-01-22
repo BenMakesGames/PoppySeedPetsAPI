@@ -1,0 +1,110 @@
+<?php
+namespace App\Controller\Fireplace;
+
+use App\Controller\PoppySeedPetsController;
+use App\Entity\User;
+use App\Enum\LocationEnum;
+use App\Enum\SerializationGroupEnum;
+use App\Repository\DragonRepository;
+use App\Repository\InventoryRepository;
+use App\Service\ResponseService;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+
+/**
+ * @Route("/fireplace")
+ */
+class FireplaceController extends PoppySeedPetsController
+{
+    /**
+     * @Route("", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getFireplace(
+        InventoryRepository $inventoryRepository, ResponseService $responseService, DragonRepository $dragonRepository,
+        NormalizerInterface $normalizer
+    )
+    {
+        $user = $this->getUser();
+
+        if(!$user->getUnlockedFireplace() || !$user->getFireplace())
+            throw new AccessDeniedHttpException('You haven\'t got a Fireplace, yet!');
+
+        $mantle = $inventoryRepository->findBy([
+            'owner' => $user,
+            'location' => LocationEnum::MANTLE
+        ]);
+
+        $dragon = $dragonRepository->findWhelp($user);
+
+        return $responseService->success(
+            [
+                'mantle' => $normalizer->normalize($mantle, null, [ 'groups' => [ SerializationGroupEnum::MY_INVENTORY ] ]),
+                'fireplace' => $normalizer->normalize($user->getFireplace(), null, [ 'groups' => [ SerializationGroupEnum::MY_FIREPLACE, SerializationGroupEnum::HELPER_PET ] ]),
+                'whelp' => $normalizer->normalize($dragon, null, [ 'groups' => [ SerializationGroupEnum::MY_FIREPLACE ] ]),
+            ]
+        );
+    }
+
+    /**
+     * @Route("/fuel", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getFireplaceFuel(
+        InventoryRepository $inventoryRepository, ResponseService $responseService
+    )
+    {
+        $user = $this->getUser();
+
+        if(!$user->getUnlockedFireplace() || !$user->getFireplace())
+            throw new AccessDeniedHttpException('You haven\'t got a Fireplace, yet!');
+
+        $fuel = $inventoryRepository->findFuel($user);
+
+        return $responseService->success($fuel, [ SerializationGroupEnum::FIREPLACE_FUEL ]);
+    }
+
+    /**
+     * @Route("/whelpFood", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getWhelpFood(
+        InventoryRepository $inventoryRepository, ResponseService $responseService, DragonRepository $dragonRepository
+    )
+    {
+        $user = $this->getUser();
+
+        $whelp = $dragonRepository->findWhelp($user);
+
+        if(!$whelp)
+            throw new AccessDeniedHttpException('You haven\'t got a Dragon Whelp, yet!');
+
+        $food = $inventoryRepository->createQueryBuilder('i')
+            ->andWhere('i.owner=:user')->setParameter('user', $user->getId())
+            ->andWhere('i.location=:home')->setParameter('home', LocationEnum::HOME)
+            ->join('i.item', 'item')
+            ->join('item.food', 'food')
+            ->andWhere('(food.spicy > 0 OR food.meaty > 0 OR food.fishy > 0)')
+            ->addOrderBy('item.name', 'ASC')
+            ->getQuery()
+            ->execute()
+        ;
+
+        return $responseService->success($food, [ SerializationGroupEnum::MY_INVENTORY ]);
+    }
+
+    /**
+     * @Route("/mantle/{user}", methods={"GET"}, requirements={"user"="\d+"})
+     */
+    public function getMantle(User $user, InventoryRepository $inventoryRepository, ResponseService $responseService)
+    {
+        $inventory = $inventoryRepository->findBy([
+            'owner' => $user,
+            'location' => LocationEnum::MANTLE
+        ]);
+
+        return $responseService->success($inventory, [ SerializationGroupEnum::FIREPLACE_MANTLE ]);
+    }
+}

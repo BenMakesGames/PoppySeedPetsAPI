@@ -1,0 +1,42 @@
+<?php
+namespace App\Controller\Greenhouse;
+
+use App\Controller\PoppySeedPetsController;
+use App\Service\GreenhouseService;
+use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
+/**
+ * @Route("/greenhouse")
+ */
+class TalkToVisitingBirdController extends PoppySeedPetsController
+{
+    /**
+     * @Route("/talkToVisitingBird", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function talkToBird(
+        ResponseService $responseService, EntityManagerInterface $em, GreenhouseService $greenhouseService
+    )
+    {
+        $user = $this->getUser();
+
+        if(!$user->getGreenhouse())
+            throw new AccessDeniedHttpException('You haven\'t purchased a Greenhouse plot yet.');
+
+        if(!$user->getGreenhouse()->getVisitingBird())
+            throw new NotFoundHttpException('Hm... there\'s no bird here. Reload, maybe??');
+
+        $message = $greenhouseService->approachBird($user->getGreenhouse());
+
+        $em->flush();
+
+        $responseService->addFlashMessage($message);
+
+        return $responseService->success();
+    }
+}

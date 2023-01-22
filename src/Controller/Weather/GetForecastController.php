@@ -1,6 +1,7 @@
 <?php
-namespace App\Controller;
+namespace App\Controller\Weather;
 
+use App\Controller\PoppySeedPetsController;
 use App\Enum\SerializationGroupEnum;
 use App\Model\AvailableHolidayBox;
 use App\Service\PlazaService;
@@ -12,7 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/weather")
  */
-class WeatherController extends PoppySeedPetsController
+class GetForecastController extends PoppySeedPetsController
 {
     /**
      * @Route("/forecast", methods={"GET"})

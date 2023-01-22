@@ -1,7 +1,7 @@
 <?php
-namespace App\Controller;
+namespace App\Controller\House;
 
-use App\Annotations\DoesNotRequireHouseHours;
+use App\Controller\PoppySeedPetsController;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
@@ -11,14 +11,15 @@ use App\Service\HouseService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use App\Annotations\DoesNotRequireHouseHours;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @Route("/house")
  */
-class HouseController extends PoppySeedPetsController
+class RunHoursController extends PoppySeedPetsController
 {
     /**
      * @DoesNotRequireHouseHours()

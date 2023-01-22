@@ -1,0 +1,64 @@
+<?php
+namespace App\Controller\Greenhouse;
+
+use App\Controller\PoppySeedPetsController;
+use App\Entity\GreenhousePlant;
+use App\Enum\LocationEnum;
+use App\Enum\PollinatorEnum;
+use App\Service\InventoryService;
+use App\Service\ResponseService;
+use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
+/**
+ * @Route("/greenhouse")
+ */
+class PullUpPlantController extends PoppySeedPetsController
+{
+    /**
+     * @Route("/{plant}/pullUp", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function pullUpPlant(
+        GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
+        InventoryService $inventoryService
+    )
+    {
+        $user = $this->getUser();
+
+        if($plant->getOwner()->getId() !== $user->getId())
+            throw new NotFoundHttpException('That plant does not exist.');
+
+        if($plant->getPlant()->getName() === 'Magic Beanstalk')
+        {
+            $responseService->addFlashMessage('Pulling up the stalk is surprisingly easy, but perhaps more surprising, you find yourself holding Magic Beans, instead of a stalk!');
+
+            $inventoryService->receiveItem('Magic Beans', $user, $user, 'Received by pulling up a Magic Beanstalk, apparently. Magically.', LocationEnum::HOME);
+        }
+        else if($plant->getPlant()->getName() === 'Goat' && $plant->getIsAdult())
+        {
+            $responseService->addFlashMessage('The goat, startled, runs into the jungle, shedding a bit of Fluff in the process.');
+
+            $inventoryService->receiveItem('Fluff', $user, $user, 'Dropped by a startled goat.', LocationEnum::HOME);
+            if($squirrel3->rngNextInt(1, 2) === 1)
+                $inventoryService->receiveItem('Fluff', $user, $user, 'Dropped by a startled goat.', LocationEnum::HOME);
+        }
+
+        $pollinators = $plant->getPollinators();
+
+        if($pollinators === PollinatorEnum::BUTTERFLIES)
+            $user->getGreenhouse()->setButterfliesDismissedOn(new \DateTimeImmutable());
+        if($pollinators === PollinatorEnum::BEES_1)
+            $user->getGreenhouse()->setBeesDismissedOn(new \DateTimeImmutable());
+        if($pollinators === PollinatorEnum::BEES_2)
+            $user->getGreenhouse()->setBees2DismissedOn(new \DateTimeImmutable());
+
+        $em->remove($plant);
+        $em->flush();
+
+        return $responseService->success();
+    }
+}
