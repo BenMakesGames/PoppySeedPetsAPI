@@ -51,6 +51,12 @@ class Article
      */
     private $designGoals;
 
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     * @Groups({"article"})
+     */
+    private $imageUrl;
+
     public function __construct()
     {
         $this->createdOn = new \DateTimeImmutable();
@@ -123,6 +129,18 @@ class Article
     public function removeDesignGoal(DesignGoal $designGoal): self
     {
         $this->designGoals->removeElement($designGoal);
+
+        return $this;
+    }
+
+    public function getImageUrl(): ?string
+    {
+        return $this->imageUrl;
+    }
+
+    public function setImageUrl(?string $imageUrl): self
+    {
+        $this->imageUrl = $imageUrl;
 
         return $this;
     }
