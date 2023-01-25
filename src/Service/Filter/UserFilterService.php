@@ -36,6 +36,7 @@ class UserFilterService
             [
                 'name' => [ $this, 'filterName' ],
                 'followedBy' => [ $this, 'filterFollowedBy' ],
+                'following' => [ $this, 'filterFollowing' ],
             ]
         );
     }
@@ -68,6 +69,20 @@ class UserFilterService
             $qb
                 ->andWhere('f.user = :followedBy')
                 ->setParameter('followedBy', $value)
+            ;
+        }
+    }
+
+    public function filterFollowing(QueryBuilder $qb, $value)
+    {
+        if($this->user && ($value === $this->user->getId() || $this->user->hasRole('ROLE_ADMIN')))
+        {
+            if(!in_array('g', $qb->getAllAliases()))
+                $qb->leftJoin('u.following', 'g');
+
+            $qb
+                ->andWhere('g.following = :following')
+                ->setParameter('following', $value)
             ;
         }
     }

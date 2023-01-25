@@ -32,7 +32,7 @@ class MyFollowers extends PoppySeedPetsController
 
         return $responseService->success(
             $userFilterService->getResults($request->query),
-            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::USER_PUBLIC_PROFILE ]
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MY_FOLLOWERS ]
         );
     }
 
