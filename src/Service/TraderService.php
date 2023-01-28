@@ -1153,16 +1153,16 @@ class TraderService
         }
     }
 
-    function recolorTrader(Trader $trader)
+    public static function recolorTrader(IRandom $rng, Trader $trader)
     {
-        $h1 = $this->rng->rngNextInt(0, 255);
-        $h2 = $this->rng->rngNextInt(0, 255);
-        $h3 = $this->rng->rngNextInt(0, 255);
+        $h1 = $rng->rngNextInt(0, 255);
+        $h2 = $rng->rngNextInt(0, 255);
+        $h3 = $rng->rngNextInt(0, 255);
 
-        $l2 = $this->rng->rngNextInt($this->rng->rngNextInt(40, 120), 150);
+        $l2 = $rng->rngNextInt($rng->rngNextInt(40, 120), 150);
 
-        $s3 = $this->rng->rngNextInt($this->rng->rngNextInt(0, 40), $this->rng->rngNextInt(160, 255));
-        $l3 = $this->rng->rngNextInt($this->rng->rngNextInt(0, 40), $this->rng->rngNextInt(160, 255));
+        $s3 = $rng->rngNextInt($rng->rngNextInt(0, 40), $rng->rngNextInt(160, 255));
+        $l3 = $rng->rngNextInt($rng->rngNextInt(0, 40), $rng->rngNextInt(160, 255));
 
         if($h1 >= 30 && $h1 < 130) $h1 += 120;
         if($h2 >= 30 && $h2 < 130) $h2 += 120;
@@ -1184,19 +1184,19 @@ class TraderService
         }
 
         $trader
-            ->setColorA(ColorFunctions::HSL2Hex($h1 / 256, $this->rng->rngNextInt(56, 100) / 100, 0.46))
-            ->setColorB(ColorFunctions::HSL2Hex($h2 / 256, $this->rng->rngNextInt(56, 100) / 100, $l2 / 255))
+            ->setColorA(ColorFunctions::HSL2Hex($h1 / 256, $rng->rngNextInt(56, 100) / 100, 0.46))
+            ->setColorB(ColorFunctions::HSL2Hex($h2 / 256, $rng->rngNextInt(56, 100) / 100, $l2 / 255))
             ->setColorC(ColorFunctions::HSL2Hex($h3 / 256, $s3 / 255, $l3 / 255))
         ;
     }
 
-    function generateTrader(): Trader
+    public static function generateTrader(IRandom $rng): Trader
     {
         $trader = (new Trader())
-            ->setName($this->rng->rngNextFromArray(self::TRADER_NAMES))
+            ->setName($rng->rngNextFromArray(self::TRADER_NAMES))
         ;
 
-        $this->recolorTrader($trader);
+        self::recolorTrader($rng, $trader);
 
         return $trader;
     }

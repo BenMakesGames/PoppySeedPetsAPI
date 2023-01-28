@@ -58,7 +58,7 @@ class LinensController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function giveToTrader(
-        Inventory $inventory, ResponseService $responseService, TraderService $traderService,
+        Inventory $inventory, ResponseService $responseService, Squirrel3 $rng,
         EntityManagerInterface $em, TraderRepository $traderRepository
     )
     {
@@ -74,7 +74,7 @@ class LinensController extends PoppySeedPetsItemController
         if(!$trader)
             throw new UnprocessableEntityHttpException('You should probably go visit the Trader first... at least once...');
 
-        $traderService->recolorTrader($trader);
+        TraderService::recolorTrader($rng, $trader);
 
         $em->remove($inventory);
         $em->flush();

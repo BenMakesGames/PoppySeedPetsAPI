@@ -14,13 +14,11 @@ class PetAssistantService
 {
     private PetRepository $petRepository;
     private DragonRepository $dragonRepository;
-    private IRandom $rng;
 
     public function __construct(PetRepository $petRepository, DragonRepository $dragonRepository, Squirrel3 $rng)
     {
         $this->petRepository = $petRepository;
         $this->dragonRepository = $dragonRepository;
-        $this->rng = $rng;
     }
 
     private static function assertOwnership(User $user, Pet $pet)
@@ -41,7 +39,7 @@ class PetAssistantService
             throw new AccessDeniedHttpException('A helper cannot be assigned here... yet.');
     }
 
-    public function helpBeehive(User $user, Pet $pet)
+    public static function helpBeehive(User $user, Pet $pet)
     {
         self::assertOwnership($user, $pet);
 
@@ -63,10 +61,9 @@ class PetAssistantService
         $user->setCanAssignHelpers(true);
 
         $pet->setLocation(PetLocationEnum::BEEHIVE);
-
     }
 
-    public function helpGreenhouse(User $user, Pet $pet)
+    public static function helpGreenhouse(User $user, Pet $pet)
     {
         self::assertOwnership($user, $pet);
 
@@ -168,17 +165,17 @@ class PetAssistantService
             $pet->setLocation(PetLocationEnum::HOME);
     }
 
-    public function getExtraItem(int $totalSkill, array $baseList, array $mediumList, array $highList, array $superHighList)
+    public static function getExtraItem(IRandom $rng, int $totalSkill, array $baseList, array $mediumList, array $highList, array $superHighList)
     {
-        $roll = $this->rng->rngNextInt(1, min(30, 10 + $totalSkill));
+        $roll = $rng->rngNextInt(1, min(30, 10 + $totalSkill));
 
         if($roll < 10)
-            return $this->rng->rngNextFromArray($baseList);
+            return $rng->rngNextFromArray($baseList);
         else if($roll < 17)
-            return $this->rng->rngNextFromArray($mediumList);
+            return $rng->rngNextFromArray($mediumList);
         else if($roll < 25)
-            return $this->rng->rngNextFromArray($highList);
+            return $rng->rngNextFromArray($highList);
         else
-            return $this->rng->rngNextFromArray($superHighList);
+            return $rng->rngNextFromArray($superHighList);
     }
 }

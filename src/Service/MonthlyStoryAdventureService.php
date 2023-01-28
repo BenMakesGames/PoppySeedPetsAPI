@@ -138,7 +138,7 @@ class MonthlyStoryAdventureService
 
     private function getAdventureLoot(MonthlyStoryAdventureStep $step, array $pets, callable $petSkillFn, int $roll, string $freeLoot, array $lootTable): array
     {
-        $loot = $this->getFixedLoot($step);
+        $loot = MonthlyStoryAdventureService::getFixedLoot($step);
 
         $loot[] = $freeLoot;
 
@@ -152,7 +152,7 @@ class MonthlyStoryAdventureService
         return $loot;
     }
 
-    private function getFixedLoot(MonthlyStoryAdventureStep $step): array
+    private static function getFixedLoot(MonthlyStoryAdventureStep $step): array
     {
         if(!$step->getTreasure())
             return [];
@@ -337,7 +337,7 @@ class MonthlyStoryAdventureService
      */
     private function doRandomRecruit(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        $loot = $this->getFixedLoot($step);
+        $loot = MonthlyStoryAdventureService::getFixedLoot($step);
 
         $plushy = $this->rng->rngNextFromArray([
             // "Roy" Plushy is a special event item
@@ -378,7 +378,7 @@ class MonthlyStoryAdventureService
      */
     private function doStory(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        $loot = $this->getFixedLoot($step);
+        $loot = MonthlyStoryAdventureService::getFixedLoot($step);
         $text = $this->describeAdventure($pets, $step, 0, $loot);
 
         return new AdventureResult($text, $loot);
@@ -389,7 +389,7 @@ class MonthlyStoryAdventureService
      */
     private function doTreasureHunt(User $user, MonthlyStoryAdventureStep $step, array $pets): AdventureResult
     {
-        $loot = $this->getFixedLoot($step);
+        $loot = MonthlyStoryAdventureService::getFixedLoot($step);
         $text = $this->describeAdventure($pets, $step, 0, $loot);
 
         return new AdventureResult($text, $loot);

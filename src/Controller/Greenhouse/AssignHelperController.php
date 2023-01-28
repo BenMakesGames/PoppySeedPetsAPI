@@ -21,13 +21,12 @@ class AssignHelperController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function assignHelper(
-        Pet $pet, ResponseService $responseService, EntityManagerInterface $em,
-        PetAssistantService $petAssistantService, GreenhouseService $greenhouseService
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em, GreenhouseService $greenhouseService
     )
     {
         $user = $this->getUser();
 
-        $petAssistantService->helpGreenhouse($user, $pet);
+        PetAssistantService::helpGreenhouse($user, $pet);
 
         $em->flush();
 

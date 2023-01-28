@@ -68,7 +68,7 @@ class MuseumService
         return $museumItem;
     }
 
-    public function getGiftShopInventory(User $user)
+    public function getGiftShopInventory(User $user): array
     {
         $inventory = [];
 

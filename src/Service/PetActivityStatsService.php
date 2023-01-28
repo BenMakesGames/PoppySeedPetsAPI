@@ -5,7 +5,6 @@ use App\Entity\Pet;
 use App\Entity\PetActivityStats;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\PetActivityStatEnum;
-use App\Repository\PetActivityStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetActivityStatsService
@@ -47,7 +46,7 @@ class PetActivityStatsService
 
     private EntityManagerInterface $em;
 
-    public function __construct(PetActivityStatsRepository $petActivityStatsRepository, EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
     }

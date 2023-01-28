@@ -54,13 +54,12 @@ class BeehiveController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function assignHelper(
-        Pet $pet, ResponseService $responseService, EntityManagerInterface $em,
-        PetAssistantService $petAssistantService
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
 
-        $petAssistantService->helpBeehive($user, $pet);
+        PetAssistantService::helpBeehive($user, $pet);
 
         $em->flush();
 
@@ -188,7 +187,7 @@ class BeehiveController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function harvest(
-        ResponseService $responseService, EntityManagerInterface $em, PetAssistantService $petAssistantService,
+        ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )
@@ -252,7 +251,7 @@ class BeehiveController extends PoppySeedPetsController
 
                 if($doGatherAction)
                 {
-                    $extraItem = $petAssistantService->getExtraItem($gathering,
+                    $extraItem = PetAssistantService::getExtraItem($squirrel3, $gathering,
                         [ 'Tea Leaves', 'Blueberries', 'Blackberries', 'Grandparoot', 'Orange', 'Red' ],
                         [ 'Onion', 'Paper', 'Naner', 'Iron Ore' ],
                         [ 'Gypsum', 'Mixed Nuts', 'Apricot', 'Silver Ore', ],
@@ -263,7 +262,7 @@ class BeehiveController extends PoppySeedPetsController
                 }
                 else
                 {
-                    $extraItem = $petAssistantService->getExtraItem($hunting,
+                    $extraItem = PetAssistantService::getExtraItem($squirrel3, $hunting,
                         [ 'Scales', 'Feathers', 'Egg' ],
                         [ 'Toadstool', 'Talon', 'Onion' ],
                         [ 'Toad Legs', 'Jar of Fireflies' ],

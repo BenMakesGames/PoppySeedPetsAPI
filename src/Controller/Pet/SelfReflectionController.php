@@ -149,7 +149,7 @@ class SelfReflectionController extends PoppySeedPetsController
      */
     public function reconcileWithAnotherPet(
         Pet $pet, Request $request, ResponseService $responseService, PetRelationshipRepository $petRelationshipRepository,
-        EntityManagerInterface $em, PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3
+        EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -196,7 +196,7 @@ class SelfReflectionController extends PoppySeedPetsController
 
         $newRelationship = $squirrel3->rngNextFromArray($possibleRelationships);
 
-        $minimumCommitment = $petRelationshipService->generateInitialCommitment($newRelationship, $newRelationship);
+        $minimumCommitment = PetRelationshipService::generateInitialCommitment($squirrel3, $newRelationship, $newRelationship);
 
         $relationshipDescriptions = [
             RelationshipEnum::FRIEND => 'friends',

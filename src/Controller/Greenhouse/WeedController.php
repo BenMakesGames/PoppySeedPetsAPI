@@ -31,7 +31,7 @@ class WeedController extends PoppySeedPetsController
      */
     public function weedPlants(
         ResponseService $responseService, UserQuestRepository $userQuestRepository, EntityManagerInterface $em,
-        InventoryService $inventoryService, Squirrel3 $squirrel3, PetAssistantService $petAssistantService,
+        InventoryService $inventoryService, Squirrel3 $squirrel3,
         WeatherService $weatherService, ItemRepository $itemRepository,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )
@@ -89,7 +89,9 @@ class WeedController extends PoppySeedPetsController
                 $slightlyCoolerItems[] = 'Worms';
             }
 
-            $extraItem = $petAssistantService->getExtraItem($skill,
+            $extraItem = PetAssistantService::getExtraItem(
+                $squirrel3,
+                $skill,
                 $basicItems,
                 $slightlyCoolerItems,
                 [ 'Coconut', 'Dark Matter', 'Filthy Cloth' ],

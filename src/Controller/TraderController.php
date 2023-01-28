@@ -7,6 +7,7 @@ use App\Repository\TraderRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +28,7 @@ class TraderController extends PoppySeedPetsController
      */
     public function getExchanges(
         TraderService $traderService, ResponseService $responseService, TraderRepository $traderRepository,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, Squirrel3 $rng
     )
     {
         $user = $this->getUser();
@@ -41,7 +42,7 @@ class TraderController extends PoppySeedPetsController
 
         if(!$trader)
         {
-            $trader = $traderService->generateTrader()
+            $trader = TraderService::generateTrader($rng)
                 ->setUser($user)
             ;
 

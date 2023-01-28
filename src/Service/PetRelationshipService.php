@@ -30,12 +30,12 @@ class PetRelationshipService
         RelationshipEnum::MATE => 5,
     ];
 
-    private $em;
-    private $responseService;
-    private $pregnancyService;
-    private $friendlyRivalsService;
-    private $loveService;
-    private $relationshipChangeService;
+    private EntityManagerInterface $em;
+    private ResponseService $responseService;
+    private PregnancyService $pregnancyService;
+    private FriendlyRivalsService $friendlyRivalsService;
+    private LoveService $loveService;
+    private RelationshipChangeService $relationshipChangeService;
     private IRandom $squirrel3;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
@@ -266,7 +266,7 @@ class PetRelationshipService
             ->setCurrentRelationship($initialRelationship)
             ->setPet($pet)
             ->setRelationshipGoal($relationshipGoal)
-            ->setCommitment($this->generateInitialCommitment($initialRelationship, $relationshipGoal))
+            ->setCommitment(self::generateInitialCommitment($this->squirrel3, $initialRelationship, $relationshipGoal))
         ;
 
         $pet->addPetRelationship($petRelationship);
@@ -302,7 +302,7 @@ class PetRelationshipService
             ->setCurrentRelationship($initialRelationship)
             ->setPet($otherPet)
             ->setRelationshipGoal($relationshipGoal)
-            ->setCommitment($this->generateInitialCommitment($initialRelationship, $relationshipGoal))
+            ->setCommitment(self::generateInitialCommitment($this->squirrel3, $initialRelationship, $relationshipGoal))
         ;
 
         $otherPet->addPetRelationship($otherPetRelationship);
@@ -330,9 +330,9 @@ class PetRelationshipService
         return [ $petRelationship, $otherPetRelationship ];
     }
 
-    public function generateInitialCommitment(string $startingRelationship, string $relationshipGoal)
+    public static function generateInitialCommitment(IRandom $rng, string $startingRelationship, string $relationshipGoal): int
     {
-        $commitment = $this->squirrel3->rngNextInt(0, 30);
+        $commitment = $rng->rngNextInt(0, 30);
 
         switch($relationshipGoal)
         {

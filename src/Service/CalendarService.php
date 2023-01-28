@@ -269,14 +269,10 @@ class CalendarService
     /**
      * @return string[]
      */
-    public function getEventData(\DateTimeImmutable $dt = null): array
+    public function getEventData(\DateTimeImmutable $dt): array
     {
-        // uh oh: this is a bit gross :|
-        if($dt)
-        {
-            $oldToday = $this->today;
-            $this->setToday($dt);
-        }
+        $oldToday = $this->today;
+        $this->setToday($dt);
 
         $events = [];
 
@@ -360,8 +356,7 @@ class CalendarService
         if($this->isLeonidPeakOrAdjacent())
             $events[] = HolidayEnum::LEONIDS;
 
-        if($dt)
-            $this->setToday($oldToday);
+        $this->setToday($oldToday);
 
         return $events;
     }

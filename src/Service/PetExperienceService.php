@@ -81,7 +81,7 @@ class PetExperienceService
 
         $levelUp = $pet->getExperience() >= $pet->getExperienceToLevel();
 
-        $focusStatusEffect = $levelUp ? $this->getPetFocusingStatusEffect($pet) : null;
+        $focusStatusEffect = $levelUp ? PetExperienceService::getPetFocusingStatusEffect($pet) : null;
 
         while($pet->getExperience() >= $pet->getExperienceToLevel())
         {
@@ -128,7 +128,7 @@ class PetExperienceService
         return $levelUp;
     }
 
-    private function getPetFocusingStatusEffect(Pet $pet): ?FocusingStatusEffect
+    private static function getPetFocusingStatusEffect(Pet $pet): ?FocusingStatusEffect
     {
         $possibleEffects = [
             [ 'brawl', StatusEffectEnum::FOCUSED_BRAWL ],

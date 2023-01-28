@@ -25,7 +25,7 @@ class CannedFoodController extends PoppySeedPetsItemController
      */
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        EntityManagerInterface $em, RecyclingService $recyclingService, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
     )
     {
         $this->validateInventory($inventory, 'cannedFood/#/open');
@@ -61,7 +61,7 @@ class CannedFoodController extends PoppySeedPetsItemController
             $message = 'You open the can; it has ' . $item . ' inside! (You also recycle the can, and get 1♺. Woo.)';
         }
 
-        $recyclingService->giveRecyclingPoints($user, 1);
+        RecyclingService::giveRecyclingPoints($user, 1);
 
         $cansOpened->increaseValue(1);
 

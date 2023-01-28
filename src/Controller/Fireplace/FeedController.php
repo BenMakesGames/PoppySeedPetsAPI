@@ -31,7 +31,7 @@ class FeedController extends PoppySeedPetsController
      */
     public function feedFireplace(
         Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
-        EntityManagerInterface $em, InventoryService $inventoryService, PetAssistantService $petAssistantService,
+        EntityManagerInterface $em, InventoryService $inventoryService,
         Squirrel3 $rng
     )
     {
@@ -76,7 +76,8 @@ class FeedController extends PoppySeedPetsController
 
             $foodItems = [ 'Fried Egg', 'Fried Tomato', 'Pan-fried Tofu', 'Mighty Fried Bananas' ];
 
-            $extraItem = $petAssistantService->getExtraItem(
+            $extraItem = PetAssistantService::getExtraItem(
+                $rng,
                 $skill,
                 [ 'Feathers', 'Fluff', 'Spider', 'Cobweb', 'Gochujang Recipe' ],
                 [ 'Silica Grounds', 'Aging Powder', $rng->rngNextFromArray($foodItems) ],

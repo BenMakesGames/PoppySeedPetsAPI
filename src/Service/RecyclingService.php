@@ -13,10 +13,10 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class RecyclingService
 {
-    private $userRepository;
-    private $calendarService;
-    private $em;
-    private $userStatsRepository;
+    private UserRepository $userRepository;
+    private CalendarService $calendarService;
+    private EntityManagerInterface $em;
+    private UserStatsRepository $userStatsRepository;
     private IRandom $squirrel3;
     private ResponseService $responseService;
 
@@ -33,7 +33,7 @@ class RecyclingService
         $this->responseService = $responseService;
     }
 
-    public function giveRecyclingPoints(User $user, int $quantity)
+    public static function giveRecyclingPoints(User $user, int $quantity)
     {
         if($quantity == 0)
             return;
@@ -44,14 +44,14 @@ class RecyclingService
             $user->setUnlockedRecycling();
     }
 
-    private function recycledItemShouldGoToGivingTree(bool $givingTreeHoliday, Inventory $i)
+    private static function recycledItemShouldGoToGivingTree(IRandom $rng, bool $givingTreeHoliday, Inventory $i): bool
     {
         if($i->getLockedToOwner())
             return false;
 
         $item = $i->getItem();
 
-        if($this->squirrel3->rngNextInt(1, 8 + $item->getRecycleValue() * 2) === 1)
+        if($rng->rngNextInt(1, 8 + $item->getRecycleValue() * 2) === 1)
             return true;
 
         if($givingTreeHoliday && $item->getFood() && $item->getFood()->getIsCandy())
@@ -92,7 +92,7 @@ class RecyclingService
                 $this->userStatsRepository->incrementStat($originalOwner, UserStatEnum::BUGS_PUT_OUTSIDE);
                 $this->em->remove($i);
             }
-            else if($this->recycledItemShouldGoToGivingTree($givingTreeHoliday, $i))
+            else if(self::recycledItemShouldGoToGivingTree($this->squirrel3, $givingTreeHoliday, $i))
             {
                 $i
                     ->setOwner($givingTree)
@@ -107,7 +107,7 @@ class RecyclingService
             else
                 $this->em->remove($i);
 
-            $this->giveRecyclingPoints($originalOwner, $i->getItem()->getRecycleValue());
+            self::giveRecyclingPoints($originalOwner, $i->getItem()->getRecycleValue());
 
             $this->userStatsRepository->incrementStat($originalOwner, UserStatEnum::ITEMS_RECYCLED);
         }
