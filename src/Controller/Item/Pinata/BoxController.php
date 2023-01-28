@@ -322,7 +322,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openCerealBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -343,7 +343,7 @@ class BoxController extends PoppySeedPetsItemController
         for($i = 0; $i < 7; $i++)
             $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Corn', 'Wheat', 'Rice' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -352,8 +352,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openBakers(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository,
-        InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository
     )
     {
         $user = $this->getUser();
@@ -392,7 +391,7 @@ class BoxController extends PoppySeedPetsItemController
                 $newInventory[$i]->setSpice($spice);
         }
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -401,8 +400,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openFruitsNVeggies(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository,
-        InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository
     )
     {
         $user = $this->getUser();
@@ -440,7 +438,7 @@ class BoxController extends PoppySeedPetsItemController
                 $newInventory[$i]->setSpice($spice);
         }
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -449,8 +447,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openNatureBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository,
-        InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -484,7 +481,7 @@ class BoxController extends PoppySeedPetsItemController
                 $newInventory[$i]->setSpice($spice);
         }
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -493,8 +490,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openMonsterBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository,
-        InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -528,7 +524,7 @@ class BoxController extends PoppySeedPetsItemController
                 $newInventory[$i]->setSpice($spice);
         }
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -537,7 +533,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openHandicrafts(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -567,7 +563,7 @@ class BoxController extends PoppySeedPetsItemController
             $newInventory[] = $inventoryService->receiveItem($itemName, $user, $user, $description, $location, $inventory->getLockedToOwner());
         }
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -576,8 +572,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openGamingBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService,
-        ItemGroupRepository $itemGroupRepository
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, ItemGroupRepository $itemGroupRepository
     )
     {
         $user = $this->getUser();
@@ -614,7 +609,7 @@ class BoxController extends PoppySeedPetsItemController
         if($squirrel3->rngNextInt(1, 10) === 1)
             $newInventory[] = $inventoryService->receiveItem('Glowing Twenty-sided Die', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -646,7 +641,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openBagOfBeans(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -668,7 +663,7 @@ class BoxController extends PoppySeedPetsItemController
             ;
         }
 
-        return $this->countRemoveFlushAndRespond('You upturn the bag, finding', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('You upturn the bag, finding', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -914,7 +909,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function open4thOfJulyBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -936,7 +931,7 @@ class BoxController extends PoppySeedPetsItemController
             $inventoryService->receiveItem('Blue Firework', $user, $user, $comment, $location, $lockedToOwner),
         ];
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -945,8 +940,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openBastilleDayBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService,
-        Squirrel3 $rng
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, Squirrel3 $rng
     )
     {
         $user = $this->getUser();
@@ -973,7 +967,7 @@ class BoxController extends PoppySeedPetsItemController
         foreach($items as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $lockedToOwner);
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -982,7 +976,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openCincoDeMayoBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -1004,7 +998,7 @@ class BoxController extends PoppySeedPetsItemController
             $inventoryService->receiveItem('Red Firework', $user, $user, $comment, $location, $lockedToOwner),
         ];
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1013,7 +1007,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openNewYearBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -1042,7 +1036,7 @@ class BoxController extends PoppySeedPetsItemController
         for($x = $squirrel3->rngNextInt(4, 5); $x > 0; $x--)
             $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray($alcohol), $user, $user, $comment, $location, $lockedToOwner);
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1051,7 +1045,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openChineseNewYearBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -1072,7 +1066,7 @@ class BoxController extends PoppySeedPetsItemController
             $inventoryService->receiveItem('Gold Dragon Ingot', $user, $user, $comment, $location, $lockedToOwner),
         ];
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1082,7 +1076,7 @@ class BoxController extends PoppySeedPetsItemController
     public function openLittleStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        TransactionService $transactionService, InventoryModifierFunctions $toolBonusService
+        TransactionService $transactionService
     )
     {
         $user = $this->getUser();
@@ -1123,7 +1117,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $em->remove($key);
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed ' . $moneys . '~~m~~,', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed ' . $moneys . '~~m~~,', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1133,7 +1127,7 @@ class BoxController extends PoppySeedPetsItemController
     public function openVeryStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        TransactionService $transactionService, InventoryModifierFunctions $toolBonusService
+        TransactionService $transactionService
     )
     {
         $user = $this->getUser();
@@ -1184,7 +1178,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $em->remove($key);
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed ' . $moneys . '~~m~~,', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed ' . $moneys . '~~m~~,', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1193,8 +1187,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openOutrageouslyStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository
     )
     {
         $user = $this->getUser();
@@ -1229,7 +1222,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $em->remove($key);
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1238,8 +1231,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openGoldChest(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository
     )
     {
         $user = $this->getUser();
@@ -1276,7 +1268,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $em->remove($key);
 
-        return $this->countRemoveFlushAndRespond('You used a Gold Key to open the Gold Chest, and revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('You used a Gold Key to open the Gold Chest, and revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1285,8 +1277,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openRubyChest(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -1315,7 +1306,7 @@ class BoxController extends PoppySeedPetsItemController
         foreach($items as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $inventory->getLockedToOwner());
 
-        return $this->countRemoveFlushAndRespond('You opened the Ruby Chest... whoa: it\'s got', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('You opened the Ruby Chest... whoa: it\'s got', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1324,7 +1315,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openTowerBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -1349,7 +1340,7 @@ class BoxController extends PoppySeedPetsItemController
         if($squirrel3->rngNextInt(1, 10) === 1)
             $newInventory[] = $inventoryService->receiveItem('Secret Seashell', $user, $user, $message, $location, $inventory->getLockedToOwner());
 
-        return $this->countRemoveFlushAndRespond('Opening the chest revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Opening the chest revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1358,7 +1349,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openFishBag(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -1395,7 +1386,7 @@ class BoxController extends PoppySeedPetsItemController
         if($squirrel3->rngNextInt(1, 20) === 1)
             $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Merchant Fish', 'Secret Seashell', 'Ceremonial Trident' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
 
-        return $this->countRemoveFlushAndRespond('Opening the bag revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Opening the bag revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1404,7 +1395,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function alicesSecretTeaTime(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, ResponseService $responseService
     )
     {
         $user = $this->getUser();
@@ -1447,7 +1438,7 @@ class BoxController extends PoppySeedPetsItemController
         foreach($loot as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from Alice\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
 
-        return $this->countRemoveFlushAndRespond('Inside Alice\'s Secret, you find', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Inside Alice\'s Secret, you find', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1456,7 +1447,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function alicesSecretHourglass(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, ResponseService $responseService
     )
     {
         $user = $this->getUser();
@@ -1465,7 +1456,7 @@ class BoxController extends PoppySeedPetsItemController
 
         $item = $inventoryService->receiveItem('Hourglass', $user, $user, $user->getName() . ' got this from Alice\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
 
-        return $this->countRemoveFlushAndRespond('Inside Alice\'s Secret, you find', $userStatsRepository, $user, $inventory, [ $item ], $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Inside Alice\'s Secret, you find', $userStatsRepository, $user, $inventory, [ $item ], $responseService, $em);
     }
 
     /**
@@ -1474,7 +1465,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function alicesSecretCards(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, ResponseService $responseService
     )
     {
         $user = $this->getUser();
@@ -1491,7 +1482,7 @@ class BoxController extends PoppySeedPetsItemController
         foreach($loot as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from Alice\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
 
-        return $this->countRemoveFlushAndRespond('Inside Alice\'s Secret, you find some cards? Oh, wait, no: it\'s just', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Inside Alice\'s Secret, you find some cards? Oh, wait, no: it\'s just', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1500,7 +1491,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function bobsSecretFish(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, ResponseService $responseService
     )
     {
         $user = $this->getUser();
@@ -1535,7 +1526,7 @@ class BoxController extends PoppySeedPetsItemController
         foreach($loot as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from Bob\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
 
-        return $this->countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1545,7 +1536,7 @@ class BoxController extends PoppySeedPetsItemController
     public function bobsTool(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         EnchantmentRepository $enchantmentRepository, UserStatsRepository $userStatsRepository,
-        ResponseService $responseService, InventoryModifierFunctions $toolBonusService
+        ResponseService $responseService
     )
     {
         $user = $this->getUser();
@@ -1569,7 +1560,7 @@ class BoxController extends PoppySeedPetsItemController
             $enchantmentRepository->findOneByName('Bob\'s')
         );
 
-        return $this->countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $userStatsRepository, $user, $inventory, [ $item ], $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $userStatsRepository, $user, $inventory, [ $item ], $responseService, $em);
     }
 
     /**
@@ -1578,7 +1569,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function bobsBBQ(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierFunctions $toolBonusService
+        UserStatsRepository $userStatsRepository, ResponseService $responseService
     )
     {
         $user = $this->getUser();
@@ -1599,7 +1590,7 @@ class BoxController extends PoppySeedPetsItemController
         foreach($loot as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from Bob\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
 
-        return $this->countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em, $toolBonusService);
+        return $this->countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
