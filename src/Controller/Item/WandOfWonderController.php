@@ -24,6 +24,8 @@ use App\Service\Squirrel3;
 use App\Service\StatusEffectService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/wandOfWonder")

@@ -2,9 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Enum\LocationEnum;
 use App\Repository\ItemRepository;
-use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;

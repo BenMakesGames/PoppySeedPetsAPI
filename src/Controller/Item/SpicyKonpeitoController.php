@@ -4,11 +4,12 @@ namespace App\Controller\Item;
 use App\Entity\Inventory;
 use App\Functions\PetColorFunctions;
 use App\Repository\DragonRepository;
-use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/spicyKonpeito")

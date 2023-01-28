@@ -3,7 +3,6 @@ namespace App\Controller\Item;
 
 use App\Entity\Dragon;
 use App\Entity\Inventory;
-use App\Functions\ArrayFunctions;
 use App\Repository\DragonRepository;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;

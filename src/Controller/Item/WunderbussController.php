@@ -2,12 +2,9 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Entity\MuseumItem;
-use App\Enum\LocationEnum;
 use App\Repository\ItemRepository;
 use App\Repository\MuseumItemRepository;
 use App\Repository\UserQuestRepository;
-use App\Service\InventoryService;
 use App\Service\MuseumService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;

@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller\Item;
 
-use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Repository\ItemRepository;
 use App\Service\ResponseService;
