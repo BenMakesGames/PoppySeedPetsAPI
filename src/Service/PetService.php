@@ -424,7 +424,7 @@ class PetService
 
         if($pet->hasStatusEffect(StatusEffectEnum::BUBBLEGUMD))
         {
-            if($this->cleanUpStatusEffect($pet, StatusEffectEnum::OIL_COVERED, 'Bubblegum'))
+            if($this->cleanUpStatusEffect($pet, StatusEffectEnum::BUBBLEGUMD, 'Bubblegum'))
                 return;
         }
 

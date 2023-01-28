@@ -3,7 +3,7 @@ namespace App\Functions;
 
 final class NumberFunctions
 {
-    public static function clamp(int $value, int $min, int $max)
+    public static function clamp(int $value, int $min, int $max): int
     {
         if($value < $min)
             return $min;

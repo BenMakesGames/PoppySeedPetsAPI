@@ -126,7 +126,6 @@ class GenericAdventureService
             return $birthdayEvent;
 
         $level = $pet->getLevel();
-        $activityLog = null;
         $changes = new PetChanges($pet);
 
         $rescuedAFairy = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Rescued a House Fairy from a Raccoon', null);

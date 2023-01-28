@@ -203,6 +203,8 @@ class PetSummonedAwayService
                 $skill = PetSkillEnum::STEALTH;
                 $tags = [ 'Stealth' ];
                 break;
+            default:
+                throw new \Exception('Bad random number result :( Ben has been notified.');
         }
 
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them ' . $activity . '. Once the task was completed, ' . $pet->getName() . ' returned home!';

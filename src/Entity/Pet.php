@@ -494,7 +494,7 @@ class Pet
 
         $amount = floor($amount / $divisor);
 
-        if($amount === 0) return $this;
+        if($amount == 0) return $this;
 
         $this->safety = NumberFunctions::clamp($this->safety + $amount, $this->getMinSafety(), $this->getMaxSafety());
 
@@ -527,7 +527,7 @@ class Pet
 
         $amount = floor($amount / $divisor);
 
-        if($amount === 0) return $this;
+        if($amount == 0) return $this;
 
         $this->love = NumberFunctions::clamp($this->love + $amount, $this->getMinLove(), $this->getMaxLove());
 
@@ -561,7 +561,7 @@ class Pet
 
         $amount = floor($amount / $divisor);
 
-        if($amount === 0) return $this;
+        if($amount == 0) return $this;
 
         $this->esteem = NumberFunctions::clamp($this->esteem + $amount, $this->getMinEsteem(), $this->getMaxEsteem());
 
