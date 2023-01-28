@@ -5,17 +5,15 @@ use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\EquipmentFunctions;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
-use App\Service\EquipmentService;
 use App\Service\MeritService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/forgettingScroll")
@@ -62,8 +60,7 @@ class ForgettingScrollController extends PoppySeedPetsItemController
      */
     public function forgetMerit(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, MeritRepository $meritRepository, MeritService $meritService,
-        EquipmentService $equipmentService
+        PetRepository $petRepository, MeritRepository $meritRepository, MeritService $meritService
     )
     {
         $user = $this->getUser();
@@ -109,7 +106,7 @@ class ForgettingScrollController extends PoppySeedPetsItemController
         {
             if($pet->getHat())
             {
-                $equipmentService->unhatPet($pet);
+                EquipmentFunctions::unhatPet($pet);
 
                 $responseService->addFlashMessage($pet->getName() . '\'s hat falls to the ground.');
             }

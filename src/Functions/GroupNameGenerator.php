@@ -1,26 +1,19 @@
 <?php
-namespace App\Service;
+namespace App\Functions;
 
-use App\Functions\ArrayFunctions;
+use App\Service\IRandom;
 
 class GroupNameGenerator
 {
-    private IRandom $rng;
-
-    public function __construct(Squirrel3 $rng)
+    public static function generateName(IRandom $rng, array $patterns, array $dictionary, int $maxLength): string
     {
-        $this->rng = $rng;
+        $pattern = $rng->rngNextFromArray($patterns);
+        $parts = GroupNameGenerator::getPatternParts($rng, $pattern);
+
+        return GroupNameGenerator::generateNameFromParts($rng, $parts, $dictionary, $maxLength);
     }
 
-    public function generateName(array $patterns, array $dictionary, int $maxLength)
-    {
-        $pattern = $this->rng->rngNextFromArray($patterns);
-        $parts = $this->getPatternParts($pattern);
-
-        return $this->generateNameFromParts($parts, $dictionary, $maxLength);
-    }
-
-    private function getPatternParts(string $pattern): array
+    private static function getPatternParts(IRandom $rng, string $pattern): array
     {
         $parts = explode(' ', $pattern);
         $newParts = [];
@@ -29,14 +22,14 @@ class GroupNameGenerator
         {
             if($part[strlen($part) - 1] === '?')
             {
-                if($this->rng->rngNextInt(1, 2) === 1)
+                if($rng->rngNextInt(1, 2) === 1)
                     $part = substr($part, 0, strlen($part) - 1);
                 else
                     continue;
             }
 
             if(strpos($part, '/') !== false)
-                $part = $this->rng->rngNextFromArray(explode('/', $part));
+                $part = $rng->rngNextFromArray(explode('/', $part));
 
             $newParts[] = $part;
         }
@@ -44,7 +37,7 @@ class GroupNameGenerator
         return $newParts;
     }
 
-    private function generateNameFromParts(array $parts, $dictionary, $maxLength): string
+    private static function generateNameFromParts(IRandom $rng, array $parts, $dictionary, $maxLength): string
     {
         while(true)
         {
@@ -57,7 +50,7 @@ class GroupNameGenerator
                 {
                     $wordType = substr($part, 1, strlen($part) - 2);
                     $availableWords = array_filter($dictionary[$wordType], fn($w) => !in_array($w, $newParts));
-                    $chosenWord = $this->rng->rngNextFromArray($availableWords);
+                    $chosenWord = $rng->rngNextFromArray($availableWords);
 
                     $chosenWords[$wordType] = $chosenWord;
 

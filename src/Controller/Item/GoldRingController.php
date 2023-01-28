@@ -66,7 +66,7 @@ class GoldRingController extends PoppySeedPetsItemController
     public function collect100(
         Inventory $inventory, EntityManagerInterface $em, InventoryService $inventoryService, ResponseService $responseService,
         PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository, PetRepository $petRepository,
-        PetFactory $petFactory, PetColorFunctions $petColorService, Squirrel3 $squirrel3
+        PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'goldRing/#/collect100');
@@ -118,7 +118,7 @@ class GoldRingController extends PoppySeedPetsItemController
                 'Runner', 'Jumps', 'Spins', 'Miles',
             ]);
 
-            $petColors = $petColorService->generateRandomPetColors($squirrel3);
+            $petColors = PetColorFunctions::generateRandomPetColors($squirrel3);
 
             $newPet = $petFactory->createPet(
                 $user, $hedgehogName, $hedgehog,

@@ -7,10 +7,10 @@ use App\Entity\PetGroup;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\GroupNameGenerator;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
-use App\Service\GroupNameGenerator;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -27,13 +27,12 @@ class SportsBallService
     private $inventoryService;
     private $petRelationshipService;
     private IRandom $squirrel3;
-    private GroupNameGenerator $groupNameGenerator;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private ItemRepository $itemRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3, GroupNameGenerator $groupNameGenerator,
+        PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3,
         PetActivityLogTagRepository $petActivityLogTagRepository, ItemRepository $itemRepository
     )
     {
@@ -42,7 +41,6 @@ class SportsBallService
         $this->inventoryService = $inventoryService;
         $this->petRelationshipService = $petRelationshipService;
         $this->squirrel3 = $squirrel3;
-        $this->groupNameGenerator = $groupNameGenerator;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->itemRepository = $itemRepository;
     }
@@ -76,7 +74,7 @@ class SportsBallService
 
     public function generateGroupName(): string
     {
-        return $this->groupNameGenerator->generateName(self::GROUP_NAME_PATTERNS, self::DICTIONARY, 60);
+        return GroupNameGenerator::generateName($this->squirrel3, self::GROUP_NAME_PATTERNS, self::DICTIONARY, 60);
     }
 
     private function rollSkill(Pet $pet): int

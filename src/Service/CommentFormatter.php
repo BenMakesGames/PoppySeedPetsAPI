@@ -33,7 +33,7 @@ class CommentFormatter
         preg_match_all('/%((pet|user):[0-9]+\\.[A-Za-z\']+)%/', $text, $matches);
 
         $matches = $matches[1];
-        array_unique($matches);
+        $matches = array_unique($matches);
 
         foreach($matches as $match)
         {

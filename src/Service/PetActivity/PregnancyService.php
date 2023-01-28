@@ -37,7 +37,6 @@ class PregnancyService
     private $userStatsRepository;
     private $meritRepository;
     private $petFactory;
-    private $petColorService;
     private IRandom $squirrel3;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
@@ -46,7 +45,7 @@ class PregnancyService
         ResponseService $responseService, PetExperienceService $petExperienceService,
         UserQuestRepository $userQuestRepository, PetSpeciesRepository $petSpeciesRepository,
         UserStatsRepository $userStatsRepository, MeritRepository $meritRepository, PetFactory $petFactory,
-        PetColorFunctions $petColorService, Squirrel3 $squirrel3, PetActivityLogTagRepository $petActivityLogTagRepository
+        Squirrel3 $squirrel3, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->em = $em;
@@ -58,7 +57,6 @@ class PregnancyService
         $this->userStatsRepository = $userStatsRepository;
         $this->meritRepository = $meritRepository;
         $this->petFactory = $petFactory;
-        $this->petColorService = $petColorService;
         $this->squirrel3 = $squirrel3;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
@@ -83,8 +81,8 @@ class PregnancyService
         else
             $species = $this->getRandomBreedingSpecies();
 
-        $colorA = $this->petColorService->generateColorFromParentColors($this->squirrel3, $mother->getColorA(), $father->getColorA());
-        $colorB = $this->petColorService->generateColorFromParentColors($this->squirrel3, $mother->getColorB(), $father->getColorB());
+        $colorA = PetColorFunctions::generateColorFromParentColors($this->squirrel3, $mother->getColorA(), $father->getColorA());
+        $colorB = PetColorFunctions::generateColorFromParentColors($this->squirrel3, $mother->getColorB(), $father->getColorB());
 
         // 20% of the time, swap colorA and colorB around
         if($this->squirrel3->rngNextInt(1, 5) === 1)

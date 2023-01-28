@@ -9,6 +9,7 @@ use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\EquipmentFunctions;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
@@ -16,7 +17,6 @@ use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
-use App\Service\EquipmentService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -24,8 +24,6 @@ use App\Service\Squirrel3;
 use App\Service\StatusEffectService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/wandOfWonder")
@@ -41,8 +39,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
         EntityManagerInterface $em, InventoryService $inventoryService, PetRepository $petRepository,
         TransactionService $transactionService, ItemRepository $itemRepository, MeritRepository $meritRepository,
         PetExperienceService $petExperienceService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3,
-        StatusEffectService $statusEffectService, EquipmentService $equipmentService,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        StatusEffectService $statusEffectService, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->validateInventory($inventory, 'wandOfWonder/#/point');
@@ -554,7 +551,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
                     {
                         $itemActionDescription = $randomPet->getName() . ' drops their ' . $randomPet->getTool()->getItem()->getName() . '; ' . $item->getNameWithArticle() . ' appears in its place!';
 
-                        $equipmentService->unequipPet($randomPet);
+                        EquipmentFunctions::unequipPet($randomPet);
                     }
                     else
                         $itemActionDescription = $randomPet->getName() . ' dons ' . $item->getNameWithArticle() . '!';

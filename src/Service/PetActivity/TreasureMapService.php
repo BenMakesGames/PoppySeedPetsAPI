@@ -13,6 +13,7 @@ use App\Enum\SpiritCompanionStarEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\EquipmentFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
@@ -21,12 +22,11 @@ use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
-use App\Service\EquipmentService;
 use App\Service\HouseSimService;
+use App\Service\InventoryModifierService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\InventoryModifierService;
 use App\Service\Squirrel3;
 use App\Service\StatusEffectService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -43,7 +43,6 @@ class TreasureMapService
     private $toolBonusService;
     private $squirrel3;
     private $itemRepository;
-    private $equipmentService;
     private HouseSimService $houseSimService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
@@ -51,7 +50,7 @@ class TreasureMapService
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         EntityManagerInterface $em, PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
         StatusEffectService $statusEffectService, InventoryModifierService $toolBonusService, Squirrel3 $squirrel3,
-        ItemRepository $itemRepository, EquipmentService $equipmentService, HouseSimService $houseSimService,
+        ItemRepository $itemRepository, HouseSimService $houseSimService,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
@@ -65,7 +64,6 @@ class TreasureMapService
         $this->toolBonusService = $toolBonusService;
         $this->squirrel3 = $squirrel3;
         $this->itemRepository = $itemRepository;
-        $this->equipmentService = $equipmentService;
         $this->houseSimService = $houseSimService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
@@ -259,7 +257,7 @@ class TreasureMapService
             $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a Leprechaun approached them... but upon seeing %pet:' . $pet->getId() . '.name%\'s pale visage, fled screaming into the woods! (Oops!) %pet:' . $pet->getId() . '.name% put their ' . $pet->getTool()->getFullItemName() . ' down...', '')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fae-kind', 'Adventure!' ]))
             ;
-            $this->equipmentService->unequipPet($pet);
+            EquipmentFunctions::unequipPet($pet);
             return $activityLog;
         }
 
@@ -346,7 +344,7 @@ class TreasureMapService
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Project-E', 'Adventure!' ]))
             ;
 
-            $this->equipmentService->unequipPet($pet);
+            EquipmentFunctions::unequipPet($pet);
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(15, 30), PetActivityStatEnum::PROTOCOL_7, false);
 
@@ -461,7 +459,7 @@ class TreasureMapService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Fluffmonger, but didn\'t have any Fluff to trade! They put the ' . $pet->getTool()->getItem()->getName() . ' down...', '');
 
             // didn't have fluff
-            $this->equipmentService->unequipPet($pet);
+            EquipmentFunctions::unequipPet($pet);
         }
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);

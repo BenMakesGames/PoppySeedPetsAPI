@@ -3,17 +3,15 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Enum\LocationEnum;
-use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\EquipmentFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
-use App\Service\EquipmentService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -27,12 +25,11 @@ class HeartDimensionService
     private $inventoryService;
     private $squirrel3;
     private $statusEffectService;
-    private $equipmentService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        Squirrel3 $squirrel3, StatusEffectService $statusEffectService, EquipmentService $equipmentService,
+        Squirrel3 $squirrel3, StatusEffectService $statusEffectService,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
@@ -41,7 +38,6 @@ class HeartDimensionService
         $this->petExperienceService = $petExperienceService;
         $this->squirrel3 = $squirrel3;
         $this->statusEffectService = $statusEffectService;
-        $this->equipmentService = $equipmentService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
@@ -57,7 +53,7 @@ class HeartDimensionService
     {
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
 
-        $this->equipmentService->unequipPet($pet);
+        EquipmentFunctions::unequipPet($pet);
 
         return $this->responseService->createActivityLog($pet, 'There being nothing more ' . '%pet:' . $pet->getId() . '.name% can do in the Heart Dimension right now, they put the Heartstone down.', '')
             ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension', 'Adventure!' ]))
@@ -108,7 +104,7 @@ class HeartDimensionService
     private function unequipHeartstone(Pet $pet, PetActivityLog $activityLog)
     {
         $activityLog->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% put the Heartstone down.');
-        $this->equipmentService->unequipPet($pet);
+        EquipmentFunctions::unequipPet($pet);
     }
 
     public function fightAngrySpirit(ComputedPetSkills $petWithSkills)

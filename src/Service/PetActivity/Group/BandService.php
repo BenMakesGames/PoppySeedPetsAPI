@@ -7,9 +7,9 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\GroupNameGenerator;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
-use App\Service\GroupNameGenerator;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -28,13 +28,12 @@ class BandService
     private $petExperienceService;
     private $transactionService;
     private IRandom $squirrel3;
-    private GroupNameGenerator $groupNameGenerator;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, InventoryService $inventoryService,
         PetExperienceService $petExperienceService, TransactionService $transactionService, Squirrel3 $squirrel3,
-        GroupNameGenerator $groupNameGenerator, PetActivityLogTagRepository $petActivityLogTagRepository
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->em = $em;
@@ -43,7 +42,6 @@ class BandService
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
         $this->squirrel3 = $squirrel3;
-        $this->groupNameGenerator = $groupNameGenerator;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
@@ -170,7 +168,7 @@ class BandService
 
     public function generateGroupName(): string
     {
-        return $this->groupNameGenerator->generateName(self::GROUP_NAME_PATTERNS, self::DICTIONARY, 60);
+        return GroupNameGenerator::generateName($this->squirrel3, self::GROUP_NAME_PATTERNS, self::DICTIONARY, 60);
     }
 
     private const BAND_ACTIVITY_SENTIMENT_MESSAGES = [

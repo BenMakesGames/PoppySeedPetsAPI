@@ -9,12 +9,12 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\EquipmentFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetQuestRepository;
-use App\Service\EquipmentService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -27,7 +27,6 @@ class PhilosophersStoneService
     private IRandom $rng;
     private PetQuestRepository $petQuestRepository;
     private ResponseService $responseService;
-    private EquipmentService $equipmentService;
     private InventoryService $inventoryService;
     private PetExperienceService $petExperienceService;
     private ItemRepository $itemRepository;
@@ -36,7 +35,7 @@ class PhilosophersStoneService
 
     public function __construct(
         Squirrel3 $rng, PetQuestRepository $petQuestRepository, ResponseService $responseService,
-        EquipmentService $equipmentService, InventoryService $inventoryService, EntityManagerInterface $em,
+        InventoryService $inventoryService, EntityManagerInterface $em,
         PetExperienceService $petExperienceService, ItemRepository $itemRepository,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )
@@ -44,7 +43,6 @@ class PhilosophersStoneService
         $this->rng = $rng;
         $this->petQuestRepository = $petQuestRepository;
         $this->responseService = $responseService;
-        $this->equipmentService = $equipmentService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->itemRepository = $itemRepository;
@@ -91,7 +89,7 @@ class PhilosophersStoneService
                 ''
             );
 
-            $this->equipmentService->unequipPet($pet);
+            EquipmentFunctions::unequipPet($pet);
         }
         else
         {
@@ -198,7 +196,7 @@ class PhilosophersStoneService
 
             $pet->increaseSafety(-4);
 
-            $this->equipmentService->unequipPet($pet);
+            EquipmentFunctions::unequipPet($pet);
         }
         else if($skill < 20)
         {
@@ -210,7 +208,7 @@ class PhilosophersStoneService
                 ''
             );
 
-            $this->equipmentService->unequipPet($pet);
+            EquipmentFunctions::unequipPet($pet);
         }
         else
         {
@@ -317,7 +315,7 @@ class PhilosophersStoneService
                 ''
             );
 
-            $this->equipmentService->unequipPet($pet);
+            EquipmentFunctions::unequipPet($pet);
         }
         else
         {

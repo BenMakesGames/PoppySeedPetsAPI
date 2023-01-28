@@ -1,17 +1,12 @@
 <?php
-namespace App\Service;
+namespace App\Functions;
 
 use App\Entity\Pet;
 use App\Enum\LocationEnum;
 
-class EquipmentService
+class EquipmentFunctions
 {
-    public function __construct()
-    {
-
-    }
-
-    public function unequipPet(Pet $pet)
+    public static function unequipPet(Pet $pet)
     {
         if($pet->getTool() === null)
             return;
@@ -23,7 +18,7 @@ class EquipmentService
         $pet->setTool(null);
     }
 
-    public function unhatPet(Pet $pet)
+    public static function unhatPet(Pet $pet)
     {
         if($pet->getHat() === null)
             return;

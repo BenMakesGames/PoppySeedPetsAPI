@@ -5,21 +5,20 @@ use App\Entity\Pet;
 use App\Entity\StatusEffect;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\EquipmentFunctions;
 use Doctrine\ORM\EntityManagerInterface;
 
 class StatusEffectService
 {
     private EntityManagerInterface $em;
     private ResponseService $responseService;
-    private EquipmentService $equipmentService;
 
     public function __construct(
-        EntityManagerInterface $em, ResponseService $responseService, EquipmentService $equipmentService
+        EntityManagerInterface $em, ResponseService $responseService
     )
     {
         $this->em = $em;
         $this->responseService = $responseService;
-        $this->equipmentService = $equipmentService;
     }
 
     public function applyStatusEffect(Pet $pet, string $status, int $durationInMinutes)
@@ -56,7 +55,7 @@ class StatusEffectService
             )
             {
                 $itemsDropped[] = $pet->getTool()->getFullItemName();
-                $this->equipmentService->unequipPet($pet);
+                EquipmentFunctions::unequipPet($pet);
             }
 
             if(
@@ -66,7 +65,7 @@ class StatusEffectService
             )
             {
                 $itemsDropped[] = $pet->getHat()->getFullItemName();
-                $this->equipmentService->unhatPet($pet);
+                EquipmentFunctions::unhatPet($pet);
             }
 
             if(count($itemsDropped) > 0)

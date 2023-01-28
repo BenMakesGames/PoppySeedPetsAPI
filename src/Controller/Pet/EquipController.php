@@ -8,14 +8,12 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\StatusEffectEnum;
-use App\Service\EquipmentService;
+use App\Functions\EquipmentFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/pet")
@@ -27,8 +25,7 @@ class EquipController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function equipPet(
-        Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        EquipmentService $equipmentService
+        Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -58,7 +55,7 @@ class EquipController extends PoppySeedPetsController
             if($inventory->getId() === $pet->getTool()->getId())
                 throw new UnprocessableEntityHttpException($pet->getName() . ' is already equipped with that ' . $pet->getTool()->getFullItemName() . '!');
 
-            $equipmentService->unequipPet($pet);
+            EquipmentFunctions::unequipPet($pet);
         }
 
         if($inventory->getHolder())
@@ -92,8 +89,7 @@ class EquipController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function hatPet(
-        Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        EquipmentService $equipmentService
+        Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -126,7 +122,7 @@ class EquipController extends PoppySeedPetsController
             if($inventory->getId() === $pet->getHat()->getId())
                 throw new UnprocessableEntityHttpException($pet->getName() . ' is already wearing that ' . $pet->getHat()->getFullItemName() . '!');
 
-            $equipmentService->unhatPet($pet);
+            EquipmentFunctions::unhatPet($pet);
         }
 
         if($inventory->getHolder())
@@ -160,7 +156,7 @@ class EquipController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function unequipPet(
-        Pet $pet, ResponseService $responseService, EntityManagerInterface $em, EquipmentService $equipmentService
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -173,7 +169,7 @@ class EquipController extends PoppySeedPetsController
         if(!$pet->getTool())
             throw new UnprocessableEntityHttpException($pet->getName() . ' is not currently equipped.');
 
-        $equipmentService->unequipPet($pet);
+        EquipmentFunctions::unequipPet($pet);
 
         $em->flush();
 

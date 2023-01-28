@@ -29,7 +29,7 @@ class EggController extends PoppySeedPetsItemController
     public function hatchPolyp(
         Inventory $inventory, ResponseService $responseService, Squirrel3 $squirrel3,
         EntityManagerInterface $em, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository,
-        MeritRepository $meritRepository, PetFactory $petFactory, PetColorFunctions $petColorService
+        MeritRepository $meritRepository, PetFactory $petFactory
     )
     {
         $this->validateInventory($inventory, 'egg/jellingPolyp/#/hatch');
@@ -95,7 +95,7 @@ class EggController extends PoppySeedPetsItemController
         else
             $message .= "and floats into your house as if swimming through the air...";
 
-        $petColorService->recolorPet($squirrel3, $newPet);
+        PetColorFunctions::recolorPet($squirrel3, $newPet);
 
         $em->flush();
 
@@ -111,8 +111,7 @@ class EggController extends PoppySeedPetsItemController
     public function hatchWeirdBlueEgg(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
         EntityManagerInterface $em, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository,
-        MeritRepository $meritRepository, PetFactory $petFactory, PetColorFunctions $petColorService,
-        Squirrel3 $squirrel3
+        MeritRepository $meritRepository, PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'egg/weird-blue/#/hatch');
@@ -176,7 +175,7 @@ class EggController extends PoppySeedPetsItemController
             $message .= "\n\nBut, you know, your house is full, so into the daycare it goes, I guess!";
         }
 
-        $petColorService->recolorPet($squirrel3, $newPet);
+        PetColorFunctions::recolorPet($squirrel3, $newPet);
 
         $em->flush();
 
@@ -192,7 +191,7 @@ class EggController extends PoppySeedPetsItemController
     public function openMetalBox(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
         EntityManagerInterface $em, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository,
-        MeritRepository $meritRepository, PetFactory $petFactory, PetColorFunctions $petColorService, Squirrel3 $squirrel3
+        MeritRepository $meritRepository, PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'egg/metalBox/#/open');
@@ -229,7 +228,7 @@ class EggController extends PoppySeedPetsItemController
             $user, '', $grabber, '', '', FlavorEnum::getRandomValue($squirrel3), $meritRepository->getRandomStartingMerit()
         );
 
-        $petColorService->recolorPet($squirrel3, $newPet, 0.2);
+        PetColorFunctions::recolorPet($squirrel3, $newPet, 0.2);
 
         $robotName = 'Metal ' . $user->getName() . ' ' . $squirrel3->rngNextFromArray([
             '2.0',

@@ -9,11 +9,11 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\GroupNameGenerator;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\CalendarService;
-use App\Service\GroupNameGenerator;
 use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -33,14 +33,13 @@ class AstronomyClubService
     private IRandom $squirrel3;
     private EnchantmentRepository $enchantmentRepository;
     private HattierService $hattierService;
-    private GroupNameGenerator $groupNameGenerator;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private CalendarService $calendarService;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
         PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3, HattierService $hattierService,
-        EnchantmentRepository $enchantmentRepository, GroupNameGenerator $groupNameGenerator,
+        EnchantmentRepository $enchantmentRepository,
         PetActivityLogTagRepository $petActivityLogTagRepository, CalendarService $calendarService
     )
     {
@@ -51,7 +50,6 @@ class AstronomyClubService
         $this->squirrel3 = $squirrel3;
         $this->hattierService = $hattierService;
         $this->enchantmentRepository = $enchantmentRepository;
-        $this->groupNameGenerator = $groupNameGenerator;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->calendarService = $calendarService;
     }
@@ -99,7 +97,7 @@ class AstronomyClubService
 
     public function generateGroupName(): string
     {
-        return $this->groupNameGenerator->generateName(self::GROUP_NAME_PATTERNS, self::DICTIONARY, 60);
+        return GroupNameGenerator::generateName($this->squirrel3, self::GROUP_NAME_PATTERNS, self::DICTIONARY, 60);
     }
 
     public function meet(PetGroup $group)

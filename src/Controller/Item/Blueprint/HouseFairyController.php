@@ -110,7 +110,7 @@ class HouseFairyController extends PoppySeedPetsItemController
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository,
-        PetColorFunctions $petColorService, Squirrel3 $squirrel3
+        Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'fairy/#/buildFireplace');
@@ -136,7 +136,7 @@ class HouseFairyController extends PoppySeedPetsItemController
 
             $user->setUnlockedFireplace();
 
-            $stockingColors = $petColorService->generateRandomPetColors($squirrel3);
+            $stockingColors = PetColorFunctions::generateRandomPetColors($squirrel3);
 
             $fireplace = (new Fireplace())
                 ->setUser($user)
