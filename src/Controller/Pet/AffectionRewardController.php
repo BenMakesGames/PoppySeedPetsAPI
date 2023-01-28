@@ -9,14 +9,13 @@ use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
-use App\Service\MeritService;
+use App\Functions\MeritFunctions;
+use App\Repository\MeritRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/pet")
@@ -27,14 +26,16 @@ class AffectionRewardController extends PoppySeedPetsController
      * @Route("/{pet}/availableMerits", methods={"GET"}, requirements={"pet"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function getAvailableMerits(Pet $pet, ResponseService $responseService, MeritService $meritService)
+    public function getAvailableMerits(Pet $pet, ResponseService $responseService, MeritRepository $meritRepository)
     {
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
             throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
 
-        return $responseService->success($meritService->getAvailableMerits($pet), [ SerializationGroupEnum::AVAILABLE_MERITS ]);
+        $merits = $meritRepository->findBy([ 'name' => MeritFunctions::getAvailableMerits($pet) ]);
+
+        return $responseService->success($merits, [ SerializationGroupEnum::AVAILABLE_MERITS ]);
     }
 
     /**
@@ -42,7 +43,8 @@ class AffectionRewardController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function chooseAffectionRewardMerit(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, MeritService $meritService
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        MeritRepository $meritRepository
     )
     {
         $user = $this->getUser();
@@ -58,7 +60,7 @@ class AffectionRewardController extends PoppySeedPetsController
 
         $meritName = $request->request->get('merit');
 
-        $availableMerits = $meritService->getAvailableMerits($pet);
+        $availableMerits = $meritRepository->findBy([ 'name' => MeritFunctions::getAvailableMerits($pet) ]);
 
         /** @var Merit $merit */
         $merit = ArrayFunctions::find_one($availableMerits, fn(Merit $m) => $m->getName() === $meritName);

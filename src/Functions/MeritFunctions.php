@@ -1,14 +1,12 @@
 <?php
-namespace App\Service;
+namespace App\Functions;
 
 use App\Entity\Merit;
 use App\Entity\Pet;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
-use App\Enum\PetPregnancyStyleEnum;
-use App\Repository\MeritRepository;
 
-class MeritService
+class MeritFunctions
 {
     public const AFFECTION_MERITS = [
         MeritEnum::EIDETIC_MEMORY,
@@ -24,17 +22,10 @@ class MeritService
         MeritEnum::VOLAGAMY,
     ];
 
-    private $meritRepository;
-
-    public function __construct(MeritRepository $meritRepository)
-    {
-        $this->meritRepository = $meritRepository;
-    }
-
     /**
      * @return string[]
      */
-    public function getUnlearnableMerits(Pet $pet): array
+    public static function getUnlearnableMerits(Pet $pet): array
     {
         $petMerits = array_map(fn(Merit $m) => $m->getName(), $pet->getMerits()->toArray());
         $canUnlearn = array_values(array_intersect($petMerits, [
@@ -72,12 +63,12 @@ class MeritService
     }
 
     /**
-     * @return Merit[]
+     * @return string[]
      * @throws EnumInvalidValueException
      */
-    public function getAvailableMerits(Pet $pet): array
+    public static function getAvailableMerits(Pet $pet): array
     {
-        /** @var Merit[] $availableMerits */
+        /** @var string[] $availableMerits */
         $availableMerits = [];
 
         foreach(MeritEnum::getValues() as $merit)
@@ -126,7 +117,7 @@ class MeritService
             }
 
             if($available)
-                $availableMerits[] = $this->meritRepository->findOneByName($merit);
+                $availableMerits[] = $merit;
         }
 
         return $availableMerits;

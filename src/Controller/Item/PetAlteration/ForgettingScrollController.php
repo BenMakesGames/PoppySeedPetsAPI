@@ -6,9 +6,9 @@ use App\Entity\Inventory;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\EquipmentFunctions;
+use App\Functions\MeritFunctions;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
-use App\Service\MeritService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,8 +25,7 @@ class ForgettingScrollController extends PoppySeedPetsItemController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getForgettableThings(
-        Inventory $inventory, ResponseService $responseService, Request $request, PetRepository $petRepository,
-        MeritService $meritService
+        Inventory $inventory, ResponseService $responseService, Request $request, PetRepository $petRepository
     )
     {
         $user = $this->getUser();
@@ -47,7 +46,7 @@ class ForgettingScrollController extends PoppySeedPetsItemController
         ));
 
         $data = [
-            'merits' => $meritService->getUnlearnableMerits($pet),
+            'merits' => MeritFunctions::getUnlearnableMerits($pet),
             'skills' => $unlearnableSkills,
         ];
 
@@ -60,7 +59,7 @@ class ForgettingScrollController extends PoppySeedPetsItemController
      */
     public function forgetMerit(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, MeritRepository $meritRepository, MeritService $meritService
+        PetRepository $petRepository, MeritRepository $meritRepository
     )
     {
         $user = $this->getUser();
@@ -85,7 +84,7 @@ class ForgettingScrollController extends PoppySeedPetsItemController
         if(!$pet->hasMerit($merit->getName()))
             throw new UnprocessableEntityHttpException($pet->getName() . ' doesn\'t have that Merit.');
 
-        if(!in_array($merit->getName(), $meritService->getUnlearnableMerits($pet)))
+        if(!in_array($merit->getName(), MeritFunctions::getUnlearnableMerits($pet)))
         {
             if($merit->getName() === MeritEnum::VOLAGAMY)
                 throw new UnprocessableEntityHttpException('That merit cannot be unlearned while ' . $pet->getName() . ' ' . ($pet->getSpecies()->getEggImage() ? 'has an egg' : 'is pregnant') . '.');
@@ -99,7 +98,7 @@ class ForgettingScrollController extends PoppySeedPetsItemController
 
         $responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% has forgotten the "' . $merit->getName() . '" Merit!', 'items/scroll/unlearning');
 
-        if(in_array($merit->getName(), MeritService::AFFECTION_MERITS))
+        if(in_array($merit->getName(), MeritFunctions::AFFECTION_MERITS))
             $pet->decreaseAffectionRewardsClaimed();
 
         if($merit->getName() === MeritEnum::BEHATTED)
