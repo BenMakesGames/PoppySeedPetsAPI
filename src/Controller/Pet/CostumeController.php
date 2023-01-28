@@ -3,14 +3,12 @@ namespace App\Controller\Pet;
 
 use App\Controller\PoppySeedPetsController;
 use App\Entity\Pet;
-use App\Service\ProfanityFilterService;
+use App\Functions\ProfanityFilterFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/pet")
@@ -35,7 +33,7 @@ class CostumeController extends PoppySeedPetsController
         if(\mb_strlen($costume) > 30)
             throw new UnprocessableEntityHttpException('Costume description cannot be longer than 30 characters.');
 
-        $costume = ProfanityFilterService::filter($costume);
+        $costume = ProfanityFilterFunctions::filter($costume);
 
         if(\mb_strlen($costume) > 30)
             $costume = \mb_substr($costume, 0, 30);

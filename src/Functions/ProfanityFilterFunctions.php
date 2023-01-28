@@ -1,7 +1,7 @@
 <?php
-namespace App\Service;
+namespace App\Functions;
 
-class ProfanityFilterService
+class ProfanityFilterFunctions
 {
     private const TRANSFORMS = [
         's+e+x+($|[^a-z])' => 'love$1',

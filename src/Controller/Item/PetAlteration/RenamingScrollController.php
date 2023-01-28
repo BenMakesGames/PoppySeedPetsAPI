@@ -4,15 +4,13 @@ namespace App\Controller\Item\PetAlteration;
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Enum\MeritEnum;
+use App\Functions\ProfanityFilterFunctions;
 use App\Repository\PetRepository;
-use App\Service\ProfanityFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/renamingScroll")
@@ -41,7 +39,7 @@ class RenamingScrollController extends PoppySeedPetsItemController
         if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
             throw new UnprocessableEntityHttpException('This pet is Affectionless. It\'s not interested in taking on a new name.');
 
-        $petName = ProfanityFilterService::filter(trim($request->request->get('name', '')));
+        $petName = ProfanityFilterFunctions::filter(trim($request->request->get('name', '')));
 
         if($petName === $pet->getName())
             throw new UnprocessableEntityHttpException('That\'s the pet\'s current name! What a waste of the scroll that would be...');

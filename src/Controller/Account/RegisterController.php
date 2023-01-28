@@ -7,13 +7,13 @@ use App\Entity\UserNotificationPreferences;
 use App\Entity\UserStyle;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
+use App\Functions\ProfanityFilterFunctions;
 use App\Functions\StringFunctions;
 use App\Repository\MeritRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserRepository;
 use App\Service\InventoryService;
 use App\Service\PetFactory;
-use App\Service\ProfanityFilterService;
 use App\Service\ResponseService;
 use App\Service\SessionService;
 use App\Service\Squirrel3;
@@ -21,9 +21,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use App\Annotations\DoesNotRequireHouseHours;
 
 /**
  * @Route("/account")
@@ -42,12 +39,12 @@ class RegisterController extends PoppySeedPetsController
     )
     {
         $theme = $request->request->get('theme');
-        $petName = ProfanityFilterService::filter(trim($request->request->get('petName')));
+        $petName = ProfanityFilterFunctions::filter(trim($request->request->get('petName')));
         $petImage = $request->request->get('petImage');
         $petColorA = $request->request->get('petColorA');
         $petColorB = $request->request->get('petColorB');
 
-        $name = ProfanityFilterService::filter(trim($request->request->get('playerName')));
+        $name = ProfanityFilterFunctions::filter(trim($request->request->get('playerName')));
         $email = $request->request->get('playerEmail');
         $passPhrase = $request->request->get('playerPassphrase');
 

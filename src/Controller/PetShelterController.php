@@ -6,6 +6,7 @@ use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\ProfanityFilterFunctions;
 use App\Model\PetShelterPet;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
@@ -13,7 +14,6 @@ use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\AdoptionService;
 use App\Service\PetFactory;
-use App\Service\ProfanityFilterService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
@@ -21,8 +21,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/petShelter")
@@ -99,7 +97,7 @@ class PetShelterController extends PoppySeedPetsController
         if($user->getMoneys() < $costToAdopt)
             throw new UnprocessableEntityHttpException('It costs ' . $costToAdopt . ' moneys to adopt a pet, but you only have ' . $user->getMoneys() . '.');
 
-        $petName = ProfanityFilterService::filter(trim($request->request->get('name', '')));
+        $petName = ProfanityFilterFunctions::filter(trim($request->request->get('name', '')));
 
         if(\mb_strlen($petName) < 1 || \mb_strlen($petName) > 30)
             throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
