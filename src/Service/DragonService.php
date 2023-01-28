@@ -71,18 +71,16 @@ class DragonService
     private UserStatsRepository $userStatsRepository;
     private CalendarService $calendarService;
     private IRandom $rng;
-    private TreasureMapService $treasureMapService;
     private InventoryRepository $inventoryRepository;
     private DragonRepository $dragonRepository;
     private HattierService $hattierService;
     private ResponseService $responseService;
 
     public function __construct(
-        EntityManagerInterface $em, InventoryService $inventoryService,
+        EntityManagerInterface $em, InventoryService $inventoryService, ResponseService $responseService,
         EnchantmentRepository $enchantmentRepository, SpiceRepository $spiceRepository,
         UserStatsRepository $userStatsRepository, CalendarService $calendarService, Squirrel3 $rng,
-        TreasureMapService $treasureMapService, InventoryRepository $inventoryRepository,
-        DragonRepository $dragonRepository, HattierService $hattierService, ResponseService $responseService
+        InventoryRepository $inventoryRepository, DragonRepository $dragonRepository, HattierService $hattierService
     )
     {
         $this->em = $em;
@@ -92,7 +90,6 @@ class DragonService
         $this->userStatsRepository = $userStatsRepository;
         $this->calendarService = $calendarService;
         $this->rng = $rng;
-        $this->treasureMapService = $treasureMapService;
         $this->inventoryRepository = $inventoryRepository;
         $this->dragonRepository = $dragonRepository;
         $this->hattierService = $hattierService;
@@ -231,7 +228,7 @@ class DragonService
             {
                 $dragon->addByproductProgress(-100);
 
-                $possibleItems = $this->treasureMapService->getFluffmongerFlavorFoods($helper->getFavoriteFlavor());
+                $possibleItems = TreasureMapService::getFluffmongerFlavorFoods($helper->getFavoriteFlavor());
 
                 if($helperSkills->getNature()->getTotal() >= 5)
                     $possibleItems[] = 'Large Bag of Fertilizer';

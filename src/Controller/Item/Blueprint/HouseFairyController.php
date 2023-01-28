@@ -5,17 +5,13 @@ use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Fireplace;
 use App\Entity\Inventory;
 use App\Enum\UserStatEnum;
-use App\Functions\ArrayFunctions;
-use App\Functions\ColorFunctions;
+use App\Functions\PetColorFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
-use App\Service\PetColorService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/fairy")
@@ -114,7 +110,7 @@ class HouseFairyController extends PoppySeedPetsItemController
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository,
-        PetColorService $petColorService, Squirrel3 $squirrel3
+        PetColorFunctions $petColorService, Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'fairy/#/buildFireplace');
@@ -140,7 +136,7 @@ class HouseFairyController extends PoppySeedPetsItemController
 
             $user->setUnlockedFireplace();
 
-            $stockingColors = $petColorService->generateRandomPetColors();
+            $stockingColors = $petColorService->generateRandomPetColors($squirrel3);
 
             $fireplace = (new Fireplace())
                 ->setUser($user)

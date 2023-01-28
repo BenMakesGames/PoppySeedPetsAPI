@@ -28,7 +28,7 @@ class WeatherService
         $this->cache = $cache;
     }
 
-    public function getHourSince2000(\DateTimeImmutable $dt): float
+    public static function getHourSince2000(\DateTimeImmutable $dt): float
     {
         $year = $dt->format('Y') - 2000;
 
@@ -49,20 +49,20 @@ class WeatherService
     public function getWeather(\DateTimeImmutable $dt, ?Pet $pet, $getHolidays = true): WeatherData
     {
         if($pet)
-            $dt->modify('-' . max(0, $pet->getHouseTime()->getActivityTime()) . ' minutes');
+            $dt = $dt->modify('-' . max(0, $pet->getHouseTime()->getActivityTime()) . ' minutes');
 
         if($dt->format('nd') === '229')
-            return $this->getLeapDayWeather($dt);
+            return WeatherService::getLeapDayWeather($dt);
 
         $weather = new WeatherData();
 
-        $hourSince2000 = $this->getHourSince2000($dt);
+        $hourSince2000 = WeatherService::getHourSince2000($dt);
 
         $weather->holidays = $getHolidays ? $this->calendarService->getEventData($dt) : [];
-        $weather->clouds = $this->getClouds($hourSince2000);
-        $weather->rainfall = $this->getRainfall($hourSince2000);
-        $weather->temperature = $this->getTemperature($hourSince2000, $weather->rainfall);
-        $weather->isNight = $this->isNight($hourSince2000 % 24);
+        $weather->clouds = WeatherService::getClouds($hourSince2000);
+        $weather->rainfall = WeatherService::getRainfall($hourSince2000);
+        $weather->temperature = WeatherService::getTemperature($hourSince2000, $weather->rainfall);
+        $weather->isNight = WeatherService::isNight($hourSince2000 % 24);
 
         return $weather;
     }
@@ -70,7 +70,7 @@ class WeatherService
     /**
      * @return float Degrees Celsius
      */
-    public function getTemperature(float $hourOfYear, float $rainfall): float
+    public static function getTemperature(float $hourOfYear, float $rainfall): float
     {
         $temp = 25 +
             2 * sin(M_PI * 4 * ($hourOfYear - 1500) / 8760) +
@@ -84,14 +84,14 @@ class WeatherService
         // some random wiggling; less if it's raining
         // (13, 23, 11, 31, and 47 are all primes)
         $temp +=
-            $this->getNoise($hourOfYear, 0.13, 0.23, 0.11, 0.31, 0.47)
+            WeatherService::getNoise($hourOfYear, 0.13, 0.23, 0.11, 0.31, 0.47)
             / ($rainfall + 1)
         ;
 
         return $temp;
     }
 
-    public function getNoise($hourOfYear, $p1, $p2, $p3, $p4, $p5)
+    public static function getNoise($hourOfYear, $p1, $p2, $p3, $p4, $p5)
     {
         return (
             sin($p1 * M_E * $hourOfYear) +
@@ -106,9 +106,9 @@ class WeatherService
     /**
      * @return float ??? unit of measure ???
      */
-    public function getRainfall(float $hourOfYear): float
+    public static function getRainfall(float $hourOfYear): float
     {
-        $moisture = $this->getMoisture($hourOfYear);
+        $moisture = WeatherService::getMoisture($hourOfYear);
 
         return 5 * max(0, $moisture - 0.3);
     }
@@ -116,15 +116,15 @@ class WeatherService
     /**
      * @return float ??? unit of measure ???
      */
-    public function getClouds(float $hourOfYear): float
+    public static function getClouds(float $hourOfYear): float
     {
-        $moistureMinus3 = $this->getMoisture($hourOfYear - 3);
-        $moistureMinus2 = $this->getMoisture($hourOfYear - 2);
-        $moistureMinus1 = $this->getMoisture($hourOfYear - 1);
-        $moisture = $this->getMoisture($hourOfYear);
-        $moisturePlus1 = $this->getMoisture($hourOfYear + 1);
-        $moisturePlus2 = $this->getMoisture($hourOfYear + 2);
-        $moisturePlus3 = $this->getMoisture($hourOfYear + 3);
+        $moistureMinus3 = WeatherService::getMoisture($hourOfYear - 3);
+        $moistureMinus2 = WeatherService::getMoisture($hourOfYear - 2);
+        $moistureMinus1 = WeatherService::getMoisture($hourOfYear - 1);
+        $moisture = WeatherService::getMoisture($hourOfYear);
+        $moisturePlus1 = WeatherService::getMoisture($hourOfYear + 1);
+        $moisturePlus2 = WeatherService::getMoisture($hourOfYear + 2);
+        $moisturePlus3 = WeatherService::getMoisture($hourOfYear + 3);
 
         return max(0,
             $moistureMinus3 / 8 +
@@ -138,32 +138,32 @@ class WeatherService
         );
     }
 
-    public function getMoisture(float $hourOfYear): float
+    public static function getMoisture(float $hourOfYear): float
     {
         $seasonal =
             1.5 * sin(M_PI * 2 * ($hourOfYear - 3500) / 8760) +
             sin(M_PI * 4 * ($hourOfYear - 600) / 8760) +
             5
         ;
-        $n1 = $this->getNoise($hourOfYear, 0.011, 0.041, 0.019, 0.037, 0.71) + 1.25;
-        $n2 = $this->getNoise($hourOfYear, 0.17, 0.23, 0.13, 0.37, 0.53) + 1.25;
+        $n1 = WeatherService::getNoise($hourOfYear, 0.011, 0.041, 0.019, 0.037, 0.71) + 1.25;
+        $n2 = WeatherService::getNoise($hourOfYear, 0.17, 0.23, 0.13, 0.37, 0.53) + 1.25;
 
         return ($seasonal * $n1 * $n2) / 50;
     }
 
-    public function isNight(int $hourOfDay): bool
+    public static function isNight(int $hourOfDay): bool
     {
         return ($hourOfDay < 6 || $hourOfDay >= 18);
     }
 
-    private function getLeapDayWeather(\DateTimeImmutable $dt): WeatherData
+    private static function getLeapDayWeather(\DateTimeImmutable $dt): WeatherData
     {
         $seed = 1618; // first four digits of the golden ratio
 
         $weather = new WeatherData();
         $weather->rainfall = 0;
         $weather->temperature = 18 + (RandomFunctions::squirrel3Noise((int)$dt->format('Y'), $seed) % 5);
-        $weather->isNight = $this->isNight($dt->format('G'));
+        $weather->isNight = WeatherService::isNight($dt->format('G'));
 
         return $weather;
     }

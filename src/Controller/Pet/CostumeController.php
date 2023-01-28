@@ -22,8 +22,7 @@ class CostumeController extends PoppySeedPetsController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function setCostume(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        ProfanityFilterService $profanityFilterService
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -36,7 +35,7 @@ class CostumeController extends PoppySeedPetsController
         if(\mb_strlen($costume) > 30)
             throw new UnprocessableEntityHttpException('Costume description cannot be longer than 30 characters.');
 
-        $costume = $profanityFilterService->filter($costume);
+        $costume = ProfanityFilterService::filter($costume);
 
         if(\mb_strlen($costume) > 30)
             $costume = \mb_substr($costume, 0, 30);

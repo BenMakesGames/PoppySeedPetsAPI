@@ -409,7 +409,7 @@ class TreasureMapService
 
             if(count($possibleTrades) === 0)
             {
-                $foods = $this->getFluffmongerFlavorFoods($pet->getFavoriteFlavor());
+                $foods = TreasureMapService::getFluffmongerFlavorFoods($pet->getFavoriteFlavor());
 
                 $possibleTrades = [];
 
@@ -474,7 +474,7 @@ class TreasureMapService
         return $activityLog;
     }
 
-    public function getFluffmongerFlavorFoods($flavor)
+    public static function getFluffmongerFlavorFoods($flavor)
     {
         switch($flavor)
         {

@@ -165,7 +165,7 @@ class StoryService
                 $c = new StoryStepChoice();
                 $c->text = $choice['text'];
                 $c->enabled = $this->choiceIsEnabled($choice);
-                $c->exitOnSelect = $this->choiceContainsExit($choice);
+                $c->exitOnSelect = StoryService::choiceContainsExit($choice);
 
                 $storyStep->choices[] = $c;
             }
@@ -224,7 +224,7 @@ class StoryService
         return $this->userInventory;
     }
 
-    private function choiceContainsExit(array $choice): bool
+    private static function choiceContainsExit(array $choice): bool
     {
         return ArrayFunctions::any($choice['actions'], fn($action) => $action['type'] === StoryActionTypeEnum::EXIT);
     }

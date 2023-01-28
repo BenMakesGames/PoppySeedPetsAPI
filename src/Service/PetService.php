@@ -16,7 +16,6 @@ use App\Enum\HolidayEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
-use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SocialTimeWantEnum;
 use App\Enum\SpiritCompanionStarEnum;
@@ -649,7 +648,7 @@ class PetService
                     return true;
                 }
 
-                return false;
+                break;
 
             case 'Rainbow Dolphin Plushy':
             case 'Sneqo Plushy':
@@ -663,7 +662,7 @@ class PetService
                     return true;
                 }
 
-                return false;
+                break;
 
             case '"Gold" Idol':
                 $this->treasureMapService->doGoldIdol($pet);
@@ -680,7 +679,7 @@ class PetService
                     return true;
                 }
 
-                return false;
+                break;
 
             case 'Saucepan':
                 if($this->squirrel3->rngNextInt(1, 10) === 1)
@@ -689,7 +688,7 @@ class PetService
                     return true;
                 }
 
-                return false;
+                break;
 
             case 'Diffie-H Key':
                 $this->treasureMapService->doUseDiffieHKey($pet);
@@ -701,7 +700,7 @@ class PetService
                     $this->treasureMapService->doEggplantCurse($pet);
                     return true;
                 }
-                return false;
+                break;
 
             case 'Chocolate Key':
                 if($this->squirrel3->rngNextInt(1, 4) === 1)
@@ -709,7 +708,7 @@ class PetService
                     $this->chocolateMansion->adventure($petWithSkills);
                     return true;
                 }
-                return false;
+                break;
 
             case 'Carrot Key':
                 if($this->squirrel3->rngNextInt(1, 4) === 1)
@@ -717,7 +716,7 @@ class PetService
                     $this->caerbannog->adventure($petWithSkills);
                     return true;
                 }
-                return false;
+                break;
 
             case '5-leaf Clover':
                 $this->treasureMapService->doLeprechaun($petWithSkills);
@@ -733,7 +732,7 @@ class PetService
                     $this->philosophersStoneService->seekMetatronsFire($petWithSkills);
                     return true;
                 }
-                return false;
+                break;
 
             case 'Ceremony of Fire':
                 if($this->squirrel3->rngNextInt(1, 20) == 1)
@@ -741,7 +740,7 @@ class PetService
                     $this->philosophersStoneService->seekVesicaHydrargyrum($petWithSkills);
                     return true;
                 }
-                return false;
+                break;
 
             case 'Snickerblade':
                 if($this->squirrel3->rngNextInt(1, 20) == 1)
@@ -749,20 +748,21 @@ class PetService
                     $this->philosophersStoneService->seekEarthsEgg($petWithSkills);
                     return true;
                 }
-                return false;
+                break;
         }
 
-        if(!$pet->getTool()->getEnchantment())
-            return false;
-
-        switch($pet->getTool()->getEnchantment()->getName())
+        if($pet->getTool()->getEnchantment())
         {
-            case 'Searing':
-                if($this->squirrel3->rngNextInt(1, 20) == 1)
-                {
-                    return $this->philosophersStoneService->seekMerkabaOfAir($petWithSkills) !== null;
-                }
-                return false;
+            switch($pet->getTool()->getEnchantment()->getName())
+            {
+                case 'Searing':
+                    if($this->squirrel3->rngNextInt(1, 20) == 1)
+                    {
+                        if($this->philosophersStoneService->seekMerkabaOfAir($petWithSkills))
+                            return true;
+                    }
+                    break;
+            }
         }
 
         return false;
@@ -1241,8 +1241,8 @@ class PetService
         if($petPreviousRelationship !== $pet->getCurrentRelationship())
         {
             $relationshipMovement =
-                abs($this->petRelationshipService->calculateRelationshipDistance($pet->getRelationshipGoal(), $petPreviousRelationship)) -
-                abs($this->petRelationshipService->calculateRelationshipDistance($pet->getRelationshipGoal(), $pet->getCurrentRelationship()))
+                abs(PetRelationshipService::calculateRelationshipDistance($pet->getRelationshipGoal(), $petPreviousRelationship)) -
+                abs(PetRelationshipService::calculateRelationshipDistance($pet->getRelationshipGoal(), $pet->getCurrentRelationship()))
             ;
 
             $pet->getPet()
@@ -1254,8 +1254,8 @@ class PetService
         if($friendPreviousRelationship !== $friend->getCurrentRelationship())
         {
             $relationshipMovement =
-                abs($this->petRelationshipService->calculateRelationshipDistance($friend->getRelationshipGoal(), $friendPreviousRelationship)) -
-                abs($this->petRelationshipService->calculateRelationshipDistance($friend->getRelationshipGoal(), $friend->getCurrentRelationship()))
+                abs(PetRelationshipService::calculateRelationshipDistance($friend->getRelationshipGoal(), $friendPreviousRelationship)) -
+                abs(PetRelationshipService::calculateRelationshipDistance($friend->getRelationshipGoal(), $friend->getCurrentRelationship()))
             ;
 
             $friend->getPet()

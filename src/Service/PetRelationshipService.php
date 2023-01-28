@@ -56,7 +56,7 @@ class PetRelationshipService
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
-    public function min(string $relationship1, string $relationship2): string
+    public static function min(string $relationship1, string $relationship2): string
     {
         $r1Commitment = self::RELATIONSHIP_COMMITMENTS[$relationship1];
         $r2Commitment = self::RELATIONSHIP_COMMITMENTS[$relationship2];
@@ -66,7 +66,7 @@ class PetRelationshipService
         return $min === $r1Commitment ? $relationship1 : $relationship2;
     }
 
-    public function max(string $relationship1, string $relationship2): string
+    public static function max(string $relationship1, string $relationship2): string
     {
         $r1Commitment = self::RELATIONSHIP_COMMITMENTS[$relationship1];
         $r2Commitment = self::RELATIONSHIP_COMMITMENTS[$relationship2];
@@ -79,7 +79,7 @@ class PetRelationshipService
     /**
      * @return string[]
      */
-    public function getRelationshipsBetween(string $relationship1, string $relationship2): array
+    public static function getRelationshipsBetween(string $relationship1, string $relationship2): array
     {
         $r1Commitment = self::RELATIONSHIP_COMMITMENTS[$relationship1];
         $r2Commitment = self::RELATIONSHIP_COMMITMENTS[$relationship2];
@@ -355,7 +355,7 @@ class PetRelationshipService
         return $commitment;
     }
 
-    public function calculateRelationshipDistance($initialRelationship, $targetRelationship): int
+    public static function calculateRelationshipDistance($initialRelationship, $targetRelationship): int
     {
         $values = [
             RelationshipEnum::BROKE_UP => -2,

@@ -83,7 +83,7 @@ class PetShelterController extends PoppySeedPetsController
         int $id, PetRepository $petRepository, AdoptionService $adoptionService, Request $request,
         ResponseService $responseService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
         UserQuestRepository $userQuestRepository, TransactionService $transactionService, Squirrel3 $squirrel3,
-        MeritRepository $meritRepository, ProfanityFilterService $profanityFilterService, PetFactory $petFactory
+        MeritRepository $meritRepository, PetFactory $petFactory
     )
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
@@ -99,7 +99,7 @@ class PetShelterController extends PoppySeedPetsController
         if($user->getMoneys() < $costToAdopt)
             throw new UnprocessableEntityHttpException('It costs ' . $costToAdopt . ' moneys to adopt a pet, but you only have ' . $user->getMoneys() . '.');
 
-        $petName = $profanityFilterService->filter(trim($request->request->get('name', '')));
+        $petName = ProfanityFilterService::filter(trim($request->request->get('name', '')));
 
         if(\mb_strlen($petName) < 1 || \mb_strlen($petName) > 30)
             throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');

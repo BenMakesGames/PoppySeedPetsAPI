@@ -35,7 +35,7 @@ class CravingService
         $this->responseService = $responseService;
     }
 
-    public function petHasCraving(Pet $pet)
+    public static function petHasCraving(Pet $pet): bool
     {
         if(!$pet->hasCraving())
             return false;
@@ -49,7 +49,7 @@ class CravingService
     public function maybeRemoveCraving(Pet $pet)
     {
         if(
-            $this->petHasCraving($pet) &&
+            CravingService::petHasCraving($pet) &&
             ($pet->getFood() < 0 || $pet->getSafety() < 0)
         )
         {
@@ -63,7 +63,7 @@ class CravingService
     {
         if(
             !$pet->hasMerit(MeritEnum::AFFECTIONLESS) &&
-            !$this->petHasCraving($pet) &&
+            !CravingService::petHasCraving($pet) &&
             $pet->getFullnessPercent() >= 0.5 &&
             $pet->getSafety() >= 8
         )
@@ -98,7 +98,7 @@ class CravingService
         return $this->squirrel3->rngNextFromArray($cravingGroups);
     }
 
-    public function foodMeetsCraving(Pet $pet, Item $food)
+    public static function foodMeetsCraving(Pet $pet, Item $food): bool
     {
         if(!$pet->getCraving() || $pet->getCraving()->isSatisfied())
             return false;

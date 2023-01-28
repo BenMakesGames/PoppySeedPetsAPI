@@ -38,17 +38,16 @@ class RegisterController extends PoppySeedPetsController
         Request $request, EntityManagerInterface $em, ResponseService $responseService,
         SessionService $sessionService, UserRepository $userRepository, PetSpeciesRepository $petSpeciesRepository,
         UserPasswordHasherInterface $userPasswordEncoder, InventoryService $inventoryService,
-        ProfanityFilterService $profanityFilterService, MeritRepository $meritRepository, PetFactory $petFactory,
-        Squirrel3 $squirrel3
+        MeritRepository $meritRepository, PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
         $theme = $request->request->get('theme');
-        $petName = $profanityFilterService->filter(trim($request->request->get('petName')));
+        $petName = ProfanityFilterService::filter(trim($request->request->get('petName')));
         $petImage = $request->request->get('petImage');
         $petColorA = $request->request->get('petColorA');
         $petColorB = $request->request->get('petColorB');
 
-        $name = $profanityFilterService->filter(trim($request->request->get('playerName')));
+        $name = ProfanityFilterService::filter(trim($request->request->get('playerName')));
         $email = $request->request->get('playerEmail');
         $passPhrase = $request->request->get('playerPassphrase');
 

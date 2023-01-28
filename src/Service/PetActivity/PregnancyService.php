@@ -6,12 +6,12 @@ use App\Entity\PetBaby;
 use App\Entity\PetRelationship;
 use App\Entity\PetSpecies;
 use App\Enum\FlavorEnum;
-use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\PetColorFunctions;
 use App\Model\PetShelterPet;
 use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogTagRepository;
@@ -19,9 +19,7 @@ use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
-use App\Service\InventoryService;
 use App\Service\IRandom;
-use App\Service\PetColorService;
 use App\Service\PetExperienceService;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
@@ -48,7 +46,7 @@ class PregnancyService
         ResponseService $responseService, PetExperienceService $petExperienceService,
         UserQuestRepository $userQuestRepository, PetSpeciesRepository $petSpeciesRepository,
         UserStatsRepository $userStatsRepository, MeritRepository $meritRepository, PetFactory $petFactory,
-        PetColorService $petColorService, Squirrel3 $squirrel3, PetActivityLogTagRepository $petActivityLogTagRepository
+        PetColorFunctions $petColorService, Squirrel3 $squirrel3, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->em = $em;
@@ -85,8 +83,8 @@ class PregnancyService
         else
             $species = $this->getRandomBreedingSpecies();
 
-        $colorA = $this->petColorService->generateColorFromParentColors($mother->getColorA(), $father->getColorA());
-        $colorB = $this->petColorService->generateColorFromParentColors($mother->getColorB(), $father->getColorB());
+        $colorA = $this->petColorService->generateColorFromParentColors($this->squirrel3, $mother->getColorA(), $father->getColorA());
+        $colorB = $this->petColorService->generateColorFromParentColors($this->squirrel3, $mother->getColorB(), $father->getColorB());
 
         // 20% of the time, swap colorA and colorB around
         if($this->squirrel3->rngNextInt(1, 5) === 1)
@@ -287,13 +285,13 @@ class PregnancyService
 
         $newName = preg_replace('/ +/', ' ', strtolower($newName));
 
-        if($this->isForbiddenCombinedName($newName))
+        if(PregnancyService::isForbiddenCombinedName($newName))
             $newName = $this->squirrel3->rngNextFromArray(PetShelterPet::PET_NAMES);
 
         return ucwords($newName);
     }
 
-    private function isForbiddenCombinedName(string $name)
+    private static function isForbiddenCombinedName(string $name): bool
     {
         $canonicalized = mb_strtolower($name);
         $canonicalized = preg_replace('/[^a-z0-9]/', '', $canonicalized); // remove all non-alphanums

@@ -23,7 +23,7 @@ class CompareRNGPerformanceCommand extends Command
         ;
     }
 
-    function NumberOfSetBits($v)
+    static function NumberOfSetBits($v)
     {
         $c = $v - (($v >> 1) & 0x55555555);
         $c = (($c >> 2) & 0x33333333) + ($c & 0x33333333);
@@ -46,7 +46,7 @@ class CompareRNGPerformanceCommand extends Command
         {
             $r = mt_rand(0, 0xFFFFFFFF);
 
-            $mtRandDiffBits[] = $this->NumberOfSetBits($r ^ $previous) / 32;
+            $mtRandDiffBits[] = CompareRNGPerformanceCommand::NumberOfSetBits($r ^ $previous) / 32;
 
             $previous = $r;
         }
@@ -62,7 +62,7 @@ class CompareRNGPerformanceCommand extends Command
         {
             $r = $squirrel3->rngNextInt(0, 0xFFFFFFFF);
 
-            $squirrel3DiffBits[] = $this->NumberOfSetBits($r ^ $previous) / 32;
+            $squirrel3DiffBits[] = CompareRNGPerformanceCommand::NumberOfSetBits($r ^ $previous) / 32;
 
             $previous = $r;
         }

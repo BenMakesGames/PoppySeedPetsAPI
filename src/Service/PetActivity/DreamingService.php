@@ -144,8 +144,8 @@ class DreamingService
 
         $replacements = $this->generateReplacementsDictionary($item, $pet, $species);
 
-        $eventDescription = $this->applyMadlib($dream->getDescription(), $replacements);
-        $itemDescription = $this->applyMadlib($dream->getItemDescription(), $replacements);
+        $eventDescription = DreamingService::applyMadlib($dream->getDescription(), $replacements);
+        $itemDescription = DreamingService::applyMadlib($dream->getItemDescription(), $replacements);
 
         $this->inventoryService->receiveItem($itemName, $pet->getOwner(), $pet->getOwner(), $itemDescription, LocationEnum::HOME);
 
@@ -205,7 +205,7 @@ class DreamingService
         ];
     }
 
-    public function applyMadlib(string $text, array $replacements): string
+    public static function applyMadlib(string $text, array $replacements): string
     {
         do
         {

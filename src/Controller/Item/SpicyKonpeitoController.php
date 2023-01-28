@@ -2,13 +2,13 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Functions\PetColorFunctions;
 use App\Repository\DragonRepository;
-use App\Service\PetColorService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/spicyKonpeito")
@@ -21,7 +21,8 @@ class SpicyKonpeitoController extends PoppySeedPetsItemController
      */
     public function feedToDragon(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        DragonRepository $dragonRepository, PetColorService $petColorChangingService
+        DragonRepository $dragonRepository, PetColorFunctions $petColorChangingService,
+        Squirrel3 $rng
     )
     {
         $user = $this->getUser();
@@ -41,8 +42,8 @@ class SpicyKonpeitoController extends PoppySeedPetsItemController
 
         $em->remove($inventory);
 
-        $newColorA = $petColorChangingService->randomizeColorDistinctFromPreviousColor($dragon->getColorA());
-        $newColorB = $petColorChangingService->randomizeColorDistinctFromPreviousColor($dragon->getColorB());
+        $newColorA = $petColorChangingService->randomizeColorDistinctFromPreviousColor($rng, $dragon->getColorA());
+        $newColorB = $petColorChangingService->randomizeColorDistinctFromPreviousColor($rng, $dragon->getColorB());
 
         $dragon
             ->setColorA($newColorA)

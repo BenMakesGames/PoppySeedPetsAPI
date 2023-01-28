@@ -25,7 +25,7 @@ class RenamingScrollController extends PoppySeedPetsItemController
      */
     public function readRenamingScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, ProfanityFilterService $profanityFilterService
+        PetRepository $petRepository
     )
     {
         $user = $this->getUser();
@@ -41,7 +41,7 @@ class RenamingScrollController extends PoppySeedPetsItemController
         if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
             throw new UnprocessableEntityHttpException('This pet is Affectionless. It\'s not interested in taking on a new name.');
 
-        $petName = $profanityFilterService->filter(trim($request->request->get('name', '')));
+        $petName = ProfanityFilterService::filter(trim($request->request->get('name', '')));
 
         if($petName === $pet->getName())
             throw new UnprocessableEntityHttpException('That\'s the pet\'s current name! What a waste of the scroll that would be...');

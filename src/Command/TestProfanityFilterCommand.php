@@ -7,12 +7,8 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class TestProfanityFilterCommand extends PoppySeedPetsCommand
 {
-    private $profanityFilter;
-
-    public function __construct(ProfanityFilterService $profanityFilter)
+    public function __construct()
     {
-        $this->profanityFilter = $profanityFilter;
-
         parent::__construct();
     }
 
@@ -30,7 +26,7 @@ class TestProfanityFilterCommand extends PoppySeedPetsCommand
         $phrase = $this->input->getArgument('phrase');
 
         $start = microtime(true);
-        $output = $this->profanityFilter->filter($phrase);
+        $output = ProfanityFilterService::filter($phrase);
         $end = microtime(true);
 
         echo $output . "\n";

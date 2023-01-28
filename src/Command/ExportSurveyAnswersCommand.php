@@ -80,7 +80,7 @@ class ExportSurveyAnswersCommand extends Command
         }
 
         $output->write('id,name,registered on,moneys,museum points,');
-        $output->writeln($this->arrayToCSVLine($questionText));
+        $output->writeln(ExportSurveyAnswersCommand::arrayToCSVLine($questionText));
 
         for($i = 0; $i < count($ids); $i += 50)
         {
@@ -126,10 +126,10 @@ class ExportSurveyAnswersCommand extends Command
         foreach($row as $r)
             $data[] = $r;
 
-        $output->writeln($this->arrayToCSVLine($data));
+        $output->writeln(ExportSurveyAnswersCommand::arrayToCSVLine($data));
     }
 
-    private function arrayToCSVLine(array $values)
+    private static function arrayToCSVLine(array $values)
     {
         return implode(',', array_map(function ($v) {
             return '"' . str_replace('"', '""', $v) . '"';

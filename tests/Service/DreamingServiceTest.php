@@ -37,8 +37,8 @@ class DreamingServiceTest extends KernelTestCase
 
         foreach($dreams as $dream)
         {
-            $descriptionResult = $dreamingService->applyMadlib($dream->getDescription(), $replacements);
-            $itemCommentTextResult = $dreamingService->applyMadlib($dream->getItemDescription(), $replacements);
+            $descriptionResult = DreamingService::applyMadlib($dream->getDescription(), $replacements);
+            $itemCommentTextResult = DreamingService::applyMadlib($dream->getItemDescription(), $replacements);
 
             $this->assertEquals(false, strpos($descriptionResult, '%'), 'After applying madlibs, there should be no remaining % signs... BUT THERE WERE, in Dream #' . $dream->getId() . '\'s activity log description: "' . $descriptionResult . '"');
             $this->assertEquals(false, strpos($itemCommentTextResult, '%'), 'After applying madlibs, there should be no remaining % signs... BUT THERE WERE, in Dream #' . $dream->getId() . '\'s item comment text: "' . $itemCommentTextResult . '"');

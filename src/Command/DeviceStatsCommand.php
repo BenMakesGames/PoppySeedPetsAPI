@@ -53,14 +53,14 @@ class DeviceStatsCommand extends Command
             else
                 $languages[$stat->getLanguage()]++;
 
-            $browser = $this->getBrowser($stat->getUserAgent());
+            $browser = DeviceStatsCommand::getBrowser($stat->getUserAgent());
 
             if(!array_key_exists($browser, $browsers))
                 $browsers[$browser] = 1;
             else
                 $browsers[$browser]++;
 
-            $widthGroup = $this->getWidthGroup($stat->getWindowWidth());
+            $widthGroup = DeviceStatsCommand::getWidthGroup($stat->getWindowWidth());
 
             if(!array_key_exists($widthGroup, $widths))
                 $widths[$widthGroup] = 1;
@@ -81,7 +81,7 @@ class DeviceStatsCommand extends Command
         return Command::SUCCESS;
     }
 
-    private function getBrowser(string $userAgent): string
+    private static function getBrowser(string $userAgent): string
     {
         $userAgent = strtolower($userAgent);
 
@@ -106,7 +106,7 @@ class DeviceStatsCommand extends Command
         return 'unknown';
     }
 
-    private function getWidthGroup(int $width): string
+    private static function getWidthGroup(int $width): string
     {
         if($width < 320)
             return '< 320';

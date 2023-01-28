@@ -122,7 +122,7 @@ class GatheringHolidayAdventureService
         return $activityLog;
     }
 
-    private function searchingFor(string $holiday, bool $plural)
+    private static function searchingFor(string $holiday, bool $plural): string
     {
         switch($holiday)
         {
@@ -150,11 +150,11 @@ class GatheringHolidayAdventureService
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, false);
 
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went looking for '. $this->searchingFor($holiday, true) . ' ' . $where . ', but it was way too hot; they couldn\'t find anything before they had to leave :(', '');
+                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went looking for '. GatheringHolidayAdventureService::searchingFor($holiday, true) . ' ' . $where . ', but it was way too hot; they couldn\'t find anything before they had to leave :(', '');
             }
         }
 
-        $message = $pet->getName() . ' went looking for '. $this->searchingFor($holiday, true) . ' ' . $where;
+        $message = $pet->getName() . ' went looking for '. GatheringHolidayAdventureService::searchingFor($holiday, true) . ' ' . $where;
 
         if($dark)
         {
@@ -162,7 +162,7 @@ class GatheringHolidayAdventureService
             {
                 $numItems = $this->squirrel3->rngNextInt($minEggs + 1, $maxEggs + $this->squirrel3->rngNextInt(1, 2));
 
-                $message .= '. It was really dark, but that didn\'t pose a problem for ' . $pet->getName() . ', who found ' . $numItems . ' ' . $this->searchingFor($holiday, $numItems !== 1) . '!';
+                $message .= '. It was really dark, but that didn\'t pose a problem for ' . $pet->getName() . ', who found ' . $numItems . ' ' . GatheringHolidayAdventureService::searchingFor($holiday, $numItems !== 1) . '!';
             }
             else
             {

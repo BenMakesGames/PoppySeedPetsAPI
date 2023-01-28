@@ -4,20 +4,18 @@ namespace App\Controller\Item\PetAlteration;
 use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Inventory;
 use App\Enum\MeritEnum;
+use App\Functions\PetColorFunctions;
 use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Service\HattierService;
-use App\Service\PetColorService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/iridescentHandCannon")
@@ -31,7 +29,7 @@ class IridescentHandCannonController extends PoppySeedPetsItemController
     public function fireHandCannon(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository, ItemRepository $itemRepository, MeritRepository $meritRepository,
-        PetColorService $petColorChangingService, Squirrel3 $squirrel3, HattierService $hattierService,
+        PetColorFunctions $petColorChangingService, Squirrel3 $squirrel3, HattierService $hattierService,
         EnchantmentRepository $enchantmentRepository
     )
     {
@@ -62,7 +60,7 @@ class IridescentHandCannonController extends PoppySeedPetsItemController
         else
             $oldColor = $pet->getColorB();
 
-        $newColor = $petColorChangingService->randomizeColorDistinctFromPreviousColor($oldColor);
+        $newColor = $petColorChangingService->randomizeColorDistinctFromPreviousColor($squirrel3, $oldColor);
 
         if($color === 'A')
             $pet->setColorA($newColor);

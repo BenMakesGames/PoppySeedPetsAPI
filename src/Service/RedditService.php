@@ -21,7 +21,7 @@ class RedditService
         $this->password = $password;
     }
 
-    public function getUserAgent(): string
+    public static function getUserAgent(): string
     {
         return 'PHP:Poppy Seed Pets news poster:1 (by /u/BenMakesGames)';
     }
@@ -39,7 +39,7 @@ class RedditService
                 'password' => $this->password,
             ],
             'headers' => [
-                'User-Agent' => $this->getUserAgent(),
+                'User-Agent' => RedditService::getUserAgent(),
             ],
             'auth' => [ $this->apiClientId, $this->apiClientSecret ]
         ]);
@@ -60,7 +60,7 @@ class RedditService
         $client->post('api/submit', [
             'headers' => [
                 'Authorization' => 'bearer ' . $accessToken,
-                'User-Agent' => $this->getUserAgent(),
+                'User-Agent' => RedditService::getUserAgent(),
             ],
             'form_params' => [
                 'sr' => 'poppyseedpets',

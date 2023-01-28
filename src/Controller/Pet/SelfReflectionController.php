@@ -64,9 +64,9 @@ class SelfReflectionController extends PoppySeedPetsController
             $troubledRelationships = array_map(
                 function(PetRelationship $r) use($petRelationshipService)
                 {
-                    $possibleRelationships = $petRelationshipService->getRelationshipsBetween(
-                        $petRelationshipService->max(RelationshipEnum::FRIEND, $r->getRelationshipGoal()),
-                        $petRelationshipService->max(RelationshipEnum::FRIEND, $r->getRelationship()->getRelationshipWith($r->getPet())->getRelationshipGoal())
+                    $possibleRelationships = PetRelationshipService::getRelationshipsBetween(
+                        PetRelationshipService::max(RelationshipEnum::FRIEND, $r->getRelationshipGoal()),
+                        PetRelationshipService::max(RelationshipEnum::FRIEND, $r->getRelationship()->getRelationshipWith($r->getPet())->getRelationshipGoal())
                     );
 
                     return [
@@ -189,9 +189,9 @@ class SelfReflectionController extends PoppySeedPetsController
         if(!$otherSide)
             throw new \Exception($pet->getName() . ' knows ' . $friend->getName() . ', but not the other way around! This is a terrible bug! Make Ben fix it!');
 
-        $possibleRelationships = $petRelationshipService->getRelationshipsBetween(
-            $petRelationshipService->max($relationship->getRelationshipGoal(), RelationshipEnum::FRIEND),
-            $petRelationshipService->max($otherSide->getRelationshipGoal(), RelationshipEnum::FRIEND)
+        $possibleRelationships = PetRelationshipService::getRelationshipsBetween(
+            PetRelationshipService::max($relationship->getRelationshipGoal(), RelationshipEnum::FRIEND),
+            PetRelationshipService::max($otherSide->getRelationshipGoal(), RelationshipEnum::FRIEND)
         );
 
         $newRelationship = $squirrel3->rngNextFromArray($possibleRelationships);
@@ -262,9 +262,9 @@ class SelfReflectionController extends PoppySeedPetsController
         try
         {
             $suggestions = array_map(function(Pet $otherPet) use($petRelationshipService, $pet) {
-                $possibleRelationships = $petRelationshipService->getRelationshipsBetween(
-                    $petRelationshipService->max(RelationshipEnum::FRIEND, $otherPet->getRelationshipWith($pet)->getRelationshipGoal()),
-                    $petRelationshipService->max(RelationshipEnum::FRIEND, $pet->getRelationshipWith($otherPet)->getRelationshipGoal())
+                $possibleRelationships = PetRelationshipService::getRelationshipsBetween(
+                    PetRelationshipService::max(RelationshipEnum::FRIEND, $otherPet->getRelationshipWith($pet)->getRelationshipGoal()),
+                    PetRelationshipService::max(RelationshipEnum::FRIEND, $pet->getRelationshipWith($otherPet)->getRelationshipGoal())
                 );
 
                 return [

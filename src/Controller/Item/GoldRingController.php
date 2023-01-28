@@ -2,24 +2,18 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Entity\Pet;
-use App\Entity\PetSkills;
 use App\Enum\FlavorEnum;
 use App\Enum\PetLocationEnum;
-use App\Functions\ArrayFunctions;
-use App\Functions\ColorFunctions;
+use App\Functions\PetColorFunctions;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Service\InventoryService;
-use App\Service\PetColorService;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/goldRing")
@@ -72,7 +66,7 @@ class GoldRingController extends PoppySeedPetsItemController
     public function collect100(
         Inventory $inventory, EntityManagerInterface $em, InventoryService $inventoryService, ResponseService $responseService,
         PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository, PetRepository $petRepository,
-        PetFactory $petFactory, PetColorService $petColorService, Squirrel3 $squirrel3
+        PetFactory $petFactory, PetColorFunctions $petColorService, Squirrel3 $squirrel3
     )
     {
         $this->validateInventory($inventory, 'goldRing/#/collect100');
@@ -124,7 +118,7 @@ class GoldRingController extends PoppySeedPetsItemController
                 'Runner', 'Jumps', 'Spins', 'Miles',
             ]);
 
-            $petColors = $petColorService->generateRandomPetColors();
+            $petColors = $petColorService->generateRandomPetColors($squirrel3);
 
             $newPet = $petFactory->createPet(
                 $user, $hedgehogName, $hedgehog,

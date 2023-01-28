@@ -24,7 +24,7 @@ class StatusEffectService
 
     public function applyStatusEffect(Pet $pet, string $status, int $durationInMinutes)
     {
-        $maxDuration = $this->getStatusEffectMaxDuration($status);
+        $maxDuration = StatusEffectService::getStatusEffectMaxDuration($status);
 
         $statusEffect = $pet->getStatusEffect($status);
 
@@ -86,7 +86,7 @@ class StatusEffectService
             $pet->removeStatusEffect($statusEffect);
     }
 
-    public function getStatusEffectMaxDuration(string $status)
+    public static function getStatusEffectMaxDuration(string $status)
     {
         switch($status)
         {

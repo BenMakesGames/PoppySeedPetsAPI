@@ -346,7 +346,7 @@ class PetGroupService
         }
     }
 
-    private function weightSkill(int $skill): int
+    private static function weightSkill(int $skill): int
     {
         if($skill < 5)
             return 0;
@@ -375,13 +375,13 @@ class PetGroupService
                 'type' => PetGroupTypeEnum::BAND,
                 'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::BAND],
                 'icon' => 'groups/band',
-                'preference' => 2 + $this->weightSkill($pet->getSkills()->getMusic()),
+                'preference' => 2 + PetGroupService::weightSkill($pet->getSkills()->getMusic()),
             ],
             [
                 'type' => PetGroupTypeEnum::ASTRONOMY,
                 'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::ASTRONOMY],
                 'icon' => 'groups/astronomy',
-                'preference' => 2 + $this->weightSkill($pet->getSkills()->getScience()),
+                'preference' => 2 + PetGroupService::weightSkill($pet->getSkills()->getScience()),
             ],
             [
                 'type' => PetGroupTypeEnum::GAMING,
@@ -393,7 +393,7 @@ class PetGroupService
                 'type' => PetGroupTypeEnum::SPORTSBALL,
                 'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::SPORTSBALL],
                 'icon' => 'groups/gaming',
-                'preference' => 2 + $this->weightSkill($pet->getSkills()->getBrawl()),
+                'preference' => 2 + PetGroupService::weightSkill($pet->getSkills()->getBrawl()),
             ]
         ];
 

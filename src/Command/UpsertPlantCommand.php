@@ -55,6 +55,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
 
             $plant = (new Plant())
                 ->setName($name)
+                ->setNoPollinators(false)
             ;
 
             $this->em->persist($plant);

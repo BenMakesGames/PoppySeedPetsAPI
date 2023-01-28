@@ -144,7 +144,7 @@ class EatingService
         if($food->grantsSelfReflection)
             $pet->increaseSelfReflectionPoint(1);
 
-        if($this->cravingService->foodMeetsCraving($pet, $food->baseItem))
+        if(CravingService::foodMeetsCraving($pet, $food->baseItem))
         {
             $this->cravingService->satisfyCraving($pet, $food->baseItem);
         }

@@ -124,7 +124,7 @@ class BookstoreService
         $this->calendarService = $calendarService;
     }
 
-    public function getBookstoreQuestStep(int $step): ?array
+    public static function getBookstoreQuestStep(int $step): ?array
     {
         if($step < count(self::QUEST_STEPS))
             return self::QUEST_STEPS[$step];
@@ -144,7 +144,7 @@ class BookstoreService
 
         $bookstoreQuestStep = $this->userQuestRepository->findOrCreate($user, self::BOOKSTORE_QUEST_NAME, 0);
 
-        $questStep = $this->getBookstoreQuestStep($bookstoreQuestStep->getValue());
+        $questStep = BookstoreService::getBookstoreQuestStep($bookstoreQuestStep->getValue());
 
         if(!$questStep)
             throw new UnprocessableEntityHttpException('You\'ve brought back everything I need! Thanks!');
@@ -311,7 +311,7 @@ class BookstoreService
         if($this->renamingScrollAvailable($user))
         {
             $bookstoreQuestStep = $this->userQuestRepository->findOrCreate($user, BookstoreService::BOOKSTORE_QUEST_NAME, 0);
-            $quest = $this->getBookstoreQuestStep($bookstoreQuestStep->getValue());
+            $quest = BookstoreService::getBookstoreQuestStep($bookstoreQuestStep->getValue());
         }
         else
             $quest = null;

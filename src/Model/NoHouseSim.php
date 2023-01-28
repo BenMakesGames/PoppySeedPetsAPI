@@ -8,12 +8,12 @@ class NoHouseSim implements IHouseSim
 {
     public function getInventoryCount(): int
     {
-        $this->throwException();
+        NoHouseSim::throwException();
     }
 
     public function hasInventory(HouseSimRecipe $recipe): bool
     {
-        $this->throwException();
+        NoHouseSim::throwException();
     }
 
     /**
@@ -21,7 +21,7 @@ class NoHouseSim implements IHouseSim
      */
     public function loseItem($item, $quantity = 1)
     {
-        $this->throwException();
+        NoHouseSim::throwException();
     }
 
     /**
@@ -29,7 +29,7 @@ class NoHouseSim implements IHouseSim
      */
     public function loseOneOf(array $items): string
     {
-        $this->throwException();
+        NoHouseSim::throwException();
     }
 
     public function addInventory(?Inventory $i): bool
@@ -40,15 +40,15 @@ class NoHouseSim implements IHouseSim
 
     public function getInventoryToRemove(): array
     {
-        $this->throwException();
+        NoHouseSim::throwException();
     }
 
     public function getInventoryToPersist(): array
     {
-        $this->throwException();
+        NoHouseSim::throwException();
     }
 
-    private function throwException()
+    private static function throwException()
     {
         throw new \Exception('Ben did a bad programming thing. He\'s been emailed...');
     }

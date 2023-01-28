@@ -161,7 +161,7 @@ class ExportItemCommand extends PoppySeedPetsCommand
 
         $columnSql = '`' . implode('`, `', $columns) . '`';
 
-        $encodedValues = array_map(fn($c) => $this->encodeValueToSql($entity->{'get' . $entityMeta->getFieldForColumn($c)}()), $columns);
+        $encodedValues = array_map(fn($c) => ExportItemCommand::encodeValueToSql($entity->{'get' . $entityMeta->getFieldForColumn($c)}()), $columns);
 
         $valueSql = implode(',', $encodedValues);
 
@@ -170,7 +170,7 @@ class ExportItemCommand extends PoppySeedPetsCommand
         return $sql;
     }
 
-    private function encodeValueToSql($value)
+    private static function encodeValueToSql($value)
     {
         if($value === true)
             return 1;

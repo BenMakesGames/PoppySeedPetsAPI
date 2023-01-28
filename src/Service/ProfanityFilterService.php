@@ -38,11 +38,7 @@ class ProfanityFilterService
         'f+u+c+k+' => 'please',
     ];
 
-    public function __construct()
-    {
-    }
-
-    public function filter(string $in): string
+    public static function filter(string $in): string
     {
         $out = $in;
 
