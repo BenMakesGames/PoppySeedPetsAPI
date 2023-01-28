@@ -1,39 +1,32 @@
 <?php
-namespace App\Service;
+namespace App\Functions;
 
 use App\Entity\Inventory;
 use Doctrine\ORM\EntityManagerInterface;
 
-class InventoryModifierService
+class InventoryModifierFunctions
 {
-    private $em;
-
-    public function __construct(EntityManagerInterface $em)
-    {
-        $this->em = $em;
-    }
-
-    public function enchant(Inventory $tool, Inventory $enchantment)
+    public static function enchant(EntityManagerInterface $em, Inventory $tool, Inventory $enchantment)
     {
         if($tool->getEnchantment())
             throw new \InvalidArgumentException('That tool already has the "' . $tool->getEnchantment()->getName() . '" bonus. Remove it first if you want to apply a new bonus.');
 
         $tool->setEnchantment($enchantment->getItem()->getEnchants());
 
-        $this->em->remove($enchantment);
+        $em->remove($enchantment);
     }
 
-    public function spiceUp(Inventory $food, Inventory $spice)
+    public static function spiceUp(EntityManagerInterface $em, Inventory $food, Inventory $spice)
     {
         if($food->getSpice())
             throw new \InvalidArgumentException('That food is already "' . $food->getSpice()->getName() . '". It can\'t be spiced up any further!');
 
         $food->setSpice($spice->getItem()->getSpice());
 
-        $this->em->remove($spice);
+        $em->remove($spice);
     }
 
-    public static function getNameWithModifiers(Inventory $item)
+    public static function getNameWithModifiers(Inventory $item): ?string
     {
         if(!$item->getEnchantment() && !$item->getSpice())
             return $item->getItem()->getName();

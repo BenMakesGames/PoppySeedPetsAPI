@@ -4,11 +4,7 @@ namespace App\Entity;
 
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
-use App\Service\InventoryModifierService;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use App\Functions\InventoryModifierFunctions;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\InventoryRepository")
@@ -149,7 +145,7 @@ class Inventory
 
         $this->item = $item;
 
-        $this->fullItemName = InventoryModifierService::getNameWithModifiers($this);
+        $this->fullItemName = InventoryModifierFunctions::getNameWithModifiers($this);
 
         return $this;
     }
@@ -158,7 +154,7 @@ class Inventory
     {
         $this->item = $item;
 
-        $this->fullItemName = InventoryModifierService::getNameWithModifiers($this);
+        $this->fullItemName = InventoryModifierFunctions::getNameWithModifiers($this);
 
         // if the item changes, we need to make sure it can still be worn/held, and unequip it if not
         if($this->getWearer() && !$item->getHat())
@@ -358,7 +354,7 @@ class Inventory
     {
         $this->enchantment = $enchantment;
 
-        $this->fullItemName = InventoryModifierService::getNameWithModifiers($this);
+        $this->fullItemName = InventoryModifierFunctions::getNameWithModifiers($this);
 
         return $this;
     }
@@ -551,7 +547,7 @@ class Inventory
 
         $this->spice = $spice;
 
-        $this->fullItemName = InventoryModifierService::getNameWithModifiers($this);
+        $this->fullItemName = InventoryModifierFunctions::getNameWithModifiers($this);
 
         return $this;
     }

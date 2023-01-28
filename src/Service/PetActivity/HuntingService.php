@@ -15,6 +15,7 @@ use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
+use App\Functions\InventoryModifierFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -29,7 +30,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\InventoryModifierService;
 use App\Service\Squirrel3;
 use App\Service\StatusEffectService;
 use App\Service\TransactionService;
@@ -729,7 +729,7 @@ class HuntingService
         }
         else if($pet->getTool() && $pet->getTool()->rangedOnly())
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' was able to defeat it from a distance thanks to their ' . InventoryModifierService::getNameWithModifiers($pet->getTool()) . '!', 'items/veggie/onion')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' was able to defeat it from a distance thanks to their ' . InventoryModifierFunctions::getNameWithModifiers($pet->getTool()) . '!', 'items/veggie/onion')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
             ;
             $this->inventoryService->petCollectsItem('Onion', $pet, 'The remains of an Onion Boy that ' . $pet->getName() . ' encountered.', $activityLog);

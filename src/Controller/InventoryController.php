@@ -7,13 +7,13 @@ use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Functions\InventoryModifierFunctions;
 use App\Repository\InventoryRepository;
 use App\Service\CookingService;
-use App\Service\MarketService;
-use App\Service\RecyclingService;
-use App\Service\InventoryModifierService;
 use App\Service\Filter\InventoryFilterService;
 use App\Service\InventoryService;
+use App\Service\MarketService;
+use App\Service\RecyclingService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,8 +21,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/inventory")
@@ -90,8 +88,7 @@ class InventoryController extends PoppySeedPetsController
      */
     public function prepareRecipe(
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
-        EntityManagerInterface $em, CookingService $cookingService, InventoryModifierService $inventoryModifierService,
-        Squirrel3 $squirrel3
+        EntityManagerInterface $em, CookingService $cookingService, Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -131,18 +128,18 @@ class InventoryController extends PoppySeedPetsController
 
                 if($baseItem->getItem()->getTool() && $addOn->getItem()->getEnchants())
                 {
-                    $inventoryModifierService->enchant($baseItem, $addOn);
+                    InventoryModifierFunctions::enchant($em, $baseItem, $addOn);
                     $enchanted = $baseItem;
                 }
                 else if($addOn->getItem()->getTool() && $baseItem->getItem()->getEnchants())
                 {
-                    $inventoryModifierService->enchant($addOn, $baseItem);
+                    InventoryModifierFunctions::enchant($em, $addOn, $baseItem);
                     $enchanted = $addOn;
                 }
 
                 if($enchanted)
                 {
-                    $newName = InventoryModifierService::getNameWithModifiers($enchanted);
+                    $newName = InventoryModifierFunctions::getNameWithModifiers($enchanted);
 
                     $responseService->addFlashMessage('The ' . $enchanted->getItem()->getName() . ' is now ' . GrammarFunctions::indefiniteArticle($newName) . ' ' . $newName . '!');
 
@@ -158,18 +155,18 @@ class InventoryController extends PoppySeedPetsController
 
                 if($baseItem->getItem()->getFood() && $addOn->getItem()->getSpice())
                 {
-                    $inventoryModifierService->spiceUp($baseItem, $addOn);
+                    InventoryModifierFunctions::spiceUp($em, $baseItem, $addOn);
                     $spiced = $baseItem;
                 }
                 else if($addOn->getItem()->getFood() && $baseItem->getItem()->getSpice())
                 {
-                    $inventoryModifierService->spiceUp($addOn, $baseItem);
+                    InventoryModifierFunctions::spiceUp($em, $addOn, $baseItem);
                     $spiced = $addOn;
                 }
 
                 if($spiced)
                 {
-                    $newName = InventoryModifierService::getNameWithModifiers($spiced);
+                    $newName = InventoryModifierFunctions::getNameWithModifiers($spiced);
 
                     $responseService->addFlashMessage('The ' . $spiced->getItem()->getName() . ' is now ' . GrammarFunctions::indefiniteArticle($newName) . ' ' . $newName . '!');
 

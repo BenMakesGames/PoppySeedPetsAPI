@@ -7,10 +7,10 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\InventoryModifierFunctions;
 use App\Repository\DailyMarketItemAverageRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\UserQuestRepository;
-use App\Service\InventoryModifierService;
 use App\Service\Filter\MarketFilterService;
 use App\Service\Filter\TransactionFilterService;
 use App\Service\InventoryService;
@@ -25,8 +25,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/market")
@@ -248,9 +246,9 @@ class MarketController extends PoppySeedPetsController
 
         try
         {
-            $transactionService->getMoney($itemToBuy->getOwner(), $itemToBuy->getSellPrice(), 'Sold ' . InventoryModifierService::getNameWithModifiers($itemToBuy) . ' in the Market.');
+            $transactionService->getMoney($itemToBuy->getOwner(), $itemToBuy->getSellPrice(), 'Sold ' . InventoryModifierFunctions::getNameWithModifiers($itemToBuy) . ' in the Market.');
 
-            $transactionService->spendMoney($user, $itemToBuy->getBuyPrice(), 'Bought ' . InventoryModifierService::getNameWithModifiers($itemToBuy) . ' in the Market.');
+            $transactionService->spendMoney($user, $itemToBuy->getBuyPrice(), 'Bought ' . InventoryModifierFunctions::getNameWithModifiers($itemToBuy) . ' in the Market.');
 
             $marketService->logExchange($itemToBuy);
 

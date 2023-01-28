@@ -6,24 +6,17 @@ use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
-use App\Functions\GrammarFunctions;
-use App\Repository\EnchantmentRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
-use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
-use App\Service\InventoryModifierService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/item/philosophersStone")

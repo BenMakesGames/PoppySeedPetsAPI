@@ -9,6 +9,7 @@ use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\InventoryModifierFunctions;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\InventoryRepository;
@@ -21,14 +22,11 @@ use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\InventoryModifierService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/box")
@@ -322,7 +320,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openCerealBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -353,7 +351,7 @@ class BoxController extends PoppySeedPetsItemController
     public function openBakers(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository,
-        InventoryModifierService $toolBonusService
+        InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -402,7 +400,7 @@ class BoxController extends PoppySeedPetsItemController
     public function openFruitsNVeggies(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository,
-        InventoryModifierService $toolBonusService
+        InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -450,7 +448,7 @@ class BoxController extends PoppySeedPetsItemController
     public function openNatureBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository,
-        InventoryModifierService $toolBonusService
+        InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -494,7 +492,7 @@ class BoxController extends PoppySeedPetsItemController
     public function openMonsterBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository,
-        InventoryModifierService $toolBonusService
+        InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -537,7 +535,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openHandicrafts(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -576,7 +574,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openGamingBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService,
         ItemGroupRepository $itemGroupRepository
     )
     {
@@ -628,7 +626,7 @@ class BoxController extends PoppySeedPetsItemController
     {
         $userStatsRepository->incrementStat($user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
 
-        $itemList = array_map(fn(Inventory $i) => InventoryModifierService::getNameWithModifiers($i), $newInventory);
+        $itemList = array_map(fn(Inventory $i) => InventoryModifierFunctions::getNameWithModifiers($i), $newInventory);
         sort($itemList);
 
         $em->remove($inventory);
@@ -646,7 +644,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openBagOfBeans(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -914,7 +912,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function open4thOfJulyBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -945,7 +943,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openBastilleDayBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService,
         Squirrel3 $rng
     )
     {
@@ -982,7 +980,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openCincoDeMayoBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -1013,7 +1011,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openNewYearBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -1051,7 +1049,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openChineseNewYearBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -1082,7 +1080,7 @@ class BoxController extends PoppySeedPetsItemController
     public function openLittleStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        TransactionService $transactionService, InventoryModifierService $toolBonusService
+        TransactionService $transactionService, InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -1133,7 +1131,7 @@ class BoxController extends PoppySeedPetsItemController
     public function openVeryStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        TransactionService $transactionService, InventoryModifierService $toolBonusService
+        TransactionService $transactionService, InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -1194,7 +1192,7 @@ class BoxController extends PoppySeedPetsItemController
     public function openOutrageouslyStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        InventoryModifierService $toolBonusService
+        InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -1239,7 +1237,7 @@ class BoxController extends PoppySeedPetsItemController
     public function openGoldChest(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        InventoryModifierService $toolBonusService
+        InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -1286,7 +1284,7 @@ class BoxController extends PoppySeedPetsItemController
     public function openRubyChest(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        InventoryModifierService $toolBonusService
+        InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -1324,7 +1322,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openTowerBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -1358,7 +1356,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function openFishBag(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierService $toolBonusService
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -1404,7 +1402,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function alicesSecretTeaTime(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierService $toolBonusService
+        UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -1456,7 +1454,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function alicesSecretHourglass(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierService $toolBonusService
+        UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -1474,7 +1472,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function alicesSecretCards(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierService $toolBonusService
+        UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -1500,7 +1498,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function bobsSecretFish(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierService $toolBonusService
+        UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -1545,7 +1543,7 @@ class BoxController extends PoppySeedPetsItemController
     public function bobsTool(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         EnchantmentRepository $enchantmentRepository, UserStatsRepository $userStatsRepository,
-        ResponseService $responseService, InventoryModifierService $toolBonusService
+        ResponseService $responseService, InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();
@@ -1578,7 +1576,7 @@ class BoxController extends PoppySeedPetsItemController
      */
     public function bobsBBQ(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierService $toolBonusService
+        UserStatsRepository $userStatsRepository, ResponseService $responseService, InventoryModifierFunctions $toolBonusService
     )
     {
         $user = $this->getUser();

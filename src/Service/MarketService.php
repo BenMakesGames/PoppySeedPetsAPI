@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\InventoryModifierFunctions;
 use App\Repository\MarketBidRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
@@ -18,13 +19,12 @@ class MarketService
     private MarketBidRepository $marketBidRepository;
     private InventoryService $inventoryService;
     private TransactionService $transactionService;
-    private InventoryModifierService $inventoryModifierService;
     private UserQuestRepository $userQuestRepository;
 
     public function __construct(
         EntityManagerInterface $em, UserStatsRepository  $userStatsRepository, MarketBidRepository $marketBidRepository,
         InventoryService $inventoryService, TransactionService $transactionService,
-        InventoryModifierService $inventoryModifierService, UserQuestRepository $userQuestRepository
+        UserQuestRepository $userQuestRepository
     )
     {
         $this->em = $em;
@@ -32,7 +32,6 @@ class MarketService
         $this->marketBidRepository = $marketBidRepository;
         $this->inventoryService = $inventoryService;
         $this->transactionService = $transactionService;
-        $this->inventoryModifierService = $inventoryModifierService;
         $this->userQuestRepository = $userQuestRepository;
     }
 
@@ -127,7 +126,7 @@ class MarketService
             {
                 $this->logExchange($inventory);
 
-                $this->transactionService->getMoney($user, $price, 'Sold ' . $this->inventoryModifierService->getNameWithModifiers($inventory) . ' in the Market.');
+                $this->transactionService->getMoney($user, $price, 'Sold ' . InventoryModifierFunctions::getNameWithModifiers($inventory) . ' in the Market.');
 
                 $targetLocation = LocationEnum::HOME;
 

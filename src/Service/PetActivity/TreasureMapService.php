@@ -15,6 +15,7 @@ use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\EquipmentFunctions;
 use App\Functions\GrammarFunctions;
+use App\Functions\InventoryModifierFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -23,7 +24,6 @@ use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\HouseSimService;
-use App\Service\InventoryModifierService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -285,7 +285,7 @@ class TreasureMapService
         $agk = $this->squirrel3->rngNextFromArray([ 'Agk!', 'Oh dang!', 'Noooo!', 'Quel dommage!', 'Welp!' ]);
 
         $activityLog = $this->responseService
-            ->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, a weird, purple energy oozed out of their ' . InventoryModifierService::getNameWithModifiers($pet->getTool()) . ', and enveloped them! (' . $agk . ' It\'s the Eggplant Curse!)', '')
+            ->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, a weird, purple energy oozed out of their ' . InventoryModifierFunctions::getNameWithModifiers($pet->getTool()) . ', and enveloped them! (' . $agk . ' It\'s the Eggplant Curse!)', '')
             ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
         ;
 

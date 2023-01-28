@@ -12,12 +12,12 @@ use App\Enum\SpiritCompanionStarEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Functions\InventoryModifierFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Model\WeatherData;
 use App\Repository\DragonRepository;
-use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
@@ -28,7 +28,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\InventoryModifierService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use App\Service\WeatherService;
@@ -921,7 +920,7 @@ class UmbraService
                 if($this->squirrel3->rngNextBool())
                 {
                     if($pet->getTool() && $pet->getTool()->providesLight())
-                        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra. The light of their ' . InventoryModifierService::getNameWithModifiers($pet->getTool()) . ' caught on some frost-covered Marshmallows, which ' . $pet->getName() . ' took!', '');
+                        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra. The light of their ' . InventoryModifierFunctions::getNameWithModifiers($pet->getTool()) . ' caught on some frost-covered Marshmallows, which ' . $pet->getName() . ' took!', '');
                     else
                         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra, and happened to spot some Marshmallows!', '');
 
@@ -935,7 +934,7 @@ class UmbraService
                 else
                 {
                     if($pet->getTool() && $pet->getTool()->providesLight())
-                        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra. The light of their ' . InventoryModifierService::getNameWithModifiers($pet->getTool()) . ' caught on a cube of Everice, which ' . $pet->getName() . ' took!', '');
+                        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra. The light of their ' . InventoryModifierFunctions::getNameWithModifiers($pet->getTool()) . ' caught on a cube of Everice, which ' . $pet->getName() . ' took!', '');
                     else
                         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra, and happened to spot a cube of Everice!', '');
 

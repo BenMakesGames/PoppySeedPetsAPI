@@ -24,6 +24,7 @@ use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\GrammarFunctions;
+use App\Functions\InventoryModifierFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\FoodWithSpice;
 use App\Model\PetChanges;
@@ -38,13 +39,14 @@ use App\Service\PetActivity\ChocolateMansion;
 use App\Service\PetActivity\Crafting\MagicBindingService;
 use App\Service\PetActivity\Crafting\NotReallyCraftsService;
 use App\Service\PetActivity\Crafting\PlasticPrinterService;
+use App\Service\PetActivity\Crafting\ProgrammingService;
 use App\Service\PetActivity\Crafting\SmithingService;
 use App\Service\PetActivity\CraftingService;
 use App\Service\PetActivity\DeepSeaService;
 use App\Service\PetActivity\DreamingService;
 use App\Service\PetActivity\EatingService;
-use App\Service\PetActivity\GatheringHolidayAdventureService;
 use App\Service\PetActivity\FishingService;
+use App\Service\PetActivity\GatheringHolidayAdventureService;
 use App\Service\PetActivity\GatheringService;
 use App\Service\PetActivity\GenericAdventureService;
 use App\Service\PetActivity\GivingTreeGatheringService;
@@ -59,7 +61,6 @@ use App\Service\PetActivity\PetSummonedAwayService;
 use App\Service\PetActivity\PhilosophersStoneService;
 use App\Service\PetActivity\PoopingService;
 use App\Service\PetActivity\PregnancyService;
-use App\Service\PetActivity\Crafting\ProgrammingService;
 use App\Service\PetActivity\Protocol7Service;
 use App\Service\PetActivity\TreasureMapService;
 use App\Service\PetActivity\UmbraService;
@@ -203,7 +204,7 @@ class PetService
 
             $activityLog = $this->responseService->createActivityLog(
                 $pet,
-                '%pet:' . $pet->getId() . '.name% nibbled on their ' . InventoryModifierService::getNameWithModifiers($pet->getTool()) . '.',
+                '%pet:' . $pet->getId() . '.name% nibbled on their ' . InventoryModifierFunctions::getNameWithModifiers($pet->getTool()) . '.',
                 'icons/activity-logs/just-the-fork',
                 $changes
             );

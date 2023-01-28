@@ -9,6 +9,7 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Functions\InventoryModifierFunctions;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\InventoryRepository;
@@ -18,15 +19,11 @@ use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\InventoryModifierService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\Location;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/item/dragonVase")
@@ -169,14 +166,14 @@ class DragonVaseController extends PoppySeedPetsItemController
         $newBonus = $enchantmentRepository->findOneByName($squirrel3->rngNextFromArray($possibleBonuses));
 
         $hadAnEnchantment = $dippedItem->getEnchantment() !== null;
-        $oldName = InventoryModifierService::getNameWithModifiers($dippedItem);
+        $oldName = InventoryModifierFunctions::getNameWithModifiers($dippedItem);
 
         $dippedItem
             ->setEnchantment($newBonus)
             ->addComment('This item gained "' . $newBonus->getName() . '" from a Dragon Vase.')
         ;
 
-        $newName = InventoryModifierService::getNameWithModifiers($dippedItem);
+        $newName = InventoryModifierFunctions::getNameWithModifiers($dippedItem);
 
         $em->flush();
 
