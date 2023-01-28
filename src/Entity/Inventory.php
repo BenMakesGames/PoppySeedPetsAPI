@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Functions\InventoryModifierFunctions;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\InventoryRepository")
