@@ -40,7 +40,6 @@ class TreasureMapService
     private $petExperienceService;
     private $userQuestRepository;
     private $statusEffectService;
-    private $toolBonusService;
     private $squirrel3;
     private $itemRepository;
     private HouseSimService $houseSimService;
@@ -49,7 +48,7 @@ class TreasureMapService
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         EntityManagerInterface $em, PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
-        StatusEffectService $statusEffectService, InventoryModifierService $toolBonusService, Squirrel3 $squirrel3,
+        StatusEffectService $statusEffectService, Squirrel3 $squirrel3,
         ItemRepository $itemRepository, HouseSimService $houseSimService,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )
@@ -61,7 +60,6 @@ class TreasureMapService
         $this->petExperienceService = $petExperienceService;
         $this->userQuestRepository = $userQuestRepository;
         $this->statusEffectService = $statusEffectService;
-        $this->toolBonusService = $toolBonusService;
         $this->squirrel3 = $squirrel3;
         $this->itemRepository = $itemRepository;
         $this->houseSimService = $houseSimService;
@@ -287,7 +285,7 @@ class TreasureMapService
         $agk = $this->squirrel3->rngNextFromArray([ 'Agk!', 'Oh dang!', 'Noooo!', 'Quel dommage!', 'Welp!' ]);
 
         $activityLog = $this->responseService
-            ->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, a weird, purple energy oozed out of their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . ', and enveloped them! (' . $agk . ' It\'s the Eggplant Curse!)', '')
+            ->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, a weird, purple energy oozed out of their ' . InventoryModifierService::getNameWithModifiers($pet->getTool()) . ', and enveloped them! (' . $agk . ' It\'s the Eggplant Curse!)', '')
             ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
         ;
 

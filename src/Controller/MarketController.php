@@ -153,7 +153,7 @@ class MarketController extends PoppySeedPetsController
     public function buy(
         Request $request, ResponseService $responseService, CacheItemPoolInterface $cache, EntityManagerInterface $em,
         InventoryRepository $inventoryRepository, Squirrel3 $squirrel3, TransactionService $transactionService,
-        MarketService $marketService, InventoryModifierService $bonusService
+        MarketService $marketService
     )
     {
         $user = $this->getUser();
@@ -248,9 +248,9 @@ class MarketController extends PoppySeedPetsController
 
         try
         {
-            $transactionService->getMoney($itemToBuy->getOwner(), $itemToBuy->getSellPrice(), 'Sold ' . $bonusService->getNameWithModifiers($itemToBuy) . ' in the Market.');
+            $transactionService->getMoney($itemToBuy->getOwner(), $itemToBuy->getSellPrice(), 'Sold ' . InventoryModifierService::getNameWithModifiers($itemToBuy) . ' in the Market.');
 
-            $transactionService->spendMoney($user, $itemToBuy->getBuyPrice(), 'Bought ' . $bonusService->getNameWithModifiers($itemToBuy) . ' in the Market.');
+            $transactionService->spendMoney($user, $itemToBuy->getBuyPrice(), 'Bought ' . InventoryModifierService::getNameWithModifiers($itemToBuy) . ' in the Market.');
 
             $marketService->logExchange($itemToBuy);
 

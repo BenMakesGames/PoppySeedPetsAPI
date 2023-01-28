@@ -98,7 +98,6 @@ class PetService
     private $burntForestService;
     private DeepSeaService $deepSeaService;
     private $petSummonedAwayService;
-    private $toolBonusService;
     private $notReallyCraftsService;
     private $letterService;
     private IRandom $squirrel3;
@@ -129,7 +128,7 @@ class PetService
         HeartDimensionService $heartDimensionService, PetRelationshipRepository $petRelationshipRepository,
         GuildService $guildService, BurntForestService $burntForestService, InventoryService $inventoryService,
         DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService, LetterService $letterService,
-        PetSummonedAwayService $petSummonedAwayService, InventoryModifierService $toolBonusService,
+        PetSummonedAwayService $petSummonedAwayService,
         WeatherService $weatherService, HoliService $holiService, Caerbannog $caerbannog, CravingService $cravingService,
         StatusEffectService $statusEffectService, EatingService $eatingService, HouseSimService $houseSimService,
         MagicBindingService $magicBindingService, SmithingService $smithingService, PlasticPrinterService $plasticPrinterService,
@@ -168,7 +167,6 @@ class PetService
         $this->inventoryService = $inventoryService;
         $this->deepSeaService = $deepSeaService;
         $this->petSummonedAwayService = $petSummonedAwayService;
-        $this->toolBonusService = $toolBonusService;
         $this->notReallyCraftsService = $notReallyCraftsService;
         $this->letterService = $letterService;
         $this->chocolateMansion = $chocolateMansion;
@@ -205,7 +203,7 @@ class PetService
 
             $activityLog = $this->responseService->createActivityLog(
                 $pet,
-                '%pet:' . $pet->getId() . '.name% nibbled on their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . '.',
+                '%pet:' . $pet->getId() . '.name% nibbled on their ' . InventoryModifierService::getNameWithModifiers($pet->getTool()) . '.',
                 'icons/activity-logs/just-the-fork',
                 $changes
             );

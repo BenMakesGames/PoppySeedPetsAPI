@@ -40,7 +40,6 @@ class UmbraService
     private PetExperienceService $petExperienceService;
     private TransactionService $transactionService;
     private ItemRepository $itemRepository;
-    private InventoryModifierService $toolBonusService;
     private StrangeUmbralEncounters $strangeUmbralEncounters;
     private DragonRepository $dragonRepository;
     private WeatherService $weatherService;
@@ -56,7 +55,7 @@ class UmbraService
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, GuildService $guildService, StrangeUmbralEncounters $strangeUmbralEncounters,
-        ItemRepository $itemRepository, InventoryModifierService $toolBonusService, FieldGuideService $fieldGuideService,
+        ItemRepository $itemRepository, FieldGuideService $fieldGuideService,
         DragonRepository $dragonRepository, Squirrel3 $squirrel3, WeatherService $weatherService,
         HattierService $hattierService, PetActivityLogTagRepository $petActivityLogTagRepository,
         SpiceRepository $spiceRepository, LeonidsService $leonidsService, CalendarService $calendarService
@@ -68,7 +67,6 @@ class UmbraService
         $this->transactionService = $transactionService;
         $this->guildService = $guildService;
         $this->itemRepository = $itemRepository;
-        $this->toolBonusService = $toolBonusService;
         $this->strangeUmbralEncounters = $strangeUmbralEncounters;
         $this->dragonRepository = $dragonRepository;
         $this->squirrel3 = $squirrel3;
@@ -923,7 +921,7 @@ class UmbraService
                 if($this->squirrel3->rngNextBool())
                 {
                     if($pet->getTool() && $pet->getTool()->providesLight())
-                        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra. The light of their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . ' caught on some frost-covered Marshmallows, which ' . $pet->getName() . ' took!', '');
+                        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra. The light of their ' . InventoryModifierService::getNameWithModifiers($pet->getTool()) . ' caught on some frost-covered Marshmallows, which ' . $pet->getName() . ' took!', '');
                     else
                         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra, and happened to spot some Marshmallows!', '');
 
@@ -937,7 +935,7 @@ class UmbraService
                 else
                 {
                     if($pet->getTool() && $pet->getTool()->providesLight())
-                        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra. The light of their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . ' caught on a cube of Everice, which ' . $pet->getName() . ' took!', '');
+                        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra. The light of their ' . InventoryModifierService::getNameWithModifiers($pet->getTool()) . ' caught on a cube of Everice, which ' . $pet->getName() . ' took!', '');
                     else
                         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra, and happened to spot a cube of Everice!', '');
 

@@ -46,7 +46,6 @@ class HuntingService
     private $userQuestRepository;
     private $petExperienceService;
     private $transactionService;
-    private $toolBonusService;
     private $werecreatureEncounterService;
     private $weatherService;
     private $statusEffectService;
@@ -59,7 +58,7 @@ class HuntingService
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         CalendarService $calendarService, MuseumItemRepository $museumItemRepository, ItemRepository $itemRepository,
         UserQuestRepository $userQuestRepository, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, InventoryModifierService $toolBonusService, Squirrel3 $squirrel3,
+        TransactionService $transactionService, Squirrel3 $squirrel3,
         WerecreatureEncounterService $werecreatureEncounterService, WeatherService $weatherService,
         StatusEffectService $statusEffectService, GatheringDistractionService $gatheringDistractions,
         PetActivityLogTagRepository $petActivityLogTagRepository, FieldGuideService $fieldGuideService
@@ -74,7 +73,6 @@ class HuntingService
         $this->userQuestRepository = $userQuestRepository;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
-        $this->toolBonusService = $toolBonusService;
         $this->squirrel3 = $squirrel3;
         $this->werecreatureEncounterService = $werecreatureEncounterService;
         $this->weatherService = $weatherService;
@@ -731,7 +729,7 @@ class HuntingService
         }
         else if($pet->getTool() && $pet->getTool()->rangedOnly())
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' was able to defeat it from a distance thanks to their ' . $this->toolBonusService->getNameWithModifiers($pet->getTool()) . '!', 'items/veggie/onion')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' was able to defeat it from a distance thanks to their ' . InventoryModifierService::getNameWithModifiers($pet->getTool()) . '!', 'items/veggie/onion')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
             ;
             $this->inventoryService->petCollectsItem('Onion', $pet, 'The remains of an Onion Boy that ' . $pet->getName() . ' encountered.', $activityLog);

@@ -623,12 +623,12 @@ class BoxController extends PoppySeedPetsItemController
     private function countRemoveFlushAndRespond(
         string $messagePrefix,
         UserStatsRepository $userStatsRepository, User $user, Inventory $inventory, array $newInventory,
-        ResponseService $responseService, EntityManagerInterface $em, InventoryModifierService $toolBonusService
+        ResponseService $responseService, EntityManagerInterface $em
     ): JsonResponse
     {
         $userStatsRepository->incrementStat($user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
 
-        $itemList = array_map(fn(Inventory $i) => $toolBonusService->getNameWithModifiers($i), $newInventory);
+        $itemList = array_map(fn(Inventory $i) => InventoryModifierService::getNameWithModifiers($i), $newInventory);
         sort($itemList);
 
         $em->remove($inventory);

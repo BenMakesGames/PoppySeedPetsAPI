@@ -142,7 +142,7 @@ class InventoryController extends PoppySeedPetsController
 
                 if($enchanted)
                 {
-                    $newName = $inventoryModifierService->getNameWithModifiers($enchanted);
+                    $newName = InventoryModifierService::getNameWithModifiers($enchanted);
 
                     $responseService->addFlashMessage('The ' . $enchanted->getItem()->getName() . ' is now ' . GrammarFunctions::indefiniteArticle($newName) . ' ' . $newName . '!');
 
@@ -169,7 +169,7 @@ class InventoryController extends PoppySeedPetsController
 
                 if($spiced)
                 {
-                    $newName = $inventoryModifierService->getNameWithModifiers($spiced);
+                    $newName = InventoryModifierService::getNameWithModifiers($spiced);
 
                     $responseService->addFlashMessage('The ' . $spiced->getItem()->getName() . ' is now ' . GrammarFunctions::indefiniteArticle($newName) . ' ' . $newName . '!');
 

@@ -114,8 +114,7 @@ class DragonVaseController extends PoppySeedPetsItemController
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         UserQuestRepository $userQuestRepository, Request $request, InventoryRepository $inventoryRepository,
-        EnchantmentRepository $enchantmentRepository, InventoryModifierService $toolBonusService,
-        UserStatsRepository $userStatsRepository
+        EnchantmentRepository $enchantmentRepository, UserStatsRepository $userStatsRepository
     )
     {
         $user = $this->getUser();
@@ -170,14 +169,14 @@ class DragonVaseController extends PoppySeedPetsItemController
         $newBonus = $enchantmentRepository->findOneByName($squirrel3->rngNextFromArray($possibleBonuses));
 
         $hadAnEnchantment = $dippedItem->getEnchantment() !== null;
-        $oldName = $toolBonusService->getNameWithModifiers($dippedItem);
+        $oldName = InventoryModifierService::getNameWithModifiers($dippedItem);
 
         $dippedItem
             ->setEnchantment($newBonus)
             ->addComment('This item gained "' . $newBonus->getName() . '" from a Dragon Vase.')
         ;
 
-        $newName = $toolBonusService->getNameWithModifiers($dippedItem);
+        $newName = InventoryModifierService::getNameWithModifiers($dippedItem);
 
         $em->flush();
 
