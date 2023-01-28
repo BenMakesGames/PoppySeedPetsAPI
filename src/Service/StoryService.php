@@ -200,7 +200,7 @@ class StoryService
             $requiredInventory = $this->inventoryService->deserializeItemList($choice['requiredInventory']);
             $userInventory = $this->getUserInventory();
 
-            if(!$this->inventoryService->hasRequiredItems($requiredInventory, $userInventory))
+            if(!InventoryService::hasRequiredItems($requiredInventory, $userInventory))
                 return false;
         }
 

@@ -60,7 +60,7 @@ class ListRecipesCommand extends PoppySeedPetsCommand
 
             $itemQuantities = $this->createQuantitiesFromList($ingredientNames);
 
-            $list = $this->inventoryService->serializeItemList($itemQuantities);
+            $list = InventoryService::serializeItemList($itemQuantities);
 
             $qb
                 ->andWhere('r.ingredients=:ingredients')

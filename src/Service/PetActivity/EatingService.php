@@ -169,7 +169,7 @@ class EatingService
         foreach($food->bonusItems as $bonusItem)
         {
             if($this->squirrel3->rngNextInt(1, 1000) <= $bonusItem->chance)
-                $bonusItems[] = $this->inventoryService->getRandomItemFromItemGroup($bonusItem->itemGroup);
+                $bonusItems[] = InventoryService::getRandomItemFromItemGroup($this->squirrel3, $bonusItem->itemGroup);
         }
 
         if(count($bonusItems) > 0)

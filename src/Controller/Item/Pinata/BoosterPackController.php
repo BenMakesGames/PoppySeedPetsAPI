@@ -23,7 +23,7 @@ class BoosterPackController extends PoppySeedPetsItemController
      */
     public function openBoosterPackOne(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, ItemGroupRepository $itemGroupRepository
+        EntityManagerInterface $em, ItemGroupRepository $itemGroupRepository, Squirrel3 $rng
     )
     {
         $this->validateInventory($inventory, 'boosterPack/one/#/open');
@@ -37,10 +37,10 @@ class BoosterPackController extends PoppySeedPetsItemController
         $rares = $itemGroupRepository->findOneByName('Hollow Earth Booster Pack: Rare');
 
         $tiles = [
-            $inventoryService->getRandomItemFromItemGroup($commons),
-            $inventoryService->getRandomItemFromItemGroup($commons),
-            $inventoryService->getRandomItemFromItemGroup($uncommons),
-            $inventoryService->getRandomItemFromItemGroup($rares)
+            InventoryService::getRandomItemFromItemGroup($rng, $commons),
+            InventoryService::getRandomItemFromItemGroup($rng, $commons),
+            InventoryService::getRandomItemFromItemGroup($rng, $uncommons),
+            InventoryService::getRandomItemFromItemGroup($rng, $rares)
         ];
 
         $tileNames = [

@@ -90,8 +90,8 @@ class InventoryController extends PoppySeedPetsController
      */
     public function prepareRecipe(
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
-        InventoryService $inventoryService, EntityManagerInterface $em, CookingService $cookingService,
-        InventoryModifierService $inventoryModifierService, Squirrel3 $squirrel3
+        EntityManagerInterface $em, CookingService $cookingService, InventoryModifierService $inventoryModifierService,
+        Squirrel3 $squirrel3
     )
     {
         $user = $this->getUser();
@@ -113,7 +113,7 @@ class InventoryController extends PoppySeedPetsController
         if(count($inventory) === 0)
             throw new UnprocessableEntityHttpException('You gotta\' select at least ONE item!');
 
-        if(!$inventoryService->inventoryInSameLocation($inventory))
+        if(!InventoryService::inventoryInSameLocation($inventory))
             throw new UnprocessableEntityHttpException('All of the items must be in the same location.');
 
         if(count($inventory) === 2)

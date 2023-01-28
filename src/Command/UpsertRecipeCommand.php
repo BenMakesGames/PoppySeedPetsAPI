@@ -71,8 +71,8 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
 
         $this->em->flush();
 
-        $ingredientFood = $this->inventoryService->totalFood($this->inventoryService->deserializeItemList($recipe->getIngredients()));
-        $makesFood = $this->inventoryService->totalFood($this->inventoryService->deserializeItemList($recipe->getMakes()));
+        $ingredientFood = InventoryService::totalFood($this->inventoryService->deserializeItemList($recipe->getIngredients()));
+        $makesFood = InventoryService::totalFood($this->inventoryService->deserializeItemList($recipe->getMakes()));
 
         $this->output->writeln('Ingredient food value totals:');
         $this->output->writeln('  Food: ' . $ingredientFood->getFood());
@@ -121,7 +121,7 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
 
         $ingredients = $this->editItemList($ingredients, 'ingredients');
 
-        $recipe->setIngredients($this->inventoryService->serializeItemList($ingredients));
+        $recipe->setIngredients(InventoryService::serializeItemList($ingredients));
     }
 
     private function makes(Recipe $recipe)
@@ -130,7 +130,7 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
 
         $makes = $this->editItemList($makes, 'products');
 
-        $recipe->setMakes($this->inventoryService->serializeItemList($makes));
+        $recipe->setMakes(InventoryService::serializeItemList($makes));
     }
 
     /**

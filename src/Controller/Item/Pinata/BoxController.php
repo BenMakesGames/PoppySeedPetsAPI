@@ -607,7 +607,7 @@ class BoxController extends PoppySeedPetsItemController
         else
             $rarityGroup = $itemGroupRepository->findOneByName('Hollow Earth Booster Pack: Common');
 
-        $tile = $inventoryService->getRandomItemFromItemGroup($rarityGroup);
+        $tile = InventoryService::getRandomItemFromItemGroup($squirrel3, $rarityGroup);
 
         $newInventory[] = $inventoryService->receiveItem($tile, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 

@@ -136,7 +136,7 @@ class InventoryService
      * @param ItemQuantity[] $requirements
      * @param ItemQuantity[] $inventory
      */
-    public function hasRequiredItems($requirements, $inventory)
+    public static function hasRequiredItems($requirements, $inventory): bool
     {
         foreach($requirements as $requirement)
         {
@@ -173,8 +173,9 @@ class InventoryService
 
     /**
      * @param ItemQuantity[] $quantities
+     * @return string
      */
-    public function serializeItemList($quantities): string
+    public static function serializeItemList($quantities): string
     {
         if(count($quantities) === 0) return '';
 
@@ -646,7 +647,7 @@ class InventoryService
     /**
      * @param ItemQuantity[] $quantities
      */
-    public function totalFood($quantities): ItemFood
+    public static function totalFood($quantities): ItemFood
     {
         $food = new ItemFood();
 
@@ -662,7 +663,7 @@ class InventoryService
     /**
      * @param Inventory[] $inventory
      */
-    public function inventoryInSameLocation(array $inventory): bool
+    public static function inventoryInSameLocation(array $inventory): bool
     {
         if(count($inventory) === 0)
             throw new \InvalidArgumentException('$inventory must contain at least 1 element.');
@@ -675,8 +676,8 @@ class InventoryService
         return ArrayFunctions::all($inventory, fn(Inventory $i) => $i->getLocation() === $locationOfFirstItem);
     }
 
-    public function getRandomItemFromItemGroup(ItemGroup $itemGroup): Item
+    public static function getRandomItemFromItemGroup(IRandom $rng, ItemGroup $itemGroup): Item
     {
-        return $this->squirrel3->rngNextFromArray($itemGroup->getItems()->toArray());
+        return $rng->rngNextFromArray($itemGroup->getItems()->toArray());
     }
 }

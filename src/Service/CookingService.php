@@ -53,7 +53,7 @@ class CookingService
     public function findRecipeFromQuantities(array $quantities): ?Recipe
     {
         return $this->recipeRepository->findOneBy([
-            'ingredients' => $this->inventoryService->serializeItemList($quantities)
+            'ingredients' => InventoryService::serializeItemList($quantities)
         ]);
     }
 
@@ -61,7 +61,7 @@ class CookingService
      * @param Inventory[] $inventory
      * @return ItemQuantity[]
      */
-    private function buildQuantitiesFromInventory(array $inventory): array
+    private static function buildQuantitiesFromInventory(array $inventory): array
     {
         /** @var ItemQuantity[] $quantities */
         $quantities = [];
@@ -89,8 +89,8 @@ class CookingService
      */
     public function logBadRecipeAttempt(User $user, array $inventory): RecipeAttempted
     {
-        $quantities = $this->buildQuantitiesFromInventory($inventory);
-        $ingredientList = $this->inventoryService->serializeItemList($quantities);
+        $quantities = CookingService::buildQuantitiesFromInventory($inventory);
+        $ingredientList = InventoryService::serializeItemList($quantities);
 
         $attempt = $this->recipeAttemptedRepository->findOneBy([
             'user' => $user,
@@ -123,7 +123,7 @@ class CookingService
      */
     public function prepareRecipe(User $user, array $inventory): ?PrepareRecipeResults
     {
-        $quantities = $this->buildQuantitiesFromInventory($inventory);
+        $quantities = CookingService::buildQuantitiesFromInventory($inventory);
 
         if(count($quantities) === 0)
             return null;
