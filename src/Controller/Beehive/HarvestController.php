@@ -1,0 +1,152 @@
+<?php
+namespace App\Controller\Beehive;
+
+use App\Entity\User;
+use App\Enum\LocationEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\SerializationGroupEnum;
+use App\Functions\ActivityHelpers;
+use App\Functions\ArrayFunctions;
+use App\Model\PetChanges;
+use App\Repository\PetActivityLogTagRepository;
+use App\Repository\SpiceRepository;
+use App\Service\InventoryService;
+use App\Service\PetAssistantService;
+use App\Service\ResponseService;
+use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
+/**
+ * @Route("/beehive")
+ */
+class HarvestController extends AbstractController
+{
+    /**
+     * @Route("/harvest", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function harvest(
+        ResponseService $responseService, EntityManagerInterface $em,
+        InventoryService $inventoryService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3,
+        PetActivityLogTagRepository $petActivityLogTagRepository
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if(!$user->getUnlockedBeehive() || !$user->getBeehive())
+            throw new AccessDeniedHttpException('You haven\'t got a Beehive, yet!');
+
+        $beehive = $user->getBeehive();
+        $itemNames = [];
+
+        if($beehive->getRoyalJellyPercent() >= 1)
+        {
+            $beehive->setRoyalJellyProgress(0);
+
+            $inventoryService->receiveItem('Royal Jelly', $user, $user, $user->getName() . ' took this from their Beehive.', LocationEnum::HOME);
+
+            $itemNames[] = 'Royal Jelly';
+        }
+
+        if($beehive->getHoneycombPercent() >= 1)
+        {
+            $beehive->setHoneycombProgress(0);
+
+            $inventoryService->receiveItem('Honeycomb', $user, $user, $user->getName() . ' took this from their Beehive.', LocationEnum::HOME);
+
+            $itemNames[] = 'Honeycomb';
+        }
+
+        if($beehive->getMiscPercent() >= 1)
+        {
+            $beehive->setMiscProgress(0);
+
+            $possibleItems = [
+                'Crooked Stick', 'Fluff', 'Yellow Dye', 'Glue', 'Sugar', 'Sugar', 'Sugar', 'Antenna',
+            ];
+
+            $item = $squirrel3->rngNextFromArray($possibleItems);
+
+            $newItems = [
+                $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' took this from their Beehive.', LocationEnum::HOME)
+            ];
+
+            if($beehive->getHelper())
+            {
+                $helper = $beehive->getHelper();
+                $petWithSkills = $helper->getComputedSkills();
+
+                $gathering = $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal();
+                $hunting = $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal();
+
+                $total = $gathering + $hunting;
+
+                $changes = new PetChanges($helper);
+
+                if($total < 2)
+                    $doGatherAction = $squirrel3->rngNextBool();
+                else
+                    $doGatherAction = $squirrel3->rngNextInt(1, $total) <= $gathering;
+
+                if($doGatherAction)
+                {
+                    $extraItem = PetAssistantService::getExtraItem($squirrel3, $gathering,
+                        [ 'Tea Leaves', 'Blueberries', 'Blackberries', 'Grandparoot', 'Orange', 'Red' ],
+                        [ 'Onion', 'Paper', 'Naner', 'Iron Ore' ],
+                        [ 'Gypsum', 'Mixed Nuts', 'Apricot', 'Silver Ore', ],
+                        [ 'Gold Ore', 'Liquid-hot Magma' ],
+                    );
+
+                    $verb = 'gather';
+                }
+                else
+                {
+                    $extraItem = PetAssistantService::getExtraItem($squirrel3, $hunting,
+                        [ 'Scales', 'Feathers', 'Egg' ],
+                        [ 'Toadstool', 'Talon', 'Onion' ],
+                        [ 'Toad Legs', 'Jar of Fireflies' ],
+                        [ 'Silver Bar', 'Gold Bar', 'Quintessence' ],
+                    );
+
+                    $verb = 'hunt';
+                }
+
+                $activityLog = $responseService->createActivityLog($helper, ActivityHelpers::PetName($helper) . ' helped ' . $user->getName() . '\'s bees while they were out ' . $verb . 'ing, and collected ' . $extraItem . '.', '');
+
+                $inventoryService->petCollectsItem($extraItem, $helper, $helper->getName() . ' helped ' . $user->getName() . '\'s bees ' . $verb . ' this.', $activityLog);
+
+                $activityLog
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
+                    ->setChanges($changes->compare($helper))
+                    ->addTags($petActivityLogTagRepository->findByNames([ 'Add-on Assistance', 'Beehive' ]))
+                ;
+            }
+
+            foreach($newItems as $newItem)
+            {
+                if($newItem->getItem()->getName() === 'Crooked Stick' || $newItem->getItem()->getFood())
+                {
+                    if($squirrel3->rngNextInt(1, 20) === 1)
+                        $newItem->setSpice($spiceRepository->findOneByName('of Queens'));
+                    else
+                        $newItem->setSpice($spiceRepository->findOneByName('Anthophilan'));
+                }
+
+                $itemNames[] = $newItem->getFullItemName();
+            }
+        }
+
+        $user->getBeehive()->setInteractionPower();
+
+        $em->flush();
+
+        $responseService->addFlashMessage('You received ' . ArrayFunctions::list_nice($itemNames) . '.');
+
+        return $responseService->success($user->getBeehive(), [ SerializationGroupEnum::MY_BEEHIVE, SerializationGroupEnum::HELPER_PET ]);
+    }
+}

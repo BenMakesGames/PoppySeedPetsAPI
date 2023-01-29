@@ -1,0 +1,71 @@
+<?php
+namespace App\Controller\Beehive;
+
+use App\Entity\User;
+use App\Enum\LocationEnum;
+use App\Enum\SerializationGroupEnum;
+use App\Repository\ItemRepository;
+use App\Service\BeehiveService;
+use App\Service\InventoryService;
+use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
+/**
+ * @Route("/beehive")
+ */
+class FeedController extends AbstractController
+{
+    /**
+     * @Route("/feed", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function feedItem(
+        ResponseService $responseService, EntityManagerInterface $em, BeehiveService $beehiveService,
+        InventoryService $inventoryService, Request $request, ItemRepository $itemRepository
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if(!$user->getUnlockedBeehive() || !$user->getBeehive())
+            throw new AccessDeniedHttpException('You haven\'t got a Beehive, yet!');
+
+        $beehive = $user->getBeehive();
+
+        if($beehive->getFlowerPower() > 0)
+            throw new UnprocessableEntityHttpException('The colony is still working on the last item you gave them.');
+
+        $alternate = $request->request->getBoolean('alternate');
+
+        $itemToFeed = $alternate
+            ? $beehive->getAlternateRequestedItem()
+            : $beehive->getRequestedItem()
+        ;
+
+        if($inventoryService->loseItem($itemToFeed, $user, LocationEnum::HOME, 1) === 0)
+        {
+            if(!$user->getUnlockedBasement())
+                throw new UnprocessableEntityHttpException('You do not have ' . $itemToFeed->getNameWithArticle() . ' in your house!');
+
+            if($inventoryService->loseItem($itemToFeed, $user, LocationEnum::BASEMENT, 1) === 0)
+                throw new UnprocessableEntityHttpException('You do not have ' . $itemToFeed->getNameWithArticle() . ' in your house, or your basement!');
+            else
+                $responseService->addFlashMessage('You give the queen ' . $itemToFeed->getNameWithArticle() . ' from your basement. Her bees immediately whisk it away into the hive!');
+        }
+        else
+            $responseService->addFlashMessage('You give the queen ' . $itemToFeed->getNameWithArticle() . ' from your house. Her bees immediately whisk it away into the hive!');
+
+        $beehiveService->fedRequestedItem($beehive, $alternate);
+        $beehive->setInteractionPower();
+
+        $em->flush();
+
+        return $responseService->success($beehive, [ SerializationGroupEnum::MY_BEEHIVE, SerializationGroupEnum::HELPER_PET ]);
+    }
+}
