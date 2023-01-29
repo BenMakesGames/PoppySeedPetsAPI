@@ -27,6 +27,7 @@ class FieldGuideController extends AbstractController
         FieldGuideEntryRepository $fieldGuideEntryRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($user->getUnlockedFieldGuide() === null)

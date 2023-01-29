@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\UserStatsRepository;
@@ -27,6 +28,7 @@ class FloristController extends AbstractController
      */
     public function getInventory(FloristService $floristService, ResponseService $responseService)
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($user->getUnlockedFlorist() === null)
@@ -45,6 +47,7 @@ class FloristController extends AbstractController
         EntityManagerInterface $em, TransactionService $transactionService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($user->getUnlockedFlorist() === null)
@@ -76,5 +79,4 @@ class FloristController extends AbstractController
 
         return $responseService->success();
     }
-
 }

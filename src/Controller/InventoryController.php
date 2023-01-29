@@ -60,6 +60,7 @@ class InventoryController extends AbstractController
         if(!LocationEnum::isAValue($location))
             throw new UnprocessableEntityHttpException('Invalid location given.');
 
+        /** @var User $user */
         $user = $this->getUser();
 
         $inventoryFilterService->addRequiredFilter('user', $user->getId());
@@ -80,7 +81,10 @@ class InventoryController extends AbstractController
         int $location, ResponseService $responseService, InventoryRepository $inventoryRepository
     )
     {
-        $summary = $inventoryRepository->getInventoryQuantities($this->getUser(), $location);
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $summary = $inventoryRepository->getInventoryQuantities($user, $location);
 
         return $responseService->success($summary, [ SerializationGroupEnum::MY_INVENTORY ]);
     }
@@ -94,6 +98,7 @@ class InventoryController extends AbstractController
         EntityManagerInterface $em, CookingService $cookingService, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $inventoryIds = $request->request->get('inventory');
@@ -243,6 +248,7 @@ class InventoryController extends AbstractController
         InventoryRepository $inventoryRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($user->getUnlockedMarket() === null)
@@ -336,6 +342,7 @@ class InventoryController extends AbstractController
         if(!LocationEnum::isAValue($location))
             throw new UnprocessableEntityHttpException('Invalid location given.');
 
+        /** @var User $user */
         $user = $this->getUser();
 
         $allowedLocations = [ LocationEnum::HOME ];

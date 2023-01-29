@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\PetActivityLog;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
@@ -38,6 +39,7 @@ class HalloweenController extends AbstractController
         HalloweenService $halloweenService, ResponseService $responseService, CalendarService $calendarService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if(!$calendarService->isHalloween())
@@ -57,6 +59,7 @@ class HalloweenController extends AbstractController
         NormalizerInterface $normalizer, CalendarService $calendarService, UserQuestRepository $userQuestRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if(!$calendarService->isHalloween())
@@ -99,6 +102,7 @@ class HalloweenController extends AbstractController
         PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if(!$calendarService->isHalloween())

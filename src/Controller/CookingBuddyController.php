@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\Inventory;
 use App\Entity\KnownRecipes;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
@@ -42,6 +43,7 @@ class CookingBuddyController extends AbstractController
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($cookingBuddy->getOwner()->getId() !== $user->getId() || ($cookingBuddy->getItem()->getName() !== 'Cooking Buddy' && $cookingBuddy->getItem()->getName() !== 'Cooking "Alien"'))
@@ -114,6 +116,7 @@ class CookingBuddyController extends AbstractController
         CookingService $cookingService, Request $request, int $quantity = 1
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($cookingBuddy->getOwner()->getId() !== $user->getId() || ($cookingBuddy->getItem()->getName() !== 'Cooking Buddy' && $cookingBuddy->getItem()->getName() !== 'Cooking "Alien"'))
