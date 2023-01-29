@@ -134,6 +134,12 @@ class PetSpecies
      */
     private $pets;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     * @Groups({"petEncyclopedia"})
+     */
+    private $physicalDescription;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -364,6 +370,18 @@ class PetSpecies
     public function setNameSort(string $nameSort): self
     {
         $this->nameSort = $nameSort;
+
+        return $this;
+    }
+
+    public function getPhysicalDescription(): ?string
+    {
+        return $this->physicalDescription;
+    }
+
+    public function setPhysicalDescription(?string $physicalDescription): self
+    {
+        $this->physicalDescription = $physicalDescription;
 
         return $this;
     }
