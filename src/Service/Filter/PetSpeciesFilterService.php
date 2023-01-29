@@ -48,18 +48,12 @@ class PetSpeciesFilterService
         if(!$this->user || $value === null)
             return;
 
-        if(!in_array('pet', $qb->getAllAliases()))
-            $qb->leftJoin('s.pets', 'pet', 'WITH', 'pet.owner=:user');
-
-        $qb
-            ->setParameter('user', $this->user)
-        ;
-
         if(strtolower($value) === 'false' || !$value)
-            $qb->andWhere('pet.id IS NULL');
+            $qb->andWhere('s.id NOT IN (SELECT IDENTITY(pet.species) FROM App\Entity\Pet pet WHERE pet.owner=:user)');
         else
-            $qb->andWhere('pet.id IS NOT NULL');
+            $qb->andWhere('s.id IN (SELECT IDENTITY(pet.species) FROM App\Entity\Pet pet WHERE pet.owner=:user)');
 
+        $qb->setParameter('user', $this->user);
     }
 
     public function filterName(QueryBuilder $qb, $value)
@@ -84,16 +78,8 @@ class PetSpeciesFilterService
     public function filterCanTransmigrate(QueryBuilder $qb, $value)
     {
         if($value)
-        {
-            $qb
-                ->andWhere('(s.id<=16 OR s.availableFromBreeding=1 OR s.availableFromPetShelter=1)')
-            ;
-        }
+            $qb->andWhere('(s.id<=16 OR s.availableFromBreeding=1 OR s.availableFromPetShelter=1)');
         else
-        {
-            $qb
-                ->andWhere('s.id>16 AND s.availableFromBreeding=0 AND s.availableFromPetShelter=0')
-            ;
-        }
+            $qb->andWhere('s.id>16 AND s.availableFromBreeding=0 AND s.availableFromPetShelter=0');
     }
 }
