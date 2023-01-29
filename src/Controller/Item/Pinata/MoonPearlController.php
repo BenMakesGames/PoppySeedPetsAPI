@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Enum\PetLocationEnum;
@@ -12,13 +12,14 @@ use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/moonPearl")
  */
-class MoonPearlController extends PoppySeedPetsItemController
+class MoonPearlController extends AbstractController
 {
     /**
      * @Route("/{inventory}/smash", methods={"POST"})
@@ -30,7 +31,7 @@ class MoonPearlController extends PoppySeedPetsItemController
         Squirrel3 $squirrel3
     )
     {
-        $this->validateInventory($inventory, 'moonPearl/#/smash');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'moonPearl/#/smash');
 
         $user = $this->getUser();
 

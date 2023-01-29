@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\User;
@@ -25,6 +25,7 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,7 +34,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/box")
  */
-class BoxController extends PoppySeedPetsItemController
+class BoxController extends AbstractController
 {
     /**
      * @Route("/twilight/{box}/open", methods={"POST"})
@@ -46,8 +47,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($box, 'box/twilight/#/open');
-        $this->validateHouseSpace($box, $inventoryService);
+        ItemControllerHelpers::validateInventory($user, $box, 'box/twilight/#/open');
+        ItemControllerHelpers::validateHouseSpace($box, $inventoryService);
 
         $location = $box->getLocation();
         $lockedToOwner = $box->getLockedToOwner();
@@ -88,7 +89,7 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($box, 'box/hat/#/open');
+        ItemControllerHelpers::validateInventory($this->getUser(), $box, 'box/hat/#/open');
 
         $location = $box->getLocation();
         $lockedToOwner = $box->getLockedToOwner();
@@ -151,8 +152,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($box, 'box/ores/#/loot');
-        $this->validateHouseSpace($box, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $box, 'box/ores/#/loot');
+        ItemControllerHelpers::validateHouseSpace($box, $inventoryService);
 
         $location = $box->getLocation();
         $lockedToOwner = $box->getLockedToOwner();
@@ -217,8 +218,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($box, 'box/smallOres/#/loot');
-        $this->validateHouseSpace($box, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $box, 'box/smallOres/#/loot');
+        ItemControllerHelpers::validateHouseSpace($box, $inventoryService);
 
         $location = $box->getLocation();
         $lockedToOwner = $box->getLockedToOwner();
@@ -255,8 +256,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/box/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/box/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
 
@@ -327,8 +328,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/cereal/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/cereal/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $newInventory = [];
 
@@ -357,8 +358,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/bakers/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/bakers/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $newInventory = [];
 
@@ -405,8 +406,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/fruits-n-veggies/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/fruits-n-veggies/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         /** @var Inventory[] $newInventory */
         $newInventory = [];
@@ -452,8 +453,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/nature/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/nature/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         /** @var Inventory[] $newInventory */
         $newInventory = [];
@@ -495,8 +496,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/monster/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/monster/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         /** @var Inventory[] $newInventory */
         $newInventory = [];
@@ -538,8 +539,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/handicrafts/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/handicrafts/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
 
@@ -577,8 +578,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/gaming/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/gaming/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
 
@@ -646,8 +647,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/bagOfBeans/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/bagOfBeans/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $newInventory = [];
 
@@ -677,8 +678,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/pepperbox/#/disassemble');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/pepperbox/#/disassemble');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $peppers = $squirrel3->rngNextInt(4, $squirrel3->rngNextInt(6, 10));
 
@@ -712,7 +713,7 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/jukebox/#/listen');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/jukebox/#/listen');
 
         $today = (new \DateTimeImmutable())->format('Y-m-d');
         $listenedToJukebox = $userQuestRepository->findOrCreate($user, 'Listened to Jukebox', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
@@ -761,8 +762,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/sandbox/#/raid');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/sandbox/#/raid');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $sand = $squirrel3->rngNextInt(6, $squirrel3->rngNextInt(7, 12));
 
@@ -833,7 +834,7 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/paperBag/#/open');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/paperBag/#/open');
 
         $item = $itemRepository->findOneByName($squirrel3->rngNextFromArray([
             'Apricot', 'Baking Soda', 'Beans', 'Blackberry Lassi', 'Blueberries', 'Butter', 'Canned Food', 'Celery',
@@ -914,8 +915,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/july4/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/july4/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
@@ -945,8 +946,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/bastille/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/bastille/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
@@ -981,8 +982,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/may5/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/may5/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
@@ -1012,8 +1013,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/newYear/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/newYear/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
@@ -1050,8 +1051,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/chineseNewYear/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/chineseNewYear/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
@@ -1081,8 +1082,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/little-strongbox/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/little-strongbox/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $key = $inventoryRepository->findOneToConsume($user, 'Iron Key');
 
@@ -1132,8 +1133,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/very-strongbox/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/very-strongbox/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $key = $inventoryRepository->findOneToConsume($user, 'Silver Key');
 
@@ -1192,8 +1193,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/outrageously-strongbox/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/outrageously-strongbox/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $key = $inventoryRepository->findOneToConsume($user, 'Gold Key');
 
@@ -1236,8 +1237,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/goldChest/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/goldChest/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $key = $inventoryRepository->findOneToConsume($user, 'Gold Key');
 
@@ -1282,8 +1283,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/rubyChest/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/rubyChest/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
@@ -1320,8 +1321,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/tower/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/tower/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $newInventory = [];
 
@@ -1354,8 +1355,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/fishBag/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/fishBag/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $newInventory = [];
 
@@ -1400,8 +1401,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/alicesSecret/#/teaTime');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/alicesSecret/#/teaTime');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $loot = [
             'Toadstool', 'Shortbread Cookies'
@@ -1452,7 +1453,7 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/alicesSecret/#/hourglass');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/alicesSecret/#/hourglass');
 
         $item = $inventoryService->receiveItem('Hourglass', $user, $user, $user->getName() . ' got this from Alice\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
 
@@ -1470,8 +1471,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/alicesSecret/#/cards');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/alicesSecret/#/cards');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $loot = [
             'Paper', 'Paper', 'Paper', 'Paper', $squirrel3->rngNextFromArray([ 'Paper', 'Quinacridone Magenta Dye' ])
@@ -1496,8 +1497,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/bobsSecret/#/fish');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/bobsSecret/#/fish');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $loot = [
             'Fish',
@@ -1541,8 +1542,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/bobsSecret/#/tool');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/bobsSecret/#/tool');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         // apply "Bob's" bonus
         $tool = $squirrel3->rngNextFromArray([
@@ -1574,8 +1575,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'box/bobsSecret/#/bbq');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/bobsSecret/#/bbq');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $loot = [
             'Charcoal',
@@ -1605,8 +1606,8 @@ class BoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($box, 'box/chocolate/#/open');
-        $this->validateHouseSpace($box, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $box, 'box/chocolate/#/open');
+        ItemControllerHelpers::validateHouseSpace($box, $inventoryService);
 
         $location = $box->getLocation();
         $lockedToOwner = $box->getLockedToOwner();

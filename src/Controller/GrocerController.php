@@ -12,6 +12,7 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,7 +21,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/grocer")
  */
-class GrocerController extends PoppySeedPetsController
+class GrocerController extends AbstractController
 {
     /**
      * @Route("", methods={"GET"})

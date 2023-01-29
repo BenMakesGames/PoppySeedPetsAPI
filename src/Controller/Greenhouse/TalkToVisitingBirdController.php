@@ -1,10 +1,10 @@
 <?php
 namespace App\Controller\Greenhouse;
 
-use App\Controller\PoppySeedPetsController;
 use App\Service\GreenhouseService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,7 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/greenhouse")
  */
-class TalkToVisitingBirdController extends PoppySeedPetsController
+class TalkToVisitingBirdController extends AbstractController
 {
     /**
      * @Route("/talkToVisitingBird", methods={"POST"})

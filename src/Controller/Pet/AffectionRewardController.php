@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller\Pet;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\Merit;
 use App\Entity\Pet;
 use App\Entity\SpiritCompanion;
@@ -13,6 +12,7 @@ use App\Functions\MeritFunctions;
 use App\Repository\MeritRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -22,7 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/pet")
  */
-class AffectionRewardController extends PoppySeedPetsController
+class AffectionRewardController extends AbstractController
 {
     /**
      * @Route("/{pet}/availableMerits", methods={"GET"}, requirements={"pet"="\d+"})

@@ -4,6 +4,7 @@ namespace App\Controller\Item;
 use App\Entity\Inventory;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -11,7 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/twilightFertilizer")
  */
-class TwilightFertilizerController extends PoppySeedPetsItemController
+class TwilightFertilizerController extends AbstractController
 {
     /**
      * @Route("/{inventory}", methods={"POST"})
@@ -21,7 +22,7 @@ class TwilightFertilizerController extends PoppySeedPetsItemController
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
-        $this->validateInventory($inventory, 'twilightFertilizer/#');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'twilightFertilizer/#');
 
         $user = $this->getUser();
 

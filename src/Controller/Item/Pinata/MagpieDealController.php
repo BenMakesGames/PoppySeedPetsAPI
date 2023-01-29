@@ -1,13 +1,14 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -15,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/magpieDeal")
  */
-class MagpieDealController extends PoppySeedPetsItemController
+class MagpieDealController extends AbstractController
 {
     /**
      * @Route("/{inventory}/quint", methods={"POST"})
@@ -28,8 +29,8 @@ class MagpieDealController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'magpieDeal/#/quint');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($user, $inventory, 'magpieDeal/#/quint');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
 
@@ -54,8 +55,8 @@ class MagpieDealController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'magpieDeal/#/feathersAndEggs');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'magpieDeal/#/feathersAndEggs');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
 
@@ -89,8 +90,8 @@ class MagpieDealController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'magpieDeal/#/sticks');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'magpieDeal/#/sticks');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
 
@@ -115,8 +116,8 @@ class MagpieDealController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'magpieDeal/#/shinyMetals');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'magpieDeal/#/shinyMetals');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
 

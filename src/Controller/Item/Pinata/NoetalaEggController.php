@@ -1,19 +1,20 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/noetalaEgg")
  */
-class NoetalaEggController extends PoppySeedPetsItemController
+class NoetalaEggController extends AbstractController
 {
     /**
      * @Route("/{inventory}/open", methods={"POST"})
@@ -24,7 +25,7 @@ class NoetalaEggController extends PoppySeedPetsItemController
         EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
-        $this->validateInventory($inventory, 'noetalaEgg/#/open');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'noetalaEgg/#/open');
 
         $user = $this->getUser();
 

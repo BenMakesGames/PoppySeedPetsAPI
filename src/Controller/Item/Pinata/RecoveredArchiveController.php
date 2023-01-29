@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Repository\ItemRepository;
@@ -9,13 +9,14 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/recoveredArchive")
  */
-class RecoveredArchiveController extends PoppySeedPetsItemController
+class RecoveredArchiveController extends AbstractController
 {
     /**
      * @Route("/{inventory}/open", methods={"POST"})
@@ -26,7 +27,7 @@ class RecoveredArchiveController extends PoppySeedPetsItemController
         EntityManagerInterface $em, ItemRepository $itemRepository, Squirrel3 $squirrel3
     )
     {
-        $this->validateInventory($inventory, 'recoveredArchive/#/open');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'recoveredArchive/#/open');
 
         $user = $this->getUser();
 

@@ -1,11 +1,12 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -13,7 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/cosmologerPromise")
  */
-class CosmologerPromiseController extends PoppySeedPetsItemController
+class CosmologerPromiseController extends AbstractController
 {
     /**
      * @Route("/{inventory}/secretSeashell", methods={"POST"})
@@ -26,7 +27,7 @@ class CosmologerPromiseController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'cosmologerPromise/#/secretSeashell');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'cosmologerPromise/#/secretSeashell');
 
         $location = $inventory->getLocation();
         $locked = $inventory->getLockedToOwner();
@@ -51,7 +52,7 @@ class CosmologerPromiseController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'cosmologerPromise/#/alienTissue');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'cosmologerPromise/#/alienTissue');
 
         $location = $inventory->getLocation();
         $locked = $inventory->getLockedToOwner();
@@ -76,7 +77,7 @@ class CosmologerPromiseController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'cosmologerPromise/#/veryStrongbox');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'cosmologerPromise/#/veryStrongbox');
 
         $location = $inventory->getLocation();
         $locked = $inventory->getLockedToOwner();

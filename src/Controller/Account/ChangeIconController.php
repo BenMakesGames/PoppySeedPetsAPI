@@ -1,10 +1,10 @@
 <?php
 namespace App\Controller\Account;
 
-use App\Controller\PoppySeedPetsController;
 use App\Repository\MuseumItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,7 +14,7 @@ use App\Annotations\DoesNotRequireHouseHours;
 /**
  * @Route("/account")
  */
-class ChangeIconController extends PoppySeedPetsController
+class ChangeIconController extends AbstractController
 {
     /**
      * @Route("/changeIcon", methods={"POST"})

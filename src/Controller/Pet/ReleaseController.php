@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller\Pet;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\PetLocationEnum;
@@ -13,6 +12,7 @@ use App\Repository\UserRepository;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -23,7 +23,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/pet")
  */
-class ReleaseController extends PoppySeedPetsController
+class ReleaseController extends AbstractController
 {
     /**
      * @Route("/{pet}/release", methods={"POST"}, requirements={"pet"="\d+"})

@@ -5,8 +5,8 @@ use App\Functions\RandomFunctions;
 
 class Squirrel3 implements IRandom
 {
-    private $seed;
-    private $rngIndex = 0;
+    private int $seed;
+    private int $rngIndex = 0;
 
     public function __construct(?int $seed = null)
     {

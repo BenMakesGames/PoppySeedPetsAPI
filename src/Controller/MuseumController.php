@@ -22,6 +22,7 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -32,7 +33,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 /**
  * @Route("/museum")
  */
-class MuseumController extends PoppySeedPetsController
+class MuseumController extends AbstractController
 {
     /**
      * @Route("/{user}/items", methods={"GET"}, requirements={"user"="\d+"})

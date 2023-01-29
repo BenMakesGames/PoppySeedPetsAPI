@@ -7,6 +7,7 @@ use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -14,7 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item")
  */
-class LeafSpearController extends PoppySeedPetsItemController
+class LeafSpearController extends AbstractController
 {
     /**
      * @Route("/leafSpear/{inventory}/unwrap", methods={"POST"})
@@ -25,7 +26,7 @@ class LeafSpearController extends PoppySeedPetsItemController
         InventoryService $inventoryService, ItemRepository $itemRepository
     )
     {
-        $this->validateInventory($inventory, 'leafSpear/#/unwrap');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'leafSpear/#/unwrap');
 
         $user = $this->getUser();
 

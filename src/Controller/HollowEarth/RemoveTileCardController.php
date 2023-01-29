@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller\HollowEarth;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\HollowEarthPlayerTile;
 use App\Repository\HollowEarthPlayerTileRepository;
 use App\Repository\HollowEarthTileRepository;
@@ -9,6 +8,7 @@ use App\Repository\InventoryRepository;
 use App\Service\HollowEarthService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -18,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/hollowEarth")
  */
-class RemoveTileCardController extends PoppySeedPetsController
+class RemoveTileCardController extends AbstractController
 {
     /**
      * @Route("/removeTileCard", methods={"POST"})

@@ -7,6 +7,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\ParkEventHistoryFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -16,7 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/park")
  */
-class ParkController extends PoppySeedPetsController
+class ParkController extends AbstractController
 {
     /**
      * @Route("/signUpPet/{pet}", methods={"POST"})

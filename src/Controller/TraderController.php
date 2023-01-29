@@ -10,6 +10,7 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -20,7 +21,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/trader")
  */
-class TraderController extends PoppySeedPetsController
+class TraderController extends AbstractController
 {
     /**
      * @Route("", methods={"GET"})

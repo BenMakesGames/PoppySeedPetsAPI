@@ -1,19 +1,20 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/maraca")
  */
-class MaracaController extends PoppySeedPetsItemController
+class MaracaController extends AbstractController
 {
     /**
      * @Route("/{inventory}/takeApart", methods={"POST"})
@@ -24,9 +25,9 @@ class MaracaController extends PoppySeedPetsItemController
         EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
-        $this->validateInventory($inventory, 'maraca/#/takeApart');
-
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'maraca/#/takeApart');
 
         $location = $inventory->getLocation();
 

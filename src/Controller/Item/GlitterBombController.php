@@ -11,13 +11,14 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\StatusEffectService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/glitterBomb")
  */
-class GlitterBombController extends PoppySeedPetsItemController
+class GlitterBombController extends AbstractController
 {
     /**
      * @Route("/{inventory}/toss", methods={"POST"})
@@ -29,7 +30,7 @@ class GlitterBombController extends PoppySeedPetsItemController
         StatusEffectService $statusEffectService
     )
     {
-        $this->validateInventory($inventory, 'glitterBomb/#/toss');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'glitterBomb/#/toss');
 
         $user = $this->getUser();
 

@@ -21,10 +21,10 @@ class PetExperienceService
 {
     public const SOCIAL_ENERGY_PER_HANG_OUT = 576; // 2.5 hangouts per day (for average pets)
 
-    private $petActivityStatsService;
-    private $squirrel3;
-    private $inventoryService;
-    private $userStatsRepository;
+    private PetActivityStatsService $petActivityStatsService;
+    private IRandom $squirrel3;
+    private InventoryService $inventoryService;
+    private UserStatsRepository $userStatsRepository;
     private CalendarService $calendarService;
     private UserQuestRepository $userQuestRepository;
     private ResponseService $responseService;

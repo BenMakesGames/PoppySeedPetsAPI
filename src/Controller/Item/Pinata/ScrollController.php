@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
@@ -12,13 +12,14 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/scroll")
  */
-class ScrollController extends PoppySeedPetsItemController
+class ScrollController extends AbstractController
 {
     /**
      * @Route("/fairy/{inventory}/read", methods={"POST"})
@@ -31,8 +32,8 @@ class ScrollController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'scroll/fairy/#/read');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/fairy/#/read');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $lameItems = [ 'Toadstool', 'Charcoal', 'Toad Legs', 'Bird\'s-foot Trefoil', 'Coriander Flower' ];
 
@@ -65,8 +66,8 @@ class ScrollController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'scroll/fruit/#/invoke');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/fruit/#/invoke');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $em->remove($inventory);
 
@@ -151,8 +152,8 @@ class ScrollController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'scroll/music/#/invoke');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/music/#/invoke');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $em->remove($inventory);
 
@@ -195,8 +196,8 @@ class ScrollController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'scroll/farmers/#/invoke');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/farmers/#/invoke');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $em->remove($inventory);
 
@@ -249,8 +250,8 @@ class ScrollController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'scroll/sea/#/invoke');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/sea/#/invoke');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $em->remove($inventory);
 
@@ -300,7 +301,7 @@ class ScrollController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'scroll/minorRiches/#/invoke');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/minorRiches/#/invoke');
 
         $em->remove($inventory);
 
@@ -336,7 +337,7 @@ class ScrollController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'scroll/majorRiches/#/invoke');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/majorRiches/#/invoke');
 
         $em->remove($inventory);
 
@@ -372,7 +373,7 @@ class ScrollController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'scroll/resources/#/invoke');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/resources/#/invoke');
 
         $numberOfItems = [
             'Tiny Scroll of Resources' => 1,
@@ -419,7 +420,7 @@ class ScrollController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'scroll/resources/#/invokeFood');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/resources/#/invokeFood');
 
         $numberOfItems = [
             'Tiny Scroll of Resources' => 1,

@@ -1,10 +1,10 @@
 <?php
 namespace App\Controller\Following;
 
-use App\Controller\PoppySeedPetsController;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\UserFilterService;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -13,7 +13,7 @@ use App\Annotations\DoesNotRequireHouseHours;
 /**
  * @Route("/following/myFollowers")
  */
-class MyFollowers extends PoppySeedPetsController
+class MyFollowers extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()

@@ -5,13 +5,14 @@ use App\Entity\Inventory;
 use App\Repository\ItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/paper")
  */
-class PaperController extends PoppySeedPetsItemController
+class PaperController extends AbstractController
 {
     /**
      * @Route("/{inventory}/unfold", methods={"POST"})
@@ -24,7 +25,7 @@ class PaperController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'paper/#/unfold');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'paper/#/unfold');
 
         $paper = $itemRepository->findOneByName('Paper');
 

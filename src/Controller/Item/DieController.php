@@ -7,6 +7,7 @@ use App\Service\HollowEarthService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -14,7 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/die")
  */
-class DieController extends PoppySeedPetsItemController
+class DieController extends AbstractController
 {
     /**
      * @Route("/{inventory}/roll", methods={"POST"})
@@ -25,7 +26,7 @@ class DieController extends PoppySeedPetsItemController
         HollowEarthService $hollowEarthService
     )
     {
-        $this->validateInventory($inventory, 'die/#/roll');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'die/#/roll');
 
         $user = $this->getUser();
         $itemName = $inventory->getItem()->getName();

@@ -1,11 +1,12 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -13,7 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/keyRing")
  */
-class KeyRingController extends PoppySeedPetsItemController
+class KeyRingController extends AbstractController
 {
     /**
      * @Route("/{inventory}/takeIron", methods={"POST"})
@@ -24,7 +25,7 @@ class KeyRingController extends PoppySeedPetsItemController
         InventoryService $inventoryService
     )
     {
-        $this->validateInventory($inventory, 'keyRing/#/takeIron');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'keyRing/#/takeIron');
 
         $user = $this->getUser();
 
@@ -47,7 +48,7 @@ class KeyRingController extends PoppySeedPetsItemController
         InventoryService $inventoryService
     )
     {
-        $this->validateInventory($inventory, 'keyRing/#/takeSilver');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'keyRing/#/takeSilver');
 
         $user = $this->getUser();
 
@@ -70,7 +71,7 @@ class KeyRingController extends PoppySeedPetsItemController
         InventoryService $inventoryService
     )
     {
-        $this->validateInventory($inventory, 'keyRing/#/takeGold');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'keyRing/#/takeGold');
 
         $user = $this->getUser();
 

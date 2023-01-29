@@ -1,16 +1,17 @@
 <?php
 namespace App\Controller\Item\Book;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/eceTextbook")
  */
-class ECETextbookController extends PoppySeedPetsItemController
+class ECETextbookController extends AbstractController
 {
     /**
      * @Route("/{inventory}/read", methods={"POST"})
@@ -18,7 +19,7 @@ class ECETextbookController extends PoppySeedPetsItemController
      */
     public function read(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'eceTextbook/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'eceTextbook/#/read');
 
         return $responseService->itemActionSuccess('# Electrical Engineering 212
 

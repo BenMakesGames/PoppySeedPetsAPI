@@ -1,16 +1,17 @@
 <?php
 namespace App\Controller\Item\Book;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/theUmbra")
  */
-class TheUmbraController extends PoppySeedPetsItemController
+class TheUmbraController extends AbstractController
 {
     /**
      * @Route("/{inventory}/read", methods={"POST"})
@@ -18,7 +19,7 @@ class TheUmbraController extends PoppySeedPetsItemController
      */
     public function read(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'theUmbra/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'theUmbra/#/read');
 
         return $responseService->itemActionSuccess('# The Umbra
 

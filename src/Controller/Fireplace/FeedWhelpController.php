@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller\Fireplace;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\Dragon;
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
@@ -14,6 +13,7 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -24,7 +24,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 /**
  * @Route("/fireplace")
  */
-class FeedWhelpController extends PoppySeedPetsController
+class FeedWhelpController extends AbstractController
 {
     /**
      * @Route("/feedWhelp", methods={"POST"})

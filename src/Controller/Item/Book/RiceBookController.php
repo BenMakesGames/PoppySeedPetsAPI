@@ -1,16 +1,17 @@
 <?php
 namespace App\Controller\Item\Book;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/riceBook")
  */
-class RiceBookController extends PoppySeedPetsItemController
+class RiceBookController extends AbstractController
 {
     /**
      * @Route("/{inventory}/read", methods={"POST"})
@@ -18,7 +19,7 @@ class RiceBookController extends PoppySeedPetsItemController
      */
     public function read(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'riceBook/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'riceBook/#/read');
 
         return $responseService->itemActionSuccess('# Of Rice
 

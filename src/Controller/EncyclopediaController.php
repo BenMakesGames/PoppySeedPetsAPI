@@ -10,6 +10,7 @@ use App\Service\Filter\MeritFilterService;
 use App\Service\Filter\PetSpeciesFilterService;
 use App\Service\ResponseService;
 use App\Service\Typeahead\ItemTypeaheadService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -19,7 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/encyclopedia")
  */
-class EncyclopediaController extends PoppySeedPetsController
+class EncyclopediaController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()

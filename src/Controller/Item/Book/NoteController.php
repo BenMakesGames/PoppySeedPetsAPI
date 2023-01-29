@@ -1,18 +1,19 @@
 <?php
 namespace App\Controller\Item\Book;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Repository\ItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/note")
  */
-class NoteController extends PoppySeedPetsItemController
+class NoteController extends AbstractController
 {
     /**
      * @Route("/{inventory}/erase", methods={"POST"})
@@ -25,7 +26,7 @@ class NoteController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'note/#/erase');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'note/#/erase');
 
         $paper = $itemRepository->findOneByName('Paper');
 
@@ -47,7 +48,7 @@ class NoteController extends PoppySeedPetsItemController
      */
     public function readWelcomeNote(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'note/welcome/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'note/welcome/#/read');
 
         return $responseService->itemActionSuccess('# Welcome!
 
@@ -68,7 +69,7 @@ Here\'s some basic notes on how to take care of your new pet:
      */
     public function readCobblerRecipes(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'note/cobblers/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'note/cobblers/#/read');
 
         return $responseService->itemActionSuccess('* flour
 * milk
@@ -84,7 +85,7 @@ Here\'s some basic notes on how to take care of your new pet:
      */
     public function readStroganoffRecipe(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'note/stroganoff/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'note/stroganoff/#/read');
 
         return $responseService->itemActionSuccess('* mushrooms, onions, oil (or butter)
 * fish
@@ -98,7 +99,7 @@ Here\'s some basic notes on how to take care of your new pet:
      */
     public function readSpiritPolymorphPotion(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'note/spiritPolymorphPotion/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'note/spiritPolymorphPotion/#/read');
 
         return $responseService->itemActionSuccess('* Striped Microcline
 * Witch-hazel
@@ -114,7 +115,7 @@ Warning: if you don\'t have a Carrot handy, you can also use a Large Radish - ju
      */
     public function readPuddingRecipes(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'note/puddin/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'note/puddin/#/read');
 
         return $responseService->itemActionSuccess('**Naner Puddin\'**
 
@@ -139,7 +140,7 @@ Warning: if you don\'t have a Carrot handy, you can also use a Large Radish - ju
      */
     public function readBananananersFosterRecipe(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'note/bananananersFoster/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'note/bananananersFoster/#/read');
 
         return $responseService->itemActionSuccess('Start with Naner Ice Cream.
 
@@ -154,7 +155,7 @@ Serve warm (and quickly!)');
      */
     public function readGochujangRecipe(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'note/gochujang/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'note/gochujang/#/read');
 
         return $responseService->itemActionSuccess('Age the following:
 

@@ -1,11 +1,11 @@
 <?php
 namespace App\Controller\Following;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\User;
 use App\Repository\UserFollowingRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -16,7 +16,7 @@ use App\Annotations\DoesNotRequireHouseHours;
 /**
  * @Route("/following")
  */
-class UpdateNote extends PoppySeedPetsController
+class UpdateNote extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()

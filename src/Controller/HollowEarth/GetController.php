@@ -1,10 +1,10 @@
 <?php
 namespace App\Controller\HollowEarth;
 
-use App\Controller\PoppySeedPetsController;
 use App\Enum\SerializationGroupEnum;
 use App\Service\HollowEarthService;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -12,7 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/hollowEarth")
  */
-class GetController extends PoppySeedPetsController
+class GetController extends AbstractController
 {
     /**
      * @Route("", methods={"GET"})

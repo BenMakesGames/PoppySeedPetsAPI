@@ -14,6 +14,7 @@ use App\Service\InventoryService;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -23,7 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/dragon")
  */
-class DragonController extends PoppySeedPetsController
+class DragonController extends AbstractController
 {
     /**
      * @Route("", methods={"GET"})

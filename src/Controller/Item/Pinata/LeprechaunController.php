@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
@@ -12,13 +12,14 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/leprechaun")
  */
-class LeprechaunController extends PoppySeedPetsItemController
+class LeprechaunController extends AbstractController
 {
     /**
      * @Route("/potOfGold/{inventory}/loot", methods={"POST"})
@@ -31,8 +32,8 @@ class LeprechaunController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'leprechaun/potOfGold/#/loot');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'leprechaun/potOfGold/#/loot');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $em->remove($inventory);
 
@@ -65,8 +66,8 @@ class LeprechaunController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'leprechaun/greenScroll/#/read');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'leprechaun/greenScroll/#/read');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
         $userStatsRepository->incrementStat($user, 'Read ' . $inventory->getItem()->getNameWithArticle());

@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller\Greenhouse;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\GreenhousePlant;
 use App\Entity\Inventory;
 use App\Enum\PlantTypeEnum;
@@ -11,6 +10,7 @@ use App\Repository\InventoryRepository;
 use App\Service\GreenhouseService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -20,7 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/greenhouse")
  */
-class GreenhouseController extends PoppySeedPetsController
+class GreenhouseController extends AbstractController
 {
     /**
      * @Route("", methods={"GET"})

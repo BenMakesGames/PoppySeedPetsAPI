@@ -6,13 +6,14 @@ use App\Entity\DesignGoal;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\DesignGoalRepository;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/designGoal")
  */
-class DesignGoalController extends PoppySeedPetsController
+class DesignGoalController extends AbstractController
 {
     /**
      * @Route("", methods={"GET"})

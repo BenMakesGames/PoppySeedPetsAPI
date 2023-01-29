@@ -6,13 +6,14 @@ use App\Repository\PetActivityLogTagRepository;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\ResponseService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/petActivityLogs")
  */
-class PetActivityLogsController extends PoppySeedPetsController
+class PetActivityLogsController extends AbstractController
 {
     /**
      * @Route("", methods={"GET"})

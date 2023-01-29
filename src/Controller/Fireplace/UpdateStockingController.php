@@ -1,10 +1,10 @@
 <?php
 namespace App\Controller\Fireplace;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\Fireplace;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -14,7 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/fireplace")
  */
-class UpdateStockingController extends PoppySeedPetsController
+class UpdateStockingController extends AbstractController
 {
     /**
      * @Route("/stocking", methods={"PATCH"})

@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\PetAlteration;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\MeritEnum;
 use App\Functions\PetColorFunctions;
@@ -13,6 +13,7 @@ use App\Service\HattierService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -22,7 +23,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/iridescentHandCannon")
  */
-class IridescentHandCannonController extends PoppySeedPetsItemController
+class IridescentHandCannonController extends AbstractController
 {
     /**
      * @Route("/{inventory}/fire", methods={"PATCH"})
@@ -37,7 +38,7 @@ class IridescentHandCannonController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'iridescentHandCannon');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'iridescentHandCannon');
 
         $color = strtoupper(trim($request->request->getAlpha('color', '')));
 

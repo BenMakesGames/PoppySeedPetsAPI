@@ -1,13 +1,13 @@
 <?php
 namespace App\Controller\Account;
 
-use App\Controller\PoppySeedPetsController;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\UserRepository;
 use App\Repository\UserStyleRepository;
 use App\Service\ResponseService;
 use App\Service\SessionService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -19,7 +19,7 @@ use App\Annotations\DoesNotRequireHouseHours;
 /**
  * @Route("/account")
  */
-class LogInController extends PoppySeedPetsController
+class LogInController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()

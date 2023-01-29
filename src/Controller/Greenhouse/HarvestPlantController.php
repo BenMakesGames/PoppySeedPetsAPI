@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller\Greenhouse;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\GreenhousePlant;
 use App\Entity\Pet;
 use App\Entity\PlantYieldItem;
@@ -28,6 +27,7 @@ use App\Service\PetActivity\GreenhouseAdventureService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,7 +36,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/greenhouse")
  */
-class HarvestPlantController extends PoppySeedPetsController
+class HarvestPlantController extends AbstractController
 {
     /**
      * @Route("/{plant}/harvest", methods={"POST"})

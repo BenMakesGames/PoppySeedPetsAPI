@@ -5,6 +5,7 @@ use App\Entity\Inventory;
 use App\Repository\ItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -12,7 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/featheredHat")
  */
-class FeatheredHatController extends PoppySeedPetsItemController
+class FeatheredHatController extends AbstractController
 {
     private const TWEAKS = [
         'Afternoon Hat' => 'Evening Hat',
@@ -26,7 +27,7 @@ class FeatheredHatController extends PoppySeedPetsItemController
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, ItemRepository $itemRepository
     )
     {
-        $this->validateInventory($inventory, 'featheredHat/#/tweak');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'featheredHat/#/tweak');
 
         $oldItemName = $inventory->getItem()->getName();
 

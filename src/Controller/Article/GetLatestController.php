@@ -1,19 +1,19 @@
 <?php
 namespace App\Controller\Article;
 
-use App\Controller\PoppySeedPetsController;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\ArticleRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Annotations\DoesNotRequireHouseHours;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
 * @Route("/article")
 */
-class GetLatestController extends PoppySeedPetsController
+class GetLatestController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()

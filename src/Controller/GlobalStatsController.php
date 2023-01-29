@@ -4,12 +4,13 @@ namespace App\Controller;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\DailyStatsRepository;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/globalStats")
  */
-class GlobalStatsController extends PoppySeedPetsController
+class GlobalStatsController extends AbstractController
 {
     /**
      * @Route("/today", methods={"GET"})

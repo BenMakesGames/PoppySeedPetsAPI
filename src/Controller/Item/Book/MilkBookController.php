@@ -1,17 +1,18 @@
 <?php
 namespace App\Controller\Item\Book;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\CookingService;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/milkBook")
  */
-class MilkBookController extends PoppySeedPetsItemController
+class MilkBookController extends AbstractController
 {
     /**
      * @Route("/{inventory}/upload", methods={"POST"})
@@ -21,7 +22,7 @@ class MilkBookController extends PoppySeedPetsItemController
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService
     )
     {
-        $this->validateInventory($inventory, 'milkBook/#/upload');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'milkBook/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($this->getUser(), [
             'Chocolate Cream Pie',
@@ -66,7 +67,7 @@ class MilkBookController extends PoppySeedPetsItemController
      */
     public function read(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'milkBook/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'milkBook/#/read');
 
         return $responseService->itemActionSuccess('Have you ever found yourself in a situation where you just have way too much dang milk? Maybe your goat\'s just been overflowing with the stuff; maybe you have a reasonable amount, but just don\'t like the taste of it; maybe your friends\' goat was overflowing with the stuff, so they brought you some as a "gift". (I\'m on to you, Greg and Rachel!)
 

@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller\Account;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
@@ -10,6 +9,7 @@ use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserStyleRepository;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 /**
  * @Route("/account")
  */
-class GetByIdController extends PoppySeedPetsController
+class GetByIdController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()

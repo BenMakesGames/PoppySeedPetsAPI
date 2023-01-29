@@ -15,6 +15,7 @@ use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -22,7 +23,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/egg")
  */
-class EggController extends PoppySeedPetsItemController
+class EggController extends AbstractController
 {
     /**
      * @Route("/jellingPolyp/{inventory}/hatch", methods={"POST"})
@@ -34,7 +35,7 @@ class EggController extends PoppySeedPetsItemController
         MeritRepository $meritRepository, PetFactory $petFactory
     )
     {
-        $this->validateInventory($inventory, 'egg/jellingPolyp/#/hatch');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'egg/jellingPolyp/#/hatch');
 
         $jelling = $petSpeciesRepository->findOneBy([ 'name' => 'Sága Jelling' ]);
 
@@ -116,7 +117,7 @@ class EggController extends PoppySeedPetsItemController
         MeritRepository $meritRepository, PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
-        $this->validateInventory($inventory, 'egg/weird-blue/#/hatch');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'egg/weird-blue/#/hatch');
 
         $starMonkey = $petSpeciesRepository->findOneBy([ 'name' => 'Star Monkey' ]);
 
@@ -196,7 +197,7 @@ class EggController extends PoppySeedPetsItemController
         MeritRepository $meritRepository, PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
-        $this->validateInventory($inventory, 'egg/metalBox/#/open');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'egg/metalBox/#/open');
 
         $grabber = $petSpeciesRepository->findOneBy([ 'name' => 'Grabber' ]);
 

@@ -1,11 +1,12 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -13,7 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/anniversaryGift")
  */
-class AnniversaryGiftController extends PoppySeedPetsItemController
+class AnniversaryGiftController extends AbstractController
 {
     /**
      * @Route("/{inventory}/open", methods={"POST"})
@@ -24,8 +25,8 @@ class AnniversaryGiftController extends PoppySeedPetsItemController
         EntityManagerInterface $em
     )
     {
-        $this->validateInventory($inventory, 'anniversaryGift/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'anniversaryGift/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
         $location = $inventory->getLocation();

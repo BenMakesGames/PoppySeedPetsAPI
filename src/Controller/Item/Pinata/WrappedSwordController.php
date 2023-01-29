@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
@@ -10,13 +10,14 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/wrappedSword")
  */
-class WrappedSwordController extends PoppySeedPetsItemController
+class WrappedSwordController extends AbstractController
 {
     /**
      * @Route("/{inventory}/unwrap", methods={"POST"})
@@ -28,7 +29,7 @@ class WrappedSwordController extends PoppySeedPetsItemController
         SpiceRepository $spiceRepository, EnchantmentRepository $enchantmentRepository
     )
     {
-        $this->validateInventory($inventory, 'wrappedSword/#/unwrap');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'wrappedSword/#/unwrap');
 
         $user = $this->getUser();
         $location = $inventory->getLocation();

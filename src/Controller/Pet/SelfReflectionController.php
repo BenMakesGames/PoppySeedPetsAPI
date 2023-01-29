@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller\Pet;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\Guild;
 use App\Entity\Pet;
 use App\Entity\PetRelationship;
@@ -17,6 +16,7 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\Typeahead\PetRelationshipTypeaheadService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -27,7 +27,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/pet")
  */
-class SelfReflectionController extends PoppySeedPetsController
+class SelfReflectionController extends AbstractController
 {
     /**
      * @Route("/{pet}/selfReflection", methods={"GET"})

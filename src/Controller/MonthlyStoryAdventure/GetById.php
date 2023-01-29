@@ -2,7 +2,6 @@
 
 namespace App\Controller\MonthlyStoryAdventure;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\MonthlyStoryAdventure;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\MonthlyStoryAdventureRepository;
@@ -10,13 +9,14 @@ use App\Repository\MonthlyStoryAdventureStepRepository;
 use App\Repository\UserMonthlyStoryAdventureStepCompletedRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/monthlyStoryAdventure")
  */
-class GetById extends PoppySeedPetsController
+class GetById extends AbstractController
 {
     /**
      * @Route("/{story}", methods={"GET"})

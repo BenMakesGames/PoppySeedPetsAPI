@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
@@ -12,12 +12,13 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/item/cannedFood")
  */
-class CannedFoodController extends PoppySeedPetsItemController
+class CannedFoodController extends AbstractController
 {
     /**
      * @Route("/{inventory}/open", methods={"POST"})
@@ -28,9 +29,10 @@ class CannedFoodController extends PoppySeedPetsItemController
         EntityManagerInterface $em, UserStatsRepository $userStatsRepository
     )
     {
-        $this->validateInventory($inventory, 'cannedFood/#/open');
-
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'cannedFood/#/open');
+
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 

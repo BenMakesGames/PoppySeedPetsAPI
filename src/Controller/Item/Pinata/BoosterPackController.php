@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Repository\ItemGroupRepository;
@@ -9,13 +9,14 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/boosterPack")
  */
-class BoosterPackController extends PoppySeedPetsItemController
+class BoosterPackController extends AbstractController
 {
     /**
      * @Route("/one/{inventory}/open", methods={"POST"})
@@ -26,8 +27,8 @@ class BoosterPackController extends PoppySeedPetsItemController
         EntityManagerInterface $em, ItemGroupRepository $itemGroupRepository, Squirrel3 $rng
     )
     {
-        $this->validateInventory($inventory, 'boosterPack/one/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'boosterPack/one/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
         $location = $inventory->getLocation();

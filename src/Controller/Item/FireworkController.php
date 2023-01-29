@@ -11,6 +11,7 @@ use App\Service\HollowEarthService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -18,7 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/firework")
  */
-class FireworkController extends PoppySeedPetsItemController
+class FireworkController extends AbstractController
 {
     /**
      * @Route("/{inventory}/light", methods={"POST"})
@@ -29,9 +30,10 @@ class FireworkController extends PoppySeedPetsItemController
         EnchantmentRepository $enchantmentRepository, UserQuestRepository $userQuestRepository
     )
     {
-        $this->validateInventory($inventory, 'firework/#/light');
-
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'firework/#/light');
+
         $itemName = $inventory->getItem()->getName();
 
         if(!$user->getUnlockedHattier())

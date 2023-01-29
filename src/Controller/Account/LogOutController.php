@@ -1,10 +1,10 @@
 <?php
 namespace App\Controller\Account;
 
-use App\Controller\PoppySeedPetsController;
 use App\Service\ResponseService;
 use App\Service\SessionService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
@@ -12,7 +12,7 @@ use App\Annotations\DoesNotRequireHouseHours;
 /**
  * @Route("/account")
  */
-class LogOutController extends PoppySeedPetsController
+class LogOutController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()

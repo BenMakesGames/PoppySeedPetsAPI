@@ -1,17 +1,17 @@
 <?php
 namespace App\Controller\Pet;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\Pet;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/pet")
  */
-class StopHelpingController extends PoppySeedPetsController
+class StopHelpingController extends AbstractController
 {
     /**
      * @Route("/{pet}/stopHelping", methods={"POST"})

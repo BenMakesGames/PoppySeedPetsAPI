@@ -7,6 +7,7 @@ use App\Service\FieldGuideService;
 use App\Service\Filter\UserLetterFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/letter")
  */
-class LetterController extends PoppySeedPetsController
+class LetterController extends AbstractController
 {
     /**
      * @Route("", methods={"GET"})

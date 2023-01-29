@@ -1,11 +1,11 @@
 <?php
 namespace App\Controller\Account;
 
-use App\Controller\PoppySeedPetsController;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\UserFilterService;
 use App\Service\ResponseService;
 use App\Service\Typeahead\UserTypeaheadService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,7 +15,7 @@ use App\Annotations\DoesNotRequireHouseHours;
 /**
  * @Route("/account")
  */
-class SearchController extends PoppySeedPetsController
+class SearchController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()

@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\UserStatEnum;
 use App\Repository\UserStatsRepository;
@@ -9,13 +9,14 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/eggplant")
  */
-class EggplantController extends PoppySeedPetsItemController
+class EggplantController extends AbstractController
 {
     /**
      * @Route("/{inventory}/clean", methods={"POST"})
@@ -26,8 +27,8 @@ class EggplantController extends PoppySeedPetsItemController
         EntityManagerInterface $em, UserStatsRepository $userStatsRepository
     )
     {
-        $this->validateInventory($inventory, 'eggplant/#/clean');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'eggplant/#/clean');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
 

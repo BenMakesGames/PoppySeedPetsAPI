@@ -2,13 +2,13 @@
 
 namespace App\Controller\Item\ChooseAPet;
 
-use App\Controller\Item\PoppySeedPetsItemController;
 use App\Entity\Pet;
 use App\Repository\PetRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class ChooseAPetController extends PoppySeedPetsItemController
+class ChooseAPetController extends AbstractController
 {
     public function getPet(Request $request, PetRepository $petRepository): Pet
     {

@@ -1,13 +1,14 @@
 <?php
 namespace App\Controller\Article;
 
-use App\Controller\PoppySeedPetsController;
+use App\Controller\AdminController;
 use App\Entity\Article;
 use App\Entity\DesignGoal;
 use App\Functions\ArrayFunctions;
 use App\Repository\DesignGoalRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Annotations\DoesNotRequireHouseHours;
@@ -17,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
 * @Route("/article")
 */
-class UpdateController extends PoppySeedPetsController
+class UpdateController extends AdminController
 {
     /**
      * @DoesNotRequireHouseHours()

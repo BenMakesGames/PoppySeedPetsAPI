@@ -1,11 +1,12 @@
 <?php
 namespace App\Controller\Article;
 
-use App\Controller\PoppySeedPetsController;
+use App\Controller\AdminController;
 use App\Entity\Article;
 use App\Service\RedditService;
 use App\Service\ResponseService;
 use App\Service\TwitterService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use App\Annotations\DoesNotRequireHouseHours;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,7 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
 * @Route("/article")
 */
-class SocialMediaController extends PoppySeedPetsController
+class SocialMediaController extends AdminController
 {
     /**
      * @DoesNotRequireHouseHours()

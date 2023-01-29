@@ -6,13 +6,14 @@ use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/protojelly")
  */
-class GlowingProtojellyController extends PoppySeedPetsItemController
+class GlowingProtojellyController extends AbstractController
 {
     /**
      * @Route("/{inventory}/d4", methods={"POST"})
@@ -23,7 +24,7 @@ class GlowingProtojellyController extends PoppySeedPetsItemController
         ItemRepository $itemRepository
     )
     {
-        $this->validateInventory($inventory, 'protojelly/#/d4');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'protojelly/#/d4');
 
         $user = $this->getUser();
 
@@ -47,7 +48,7 @@ class GlowingProtojellyController extends PoppySeedPetsItemController
         ItemRepository $itemRepository
     )
     {
-        $this->validateInventory($inventory, 'protojelly/#/d6');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'protojelly/#/d6');
 
         $user = $this->getUser();
 
@@ -71,7 +72,7 @@ class GlowingProtojellyController extends PoppySeedPetsItemController
         ItemRepository $itemRepository
     )
     {
-        $this->validateInventory($inventory, 'protojelly/#/d8');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'protojelly/#/d8');
 
         $user = $this->getUser();
 

@@ -1,11 +1,11 @@
 <?php
 namespace App\Controller\Pet;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\Pet;
 use App\Enum\PetActivityStatEnum;
 use App\Service\PetActivityStatsService;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -13,7 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/pet")
  */
-class GetActivityStatsController extends PoppySeedPetsController
+class GetActivityStatsController extends AbstractController
 {
     /**
      * @Route("/{pet}/activityStats", methods={"GET"}, requirements={"pet"="\d+"})

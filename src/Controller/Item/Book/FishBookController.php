@@ -1,17 +1,18 @@
 <?php
 namespace App\Controller\Item\Book;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\CookingService;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/fishBook")
  */
-class FishBookController extends PoppySeedPetsItemController
+class FishBookController extends AbstractController
 {
     /**
      * @Route("/{inventory}/upload", methods={"POST"})
@@ -21,9 +22,11 @@ class FishBookController extends PoppySeedPetsItemController
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService
     )
     {
-        $this->validateInventory($inventory, 'fishBook/#/upload');
+        $user = $this->getUser();
 
-        $message = $cookingService->showRecipeNamesToCookingBuddy($this->getUser(), [
+        ItemControllerHelpers::validateInventory($user, $inventory, 'fishBook/#/upload');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Baked Fish Fingers',
             'Basic Fish Taco',
             'Battered, Fried Fish (with Egg)',
@@ -53,7 +56,7 @@ class FishBookController extends PoppySeedPetsItemController
      */
     public function read(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'fishBook/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'fishBook/#/read');
 
         return $responseService->itemActionSuccess('# Fish Book
 

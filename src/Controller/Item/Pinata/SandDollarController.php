@@ -1,20 +1,21 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/sandDollar")
  */
-class SandDollarController extends PoppySeedPetsItemController
+class SandDollarController extends AbstractController
 {
     /**
      * @Route("/{inventory}/loot", methods={"POST"})
@@ -25,9 +26,9 @@ class SandDollarController extends PoppySeedPetsItemController
         EntityManagerInterface $em, TransactionService $transactionService
     )
     {
-        $this->validateInventory($inventory, 'sandDollar/#/loot');
-
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'sandDollar/#/loot');
 
         $transactionService->getMoney($user, 1, 'Found inside a Sand Dollar.');
 

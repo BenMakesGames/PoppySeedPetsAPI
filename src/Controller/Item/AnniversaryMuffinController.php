@@ -7,6 +7,7 @@ use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/anniversaryMuffin")
  */
-class AnniversaryMuffinController extends PoppySeedPetsItemController
+class AnniversaryMuffinController extends AbstractController
 {
     /**
      * @Route("/{inventory}/lengthySkillScroll", methods={"POST"})
@@ -26,7 +27,9 @@ class AnniversaryMuffinController extends PoppySeedPetsItemController
         ItemRepository $itemRepository
     )
     {
-        $this->validateInventory($inventory, 'anniversaryMuffin/#/lengthySkillScroll');
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'anniversaryMuffin/#/lengthySkillScroll');
 
         $inventory
             ->changeItem($itemRepository->findOneByName('Lengthy Scroll of Skill'))
@@ -48,7 +51,7 @@ class AnniversaryMuffinController extends PoppySeedPetsItemController
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
-        $this->validateInventory($inventory, 'anniversaryMuffin/#/museumFavor');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'anniversaryMuffin/#/museumFavor');
 
         $this->getUser()->addMuseumPoints(700);
 

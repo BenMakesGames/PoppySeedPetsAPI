@@ -15,6 +15,7 @@ use App\Service\Filter\KnownRecipesFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -24,7 +25,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/cookingBuddy")
  */
-class CookingBuddyController extends PoppySeedPetsController
+class CookingBuddyController extends AbstractController
 {
     private const ALLOWED_LOCATIONS = [
         LocationEnum::HOME,

@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller\Pet;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\Pet;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
@@ -9,6 +8,7 @@ use App\Repository\PetRepository;
 use App\Service\Filter\PetFilterService;
 use App\Service\ResponseService;
 use App\Service\Typeahead\PetTypeaheadService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -18,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/pet")
  */
-class GetController extends PoppySeedPetsController
+class GetController extends AbstractController
 {
     /**
      * @Route("", methods={"GET"})

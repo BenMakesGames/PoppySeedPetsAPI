@@ -6,13 +6,14 @@ use App\Entity\SpiritCompanion;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\SpiritCompanionFilterService;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/spiritCompanion")
  */
-class SpiritCompanionController extends PoppySeedPetsController
+class SpiritCompanionController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()

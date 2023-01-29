@@ -9,6 +9,7 @@ use App\Service\MuseumService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -17,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/item")
  */
-class WunderbussController extends PoppySeedPetsItemController
+class WunderbussController extends AbstractController
 {
     /**
      * @Route("/wunderbuss/{inventory}/usedWish", methods={"GET"})
@@ -27,7 +28,7 @@ class WunderbussController extends PoppySeedPetsItemController
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository
     )
     {
-        $this->validateInventory($inventory, 'wunderbuss');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'wunderbuss');
 
         $user = $this->getUser();
 
@@ -46,7 +47,7 @@ class WunderbussController extends PoppySeedPetsItemController
         MuseumService $museumService
     )
     {
-        $this->validateInventory($inventory, 'wunderbuss');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'wunderbuss');
 
         $user = $this->getUser();
 

@@ -7,6 +7,7 @@ use App\Repository\DragonRepository;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -14,7 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/dragonPolymorphPotion")
  */
-class DragonPolymorphPotionController extends PoppySeedPetsItemController
+class DragonPolymorphPotionController extends AbstractController
 {
     /**
      * @Route("/{inventory}/give", methods={"POST"})
@@ -27,7 +28,7 @@ class DragonPolymorphPotionController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'dragonPolymorphPotion/#/give');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'dragonPolymorphPotion/#/give');
 
         $dragon = $dragonRepository->findOneBy([ 'owner' => $user ]);
 

@@ -12,13 +12,14 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/whisperStone")
  */
-class WhisperStoneController extends PoppySeedPetsItemController
+class WhisperStoneController extends AbstractController
 {
     /**
      * @Route("/{inventory}/listen", methods={"POST"})
@@ -30,7 +31,7 @@ class WhisperStoneController extends PoppySeedPetsItemController
         UserStatsRepository $userStatsRepository
     )
     {
-        $this->validateInventory($inventory, 'whisperStone/#/listen');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'whisperStone/#/listen');
 
         $user = $this->getUser();
 

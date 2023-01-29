@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
@@ -12,13 +12,14 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/burntLog")
  */
-class BurntLogController extends PoppySeedPetsItemController
+class BurntLogController extends AbstractController
 {
     /**
      * @Route("/{inventory}/break", methods={"POST"})
@@ -29,8 +30,8 @@ class BurntLogController extends PoppySeedPetsItemController
         EntityManagerInterface $em, UserStatsRepository $userStatsRepository, ItemRepository $itemRepository
     )
     {
-        $this->validateInventory($inventory, 'burntLog/#/break');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'burntLog/#/break');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
         $location = $inventory->getLocation();

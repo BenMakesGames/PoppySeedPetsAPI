@@ -1,12 +1,12 @@
 <?php
 namespace App\Controller\HollowEarth;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\Pet;
 use App\Enum\SerializationGroupEnum;
 use App\Service\HollowEarthService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,7 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/hollowEarth")
  */
-class ChangePetController extends PoppySeedPetsController
+class ChangePetController extends AbstractController
 {
     /**
      * @Route("/changePet/{pet}", methods={"POST"})

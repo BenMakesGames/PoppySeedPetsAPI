@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller\Account;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\User;
 use App\Entity\UserNotificationPreferences;
 use App\Entity\UserStyle;
@@ -18,6 +17,7 @@ use App\Service\ResponseService;
 use App\Service\SessionService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -28,7 +28,7 @@ use App\Annotations\DoesNotRequireHouseHours;
 /**
  * @Route("/account")
  */
-class RegisterController extends PoppySeedPetsController
+class RegisterController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()

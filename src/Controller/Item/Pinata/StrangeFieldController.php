@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
@@ -12,12 +12,13 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/item/strangeField")
  */
-class StrangeFieldController extends PoppySeedPetsItemController
+class StrangeFieldController extends AbstractController
 {
     /**
      * @Route("/{inventory}/collapse", methods={"POST"})
@@ -28,7 +29,7 @@ class StrangeFieldController extends PoppySeedPetsItemController
         EntityManagerInterface $em, RecyclingService $recyclingService, UserStatsRepository $userStatsRepository
     )
     {
-        $this->validateInventory($inventory, 'strangeField/#/collapse');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'strangeField/#/collapse');
 
         $user = $this->getUser();
         $location = $inventory->getLocation();

@@ -2,7 +2,6 @@
 
 namespace App\Controller\MonthlyStoryAdventure;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\MonthlyStoryAdventureStep;
 use App\Entity\User;
 use App\Enum\LocationEnum;
@@ -15,6 +14,7 @@ use App\Service\InventoryService;
 use App\Service\MonthlyStoryAdventureService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -24,7 +24,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/monthlyStoryAdventure")
  */
-class GoOnAdventure extends PoppySeedPetsController
+class GoOnAdventure extends AbstractController
 {
     /**
      * @Route("/do/{step}", methods={"POST"})

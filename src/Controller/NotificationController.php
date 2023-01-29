@@ -9,6 +9,7 @@ use App\Repository\ReminderRepository;
 use App\Repository\UserNotificationPreferencesRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -18,7 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/notification")
  */
-class NotificationController extends PoppySeedPetsController
+class NotificationController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()

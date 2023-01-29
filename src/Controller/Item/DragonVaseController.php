@@ -21,6 +21,7 @@ use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -30,7 +31,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/dragonVase")
  */
-class DragonVaseController extends PoppySeedPetsItemController
+class DragonVaseController extends AbstractController
 {
     /**
      * @Route("/{inventory}/smash", methods={"POST"})
@@ -44,7 +45,7 @@ class DragonVaseController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'dragonVase/#/smash');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'dragonVase/#/smash');
 
         $petsAtHome = $petRepository->findBy([
             'owner' => $user,
@@ -118,7 +119,7 @@ class DragonVaseController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'dragonVase');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'dragonVase');
 
         $itemId = $request->request->getInt('tool');
 

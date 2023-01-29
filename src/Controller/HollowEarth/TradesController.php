@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller\HollowEarth;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Repository\ItemRepository;
@@ -9,6 +8,7 @@ use App\Service\HollowEarthService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,7 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/hollowEarth")
  */
-class TradesController extends PoppySeedPetsController
+class TradesController extends AbstractController
 {
     /**
      * @Route("/trades", methods={"GET"})

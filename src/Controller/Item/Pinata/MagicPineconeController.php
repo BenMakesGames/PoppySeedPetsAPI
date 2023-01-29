@@ -1,25 +1,22 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
-use App\Model\ItemQuantity;
-use App\Repository\EnchantmentRepository;
-use App\Repository\ItemRepository;
 use App\Repository\SpiceRepository;
 use App\Service\InventoryService;
-use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/magicPinecone")
  */
-class MagicPineconeController extends PoppySeedPetsItemController
+class MagicPineconeController extends AbstractController
 {
     /**
      * @Route("/{inventory}/open", methods={"POST"})
@@ -33,7 +30,7 @@ class MagicPineconeController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'magicPinecone/#/open');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'magicPinecone/#/open');
 
         $possibleItems = [
             'Sugar',

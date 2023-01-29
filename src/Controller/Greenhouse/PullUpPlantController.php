@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller\Greenhouse;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\GreenhousePlant;
 use App\Enum\LocationEnum;
 use App\Enum\PollinatorEnum;
@@ -9,6 +8,7 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -16,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/greenhouse")
  */
-class PullUpPlantController extends PoppySeedPetsController
+class PullUpPlantController extends AbstractController
 {
     /**
      * @Route("/{plant}/pullUp", methods={"POST"})

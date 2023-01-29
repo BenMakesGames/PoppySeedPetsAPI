@@ -2,6 +2,7 @@
 
 namespace App\Controller\Item\ChooseAPet;
 
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
@@ -39,7 +40,7 @@ class Molly extends ChooseAPetController
         IRandom $rng
     )
     {
-        $this->validateInventory($inventory, 'molly');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'molly');
 
         $pet = $this->getPet($request, $petRepository);
         $petChanges = new PetChanges($pet);

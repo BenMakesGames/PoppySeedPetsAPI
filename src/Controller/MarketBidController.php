@@ -13,6 +13,7 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -22,7 +23,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/marketBid")
  */
-class MarketBidController extends PoppySeedPetsController
+class MarketBidController extends AbstractController
 {
     /**
      * @Route("", methods={"GET"})

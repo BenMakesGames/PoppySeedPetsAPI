@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller\Pet;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\Pet;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -10,6 +9,7 @@ use App\Repository\MeritRepository;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -19,7 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/pet")
  */
-class TalentAndExpertiseController extends PoppySeedPetsController
+class TalentAndExpertiseController extends AbstractController
 {
     /**
      * @Route("/{pet}/pickTalent", methods={"POST"}, requirements={"pet"="\d+"})

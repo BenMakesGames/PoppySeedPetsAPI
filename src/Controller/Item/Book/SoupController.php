@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Book;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\KnownRecipes;
 use App\Entity\Recipe;
@@ -12,13 +12,14 @@ use App\Repository\RecipeRepository;
 use App\Service\CookingService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/SOUP")
  */
-class SoupController extends PoppySeedPetsItemController
+class SoupController extends AbstractController
 {
     /**
      * @Route("/{inventory}/UPLOAD", methods={"POST"})
@@ -28,7 +29,7 @@ class SoupController extends PoppySeedPetsItemController
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService
     )
     {
-        $this->validateInventory($inventory, 'SOUP/#/UPLOAD');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'SOUP/#/UPLOAD');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($this->getUser(), [
             '15-bean Soup',
@@ -54,7 +55,7 @@ class SoupController extends PoppySeedPetsItemController
      */
     public function read(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'SOUP/#/READ');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'SOUP/#/READ');
 
         return $responseService->itemActionSuccess('# SOUP
 

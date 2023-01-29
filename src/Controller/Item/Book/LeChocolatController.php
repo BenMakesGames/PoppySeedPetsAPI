@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Book;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Recipe;
 use App\Functions\ArrayFunctions;
@@ -10,13 +10,14 @@ use App\Repository\RecipeRepository;
 use App\Service\CookingService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/leChocolat")
  */
-class LeChocolatController extends PoppySeedPetsItemController
+class LeChocolatController extends AbstractController
 {
     /**
      * @return Recipe[]
@@ -41,11 +42,13 @@ class LeChocolatController extends PoppySeedPetsItemController
         RecipeRepository $recipeRepository
     )
     {
-        $this->validateInventory($inventory, 'leChocolat/#/upload');
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'leChocolat/#/upload');
 
         $recipes = $this->getRecipes($recipeRepository);
 
-        $message = $cookingService->showRecipesToCookingBuddy($this->getUser(), $recipes);
+        $message = $cookingService->showRecipesToCookingBuddy($user, $recipes);
 
         return $responseService->itemActionSuccess($message);
     }
@@ -59,7 +62,7 @@ class LeChocolatController extends PoppySeedPetsItemController
         InventoryService $inventoryService
     )
     {
-        $this->validateInventory($inventory, 'leChocolat/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'leChocolat/#/read');
 
         $recipes = $this->getRecipes($recipeRepository);
 

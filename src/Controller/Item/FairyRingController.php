@@ -7,13 +7,14 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/fairyRing")
  */
-class FairyRingController extends PoppySeedPetsItemController
+class FairyRingController extends AbstractController
 {
     /**
      * @Route("/{inventory}/takeApart", methods={"POST"})
@@ -24,8 +25,8 @@ class FairyRingController extends PoppySeedPetsItemController
         EntityManagerInterface $em, InventoryService $inventoryService
     )
     {
-        $this->validateInventory($inventory, 'fairyRing/#/takeApart');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'fairyRing/#/takeApart');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
 

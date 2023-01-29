@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Repository\InventoryRepository;
 use App\Repository\UserStatsRepository;
@@ -10,6 +10,7 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -17,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/cryptocurrencyWallet")
  */
-class CryptocurrencyWalletController extends PoppySeedPetsItemController
+class CryptocurrencyWalletController extends AbstractController
 {
     /**
      * @Route("/{inventory}/unlock", methods={"POST"})
@@ -29,7 +30,7 @@ class CryptocurrencyWalletController extends PoppySeedPetsItemController
         TransactionService $transactionService, InventoryService $inventoryService
     )
     {
-        $this->validateInventory($inventory, 'cryptocurrencyWallet/#/unlock');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'cryptocurrencyWallet/#/unlock');
 
         $user = $this->getUser();
 

@@ -1,19 +1,20 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/scroll")
  */
-class ScrollOfDiceController extends PoppySeedPetsItemController
+class ScrollOfDiceController extends AbstractController
 {
     /**
      * @Route("/dice/{inventory}/read", methods={"POST"})
@@ -26,8 +27,8 @@ class ScrollOfDiceController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'scroll/dice/#/read');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/dice/#/read');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();

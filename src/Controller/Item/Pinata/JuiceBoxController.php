@@ -2,20 +2,21 @@
 
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/juiceBox")
  */
-class JuiceBoxController extends PoppySeedPetsItemController
+class JuiceBoxController extends AbstractController
 {
     /**
      * @Route("/{inventory}/open", methods={"POST"})
@@ -28,8 +29,8 @@ class JuiceBoxController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'juiceBox/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($user, $inventory, 'juiceBox/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $juiceBoxesOpened = $userStatsRepository->incrementStat($user, 'Juice Boxes Opened', 1)->getValue();
 

@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller\Pet;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\Pet;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
@@ -11,6 +10,7 @@ use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -20,7 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/pet")
  */
-class GuessFavoriteFlavorController extends PoppySeedPetsController
+class GuessFavoriteFlavorController extends AbstractController
 {
     /**
      * @Route("/{pet}/guessFavoriteFlavor", methods={"POST"})

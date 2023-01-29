@@ -21,6 +21,7 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\StoryService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,7 +30,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/bug")
  */
-class BugController extends PoppySeedPetsItemController
+class BugController extends AbstractController
 {
     /**
      * @Route("/{inventory}/squish", methods={"POST"})
@@ -42,7 +43,7 @@ class BugController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'bug/#/squish');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'bug/#/squish');
 
         $promised = $userQuestRepository->findOrCreate($user, 'Promised to Not Squish Bugs', 0);
 
@@ -69,7 +70,7 @@ class BugController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'bug/#/putOutside');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'bug/#/putOutside');
 
         $em->remove($inventory);
 
@@ -93,7 +94,7 @@ class BugController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'feedBug');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'feedBug');
 
         $item = $inventoryRepository->find($request->request->getInt('food'));
 
@@ -191,7 +192,7 @@ class BugController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'bug/#/adopt');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'bug/#/adopt');
 
         $petName = $squirrel3->rngNextFromArray([
             'Afrolixa', 'Alcimus', 'Antocha', 'Argyra', 'Asiola', 'Atarba', 'Atissa',
@@ -283,7 +284,7 @@ class BugController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'bug/#/squish');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'bug/#/squish');
 
         $response = $storyService->doStory($user, StoryEnum::STOLEN_PLANS, $request->request, $inventory);
 

@@ -5,13 +5,14 @@ use App\Entity\Inventory;
 use App\Repository\ItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/metalDetector")
  */
-class MetalDetectorController extends PoppySeedPetsItemController
+class MetalDetectorController extends AbstractController
 {
     /**
      * @Route("/{inventory}/tune/iron", methods={"POST"})
@@ -22,7 +23,7 @@ class MetalDetectorController extends PoppySeedPetsItemController
         EntityManagerInterface $em
     )
     {
-        $this->validateInventory($inventory, 'metalDetector/#/tune/iron');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'metalDetector/#/tune/iron');
 
         $inventory->changeItem($itemRepository->findOneByName('Metal Detector (Iron)'));
 
@@ -43,7 +44,7 @@ class MetalDetectorController extends PoppySeedPetsItemController
         EntityManagerInterface $em
     )
     {
-        $this->validateInventory($inventory, 'metalDetector/#/tune/silver');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'metalDetector/#/tune/silver');
 
         $inventory->changeItem($itemRepository->findOneByName('Metal Detector (Silver)'));
 
@@ -64,7 +65,7 @@ class MetalDetectorController extends PoppySeedPetsItemController
         EntityManagerInterface $em
     )
     {
-        $this->validateInventory($inventory, 'metalDetector/#/tune/gold');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'metalDetector/#/tune/gold');
 
         $inventory->changeItem($itemRepository->findOneByName('Metal Detector (Gold)'));
 

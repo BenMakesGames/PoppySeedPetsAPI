@@ -1,11 +1,11 @@
 <?php
 namespace App\Controller\Article;
 
-use App\Controller\PoppySeedPetsController;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\ArticleFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use App\Annotations\DoesNotRequireHouseHours;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,7 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
 * @Route("/article")
 */
-class SearchController extends PoppySeedPetsController
+class SearchController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()

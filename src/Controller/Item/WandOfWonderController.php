@@ -24,13 +24,14 @@ use App\Service\Squirrel3;
 use App\Service\StatusEffectService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/wandOfWonder")
  */
-class WandOfWonderController extends PoppySeedPetsItemController
+class WandOfWonderController extends AbstractController
 {
     /**
      * @Route("/{inventory}/point", methods={"POST"})
@@ -44,7 +45,7 @@ class WandOfWonderController extends PoppySeedPetsItemController
         StatusEffectService $statusEffectService, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
-        $this->validateInventory($inventory, 'wandOfWonder/#/point');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'wandOfWonder/#/point');
 
         $user = $this->getUser();
         $location = $inventory->getLocation();

@@ -6,6 +6,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Service\ResponseService;
 use App\Service\SurveyService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -15,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/survey")
  */
-class SurveyController extends PoppySeedPetsController
+class SurveyController extends AbstractController
 {
     /**
      * @Route("/{guid}", methods={"GET"})

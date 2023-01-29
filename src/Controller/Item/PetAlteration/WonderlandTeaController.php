@@ -1,12 +1,13 @@
 <?php
 namespace App\Controller\Item\PetAlteration;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Repository\PetRepository;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -16,7 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item")
  */
-class WonderlandTeaController extends PoppySeedPetsItemController
+class WonderlandTeaController extends AbstractController
 {
     /**
      * @Route("/tinyTea/{inventory}", methods={"POST"})
@@ -29,7 +30,7 @@ class WonderlandTeaController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'tinyTea');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'tinyTea');
 
         $petId = $request->request->getInt('pet', 0);
         $pet = $petRepository->find($petId);
@@ -65,7 +66,7 @@ class WonderlandTeaController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'tremendousTea');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'tremendousTea');
 
         $petId = $request->request->getInt('pet', 0);
         $pet = $petRepository->find($petId);
@@ -101,7 +102,7 @@ class WonderlandTeaController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'totallyTea');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'totallyTea');
 
         $petId = $request->request->getInt('pet', 0);
         $pet = $petRepository->find($petId);

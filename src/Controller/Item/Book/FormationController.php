@@ -1,16 +1,17 @@
 <?php
 namespace App\Controller\Item\Book;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\ResponseService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/item/formation")
  */
-class FormationController extends PoppySeedPetsItemController
+class FormationController extends AbstractController
 {
     /**
      * @Route("/{inventory}/read", methods={"POST"})
@@ -18,7 +19,7 @@ class FormationController extends PoppySeedPetsItemController
      */
     public function read(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'formation/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'formation/#/read');
 
         return $responseService->itemActionSuccess('# Formation
 

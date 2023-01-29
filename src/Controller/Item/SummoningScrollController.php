@@ -15,13 +15,14 @@ use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/summoningScroll")
  */
-class SummoningScrollController extends PoppySeedPetsItemController
+class SummoningScrollController extends AbstractController
 {
     /**
      * @Route("/{inventory}/unfriendly", methods={"POST"})
@@ -34,7 +35,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'summoningScroll/#/unfriendly');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'summoningScroll/#/unfriendly');
 
         $em->remove($inventory);
 
@@ -75,7 +76,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'summoningScroll/#/unfriendly2');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'summoningScroll/#/unfriendly2');
 
         $em->remove($inventory);
 
@@ -115,7 +116,7 @@ class SummoningScrollController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'summoningScroll/#/friendly');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'summoningScroll/#/friendly');
 
         $em->remove($inventory);
 

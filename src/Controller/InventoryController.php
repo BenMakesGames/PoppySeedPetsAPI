@@ -17,6 +17,7 @@ use App\Service\RecyclingService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -27,7 +28,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/inventory")
  */
-class InventoryController extends PoppySeedPetsController
+class InventoryController extends AbstractController
 {
     /**
      * @Route("/my", methods={"GET"})

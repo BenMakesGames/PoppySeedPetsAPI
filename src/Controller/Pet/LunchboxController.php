@@ -1,13 +1,13 @@
 <?php
 namespace App\Controller\Pet;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\Inventory;
 use App\Entity\LunchboxItem;
 use App\Entity\Pet;
 use App\Enum\LocationEnum;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/pet")
  */
-class LunchboxController extends PoppySeedPetsController
+class LunchboxController extends AbstractController
 {
     /**
      * @Route("/{pet}/putInLunchbox/{inventory}", methods={"POST"}, requirements={"pet"="\d+", "inventory"="\d+"})

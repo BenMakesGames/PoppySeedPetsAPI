@@ -2,6 +2,7 @@
 
 namespace App\Controller\Item\ChooseAPet;
 
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -34,7 +35,7 @@ class YggdrasilBranch extends ChooseAPetController
         IRandom $rng
     )
     {
-        $this->validateInventory($inventory, 'yggdrasilBranch');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'yggdrasilBranch');
 
         $pet = $this->getPet($request, $petRepository);
         $petChanges = new PetChanges($pet);

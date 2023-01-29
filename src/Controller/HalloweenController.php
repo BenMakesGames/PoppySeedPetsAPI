@@ -16,6 +16,7 @@ use App\Service\Holidays\HalloweenService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -27,7 +28,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 /**
  * @Route("/halloween")
  */
-class HalloweenController extends PoppySeedPetsController
+class HalloweenController extends AbstractController
 {
     /**
      * @Route(methods={"GET"})

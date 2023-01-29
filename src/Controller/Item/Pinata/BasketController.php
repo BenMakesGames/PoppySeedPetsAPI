@@ -1,20 +1,21 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/basket")
  */
-class BasketController extends PoppySeedPetsItemController
+class BasketController extends AbstractController
 {
     /**
      * @Route("/fish/{inventory}/open", methods={"POST"})
@@ -25,8 +26,8 @@ class BasketController extends PoppySeedPetsItemController
         EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
-        $this->validateInventory($inventory, 'basket/fish/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'basket/fish/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
         $location = $inventory->getLocation();
@@ -68,8 +69,8 @@ class BasketController extends PoppySeedPetsItemController
         EntityManagerInterface $em
     )
     {
-        $this->validateInventory($inventory, 'basket/fruit/#/open');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'basket/fruit/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
         $location = $inventory->getLocation();
@@ -96,8 +97,8 @@ class BasketController extends PoppySeedPetsItemController
         EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
-        $this->validateInventory($inventory, 'basket/flower/#/loot');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'basket/flower/#/loot');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
         $location = $inventory->getLocation();

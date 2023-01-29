@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Model\ItemQuantity;
@@ -12,13 +12,14 @@ use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/animalPouch")
  */
-class AnimalPouchController extends PoppySeedPetsItemController
+class AnimalPouchController extends AbstractController
 {
     /**
      * @Route("/magpie/{inventory}/open", methods={"POST"})
@@ -32,7 +33,7 @@ class AnimalPouchController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'animalPouch/magpie/#/open');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'animalPouch/magpie/#/open');
 
         $possibleItems = [
             'Fool\'s Spice',
@@ -74,7 +75,7 @@ class AnimalPouchController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'animalPouch/raccoon/#/open');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'animalPouch/raccoon/#/open');
 
         $possibleItems = [
             'Beans',

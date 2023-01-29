@@ -11,7 +11,7 @@ class PetSpeciesFilterService
 
     public const PAGE_SIZE = 20;
 
-    private $repository;
+    private PetSpeciesRepository $repository;
     private ?User $user;
 
     public function __construct(PetSpeciesRepository $petSpeciesRepository)

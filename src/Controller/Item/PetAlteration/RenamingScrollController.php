@@ -1,13 +1,14 @@
 <?php
 namespace App\Controller\Item\PetAlteration;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\MeritEnum;
 use App\Functions\ProfanityFilterFunctions;
 use App\Repository\PetRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -17,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/renamingScroll")
  */
-class RenamingScrollController extends PoppySeedPetsItemController
+class RenamingScrollController extends AbstractController
 {
     /**
      * @Route("/{inventory}/read", methods={"PATCH"})
@@ -30,7 +31,7 @@ class RenamingScrollController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'renamingScroll');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'renamingScroll');
 
         $petId = $request->request->getInt('pet', 0);
         $pet = $petRepository->find($petId);

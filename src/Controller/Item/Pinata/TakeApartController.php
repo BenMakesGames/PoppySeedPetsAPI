@@ -1,19 +1,20 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/item/takeApart")
  */
-class TakeApartController extends PoppySeedPetsItemController
+class TakeApartController extends AbstractController
 {
     /**
      * @Route("/{inventory}", methods={"POST"})
@@ -24,8 +25,8 @@ class TakeApartController extends PoppySeedPetsItemController
         InventoryService $inventoryService
     )
     {
-        $this->validateInventory($inventory, 'takeApart/#');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'takeApart/#');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
 

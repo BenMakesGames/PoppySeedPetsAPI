@@ -10,13 +10,14 @@ use App\Repository\ItemRepository;
 use App\Service\ResponseService;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/sharuminyinka")
  */
-class SharuminyinkaController extends PoppySeedPetsItemController
+class SharuminyinkaController extends AbstractController
 {
     /**
      * @Route("/{inventory}/createHope", methods={"POST"})
@@ -27,7 +28,7 @@ class SharuminyinkaController extends PoppySeedPetsItemController
         EntityManagerInterface $em, InventoryRepository $inventoryRepository
     )
     {
-        $this->validateInventory($inventory, 'sharuminyinka/#/createHope');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'sharuminyinka/#/createHope');
 
         $user = $this->getUser();
 
@@ -70,7 +71,7 @@ class SharuminyinkaController extends PoppySeedPetsItemController
         EntityManagerInterface $em
     )
     {
-        $this->validateInventory($inventory, 'sharuminyinka/#/createMemory');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'sharuminyinka/#/createMemory');
 
         $user = $this->getUser();
 

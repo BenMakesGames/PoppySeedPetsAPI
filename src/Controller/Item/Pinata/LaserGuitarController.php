@@ -1,18 +1,19 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/laserGuitar")
  */
-class LaserGuitarController extends PoppySeedPetsItemController
+class LaserGuitarController extends AbstractController
 {
     /**
      * @Route("/{inventory}/overload", methods={"POST"})
@@ -23,8 +24,8 @@ class LaserGuitarController extends PoppySeedPetsItemController
         EntityManagerInterface $em
     )
     {
-        $this->validateInventory($inventory, 'laserGuitar/#/overload');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'laserGuitar/#/overload');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
         $location = $inventory->getLocation();

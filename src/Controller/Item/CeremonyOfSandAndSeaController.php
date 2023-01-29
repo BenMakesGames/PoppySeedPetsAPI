@@ -7,6 +7,7 @@ use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/ceremonyOfSandAndSea")
  */
-class CeremonyOfSandAndSeaController extends PoppySeedPetsItemController
+class CeremonyOfSandAndSeaController extends AbstractController
 {
     /**
      * @Route("/{inventory}", methods={"POST"})
@@ -26,7 +27,7 @@ class CeremonyOfSandAndSeaController extends PoppySeedPetsItemController
         UserQuestRepository $userQuestRepository, ItemRepository $itemRepository
     )
     {
-        $this->validateInventory($inventory, 'ceremonyOfSandAndSea/#');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'ceremonyOfSandAndSea/#');
 
         $user = $this->getUser();
 

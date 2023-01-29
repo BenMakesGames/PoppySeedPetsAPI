@@ -1,16 +1,17 @@
 <?php
 namespace App\Controller\Item\Book;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/candyMakerCookbook")
  */
-class CandyMakersCookbookController extends PoppySeedPetsItemController
+class CandyMakersCookbookController extends AbstractController
 {
     /**
      * @Route("/{inventory}/read", methods={"POST"})
@@ -18,7 +19,7 @@ class CandyMakersCookbookController extends PoppySeedPetsItemController
      */
     public function read(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'candyMakerCookbook/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'candyMakerCookbook/#/read');
 
         return $responseService->itemActionSuccess('# Candy Maker\'s Cookbook
 

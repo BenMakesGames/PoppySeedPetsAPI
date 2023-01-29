@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Book;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Recipe;
 use App\Functions\ArrayFunctions;
@@ -10,13 +10,14 @@ use App\Repository\RecipeRepository;
 use App\Service\CookingService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/melt")
  */
-class MeltController extends PoppySeedPetsItemController
+class MeltController extends AbstractController
 {
     /**
      * @return Recipe[]
@@ -40,7 +41,7 @@ class MeltController extends PoppySeedPetsItemController
         RecipeRepository $recipeRepository
     )
     {
-        $this->validateInventory($inventory, 'melt/#/upload');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'melt/#/upload');
 
         $recipes = $this->getRecipes($recipeRepository);
 
@@ -58,7 +59,7 @@ class MeltController extends PoppySeedPetsItemController
         InventoryService $inventoryService
     )
     {
-        $this->validateInventory($inventory, 'melt/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'melt/#/read');
 
         $recipes = $this->getRecipes($recipeRepository);
 

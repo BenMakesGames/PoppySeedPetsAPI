@@ -1,17 +1,18 @@
 <?php
 namespace App\Controller\Item\Book;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\CookingService;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/pieRecipes")
  */
-class PieRecipesController extends PoppySeedPetsItemController
+class PieRecipesController extends AbstractController
 {
     /**
      * @Route("/{inventory}/upload", methods={"POST"})
@@ -21,9 +22,11 @@ class PieRecipesController extends PoppySeedPetsItemController
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService
     )
     {
-        $this->validateInventory($inventory, 'pieRecipes/#/upload');
+        $user = $this->getUser();
 
-        $message = $cookingService->showRecipeNamesToCookingBuddy($this->getUser(), [
+        ItemControllerHelpers::validateInventory($user, $inventory, 'pieRecipes/#/upload');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Pie Crust',
             'Blackberry Pie',
             'Blueberry Pie',
@@ -42,7 +45,7 @@ class PieRecipesController extends PoppySeedPetsItemController
      */
     public function read(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'pieRecipes/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'pieRecipes/#/read');
 
         return $responseService->itemActionSuccess('Who are you, and how did you come by a copy of my book, I wonder. Did you find it washed up on some strange shore? Pry it from the hands of a hungry Preta? Or perhaps you just bought it from a bookstore?
 

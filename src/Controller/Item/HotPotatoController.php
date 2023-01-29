@@ -8,13 +8,14 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/hotPotato")
  */
-class HotPotatoController extends PoppySeedPetsItemController
+class HotPotatoController extends AbstractController
 {
     /**
      * @Route("/{inventory}/toss", methods={"POST"})
@@ -25,7 +26,7 @@ class HotPotatoController extends PoppySeedPetsItemController
         InventoryService $inventoryService, Squirrel3 $squirrel3, HotPotatoService $hotPotatoService
     )
     {
-        $this->validateInventory($inventory, 'hotPotato/#/toss');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'hotPotato/#/toss');
 
         $user = $this->getUser();
 
@@ -63,7 +64,7 @@ class HotPotatoController extends PoppySeedPetsItemController
         InventoryService $inventoryService, Squirrel3 $squirrel3, HotPotatoService $hotPotatoService
     )
     {
-        $this->validateInventory($inventory, 'hotPotato/#/tossChocolateBomb');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'hotPotato/#/tossChocolateBomb');
 
         $user = $this->getUser();
 
@@ -116,7 +117,7 @@ class HotPotatoController extends PoppySeedPetsItemController
         Squirrel3 $squirrel3, HotPotatoService $hotPotatoService, TransactionService $transactionService
     )
     {
-        $this->validateInventory($inventory, 'hotPotato/#/tossHongbao');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'hotPotato/#/tossHongbao');
 
         $user = $this->getUser();
 

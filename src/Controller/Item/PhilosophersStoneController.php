@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
@@ -15,6 +16,7 @@ use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,7 +25,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/philosophersStone")
  */
-class PhilosophersStoneController extends PoppySeedPetsItemController
+class PhilosophersStoneController extends AbstractController
 {
     private const PLUSHIES = [
         'Bulbun Plushy' => [ 'species' => 'Bulbun', 'colorA' => 'f8d592', 'colorB' => 'd4b36e' ],
@@ -46,7 +48,7 @@ class PhilosophersStoneController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'philosophersStone');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'philosophersStone');
 
         $itemId = $request->request->getInt('plushy');
 

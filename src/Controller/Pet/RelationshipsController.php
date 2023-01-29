@@ -1,13 +1,13 @@
 <?php
 namespace App\Controller\Pet;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\Pet;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
 use App\Service\Filter\PetRelationshipFilterService;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 /**
  * @Route("/pet")
  */
-class RelationshipsController extends PoppySeedPetsController
+class RelationshipsController extends AbstractController
 {
     /**
      * @Route("/{pet}/relationships", methods={"GET"}, requirements={"pet"="\d+"})

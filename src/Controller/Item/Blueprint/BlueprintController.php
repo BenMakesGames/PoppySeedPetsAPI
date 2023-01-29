@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Blueprint;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Greenhouse;
 use App\Entity\Inventory;
 use App\Entity\Pet;
@@ -17,6 +17,7 @@ use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -26,7 +27,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item")
  */
-class BlueprintController extends PoppySeedPetsItemController
+class BlueprintController extends AbstractController
 {
     /**
      * @Route("/installComposter/{inventory}", methods={"POST"})
@@ -37,7 +38,7 @@ class BlueprintController extends PoppySeedPetsItemController
         PetExperienceService $petExperienceService, EntityManagerInterface $em
     )
     {
-        $this->validateInventory($inventory, 'installComposter');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'installComposter');
 
         $user = $this->getUser();
 
@@ -80,7 +81,7 @@ class BlueprintController extends PoppySeedPetsItemController
         PetRepository $petRepository, PetExperienceService $petExperienceService
     )
     {
-        $this->validateInventory($inventory, 'basementBlueprint');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'basementBlueprint');
 
         $user = $this->getUser();
 
@@ -120,7 +121,7 @@ class BlueprintController extends PoppySeedPetsItemController
         PetRepository $petRepository
     )
     {
-        $this->validateInventory($inventory, 'beehiveBlueprint');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'beehiveBlueprint');
 
         $user = $this->getUser();
 
@@ -181,7 +182,7 @@ class BlueprintController extends PoppySeedPetsItemController
         PetRepository $petRepository, PetExperienceService $petExperienceService
     )
     {
-        $this->validateInventory($inventory, 'greenhouseDeed');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'greenhouseDeed');
 
         $user = $this->getUser();
 
@@ -223,7 +224,7 @@ class BlueprintController extends PoppySeedPetsItemController
         PetRepository $petRepository, InventoryRepository $inventoryRepository, PetExperienceService $petExperienceService
     )
     {
-        $this->validateInventory($inventory, 'birdBathBlueprint');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'birdBathBlueprint');
 
         $user = $this->getUser();
 

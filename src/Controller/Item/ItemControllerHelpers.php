@@ -1,36 +1,38 @@
 <?php
 namespace App\Controller\Item;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\LocationEnum;
-use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
-use App\Service\Squirrel3;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
-abstract class PoppySeedPetsItemController extends PoppySeedPetsController
+class ItemControllerHelpers
 {
-    protected function validateInventory(Inventory $inventory, string $action)
+    public static function validateInventory(?User $user, Inventory $inventory, string $action)
     {
-        if(!$this->getUser() || $this->getUser()->getId() !== $inventory->getOwner()->getId() || !$inventory->getItem()->hasUseAction($action))
+        if(!$user || $user->getId() !== $inventory->getOwner()->getId() || !$inventory->getItem()->hasUseAction($action))
             throw new UnprocessableEntityHttpException('That item no longer exists, or cannot be used in that way.');
     }
 
-    protected function validateHouseSpace(Inventory $inventory, InventoryService $inventoryService)
+    public static function validateHouseSpace(Inventory $inventory, InventoryService $inventoryService)
     {
         if($inventory->getLocation() !== LocationEnum::HOME)
             return;
 
-        if($inventoryService->countTotalInventory($inventory->getOwner(), LocationEnum::HOME) > 150)
-        {
-            $squirrel3 = new Squirrel3();
+        $itemsInHouse = $inventoryService->countTotalInventory($inventory->getOwner(), LocationEnum::HOME);
 
-            throw new UnprocessableEntityHttpException($squirrel3->rngNextFromArray([
+        if($itemsInHouse > 150)
+        {
+            $index = $itemsInHouse + $inventory->getOwner()->getId();
+
+            $message = [
                 'Whoa! You\'ve already over 150 items?! The server might LITERALLY EXPLODE if I let you open this!',
                 'Waitwaitwaitwait... over 150 items? Sorry, you\'re already WAY over the limit!',
                 'Whaaaat? You\'re over 150 items already? Dang! You know you\'re technically not supposed to go over 100, right??',
-            ]));
+            ][$index % 3];
+
+            throw new UnprocessableEntityHttpException($message);
         }
     }
 }

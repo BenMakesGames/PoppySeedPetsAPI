@@ -1,16 +1,17 @@
 <?php
 namespace App\Controller\Item\Book;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/eggBook")
  */
-class EggController extends PoppySeedPetsItemController
+class EggController extends AbstractController
 {
     /**
      * @Route("/{inventory}/listen", methods={"POST"})
@@ -18,7 +19,7 @@ class EggController extends PoppySeedPetsItemController
      */
     public function read(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'eggBook/#/listen');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'eggBook/#/listen');
 
         return $responseService->itemActionSuccess('\*hiiiiiisssss\*
 Egg Book.

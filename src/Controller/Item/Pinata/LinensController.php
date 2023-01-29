@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
 use App\Functions\ArrayFunctions;
@@ -11,6 +11,7 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -18,7 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/linensAndThings")
  */
-class LinensController extends PoppySeedPetsItemController
+class LinensController extends AbstractController
 {
     /**
      * @Route("/{inventory}/rummage", methods={"POST"})
@@ -29,8 +30,8 @@ class LinensController extends PoppySeedPetsItemController
         EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
-        $this->validateInventory($inventory, 'linensAndThings/#/rummage');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'linensAndThings/#/rummage');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
         $location = $inventory->getLocation();
@@ -62,7 +63,7 @@ class LinensController extends PoppySeedPetsItemController
         EntityManagerInterface $em, TraderRepository $traderRepository
     )
     {
-        $this->validateInventory($inventory, 'linensAndThings/#/giveToTrader');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'linensAndThings/#/giveToTrader');
 
         $user = $this->getUser();
 

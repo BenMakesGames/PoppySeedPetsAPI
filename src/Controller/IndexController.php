@@ -3,12 +3,13 @@ namespace App\Controller;
 
 use App\Annotations\DoesNotRequireHouseHours;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("")
  */
-class IndexController extends PoppySeedPetsController
+class IndexController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()

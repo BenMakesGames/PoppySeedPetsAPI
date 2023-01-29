@@ -1,17 +1,18 @@
 <?php
 namespace App\Controller\Item\Book;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\CookingService;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/iceCream")
  */
-class IceCreamController extends PoppySeedPetsItemController
+class IceCreamController extends AbstractController
 {
     /**
      * @Route("/{inventory}/upload", methods={"POST"})
@@ -21,7 +22,7 @@ class IceCreamController extends PoppySeedPetsItemController
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService
     )
     {
-        $this->validateInventory($inventory, 'iceCream/#/upload');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'iceCream/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($this->getUser(), [
             'Blackberry Ice Cream',
@@ -46,7 +47,7 @@ class IceCreamController extends PoppySeedPetsItemController
      */
     public function read(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'iceCream/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'iceCream/#/read');
 
         return $responseService->itemActionSuccess('# We All Scream
 

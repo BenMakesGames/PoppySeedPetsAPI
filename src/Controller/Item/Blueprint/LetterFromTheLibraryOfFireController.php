@@ -1,10 +1,9 @@
 <?php
 namespace App\Controller\Item\Blueprint;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Dragon;
 use App\Entity\Inventory;
-use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Repository\DragonRepository;
 use App\Service\InventoryService;
@@ -12,13 +11,14 @@ use App\Service\PetAssistantService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/letterFromTheLibraryOfFire")
  */
-class LetterFromTheLibraryOfFireController extends PoppySeedPetsItemController
+class LetterFromTheLibraryOfFireController extends AbstractController
 {
     /**
      * @Route("/{inventory}/read", methods={"POST"})
@@ -28,7 +28,7 @@ class LetterFromTheLibraryOfFireController extends PoppySeedPetsItemController
         Inventory $inventory, ResponseService $responseService
     )
     {
-        $this->validateInventory($inventory, 'letterFromTheLibraryOfFire/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'letterFromTheLibraryOfFire/#/read');
 
         $user = $this->getUser();
 
@@ -71,7 +71,7 @@ The Library of Fire is always open. We look forward to seeing you!');
         PetAssistantService $petAssistantService
     )
     {
-        $this->validateInventory($inventory, 'letterFromTheLibraryOfFire/#/meltSeal');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'letterFromTheLibraryOfFire/#/meltSeal');
 
         $user = $this->getUser();
         $fireplace = $user->getFireplace();

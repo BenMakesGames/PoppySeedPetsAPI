@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
@@ -10,12 +10,13 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/item/pspBirthdayPresent")
  */
-class PSPBirthdayPresentController extends PoppySeedPetsItemController
+class PSPBirthdayPresentController extends AbstractController
 {
     /**
      * @Route("/{inventory}/open", methods={"POST"})
@@ -26,7 +27,7 @@ class PSPBirthdayPresentController extends PoppySeedPetsItemController
         EntityManagerInterface $em
     )
     {
-        $this->validateInventory($inventory, 'pspBirthdayPresent/#/open');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'pspBirthdayPresent/#/open');
 
         $user = $this->getUser();
 

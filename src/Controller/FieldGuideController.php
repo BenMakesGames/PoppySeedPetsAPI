@@ -7,6 +7,7 @@ use App\Repository\FieldGuideEntryRepository;
 use App\Service\Filter\MuseumFilterService;
 use App\Service\Filter\UserFieldGuideEntryFilterService;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/fieldGuide")
  */
-class FieldGuideController extends PoppySeedPetsController
+class FieldGuideController extends AbstractController
 {
     /**
      * @Route("", methods={"GET"})

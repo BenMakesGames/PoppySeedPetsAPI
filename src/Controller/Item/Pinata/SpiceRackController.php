@@ -1,20 +1,21 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/spiceRack")
  */
-class SpiceRackController extends PoppySeedPetsItemController
+class SpiceRackController extends AbstractController
 {
     /**
      * @Route("/{inventory}/loot", methods={"POST"})
@@ -25,8 +26,8 @@ class SpiceRackController extends PoppySeedPetsItemController
         EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
-        $this->validateInventory($inventory, 'spiceRack/#/loot');
-        $this->validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'spiceRack/#/loot');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $user = $this->getUser();
 

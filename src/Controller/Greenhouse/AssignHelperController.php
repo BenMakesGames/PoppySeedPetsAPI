@@ -1,20 +1,20 @@
 <?php
 namespace App\Controller\Greenhouse;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\Pet;
 use App\Enum\SerializationGroupEnum;
 use App\Service\GreenhouseService;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/greenhouse")
  */
-class AssignHelperController extends PoppySeedPetsController
+class AssignHelperController extends AbstractController
 {
     /**
      * @Route("/assignHelper/{pet}", methods={"POST"})

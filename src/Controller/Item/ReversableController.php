@@ -6,6 +6,7 @@ use App\Repository\ItemRepository;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -13,7 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/reversable")
  */
-class ReversableController extends PoppySeedPetsItemController
+class ReversableController extends AbstractController
 {
     private const FLIPS = [
         'Small Plastic Bucket' => 'Upside-down Plastic Bucket',
@@ -33,7 +34,7 @@ class ReversableController extends PoppySeedPetsItemController
         Squirrel3 $squirrel3
     )
     {
-        $this->validateInventory($inventory, 'reversable/#/flip');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'reversable/#/flip');
 
         $oldItemName = $inventory->getItem()->getName();
 

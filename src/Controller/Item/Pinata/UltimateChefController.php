@@ -1,19 +1,20 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/ultimateChef")
  */
-class UltimateChefController extends PoppySeedPetsItemController
+class UltimateChefController extends AbstractController
 {
     /**
      * @Route("/{inventory}/read", methods={"POST"})
@@ -24,7 +25,7 @@ class UltimateChefController extends PoppySeedPetsItemController
         EntityManagerInterface $em
     )
     {
-        $this->validateInventory($inventory, 'ultimateChef/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'ultimateChef/#/read');
 
         $user = $this->getUser();
 

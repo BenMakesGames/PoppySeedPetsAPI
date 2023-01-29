@@ -1,16 +1,17 @@
 <?php
 namespace App\Controller\Item\Book;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/grandparootSecrets")
  */
-class GrandparootSecretsController extends PoppySeedPetsItemController
+class GrandparootSecretsController extends AbstractController
 {
     /**
      * @Route("/{inventory}/read", methods={"POST"})
@@ -18,7 +19,7 @@ class GrandparootSecretsController extends PoppySeedPetsItemController
      */
     public function read(Inventory $inventory, ResponseService $responseService)
     {
-        $this->validateInventory($inventory, 'grandparootSecrets/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'grandparootSecrets/#/read');
 
         return $responseService->itemActionSuccess('# Unlocking the Secrets of Grandparoot
 

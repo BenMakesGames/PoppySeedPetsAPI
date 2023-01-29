@@ -6,13 +6,14 @@ use App\Entity\Inventory;
 use App\Repository\ItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/butterknife")
  */
-class ButterknifeController extends PoppySeedPetsItemController
+class ButterknifeController extends AbstractController
 {
     /**
      * @Route("/{inventory}/mold", methods={"POST"})
@@ -22,7 +23,7 @@ class ButterknifeController extends PoppySeedPetsItemController
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, ItemRepository $itemRepository
     )
     {
-        $this->validateInventory($inventory, 'butterknife/#/mold');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'butterknife/#/mold');
 
         $butter = $itemRepository->findOneByName('Butter');
 

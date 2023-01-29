@@ -1,18 +1,19 @@
 <?php
 namespace App\Controller\Item\Book;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Repository\RecipeRepository;
 use App\Service\CookingService;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/fruitJuice")
  */
-class FruitJuiceController extends PoppySeedPetsItemController
+class FruitJuiceController extends AbstractController
 {
     private const RECIPES = [
         'Red Juice, and Pectin',
@@ -32,9 +33,11 @@ class FruitJuiceController extends PoppySeedPetsItemController
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService
     )
     {
-        $this->validateInventory($inventory, 'fruitJuice/#/upload');
+        $user = $this->getUser();
 
-        $message = $cookingService->showRecipeNamesToCookingBuddy($this->getUser(), self::RECIPES);
+        ItemControllerHelpers::validateInventory($user, $inventory, 'fruitJuice/#/upload');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($user, self::RECIPES);
 
         return $responseService->itemActionSuccess($message);
     }
@@ -47,7 +50,7 @@ class FruitJuiceController extends PoppySeedPetsItemController
         Inventory $inventory, ResponseService $responseService, RecipeRepository $recipeRepository
     )
     {
-        $this->validateInventory($inventory, 'fruitJuice/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'fruitJuice/#/read');
 
         return $responseService->itemActionSuccess('### Fresh-squeezed Fruit Juice
 

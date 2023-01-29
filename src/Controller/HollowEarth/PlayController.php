@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller\HollowEarth;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\HollowEarthPlayer;
 use App\Enum\HollowEarthActionTypeEnum;
 use App\Enum\SerializationGroupEnum;
@@ -11,6 +10,7 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -21,7 +21,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/hollowEarth")
  */
-class PlayController extends PoppySeedPetsController
+class PlayController extends AbstractController
 {
     /**
      * @Route("/continue", methods={"POST"})

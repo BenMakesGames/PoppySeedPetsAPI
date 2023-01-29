@@ -11,13 +11,14 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/magicHourglass")
  */
-class MagicHourglassController extends PoppySeedPetsItemController
+class MagicHourglassController extends AbstractController
 {
     /**
      * @Route("/{inventory}/shatter", methods={"POST"})
@@ -29,7 +30,7 @@ class MagicHourglassController extends PoppySeedPetsItemController
         Squirrel3 $squirrel3
     )
     {
-        $this->validateInventory($inventory, 'magicHourglass/#/shatter');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'magicHourglass/#/shatter');
 
         if($inventory->getLocation() !== LocationEnum::HOME)
         {

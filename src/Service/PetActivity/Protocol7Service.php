@@ -14,6 +14,7 @@ use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetQuestRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -21,14 +22,14 @@ use App\Service\TransactionService;
 
 class Protocol7Service
 {
-    private $responseService;
-    private $petExperienceService;
-    private $inventoryService;
-    private $transactionService;
-    private $guildService;
-    private $itemRepository;
-    private $squirrel3;
-    private $petQuestRepository;
+    private ResponseService $responseService;
+    private PetExperienceService $petExperienceService;
+    private InventoryService $inventoryService;
+    private TransactionService $transactionService;
+    private GuildService $guildService;
+    private ItemRepository $itemRepository;
+    private IRandom $squirrel3;
+    private PetQuestRepository $petQuestRepository;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(

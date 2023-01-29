@@ -14,13 +14,14 @@ use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/goldRing")
  */
-class GoldRingController extends PoppySeedPetsItemController
+class GoldRingController extends AbstractController
 {
     /**
      * @Route("/{inventory}/smash", methods={"POST"})
@@ -31,7 +32,7 @@ class GoldRingController extends PoppySeedPetsItemController
         EntityManagerInterface $em
     )
     {
-        $this->validateInventory($inventory, 'goldRing/#/smash');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'goldRing/#/smash');
 
         $inventory->changeItem($itemRepository->findOneByName('Gold Bar'));
 
@@ -71,7 +72,7 @@ class GoldRingController extends PoppySeedPetsItemController
         PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
-        $this->validateInventory($inventory, 'goldRing/#/collect100');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'goldRing/#/collect100');
 
         $goldRingItem = $inventory->getItem();
 

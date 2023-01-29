@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Repository\UserStatsRepository;
@@ -9,6 +9,7 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/rock")
  */
-class RockController extends PoppySeedPetsItemController
+class RockController extends AbstractController
 {
     /**
      * @Route("/{rock}/smash", methods={"POST"})
@@ -30,8 +31,8 @@ class RockController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($rock, 'rock/#/smash');
-        $this->validateHouseSpace($rock, $inventoryService);
+        ItemControllerHelpers::validateInventory($this->getUser(), $rock, 'rock/#/smash');
+        ItemControllerHelpers::validateHouseSpace($rock, $inventoryService);
 
         $location = $rock->getLocation();
         $lockedToOwner = $rock->getLockedToOwner();

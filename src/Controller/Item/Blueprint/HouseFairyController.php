@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Blueprint;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Fireplace;
 use App\Entity\Inventory;
 use App\Enum\UserStatEnum;
@@ -12,13 +12,14 @@ use App\Repository\UserStatsRepository;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/fairy")
  */
-class HouseFairyController extends PoppySeedPetsItemController
+class HouseFairyController extends AbstractController
 {
     public const FAIRY_NAMES = [
         'Ævintýri', 'Alfrigg', 'Ant', 'Ao', 'Aphid', 'Apricot', 'Arethusa', 'Ariel',
@@ -60,7 +61,7 @@ class HouseFairyController extends PoppySeedPetsItemController
         EntityManagerInterface $em
     )
     {
-        $this->validateInventory($inventory, 'fairy/#/hello');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'fairy/#/hello');
 
         $user = $this->getUser();
 
@@ -115,7 +116,7 @@ class HouseFairyController extends PoppySeedPetsItemController
         Squirrel3 $squirrel3
     )
     {
-        $this->validateInventory($inventory, 'fairy/#/buildFireplace');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'fairy/#/buildFireplace');
 
         $user = $this->getUser();
 
@@ -172,7 +173,7 @@ class HouseFairyController extends PoppySeedPetsItemController
         Inventory $inventory, ResponseService $responseService
     )
     {
-        $this->validateInventory($inventory, 'fairy/#/quintessence');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'fairy/#/quintessence');
 
         return $responseService->itemActionSuccess(
             '"I mean, it\'s kind of like a currency in the Umbra. And a food," ' . $this->fairyName($inventory) . ' explains. "All magical creatures want it. Need it. If you\'re looking to get some, honestly, trading with a magical creature is one of the most reliable ways. Or you could beat up a ghost, werewolf, vampire, or some other awful creature like that."'

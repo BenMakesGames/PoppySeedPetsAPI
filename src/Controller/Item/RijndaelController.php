@@ -6,6 +6,7 @@ use App\Repository\ItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -14,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/item")
  */
-class RijndaelController extends PoppySeedPetsItemController
+class RijndaelController extends AbstractController
 {
     /**
      * @Route("/rijndael/{inventory}", methods={"POST"})
@@ -25,7 +26,7 @@ class RijndaelController extends PoppySeedPetsItemController
         ItemRepository $itemRepository
     )
     {
-        $this->validateInventory($inventory, 'rijndael');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'rijndael');
 
         $searchForId = $request->request->get('itemId');
 

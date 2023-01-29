@@ -5,13 +5,14 @@ use App\Entity\Inventory;
 use App\Repository\ItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/password")
  */
-class PasswordController extends PoppySeedPetsItemController
+class PasswordController extends AbstractController
 {
     /**
      * @Route("/{inventory}/erase", methods={"POST"})
@@ -24,7 +25,7 @@ class PasswordController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'password/#/erase');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'password/#/erase');
 
         $string = $itemRepository->findOneByName('String');
 

@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Model\ItemQuantity;
@@ -11,13 +11,14 @@ use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/album")
  */
-class AlbumController extends PoppySeedPetsItemController
+class AlbumController extends AbstractController
 {
     public const GENRES = [
         'Salsa',
@@ -37,7 +38,7 @@ class AlbumController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'album/single/#/listen');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'album/single/#/listen');
 
         $location = $inventory->getLocation();
 
@@ -68,7 +69,7 @@ class AlbumController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'album/EP/#/listen');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'album/EP/#/listen');
 
         $location = $inventory->getLocation();
 
@@ -101,7 +102,7 @@ class AlbumController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'album/LP/#/listen');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'album/LP/#/listen');
 
         $location = $inventory->getLocation();
 

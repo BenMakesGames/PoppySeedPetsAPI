@@ -13,6 +13,7 @@ use App\Service\Squirrel3;
 use App\Service\StoryService;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -20,7 +21,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/merchantFish")
  */
-class MerchantFishController extends PoppySeedPetsItemController
+class MerchantFishController extends AbstractController
 {
     /**
      * @Route("/{inventory}/talk", methods={"POST"})
@@ -31,7 +32,7 @@ class MerchantFishController extends PoppySeedPetsItemController
         StoryService $storyService, Request $request, TraderService $traderService, InventoryService $inventoryService
     )
     {
-        $this->validateInventory($inventory, 'merchantFish/#/talk');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'merchantFish/#/talk');
 
         $user = $this->getUser();
 

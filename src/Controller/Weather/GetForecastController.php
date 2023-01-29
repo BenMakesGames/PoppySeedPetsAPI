@@ -1,19 +1,19 @@
 <?php
 namespace App\Controller\Weather;
 
-use App\Controller\PoppySeedPetsController;
 use App\Enum\SerializationGroupEnum;
 use App\Model\AvailableHolidayBox;
 use App\Service\PlazaService;
 use App\Service\ResponseService;
 use App\Service\WeatherService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/weather")
  */
-class GetForecastController extends PoppySeedPetsController
+class GetForecastController extends AbstractController
 {
     /**
      * @Route("/forecast", methods={"GET"})

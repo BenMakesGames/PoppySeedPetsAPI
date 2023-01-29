@@ -7,6 +7,7 @@ use App\Enum\StoryEnum;
 use App\Service\ResponseService;
 use App\Service\StoryService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -14,7 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/tuningFork")
  */
-class TuningForkController extends PoppySeedPetsItemController
+class TuningForkController extends AbstractController
 {
     /**
      * @Route("/{inventory}/listen", methods={"POST"})
@@ -25,7 +26,7 @@ class TuningForkController extends PoppySeedPetsItemController
         StoryService $storyService, Request $request
     )
     {
-        $this->validateInventory($inventory, 'tuningFork/#/listen');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'tuningFork/#/listen');
 
         $user = $this->getUser();
 

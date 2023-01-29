@@ -8,13 +8,14 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/flowerbomb")
  */
-class FlowerbombController extends PoppySeedPetsItemController
+class FlowerbombController extends AbstractController
 {
     /**
      * @Route("/{inventory}/toss", methods={"POST"})
@@ -25,7 +26,7 @@ class FlowerbombController extends PoppySeedPetsItemController
         InventoryService $inventoryService, UserQuestRepository $userQuestRepository, HotPotatoService $hotPotatoService
     )
     {
-        $this->validateInventory($inventory, 'flowerbomb/#/toss');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'flowerbomb/#/toss');
 
         $user = $this->getUser();
 

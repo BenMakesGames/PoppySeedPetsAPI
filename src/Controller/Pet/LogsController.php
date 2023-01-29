@@ -1,12 +1,12 @@
 <?php
 namespace App\Controller\Pet;
 
-use App\Controller\PoppySeedPetsController;
 use App\Entity\Pet;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\PetActivityLogRepository;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -16,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/pet")
  */
-class LogsController extends PoppySeedPetsController
+class LogsController extends AbstractController
 {
     /**
      * @Route("/{pet}/logs/calendar/{year}/{month}", methods={"GET"}, requirements={"pet":"\d+", "year":"\d+", "month":"\d+"})

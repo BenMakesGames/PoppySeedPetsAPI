@@ -2,10 +2,10 @@
 
 namespace App\Controller\MonthlyStoryAdventure;
 
-use App\Controller\PoppySeedPetsController;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\MonthlyStoryAdventureFilterService;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -13,7 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/monthlyStoryAdventure")
  */
-class Search extends PoppySeedPetsController
+class Search extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"})

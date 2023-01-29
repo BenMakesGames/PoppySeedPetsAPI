@@ -1,17 +1,18 @@
 <?php
 namespace App\Controller\Item\Book;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Repository\RecipeRepository;
 use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/cooking101")
  */
-class Cooking101Controller extends PoppySeedPetsItemController
+class Cooking101Controller extends AbstractController
 {
     /**
      * @Route("/{inventory}/read", methods={"POST"})
@@ -21,7 +22,7 @@ class Cooking101Controller extends PoppySeedPetsItemController
         Inventory $inventory, ResponseService $responseService, RecipeRepository $recipeRepository
     )
     {
-        $this->validateInventory($inventory, 'cooking101/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'cooking101/#/read');
 
         $recipeCount = $recipeRepository->count([]);
 

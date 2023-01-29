@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Item\Pinata;
 
-use App\Controller\Item\PoppySeedPetsItemController;
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Functions\ArrayFunctions;
 use App\Model\ItemQuantity;
@@ -12,13 +12,14 @@ use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/tellSamarzhoustianDelights")
  */
-class TellSamarzhoustianScrollController extends PoppySeedPetsItemController
+class TellSamarzhoustianScrollController extends AbstractController
 {
     /**
      * @Route("/{inventory}/open", methods={"POST"})
@@ -31,7 +32,7 @@ class TellSamarzhoustianScrollController extends PoppySeedPetsItemController
     {
         $user = $this->getUser();
 
-        $this->validateInventory($inventory, 'tellSamarzhoustianDelights/#/open');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'tellSamarzhoustianDelights/#/open');
 
         $ingredients = [
             'Algae',
