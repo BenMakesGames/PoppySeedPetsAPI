@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\TraderRepository;
@@ -32,6 +33,7 @@ class TraderController extends AbstractController
         EntityManagerInterface $em, Squirrel3 $rng
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if(!$user->getUnlockedTrader())
@@ -68,6 +70,7 @@ class TraderController extends AbstractController
         UserQuestRepository $userQuestRepository, InventoryService $inventoryService, Request $request
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if(!$user->getUnlockedTrader())

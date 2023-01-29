@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Enum\ParkEventTypeEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\ParkEventHistoryFilterService;
@@ -32,6 +33,7 @@ class ParkController extends AbstractController
         if($parkEventType !== null && !ParkEventTypeEnum::isAValue($parkEventType))
             throw new UnprocessableEntityHttpException('"' . $parkEventType . '" is not a valid park event type!');
 
+        /** @var User $user */
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
@@ -52,7 +54,10 @@ class ParkController extends AbstractController
         Request $request, ResponseService $responseService, ParkEventHistoryFilterService $parkEventHistoryFilterService
     )
     {
-        $parkEventHistoryFilterService->setUser($this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $parkEventHistoryFilterService->setUser($user);
 
         return $responseService->success(
             $parkEventHistoryFilterService->getResults($request->query),

@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\UserStyle;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\UserStyleRepository;
@@ -28,6 +29,7 @@ class StyleController extends AbstractController
         Request $request, UserStyleFilter $userStyleFilter, ResponseService $responseService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $userStyleFilter->setUser($user);
@@ -46,6 +48,7 @@ class StyleController extends AbstractController
      */
     public function getThemes(UserStyleRepository $userStyleRepository, ResponseService $responseService)
     {
+        /** @var User $user */
         $user = $this->getUser();
         $themes = $userStyleRepository->findBy([ 'user' => $user ]);
 
@@ -60,6 +63,7 @@ class StyleController extends AbstractController
         UserStyle $theme, ResponseService $responseService, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($theme->getUser()->getId() !== $user->getId())
@@ -80,6 +84,7 @@ class StyleController extends AbstractController
         Request $request, UserStyleRepository $userStyleRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($theme->getUser()->getId() !== $user->getId())
@@ -119,6 +124,7 @@ class StyleController extends AbstractController
         EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($theme->getName() === UserStyle::CURRENT)
@@ -153,6 +159,7 @@ class StyleController extends AbstractController
         Request $request, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
         $name = trim($request->request->get('name'));
 
@@ -198,6 +205,7 @@ class StyleController extends AbstractController
         ResponseService $responseService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $style = $userStyleRepository->findCurrent($user);

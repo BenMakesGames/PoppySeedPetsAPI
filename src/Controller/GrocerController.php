@@ -31,6 +31,7 @@ class GrocerController extends AbstractController
         GrocerService $grocerService, ResponseService $responseService, UserQuestRepository $userQuestRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
         $now = new \DateTimeImmutable();
 
@@ -96,6 +97,7 @@ class GrocerController extends AbstractController
             }
         }
 
+        /** @var User $user */
         $user = $this->getUser();
         $now = new \DateTimeImmutable();
 

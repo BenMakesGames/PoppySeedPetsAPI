@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Service\ResponseService;
 use App\Service\SurveyService;
@@ -34,6 +35,7 @@ class SurveyController extends AbstractController
         if(!$questions)
             throw new NotFoundHttpException('Survey not found.');
 
+        /** @var User $user */
         $user = $this->getUser();
 
         $answers = $surveyService->getSurveyQuestionAnswers($guid, $user);
@@ -61,6 +63,7 @@ class SurveyController extends AbstractController
         if(!$questions)
             throw new NotFoundHttpException('Survey not found.');
 
+        /** @var User $user */
         $user = $this->getUser();
 
         foreach($questions as $question)
