@@ -98,6 +98,17 @@ class UserActivityLog
         return $this->tags;
     }
 
+    /**
+     * @param UserActivityLogTag[] $tags
+     */
+    public function addTags(array $tags): self
+    {
+        foreach($tags as $tag)
+            $this->addTag($tag);
+
+        return $this;
+    }
+
     public function addTag(UserActivityLogTag $tag): self
     {
         if (!$this->tags->contains($tag)) {

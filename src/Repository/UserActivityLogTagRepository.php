@@ -39,28 +39,12 @@ class UserActivityLogTagRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return UserActivityLogTag[] Returns an array of UserActivityLogTag objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('u.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?UserActivityLogTag
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @param string[] $names
+     * @return UserActivityLogTag[]
+     */
+    public function findByNames(array $names): array
+    {
+        return $this->findBy([ 'title' => $names ]);
+    }
 }

@@ -271,18 +271,4 @@ class MarketController extends AbstractController
 
         return $responseService->success($itemToBuy, [ SerializationGroupEnum::MY_INVENTORY ]);
     }
-
-    /**
-     * @Route("/transactionHistory", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function history(Request $request, ResponseService $responseService, TransactionFilterService $transactionFilterService)
-    {
-        $transactionFilterService->setUser($this->getUser());
-
-        return $responseService->success(
-            $transactionFilterService->getResults($request->query),
-            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MY_TRANSACTION ]
-        );
-    }
 }

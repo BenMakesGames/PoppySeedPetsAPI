@@ -1,24 +1,30 @@
 <?php
 namespace App\Service;
 
-use App\Entity\TransactionHistory;
 use App\Entity\User;
+use App\Entity\UserActivityLog;
 use App\Enum\UserStatEnum;
+use App\Repository\UserActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class TransactionService
 {
-    private $em;
-    private $userStatsRepository;
+    private EntityManagerInterface $em;
+    private UserStatsRepository $userStatsRepository;
+    private UserActivityLogTagRepository $activityLogTagRepository;
 
-    public function __construct(EntityManagerInterface $em, UserStatsRepository $userStatsRepository)
+    public function __construct(
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
+        UserActivityLogTagRepository $activityLogTagRepository
+    )
     {
         $this->em = $em;
         $this->userStatsRepository = $userStatsRepository;
+        $this->activityLogTagRepository = $activityLogTagRepository;
     }
 
-    public function spendMoney(User $user, int $amount, string $description, bool $countTotalMoneysSpentStat = true): TransactionHistory
+    public function spendMoney(User $user, int $amount, string $description, bool $countTotalMoneysSpentStat = true): UserActivityLog
     {
         if($amount < 1)
             throw new \InvalidArgumentException('$amount must be 1 or greater.');
@@ -31,10 +37,10 @@ class TransactionService
         if($countTotalMoneysSpentStat)
             $this->userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, $amount);
 
-        $transaction = (new TransactionHistory())
+        $transaction = (new UserActivityLog())
             ->setUser($user)
-            ->setAmount(-$amount)
-            ->setDescription($description)
+            ->setEntry($description)
+            ->addTags($this->activityLogTagRepository->findByNames([ 'Moneys' ]))
         ;
 
         $this->em->persist($transaction);
@@ -42,17 +48,17 @@ class TransactionService
         return $transaction;
     }
 
-    public function getMoney(User $user, int $amount, string $description): TransactionHistory
+    public function getMoney(User $user, int $amount, string $description): UserActivityLog
     {
         if($amount < 1)
             throw new \InvalidArgumentException('$amount must be 1 or greater.');
 
         $user->increaseMoneys($amount);
 
-        $transaction = (new TransactionHistory())
+        $transaction = (new UserActivityLog())
             ->setUser($user)
-            ->setAmount($amount)
-            ->setDescription($description)
+            ->setEntry($description)
+            ->addTags($this->activityLogTagRepository->findByNames([ 'Moneys' ]))
         ;
 
         $this->em->persist($transaction);

@@ -25,19 +25,16 @@ class TransactionHistory
 
     /**
      * @ORM\Column(type="datetime_immutable")
-     * @Groups({"myTransaction"})
      */
     private $datetime;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"myTransaction"})
      */
     private $amount;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"myTransaction"})
      */
     private $description;
 
