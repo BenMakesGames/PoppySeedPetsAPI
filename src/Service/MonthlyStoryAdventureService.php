@@ -2,8 +2,6 @@
 
 namespace App\Service;
 
-use App\Entity\Aura;
-use App\Entity\Enchantment;
 use App\Entity\MonthlyStoryAdventureStep;
 use App\Entity\Pet;
 use App\Entity\User;
