@@ -1,21 +1,14 @@
 <?php
-namespace App\Controller;
+namespace App\Controller\Market;
 
 use App\Entity\Inventory;
-use App\Entity\Item;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\InventoryModifierFunctions;
-use App\Repository\DailyMarketItemAverageRepository;
 use App\Repository\InventoryRepository;
-use App\Repository\UserQuestRepository;
-use App\Service\Filter\MarketFilterService;
-use App\Service\Filter\TransactionFilterService;
-use App\Service\InventoryService;
 use App\Service\MarketService;
-use App\Service\MuseumService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
@@ -23,7 +16,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,121 +24,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/market")
  */
-class MarketController extends AbstractController
+class BuyController extends AbstractController
 {
-    /**
-     * @Route("/history/{item}", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function getItemHistory(
-        ResponseService $responseService, DailyMarketItemAverageRepository $dailyMarketItemAverageRepository,
-
-        Item $item
-    )
-    {
-        $itemHistory = $dailyMarketItemAverageRepository->findHistoryForItem(
-            $item, \DateInterval::createFromDateString('7 days')
-        );
-
-        return $responseService->success(
-            [
-                'history' => $itemHistory,
-                'lastHistory' => $dailyMarketItemAverageRepository->findLastHistoryForItem($item)
-            ],
-            [ SerializationGroupEnum::MARKET_ITEM_HISTORY ]
-        );
-    }
-
-    /**
-     * @Route("/search", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function search(Request $request, ResponseService $responseService, MarketFilterService $marketFilterService)
-    {
-        $marketFilterService->setUser($this->getUser());
-
-        return $responseService->success(
-            $marketFilterService->getResults($request->query),
-            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MARKET_ITEM ]
-        );
-    }
-
-    /**
-     * @Route("/limits", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function getMarketLimits(ResponseService $responseService, MarketService $marketService)
-    {
-        $user = $this->getUser();
-
-        return $responseService->success([
-            'offeringBulkSellUpgrade' => $marketService->canOfferWingedKey($user),
-            'limits' => [
-                'moneysLimit' => $user->getMaxSellPrice(),
-                'itemRequired' => $marketService->getItemToRaiseLimit($user)
-            ]
-        ]);
-    }
-
-    /**
-     * @Route("/getWingedKey", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function getWingedKey(
-        ResponseService $responseService, MarketService $marketService, MuseumService $museumService,
-        InventoryService $inventoryService, UserQuestRepository $userQuestRepository,
-        EntityManagerInterface $em
-    )
-    {
-        $user = $this->getUser();
-
-        if(!$marketService->canOfferWingedKey($user))
-            throw new AccessDeniedHttpException();
-
-        $userQuestRepository->findOrCreate($user, 'Received Winged Key', false)
-            ->setValue(true)
-        ;
-
-        $comment = 'Begrudgingly given to ' . $user->getName() . ' by Argentelle.';
-
-        $museumService->forceDonateItem($user, 'Winged Key', $comment);
-
-        $inventoryService->receiveItem('Winged Key', $user, null, $comment, LocationEnum::HOME, true);
-
-        $em->flush();
-
-        return $responseService->success();
-    }
-
-    /**
-     * @Route("/limits/increase", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function increaseMarketLimits(
-        ResponseService $responseService, MarketService $marketService, InventoryService $inventoryService,
-        EntityManagerInterface $em
-    )
-    {
-        $user = $this->getUser();
-
-        $itemRequired = $marketService->getItemToRaiseLimit($user);
-
-        if(!$itemRequired)
-            throw new UnprocessableEntityHttpException('The market limits don\'t go any higher!');
-
-        if($inventoryService->loseItem($itemRequired['itemName'], $user, [ LocationEnum::HOME, LocationEnum::BASEMENT ], 1) === 0)
-            throw new UnprocessableEntityHttpException('Come back when you ACTUALLY have the item.');
-
-        $user->setMaxSellPrice($user->getMaxSellPrice() + 10);
-
-        $em->flush();
-
-        return $responseService->success([
-            'moneysLimit' => $user->getMaxSellPrice(),
-            'itemRequired' => $marketService->getItemToRaiseLimit($user)
-        ]);
-    }
-
     /**
      * @Route("/buy", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
@@ -157,6 +36,7 @@ class MarketController extends AbstractController
         MarketService $marketService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $itemId = $request->request->getInt('item', 0);
