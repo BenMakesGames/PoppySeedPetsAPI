@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\PetActivityLogTagRepository;
+use App\Repository\UserActivityLogTagRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=PetActivityLogTagRepository::class)
+ * @ORM\Entity(repositoryClass=UserActivityLogTagRepository::class)
  */
-class PetActivityLogTag
+class UserActivityLogTag
 {
     /**
      * @ORM\Id
@@ -20,19 +20,19 @@ class PetActivityLogTag
 
     /**
      * @ORM\Column(type="string", length=40, unique=true)
-     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
+     * @Groups({"userActivityLogs"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", length=6)
-     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
+     * @Groups({"userActivityLogs"})
      */
     private $color;
 
     /**
      * @ORM\Column(type="string", length=12)
-     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
+     * @Groups({"userActivityLogs"})
      */
     private $emoji;
 

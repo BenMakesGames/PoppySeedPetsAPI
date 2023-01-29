@@ -75,4 +75,5 @@ final class SerializationGroupEnum
     public const STAR_KINDRED_STORY_STEP_AVAILABLE = 'starKindredStoryStepAvailable';
     public const STAR_KINDRED_STORY_STEP_COMPLETE = 'starKindredStoryStepComplete';
     public const MY_FOLLOWERS = 'myFollowers';
+    public const USER_ACTIVITY_LOGS = 'userActivityLogs';
 }

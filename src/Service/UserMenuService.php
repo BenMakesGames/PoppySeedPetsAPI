@@ -15,7 +15,8 @@ class UserMenuService
     private const DEFAULT_ORDER = [
         'home', 'basement', 'greenhouse', 'beehive', 'dragonDen', 'hollowEarth', 'starKindred',
         'fireplace', 'park', 'plaza', 'museum', 'market', 'grocer', 'petShelter',
-        'bookstore', 'trader', 'hattier', 'fieldGuide', 'mailbox', 'painter', 'florist'
+        'bookstore', 'trader', 'hattier', 'fieldGuide', 'mailbox', 'painter', 'florist',
+        'journal'
     ];
 
     public function __construct(
@@ -121,6 +122,8 @@ class UserMenuService
 
         if($user->getUnlockedFlorist())
             $menuItems[] = new UserMenuItem('florist', $userSortOrder, $user->getUnlockedFlorist());
+
+        $menuItems[] = new UserMenuItem('journal', $userSortOrder, null);
 
         return $menuItems;
     }
