@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\AvailableHolidayBox;
@@ -29,6 +30,7 @@ class PlazaController extends AbstractController
         InventoryService $inventoryService, EntityManagerInterface $em, ResponseService $responseService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $availableBoxes = $plazaService->getAvailableHolidayBoxes($user);
