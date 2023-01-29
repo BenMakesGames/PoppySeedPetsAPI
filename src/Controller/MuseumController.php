@@ -207,6 +207,7 @@ class MuseumController extends AbstractController
         MuseumItemRepository $museumItemRepository, EntityManagerInterface $em, UserStatsRepository $userStatsRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($user->getUnlockedMuseum() === null)
@@ -282,6 +283,7 @@ class MuseumController extends AbstractController
      */
     public function getGiftShop(ResponseService $responseService, MuseumService $museumService)
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $giftShop = $museumService->getGiftShopInventory($user);
@@ -301,6 +303,7 @@ class MuseumController extends AbstractController
         InventoryService $inventoryService, ItemRepository $itemRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $categoryName = $request->request->get('category', '');

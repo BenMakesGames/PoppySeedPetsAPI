@@ -3,6 +3,7 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Functions\ProfanityFilterFunctions;
 use App\Repository\PetRepository;
@@ -29,9 +30,10 @@ class RenamingScrollController extends AbstractController
         PetRepository $petRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'renamingScroll');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'renamingScroll');
 
         $petId = $request->request->getInt('pet', 0);
         $pet = $petRepository->find($petId);
@@ -45,7 +47,7 @@ class RenamingScrollController extends AbstractController
         $petName = ProfanityFilterFunctions::filter(trim($request->request->get('name', '')));
 
         if($petName === $pet->getName())
-            throw new UnprocessableEntityHttpException('That\'s the pet\'s current name! What a waste of the scroll that would be...');
+            throw new UnprocessableEntityHttpException('That\'s the pet\'s current name! (What a waste of the scroll that would be...)');
 
         if(\mb_strlen($petName) < 1 || \mb_strlen($petName) > 30)
             throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
@@ -61,6 +63,45 @@ class RenamingScrollController extends AbstractController
         $em->remove($inventory);
 
         $pet->setName($petName);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
+    }
+
+    /**
+     * @Route("/{inventory}/readToSelf", methods={"PATCH"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function renameYourself(
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
+        PetRepository $petRepository
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $pointsRemaining = $user->getMuseumPoints() - $user->getMuseumPointsSpent();
+
+        if($pointsRemaining < 500)
+            throw new UnprocessableEntityHttpException('That would cost 500 Favor, but you only have ' . $pointsRemaining . '!');
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'renamingScroll');
+
+        $newName = ProfanityFilterFunctions::filter(trim($request->request->get('name', '')));
+
+        if($newName === $user->getName())
+            throw new UnprocessableEntityHttpException('That\'s already your name! (What a waste of the scroll that would be...)');
+
+        if(\mb_strlen($newName) < 2 || \mb_strlen($newName) > 30)
+            throw new UnprocessableEntityHttpException('Name must be between 2 and 30 characters long.');
+
+        $em->remove($inventory);
+
+        $user
+            ->addMuseumPointsSpent(500)
+            ->setName($newName)
+        ;
 
         $em->flush();
 
