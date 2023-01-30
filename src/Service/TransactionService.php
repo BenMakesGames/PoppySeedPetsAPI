@@ -39,7 +39,7 @@ class TransactionService
 
         $transaction = (new UserActivityLog())
             ->setUser($user)
-            ->setEntry($description)
+            ->setEntry($description . ' (' . $amount . '~~m~~)')
             ->addTags($this->activityLogTagRepository->findByNames([ 'Moneys' ]))
         ;
 
@@ -57,7 +57,7 @@ class TransactionService
 
         $transaction = (new UserActivityLog())
             ->setUser($user)
-            ->setEntry($description)
+            ->setEntry($description . ' (' . $amount . '~~m~~)')
             ->addTags($this->activityLogTagRepository->findByNames([ 'Moneys' ]))
         ;
 
