@@ -7,6 +7,7 @@ use App\Entity\UserActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\PlayerLogHelpers;
 use App\Functions\RequestFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\UserActivityLogTagRepository;
@@ -79,13 +80,7 @@ class FeedController extends AbstractController
                 ? 'You burned ' . $fuelUsed[0] . ' for fuel in the Fireplace.'
                 : 'You burned the following items for fuel in the Fireplace: ' . ArrayFunctions::list_nice($fuelUsed) . '.';
 
-            $log = (new UserActivityLog())
-                ->setUser($user)
-                ->addTags($userActivityLogTagRepository->findByNames([ 'Fireplace' ]))
-                ->setEntry($entry)
-            ;
-
-            $em->persist($log);
+            PlayerLogHelpers::Create($em, $user, $entry, [ 'Fireplace' ]);
         }
 
         if($fireplace->getHelper() && $fireplace->getSoot() >= 18 * 60)

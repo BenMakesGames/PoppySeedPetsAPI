@@ -7,6 +7,7 @@ use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Functions\PlayerLogHelpers;
 use App\Repository\UserActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
@@ -108,13 +109,7 @@ class ClaimRewardsController extends AbstractController
 
         $responseService->addFlashMessage($message);
 
-        $log = (new UserActivityLog())
-            ->setUser($user)
-            ->setEntry($message)
-            ->addTags($userActivityLogTagRepository->findByNames([ 'Fireplace' ]))
-        ;
-
-        $em->persist($log);
+        PlayerLogHelpers::Create($em, $user, $message, [ 'Fireplace' ]);
 
         if($numItems > 0 && $fireplace->getGnomePoints() >= 24)
         {
@@ -130,13 +125,7 @@ class ClaimRewardsController extends AbstractController
 
             $responseService->addFlashMessage($gnomishMessage . ' (You received a Gnome\'s Favor!)');
 
-            $log = (new UserActivityLog())
-                ->setUser($user)
-                ->setEntry($gnomishMessage . ' (You received a Gnome\'s Favor!)')
-                ->addTags($userActivityLogTagRepository->findByNames([ 'Fireplace' ]))
-            ;
-
-            $em->persist($log);
+            PlayerLogHelpers::Create($em, $user, $gnomishMessage . ' (You received a Gnome\'s Favor!)', [ 'Fireplace' ]);
         }
 
         $em->flush();

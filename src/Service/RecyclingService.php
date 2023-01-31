@@ -7,6 +7,7 @@ use App\Entity\UserActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\PlayerLogHelpers;
 use App\Repository\UserActivityLogTagRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
@@ -21,12 +22,10 @@ class RecyclingService
     private UserStatsRepository $userStatsRepository;
     private IRandom $squirrel3;
     private ResponseService $responseService;
-    private UserActivityLogTagRepository $userActivityLogTagRepository;
 
     public function __construct(
         UserRepository $userRepository, CalendarService $calendarService, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3, ResponseService $responseService,
-        UserActivityLogTagRepository $userActivityLogTagRepository
+        UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3, ResponseService $responseService
     )
     {
         $this->userRepository = $userRepository;
@@ -35,7 +34,6 @@ class RecyclingService
         $this->userStatsRepository = $userStatsRepository;
         $this->squirrel3 = $squirrel3;
         $this->responseService = $responseService;
-        $this->userActivityLogTagRepository = $userActivityLogTagRepository;
     }
 
     public static function giveRecyclingPoints(User $user, int $quantity)
@@ -128,12 +126,8 @@ class RecyclingService
 
             $this->userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_RECYCLED, $totalItemsRecycled);
 
-            $playerLog = (new UserActivityLog())
-                ->setUser($user)
-                ->addTags($this->userActivityLogTagRepository->findByNames([ 'Recycling' ]))
-                ->setEntry('You recycled ' . $totalItemsRecycled . ' item' . ($totalItemsRecycled == 1 ? '' : 's') . ' for ' . $totalRecyclingPointsEarned . ' recycling point' . ($totalRecyclingPointsEarned == 1 ? '' : 's') . '.')
-            ;
-            $this->em->persist($playerLog);
+            $log = 'You recycled ' . $totalItemsRecycled . ' item' . ($totalItemsRecycled == 1 ? '' : 's') . ' for ' . $totalRecyclingPointsEarned . ' recycling point' . ($totalRecyclingPointsEarned == 1 ? '' : 's') . '.';
+            PlayerLogHelpers::Create($this->em, $user, $log, [ 'Recycling' ]);
         }
 
         if(count($questItems) > 0)

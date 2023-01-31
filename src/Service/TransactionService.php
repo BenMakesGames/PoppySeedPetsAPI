@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\User;
 use App\Entity\UserActivityLog;
 use App\Enum\UserStatEnum;
+use App\Functions\PlayerLogHelpers;
 use App\Repository\UserActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,16 +13,13 @@ class TransactionService
 {
     private EntityManagerInterface $em;
     private UserStatsRepository $userStatsRepository;
-    private UserActivityLogTagRepository $activityLogTagRepository;
 
     public function __construct(
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
-        UserActivityLogTagRepository $activityLogTagRepository
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
     )
     {
         $this->em = $em;
         $this->userStatsRepository = $userStatsRepository;
-        $this->activityLogTagRepository = $activityLogTagRepository;
     }
 
     public function spendMoney(User $user, int $amount, string $description, bool $countTotalMoneysSpentStat = true, array $additionalTags = []): UserActivityLog
@@ -39,15 +37,7 @@ class TransactionService
 
         $tags = array_merge($additionalTags, [ 'Moneys' ]);
 
-        $transaction = (new UserActivityLog())
-            ->setUser($user)
-            ->setEntry($description . ' (' . $amount . '~~m~~)')
-            ->addTags($this->activityLogTagRepository->findByNames($tags))
-        ;
-
-        $this->em->persist($transaction);
-
-        return $transaction;
+        return PlayerLogHelpers::Create($this->em, $user, $description . ' (' . $amount . '~~m~~)', $tags);
     }
 
     public function getMoney(User $user, int $amount, string $description, array $additionalTags = []): UserActivityLog
@@ -59,14 +49,6 @@ class TransactionService
 
         $tags = array_merge($additionalTags, [ 'Moneys' ]);
 
-        $transaction = (new UserActivityLog())
-            ->setUser($user)
-            ->setEntry($description . ' (' . $amount . '~~m~~)')
-            ->addTags($this->activityLogTagRepository->findByNames($tags))
-        ;
-
-        $this->em->persist($transaction);
-
-        return $transaction;
+        return PlayerLogHelpers::Create($this->em, $user, $description . ' (' . $amount . '~~m~~)', $tags);
     }
 }

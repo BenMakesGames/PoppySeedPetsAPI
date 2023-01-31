@@ -104,7 +104,7 @@ class FeedWhelpController extends AbstractController
         else
         {
             $adverb = $squirrel3->rngNextFromArray([
-                'happily', 'happily', 'happily', 'excitedly', 'blithely'
+                'happily', 'happily', 'happily', 'excitedly', 'blithely', 'eagerly'
             ]);
 
             $responseService->addFlashMessage($whelp->getName() . ' ' . $adverb . ' devoured your offering.');
@@ -120,6 +120,7 @@ class FeedWhelpController extends AbstractController
                 ->setThanks([ $greetingsAndThanks[0]['thanks'], $greetingsAndThanks[1]['thanks'] ])
             ;
             $user->setUnlockedDragonDen();
+
             $responseService->addFlashMessage($whelp->getName() . ' is a whelp no longer! They leave your fireplace and establish a den nearby!');
         }
 
