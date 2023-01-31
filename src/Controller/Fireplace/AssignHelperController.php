@@ -2,6 +2,7 @@
 namespace App\Controller\Fireplace;
 
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
@@ -24,6 +25,7 @@ class AssignHelperController extends AbstractController
         PetAssistantService $petAssistantService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $petAssistantService->helpFireplace($user, $pet);

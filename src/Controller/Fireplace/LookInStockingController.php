@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Fireplace;
 
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Functions\JewishCalendarFunctions;
 use App\Repository\ItemRepository;
@@ -29,6 +30,7 @@ class LookInStockingController extends AbstractController
         UserQuestRepository $userQuestRepository, ItemRepository $itemRepository, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
         $now = new \DateTimeImmutable();
         $monthAndDay = $now->format('md');

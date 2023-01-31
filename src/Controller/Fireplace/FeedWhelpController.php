@@ -3,6 +3,7 @@ namespace App\Controller\Fireplace;
 
 use App\Entity\Dragon;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
@@ -36,6 +37,7 @@ class FeedWhelpController extends AbstractController
         Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $whelp = $dragonRepository->findWhelp($user);

@@ -129,9 +129,9 @@ class BuyController extends AbstractController
 
         try
         {
-            $transactionService->getMoney($itemToBuy->getOwner(), $itemToBuy->getSellPrice(), 'Sold ' . InventoryModifierFunctions::getNameWithModifiers($itemToBuy) . ' in the Market.');
+            $transactionService->getMoney($itemToBuy->getOwner(), $itemToBuy->getSellPrice(), 'Sold ' . InventoryModifierFunctions::getNameWithModifiers($itemToBuy) . ' in the Market.', [ 'Market' ]);
 
-            $transactionService->spendMoney($user, $itemToBuy->getBuyPrice(), 'Bought ' . InventoryModifierFunctions::getNameWithModifiers($itemToBuy) . ' in the Market.');
+            $transactionService->spendMoney($user, $itemToBuy->getBuyPrice(), 'Bought ' . InventoryModifierFunctions::getNameWithModifiers($itemToBuy) . ' in the Market.', true, [ 'Market' ]);
 
             $marketService->logExchange($itemToBuy);
 

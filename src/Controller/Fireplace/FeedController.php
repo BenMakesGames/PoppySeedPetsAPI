@@ -2,11 +2,14 @@
 namespace App\Controller\Fireplace;
 
 use App\Entity\Fireplace;
+use App\Entity\User;
+use App\Entity\UserActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\RequestFunctions;
 use App\Repository\InventoryRepository;
+use App\Repository\UserActivityLogTagRepository;
 use App\Service\InventoryService;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
@@ -31,10 +34,11 @@ class FeedController extends AbstractController
      */
     public function feedFireplace(
         Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
-        EntityManagerInterface $em, InventoryService $inventoryService,
-        Squirrel3 $rng
+        EntityManagerInterface $em, InventoryService $inventoryService, Squirrel3 $rng,
+        UserActivityLogTagRepository $userActivityLogTagRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if(!$user->getUnlockedFireplace() || !$user->getFireplace())
@@ -51,6 +55,8 @@ class FeedController extends AbstractController
 
         $fuelNotUsed = [];
 
+        $fuelUsed = [];
+
         foreach($items as $item)
         {
             // don't feed an item if doing so would waste more than half the item's fuel
@@ -59,11 +65,27 @@ class FeedController extends AbstractController
                 $alcohol = $item->getItem()->getFood() ? $item->getItem()->getFood()->getAlcohol() * 4 : 0;
                 $fireplace->addFuel($item->getItem()->getFuel(), $alcohol);
                 $em->remove($item);
+                $fuelUsed[] = $item->getFullItemName();
             }
             else
             {
                 $fuelNotUsed[] = $item->getItem()->getName();
             }
+        }
+
+        if(count($fuelUsed) > 0)
+        {
+            $entry = count($fuelUsed) == 1
+                ? 'You burned ' . $fuelUsed[0] . ' for fuel in the Fireplace.'
+                : 'You burned the following items for fuel in the Fireplace: ' . ArrayFunctions::list_nice($fuelUsed) . '.';
+
+            $log = (new UserActivityLog())
+                ->setUser($user)
+                ->addTags($userActivityLogTagRepository->findByNames([ 'Fireplace' ]))
+                ->setEntry($entry)
+            ;
+
+            $em->persist($log);
         }
 
         if($fireplace->getHelper() && $fireplace->getSoot() >= 18 * 60)

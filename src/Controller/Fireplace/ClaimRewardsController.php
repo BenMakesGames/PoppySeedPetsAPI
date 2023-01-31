@@ -1,10 +1,13 @@
 <?php
 namespace App\Controller\Fireplace;
 
+use App\Entity\User;
+use App\Entity\UserActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Repository\UserActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -27,9 +30,11 @@ class ClaimRewardsController extends AbstractController
      */
     public function claimRewards(
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3
+        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3,
+        UserActivityLogTagRepository $userActivityLogTagRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if(!$user->getUnlockedFireplace() || !$user->getFireplace())
@@ -97,10 +102,19 @@ class ClaimRewardsController extends AbstractController
         else
             $fireplace->spendPoints($numItems * 8 * 60);
 
-        if($fireplace->getHeat() >= 2 * 60 && $squirrel3->rngNextInt(1, 3) === 1)
-            $responseService->addFlashMessage('You reach inside while the fire is still burning, just like a totally normal person would do, and pull out ' . ArrayFunctions::list_nice($itemsReceived) . '!');
-        else
-            $responseService->addFlashMessage('You reach inside, and pull out ' . ArrayFunctions::list_nice($itemsReceived) . '!');
+        $message = ($fireplace->getHeat() >= 2 * 60 && $squirrel3->rngNextInt(1, 3) === 1)
+            ? 'You reach inside the Fireplace while the fire is still burning, just like a totally normal person would do, and pull out ' . ArrayFunctions::list_nice($itemsReceived) . '!'
+            : 'You reach inside the Fireplace, and pull out ' . ArrayFunctions::list_nice($itemsReceived) . '!';
+
+        $responseService->addFlashMessage($message);
+
+        $log = (new UserActivityLog())
+            ->setUser($user)
+            ->setEntry($message)
+            ->addTags($userActivityLogTagRepository->findByNames([ 'Fireplace' ]))
+        ;
+
+        $em->persist($log);
 
         if($numItems > 0 && $fireplace->getGnomePoints() >= 24)
         {
@@ -115,6 +129,14 @@ class ClaimRewardsController extends AbstractController
             ]);
 
             $responseService->addFlashMessage($gnomishMessage . ' (You received a Gnome\'s Favor!)');
+
+            $log = (new UserActivityLog())
+                ->setUser($user)
+                ->setEntry($gnomishMessage . ' (You received a Gnome\'s Favor!)')
+                ->addTags($userActivityLogTagRepository->findByNames([ 'Fireplace' ]))
+            ;
+
+            $em->persist($log);
         }
 
         $em->flush();

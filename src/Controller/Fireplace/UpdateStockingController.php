@@ -2,6 +2,7 @@
 namespace App\Controller\Fireplace;
 
 use App\Entity\Fireplace;
+use App\Entity\User;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,6 +25,7 @@ class UpdateStockingController extends AbstractController
         Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if(!$user->getUnlockedFireplace() || !$user->getFireplace())

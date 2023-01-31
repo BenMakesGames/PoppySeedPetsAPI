@@ -307,6 +307,7 @@ class InventoryController extends AbstractController
         EntityManagerInterface $em, RecyclingService $recyclingService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $inventoryIds = $request->request->get('inventory');
@@ -323,7 +324,7 @@ class InventoryController extends AbstractController
         if(count($inventory) !== count($inventoryIds))
             throw new UnprocessableEntityHttpException('Some of the items could not be found??');
 
-        $idsNotRecycled = $recyclingService->recycleInventory($inventory);
+        $idsNotRecycled = $recyclingService->recycleInventory($user, $inventory);
 
         $em->flush();
 

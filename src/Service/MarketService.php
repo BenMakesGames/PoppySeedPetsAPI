@@ -126,7 +126,7 @@ class MarketService
             {
                 $this->logExchange($inventory);
 
-                $this->transactionService->getMoney($user, $price, 'Sold ' . InventoryModifierFunctions::getNameWithModifiers($inventory) . ' in the Market.');
+                $this->transactionService->getMoney($user, $price, 'Sold ' . InventoryModifierFunctions::getNameWithModifiers($inventory) . ' in the Market.', [ 'Market' ]);
 
                 $targetLocation = LocationEnum::HOME;
 

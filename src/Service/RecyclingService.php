@@ -3,9 +3,11 @@ namespace App\Service;
 
 use App\Entity\Inventory;
 use App\Entity\User;
+use App\Entity\UserActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Repository\UserActivityLogTagRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,10 +21,12 @@ class RecyclingService
     private UserStatsRepository $userStatsRepository;
     private IRandom $squirrel3;
     private ResponseService $responseService;
+    private UserActivityLogTagRepository $userActivityLogTagRepository;
 
     public function __construct(
         UserRepository $userRepository, CalendarService $calendarService, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3, ResponseService $responseService
+        UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3, ResponseService $responseService,
+        UserActivityLogTagRepository $userActivityLogTagRepository
     )
     {
         $this->userRepository = $userRepository;
@@ -31,6 +35,7 @@ class RecyclingService
         $this->userStatsRepository = $userStatsRepository;
         $this->squirrel3 = $squirrel3;
         $this->responseService = $responseService;
+        $this->userActivityLogTagRepository = $userActivityLogTagRepository;
     }
 
     public static function giveRecyclingPoints(User $user, int $quantity)
@@ -64,7 +69,7 @@ class RecyclingService
      * @param Inventory[] $inventory
      * @return int[] IDs of items NOT recycled
      */
-    public function recycleInventory(array $inventory): array
+    public function recycleInventory(User $user, array $inventory): array
     {
         $givingTree = $this->userRepository->findOneByEmail('giving-tree@poppyseedpets.com');
 
@@ -75,8 +80,14 @@ class RecyclingService
         $questItems = [];
         $idsNotRecycled = [];
 
+        $totalItemsRecycled = 0;
+        $totalRecyclingPointsEarned = 0;
+
         foreach($inventory as $i)
         {
+            if($i->getOwner()->getId() !== $user->getId())
+                throw new \Exception('Cannot recycle items that do not belong to you!');
+
             if($i->getItem()->getCannotBeThrownOut())
             {
                 $questItems[] = $i->getItem()->getName();
@@ -85,20 +96,20 @@ class RecyclingService
                 continue;
             }
 
-            $originalOwner = $i->getOwner();
-
             if($i->getItem()->hasUseAction('bug/#/putOutside'))
             {
-                $this->userStatsRepository->incrementStat($originalOwner, UserStatEnum::BUGS_PUT_OUTSIDE);
+                $this->userStatsRepository->incrementStat($user, UserStatEnum::BUGS_PUT_OUTSIDE);
                 $this->em->remove($i);
+                continue;
             }
-            else if(self::recycledItemShouldGoToGivingTree($this->squirrel3, $givingTreeHoliday, $i))
+
+            if(self::recycledItemShouldGoToGivingTree($this->squirrel3, $givingTreeHoliday, $i))
             {
                 $i
                     ->setOwner($givingTree)
                     ->setLocation(LocationEnum::HOME)
                     ->setSellPrice(null)
-                    ->addComment($originalOwner->getName() . ' recycled this item, and it found its way to The Giving Tree!')
+                    ->addComment($user->getName() . ' recycled this item, and it found its way to The Giving Tree!')
                 ;
 
                 if($i->getHolder()) $i->getHolder()->setTool(null);
@@ -107,9 +118,22 @@ class RecyclingService
             else
                 $this->em->remove($i);
 
-            self::giveRecyclingPoints($originalOwner, $i->getItem()->getRecycleValue());
+            $totalItemsRecycled++;
+            $totalRecyclingPointsEarned += $i->getItem()->getRecycleValue();
+        }
 
-            $this->userStatsRepository->incrementStat($originalOwner, UserStatEnum::ITEMS_RECYCLED);
+        if($totalRecyclingPointsEarned > 0 || $totalItemsRecycled > 0)
+        {
+            self::giveRecyclingPoints($user, $totalRecyclingPointsEarned);
+
+            $this->userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_RECYCLED, $totalItemsRecycled);
+
+            $playerLog = (new UserActivityLog())
+                ->setUser($user)
+                ->addTags($this->userActivityLogTagRepository->findByNames([ 'Recycling' ]))
+                ->setEntry('You recycled ' . $totalItemsRecycled . ' item' . ($totalItemsRecycled == 1 ? '' : 's') . ' for ' . $totalRecyclingPointsEarned . ' recycling point' . ($totalRecyclingPointsEarned == 1 ? '' : 's') . '.')
+            ;
+            $this->em->persist($playerLog);
         }
 
         if(count($questItems) > 0)

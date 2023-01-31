@@ -27,6 +27,7 @@ class FireplaceController extends AbstractController
         NormalizerInterface $normalizer
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if(!$user->getUnlockedFireplace() || !$user->getFireplace())
@@ -56,6 +57,7 @@ class FireplaceController extends AbstractController
         InventoryRepository $inventoryRepository, ResponseService $responseService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if(!$user->getUnlockedFireplace() || !$user->getFireplace())
@@ -74,6 +76,7 @@ class FireplaceController extends AbstractController
         InventoryRepository $inventoryRepository, ResponseService $responseService, DragonRepository $dragonRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $whelp = $dragonRepository->findWhelp($user);

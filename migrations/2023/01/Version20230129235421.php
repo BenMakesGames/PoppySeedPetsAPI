@@ -19,7 +19,18 @@ final class Version20230129235421 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql("INSERT INTO `user_activity_log_tag` (`title`, `color`, `emoji`) VALUES ('Moneys', 'F9C206', '💰');");
+        $this->addSql("
+            INSERT INTO `user_activity_log_tag` (`title`, `color`, `emoji`) VALUES
+                ('Moneys', 'F9C206', '💰'),
+                ('Recycling', '2AA82C', '♻️'),
+                ('Market', '3E9FC9', '🪙'),
+                ('Fireplace', 'F85E0F', '🧱'),
+                ('Greenhouse', '23C143', '🎍'),
+                ('Beehive', 'FAD12C', '🐝'),
+                ('Dragon Den', 'FFE42D', '🐲')
+            ;
+        ");
+
         $this->addSql("
             INSERT INTO `user_activity_log` (user_id, entry, created_on)
             SELECT user_id,CONCAT(description, ' (',amount,'~~m~~)'),datetime AS created_on FROM transaction_history;

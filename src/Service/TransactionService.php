@@ -24,7 +24,7 @@ class TransactionService
         $this->activityLogTagRepository = $activityLogTagRepository;
     }
 
-    public function spendMoney(User $user, int $amount, string $description, bool $countTotalMoneysSpentStat = true): UserActivityLog
+    public function spendMoney(User $user, int $amount, string $description, bool $countTotalMoneysSpentStat = true, array $additionalTags = []): UserActivityLog
     {
         if($amount < 1)
             throw new \InvalidArgumentException('$amount must be 1 or greater.');
@@ -37,10 +37,12 @@ class TransactionService
         if($countTotalMoneysSpentStat)
             $this->userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, $amount);
 
+        $tags = array_merge($additionalTags, [ 'Moneys' ]);
+
         $transaction = (new UserActivityLog())
             ->setUser($user)
             ->setEntry($description . ' (' . $amount . '~~m~~)')
-            ->addTags($this->activityLogTagRepository->findByNames([ 'Moneys' ]))
+            ->addTags($this->activityLogTagRepository->findByNames($tags))
         ;
 
         $this->em->persist($transaction);
@@ -48,17 +50,19 @@ class TransactionService
         return $transaction;
     }
 
-    public function getMoney(User $user, int $amount, string $description): UserActivityLog
+    public function getMoney(User $user, int $amount, string $description, array $additionalTags = []): UserActivityLog
     {
         if($amount < 1)
             throw new \InvalidArgumentException('$amount must be 1 or greater.');
 
         $user->increaseMoneys($amount);
 
+        $tags = array_merge($additionalTags, [ 'Moneys' ]);
+
         $transaction = (new UserActivityLog())
             ->setUser($user)
             ->setEntry($description . ' (' . $amount . '~~m~~)')
-            ->addTags($this->activityLogTagRepository->findByNames([ 'Moneys' ]))
+            ->addTags($this->activityLogTagRepository->findByNames($tags))
         ;
 
         $this->em->persist($transaction);

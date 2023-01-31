@@ -1,0 +1,45 @@
+<?php
+namespace App\Controller;
+
+use App\Enum\SerializationGroupEnum;
+use App\Repository\UserActivityLogTagRepository;
+use App\Service\Filter\UserActivityLogsFilterService;
+use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Routing\Annotation\Route;
+
+/**
+ * @Route("/userActivityLogs")
+ */
+class UserActivityLogsController extends AbstractController
+{
+    /**
+     * @Route("", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function history(
+        Request $request, ResponseService $responseService, UserActivityLogsFilterService $userActivityLogsFilterService
+    )
+    {
+        $user = $this->getUser();
+
+        $userActivityLogsFilterService->addRequiredFilter('user', $user->getId());
+
+        $logs = $userActivityLogsFilterService->getResults($request->query);
+
+        return $responseService->success($logs, [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::USER_ACTIVITY_LOGS ]);
+    }
+
+    /**
+     * @Route("/getAllTags", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getAllTags(ResponseService $responseService, UserActivityLogTagRepository $userActivityLogTagRepository)
+    {
+        $tags = $userActivityLogTagRepository->findAll();
+
+        return $responseService->success($tags, [ SerializationGroupEnum::USER_ACTIVITY_LOGS ]);
+    }
+}
