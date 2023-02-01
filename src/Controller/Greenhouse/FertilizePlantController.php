@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\GrammarFunctions;
 use App\Functions\PlayerLogHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\UserStatsRepository;
@@ -60,10 +61,12 @@ class FertilizePlantController extends AbstractController
 
         $userStatsRepository->incrementStat($user, UserStatEnum::FERTILIZED_PLANT);
 
+        $plantNameArticle = GrammarFunctions::indefiniteArticle($plant->getPlant()->getName());
+
         PlayerLogHelpers::Create(
             $em,
             $user,
-            "You fertilized a {$plant->getPlant()->getName()} plant with {$fertilizer->getFullItemName()}.",
+            "You fertilized $plantNameArticle {$plant->getPlant()->getName()} plant with {$fertilizer->getFullItemName()}.",
             [ 'Greenhouse' ]
         );
 

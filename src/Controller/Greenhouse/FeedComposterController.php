@@ -2,10 +2,12 @@
 namespace App\Controller\Greenhouse;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\PlayerLogHelpers;
 use App\Functions\RequestFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
@@ -17,6 +19,7 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -44,8 +47,9 @@ class FeedComposterController extends AbstractController
         InventoryService $inventoryService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
         ItemRepository $itemRepository, SpiceRepository $spiceRepository, Squirrel3 $squirrel3,
         GreenhouseService $greenhouseService
-    )
+    ): JsonResponse
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if(!$user->getGreenhouse())
@@ -67,8 +71,13 @@ class FeedComposterController extends AbstractController
 
         $totalFertilizer = $user->getGreenhouse()->getComposterFood();
 
+        $tossedItemNames = [];
+
         foreach($items as $item)
+        {
             $totalFertilizer += $item->getItem()->getFertilizer();
+            $tossedItemNames[] = $item->getFullItemName();
+        }
 
         $remainingFertilizer = $totalFertilizer;
 
@@ -153,6 +162,38 @@ class FeedComposterController extends AbstractController
 
         if($smallBags > 0)
             $got[] = $smallBags === 1 ? 'one Small Bag of Fertilizer' : ($smallBags . ' Small Bags of Fertilizer');
+
+        if(count($got) > 0)
+        {
+            $gotDescription = ' ' . ArrayFunctions::list_nice($got);
+            if(count($bonusItemNames) > 0)
+                $gotDescription .= ', _and also_ ' . ArrayFunctions::list_nice($bonusItemNames);
+            $gotDescription .= '!';
+        }
+        else if(count($bonusItemNames) > 0)
+            $gotDescription = ' ' . ArrayFunctions::list_nice($bonusItemNames) . '!';
+        else
+            $gotDescription = '... nothing, yet (but you\'re making progress!)';
+
+        if(count($tossedItemNames) > 5)
+        {
+            PlayerLogHelpers::Create(
+                $em,
+                $user,
+                'You chucked ' . count($tossedItemNames) . ' objects into the Composter, and got' . $gotDescription,
+                [ 'Greenhouse' ]
+            );
+        }
+        else
+        {
+            $objectOrObjects = count($tossedItemNames) == 1 ? 'object' : 'objects';
+            PlayerLogHelpers::Create(
+                $em,
+                $user,
+                'You chucked ' . ArrayFunctions::list_nice($tossedItemNames) . ' ' . $objectOrObjects . ' into the Composter, and got' . $gotDescription,
+                [ 'Greenhouse' ]
+            );
+        }
 
         $em->flush();
 
