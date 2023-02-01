@@ -3,6 +3,7 @@ namespace App\Controller\Market;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Functions\PlayerLogHelpers;
 use App\Service\InventoryService;
 use App\Service\MarketService;
 use App\Service\ResponseService;
@@ -56,6 +57,13 @@ class LimitsController extends AbstractController
             throw new UnprocessableEntityHttpException('Come back when you ACTUALLY have the item.');
 
         $user->setMaxSellPrice($user->getMaxSellPrice() + 10);
+
+        PlayerLogHelpers::Create(
+            $em,
+            $user,
+            'You gave ' . $itemRequired['itemName'] . ' to Argentelle to increase your maximum Market sell price to ' . $user->getMaxSellPrice() . '.',
+            [ 'Market' ]
+        );
 
         $em->flush();
 
