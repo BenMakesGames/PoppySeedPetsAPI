@@ -4,6 +4,7 @@ namespace App\Controller\Greenhouse;
 use App\Entity\GreenhousePlant;
 use App\Entity\Pet;
 use App\Entity\PlantYieldItem;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\MoonPhaseEnum;
@@ -28,6 +29,7 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -49,8 +51,9 @@ class HarvestPlantController extends AbstractController
         GreenhouseService $greenhouseService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3,
         FieldGuideService $fieldGuideService, EnchantmentRepository $enchantmentRepository,
         HattierService $hattierService
-    )
+    ): JsonResponse
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($plant->getOwner()->getId() !== $user->getId())

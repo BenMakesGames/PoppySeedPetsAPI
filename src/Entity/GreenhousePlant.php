@@ -234,6 +234,9 @@ class GreenhousePlant
         return $this->pollinators;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function setPollinators(?string $pollinators): self
     {
         if($pollinators != null && !PollinatorEnum::isAValue($pollinators))
