@@ -3,14 +3,18 @@ namespace App\Controller\Greenhouse;
 
 use App\Entity\GreenhousePlant;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\PlayerLogHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\GreenhouseService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Util\Json;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -30,8 +34,9 @@ class FertilizePlantController extends AbstractController
         GreenhousePlant $plant, ResponseService $responseService, Request $request, EntityManagerInterface $em,
         InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository,
         GreenhouseService $greenhouseService
-    )
+    ): JsonResponse
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($plant->getOwner()->getId() !== $user->getId())
@@ -54,6 +59,13 @@ class FertilizePlantController extends AbstractController
         $plant->increaseGrowth($fertilizer->getItem()->getFertilizer());
 
         $userStatsRepository->incrementStat($user, UserStatEnum::FERTILIZED_PLANT);
+
+        PlayerLogHelpers::Create(
+            $em,
+            $user,
+            "You fertilized a {$plant->getPlant()->getName()} plant with {$fertilizer->getFullItemName()}.",
+            [ 'Greenhouse' ]
+        );
 
         $em->remove($fertilizer);
         $em->flush();

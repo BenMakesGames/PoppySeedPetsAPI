@@ -1,9 +1,11 @@
 <?php
 namespace App\Controller\Greenhouse;
 
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\PlayerLogHelpers;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
@@ -15,6 +17,7 @@ use App\Service\Squirrel3;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,8 +37,9 @@ class WeedController extends AbstractController
         InventoryService $inventoryService, Squirrel3 $squirrel3,
         WeatherService $weatherService, ItemRepository $itemRepository,
         PetActivityLogTagRepository $petActivityLogTagRepository
-    )
+    ): JsonResponse
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $greenhouse = $user->getGreenhouse();
@@ -121,8 +125,12 @@ class WeedController extends AbstractController
             ;
         }
 
+        $message .= ' ' . $squirrel3->rngNextFromArray([ 'Noice!', 'Yoink!', '👍', '👌', 'Neat-o!', 'Okey dokey!' ]);
+
+        PlayerLogHelpers::Create($em, $user, $message, [ 'Greenhouse' ]);
+
         $em->flush();
 
-        return $responseService->success($message . ' ' . $squirrel3->rngNextFromArray([ 'Noice!', 'Yoink!', '👍', '👌', 'Neat-o!', 'Okey dokey!' ]));
+        return $responseService->success($message);
     }
 }

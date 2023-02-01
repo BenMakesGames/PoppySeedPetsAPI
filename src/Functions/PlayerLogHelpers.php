@@ -9,14 +9,17 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PlayerLogHelpers
 {
+    /**
+     * @param string[] $tagNames
+     */
     public static function Create(EntityManagerInterface $em, User $user, string $entry, array $tagNames): UserActivityLog
     {
-        $em->getRepository(UserActivityLogTag::class)->findByNames($tagNames);
+        $tags = $em->getRepository(UserActivityLogTag::class)->findByNames($tagNames);
 
         $log = (new UserActivityLog())
             ->setUser($user)
             ->setEntry($entry)
-            ->addTags($tagNames)
+            ->addTags($tags)
         ;
 
         $em->persist($log);
