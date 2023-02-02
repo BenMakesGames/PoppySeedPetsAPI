@@ -1,0 +1,37 @@
+<?php
+namespace App\Controller\Style;
+
+use App\Entity\User;
+use App\Entity\UserStyle;
+use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
+/**
+ * @Route("/style")
+ */
+class DeleteController extends AbstractController
+{
+    /**
+     * @Route("/{theme}", methods={"DELETE"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function deleteTheme(
+        UserStyle $theme, ResponseService $responseService, EntityManagerInterface $em
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if($theme->getUser()->getId() !== $user->getId())
+            throw new AccessDeniedHttpException('That\'s not your theme!');
+
+        $em->remove($theme);
+        $em->flush();
+
+        return $responseService->success();
+    }
+}

@@ -2,6 +2,7 @@
 namespace App\Controller\HollowEarth;
 
 use App\Entity\HollowEarthPlayerTile;
+use App\Entity\User;
 use App\Repository\HollowEarthPlayerTileRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,6 +26,7 @@ class ChangeTileGoodsController extends AbstractController
         HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
         $player = $user->getHollowEarthPlayer();
 

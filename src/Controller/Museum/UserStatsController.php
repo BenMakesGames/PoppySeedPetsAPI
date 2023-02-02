@@ -1,0 +1,79 @@
+<?php
+namespace App\Controller\Museum;
+
+use App\Entity\User;
+use App\Enum\SerializationGroupEnum;
+use App\Service\Filter\ItemFilterService;
+use App\Service\Filter\MuseumFilterService;
+use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
+/**
+ * @Route("/museum")
+ */
+class UserStatsController extends AbstractController
+{
+    /**
+     * @Route("/{user}/items", methods={"GET"}, requirements={"user"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function userDonatedItems(
+        User $user,
+        Request $request, ResponseService $responseService, MuseumFilterService $museumFilterService
+    )
+    {
+        if($this->getUser()->getUnlockedMuseum() === null)
+            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+
+        $museumFilterService->addRequiredFilter('user', $user->getId());
+
+        return $responseService->success(
+            $museumFilterService->getResults($request->query),
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MUSEUM ]
+        );
+    }
+
+    /**
+     * @Route("/{user}/nonItems", methods={"GET"}, requirements={"user"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function userNonDonatedItems(
+        User $user,
+        Request $request, ResponseService $responseService, ItemFilterService $itemFilterService
+    )
+    {
+        if($this->getUser()->getUnlockedMuseum() === null)
+            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+
+        $itemFilterService->addRequiredFilter('notDonatedBy', $user->getId());
+
+        return $responseService->success(
+            $itemFilterService->getResults($request->query),
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::ITEM_ENCYCLOPEDIA ]
+        );
+    }
+
+    /**
+     * @Route("/{user}/itemCount", methods={"GET"}, requirements={"user"="\d+"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function userItemCount(
+        User $user,
+        Request $request, ResponseService $responseService, MuseumFilterService $museumFilterService
+    )
+    {
+        if($this->getUser()->getUnlockedMuseum() === null)
+            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+
+        $museumFilterService->addRequiredFilter('user', $user->getId());
+
+        return $responseService->success(
+            $museumFilterService->getResults($request->query),
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MUSEUM ]
+        );
+    }
+}

@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\PetRepository;
 use App\Repository\UserUnlockedAuraRepository;
@@ -26,6 +27,7 @@ class HattierController extends AbstractController
      */
     public function getUnlockedAuras(HattierService $hattierService, ResponseService $responseService)
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         return $responseService->success(
@@ -53,6 +55,7 @@ class HattierController extends AbstractController
         if(!$petId || !$auraId)
             throw new UnprocessableEntityHttpException('A pet and style must be selected.');
 
+        /** @var User $user */
         $user = $this->getUser();
 
         if($payWith === 'moneys')

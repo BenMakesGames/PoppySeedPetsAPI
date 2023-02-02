@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Item;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Service\BookstoreService;
@@ -30,6 +31,7 @@ class BookstoreController extends AbstractController
         BookstoreService $bookstoreService, ResponseService $responseService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($user->getUnlockedBookstore() === null)
@@ -48,6 +50,7 @@ class BookstoreController extends AbstractController
         string $item, BookstoreService $bookstoreService, ResponseService $responseService, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($user->getUnlockedBookstore() === null)
@@ -73,6 +76,7 @@ class BookstoreController extends AbstractController
         ResponseService $responseService, TransactionService $transactionService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($user->getUnlockedBookstore() === null)
