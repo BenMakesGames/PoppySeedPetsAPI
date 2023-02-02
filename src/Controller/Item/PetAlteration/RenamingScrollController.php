@@ -5,6 +5,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\MeritEnum;
+use App\Functions\PlayerLogHelpers;
 use App\Functions\ProfanityFilterFunctions;
 use App\Repository\PetRepository;
 use App\Service\ResponseService;
@@ -74,8 +75,7 @@ class RenamingScrollController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function renameYourself(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
     )
     {
         /** @var User $user */
@@ -98,10 +98,14 @@ class RenamingScrollController extends AbstractController
 
         $em->remove($inventory);
 
+        $oldName = $user->getName();
+
         $user
             ->addMuseumPointsSpent(500)
             ->setName($newName)
         ;
+
+        PlayerLogHelpers::Create($em, $user, 'You renamed yourself, from ' . $oldName . ' to ' . $newName . '!', []);
 
         $em->flush();
 
