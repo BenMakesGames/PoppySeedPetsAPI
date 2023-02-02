@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\Filter\PetActivityLogsFilterService;
@@ -23,6 +24,7 @@ class PetActivityLogsController extends AbstractController
         Request $request, ResponseService $responseService, PetActivityLogsFilterService $petActivityLogsFilterService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $petActivityLogsFilterService->addRequiredFilter('user', $user->getId());

@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller;
+namespace App\Controller\MarketBid;
 
 use App\Entity\MarketBid;
 use App\Entity\User;
@@ -12,35 +12,19 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/marketBid")
  */
-class MarketBidController extends AbstractController
+class CreateBidController extends AbstractController
 {
-    /**
-     * @Route("", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function getMyBids(ResponseService $responseService, MarketBidRepository $marketBidRepository)
-    {
-        $user = $this->getUser();
-
-        if(!$user->getUnlockedMarket())
-            throw new AccessDeniedHttpException('You haven\'t unlocked this feature, yet!');
-
-        $myBids = $marketBidRepository->findBy([ 'user' => $user ], [ 'createdOn' => 'DESC' ]);
-
-        return $responseService->success($myBids, [ SerializationGroupEnum::MY_MARKET_BIDS ]);
-    }
-
     /**
      * @Route("", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
@@ -51,6 +35,7 @@ class MarketBidController extends AbstractController
         InventoryService $inventoryService, EntityManagerInterface $em, InventoryRepository $inventoryRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if(!$user->getUnlockedMarket())
@@ -134,27 +119,5 @@ class MarketBidController extends AbstractController
         $em->flush();
 
         return $responseService->success($myBid, [ SerializationGroupEnum::MY_MARKET_BIDS ]);
-    }
-
-    /**
-     * @Route("/{bidId}", methods={"DELETE"}, requirements={"bidId"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function deleteBid(
-        int $bidId, ResponseService $responseService, TransactionService $transactionService,
-        MarketBidRepository $marketBidRepository, EntityManagerInterface $em
-    )
-    {
-        $user = $this->getUser();
-        $bid = $marketBidRepository->find($bidId);
-
-        if(!$bid || $bid->getUser()->getId() !== $user->getId())
-            throw new NotFoundHttpException('That bid could not be found (maybe someone else already sold you the item!)');
-
-        $em->remove($bid);
-
-        $transactionService->getMoney($user, $bid->getQuantity() * $bid->getBid(), 'Money refunded from canceling bid on ' . $bid->getQuantity() . 'x ' . $bid->getItem()->getName() . '.');
-
-        return $responseService->success();
     }
 }

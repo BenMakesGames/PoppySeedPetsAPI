@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
@@ -40,6 +41,7 @@ class PetShelterController extends AbstractController
     )
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
+        /** @var User $user */
         $user = $this->getUser();
         $costToAdopt = $adoptionService->getAdoptionFee($user);
         $lastAdopted = $userQuestRepository->findOneBy([ 'user' => $user, 'name' => 'Last Adopted a Pet' ]);
@@ -88,6 +90,7 @@ class PetShelterController extends AbstractController
     )
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
+        /** @var User $user */
         $user = $this->getUser();
         $costToAdopt = $adoptionService->getAdoptionFee($user);
         $lastAdopted = $userQuestRepository->findOneBy([ 'user' => $user, 'name' => 'Last Adopted a Pet' ]);

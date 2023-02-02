@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\PushSubscription;
+use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\PushSubscriptionRepository;
 use App\Repository\ReminderRepository;
@@ -31,6 +32,7 @@ class NotificationController extends AbstractController
         PushSubscriptionRepository $pushSubscriptionRepository, ReminderRepository $reminderRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $preferences = $userNotificationPreferencesRepository->findOneBy([
@@ -104,6 +106,7 @@ class NotificationController extends AbstractController
         ResponseService $responseService, PushSubscription $subscription, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($subscription->getUser()->getId() !== $user->getId())

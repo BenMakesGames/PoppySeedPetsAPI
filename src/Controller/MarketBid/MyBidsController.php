@@ -1,0 +1,34 @@
+<?php
+namespace App\Controller\MarketBid;
+
+use App\Entity\User;
+use App\Enum\SerializationGroupEnum;
+use App\Repository\MarketBidRepository;
+use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
+/**
+ * @Route("/marketBid")
+ */
+class MyBidsController extends AbstractController
+{
+    /**
+     * @Route("", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function getMyBids(ResponseService $responseService, MarketBidRepository $marketBidRepository)
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if(!$user->getUnlockedMarket())
+            throw new AccessDeniedHttpException('You haven\'t unlocked this feature, yet!');
+
+        $myBids = $marketBidRepository->findBy([ 'user' => $user ], [ 'createdOn' => 'DESC' ]);
+
+        return $responseService->success($myBids, [ SerializationGroupEnum::MY_MARKET_BIDS ]);
+    }
+}
