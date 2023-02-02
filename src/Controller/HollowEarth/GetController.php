@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\HollowEarth;
 
+use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Service\HollowEarthService;
 use App\Service\ResponseService;
@@ -20,6 +21,7 @@ class GetController extends AbstractController
      */
     public function getState(ResponseService $responseService, HollowEarthService $hollowEarthService)
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($user->getHollowEarthPlayer() === null)

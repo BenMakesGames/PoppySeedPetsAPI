@@ -58,6 +58,7 @@ class ChangeTileGoodsController extends AbstractController
                 ->setPlayer($user)
                 ->setTile($tile)
                 ->setGoods($selectedGoods)
+                ->setCard($tile->getCard())
             ;
 
             $em->persist($playerTile);
