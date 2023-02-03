@@ -54,6 +54,7 @@ class AntQueensFavorController extends AbstractController
             'Petrichor',
             'Antenna',
             'Large Bag of Fertilizer',
+            'Eggplant',
         ];
 
         $items = $rng->rngNextSubsetFromArray($possibleItems, 10);
