@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\PetLocationEnum;
 use App\Functions\PetColorFunctions;
@@ -72,11 +73,12 @@ class GoldRingController extends AbstractController
         PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'goldRing/#/collect100');
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'goldRing/#/collect100');
 
         $goldRingItem = $inventory->getItem();
-
-        $user = $this->getUser();
 
         $count = $inventoryService->countInventory($user, $goldRingItem, $inventory->getLocation());
 

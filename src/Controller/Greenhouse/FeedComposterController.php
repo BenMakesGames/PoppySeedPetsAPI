@@ -122,9 +122,14 @@ class FeedComposterController extends AbstractController
         {
             $user->getGreenhouse()->setComposterBonusCountdown();
 
+            $bugs = [ 'Centipede', 'Stink Bug' ];
+
+            if($user->getBeehive())
+                $bugs[] = 'Bee Larva';
+
             $bonusItem = $itemRepository->findOneByName($squirrel3->rngNextFromArray([
                 $squirrel3->rngNextFromArray([ 'Talon', 'Silica Grounds', 'Secret Seashell', 'Brown Bow' ]),
-                $squirrel3->rngNextFromArray([ 'Centipede', 'Stink Bug' ]),
+                $squirrel3->rngNextFromArray($bugs),
                 'Grandparoot',
                 'Toadstool',
                 'String', // let it get rancid
