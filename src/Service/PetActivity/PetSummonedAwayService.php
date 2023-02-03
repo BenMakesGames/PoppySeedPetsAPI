@@ -17,10 +17,10 @@ use App\Service\Squirrel3;
 
 class PetSummonedAwayService
 {
-    private $responseService;
-    private $inventoryService;
-    private $petExperienceService;
-    private $itemRepository;
+    private ResponseService $responseService;
+    private InventoryService $inventoryService;
+    private PetExperienceService $petExperienceService;
+    private ItemRepository $itemRepository;
     private IRandom $squirrel3;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 

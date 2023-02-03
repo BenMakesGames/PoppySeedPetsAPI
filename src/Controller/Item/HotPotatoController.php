@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Service\HotPotatoService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -28,6 +29,7 @@ class HotPotatoController extends AbstractController
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'hotPotato/#/toss');
 
+        /** @var User $user */
         $user = $this->getUser();
 
         if($squirrel3->rngNextInt(1, 5) === 1)
@@ -66,9 +68,10 @@ class HotPotatoController extends AbstractController
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'hotPotato/#/tossChocolateBomb');
 
+        /** @var User $user */
         $user = $this->getUser();
 
-        $numberOfTosses = $hotPotatoService->countTosses($inventory);
+        $numberOfTosses = HotPotatoService::countTosses($inventory);
 
         if($squirrel3->rngNextInt(1, 100) <= 10 + $numberOfTosses * 10)
         {
@@ -117,9 +120,10 @@ class HotPotatoController extends AbstractController
         Squirrel3 $squirrel3, HotPotatoService $hotPotatoService, TransactionService $transactionService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'hotPotato/#/tossHongbao');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'hotPotato/#/tossHongbao');
 
         if($squirrel3->rngNextInt(1, 5) === 1)
         {

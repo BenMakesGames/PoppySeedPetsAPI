@@ -7,8 +7,8 @@ use Psr\Log\LoggerInterface;
 
 class JsonLogicParserService
 {
-    private $logger;
-    private $userStatsRepository;
+    private LoggerInterface $logger;
+    private UserStatsRepository $userStatsRepository;
 
     public function __construct(LoggerInterface $logger, UserStatsRepository $userStatsRepository)
     {

@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Repository\UserQuestRepository;
 use App\Service\HotPotatoService;
 use App\Service\InventoryService;
@@ -28,11 +29,12 @@ class FlowerbombController extends AbstractController
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'flowerbomb/#/toss');
 
+        /** @var User $user */
         $user = $this->getUser();
 
         $lastFlowerBombWasNarcissistic = $userQuestRepository->findOrCreate($user, 'Last Flowerbomb was Narcissus', true);
 
-        $numberOfTosses = $hotPotatoService->countTosses($inventory);
+        $numberOfTosses = HotPotatoService::countTosses($inventory);
 
         if($numberOfTosses === 0)
         {

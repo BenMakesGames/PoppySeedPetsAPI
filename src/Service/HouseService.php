@@ -14,7 +14,7 @@ use Psr\Cache\CacheItemPoolInterface;
 
 class HouseService
 {
-    private PetService $petService;
+    private PetActivityService $petActivityService;
     private PetRepository $petRepository;
     private UserQuestRepository $userQuestRepository;
     private InventoryService $inventoryService;
@@ -23,14 +23,16 @@ class HouseService
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
     private SagaSagaService $sagaSagaService;
+    private PetSocialActivityService $petSocialActivityService;
 
     public function __construct(
-        PetService $petService, PetRepository $petRepository, CacheItemPoolInterface $cache, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        HouseSimService $houseSimService, SagaSagaService $sagaSagaService
+        PetActivityService $petActivityService, PetRepository $petRepository, CacheItemPoolInterface $cache,
+        EntityManagerInterface $em, UserQuestRepository $userQuestRepository, InventoryService $inventoryService,
+        Squirrel3 $squirrel3, HouseSimService $houseSimService, SagaSagaService $sagaSagaService,
+        PetSocialActivityService $petSocialActivityService
     )
     {
-        $this->petService = $petService;
+        $this->petActivityService = $petActivityService;
         $this->petRepository = $petRepository;
         $this->userQuestRepository = $userQuestRepository;
         $this->inventoryService = $inventoryService;
@@ -39,6 +41,7 @@ class HouseService
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
         $this->sagaSagaService = $sagaSagaService;
+        $this->petSocialActivityService = $petSocialActivityService;
     }
 
     public function needsToBeRun(User $user)
@@ -130,7 +133,7 @@ class HouseService
         {
             if($pet->getHouseTime()->getActivityTime() >= 60)
             {
-                $this->petService->runHour($pet);
+                $this->petActivityService->runHour($pet);
             }
 
             $hungOut = false;
@@ -138,10 +141,10 @@ class HouseService
             if($this->petCanRunSocialTime($pet))
             {
                 // only one social activity per request, to avoid weird bugs...
-                $hungOut = $this->petService->runSocialTime($pet);
+                $hungOut = $this->petSocialActivityService->runSocialTime($pet);
 
                 if($hungOut)
-                    $this->petService->recomputeFriendRatings($pet);
+                    $this->petSocialActivityService->recomputeFriendRatings($pet);
 
                 $this->houseSimService->setPetHasRunSocialTime($pet);
             }

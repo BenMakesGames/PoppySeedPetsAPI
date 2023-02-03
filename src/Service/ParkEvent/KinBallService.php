@@ -18,7 +18,7 @@ use App\Service\IRandom;
 use App\Service\ParkService;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
-use App\Service\PetService;
+use App\Service\PetActivityService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;

@@ -22,7 +22,7 @@ class HotPotatoService
         $this->responseService = $responseService;
     }
 
-    public function countTosses(Inventory $inventory): int
+    public static function countTosses(Inventory $inventory): int
     {
         $numberOfTosses = 0;
 

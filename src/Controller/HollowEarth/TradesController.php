@@ -50,6 +50,7 @@ class TradesController extends AbstractController
         ItemRepository $itemRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
         $player = $user->getHollowEarthPlayer();
         $tile = $player->getCurrentTile();

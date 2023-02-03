@@ -363,7 +363,7 @@ class HollowEarthService
 
         if(array_key_exists('description', $event) && $doLog)
         {
-            $description = $this->formatEventDescription($event['description'], $player);
+            $description = self::formatEventDescription($event['description'], $player);
 
             $currentCard = $this->getEffectiveTileCard($player, $player->getCurrentTile());
 
@@ -421,7 +421,7 @@ class HollowEarthService
             $this->inventoryService->petCollectsItem($itemName, $player->getChosenPet(), $player->getChosenPet()->getName() . ' found this while exploring the Hollow Earth.', $activityLog);
     }
 
-    public function formatEventDescription(string $description, HollowEarthPlayer $player): string
+    public static function formatEventDescription(string $description, HollowEarthPlayer $player): string
     {
         $replacements = [
             '%pet.name%' => $player->getChosenPet()->getName(),
@@ -474,80 +474,80 @@ class HollowEarthService
         return [
             [
                 'id' => 'skillpotion1',
-                'item' => $this->serializeItem($items, 'Potion of Brawling'),
+                'item' => self::serializeItem($items, 'Potion of Brawling'),
                 'cost' => [ 'jade' => 4, 'fruit' => 4 ], // 4 jade, 4 fruit + 1 extra in 3 go-arounds
-                'maxQuantity' => $this->computeMaxQuantity($player, 4, 0, 0, 0, 4),
+                'maxQuantity' => self::computeMaxQuantity($player, 4, 0, 0, 0, 4),
             ],
             [
                 'id' => 'skillpotion2',
-                'item' => $this->serializeItem($items, 'Potion of Crafts'),
+                'item' => self::serializeItem($items, 'Potion of Crafts'),
                 'cost' => [ 'jade' => 4, 'incense' => 4 ], // 4 jade, 4 incense in 4 go-arounds + 4 extra
-                'maxQuantity' => $this->computeMaxQuantity($player, 4, 4, 0, 0, 0),
+                'maxQuantity' => self::computeMaxQuantity($player, 4, 4, 0, 0, 0),
             ],
             [
                 'id' => 'skillpotion3',
-                'item' => $this->serializeItem($items, 'Potion of Music'),
+                'item' => self::serializeItem($items, 'Potion of Music'),
                 'cost' => [ 'incense' => 4, 'fruit' => 4 ], // 4 incense & 2 fruit + 2 fruit & 1 extra in 3 go-arounds
-                'maxQuantity' => $this->computeMaxQuantity($player, 0, 4, 0, 0, 4),
+                'maxQuantity' => self::computeMaxQuantity($player, 0, 4, 0, 0, 4),
             ],
             [
                 'id' => 'skillpotion4',
-                'item' => $this->serializeItem($items, 'Potion of Nature'),
+                'item' => self::serializeItem($items, 'Potion of Nature'),
                 'cost' => [ 'fruit' => 4, 'salt' => 4 ], // 3 go-arounds with 1 extras
-                'maxQuantity' => $this->computeMaxQuantity($player, 0, 0, 4, 0, 4),
+                'maxQuantity' => self::computeMaxQuantity($player, 0, 0, 4, 0, 4),
             ],
             [
                 'id' => 'skillpotion5',
-                'item' => $this->serializeItem($items, 'Potion of Science'),
+                'item' => self::serializeItem($items, 'Potion of Science'),
                 'cost' => [ 'amber' => 4, 'salt' => 4 ], // 4 go-arounds with 4 extras
-                'maxQuantity' => $this->computeMaxQuantity($player, 0, 0, 4, 4, 0),
+                'maxQuantity' => self::computeMaxQuantity($player, 0, 0, 4, 4, 0),
             ],
             [
                 'id' => 'skillpotion6',
-                'item' => $this->serializeItem($items, 'Potion of Stealth'),
+                'item' => self::serializeItem($items, 'Potion of Stealth'),
                 'cost' => [ 'incense' => 4, 'salt' => 4 ], // 4 go arounds with 4 extras
-                'maxQuantity' => $this->computeMaxQuantity($player, 0, 0, 4, 4, 0),
+                'maxQuantity' => self::computeMaxQuantity($player, 0, 0, 4, 4, 0),
             ],
             [
                 'id' => 'skillpotion7',
-                'item' => $this->serializeItem($items, 'Potion of Umbra'),
+                'item' => self::serializeItem($items, 'Potion of Umbra'),
                 'cost' => [ 'incense' => 4, 'amber' => 4 ], // 3 go arounds, with 1 extra
-                'maxQuantity' => $this->computeMaxQuantity($player, 0, 4, 0, 4, 0),
+                'maxQuantity' => self::computeMaxQuantity($player, 0, 4, 0, 4, 0),
             ],
             [
                 'id' => 'magic1',
-                'item' => $this->serializeItem($items, 'Magic Smoke'),
+                'item' => self::serializeItem($items, 'Magic Smoke'),
                 'cost' => [ 'jade' => 2 ],
-                'maxQuantity' => $this->computeMaxQuantity($player, 2, 0, 0, 0, 0),
+                'maxQuantity' => self::computeMaxQuantity($player, 2, 0, 0, 0, 0),
             ],
             [
                 'id' => 'magic2',
-                'item' => $this->serializeItem($items, 'Quintessence'),
+                'item' => self::serializeItem($items, 'Quintessence'),
                 'cost' => [ 'incense' => 2 ],
-                'maxQuantity' => $this->computeMaxQuantity($player, 0, 2, 0, 0, 0),
+                'maxQuantity' => self::computeMaxQuantity($player, 0, 2, 0, 0, 0),
             ],
             [
                 'id' => 'box2',
-                'item' => $this->serializeItem($items, 'Small Box of Ores'),
+                'item' => self::serializeItem($items, 'Small Box of Ores'),
                 'cost' => [ 'salt' => 2 ],
-                'maxQuantity' => $this->computeMaxQuantity($player, 0, 0, 2, 0, 0),
+                'maxQuantity' => self::computeMaxQuantity($player, 0, 0, 2, 0, 0),
             ],
             [
                 'id' => 'box1',
-                'item' => $this->serializeItem($items, 'Fruits & Veggies Box'),
+                'item' => self::serializeItem($items, 'Fruits & Veggies Box'),
                 'cost' => [ 'amber' => 2 ],
-                'maxQuantity' => $this->computeMaxQuantity($player, 0, 0, 0, 2, 0),
+                'maxQuantity' => self::computeMaxQuantity($player, 0, 0, 0, 2, 0),
             ],
             [
                 'id' => 'box3',
-                'item' => $this->serializeItem($items, 'Bag of Beans'),
+                'item' => self::serializeItem($items, 'Bag of Beans'),
                 'cost' => [ 'fruit' => 2 ],
-                'maxQuantity' => $this->computeMaxQuantity($player, 0, 0, 0, 0, 2),
+                'maxQuantity' => self::computeMaxQuantity($player, 0, 0, 0, 0, 2),
             ]
         ];
     }
 
-    private function computeMaxQuantity(HollowEarthPlayer $player, int $jade, int $incense, int $salt, int $amber, int $fruit): int
+    private static function computeMaxQuantity(HollowEarthPlayer $player, int $jade, int $incense, int $salt, int $amber, int $fruit): int
     {
         return min(
             $jade == 0 ? 100 : floor($player->getJade() / $jade),
@@ -561,7 +561,7 @@ class HollowEarthService
     /**
      * @param Item[] $items
      */
-    private function serializeItem(array $items, string $itemName)
+    private static function serializeItem(array $items, string $itemName): array
     {
         /** @var Item $item */
         $item = ArrayFunctions::find_one($items, fn(Item $i) => $i->getName() === $itemName);
