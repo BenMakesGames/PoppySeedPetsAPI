@@ -334,7 +334,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->userSessions = new ArrayCollection();
         $this->pushSubscriptions = new ArrayCollection();
         $this->unlockedAuras = new ArrayCollection();
-        $this->fate = mt_rand();
+        $this->fate = mt_rand(0, 2147483647);
     }
 
     public function getId(): ?int
@@ -1118,15 +1118,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->fate;
     }
 
-    public function setFate(int $fate): self
+    public function setFate(): self
     {
-        $this->fate = $fate;
+        $this->fate = mt_rand(0, 2147483647);
 
         return $this;
     }
 
     public function getDailySeed()
     {
-        return (($this->id * date('N')) % (date('nd') * 53)) + date('Yj');
+        return (($this->fate * date('N')) % (date('nd') * 53)) + date('Yj');
     }
 }

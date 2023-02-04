@@ -76,7 +76,7 @@ class DieController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $user->setFate(mt_rand());
+        $user->setFate();
 
         $em->remove($inventory);
 
