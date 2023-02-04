@@ -9,7 +9,6 @@ use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
-use App\Repository\ItemRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\CookingService;
 use App\Service\Filter\KnownRecipesFilterService;

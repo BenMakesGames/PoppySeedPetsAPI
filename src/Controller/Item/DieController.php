@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Service\HollowEarthService;
 use App\Service\ResponseService;
@@ -21,13 +22,14 @@ class DieController extends AbstractController
      * @Route("/{inventory}/roll", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function read(
+    public function roll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         HollowEarthService $hollowEarthService
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'die/#/roll');
 
+        /** @var User $user */
         $user = $this->getUser();
         $itemName = $inventory->getItem()->getName();
 
@@ -59,5 +61,27 @@ class DieController extends AbstractController
             $location = 'on one of the walls';
 
         return $responseService->itemActionSuccess("You rolled a $roll.\n\nYou notice a door $location that you're _quite_ certain did not exist before now...\n\nThat's... more than a little weird.\n\n(A new location has been made available - check the menu...)");
+    }
+    /**
+     * @Route("/{inventory}/changeYourFate", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function changeYourFate(
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
+        HollowEarthService $hollowEarthService
+    )
+    {
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'die/#/changeYourFate');
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $user->setFate(mt_rand());
+
+        $em->remove($inventory);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess("You throw the die, and it vanishes the instant before it hits the ground!\n\n_You_ feel the same, but the world around you seems... different.\n\n(Your daily trades & pet shelter offerings have been changed!)");
     }
 }

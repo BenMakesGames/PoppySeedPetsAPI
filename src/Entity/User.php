@@ -318,6 +318,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $canAssignHelpers = false;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $fate;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -329,16 +334,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->userSessions = new ArrayCollection();
         $this->pushSubscriptions = new ArrayCollection();
         $this->unlockedAuras = new ArrayCollection();
+        $this->fate = mt_rand();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getDailySeed(): int
-    {
-        return (($this->id * date('N')) % (date('nd') * 53)) + date('Yj');
     }
 
     public function getEmail(): ?string
@@ -1110,5 +1111,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->canAssignHelpers = $canAssignHelpers;
 
         return $this;
+    }
+
+    public function getFate(): int
+    {
+        return $this->fate;
+    }
+
+    public function setFate(int $fate): self
+    {
+        $this->fate = $fate;
+
+        return $this;
+    }
+
+    public function getDailySeed()
+    {
+        return (($this->id * date('N')) % (date('nd') * 53)) + date('Yj');
     }
 }
