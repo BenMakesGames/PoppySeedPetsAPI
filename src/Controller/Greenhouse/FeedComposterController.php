@@ -185,7 +185,7 @@ class FeedComposterController extends AbstractController
             PlayerLogHelpers::Create(
                 $em,
                 $user,
-                'You chucked ' . count($tossedItemNames) . ' objects into the Composter, and got' . $gotDescription,
+                'You chucked ' . count($tossedItemNames) . ' into the Composter, and got' . $gotDescription,
                 [ 'Greenhouse' ]
             );
         }
@@ -195,7 +195,7 @@ class FeedComposterController extends AbstractController
             PlayerLogHelpers::Create(
                 $em,
                 $user,
-                'You chucked ' . ArrayFunctions::list_nice($tossedItemNames) . ' ' . $objectOrObjects . ' into the Composter, and got' . $gotDescription,
+                'You chucked ' . ArrayFunctions::list_nice($tossedItemNames) . ' into the Composter, and got' . $gotDescription,
                 [ 'Greenhouse' ]
             );
         }
