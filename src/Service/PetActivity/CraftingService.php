@@ -332,6 +332,9 @@ class CraftingService
         {
             if($this->houseSimService->hasInventory('Smallish Pumpkin') && $this->houseSimService->hasInventory('Crooked Stick'))
                 $possibilities[] = new ActivityCallback($this, 'createDrumpkin', 10);
+
+            if($this->houseSimService->hasInventory('Iron Bar'))
+                $possibilities[] = new ActivityCallback($this, 'createGrabbyArm', 10);
         }
 
         if($this->houseSimService->hasInventory('Rice Flour') && $this->houseSimService->hasInventory('Potato'))
@@ -2306,6 +2309,35 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a plushy, but couldn\'t come up with a good pattern...', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+            ;
+        }
+    }
+
+    public function createGrabbyArm(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $craftsCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+
+        if($craftsCheck >= 12)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->houseSimService->getState()->loseItem('Plastic', 1);
+            $this->houseSimService->getState()->loseItem('Iron Bar', 1);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Grabby Arm!', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Grabby Arm', $pet, $pet->getName() . ' created this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a grabby arm, but couldn\'t get it to grab...', 'icons/activity-logs/confused')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
             ;
         }

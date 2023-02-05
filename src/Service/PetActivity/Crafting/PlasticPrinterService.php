@@ -58,7 +58,7 @@ class PlasticPrinterService
         if($this->houseSimService->hasInventory('3D Printer') && $this->houseSimService->hasInventory('Plastic'))
         {
             $possibilities[] = new ActivityCallback($this, 'createPlasticCraft', 10);
-            $possibilities[] = new ActivityCallback($this, 'createPlasticIdol', 4);
+            $possibilities[] = new ActivityCallback($this, 'createPlasticIdol', 5);
 
             if($this->houseSimService->hasInventory('Iron Bar'))
                 $possibilities[] = new ActivityCallback($this, 'createCompass', 10);
@@ -77,6 +77,9 @@ class PlasticPrinterService
 
             if($this->houseSimService->hasInventory('String') && $this->houseSimService->hasInventory('Antenna') && $this->houseSimService->hasInventory('Green Dye'))
                 $possibilities[] = new ActivityCallback($this, 'createDicerca', 12);
+
+            if($this->houseSimService->hasInventory('GrabbyArm') && $this->houseSimService->hasInventory('Green Dye'))
+                $possibilities[] = new ActivityCallback($this, 'createDinoGrabbyArm', 10);
         }
 
         return $possibilities;
@@ -380,6 +383,35 @@ class PlasticPrinterService
                 ->addTags($this->petActivityLogTagRepository->findByNames([ '3D Printing' ]))
             ;
             $this->inventoryService->petCollectsItem('Plastic Idol', $pet, $pet->getName() . ' created this from Plastic.', $activityLog);
+
+            return $activityLog;
+        }
+        else
+        {
+            return $this->printerActingUp($pet);
+        }
+    }
+
+    public function createDinoGrabbyArm(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
+
+        if($roll >= 13)
+        {
+            $this->houseSimService->getState()->loseItem('Plastic', 1);
+            $this->houseSimService->getState()->loseItem('Green Dye', 1);
+            $this->houseSimService->getState()->loseItem('Grabby Arm', 1);
+
+            $pet->increaseEsteem(2);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% zhuzhed up a Grabby Arm, turning it into a Dino Grabby Arm.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ '3D Printing' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Dino Grabby Arm', $pet, $pet->getName() . ' created this by zhuzhing up a Grabby Arm.', $activityLog);
 
             return $activityLog;
         }

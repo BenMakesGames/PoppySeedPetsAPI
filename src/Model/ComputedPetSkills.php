@@ -148,6 +148,7 @@ class ComputedPetSkills
         $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->brawlBonus($allowRanged) : 0;
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 3 : 0) +
+            ($this->pet->hasStatusEffect(StatusEffectEnum::RAWR) ? 1 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::HEX_HEXED) ? 6 - $this->pet->getSkills()->getBrawl() : 0) +
             ($this->pet->getSkills()->getBrawl() < 10 && $this->pet->hasStatusEffect(StatusEffectEnum::FOCUSED_BRAWL) ? 3 : 0)
         ;
