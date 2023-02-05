@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
 use App\Repository\SpiceRepository;
@@ -29,9 +30,11 @@ class WrappedSwordController extends AbstractController
         SpiceRepository $spiceRepository, EnchantmentRepository $enchantmentRepository
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'wrappedSword/#/unwrap');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'wrappedSword/#/unwrap');
+
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
