@@ -29,16 +29,16 @@ use App\Service\Squirrel3;
 
 class SmithingService
 {
-    private $inventoryService;
-    private $responseService;
-    private $petExperienceService;
-    private $goldSmithingService;
-    private $ironSmithingService;
-    private $meteoriteSmithingService;
-    private $halloweenSmithingService;
-    private $calendarService;
-    private $silverSmithingService;
-    private $twuWuvCraftingService;
+    private InventoryService $inventoryService;
+    private ResponseService $responseService;
+    private PetExperienceService $petExperienceService;
+    private GoldSmithingService $goldSmithingService;
+    private IronSmithingService $ironSmithingService;
+    private MeteoriteSmithingService $meteoriteSmithingService;
+    private HalloweenSmithingService $halloweenSmithingService;
+    private CalendarService $calendarService;
+    private SilverSmithingService $silverSmithingService;
+    private TwuWuvCraftingService $twuWuvCraftingService;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
@@ -184,6 +184,9 @@ class SmithingService
             $possibilities[] = new ActivityCallback($this->silverSmithingService, 'createSilverKey', $weight);
             $possibilities[] = new ActivityCallback($this->silverSmithingService, 'createBasicSilverCraft', $weight);
 
+            if($this->houseSimService->hasInventory('Mericarp'))
+                $possibilities[] = new ActivityCallback($this->silverSmithingService, 'createSilveredMericarp', 10);
+
             if($this->houseSimService->hasInventory('Crown Coral'))
                 $possibilities[] = new ActivityCallback($this->silverSmithingService, 'createCoralTrident', 10);
 
@@ -220,6 +223,9 @@ class SmithingService
             $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createGoldKey', $weight);
 
             $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createGoldTuningFork', ceil($weight / 2));
+
+            if($this->houseSimService->hasInventory('Mericarp'))
+                $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createGildedMericarp', 10);
 
             if($this->houseSimService->hasInventory('Culinary Knife') && $this->houseSimService->hasInventory('Firestone'))
                 $possibilities[] = new ActivityCallback($this->goldSmithingService, 'createNoWhiskNoReward', $weight);

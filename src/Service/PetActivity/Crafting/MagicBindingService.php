@@ -28,14 +28,14 @@ use App\Service\WeatherService;
 
 class MagicBindingService
 {
-    private $inventoryService;
-    private $responseService;
-    private $petExperienceService;
-    private $itemRepository;
+    private InventoryService $inventoryService;
+    private ResponseService $responseService;
+    private PetExperienceService $petExperienceService;
+    private ItemRepository $itemRepository;
     private IRandom $squirrel3;
-    private $coinSmithingService;
-    private $weatherService;
-    private $statusEffectService;
+    private CoinSmithingService $coinSmithingService;
+    private WeatherService $weatherService;
+    private StatusEffectService $statusEffectService;
     private HouseSimService $houseSimService;
     private HattierService $hattierService;
     private EnchantmentRepository $enchantmentRepository;
@@ -334,6 +334,9 @@ class MagicBindingService
 
         if($this->houseSimService->hasInventory('Witch\'s Broom') && $this->houseSimService->hasInventory('Wood\'s Metal'))
             $possibilities[] = new ActivityCallback($this, 'createSnickerblade', 10);
+
+        if($this->houseSimService->hasInventory('Tiny Black Hole') && $this->houseSimService->hasInventory('Mericarp'))
+            $possibilities[] = new ActivityCallback($this, 'createSunlessMericarp', 8);
 
         return $possibilities;
     }
@@ -2763,7 +2766,7 @@ class MagicBindingService
         }
         else if($roll >= 22)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::UMBRA, true);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Silver Bar', 1);
             $this->houseSimService->getState()->loseItem('Iron Axe', 1);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
@@ -2779,10 +2782,51 @@ class MagicBindingService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::UMBRA, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to imbue an Iron Axe with lightning, but it wasn\'t working out...', 'icons/activity-logs/confused')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding', 'Smithing' ]))
+            ;
+        }
+    }
+
+    public function createSunlessMericarp(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
+
+        if($roll >= 22)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->houseSimService->getState()->loseItem('Tiny Black Hole', 1);
+            $this->houseSimService->getState()->loseItem('Mericarp', 1);
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(4);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Sunless Mericarp!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Sunless Mericarp', $pet, $pet->getName() . ' created this by binding a Tiny Black Hole to a Mericarp.', $activityLog);
+            return $activityLog;
+        }
+        else if($roll == 1)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->houseSimService->getState()->loseItem('Tiny Black Hole', 1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+            $pet->increaseEsteem(-4);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Tiny Black Hole to a Mericarp, but accidentally evaporated the black hole, instead :|', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
+            ;
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Tiny Black Hole to a Mericarp, but almost evaporated the black hole, instead!', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
             ;
         }
     }
