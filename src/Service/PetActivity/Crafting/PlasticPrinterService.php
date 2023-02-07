@@ -78,7 +78,7 @@ class PlasticPrinterService
             if($this->houseSimService->hasInventory('String') && $this->houseSimService->hasInventory('Antenna') && $this->houseSimService->hasInventory('Green Dye'))
                 $possibilities[] = new ActivityCallback($this, 'createDicerca', 12);
 
-            if($this->houseSimService->hasInventory('GrabbyArm') && $this->houseSimService->hasInventory('Green Dye'))
+            if($this->houseSimService->hasInventory('Grabby Arm') && $this->houseSimService->hasInventory('Green Dye'))
                 $possibilities[] = new ActivityCallback($this, 'createDinoGrabbyArm', 10);
         }
 
