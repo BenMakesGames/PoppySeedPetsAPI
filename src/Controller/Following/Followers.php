@@ -11,9 +11,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
 
 /**
- * @Route("/following/myFollowers")
+ * @Route("/following/followers")
  */
-class MyFollowers extends AbstractController
+class Followers extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()
