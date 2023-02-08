@@ -400,7 +400,7 @@ class ItemTool
     }
 
     /**
-     * @Groups({"myInventory", "itemEncyclopedia", "marketItem"})
+     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "myPet"})
      */
     public function getModifiers(): array
     {

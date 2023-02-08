@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\House;
 
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
@@ -31,6 +32,7 @@ class RunHoursController extends AbstractController
         PetRepository $petRepository, InventoryRepository $inventoryRepository, NormalizerInterface $normalizer
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         try
