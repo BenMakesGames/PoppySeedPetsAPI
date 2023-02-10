@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Repository\ItemRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
@@ -29,6 +30,7 @@ class SandyLumpController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, ItemRepository $itemRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $lump, 'sandyLump/#/clean');

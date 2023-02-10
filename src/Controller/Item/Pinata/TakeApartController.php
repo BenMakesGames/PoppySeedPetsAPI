@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -25,10 +26,11 @@ class TakeApartController extends AbstractController
         InventoryService $inventoryService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'takeApart/#');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'takeApart/#');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $takeApartTable = [
             'Glowing Russet Staff of Swiftness' => [

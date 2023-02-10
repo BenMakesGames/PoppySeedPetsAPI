@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
@@ -27,9 +28,10 @@ class RecoveredArchiveController extends AbstractController
         EntityManagerInterface $em, ItemRepository $itemRepository, Squirrel3 $squirrel3
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'recoveredArchive/#/open');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'recoveredArchive/#/open');
 
         if($inventoryService->countInventory($user, '3D Printer', $inventory->getLocation()) < 1)
         {
@@ -37,6 +39,7 @@ class RecoveredArchiveController extends AbstractController
         }
 
         $loot = $squirrel3->rngNextFromArray([
+            '4-function Calculator',
             'Bananananers Foster Recipe',
             'Bass Guitar',
             'Big Book of Baking',

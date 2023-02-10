@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\TraderRepository;
@@ -30,17 +31,27 @@ class LinensController extends AbstractController
         EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'linensAndThings/#/rummage');
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'linensAndThings/#/rummage');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
-        $user = $this->getUser();
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
         $baseNumberOfCloth = $squirrel3->rngNextInt(1, 2);
-        $hasBadCloth = $squirrel3->rngNextInt(1, 2) === 1;
 
-        $inventoryService->receiveItem($hasBadCloth ? 'Filthy Cloth' : 'White Cloth', $user, $user, $user->getName() . ' found this in a pile of Linens and Things.', $location, $lockedToOwner);
+        if($squirrel3->rngNextInt(1, 2) === 1)
+        {
+            $extraItem = $squirrel3->rngNextInt(1, 10) == 1
+                ? $squirrel3->rngNextFromArray([ '4-function Calculator', 'Coconut', 'Glowing Six-sided Die', 'Music Note', 'Paper', 'Password', 'Red Hard Candy', 'Sand Dollar', 'Spider', 'Tentacle' ])
+                : 'Filthy Cloth';
+        }
+        else
+            $extraItem = 'White Cloth';
+
+        $inventoryService->receiveItem($extraItem, $user, $user, $user->getName() . ' found this in a pile of Linens and Things.', $location, $lockedToOwner);
 
         for($i = 0; $i < $baseNumberOfCloth; $i++)
             $inventoryService->receiveItem('White Cloth', $user, $user, $user->getName() . ' found this in a pile of Linens and Things.', $location, $lockedToOwner);
@@ -48,10 +59,12 @@ class LinensController extends AbstractController
         $em->remove($inventory);
         $em->flush();
 
-        if($hasBadCloth)
+        if($extraItem === 'White Cloth')
+            return $responseService->itemActionSuccess('You rummaged around in the pile, and pulled out ' . ($baseNumberOfCloth + 1) . ' pieces of good cloth...', [ 'itemDeleted' => true ]);
+        else if($extraItem === 'Filthy Cloth')
             return $responseService->itemActionSuccess('You rummaged around in the pile, and pulled out ' . $baseNumberOfCloth . ' ' . ($baseNumberOfCloth === 1 ? 'piece' : 'pieces') . ' of good cloth... and 1 piece of BAD cloth...', [ 'itemDeleted' => true ]);
         else
-            return $responseService->itemActionSuccess('You rummaged around in the pile, and pulled out ' . ($baseNumberOfCloth + 1) . ' pieces of good cloth...', [ 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess('You rummaged around in the pile, and pulled out ' . $baseNumberOfCloth . ' ' . ($baseNumberOfCloth === 1 ? 'piece' : 'pieces') . ' of good cloth, and what\'s this? Tangled up in the folds of cloth is a ' . $extraItem . '!', [ 'itemDeleted' => true ]);
     }
 
     /**
