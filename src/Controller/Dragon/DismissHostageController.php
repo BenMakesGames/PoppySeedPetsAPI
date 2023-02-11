@@ -4,6 +4,7 @@ namespace App\Controller\Dragon;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Functions\PlayerLogHelpers;
 use App\Repository\DragonRepository;
 use App\Service\DragonHostageService;
 use App\Service\InventoryService;
@@ -46,6 +47,13 @@ class DismissHostageController extends AbstractController
         $responseService->addFlashMessage($loot->flashMessage);
 
         $inventoryService->receiveItem($loot->item, $dragon->getOwner(), $dragon->getOwner(), $loot->comment, LocationEnum::HOME, false);
+
+        PlayerLogHelpers::Create(
+            $em,
+            $user,
+            'You ushered a "hostage" out of your Dragon Den. ' . $loot->flashMessage,
+            [ 'Dragon Den' ]
+        );
 
         $em->flush();
 

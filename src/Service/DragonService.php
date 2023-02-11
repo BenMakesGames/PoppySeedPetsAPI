@@ -8,6 +8,7 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\PlayerLogHelpers;
 use App\Repository\DragonRepository;
 use App\Repository\EnchantmentRepository;
 use App\Repository\InventoryRepository;
@@ -119,8 +120,15 @@ class DragonService
         $gold = ArrayFunctions::sum($items, fn(Inventory $i) => $i->getItem()->getTreasure()->getGold());
         $gems = ArrayFunctions::sum($items, fn(Inventory $i) => $i->getItem()->getTreasure()->getGems());
 
+        $offeringItemNames = [];
+
         foreach($items as $item)
+        {
+            $offeringItemNames[] = $item->getItem()->getNameWithArticle();
             $this->em->remove($item);
+        }
+
+        sort($offeringItemNames);
 
         $this->userStatsRepository->incrementStat($user, UserStatEnum::TREASURES_GIVEN_TO_DRAGON_HOARD, count($items));
 
@@ -277,6 +285,13 @@ class DragonService
         }
         else
             $message .= '.';
+
+        PlayerLogHelpers::Create(
+            $this->em,
+            $user,
+            'You gave your dragon ' . ArrayFunctions::list_nice($offeringItemNames) . '. ' . $message,
+            [ 'Dragon Den' ]
+        );
 
         return $message;
     }

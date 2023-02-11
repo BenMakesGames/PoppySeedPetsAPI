@@ -3,8 +3,8 @@ namespace App\Service;
 
 use App\Entity\PassphraseResetRequest;
 use App\Entity\User;
+use App\Functions\PlayerLogHelpers;
 use App\Functions\StringFunctions;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PassphraseResetService
@@ -20,10 +20,14 @@ class PassphraseResetService
 
     public function requestReset(User $user): bool
     {
-        if(!$user)
-            return false;
-
         $now = new \DateTimeImmutable();
+
+        PlayerLogHelpers::Create(
+            $this->em,
+            $user,
+            'A passphrase reset request was made for `' . $user->getEmail() . '`.',
+            [ 'Account & Security' ]
+        );
 
         if($user->getPassphraseResetRequest())
         {
@@ -64,7 +68,7 @@ class PassphraseResetService
             ->setFrom('help+resetpassword@poppyseedpets.com')
             ->setTo($request->getUser()->getEmail())
             ->setBody(
-                'Ah! You lost your password? Sorry! That sucks! Let\'s get that fixed up!' . "\n\n" .
+                'Ah! You lost your password? Sorry! Let\'s get that fixed up!' . "\n\n" .
                 'To reset your password, use this link:' . "\n\n" .
                 'https://poppyseedpets.com/resetPassphrase/' . $request->getCode() . "\n"
             )

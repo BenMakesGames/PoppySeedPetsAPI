@@ -2,6 +2,7 @@
 namespace App\Controller\Account;
 
 use App\Enum\SerializationGroupEnum;
+use App\Functions\PlayerLogHelpers;
 use App\Repository\UserRepository;
 use App\Repository\UserStyleRepository;
 use App\Service\ResponseService;
@@ -64,6 +65,13 @@ class LogInController extends AbstractController
         {
             $user->setUnreadNews(0);
         }
+
+        PlayerLogHelpers::Create(
+            $em,
+            $user,
+            'You logged in from `' . $request->getClientIp() . '`.',
+            [ 'Account & Security' ]
+        );
 
         $em->flush();
 

@@ -1,9 +1,11 @@
 <?php
 namespace App\Controller\Account;
 
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Functions\PlayerLogHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\PassphraseResetRequestRepository;
 use App\Repository\PetRepository;
@@ -37,10 +39,12 @@ class AccountController extends AbstractController
      */
     public function updateEmail(
         Request $request, ResponseService $responseService, UserPasswordHasherInterface $passwordEncoder,
-        UserRepository $userRepository
+        UserRepository $userRepository, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
+        $oldEmail = $user->getEmail();
 
         if(!$passwordEncoder->isPasswordValid($user, $request->request->get('confirmPassphrase')))
             throw new AccessDeniedHttpException('Passphrase is not correct.');
@@ -50,26 +54,27 @@ class AccountController extends AbstractController
         if($newEmail === '' || !filter_var($newEmail, FILTER_VALIDATE_EMAIL))
             throw new UnprocessableEntityHttpException('Email address is not valid.');
 
+        if(strtoupper($oldEmail) == strtoupper($newEmail))
+            throw new UnprocessableEntityHttpException('B-- but that\'s _already_ your email address...');
+
+        if(str_ends_with($newEmail, '@poppyseedpets.com') || str_ends_with($newEmail, '.poppyseedpets.com'))
+            throw new UnprocessableEntityHttpException('poppyseedpets.com e-mail addresses cannot be used.');
+
         $alreadyInUse = $userRepository->findOneBy([ 'email' => $newEmail ]);
 
-        if($alreadyInUse)
-        {
-            if($alreadyInUse->getId() === $user->getId())
-                return $responseService->success(); // sure.
-            else
-            {
-                if(strpos($newEmail, '+') === -1)
-                {
-                    $emailParts = explode('@', $newEmail);
-                    $exampleEmail = $emailParts[0] . '+whatever@' . $emailParts[1];
-                    throw new UnprocessableEntityHttpException('That e-mail address is already in use. If it\'s your e-mail address, many e-mail services allow you to put a "+" in your address, for example "' . $exampleEmail . '".');
-                }
-                else
-                    throw new UnprocessableEntityHttpException('That e-mail address is already in use.');
-            }
-        }
+        if($alreadyInUse && $alreadyInUse->getId() != $user->getId())
+            throw new UnprocessableEntityHttpException('That e-mail address is already in use.');
 
         $user->setEmail($newEmail);
+
+        PlayerLogHelpers::Create(
+            $em,
+            $user,
+            'You changed your e-mail address, from `' . $oldEmail . '` to `' . $newEmail .'`.',
+            [ 'Account & Security' ]
+        );
+
+        $em->flush();
 
         return $responseService->success();
     }
@@ -84,6 +89,7 @@ class AccountController extends AbstractController
         EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if(!$passwordEncoder->isPasswordValid($user, $request->request->get('confirmPassphrase')))
@@ -95,6 +101,13 @@ class AccountController extends AbstractController
             throw new UnprocessableEntityHttpException('Passphrase must be at least 10 characters long.');
 
         $user->setPassword($passwordEncoder->hashPassword($user, $newPassphrase));
+
+        PlayerLogHelpers::Create(
+            $em,
+            $user,
+            'You changed your passphrase.',
+            [ 'Account & Security' ]
+        );
 
         $em->flush();
 
@@ -110,6 +123,7 @@ class AccountController extends AbstractController
         ResponseService $responseService, EntityManagerInterface $em, UserStyleRepository $userStyleRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($user->getUnlockedMuseum() === null && $user->getRegisteredOn() <= (new \DateTimeImmutable())->modify('-3 days'))
@@ -176,6 +190,13 @@ class AccountController extends AbstractController
 
         $em->remove($resetRequest);
 
+        PlayerLogHelpers::Create(
+            $em,
+            $user,
+            'You reset your passphrase.',
+            [ 'Account & Security' ]
+        );
+
         $em->flush();
 
         return $responseService->success();
@@ -228,9 +249,11 @@ class AccountController extends AbstractController
         ResponseService $responseService
     )
     {
+        /** @var User $user */
+        $user = $this->getUser();
         $newOrder = $request->request->get('order');
 
-        $userMenuService->updateUserMenuSortOrder($this->getUser(), $newOrder);
+        $userMenuService->updateUserMenuSortOrder($user, $newOrder);
 
         $em->flush();
 
