@@ -57,6 +57,9 @@ class RegisterController extends AbstractController
         if(!\filter_var($email, FILTER_VALIDATE_EMAIL))
             throw new UnprocessableEntityHttpException('Email address is not valid.');
 
+        if(str_ends_with($email, '@poppyseedpets.com') || str_ends_with($email, '.poppyseedpets.com'))
+            throw new UnprocessableEntityHttpException('poppyseedpets.com e-mail addresses cannot be used.');
+
         if(\mb_strlen($petName) < 1)
             throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
         else if(\mb_strlen($petName) > 30)
