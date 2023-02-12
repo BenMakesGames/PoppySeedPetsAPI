@@ -7,11 +7,13 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
+use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\EquipmentFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -20,17 +22,18 @@ use App\Service\StatusEffectService;
 
 class HeartDimensionService
 {
-    private $responseService;
-    private $petExperienceService;
-    private $inventoryService;
-    private $squirrel3;
-    private $statusEffectService;
+    private ResponseService $responseService;
+    private PetExperienceService $petExperienceService;
+    private InventoryService $inventoryService;
+    private Squirrel3 $squirrel3;
+    private StatusEffectService $statusEffectService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private UserStatsRepository $userStatsRepository;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        Squirrel3 $squirrel3, StatusEffectService $statusEffectService,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        ResponseService $responseService, InventoryService $inventoryService,
+        PetExperienceService $petExperienceService, Squirrel3 $squirrel3, StatusEffectService $statusEffectService,
+        PetActivityLogTagRepository $petActivityLogTagRepository, UserStatsRepository $userStatsRepository
     )
     {
         $this->responseService = $responseService;
@@ -39,13 +42,14 @@ class HeartDimensionService
         $this->squirrel3 = $squirrel3;
         $this->statusEffectService = $statusEffectService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->userStatsRepository = $userStatsRepository;
     }
 
-    public function canAdventure(Pet $pet)
+    public function canAdventure(Pet $pet): bool
     {
         return
             $pet->getAffectionAdventures() < $pet->getAffectionLevel() &&
-            $pet->getAffectionAdventures() < 5
+            $pet->getAffectionAdventures() < 6
         ;
     }
 
@@ -85,6 +89,9 @@ class HeartDimensionService
             case 5:
                 $activityLog = $this->defeatShadow($petWithSkills);
                 break;
+            case 6:
+                $activityLog = $this->unlockTransformingAHeartStone($pet);
+                break;
             default:
                 throw new \Exception('Ben made a bad error! There is no Heart Dimension adventure that ' . $pet->getName() . ' can go on!');
         }
@@ -107,7 +114,7 @@ class HeartDimensionService
         EquipmentFunctions::unequipPet($pet);
     }
 
-    public function fightAngrySpirit(ComputedPetSkills $petWithSkills)
+    public function fightAngrySpirit(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
@@ -158,7 +165,7 @@ class HeartDimensionService
         ;
     }
 
-    public function beInspired(ComputedPetSkills $petWithSkills)
+    public function beInspired(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
@@ -206,7 +213,7 @@ class HeartDimensionService
         ;
     }
 
-    public function defeatNightmare(ComputedPetSkills $petWithSkills)
+    public function defeatNightmare(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
@@ -242,7 +249,7 @@ class HeartDimensionService
         ;
     }
 
-    public function haveDivineVision(ComputedPetSkills $petWithSkills)
+    public function haveDivineVision(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
@@ -283,7 +290,7 @@ class HeartDimensionService
         ;
     }
 
-    public function defeatShadow(ComputedPetSkills $petWithSkills)
+    public function defeatShadow(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
@@ -315,6 +322,21 @@ class HeartDimensionService
             ->increaseSelfReflectionPoint(1)
             ->incrementAffectionAdventures()
         ;
+
+        return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/heart-dimension')
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension' ]))
+        ;
+    }
+
+    private function unlockTransformingAHeartstone(Pet $pet): PetActivityLog
+    {
+        $pet->incrementAffectionAdventures();
+
+        $message = ActivityHelpers::PetName($pet) . ' made one last trip to the Heart Dimensions, navigating the maze surrounding its core, and reaching the center. The maze shattered, and ' . ActivityHelpers::PetName($pet) . ' awoke. (You can now transform an additional Heartstone!)';
+
+        $this->userStatsRepository->incrementStat($pet->getOwner(), 'Pet Completed the Heartstone Dimension');
+
+        EquipmentFunctions::unequipPet($pet);
 
         return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/heart-dimension')
             ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension' ]))
