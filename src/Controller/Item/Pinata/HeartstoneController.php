@@ -30,7 +30,7 @@ class HeartstoneController extends AbstractController
      */
     public function transform(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, PetRepository $petRepository
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */
@@ -42,8 +42,9 @@ class HeartstoneController extends AbstractController
         $numberTransformed = $userStatsRepository->getStatValue($user, self::STAT_NAME);
         $petsWhoHaveCompletedHeartDimensionAdventures = $userStatsRepository->getStatValue($user, 'Pet Completed the Heartstone Dimension');
 
+        $numberThatCanBeTransformed = $petsWhoHaveCompletedHeartDimensionAdventures - $numberTransformed;
 
-        if($numberTransformed >= $petsWhoHaveCompletedHeartDimensionAdventures - 1)
+        if($numberThatCanBeTransformed <= 0)
         {
             if($numberTransformed == 0)
                 throw new UnprocessableEntityHttpException('You cannot transform a Heartstone until one of your pets has completed all of the Heartstone Dimension challenges.');
