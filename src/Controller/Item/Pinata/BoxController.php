@@ -45,6 +45,7 @@ class BoxController extends AbstractController
         EntityManagerInterface $em, InventoryService $inventoryService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $box, 'box/twilight/#/open');
@@ -79,68 +80,6 @@ class BoxController extends AbstractController
     }
 
     /**
-     * @Route("/hat/{box}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function openHatBox(
-        Inventory $box, ResponseService $responseService, InventoryService $inventoryService, ItemRepository $itemRepository,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, Squirrel3 $squirrel3
-    )
-    {
-        $user = $this->getUser();
-
-        ItemControllerHelpers::validateInventory($this->getUser(), $box, 'box/hat/#/open');
-
-        $location = $box->getLocation();
-        $lockedToOwner = $box->getLockedToOwner();
-
-        $hatItem = $itemRepository->findOneByName($squirrel3->rngNextFromArray([
-            'Bright Top Hat',
-            'Masquerade Mask',
-            'Merchant\'s Cap',
-            'Wizarding Hat',
-            'Gray Bow',
-            'Cool Sunglasses',
-            'Sombrero',
-            'Judy',
-            'Propeller Beanie',
-        ]));
-
-        $userStatsRepository->incrementStat($user, 'Opened ' . $box->getItem()->getNameWithArticle());
-
-        if($hatItem->getName() === 'Gray Bow')
-        {
-            $itemComment = 'Made out of the strap of ' . $box->getItem()->getNameWithArticle() . '.';
-            $message = "You open the hat box... ta-da! It\'s... EMPTY?!?!\n\nRefusing to be outdone by a box, you tie the Hat Box\'s strap into a bow.";
-        }
-        else if($hatItem->getName() === 'Cool Sunglasses')
-        {
-            $itemComment = 'Found inside ' . $box->getItem()->getNameWithArticle() . '.';
-            $message = 'You open the hat box... ta-da! It\'s... ' . $hatItem->getNameWithArticle() . '? (Is that a hat?)';
-        }
-        else if($hatItem->getName() === 'Wings')
-        {
-            $itemComment = 'Found inside ' . $box->getItem()->getNameWithArticle() . '.';
-            $message = 'You open the hat box... ta-da! It\'s... two ' . $hatItem->getName() . '! (Which are each already two wings, so it\'s kinda\' like getting four, I guess?)';
-
-            $inventoryService->receiveItem($hatItem, $user, $box->getCreatedBy(), $itemComment, $location, $lockedToOwner);
-        }
-        else
-        {
-            $itemComment = 'Found inside ' . $box->getItem()->getNameWithArticle() . '.';
-            $message = 'You open the hat box... ta-da! It\'s ' . $hatItem->getNameWithArticle() . '!';
-        }
-
-        $inventoryService->receiveItem($hatItem, $user, $box->getCreatedBy(), $itemComment, $location, $lockedToOwner);
-
-        $em->remove($box);
-
-        $em->flush();
-
-        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
-    }
-
-    /**
      * @Route("/ores/{box}/loot", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
@@ -150,6 +89,7 @@ class BoxController extends AbstractController
         Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $box, 'box/ores/#/loot');
@@ -216,6 +156,7 @@ class BoxController extends AbstractController
         EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $box, 'box/smallOres/#/loot');
@@ -254,6 +195,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/box/#/open');
@@ -326,6 +268,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/cereal/#/open');
@@ -344,7 +287,7 @@ class BoxController extends AbstractController
         for($i = 0; $i < 7; $i++)
             $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Corn', 'Wheat', 'Rice' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -356,6 +299,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/bakers/#/open');
@@ -392,7 +336,7 @@ class BoxController extends AbstractController
                 $newInventory[$i]->setSpice($spice);
         }
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -404,6 +348,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/fruits-n-veggies/#/open');
@@ -439,7 +384,7 @@ class BoxController extends AbstractController
                 $newInventory[$i]->setSpice($spice);
         }
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -451,6 +396,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/nature/#/open');
@@ -482,7 +428,7 @@ class BoxController extends AbstractController
                 $newInventory[$i]->setSpice($spice);
         }
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -494,6 +440,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/monster/#/open');
@@ -525,7 +472,7 @@ class BoxController extends AbstractController
                 $newInventory[$i]->setSpice($spice);
         }
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -537,6 +484,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/handicrafts/#/open');
@@ -564,7 +512,7 @@ class BoxController extends AbstractController
             $newInventory[] = $inventoryService->receiveItem($itemName, $user, $user, $description, $location, $inventory->getLockedToOwner());
         }
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -576,6 +524,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, ItemGroupRepository $itemGroupRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/gaming/#/open');
@@ -610,30 +559,7 @@ class BoxController extends AbstractController
         if($squirrel3->rngNextInt(1, 10) === 1)
             $newInventory[] = $inventoryService->receiveItem('Glowing Twenty-sided Die', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
-    }
-
-    /**
-     * @param Inventory[] $newInventory
-     */
-    private function countRemoveFlushAndRespond(
-        string $messagePrefix,
-        UserStatsRepository $userStatsRepository, User $user, Inventory $inventory, array $newInventory,
-        ResponseService $responseService, EntityManagerInterface $em
-    ): JsonResponse
-    {
-        $userStatsRepository->incrementStat($user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
-
-        $itemList = array_map(fn(Inventory $i) => InventoryModifierFunctions::getNameWithModifiers($i), $newInventory);
-        sort($itemList);
-
-        $em->remove($inventory);
-
-        $em->flush();
-
-        $responseService->setReloadInventory();
-
-        return $responseService->itemActionSuccess($messagePrefix . ' ' . ArrayFunctions::list_nice($itemList) . '.', [ 'itemDeleted' => true ]);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -645,6 +571,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/bagOfBeans/#/open');
@@ -664,7 +591,7 @@ class BoxController extends AbstractController
             ;
         }
 
-        return $this->countRemoveFlushAndRespond('You upturn the bag, finding', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('You upturn the bag, finding', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -676,6 +603,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/pepperbox/#/disassemble');
@@ -711,6 +639,7 @@ class BoxController extends AbstractController
         EntityManagerInterface $em, UserQuestRepository $userQuestRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/jukebox/#/listen');
@@ -760,6 +689,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/sandbox/#/raid');
@@ -832,6 +762,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, ItemRepository $itemRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/paperBag/#/open');
@@ -913,6 +844,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/july4/#/open');
@@ -932,7 +864,7 @@ class BoxController extends AbstractController
             $inventoryService->receiveItem('Blue Firework', $user, $user, $comment, $location, $lockedToOwner),
         ];
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -944,6 +876,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, Squirrel3 $rng
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/bastille/#/open');
@@ -968,7 +901,7 @@ class BoxController extends AbstractController
         foreach($items as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $lockedToOwner);
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -980,6 +913,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/may5/#/open');
@@ -999,7 +933,7 @@ class BoxController extends AbstractController
             $inventoryService->receiveItem('Red Firework', $user, $user, $comment, $location, $lockedToOwner),
         ];
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1011,6 +945,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/newYear/#/open');
@@ -1037,7 +972,7 @@ class BoxController extends AbstractController
         for($x = $squirrel3->rngNextInt(4, 5); $x > 0; $x--)
             $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray($alcohol), $user, $user, $comment, $location, $lockedToOwner);
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1049,6 +984,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/chineseNewYear/#/open');
@@ -1067,163 +1003,7 @@ class BoxController extends AbstractController
             $inventoryService->receiveItem('Gold Dragon Ingot', $user, $user, $comment, $location, $lockedToOwner),
         ];
 
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
-    }
-
-    /**
-     * @Route("/little-strongbox/{inventory}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function openLittleStrongbox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        TransactionService $transactionService
-    )
-    {
-        $user = $this->getUser();
-
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/little-strongbox/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
-
-        $key = $inventoryRepository->findOneToConsume($user, 'Iron Key');
-
-        if(!$key)
-            throw new UnprocessableEntityHttpException('You need an Iron Key to do that.');
-
-        $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
-
-        $moneys = $squirrel3->rngNextInt(10, $squirrel3->rngNextInt(20, $squirrel3->rngNextInt(50, $squirrel3->rngNextInt(100, 200)))); // averages 35?
-
-        $transactionService->getMoney($user, $moneys, 'Found inside ' . $inventory->getItem()->getNameWithArticle() . '.');
-
-        $possibleItems = [
-            'Silver Bar', 'Silver Bar',
-            'Gold Bar',
-            'Rusty Blunderbuss',
-            'Rusty Rapier',
-            'Blackberry Wine',
-            'Fluff',
-            'Glowing Six-sided Die',
-        ];
-
-        $numItems = $squirrel3->rngNextInt(2, $squirrel3->rngNextInt(3, 4));
-        $newInventory = [];
-
-        $location = $inventory->getLocation();
-
-        for($i = 0; $i < $numItems; $i++)
-            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray($possibleItems), $user, $user, $comment, $location);
-
-        $newInventory[] = $inventoryService->receiveItem('Piece of Cetgueli\'s Map', $user, $user, $comment, $location, $inventory->getLockedToOwner());
-
-        $em->remove($key);
-
-        return $this->countRemoveFlushAndRespond('Opening the box revealed ' . $moneys . '~~m~~,', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
-    }
-
-    /**
-     * @Route("/very-strongbox/{inventory}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function openVeryStrongbox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        TransactionService $transactionService
-    )
-    {
-        $user = $this->getUser();
-
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/very-strongbox/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
-
-        $key = $inventoryRepository->findOneToConsume($user, 'Silver Key');
-
-        if(!$key)
-            throw new UnprocessableEntityHttpException('You need a Silver Key to do that.');
-
-        $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
-
-        $moneys = $squirrel3->rngNextInt(15, $squirrel3->rngNextInt(45, $squirrel3->rngNextInt(100, $squirrel3->rngNextInt(200, 300)))); // averages 50?
-
-        $transactionService->getMoney($user, $moneys, 'Found inside ' . $inventory->getItem()->getNameWithArticle() . '.');
-
-        $items = [
-            'Silver Bar',
-            'Gold Bar',
-            'Gold Bar',
-            'Glowing Six-sided Die',
-        ];
-
-        $items[] = $squirrel3->rngNextFromArray([
-            'Rusty Blunderbuss',
-            'Rusty Rapier',
-            'Pepperbox',
-        ]);
-
-        $items[] = $squirrel3->rngNextFromArray([
-            'Minor Scroll of Riches',
-            'Magic Hourglass',
-        ]);
-
-        $items[] = $squirrel3->rngNextFromArray([
-            'Scroll of Fruit',
-            'Scroll of the Sea',
-            'Forgetting Scroll',
-        ]);
-
-        $newInventory = [];
-        $location = $inventory->getLocation();
-
-        foreach($items as $item)
-            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $inventory->getLockedToOwner());
-
-        $em->remove($key);
-
-        return $this->countRemoveFlushAndRespond('Opening the box revealed ' . $moneys . '~~m~~,', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
-    }
-
-    /**
-     * @Route("/outrageously-strongbox/{inventory}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function openOutrageouslyStrongbox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository
-    )
-    {
-        $user = $this->getUser();
-
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/outrageously-strongbox/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
-
-        $key = $inventoryRepository->findOneToConsume($user, 'Gold Key');
-
-        if(!$key)
-            throw new UnprocessableEntityHttpException('You need a Gold Key to do that.');
-
-        $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
-
-        $items = [
-            'Very Strongbox',
-            'Major Scroll of Riches',
-            'Major Scroll of Riches',
-            'Dumbbell',
-        ];
-
-        $items[] = $squirrel3->rngNextFromArray([
-            'Weird, Blue Egg',
-            'Unexpectedly-familiar Metal Box',
-        ]);
-
-        $newInventory = [];
-        $location = $inventory->getLocation();
-
-        foreach($items as $item)
-            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $inventory->getLockedToOwner());
-
-        $em->remove($key);
-
-        return $this->countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1235,6 +1015,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/goldChest/#/open');
@@ -1269,7 +1050,7 @@ class BoxController extends AbstractController
 
         $em->remove($key);
 
-        return $this->countRemoveFlushAndRespond('You used a Gold Key to open the Gold Chest, and revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('You used a Gold Key to open the Gold Chest, and revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1281,6 +1062,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/rubyChest/#/open');
@@ -1307,7 +1089,7 @@ class BoxController extends AbstractController
         foreach($items as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $inventory->getLockedToOwner());
 
-        return $this->countRemoveFlushAndRespond('You opened the Ruby Chest... whoa: it\'s got', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('You opened the Ruby Chest... whoa: it\'s got', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1319,6 +1101,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/tower/#/open');
@@ -1341,7 +1124,7 @@ class BoxController extends AbstractController
         if($squirrel3->rngNextInt(1, 10) === 1)
             $newInventory[] = $inventoryService->receiveItem('Secret Seashell', $user, $user, $message, $location, $inventory->getLockedToOwner());
 
-        return $this->countRemoveFlushAndRespond('Opening the chest revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the chest revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1353,6 +1136,7 @@ class BoxController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/fishBag/#/open');
@@ -1387,211 +1171,7 @@ class BoxController extends AbstractController
         if($squirrel3->rngNextInt(1, 20) === 1)
             $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Merchant Fish', 'Secret Seashell', 'Ceremonial Trident' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
 
-        return $this->countRemoveFlushAndRespond('Opening the bag revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
-    }
-
-    /**
-     * @Route("/alicesSecret/{inventory}/teaTime", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function alicesSecretTeaTime(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, ResponseService $responseService
-    )
-    {
-        $user = $this->getUser();
-
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/alicesSecret/#/teaTime');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
-
-        $loot = [
-            'Toadstool', 'Shortbread Cookies'
-        ];
-
-        for($i = 0; $i < 3; $i++)
-        {
-            $loot[] = $squirrel3->rngNextFromArray([
-                'Coffee Bean Tea with Mammal Extract',
-                'Ginger Tea',
-                'Black Tea',
-                'Sweet Tea with Mammal Extract',
-            ]);
-        }
-
-        for($i = 0; $i < 2; $i++)
-        {
-            if($squirrel3->rngNextInt(1, 5) === 1)
-            {
-                $loot[] = $squirrel3->rngNextFromArray([
-                    'Dreamwalker\'s Tea', 'Yogurt Muffin',
-                ]);
-            }
-            else
-            {
-                $loot[] = $squirrel3->rngNextFromArray([
-                    'Toadstool', 'Mini Chocolate Chip Cookies', 'Pumpkin Bread',
-                ]);
-            }
-        }
-
-        $newInventory = [];
-
-        foreach($loot as $item)
-            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from Alice\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
-
-        return $this->countRemoveFlushAndRespond('Inside Alice\'s Secret, you find', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
-    }
-
-    /**
-     * @Route("/alicesSecret/{inventory}/hourglass", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function alicesSecretHourglass(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository, ResponseService $responseService
-    )
-    {
-        $user = $this->getUser();
-
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/alicesSecret/#/hourglass');
-
-        $item = $inventoryService->receiveItem('Hourglass', $user, $user, $user->getName() . ' got this from Alice\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
-
-        return $this->countRemoveFlushAndRespond('Inside Alice\'s Secret, you find', $userStatsRepository, $user, $inventory, [ $item ], $responseService, $em);
-    }
-
-    /**
-     * @Route("/alicesSecret/{inventory}/cards", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function alicesSecretCards(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, ResponseService $responseService
-    )
-    {
-        $user = $this->getUser();
-
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/alicesSecret/#/cards');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
-
-        $loot = [
-            'Paper', 'Paper', 'Paper', 'Paper', $squirrel3->rngNextFromArray([ 'Paper', 'Quinacridone Magenta Dye' ])
-        ];
-
-        $newInventory = [];
-
-        foreach($loot as $item)
-            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from Alice\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
-
-        return $this->countRemoveFlushAndRespond('Inside Alice\'s Secret, you find some cards? Oh, wait, no: it\'s just', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
-    }
-
-    /**
-     * @Route("/bobsSecret/{inventory}/fish", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function bobsSecretFish(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, ResponseService $responseService
-    )
-    {
-        $user = $this->getUser();
-
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/bobsSecret/#/fish');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
-
-        $loot = [
-            'Fish',
-            'Fish',
-            'Scales'
-        ];
-
-        for($i = 0; $i < 3; $i++)
-        {
-            if($squirrel3->rngNextInt(1, 5) === 1)
-            {
-                $loot[] = $squirrel3->rngNextFromArray([
-                    'Sand Dollar', 'Tentacle',
-                ]);
-            }
-            else
-            {
-                $loot[] = $squirrel3->rngNextFromArray([
-                    'Fish', 'Scales',
-                ]);
-            }
-        }
-
-        $newInventory = [];
-
-        foreach($loot as $item)
-            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from Bob\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
-
-        return $this->countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
-    }
-
-    /**
-     * @Route("/bobsSecret/{inventory}/tool", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function bobsTool(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
-        EnchantmentRepository $enchantmentRepository, UserStatsRepository $userStatsRepository,
-        ResponseService $responseService
-    )
-    {
-        $user = $this->getUser();
-
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/bobsSecret/#/tool');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
-
-        // apply "Bob's" bonus
-        $tool = $squirrel3->rngNextFromArray([
-            'Iron Tongs',
-            'Garden Shovel',
-            'Crooked Fishing Rod',
-            'Yellow Scissors',
-            'Small Plastic Bucket',
-            'Straw Broom',
-        ]);
-
-        $item = $inventoryService->receiveItem($tool, $user, $user, $user->getName() . ' got this from Bob\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
-
-        $item->setEnchantment(
-            $enchantmentRepository->findOneByName('Bob\'s')
-        );
-
-        return $this->countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $userStatsRepository, $user, $inventory, [ $item ], $responseService, $em);
-    }
-
-    /**
-     * @Route("/bobsSecret/{inventory}/bbq", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function bobsBBQ(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository, ResponseService $responseService
-    )
-    {
-        $user = $this->getUser();
-
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/bobsSecret/#/bbq');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
-
-        $loot = [
-            'Charcoal',
-            'Hot Dog',
-            'Grilled Fish',
-            'Tomato Ketchup',
-            'Hot Potato'
-        ];
-
-        $newInventory = [];
-
-        foreach($loot as $item)
-            $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from Bob\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
-
-        return $this->countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the bag revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1604,6 +1184,7 @@ class BoxController extends AbstractController
         Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $box, 'box/chocolate/#/open');
