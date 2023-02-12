@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller\Item\PetAlteration;
+namespace App\Controller\Item\Scroll;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
@@ -20,7 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/renamingScroll")
  */
-class RenamingScrollController extends AbstractController
+class RenamingController extends AbstractController
 {
     /**
      * @Route("/{inventory}/read", methods={"PATCH"})

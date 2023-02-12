@@ -5,6 +5,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Greenhouse;
 use App\Entity\Inventory;
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
@@ -121,9 +122,10 @@ class BlueprintController extends AbstractController
         PetRepository $petRepository
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'beehiveBlueprint');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'beehiveBlueprint');
 
         if($user->getUnlockedBeehive())
         {
@@ -182,9 +184,10 @@ class BlueprintController extends AbstractController
         PetRepository $petRepository, PetExperienceService $petExperienceService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'greenhouseDeed');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'greenhouseDeed');
 
         if($user->getGreenhouse())
         {
@@ -224,9 +227,10 @@ class BlueprintController extends AbstractController
         PetRepository $petRepository, InventoryRepository $inventoryRepository, PetExperienceService $petExperienceService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'birdBathBlueprint');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'birdBathBlueprint');
 
         if(!$user->getUnlockedGreenhouse())
             return $responseService->error(400, [ 'You need a Greenhouse to build a Bird Bath!' ]);

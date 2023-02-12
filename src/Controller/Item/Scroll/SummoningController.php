@@ -1,7 +1,9 @@
 <?php
-namespace App\Controller\Item;
+namespace App\Controller\Item\Scroll;
 
+use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\GrammarFunctions;
@@ -22,7 +24,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/summoningScroll")
  */
-class SummoningScrollController extends AbstractController
+class SummoningController extends AbstractController
 {
     /**
      * @Route("/{inventory}/unfriendly", methods={"POST"})
@@ -114,6 +116,7 @@ class SummoningScrollController extends AbstractController
         PetSpeciesRepository $petSpeciesRepository, PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'summoningScroll/#/friendly');

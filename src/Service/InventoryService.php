@@ -25,13 +25,13 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class InventoryService
 {
-    private $itemRepository;
-    private $em;
-    private $responseService;
-    private $inventoryRepository;
-    private $squirrel3;
-    private $spiceRepository;
-    private $eatingService;
+    private ItemRepository $itemRepository;
+    private EntityManagerInterface $em;
+    private ResponseService $responseService;
+    private InventoryRepository $inventoryRepository;
+    private Squirrel3 $squirrel3;
+    private SpiceRepository $spiceRepository;
+    private EatingService $eatingService;
     private HouseSimService $houseSimService;
     private StatusEffectService $statusEffectService;
 

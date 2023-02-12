@@ -842,10 +842,9 @@ class GatheringService
             $loot = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
                 'Fishkebab Stew',
                 'Grilled Fish',
-                'Honeydont Ice Cream',
+                $this->squirrel3->rngNextFromArray([ 'Orange', 'Yellowy Lime', 'Ponzu' ]),
+                $this->squirrel3->rngNextFromArray([ 'Honeydont Ice Cream', 'Naner Ice Cream' ]),
                 'Coconut',
-                'Orange',
-                'Yellowy Lime',
                 'Mango',
                 'Pineapple',
             ]));

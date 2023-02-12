@@ -773,7 +773,7 @@ class BoxController extends AbstractController
             'Grandparoot', 'Honeydont', 'Hot Dog', 'Iron Ore', 'Kombucha', 'Melon Bun', 'Mint', 'Mixed Nuts', 'Naner',
             'Oil', 'Onion', 'Orange', 'Pamplemousse', 'Plain Yogurt', 'Quintessence', 'Red', 'Red Clover', 'Rice',
             'Seaweed', 'Secret Seashell', 'Silica Grounds', 'Smallish Pumpkin', 'Sugar', 'Toad Legs', 'Tomato',
-            'Wheat Flour', 'World\'s Best Sugar Cookie', 'Yeast', 'Yellowy Lime'
+            'Wheat Flour', 'World\'s Best Sugar Cookie', 'Yeast', 'Yellowy Lime', 'Ponzu'
         ]));
 
         $openedStat = $userStatsRepository->incrementStat($user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
