@@ -14,7 +14,7 @@ class SessionService
     private UserSessionRepository $userSessionRepository;
     private EntityManagerInterface $em;
     private TokenStorageInterface $tokenStorage;
-    private ?UserSession $currentSession;
+    private ?string $currentSessionId;
 
     public function __construct(
         UserSessionRepository $userSessionRepository, TokenStorageInterface $tokenStorage,
@@ -41,24 +41,26 @@ class SessionService
         return $this->userSessionRepository->count([ 'sessionId' => $sessionId ]) > 0;
     }
 
-    public function setCurrentSession(UserSession $userSession)
+    public function setCurrentSession(string $userSessionId)
     {
-        $this->currentSession = $userSession;
+        $this->currentSessionId = $userSessionId;
     }
 
     public function logIn(User $user, ?int $hours = null): UserSession
     {
         $user->setLastActivity();
 
+        $sessionId = $this->generateSessionId();
+
         $userSession = (new UserSession())
-            ->setSessionId($this->generateSessionId())
+            ->setSessionId($sessionId)
             ->setUser($user)
             ->setSessionExpiration($hours)
         ;
 
         $this->em->persist($userSession);
 
-        $this->setCurrentSession($userSession);
+        $this->setCurrentSession($sessionId);
 
         $this->tokenStorage->setToken(new UsernamePasswordToken($user, null, 'main', $user->getRoles()));
 
@@ -67,11 +69,16 @@ class SessionService
 
     public function logOut(): bool
     {
-        if(!$this->currentSession)
+        if(!$this->currentSessionId)
             return false;
 
-        $this->em->remove($this->currentSession);
+        $currentSession = $this->userSessionRepository->findOneBy([ 'sessionId' => $this->currentSessionId ]);
 
+        if(!$currentSession)
+            return false;
+
+        $this->em->remove($currentSession);
+        $this->currentSessionId = null;
         $this->tokenStorage->setToken(null);
 
         return true;

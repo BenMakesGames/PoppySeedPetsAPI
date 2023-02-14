@@ -64,7 +64,7 @@ class SessionAuthenticator extends AbstractAuthenticator
             throw new AccessDeniedHttpException('This account has been locked.');
         }
 
-        $this->sessionService->setCurrentSession($session);
+        $this->sessionService->setCurrentSession($sessionId);
 
         $session->setSessionExpiration();
         $user->setLastActivity();
