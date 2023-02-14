@@ -62,7 +62,7 @@ class InventoryService
             throw new EnumInvalidValueException(LocationEnum::class, $location);
 
         if(is_string($item))
-            $itemId = $this->itemRepository->findOneByName($item)->getId();
+            $itemId = $this->itemRepository->getIdByName($item);
         else if(is_object($item) && $item instanceof Item)
             $itemId = $item->getId();
         else if(is_integer($item))
@@ -79,32 +79,6 @@ class InventoryService
             ->setParameter('owner', $user->getId())
             ->setParameter('item', $itemId)
             ->setParameter('location', $location)
-            ->getQuery()
-            ->getSingleScalarResult()
-        ;
-    }
-
-    /**
-     * @param Item|string|integer $item
-     */
-    public function countInventoryAnywhere(User $user, $item): int
-    {
-        if(is_string($item))
-            $itemId = $this->itemRepository->findOneByName($item)->getId();
-        else if(is_object($item) && $item instanceof Item)
-            $itemId = $item->getId();
-        else if(is_integer($item))
-            $itemId = $item;
-        else
-            throw new \InvalidArgumentException('$item must be an Item, string, or integer.');
-
-        return (int)$this->em->createQueryBuilder()
-            ->select('COUNT(i.id)')
-            ->from(Inventory::class, 'i')
-            ->andWhere('i.owner=:owner')
-            ->andWhere('i.item=:item')
-            ->setParameter('owner', $user->getId())
-            ->setParameter('item', $itemId)
             ->getQuery()
             ->getSingleScalarResult()
         ;

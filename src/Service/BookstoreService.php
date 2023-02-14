@@ -139,9 +139,6 @@ class BookstoreService
 
         $item = $this->itemRepository->findOneByName($itemToGive);
 
-        if(!$item)
-            throw new UnprocessableEntityHttpException('There is no such item in the game...');
-
         $bookstoreQuestStep = $this->userQuestRepository->findOrCreate($user, self::BOOKSTORE_QUEST_NAME, 0);
 
         $questStep = BookstoreService::getBookstoreQuestStep($bookstoreQuestStep->getValue());

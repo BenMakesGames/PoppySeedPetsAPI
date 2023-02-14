@@ -31,6 +31,21 @@ class ItemRepository extends ServiceEntityRepository
         return $item;
     }
 
+    public function getIdByName(string $itemName): int
+    {
+        $itemId = $this->createQueryBuilder('i')
+            ->select('i.id')
+            ->where('i.name=:name')
+            ->setParameter('name', $itemName)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        if(!$itemId)
+            throw new \InvalidArgumentException('There is no item called ' . $itemName . '.');
+
+        return $itemId;
+    }
+
     /**
      * @return Item[]
      */
