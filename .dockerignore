@@ -1,0 +1,4 @@
+vendor
+var
+.env.local
+.env.test
