@@ -31,19 +31,19 @@ class SessionService
         do
         {
             $sessionId = StringFunctions::randomLettersAndNumbers(40);
-        } while($this->userSessionRepository->findOneBySessionId($sessionId) !== null);
+        } while($this->sessionIdIsTaken($sessionId));
 
         return $sessionId;
+    }
+
+    private function sessionIdIsTaken(string $sessionId): bool
+    {
+        return $this->userSessionRepository->count([ 'sessionId' => $sessionId ]) > 0;
     }
 
     public function setCurrentSession(UserSession $userSession)
     {
         $this->currentSession = $userSession;
-    }
-
-    public function getCurrentSession(): ?UserSession
-    {
-        return $this->currentSession;
     }
 
     public function logIn(User $user, ?int $hours = null): UserSession
