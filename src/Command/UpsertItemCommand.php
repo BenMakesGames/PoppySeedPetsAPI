@@ -20,8 +20,8 @@ class UpsertItemCommand extends PoppySeedPetsCommand
 {
     use AskItemTrait;
 
-    private $em;
-    private $itemRepository;
+    private EntityManagerInterface $em;
+    private ItemRepository $itemRepository;
 
     public function __construct(EntityManagerInterface $em, ItemRepository $itemRepository)
     {

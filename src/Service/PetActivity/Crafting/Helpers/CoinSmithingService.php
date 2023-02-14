@@ -18,9 +18,9 @@ use App\Service\TransactionService;
 
 class CoinSmithingService
 {
-    private $petExperienceService;
-    private $transactionService;
-    private $responseService;
+    private PetExperienceService $petExperienceService;
+    private TransactionService $transactionService;
+    private ResponseService $responseService;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;

@@ -32,13 +32,13 @@ class ChocolateMansion
     private const QUEST_VALUE_ALL_EXCEPT_CELLAR_AND_ATTIC = 6;
     private const QUEST_VALUE_FULL_ACCESS = 8;
 
-    private $userQuestRepository;
-    private $itemRepository;
-    private $inventoryService;
-    private $petExperienceService;
-    private $responseService;
-    private $petQuestRepository;
-    private $em;
+    private UserQuestRepository $userQuestRepository;
+    private ItemRepository $itemRepository;
+    private InventoryService $inventoryService;
+    private PetExperienceService $petExperienceService;
+    private ResponseService $responseService;
+    private PetQuestRepository $petQuestRepository;
+    private EntityManagerInterface $em;
     private IRandom $rng;
     private FieldGuideService $fieldGuideService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;

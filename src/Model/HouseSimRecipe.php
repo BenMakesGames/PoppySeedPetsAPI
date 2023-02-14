@@ -17,7 +17,7 @@ class HouseSimRecipe
     /**
      * @param Item[]|ItemQuantity[]|Item[][]|ItemGroup[] $ingredients
      */
-    public function __construct($ingredients)
+    public function __construct(array $ingredients)
     {
         $this->ingredients = $ingredients;
     }

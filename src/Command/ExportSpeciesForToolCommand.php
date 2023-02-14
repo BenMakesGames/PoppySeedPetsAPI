@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ExportSpeciesForToolCommand extends Command
 {
-    private $petSpeciesRepository;
+    private PetSpeciesRepository $petSpeciesRepository;
 
     public function __construct(PetSpeciesRepository $petSpeciesRepository)
     {

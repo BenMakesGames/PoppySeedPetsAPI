@@ -294,7 +294,7 @@ class Protocol7Service
 
         $petQuest = $this->petQuestRepository->findOrCreate($pet, 'Next Annabellastasia Encounter', $now->format('Y-m-d'));
 
-        if($petQuest && $petQuest->getValue() > $now->format('Y-m-d'))
+        if($petQuest->getValue() > $now->format('Y-m-d'))
             return $this->encounterGarbageCollector($petWithSkills);
 
         $petQuest->setValue($now->modify('+' . $this->squirrel3->rngNextInt(20, 40) . ' days')->format('Y-m-d'));

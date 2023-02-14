@@ -9,9 +9,9 @@ use Symfony\Component\Security\Core\Security;
 
 class CommentFormatter
 {
-    private $petRepository;
-    private $userRepository;
-    private $security;
+    private PetRepository $petRepository;
+    private UserRepository $userRepository;
+    private Security $security;
 
     public const ALLOWED_PET_PROPERTIES = [
         'name'

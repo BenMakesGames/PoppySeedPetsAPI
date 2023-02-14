@@ -7,8 +7,7 @@ use Symfony\Component\Console\Question\Question;
 
 trait AskItemTrait
 {
-    /** @var ItemRepository */
-    private $itemRepository;
+    private ItemRepository $itemRepository;
 
     private function askItem(string $prompt, ?Item $defaultValue): Item
     {
@@ -20,7 +19,7 @@ trait AskItemTrait
         $question->setValidator(function($itemName) {
             $itemName = trim($itemName);
 
-            if($itemName === null || $itemName === '~')
+            if($itemName === '' || $itemName === '~')
                 throw new \RuntimeException('Must select an item.');
 
             $item = $this->itemRepository->findOneBy([ 'name' => $itemName ]);

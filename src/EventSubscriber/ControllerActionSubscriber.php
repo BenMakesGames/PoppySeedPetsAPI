@@ -25,9 +25,9 @@ class ControllerActionSubscriber implements EventSubscriberInterface
         ];
     }
 
-    private $security;
-    private $houseService;
-    private $annotationReader;
+    private Security $security;
+    private HouseService $houseService;
+    private Reader $annotationReader;
     private RateLimiterFactory $defaultRateLimiterFactory;
 
     public function __construct(

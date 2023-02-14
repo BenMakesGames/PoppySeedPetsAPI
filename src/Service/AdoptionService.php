@@ -5,6 +5,7 @@ use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
+use App\Model\ChineseCalendarInfo;
 use App\Model\PetShelterPet;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
@@ -12,11 +13,11 @@ use App\Repository\UserStatsRepository;
 
 class AdoptionService
 {
-    private $petRepository;
-    private $petSpeciesRepository;
-    private $calendarService;
-    private $userStatsRepository;
-    private $chineseCalendarInfo;
+    private PetRepository $petRepository;
+    private PetSpeciesRepository $petSpeciesRepository;
+    private CalendarService $calendarService;
+    private UserStatsRepository $userStatsRepository;
+    private ChineseCalendarInfo $chineseCalendarInfo;
 
     public function __construct(
         PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository, CalendarService $calendarService,

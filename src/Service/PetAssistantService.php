@@ -23,7 +23,7 @@ class PetAssistantService
 
     private static function assertOwnership(User $user, Pet $pet)
     {
-        if($pet->getOwner() != $user)
+        if($pet->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException('That pet does not exist, or does not belong to you.');
     }
 

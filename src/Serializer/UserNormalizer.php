@@ -28,22 +28,22 @@ class UserNormalizer implements ContextAwareNormalizerInterface
     }
 
     /**
-     * @param User $user
+     * @param User $object
      */
-    public function normalize($user, string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
-        $data = $this->normalizer->normalize($user, $format, $context);
+        $data = $this->normalizer->normalize($object, $format, $context);
 
         if(in_array(SerializationGroupEnum::MY_ACCOUNT, $context['groups']))
         {
-            $data['unreadLetters'] = $this->userLetterRepository->getNumberUnread($user);
+            $data['unreadLetters'] = $this->userLetterRepository->getNumberUnread($object);
         }
 
         if(in_array(SerializationGroupEnum::USER_PUBLIC_PROFILE, $context['groups']))
         {
             $friend = $this->userFollowingRepository->findOneBy([
                 'user' => $this->security->getUser(),
-                'following' => $user
+                'following' => $object
             ]);
 
             if($friend)

@@ -8,9 +8,9 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class BeehiveService
 {
-    private $em;
-    private $itemRepository;
-    private $squirrel3;
+    private EntityManagerInterface $em;
+    private ItemRepository $itemRepository;
+    private IRandom $squirrel3;
 
     public const DESIRED_ITEMS = [
         'Red Clover' => 18,

@@ -129,7 +129,7 @@ class ListRecipesCommand extends PoppySeedPetsCommand
      *
      * @param ItemQuantity[] $items
      */
-    private function listItems($items)
+    private function listItems(array $items)
     {
         foreach($items as $ingredient)
             $this->output->writeln('    ' . $ingredient->quantity . 'x ' . $ingredient->item->getName());

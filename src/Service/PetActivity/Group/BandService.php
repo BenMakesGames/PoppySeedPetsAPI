@@ -22,11 +22,11 @@ class BandService
 {
     public const ACTIVITY_ICON = 'groups/band';
 
-    private $em;
-    private $petRelationshipService;
-    private $inventoryService;
-    private $petExperienceService;
-    private $transactionService;
+    private EntityManagerInterface $em;
+    private PetRelationshipService $petRelationshipService;
+    private InventoryService $inventoryService;
+    private PetExperienceService $petExperienceService;
+    private TransactionService $transactionService;
     private IRandom $squirrel3;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 

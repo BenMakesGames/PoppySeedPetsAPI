@@ -15,6 +15,7 @@ use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -25,7 +26,7 @@ class HeartDimensionService
     private ResponseService $responseService;
     private PetExperienceService $petExperienceService;
     private InventoryService $inventoryService;
-    private Squirrel3 $squirrel3;
+    private IRandom $squirrel3;
     private StatusEffectService $statusEffectService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private UserStatsRepository $userStatsRepository;

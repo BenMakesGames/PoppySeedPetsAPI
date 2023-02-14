@@ -15,8 +15,8 @@ class AssignActivityPersonalitiesCommand extends Command
 {
     public const BATCH_SIZE = 200;
 
-    private $em;
-    private $petRepository;
+    private EntityManagerInterface $em;
+    private PetRepository $petRepository;
     private IRandom $rng;
 
     public function __construct(PetRepository $petRepository, EntityManagerInterface $em, Squirrel3 $squirrel3)

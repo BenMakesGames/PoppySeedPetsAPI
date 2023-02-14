@@ -18,9 +18,9 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
 {
     use AskItemTrait;
 
-    private $em;
-    private $recipeRepository;
-    private $inventoryService;
+    private EntityManagerInterface $em;
+    private RecipeRepository $recipeRepository;
+    private InventoryService $inventoryService;
 
     public function __construct(
         EntityManagerInterface $em, RecipeRepository $recipeRepository, InventoryService $inventoryService,
@@ -137,7 +137,7 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
      * @param ItemQuantity[] $quantities
      * @return ItemQuantity[]
      */
-    private function editItemList($quantities, $describedAs)
+    private function editItemList(array $quantities, string $describedAs): array
     {
         if(count($quantities) > 0)
         {

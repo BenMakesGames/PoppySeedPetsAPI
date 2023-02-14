@@ -20,11 +20,11 @@ class UserLetterNormalizer implements ContextAwareNormalizerInterface
     }
 
     /**
-     * @param UserLetter $userLetter
+     * @param UserLetter $object
      */
-    public function normalize($userLetter, string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
-        $data = $this->normalizer->normalize($userLetter, $format, $context);
+        $data = $this->normalizer->normalize($object, $format, $context);
 
         if(array_key_exists('comment', $data))
             $data['comment'] = $this->commentFormatter->format($data['comment']);

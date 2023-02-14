@@ -20,11 +20,11 @@ class UserFieldGuideEntryNormalizer implements ContextAwareNormalizerInterface
     }
 
     /**
-     * @param UserFieldGuideEntry $petActivityLog
+     * @param UserFieldGuideEntry $object
      */
-    public function normalize($userFieldGuideEntry, string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
-        $data = $this->normalizer->normalize($userFieldGuideEntry, $format, $context);
+        $data = $this->normalizer->normalize($object, $format, $context);
 
         $data['comment'] = $this->commentFormatter->format($data['comment']);
 

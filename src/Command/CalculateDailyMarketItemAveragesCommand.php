@@ -10,9 +10,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CalculateDailyMarketItemAveragesCommand extends Command
 {
-    private $em;
-    private $logger;
-    /** @var OutputInterface */ private $output;
+    private EntityManagerInterface $em;
+    private LoggerInterface $logger;
+    private OutputInterface $output;
 
     public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
     {

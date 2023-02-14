@@ -13,11 +13,11 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class BookstoreService
 {
-    private $userStatsRepository;
-    private $userQuestRepository;
-    private $inventoryService;
-    private $itemRepository;
-    private $calendarService;
+    private UserStatsRepository $userStatsRepository;
+    private UserQuestRepository $userQuestRepository;
+    private InventoryService $inventoryService;
+    private ItemRepository $itemRepository;
+    private CalendarService $calendarService;
 
     const BOOKSTORE_QUEST_NAME = 'Items Given to Bookstore';
 

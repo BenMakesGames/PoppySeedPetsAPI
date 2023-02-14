@@ -30,12 +30,12 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class GreenhouseService
 {
-    private $inventoryService;
-    private $petRepository;
-    private $petFactory;
-    private $em;
-    private $meritRepository;
-    private $userStatsRepository;
+    private InventoryService $inventoryService;
+    private PetRepository $petRepository;
+    private PetFactory $petFactory;
+    private EntityManagerInterface $em;
+    private MeritRepository $meritRepository;
+    private UserStatsRepository $userStatsRepository;
     private IRandom $squirrel3;
     private UserQuestRepository $userQuestRepository;
     private GreenhousePlantRepository $greenhousePlantRepository;
@@ -187,7 +187,7 @@ class GreenhouseService
             $this->maybeAssignPollinator($user, PollinatorEnum::BEES_2);
     }
 
-    private function maybeAssignPollinator(User $user, string $pollinator)
+    private function maybeAssignPollinator(User $user, string $pollinator): bool
     {
         // must not already have this pollinator present
         if(ArrayFunctions::any($user->getGreenhousePlants(), fn(GreenhousePlant $p) => $p->getPollinators() == $pollinator))
@@ -213,7 +213,7 @@ class GreenhouseService
         return true;
     }
 
-    public function getGreenhouseResponseData(User $user)
+    public function getGreenhouseResponseData(User $user): array
     {
         $fertilizers = $this->inventoryRepository->findFertilizers($user);
 
@@ -225,7 +225,7 @@ class GreenhouseService
         ];
     }
 
-    public function getWeedText(User $user)
+    public function getWeedText(User $user): ?string
     {
         $weeds = $this->userQuestRepository->findOrCreate($user, 'Greenhouse Weeds', (new \DateTimeImmutable())->modify('-1 minutes')->format('Y-m-d H:i:s'));
 

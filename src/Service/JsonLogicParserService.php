@@ -85,7 +85,7 @@ class JsonLogicParserService
             }
             else
             {
-                $this->logger->error('JsonLogicParserService could not parse the following template expression: ' . var_export($expression));
+                $this->logger->error('JsonLogicParserService could not parse the following template expression: ' . var_export($expression, true));
                 throw new \InvalidArgumentException('JsonLogicParserService failed to parse a template expression. Additional information has been added to the logs.');
             }
         }

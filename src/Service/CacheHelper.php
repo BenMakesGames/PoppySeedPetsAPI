@@ -5,7 +5,7 @@ use Psr\Cache\CacheItemPoolInterface;
 
 class CacheHelper
 {
-    private $cache;
+    private CacheItemPoolInterface $cache;
 
     public function __construct(CacheItemPoolInterface $cache)
     {

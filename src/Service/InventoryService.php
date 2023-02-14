@@ -29,7 +29,7 @@ class InventoryService
     private EntityManagerInterface $em;
     private ResponseService $responseService;
     private InventoryRepository $inventoryRepository;
-    private Squirrel3 $squirrel3;
+    private IRandom $squirrel3;
     private SpiceRepository $spiceRepository;
     private EatingService $eatingService;
     private HouseSimService $houseSimService;
@@ -108,7 +108,7 @@ class InventoryService
      * @param ItemQuantity[] $requirements
      * @param ItemQuantity[] $inventory
      */
-    public static function hasRequiredItems($requirements, $inventory): bool
+    public static function hasRequiredItems(array $requirements, array $inventory): bool
     {
         foreach($requirements as $requirement)
         {
@@ -145,9 +145,8 @@ class InventoryService
 
     /**
      * @param ItemQuantity[] $quantities
-     * @return string
      */
-    public static function serializeItemList($quantities): string
+    public static function serializeItemList(array $quantities): string
     {
         if(count($quantities) === 0) return '';
 
@@ -603,7 +602,7 @@ class InventoryService
      * @param int|int[] $location
      * @return Item|string|null
      */
-    public function loseOneOf($itemList, User $owner, $location)
+    public function loseOneOf(array $itemList, User $owner, $location)
     {
         $this->squirrel3->rngNextShuffle($itemList);
 
@@ -619,7 +618,7 @@ class InventoryService
     /**
      * @param ItemQuantity[] $quantities
      */
-    public static function totalFood($quantities): ItemFood
+    public static function totalFood(array $quantities): ItemFood
     {
         $food = new ItemFood();
 

@@ -10,8 +10,8 @@ use App\Service\Holidays\HalloweenService;
 
 class CalendarService
 {
-    /** @var \DateTimeImmutable */ private $today;
-    private $monthAndDay;
+    private \DateTimeImmutable $today;
+    private int $monthAndDay;
 
     public function __construct()
     {

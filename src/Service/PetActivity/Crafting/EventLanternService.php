@@ -21,11 +21,11 @@ use App\Service\Squirrel3;
 
 class EventLanternService
 {
-    private $inventoryService;
-    private $responseService;
-    private $petExperienceService;
-    private $itemRepository;
-    private $calendarService;
+    private InventoryService $inventoryService;
+    private ResponseService $responseService;
+    private PetExperienceService $petExperienceService;
+    private ItemRepository $itemRepository;
+    private CalendarService $calendarService;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;

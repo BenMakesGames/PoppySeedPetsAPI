@@ -26,11 +26,11 @@ use App\Service\StatusEffectService;
 
 class BurntForestService
 {
-    private $petExperienceService;
-    private $responseService;
-    private $inventoryService;
-    private $userQuestRepository;
-    private $statusEffectService;
+    private PetExperienceService $petExperienceService;
+    private ResponseService $responseService;
+    private InventoryService $inventoryService;
+    private UserQuestRepository $userQuestRepository;
+    private StatusEffectService $statusEffectService;
     private IRandom $squirrel3;
     private HattierService $hattierService;
     private EnchantmentRepository $enchantmentRepository;

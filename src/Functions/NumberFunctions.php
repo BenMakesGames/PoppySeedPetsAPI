@@ -5,12 +5,7 @@ final class NumberFunctions
 {
     public static function clamp(int $value, int $min, int $max): int
     {
-        if($value < $min)
-            return $min;
-        else if($value > $max)
-            return $max;
-        else
-            return $value;
+        return max($min, min($max, $value));
     }
 
     public static function findDivisors(int $number): array

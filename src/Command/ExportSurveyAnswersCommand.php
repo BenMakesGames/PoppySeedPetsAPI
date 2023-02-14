@@ -20,9 +20,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ExportSurveyAnswersCommand extends Command
 {
-    private $surveyRepository;
-    private $surveyQuestionAnswerRepository;
-    private $userRepository;
+    private SurveyRepository $surveyRepository;
+    private SurveyQuestionAnswerRepository $surveyQuestionAnswerRepository;
+    private UserRepository $userRepository;
 
     public function __construct(
         SurveyRepository $surveyRepository, UserRepository $userRepository,

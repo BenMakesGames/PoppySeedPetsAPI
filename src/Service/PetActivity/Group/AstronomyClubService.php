@@ -26,10 +26,10 @@ class AstronomyClubService
 {
     public const ACTIVITY_ICON = 'groups/astronomy';
 
-    private $petExperienceService;
-    private $em;
-    private $inventoryService;
-    private $petRelationshipService;
+    private PetExperienceService $petExperienceService;
+    private EntityManagerInterface $em;
+    private InventoryService $inventoryService;
+    private PetRelationshipService $petRelationshipService;
     private IRandom $squirrel3;
     private EnchantmentRepository $enchantmentRepository;
     private HattierService $hattierService;

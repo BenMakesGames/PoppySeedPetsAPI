@@ -5,35 +5,12 @@ use App\Entity\UserQuest;
 
 class AvailableHolidayBox
 {
-    /**
-     * @var string
-     */
-    public $nameWithQuantity;
-
-    /**
-     * @var string
-     */
-    public $tradeDescription;
-
-    /**
-     * @var string
-     */
-    public $itemName;
-
-    /**
-     * @var int
-     */
-    public $quantity;
-
-    /**
-     * @var string
-     */
-    public $comment;
-
-    /**
-     * @var UserQuest|null
-     */
-    public $userQuestEntity;
+    public string $nameWithQuantity;
+    public string $tradeDescription;
+    public string $itemName;
+    public int $quantity;
+    public string $comment;
+    public ?UserQuest $userQuestEntity;
 
     public function __construct(string $nameWithQuantity, string $tradeDescription, string $itemName, int $quantity, string $comment, ?UserQuest $userQuest)
     {

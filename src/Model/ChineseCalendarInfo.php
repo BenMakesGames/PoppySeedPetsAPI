@@ -3,9 +3,9 @@ namespace App\Model;
 
 class ChineseCalendarInfo
 {
-    /** @var int */ var $year;
-    /** @var int */ var $month;
-    /** @var int */ var $day;
-    /** @var string */ var $animal;
-    /** @var bool */ var $isLeapYear;
+    var int $year;
+    var int $month;
+    var int $day;
+    var string $animal;
+    var bool $isLeapYear;
 }

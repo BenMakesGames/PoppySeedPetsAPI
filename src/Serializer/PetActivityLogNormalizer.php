@@ -21,11 +21,11 @@ class PetActivityLogNormalizer implements ContextAwareNormalizerInterface
     }
 
     /**
-     * @param PetActivityLog $petActivityLog
+     * @param PetActivityLog $object
      */
-    public function normalize($petActivityLog, string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
-        $data = $this->normalizer->normalize($petActivityLog, $format, $context);
+        $data = $this->normalizer->normalize($object, $format, $context);
 
         if(array_key_exists('entry', $data))
             $data['entry'] = $this->commentFormatter->format($data['entry']);

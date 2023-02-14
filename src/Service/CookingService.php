@@ -22,14 +22,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class CookingService
 {
-    private $recipeRepository;
-    private $inventoryService;
-    private $em;
-    private $userStatsRepository;
-    private $knownRecipesRepository;
-    private $inventoryRepository;
-    private $recipeAttemptedRepository;
-    private $squirrel3;
+    private RecipeRepository $recipeRepository;
+    private InventoryService $inventoryService;
+    private EntityManagerInterface $em;
+    private UserStatsRepository $userStatsRepository;
+    private KnownRecipesRepository $knownRecipesRepository;
+    private InventoryRepository $inventoryRepository;
+    private RecipeAttemptedRepository $recipeAttemptedRepository;
+    private IRandom $squirrel3;
 
     public function __construct(
         RecipeRepository $recipeRepository, InventoryService $inventoryService, EntityManagerInterface $em,

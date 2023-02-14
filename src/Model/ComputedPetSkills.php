@@ -9,7 +9,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class ComputedPetSkills
 {
-    private $pet;
+    private Pet $pet;
 
     public function __construct(Pet $pet)
     {

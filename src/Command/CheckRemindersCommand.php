@@ -11,8 +11,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckRemindersCommand extends Command
 {
-    private $em;
-    private $reminderRepository;
+    private EntityManagerInterface $em;
+    private ReminderRepository $reminderRepository;
 
     public function __construct(EntityManagerInterface $em, ReminderRepository $reminderRepository)
     {

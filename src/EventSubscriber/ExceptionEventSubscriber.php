@@ -14,9 +14,9 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class ExceptionEventSubscriber implements EventSubscriberInterface
 {
-    private $logger;
-    private $responseService;
-    private $kernel;
+    private LoggerInterface $logger;
+    private ResponseService $responseService;
+    private KernelInterface $kernel;
 
     public function __construct(ResponseService $responseService, KernelInterface $kernel, LoggerInterface $logger)
     {

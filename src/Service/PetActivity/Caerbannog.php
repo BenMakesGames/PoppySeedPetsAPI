@@ -12,6 +12,7 @@ use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -19,12 +20,12 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class Caerbannog
 {
-    private $em;
-    private $rng;
-    private $inventoryService;
-    private $petExperienceService;
-    private $responseService;
-    private $itemRepository;
+    private EntityManagerInterface $em;
+    private IRandom $rng;
+    private InventoryService $inventoryService;
+    private PetExperienceService $petExperienceService;
+    private ResponseService $responseService;
+    private ItemRepository $itemRepository;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(

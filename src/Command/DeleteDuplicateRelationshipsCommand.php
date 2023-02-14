@@ -9,8 +9,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DeleteDuplicateRelationshipsCommand extends Command
 {
-    private $em;
-    private $petRelationshipRepository;
+    private EntityManagerInterface $em;
+    private PetRelationshipRepository $petRelationshipRepository;
 
     public function __construct(EntityManagerInterface $em, PetRelationshipRepository $petRelationshipRepository)
     {

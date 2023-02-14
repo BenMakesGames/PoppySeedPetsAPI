@@ -102,10 +102,10 @@ class TreasureMapService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 90), PetActivityStatEnum::GATHER, true);
         }
 
-        if($activityLog)
-            $activityLog->setChanges($changes->compare($pet));
-
-        $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY);
+        $activityLog
+            ->setChanges($changes->compare($pet))
+            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+        ;
 
         if($this->squirrel3->rngNextInt(1, 5) === 1)
             $this->inventoryService->petAttractsRandomBug($pet);
@@ -157,8 +157,7 @@ class TreasureMapService
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ] );
         $this->petExperienceService->spendTime($pet, 120, PetActivityStatEnum::OTHER, null);
 
-        if($activityLog)
-            $activityLog->setChanges($changes->compare($pet));
+        $activityLog->setChanges($changes->compare($pet));
     }
 
     public function doKeybladeTower(ComputedPetSkills $petWithSkills)

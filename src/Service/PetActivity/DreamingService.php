@@ -21,11 +21,11 @@ use App\Service\Squirrel3;
 
 class DreamingService
 {
-    private $inventoryService;
-    private $responseService;
-    private $petSpeciesRepository;
-    private $petExperienceService;
-    private $itemRepository;
+    private InventoryService $inventoryService;
+    private ResponseService $responseService;
+    private PetSpeciesRepository $petSpeciesRepository;
+    private PetExperienceService $petExperienceService;
+    private ItemRepository $itemRepository;
     private IRandom $squirrel3;
     private DreamRepository $dreamRepository;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
