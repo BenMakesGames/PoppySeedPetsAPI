@@ -3,13 +3,14 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Model\AvailableHolidayBox;
+use App\Model\ChineseCalendarInfo;
 use App\Repository\UserQuestRepository;
 
 class PlazaService
 {
-    private $calendarService;
-    private $chineseCalendarInfo;
-    private $userQuestRepository;
+    private CalendarService $calendarService;
+    private ChineseCalendarInfo $chineseCalendarInfo;
+    private UserQuestRepository $userQuestRepository;
 
     public function __construct(CalendarService $calendarService, UserQuestRepository $userQuestRepository)
     {
@@ -19,7 +20,11 @@ class PlazaService
         $this->chineseCalendarInfo = $calendarService->getChineseCalendarInfo();
     }
 
-    public function getAvailableHolidayBoxes(User $user)
+    /**
+     * @param User $user
+     * @return AvailableHolidayBox[]
+     */
+    public function getAvailableHolidayBoxes(User $user): array
     {
         $boxes = [];
 

@@ -14,10 +14,10 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class MuseumService
 {
-    private $em;
-    private $itemRepository;
-    private $userStatsRepository;
-    private $museumItemRepository;
+    private EntityManagerInterface $em;
+    private ItemRepository $itemRepository;
+    private UserStatsRepository $userStatsRepository;
+    private MuseumItemRepository $museumItemRepository;
     private ItemGroupRepository $itemGroupRepository;
 
     public function __construct(

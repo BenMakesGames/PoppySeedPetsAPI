@@ -135,9 +135,9 @@ class RecyclingService
             $questItems = array_unique($questItems);
 
             if(count($questItems) === 1)
-                $this->responseService->addFlashMessage('The ' . $questItems[0] . ' look really important! You should hold on to that...');
+                $this->responseService->addFlashMessage('The ' . $questItems[0] . ' looks really important! You should probably hold on to that...');
             else
-                $this->responseService->addFlashMessage('The ' . ArrayFunctions::list_nice($questItems) . ' look really important! You should hold on to those...');
+                $this->responseService->addFlashMessage('The ' . ArrayFunctions::list_nice($questItems) . ' look really important! You should probably hold on to those...');
         }
 
         return $idsNotRecycled;
