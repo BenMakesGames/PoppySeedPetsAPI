@@ -4,7 +4,6 @@ namespace App\Service;
 use App\Entity\User;
 use App\Entity\UserSession;
 use App\Functions\StringFunctions;
-use App\Repository\UserRepository;
 use App\Repository\UserSessionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -12,10 +11,10 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class SessionService
 {
-    private $userSessionRepository;
-    private $em;
-    private $tokenStorage;
-    private $currentSession;
+    private UserSessionRepository $userSessionRepository;
+    private EntityManagerInterface $em;
+    private TokenStorageInterface $tokenStorage;
+    private ?UserSession $currentSession;
 
     public function __construct(
         UserSessionRepository $userSessionRepository, TokenStorageInterface $tokenStorage,
