@@ -25,65 +25,6 @@ class InventoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Inventory::class);
     }
 
-    /**
-     * @return Inventory[]
-     */
-    public function findTreasures(User $user): array
-    {
-        return $this->createQueryBuilder('i')
-            ->leftJoin('i.item', 'item')
-            ->leftJoin('item.treasure', 'treasure')
-            ->andWhere('i.owner=:user')
-            ->andWhere('i.location=:home')
-            ->andWhere('item.treasure IS NOT NULL')
-            ->setParameter('user', $user->getId())
-            ->setParameter('home', LocationEnum::HOME)
-            ->getQuery()
-            ->execute()
-        ;
-    }
-
-    /**
-     * @return Inventory[]
-     */
-    public function findTreasuresById(User $user, array $inventoryIds): array
-    {
-        return $this->createQueryBuilder('i')
-            ->leftJoin('i.item', 'item')
-            ->leftJoin('item.treasure', 'treasure')
-            ->andWhere('i.id IN (:inventoryIds)')
-            ->andWhere('i.owner=:user')
-            ->andWhere('i.location=:home')
-            ->andWhere('item.treasure IS NOT NULL')
-            ->setParameter('inventoryIds', $inventoryIds)
-            ->setParameter('user', $user->getId())
-            ->setParameter('home', LocationEnum::HOME)
-            ->getQuery()
-            ->execute()
-        ;
-    }
-
-    /**
-     * @return Inventory[]
-     */
-    public function findHollowEarthTiles(User $owner, array $types): array
-    {
-        return $this->createQueryBuilder('i')
-            ->leftJoin('i.item', 'item')
-            ->leftJoin('item.hollowEarthTileCard', 'tileCard')
-            ->leftJoin('tileCard.type', 'type')
-            ->andWhere('i.owner=:user')
-            ->andWhere('i.location=:home')
-            ->andWhere('item.hollowEarthTileCard IS NOT NULL')
-            ->andWhere('type.name IN (:allowedTypes)')
-            ->setParameter('user', $owner->getId())
-            ->setParameter('home', LocationEnum::HOME)
-            ->setParameter('allowedTypes', $types)
-            ->getQuery()
-            ->execute()
-        ;
-    }
-
     public function findOneToConsume(User $owner, string $itemName): ?Inventory
     {
         return $this->createQueryBuilder('i')
@@ -193,29 +134,6 @@ class InventoryRepository extends ServiceEntityRepository
             ->setParameter('location', $location)
             ->getQuery()
             ->getSingleScalarResult()
-        ;
-    }
-
-    /**
-     * @param int[] $itemIds
-     * @return Inventory[]
-     */
-    public function getInventoryToSell(User $user, array $itemIds): array
-    {
-        return $this->createQueryBuilder('i')
-            ->leftJoin('i.holder', 'holder')
-            ->leftJoin('i.wearer', 'wearer')
-            ->leftJoin('i.lunchboxItem', 'lunchboxItem')
-            ->andWhere('i.owner=:user')
-            ->andWhere('i.id IN (:itemIds)')
-            ->andWhere('i.lockedToOwner = 0')
-            ->andWhere('holder IS NULL')
-            ->andWhere('wearer IS NULL')
-            ->andWhere('lunchboxItem IS NULL')
-            ->setParameter('user', $user->getId())
-            ->setParameter('itemIds', $itemIds)
-            ->getQuery()
-            ->execute()
         ;
     }
 

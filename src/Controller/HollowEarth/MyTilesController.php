@@ -1,6 +1,8 @@
 <?php
 namespace App\Controller\HollowEarth;
 
+use App\Entity\User;
+use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
@@ -24,6 +26,7 @@ class MyTilesController extends AbstractController
         InventoryRepository $inventoryRepository, ResponseService $responseService, Request $request
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
         $player = $user->getHollowEarthPlayer();
 
@@ -35,7 +38,20 @@ class MyTilesController extends AbstractController
         if(!is_array($types) || count($types) === 0)
             throw new UnprocessableEntityHttpException('The types of tiles is missing.');
 
-        $tiles = $inventoryRepository->findHollowEarthTiles($user, $types);
+        $tiles = $inventoryRepository->createQueryBuilder('i')
+            ->leftJoin('i.item', 'item')
+            ->leftJoin('item.hollowEarthTileCard', 'tileCard')
+            ->leftJoin('tileCard.type', 'type')
+            ->andWhere('i.owner=:user')
+            ->andWhere('i.location=:home')
+            ->andWhere('item.hollowEarthTileCard IS NOT NULL')
+            ->andWhere('type.name IN (:allowedTypes)')
+            ->setParameter('user', $user->getId())
+            ->setParameter('home', LocationEnum::HOME)
+            ->setParameter('allowedTypes', $types)
+            ->getQuery()
+            ->execute()
+        ;
 
         return $responseService->success($tiles, [ SerializationGroupEnum::MY_HOLLOW_EARTH_TILES ]);
     }

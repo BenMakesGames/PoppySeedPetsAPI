@@ -2,6 +2,7 @@
 namespace App\Controller\Dragon;
 
 use App\Entity\User;
+use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\DragonRepository;
 use App\Repository\InventoryRepository;
@@ -32,7 +33,17 @@ class GetPotentialOfferingsController extends AbstractController
         if(!$dragon)
             throw new NotFoundHttpException('You don\'t have an adult dragon!');
 
-        $treasures = $inventoryRepository->findTreasures($user);
+        $treasures = $inventoryRepository->createQueryBuilder('i')
+            ->leftJoin('i.item', 'item')
+            ->leftJoin('item.treasure', 'treasure')
+            ->andWhere('i.owner=:user')
+            ->andWhere('i.location=:home')
+            ->andWhere('item.treasure IS NOT NULL')
+            ->setParameter('user', $user->getId())
+            ->setParameter('home', LocationEnum::HOME)
+            ->getQuery()
+            ->execute()
+        ;
 
         return $responseService->success($treasures, [ SerializationGroupEnum::DRAGON_TREASURE ]);
     }

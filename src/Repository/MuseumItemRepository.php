@@ -21,9 +21,9 @@ class MuseumItemRepository extends ServiceEntityRepository
         parent::__construct($registry, MuseumItem::class);
     }
 
-    public function hasUserDonated(User $user, Item $item)
+    public function hasUserDonated(User $user, Item $item): bool
     {
-        return $this->findOneBy([ 'user' => $user, 'item' => $item ]) !== null;
+        return $this->count([ 'user' => $user, 'item' => $item ]) > 0;
     }
 
     // /**

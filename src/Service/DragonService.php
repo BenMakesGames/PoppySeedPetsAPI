@@ -111,7 +111,19 @@ class DragonService
 
         $user = $dragon->getOwner();
 
-        $items = $this->inventoryRepository->findTreasuresById($user, $itemIds);
+        $items = $this->inventoryRepository->createQueryBuilder('i')
+            ->leftJoin('i.item', 'item')
+            ->leftJoin('item.treasure', 'treasure')
+            ->andWhere('i.id IN (:inventoryIds)')
+            ->andWhere('i.owner=:user')
+            ->andWhere('i.location=:home')
+            ->andWhere('item.treasure IS NOT NULL')
+            ->setParameter('inventoryIds', $itemIds)
+            ->setParameter('user', $user->getId())
+            ->setParameter('home', LocationEnum::HOME)
+            ->getQuery()
+            ->execute()
+        ;
 
         if(count($items) < count($itemIds))
             throw new UnprocessableEntityHttpException('Some of the treasures selected... maybe don\'t exist!? That shouldn\'t happen. Reload and try again.');

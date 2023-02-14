@@ -51,7 +51,21 @@ class SellController extends AbstractController
         if($price > $user->getMaxSellPrice())
             throw new UnprocessableEntityHttpException('You cannot list items for more than ' . $user->getMaxSellPrice() . ' moneys. See the Market Manager to see if you can increase this limit!');
 
-        $inventory = $inventoryRepository->getInventoryToSell($user, $itemIds);
+        $inventory = $inventoryRepository->createQueryBuilder('i')
+            ->leftJoin('i.holder', 'holder')
+            ->leftJoin('i.wearer', 'wearer')
+            ->leftJoin('i.lunchboxItem', 'lunchboxItem')
+            ->andWhere('i.owner=:user')
+            ->andWhere('i.id IN (:itemIds)')
+            ->andWhere('i.lockedToOwner = 0')
+            ->andWhere('holder IS NULL')
+            ->andWhere('wearer IS NULL')
+            ->andWhere('lunchboxItem IS NULL')
+            ->setParameter('user', $user->getId())
+            ->setParameter('itemIds', $itemIds)
+            ->getQuery()
+            ->execute()
+        ;
 
         if(count($inventory) !== count($itemIds))
             throw new UnprocessableEntityHttpException('One or more of the selected items do not exist! Maybe reload and try again??');

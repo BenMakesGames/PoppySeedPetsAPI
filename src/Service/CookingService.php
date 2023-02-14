@@ -7,6 +7,7 @@ use App\Entity\Recipe;
 use App\Entity\RecipeAttempted;
 use App\Entity\Spice;
 use App\Entity\User;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
@@ -119,7 +120,7 @@ class CookingService
 
     /**
      * @param Inventory[] $inventory
-     * @return Inventory[]
+     * @throws EnumInvalidValueException
      */
     public function prepareRecipe(User $user, array $inventory): ?PrepareRecipeResults
     {
@@ -245,10 +246,10 @@ class CookingService
 
     public function learnRecipe(User $user, Recipe $recipe): bool
     {
-        $alreadyKnownRecipe = $this->knownRecipesRepository->findOneBy([
+        $alreadyKnownRecipe = $this->knownRecipesRepository->count([
             'user' => $user,
             'recipe' => $recipe
-        ]);
+        ]) > 0;
 
         if($alreadyKnownRecipe)
             return false;
@@ -267,10 +268,10 @@ class CookingService
 
     public function hasACookingBuddy(User $user): bool
     {
-        return $this->inventoryRepository->findOneBy([
+        return $this->inventoryRepository->count([
             'owner' => $user,
             'item' => [ 158, 454 ] // IDs of Cooking Buddy and Cooking "Alien"
-        ]) !== null;
+        ]) > 0;
     }
 
     public function showRecipeNamesToCookingBuddy(User $user, array $recipeNames): string
