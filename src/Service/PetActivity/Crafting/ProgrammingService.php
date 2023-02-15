@@ -1,28 +1,38 @@
 <?php
 namespace App\Service\PetActivity\Crafting;
 
+use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\PetRelationship;
+use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
+use App\Functions\PetColorFunctions;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
+use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogTagRepository;
+use App\Repository\PetSpeciesRepository;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
+use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\StatusEffectService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class ProgrammingService
 {
@@ -36,12 +46,18 @@ class ProgrammingService
     private EnchantmentRepository $enchantmentRepository;
     private FieldGuideService $fieldGuideService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private PetSpeciesRepository $petSpeciesRepository;
+    private PetFactory $petFactory;
+    private MeritRepository $meritRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         PetExperienceService $petExperienceService, StatusEffectService $statusEffectService,
         HouseSimService $houseSimService, HattierService $hattierService, EnchantmentRepository $enchantmentRepository,
-        FieldGuideService $fieldGuideService, PetActivityLogTagRepository $petActivityLogTagRepository
+        FieldGuideService $fieldGuideService, PetActivityLogTagRepository $petActivityLogTagRepository,
+        PetSpeciesRepository $petSpeciesRepository, PetFactory $petFactory, MeritRepository $meritRepository,
+        EntityManagerInterface $em
     )
     {
         $this->responseService = $responseService;
@@ -54,6 +70,10 @@ class ProgrammingService
         $this->enchantmentRepository = $enchantmentRepository;
         $this->fieldGuideService = $fieldGuideService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->petSpeciesRepository = $petSpeciesRepository;
+        $this->petFactory = $petFactory;
+        $this->meritRepository = $meritRepository;
+        $this->em = $em;
     }
 
     /**
@@ -800,7 +820,30 @@ class ProgrammingService
 
         $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Infinity Imp', $impDiscovery);
 
-        if($scienceRoll >= $brawlRoll)
+        $isLucky = $this->squirrel3->rngNextInt(1, 200) == 1 && $pet->hasMerit(MeritEnum::LUCKY);
+
+        if($this->squirrel3->rngNextInt(1, 200) == 1 || $isLucky)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->gainExp($pet, 5, [ PetSkillEnum::SCIENCE, PetSkillEnum::BRAWL ]);
+            $activityLog = $this->responseService->createActivityLog($pet, $impDiscovery . ' %pet:' . $pet->getId() . '.name% was able to subdue the creature, and tossed it in to your daycare!', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Programming', 'Physics', 'Fighting' ]))
+                ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+            ;
+
+            if($isLucky)
+            {
+                $activityLog
+                    ->setEntry($activityLog->getEntry() . ' (Lucky~!)')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Lucky~!' ]));
+            }
+
+            $this->createInfinityImp($pet);
+
+            return $activityLog;
+
+        }
+        else if($scienceRoll >= $brawlRoll)
         {
             if($scienceRoll >= 20)
             {
@@ -830,6 +873,66 @@ class ProgrammingService
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ]);
         return $this->responseService->createActivityLog($pet, $impDiscovery . ' %pet:' . $pet->getId() . '.name% ran away until the imp finally gave up and returned to the strange dimension from whence it came.', 'icons/activity-logs/confused');
+    }
+
+    private function createInfinityImp(Pet $captor)
+    {
+        $infinityImp = $this->petSpeciesRepository->findOneBy([ 'name' => 'Infinity Imp' ]);
+
+        $impName = $this->squirrel3->rngNextFromArray([
+            'Pythagorimp', 'Euclidemon', 'Algebrogremlin', 'Probabilidemon',
+            'Axiomatixie', 'Numbergnome', 'Entropixie', 'Thermodynamimp',
+        ]);
+
+        $petColors = PetColorFunctions::generateRandomPetColors($this->squirrel3);
+
+        $startingMerit = $this->squirrel3->rngNextFromArray([
+            MeritEnum::GOURMAND,
+            MeritEnum::PREHENSILE_TONGUE,
+            MeritEnum::LOLLIGOVORE,
+            MeritEnum::HYPERCHROMATIC,
+            MeritEnum::DREAMWALKER,
+            MeritEnum::SHEDS,
+            MeritEnum::DARKVISION,
+        ]);
+
+        $newPet = $this->petFactory->createPet(
+            $captor->getOwner(), $impName, $infinityImp,
+            $petColors[0], $petColors[1],
+            FlavorEnum::getRandomValue($this->squirrel3),
+            $this->meritRepository->findOneByName($startingMerit)
+        );
+
+        $newPet
+            ->increaseLove(10)
+            ->increaseSafety(10)
+            ->increaseEsteem(10)
+            ->increaseFood(-8)
+            ->setScale($this->squirrel3->rngNextInt(80, 120))
+            ->setLocation(PetLocationEnum::DAYCARE)
+        ;
+
+        $this->em->persist($newPet);
+
+        $petWithCaptor = (new PetRelationship())
+            ->setRelationship($captor)
+            ->setCurrentRelationship(RelationshipEnum::DISLIKE)
+            ->setPet($newPet)
+            ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+            ->setMetDescription('%relationship.name% pulled %pet.name% out of the imaginary plane, trapping them here!')
+        ;
+
+        $newPet->addPetRelationship($petWithCaptor);
+
+        $captorWithPet = (new PetRelationship())
+            ->setRelationship($newPet)
+            ->setCurrentRelationship(RelationshipEnum::DISLIKE)
+            ->setPet($captor)
+            ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+            ->setMetDescription('%pet.name% pulled %relationship.name% out of the imaginary plane, trapping them here!')
+        ;
+
+        $captor->addPetRelationship($captorWithPet);
     }
 
     private function createBruteForce(ComputedPetSkills $petWithSkills): PetActivityLog
