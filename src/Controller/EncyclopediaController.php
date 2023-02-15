@@ -62,7 +62,7 @@ class EncyclopediaController extends AbstractController
      */
     public function getItemByName(string $itemName, ItemRepository $itemRepository, ResponseService $responseService)
     {
-        $item = $itemRepository->findOneBy([ 'name' => $itemName ]);
+        $item = $itemRepository->findOneByName($itemName);
 
         if(!$item)
             throw new NotFoundHttpException('There is no such item.');
