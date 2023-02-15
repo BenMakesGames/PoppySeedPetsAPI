@@ -920,6 +920,7 @@ class ProgrammingService
             ->setPet($newPet)
             ->setRelationshipGoal(RelationshipEnum::DISLIKE)
             ->setMetDescription('%relationship.name% pulled %pet.name% out of the imaginary plane, trapping them here!')
+            ->setCommitment(0)
         ;
 
         $newPet->addPetRelationship($petWithCaptor);
@@ -930,9 +931,13 @@ class ProgrammingService
             ->setPet($captor)
             ->setRelationshipGoal(RelationshipEnum::DISLIKE)
             ->setMetDescription('%pet.name% pulled %relationship.name% out of the imaginary plane, trapping them here!')
+            ->setCommitment(0)
         ;
 
         $captor->addPetRelationship($captorWithPet);
+
+        $this->em->persist($petWithCaptor);
+        $this->em->persist($captorWithPet);
     }
 
     private function createBruteForce(ComputedPetSkills $petWithSkills): PetActivityLog
