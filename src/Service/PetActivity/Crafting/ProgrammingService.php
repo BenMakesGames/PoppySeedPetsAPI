@@ -820,9 +820,9 @@ class ProgrammingService
 
         $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Infinity Imp', $impDiscovery);
 
-        $isLucky = $this->squirrel3->rngNextInt(1, 200) == 1 && $pet->hasMerit(MeritEnum::LUCKY);
+        $isLucky = $this->squirrel3->rngNextInt(1, 50) == 1 && $pet->hasMerit(MeritEnum::LUCKY);
 
-        if($this->squirrel3->rngNextInt(1, 200) == 1 || $isLucky)
+        if($this->squirrel3->rngNextInt(1, 50) == 1 || $isLucky)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 5, [ PetSkillEnum::SCIENCE, PetSkillEnum::BRAWL ]);
