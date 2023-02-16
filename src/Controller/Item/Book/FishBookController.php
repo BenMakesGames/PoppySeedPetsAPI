@@ -3,6 +3,7 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,6 +23,7 @@ class FishBookController extends AbstractController
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'fishBook/#/upload');
@@ -42,6 +44,7 @@ class FishBookController extends AbstractController
             'Orange Fish',
             'Pan-fried Fish (with Butter)',
             'Pan-fried Fish (with Oil)',
+            'Papeete I\'a Ota',
             'Stargazy Pie',
             'Simple Sushi',
             'Zongzi',
