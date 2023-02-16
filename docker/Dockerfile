@@ -20,9 +20,6 @@ RUN composer install
 RUN mkdir -p var/cache var/log
 RUN chown -R www-data:www-data var/cache var/log
 
-# if we ever want to scale, redis needs to be moved to a separate container (or use an AWS redis server)
-# TODO: install & run redis
-
 # if we ever want to scale, crontab needs to be moved to a separate container
 COPY crontab /etc/cron.d/psp-crontab
 RUN chmod 0644 /etc/cron.d/psp-crontab && crontab /etc/cron.d/psp-crontab
