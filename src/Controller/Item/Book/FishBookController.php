@@ -45,6 +45,7 @@ class FishBookController extends AbstractController
             'Pan-fried Fish (with Butter)',
             'Pan-fried Fish (with Oil)',
             'Papeete I\'a Ota',
+            'Soy-ginger Fish',
             'Stargazy Pie',
             'Simple Sushi',
             'Zongzi',
@@ -84,6 +85,8 @@ class FishBookController extends AbstractController
 * Nigiri
 * Orange Fish
 * Pan-fried Fish
+* Papeete I\'a Ota
+* Soy-ginger Fish
 * Stargazy Pie
 * Sushi
 * Zongzi
@@ -197,6 +200,19 @@ Just grill some Fish with Charcoal!
 * Butter, or Oil
 
 That\'s it!
+
+#### Papeete I\'a Ota
+
+* Fish
+* Coconut Milk
+* Onion
+* Yellowy Lime
+
+#### Soy-ginger Fish
+
+* Fish
+* Soy Sauce
+* Ginger
 
 #### Stargazy Pie
 
