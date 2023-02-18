@@ -5,6 +5,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\KnownRecipes;
 use App\Entity\Recipe;
+use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\KnownRecipesRepository;
@@ -29,11 +30,16 @@ class SoupController extends AbstractController
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'SOUP/#/UPLOAD');
+        /** @var User $user */
+        $user = $this->getUser();
 
-        $message = $cookingService->showRecipeNamesToCookingBuddy($this->getUser(), [
+        ItemControllerHelpers::validateInventory($user, $inventory, 'SOUP/#/UPLOAD');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             '15-bean Soup',
             '"Chicken" Noodle Soup (with Fish)',
+            'Cullen Skink (A)',
+            'Cullen Skink (B)',
             'Dashi',
             'Fish Stew',
             'Fishkebab Stew',
@@ -72,6 +78,15 @@ IF YOU HAPPEN TO STOR-- \*HACK; CoUgh; wheeze\* to store your Beans in threes, f
 * Noodles
 
 Also good with Fish, instead of chicken.
+
+#### Cullen Skink
+
+* Fish
+* Creamy Milk
+* Smashed Potatoes
+* Onion
+
+A hearty, Scottish soup. The traditional recipe calls for Smashed Potatoes, but if you like chunks, you can cut up a Potato, instead.
 
 #### Dashi
 

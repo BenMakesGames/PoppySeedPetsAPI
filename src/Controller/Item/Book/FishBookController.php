@@ -33,6 +33,8 @@ class FishBookController extends AbstractController
             'Basic Fish Taco',
             'Battered, Fried Fish (with Egg)',
             'Battered, Fried Fish (without Egg)',
+            'Cullen Skink (A)',
+            'Cullen Skink (B)',
             'Fermented Fish',
             'Fisherman\'s Pie (Carrot)',
             'Fisherman\'s Pie (Corn)',
@@ -77,6 +79,7 @@ class FishBookController extends AbstractController
 * Baked Fish Fingers
 * Basic Fish Taco
 * Battered, Fried Fish
+* Cullen Skink
 * Fermented Fish
 * Fisherman\'s Pie
 * Fish Onigiri
@@ -143,6 +146,15 @@ Life as a pet truly isn\'t fair.
 * Egg (optional)
 * Fish
 * Oil (for frying)
+
+#### Cullen Skink
+
+* Fish
+* Creamy Milk
+* Smashed Potatoes
+* Onion
+
+A hearty, Scottish soup. The traditional recipe calls for Smashed Potatoes, but if you like chunks, you can cut up a Potato, instead. 
 
 #### Fermented Fish
 
