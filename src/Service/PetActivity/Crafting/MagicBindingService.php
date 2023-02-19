@@ -142,6 +142,9 @@ class MagicBindingService
 
         if($this->houseSimService->hasInventory('Quintessence'))
         {
+            if($this->houseSimService->hasInventory('Crystal Ball') && $this->houseSimService->hasInventory('Lotus Flower'))
+                $possibilities[] = new ActivityCallback($this, 'createLotusjar', 8);
+
             if($this->houseSimService->hasInventory('Viscaria') && $this->houseSimService->hasInventory('Jar of Fireflies'))
                 $possibilities[] = new ActivityCallback($this, 'createLullablade', 8);
 
@@ -1871,7 +1874,7 @@ class MagicBindingService
 
         if($roll >= 18)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Crystal Ball', 1);
             $this->houseSimService->getState()->loseItem('Quinacridone Magenta Dye', 1);
             $this->houseSimService->getState()->loseItem('Meteorite', 1);
@@ -1904,9 +1907,40 @@ class MagicBindingService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% considered invoking the watchful eye of Noetala, but thought better of it...', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
+            ;
+        }
+    }
+
+    public function createLotusjar(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + floor(($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getPerception()->getTotal()) / 2) + $petWithSkills->getUmbra()->getTotal());
+
+        if($roll >= 24)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->houseSimService->getState()->loseItem('Crystal Ball', 1);
+            $this->houseSimService->getState()->loseItem('Lotus Flower', 1);
+            $this->houseSimService->getState()->loseItem('Quintessence', 1);
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::UMBRA ]);
+            $pet->increaseEsteem(1);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% magically bound a Lotusjar!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 24)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Lotusjar', $pet, $pet->getName() . ' bound this.', $activityLog);
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started making a Lotusjar, but almost accidentally tore the flower, so decided to take a break...', 'icons/activity-logs/confused')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
             ;
         }

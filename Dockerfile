@@ -15,7 +15,8 @@ COPY nginx.conf /etc/nginx/sites-enabled/
 
 # TODO: set up .env.local file for prod
 
-RUN composer install
+ENV COMPOSER_ALLOW_SUPERUSER 1
+RUN cd /var/www/project composer install
 
 RUN mkdir -p var/cache var/log
 RUN chown -R www-data:www-data var/cache var/log
