@@ -3,6 +3,7 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,6 +23,7 @@ class BakingBookController extends AbstractController
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'bakingBook/#/upload');
@@ -54,6 +56,8 @@ class BakingBookController extends AbstractController
             'Chocolate Chip Muffins II',
             'Naner Bread',
             'Pancakes',
+            'Pavé aux Noix',
+            'Pavé Chocolat aux Noix',
             'Loaf of Plain Bread',
             'Simple Bread (A)',
             'Shortbread Cookies',
@@ -277,6 +281,17 @@ Bored of Naner Bread? Replacing the Naner with a Smallish Pumpkin and make some 
 * Wheat Flour
 
 The milk provides enough acidity for this recipe, so Cream of Tartar (or Baking Powder) is not required; Baking Soda on its own will do!
+
+#### Pavé aux Noix
+
+* Butter
+* Egg
+* Sugar
+* Mixed Nuts
+
+This gluten-free cake gets its substance not from What Flour, but from nut flour. (Which is a weird phrase, now that I say-- er, type it... out loud...)
+
+Er, anyway: looking to get your chocolate fix? Add Cocoa Powder to make Pavé Chocolat aux Noix!
 
 #### Plain Bread
 

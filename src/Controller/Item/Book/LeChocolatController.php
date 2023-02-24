@@ -4,6 +4,7 @@ namespace App\Controller\Item\Book;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Recipe;
+use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Model\ItemQuantity;
 use App\Repository\RecipeRepository;
@@ -25,8 +26,8 @@ class LeChocolatController extends AbstractController
     private function getRecipes(RecipeRepository $recipeRepository): array
     {
         return $recipeRepository->createQueryBuilder('r')
-            ->andWhere('r.name LIKE :chocolate')
-            ->setParameter('chocolate', '%chocolate%')
+            ->andWhere('r.name LIKE :chocolat')
+            ->setParameter('chocolat', '%chocolat%')
             ->addOrderBy('r.name', 'ASC')
             ->getQuery()
             ->execute()
@@ -42,6 +43,7 @@ class LeChocolatController extends AbstractController
         RecipeRepository $recipeRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'leChocolat/#/upload');
