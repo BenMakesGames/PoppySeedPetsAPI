@@ -60,52 +60,79 @@ class MarketService
         return null;
     }
 
-    private static function getLowestPriceCacheKey(Inventory $inventory): string
+    private static function getLowestPriceCacheKey(int $itemId, ?int $enchantmentId, ?int $spiceId): string
     {
         return
             'Market Lowest Price ' .
-            $inventory->getItem()->getId() . ',' .
-            ($inventory->getEnchantment() ? $inventory->getEnchantment()->getId() : 'null') . ',' .
-            ($inventory->getSpice() ? $inventory->getSpice()->getId() : 'null')
+            $itemId . ',' .
+            ($enchantmentId ?? 'null') . ',' .
+            ($spiceId ?? 'null')
         ;
     }
 
-    public function getLowestPriceForItem(Inventory $inventory)
+    public function getLowestPriceForItem(int $itemId, ?int $enchantmentId, ?int $spiceId)
     {
-        $cacheKey = self::getLowestPriceCacheKey($inventory);
+        $cacheKey = self::getLowestPriceCacheKey($itemId, $enchantmentId, $spiceId);
 
         return $this->cacheHelper->getOrCompute(
             $cacheKey,
             \DateInterval::createFromDateString('24 hours'),
-            fn() => $this->computeLowestPriceForItem($inventory)
+            fn() => $this->computeLowestPriceForItem($itemId, $enchantmentId, $spiceId)
         );
     }
 
-    public function updateLowestPriceForItem(Inventory $inventory)
+    public function updateLowestPriceForInventory(Inventory $inventory)
     {
-        $cacheKey = self::getLowestPriceCacheKey($inventory);
+        $this->updateLowestPriceForItem(
+            $inventory->getItem()->getId(),
+            $inventory->getEnchantment() ? $inventory->getEnchantment()->getId() : null,
+            $inventory->getSpice() ? $inventory->getSpice()->getId() : null
+        );
+    }
+
+    public function updateLowestPriceForItem(int $itemId, ?int $enchantmentId, ?int $spiceId)
+    {
+        $cacheKey = self::getLowestPriceCacheKey($itemId, $enchantmentId, $spiceId);
 
         $this->cacheHelper->set(
             $cacheKey,
             \DateInterval::createFromDateString('24 hours'),
-            $this->computeLowestPriceForItem($inventory)
+            $this->computeLowestPriceForItem($itemId, $enchantmentId, $spiceId)
         );
     }
 
-    public function computeLowestPriceForItem(Inventory $inventory)
+    private function computeLowestPriceForItem(int $itemId, ?int $enchantmentId, ?int $spiceId): ?int
     {
-        return (int)$this->em->createQueryBuilder()
-            ->select('MIN(i.buyPrice)')
+        $qb = $this->em->createQueryBuilder()
+            ->select('MIN(i.sellPrice)')
             ->from(Inventory::class, 'i')
-            ->where('i.item = :item')
-            ->andWhere('i.enchantment = :enchantment')
-            ->andWhere('i.spice = :spice')
-            ->andWhere('i.buyPrice IS NOT NULL')
-            ->setParameter('item', $inventory->getItem())
-            ->setParameter('enchantment', $inventory->getEnchantment())
-            ->setParameter('spice', $inventory->getSpice())
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->andWhere('i.item = :item')
+            ->setParameter('item', $itemId)
+            ->andWhere('i.sellPrice IS NOT NULL')
+        ;
+
+        if($enchantmentId)
+        {
+            $qb = $qb
+                ->andWhere('i.enchantment = :enchantment')
+                ->setParameter('enchantment', $enchantmentId)
+            ;
+        }
+
+        if($spiceId)
+        {
+            $qb = $qb
+                ->andWhere('i.spice = :spice')
+                ->setParameter('spice', $spiceId)
+            ;
+        }
+
+        $minPrice = (int)$qb->getQuery()->getSingleScalarResult();
+
+        if(!$minPrice)
+            return null;
+
+        return $minPrice;
     }
 
     public function logExchange(Inventory $itemForSale): DailyMarketInventoryTransaction
@@ -175,7 +202,10 @@ class MarketService
         $highestBid = $this->marketBidRepository->findHighestBidForItem($inventory, Inventory::calculateBuyPrice($price));
 
         if(!$highestBid)
+        {
+            $this->updateLowestPriceForInventory($inventory);
             return false;
+        }
 
         $this->logExchange($inventory);
 

@@ -21,17 +21,17 @@ use Symfony\Component\Serializer\SerializerInterface;
 class ResponseService
 {
     /** @var PetActivityLog[] */
-    private $flashMessages = [];
-    private $reloadInventory = false;
-    private $reloadPets = false;
-    private $em;
-    private $serializer;
-    private $security;
-    private $normalizer;
-    private $sessionId = 0;
-    private $petActivityLogRepository;
-    private $weatherService;
-    private $userMenuService;
+    private array $flashMessages = [];
+    private bool $reloadInventory = false;
+    private bool $reloadPets = false;
+    private EntityManagerInterface $em;
+    private SerializerInterface $serializer;
+    private Security $security;
+    private NormalizerInterface $normalizer;
+    private ?string $sessionId = null;
+    private PetActivityLogRepository $petActivityLogRepository;
+    private WeatherService $weatherService;
+    private UserMenuService $userMenuService;
 
     public function __construct(
         SerializerInterface $serializer, NormalizerInterface $normalizer, EntityManagerInterface $em, Security $security,
@@ -89,7 +89,7 @@ class ResponseService
         if(count($activity) > 0)
             $responseData['activity'] = $this->normalizer->normalize($activity, null, [ 'groups' => [ SerializationGroupEnum::PET_ACTIVITY_LOGS ] ]);
 
-        if($this->sessionId !== 0)
+        if($this->sessionId !== null)
             $responseData['sessionId'] = $this->sessionId;
 
         $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), null);
