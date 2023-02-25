@@ -14,8 +14,12 @@ class MarketFilterService
 
     public const PAGE_SIZE = 20;
 
-    private User $user;
-    private InventoryRepository $repository;
+    /**
+     * @var User
+     */
+    private $user;
+
+    private $repository;
 
     public function __construct(InventoryRepository $inventoryRepository)
     {
@@ -51,14 +55,16 @@ class MarketFilterService
     public function createQueryBuilder(): QueryBuilder
     {
         return $this->repository->createQueryBuilder('i')
-            ->select('i AS inventory,item,enchantment')
-            ->andWhere('i.sellPrice IS NOT NULL')
+            ->select('i AS inventory,item,enchantment,MIN(i.sellPrice) AS minSellPrice')
             ->leftJoin('i.item', 'item')
             ->leftJoin('i.enchantment', 'enchantment')
             ->leftJoin('i.spice', 'spice')
+            ->andWhere('i.sellPrice IS NOT NULL')
+            ->andWhere('i.owner != :user')
             ->addGroupBy('item.name')
             ->addGroupBy('enchantment.name')
             ->addGroupBy('spice.name')
+            ->setParameter('user', $this->user->getId())
         ;
     }
 
