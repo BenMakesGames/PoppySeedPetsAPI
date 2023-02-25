@@ -30,4 +30,16 @@ class CacheHelper
 
         return $data;
     }
+
+    public function set(string $cacheKey, \DateInterval $ttl, $data)
+    {
+        $item = $this->cache->getItem($cacheKey);
+
+        $item
+            ->set($data)
+            ->expiresAfter($ttl)
+        ;
+
+        $this->cache->save($item);
+    }
 }

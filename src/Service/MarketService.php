@@ -14,17 +14,18 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class MarketService
 {
-    private $em;
-    private $userStatsRepository;
+    private EntityManagerInterface $em;
+    private UserStatsRepository $userStatsRepository;
     private MarketBidRepository $marketBidRepository;
     private InventoryService $inventoryService;
     private TransactionService $transactionService;
     private UserQuestRepository $userQuestRepository;
+    private CacheHelper $cacheHelper;
 
     public function __construct(
         EntityManagerInterface $em, UserStatsRepository  $userStatsRepository, MarketBidRepository $marketBidRepository,
         InventoryService $inventoryService, TransactionService $transactionService,
-        UserQuestRepository $userQuestRepository
+        UserQuestRepository $userQuestRepository, CacheHelper $cacheHelper
     )
     {
         $this->em = $em;
@@ -33,6 +34,7 @@ class MarketService
         $this->inventoryService = $inventoryService;
         $this->transactionService = $transactionService;
         $this->userQuestRepository = $userQuestRepository;
+        $this->cacheHelper = $cacheHelper;
     }
 
     public function getItemToRaiseLimit(User $user): ?array
@@ -56,6 +58,54 @@ class MarketService
         }
 
         return null;
+    }
+
+    private static function getLowestPriceCacheKey(Inventory $inventory): string
+    {
+        return
+            'Market Lowest Price ' .
+            $inventory->getItem()->getId() . ',' .
+            ($inventory->getEnchantment() ? $inventory->getEnchantment()->getId() : 'null') . ',' .
+            ($inventory->getSpice() ? $inventory->getSpice()->getId() : 'null')
+        ;
+    }
+
+    public function getLowestPriceForItem(Inventory $inventory)
+    {
+        $cacheKey = self::getLowestPriceCacheKey($inventory);
+
+        return $this->cacheHelper->getOrCompute(
+            $cacheKey,
+            \DateInterval::createFromDateString('24 hours'),
+            fn() => $this->computeLowestPriceForItem($inventory)
+        );
+    }
+
+    public function updateLowestPriceForItem(Inventory $inventory)
+    {
+        $cacheKey = self::getLowestPriceCacheKey($inventory);
+
+        $this->cacheHelper->set(
+            $cacheKey,
+            \DateInterval::createFromDateString('24 hours'),
+            $this->computeLowestPriceForItem($inventory)
+        );
+    }
+
+    public function computeLowestPriceForItem(Inventory $inventory)
+    {
+        return (int)$this->em->createQueryBuilder()
+            ->select('MIN(i.buyPrice)')
+            ->from(Inventory::class, 'i')
+            ->where('i.item = :item')
+            ->andWhere('i.enchantment = :enchantment')
+            ->andWhere('i.spice = :spice')
+            ->andWhere('i.buyPrice IS NOT NULL')
+            ->setParameter('item', $inventory->getItem())
+            ->setParameter('enchantment', $inventory->getEnchantment())
+            ->setParameter('spice', $inventory->getSpice())
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     public function logExchange(Inventory $itemForSale): DailyMarketInventoryTransaction
@@ -115,52 +165,51 @@ class MarketService
         $user = $inventory->getOwner();
 
         if($price <= 0)
-            $inventory->setSellPrice(null);
-        else
         {
-            $inventory->setSellPrice($price);
+            $inventory->setSellPrice(null);
+            return false;
+        }
 
-            $highestBid = $this->marketBidRepository->findHighestBidForItem($inventory, Inventory::calculateBuyPrice($price));
+        $inventory->setSellPrice($price);
 
-            if($highestBid)
+        $highestBid = $this->marketBidRepository->findHighestBidForItem($inventory, Inventory::calculateBuyPrice($price));
+
+        if(!$highestBid)
+            return false;
+
+        $this->logExchange($inventory);
+
+        $this->transactionService->getMoney($user, $price, 'Sold ' . InventoryModifierFunctions::getNameWithModifiers($inventory) . ' in the Market.', [ 'Market' ]);
+
+        $targetLocation = LocationEnum::HOME;
+
+        if($highestBid->getTargetLocation() === LocationEnum::BASEMENT)
+        {
+            $itemsInBuyersBasement = $this->inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::BASEMENT);
+
+            if($itemsInBuyersBasement < User::MAX_BASEMENT_INVENTORY)
+                $targetLocation = LocationEnum::BASEMENT;
+        }
+        else // assume home as fallback/default
+        {
+            $itemsInBuyersHome = $this->inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::HOME);
+
+            if($itemsInBuyersHome >= User::MAX_HOUSE_INVENTORY)
             {
-                $this->logExchange($inventory);
+                $itemsInBuyersBasement = $this->inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::BASEMENT);
 
-                $this->transactionService->getMoney($user, $price, 'Sold ' . InventoryModifierFunctions::getNameWithModifiers($inventory) . ' in the Market.', [ 'Market' ]);
-
-                $targetLocation = LocationEnum::HOME;
-
-                if($highestBid->getTargetLocation() === LocationEnum::BASEMENT)
-                {
-                    $itemsInBuyersBasement = $this->inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::BASEMENT);
-
-                    if($itemsInBuyersBasement < User::MAX_BASEMENT_INVENTORY)
-                        $targetLocation = LocationEnum::BASEMENT;
-                }
-                else // assume home as fallback/default
-                {
-                    $itemsInBuyersHome = $this->inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::HOME);
-
-                    if($itemsInBuyersHome >= User::MAX_HOUSE_INVENTORY)
-                    {
-                        $itemsInBuyersBasement = $this->inventoryService->countTotalInventory($highestBid->getUser(), LocationEnum::BASEMENT);
-
-                        if($itemsInBuyersBasement < User::MAX_BASEMENT_INVENTORY)
-                            $targetLocation = LocationEnum::BASEMENT;
-                    }
-                }
-
-                $this->transferItemToPlayer($inventory, $highestBid->getUser(), $targetLocation);
-
-                if($highestBid->getQuantity() > 1)
-                    $highestBid->setQuantity($highestBid->getQuantity() - 1);
-                else
-                    $this->em->remove($highestBid);
-
-                return true;
+                if($itemsInBuyersBasement < User::MAX_BASEMENT_INVENTORY)
+                    $targetLocation = LocationEnum::BASEMENT;
             }
         }
 
-        return false;
+        $this->transferItemToPlayer($inventory, $highestBid->getUser(), $targetLocation);
+
+        if($highestBid->getQuantity() > 1)
+            $highestBid->setQuantity($highestBid->getQuantity() - 1);
+        else
+            $this->em->remove($highestBid);
+
+        return true;
     }
 }
