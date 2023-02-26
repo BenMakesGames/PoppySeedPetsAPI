@@ -147,9 +147,15 @@ class Item
      */
     private $museumPoints;
 
+    /**
+     * @ORM\OneToMany(targetEntity=MarketListing::class, mappedBy="item")
+     */
+    private $marketListings;
+
     public function __construct()
     {
         $this->itemGroups = new ArrayCollection();
+        $this->marketListings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -508,6 +514,36 @@ class Item
     public function setMuseumPoints(int $museumPoints): self
     {
         $this->museumPoints = $museumPoints;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MarketListing>
+     */
+    public function getMarketListings(): Collection
+    {
+        return $this->marketListings;
+    }
+
+    public function addMarketListing(MarketListing $marketListing): self
+    {
+        if (!$this->marketListings->contains($marketListing)) {
+            $this->marketListings[] = $marketListing;
+            $marketListing->setItem($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMarketListing(MarketListing $marketListing): self
+    {
+        if ($this->marketListings->removeElement($marketListing)) {
+            // set the owning side to null (unless already changed)
+            if ($marketListing->getItem() === $this) {
+                $marketListing->setItem(null);
+            }
+        }
 
         return $this;
     }
