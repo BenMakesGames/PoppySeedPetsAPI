@@ -6,6 +6,7 @@ use App\Entity\Enchantment;
 use App\Entity\Item;
 use App\Entity\MarketListing;
 use App\Entity\Spice;
+use App\Functions\InventoryModifierFunctions;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -71,6 +72,7 @@ class MarketListingRepository extends ServiceEntityRepository
             ->setEnchantment($enchantment)
             ->setSpice($spice)
             ->setMinimumSellPrice($lowestPrice)
+            ->setFullItemName(InventoryModifierFunctions::getNameWithModifiersForItem($item, $enchantment, $spice))
         ;
 
         $this->_em->persist($newRecord);

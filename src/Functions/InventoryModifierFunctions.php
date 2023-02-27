@@ -1,7 +1,10 @@
 <?php
 namespace App\Functions;
 
+use App\Entity\Enchantment;
 use App\Entity\Inventory;
+use App\Entity\Item;
+use App\Entity\Spice;
 use Doctrine\ORM\EntityManagerInterface;
 
 class InventoryModifierFunctions
@@ -46,6 +49,30 @@ class InventoryModifierFunctions
 
         if($item->getSpice() && $item->getSpice()->getIsSuffix())
             $nameParts[] = $item->getSpice()->getName();
+
+        return implode(' ', $nameParts);
+    }
+
+    public static function getNameWithModifiersForItem(Item $item, ?Enchantment $enchantment, ?Spice $spice): ?string
+    {
+        if(!$enchantment && !$item->getSpice())
+            return $item->getName();
+
+        $nameParts = [];
+
+        if($enchantment && !$enchantment->getIsSuffix())
+            $nameParts[] = $enchantment->getName();
+
+        if($spice && !$spice->getIsSuffix())
+            $nameParts[] = $spice->getName();
+
+        $nameParts[] = $item->getName();
+
+        if($enchantment && $enchantment->getIsSuffix())
+            $nameParts[] = $enchantment->getName();
+
+        if($spice && $spice->getIsSuffix())
+            $nameParts[] = $spice->getName();
 
         return implode(' ', $nameParts);
     }
