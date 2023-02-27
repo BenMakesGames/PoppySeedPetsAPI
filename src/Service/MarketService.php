@@ -119,12 +119,12 @@ class MarketService
         return $minPrice;
     }
 
-    public function logExchange(Inventory $itemForSale): DailyMarketInventoryTransaction
+    public function logExchange(Inventory $itemForSale, int $price): DailyMarketInventoryTransaction
     {
         $log = (new DailyMarketInventoryTransaction())
             ->setInventory($itemForSale->getId())
             ->setItem($itemForSale->getItem())
-            ->setPrice($itemForSale->getBuyPrice())
+            ->setPrice($price)
         ;
 
         $this->em->persist($log);
@@ -184,7 +184,7 @@ class MarketService
             return false;
         }
 
-        $this->logExchange($inventory);
+        $this->logExchange($inventory, $price);
 
         $user = $inventory->getOwner();
 

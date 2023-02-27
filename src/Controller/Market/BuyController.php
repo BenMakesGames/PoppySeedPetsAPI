@@ -142,7 +142,7 @@ class BuyController extends AbstractController
 
                 $transactionService->spendMoney($user, $itemToBuy->getBuyPrice(), 'Bought ' . InventoryModifierFunctions::getNameWithModifiers($itemToBuy) . ' in the Market.', true, [ 'Market' ]);
 
-                $marketService->logExchange($itemToBuy);
+                $marketService->logExchange($itemToBuy, $itemToBuy->getBuyPrice());
 
                 $marketService->transferItemToPlayer($itemToBuy, $user, $placeItemsIn);
 
