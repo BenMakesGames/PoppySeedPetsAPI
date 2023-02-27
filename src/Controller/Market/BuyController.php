@@ -74,12 +74,10 @@ class BuyController extends AbstractController
         }
 
         $qb = $inventoryRepository->createQueryBuilder('i')
-            ->andWhere('i.owner!=:user')
             ->andWhere('i.sellPrice<=:price')
             ->andWhere('i.item=:item')
             ->addOrderBy('i.sellPrice', 'ASC')
             ->addOrderBy('i.sellListDate', 'ASC')
-            ->setParameter('user', $user->getId())
             ->setParameter('price', $price)
             ->setParameter('item', $itemId)
         ;
@@ -118,7 +116,7 @@ class BuyController extends AbstractController
         });
 
         if(count($forSale) === 0)
-            throw new NotFoundHttpException('An item for that price could not be found on the market. Someone may have bought it up just for you did! Sorry :| Reload the page to get the latest prices available!');
+            throw new UnprocessableEntityHttpException('An item for that price could not be found on the market. Someone may have bought it up just before you did! Sorry :| Reload the page to get the latest prices available!');
 
         /** @var Inventory $itemToBuy */
         $itemToBuy = ArrayFunctions::min($forSale, fn(Inventory $inventory) => $inventory->getSellPrice());
@@ -129,13 +127,30 @@ class BuyController extends AbstractController
 
         try
         {
-            $transactionService->getMoney($itemToBuy->getOwner(), $itemToBuy->getSellPrice(), 'Sold ' . InventoryModifierFunctions::getNameWithModifiers($itemToBuy) . ' in the Market.', [ 'Market' ]);
+            if($itemToBuy->getOwner() === $user)
+            {
+                $itemToBuy->setSellPrice(null);
 
-            $transactionService->spendMoney($user, $itemToBuy->getBuyPrice(), 'Bought ' . InventoryModifierFunctions::getNameWithModifiers($itemToBuy) . ' in the Market.', true, [ 'Market' ]);
+                if($itemToBuy->getLocation() === LocationEnum::BASEMENT)
+                    $responseService->addFlashMessage('The ' . $itemToBuy->getItem()->getName() . ' is one of yours! It has been removed from the Market, and can be found in your Basement!');
+                else
+                    $responseService->addFlashMessage('The ' . $itemToBuy->getItem()->getName() . ' is one of yours! It has been removed from the Market, and can be found in your Home!');
+            }
+            else
+            {
+                $transactionService->getMoney($itemToBuy->getOwner(), $itemToBuy->getSellPrice(), 'Sold ' . InventoryModifierFunctions::getNameWithModifiers($itemToBuy) . ' in the Market.', [ 'Market' ]);
 
-            $marketService->logExchange($itemToBuy);
+                $transactionService->spendMoney($user, $itemToBuy->getBuyPrice(), 'Bought ' . InventoryModifierFunctions::getNameWithModifiers($itemToBuy) . ' in the Market.', true, [ 'Market' ]);
 
-            $marketService->transferItemToPlayer($itemToBuy, $user, $placeItemsIn);
+                $marketService->logExchange($itemToBuy);
+
+                $marketService->transferItemToPlayer($itemToBuy, $user, $placeItemsIn);
+
+                if($placeItemsIn === LocationEnum::BASEMENT)
+                    $responseService->addFlashMessage('The ' . $itemToBuy->getItem()->getName() . ' is yours; you\'ll find it in your Basement! (Your Home is a bit full...)');
+                else
+                    $responseService->addFlashMessage('The ' . $itemToBuy->getItem()->getName() . ' is yours!');
+            }
 
             $em->flush();
         }
@@ -144,10 +159,8 @@ class BuyController extends AbstractController
             $cache->deleteItem('Trading Inventory #' . $itemToBuy->getId());
         }
 
-        if($placeItemsIn === LocationEnum::BASEMENT)
-            $responseService->addFlashMessage('The ' . $itemToBuy->getItem()->getName() . ' is yours; you\'ll find it in your Basement! (The house is a bit full...)');
-        else
-            $responseService->addFlashMessage('The ' . $itemToBuy->getItem()->getName() . ' is yours!');
+        $marketService->updateLowestPriceForInventory($itemToBuy);
+        $em->flush();
 
         return $responseService->success($itemToBuy, [ SerializationGroupEnum::MY_INVENTORY ]);
     }

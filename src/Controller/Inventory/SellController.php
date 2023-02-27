@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Inventory;
 
+use App\Entity\Inventory;
 use App\Entity\User;
 use App\Repository\InventoryRepository;
 use App\Service\MarketService;
@@ -51,6 +52,7 @@ class SellController extends AbstractController
         if($price > $user->getMaxSellPrice())
             throw new UnprocessableEntityHttpException('You cannot list items for more than ' . $user->getMaxSellPrice() . ' moneys. See the Market Manager to see if you can increase this limit!');
 
+        /** @var Inventory[] $inventory */
         $inventory = $inventoryRepository->createQueryBuilder('i')
             ->leftJoin('i.holder', 'holder')
             ->leftJoin('i.wearer', 'wearer')
@@ -70,7 +72,20 @@ class SellController extends AbstractController
         if(count($inventory) !== count($itemIds))
             throw new UnprocessableEntityHttpException('One or more of the selected items do not exist! Maybe reload and try again??');
 
+        // if you're UNlisting items... EASY: do that:
+        if($price <= 0)
+        {
+            foreach($inventory as $i)
+                $i->setSellPrice(null);
+
+            $em->flush();
+
+            return $responseService->success();
+        }
+
         $anySoldToBidder = false;
+
+        $inventoryToUpdateMinimumPriceFor = [];
 
         foreach($inventory as $i)
         {
@@ -81,6 +96,23 @@ class SellController extends AbstractController
                 $anySoldToBidder = true;
                 $em->flush();
             }
+            else
+            {
+                $key =
+                    $i->getItem()->getId() . ',' .
+                    ($i->getEnchantment() ? $i->getEnchantment()->getId() : 'null') . ','.
+                    ($i->getSpice() ? $i->getSpice()->getId() : 'null')
+                ;
+
+                if(!array_key_exists($key, $inventoryToUpdateMinimumPriceFor))
+                {
+                    $inventoryToUpdateMinimumPriceFor[$key] = [
+                        'item' => $i->getItem(),
+                        'enchantment' => $i->getEnchantment(),
+                        'spice' => $i->getSpice()
+                    ];
+                }
+            }
         }
 
         if($anySoldToBidder)
@@ -88,6 +120,11 @@ class SellController extends AbstractController
 
         $em->flush();
 
-        return $responseService->success($inventory[0]->getSellPrice());
+        foreach($inventoryToUpdateMinimumPriceFor as $i)
+            $marketService->updateLowestPriceForItem($i['item'], $i['enchantment'], $i['spice']);
+
+        $em->flush();
+
+        return $responseService->success();
     }
 }

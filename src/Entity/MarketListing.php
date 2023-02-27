@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\MarketListingRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=MarketListingRepository::class)
@@ -20,23 +21,32 @@ class MarketListing
     /**
      * @ORM\ManyToOne(targetEntity=Item::class, inversedBy="marketListings")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("marketItem")
      */
     private $item;
 
     /**
      * @ORM\ManyToOne(targetEntity=Enchantment::class)
+     * @Groups("marketItem")
      */
     private $enchantment;
 
     /**
      * @ORM\ManyToOne(targetEntity=Spice::class)
+     * @Groups("marketItem")
      */
     private $spice;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups("marketItem")
      */
     private $minimumSellPrice;
+
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $fullItemName;
 
     public function getId(): ?int
     {
@@ -87,6 +97,18 @@ class MarketListing
     public function setMinimumSellPrice(?int $minimumSellPrice): self
     {
         $this->minimumSellPrice = $minimumSellPrice;
+
+        return $this;
+    }
+
+    public function getFullItemName(): ?string
+    {
+        return $this->fullItemName;
+    }
+
+    public function setFullItemName(string $fullItemName): self
+    {
+        $this->fullItemName = $fullItemName;
 
         return $this;
     }

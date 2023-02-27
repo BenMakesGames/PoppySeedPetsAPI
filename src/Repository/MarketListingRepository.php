@@ -2,7 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Enchantment;
+use App\Entity\Item;
 use App\Entity\MarketListing;
+use App\Entity\Spice;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -39,31 +42,37 @@ class MarketListingRepository extends ServiceEntityRepository
         }
     }
 
-    public function findLowestPriceFor(int $itemId, ?int $enchantmentId, ?int $spiceId): ?int
+    public function upsertLowestPriceForItem(Item $item, ?Enchantment $enchantment, ?Spice $spice, ?int $lowestPrice)
     {
-        $qb = $this->createQueryBuilder('ml')
-            ->select('ml.minimumSellPrice')
-            ->where('ml.item = :item')
-            ->setParameter('item', $itemId);
+        if($lowestPrice != null && $lowestPrice <= 0)
+            throw new \InvalidArgumentException('Lowest price must be null or greater than 0.');
 
-        if ($enchantmentId)
+        $existingRecord = $this->findOneBy([
+            'item' => $item,
+            'enchantment' => $enchantment,
+            'spice' => $spice,
+        ]);
+
+        if($existingRecord)
         {
-            $qb
-                ->andWhere('ml.enchantment = :enchantment')
-                ->setParameter('enchantment', $enchantmentId);
-        }
-        else
-            $qb->andWhere('ml.enchantment IS NULL');
+            if($lowestPrice == null)
+                $this->_em->remove($existingRecord);
+            else
+                $existingRecord->setMinimumSellPrice($lowestPrice);
 
-        if ($spiceId)
-        {
-            $qb
-                ->andWhere('ml.spice = :spice')
-                ->setParameter('spice', $spiceId);
+            return;
         }
-        else
-            $qb->andWhere('ml.spice IS NULL');
 
-        return $qb->getQuery()->getSingleScalarResult();
+        if($lowestPrice == null)
+            return;
+
+        $newRecord = (new MarketListing())
+            ->setItem($item)
+            ->setEnchantment($enchantment)
+            ->setSpice($spice)
+            ->setMinimumSellPrice($lowestPrice)
+        ;
+
+        $this->_em->persist($newRecord);
     }
 }

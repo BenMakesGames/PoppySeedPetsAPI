@@ -2,7 +2,10 @@
 namespace App\Service;
 
 use App\Entity\DailyMarketInventoryTransaction;
+use App\Entity\Enchantment;
 use App\Entity\Inventory;
+use App\Entity\Item;
+use App\Entity\Spice;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
@@ -61,52 +64,52 @@ class MarketService
         return null;
     }
 
-    public function getLowestPriceForItem(int $itemId, ?int $enchantmentId, ?int $spiceId): ?int
-    {
-        return $this->marketListingRepository->findLowestPriceFor($itemId, $enchantmentId, $spiceId);
-    }
-
     public function updateLowestPriceForInventory(Inventory $inventory)
     {
         $this->updateLowestPriceForItem(
-            $inventory->getItem()->getId(),
-            $inventory->getEnchantment() ? $inventory->getEnchantment()->getId() : null,
-            $inventory->getSpice() ? $inventory->getSpice()->getId() : null
+            $inventory->getItem(),
+            $inventory->getEnchantment(),
+            $inventory->getSpice()
         );
     }
 
-    public function updateLowestPriceForItem(int $itemId, ?int $enchantmentId, ?int $spiceId)
+    public function updateLowestPriceForItem(Item $item, ?Enchantment $enchantment, ?Spice $spice)
     {
-        $lowestPrice = $this->computeLowestPriceForItem($itemId, $enchantmentId, $spiceId);
+        $lowestPrice = $this->computeLowestPriceForItem($item, $enchantment, $spice);
 
-        $this->marketListingRepository->upsertLowestPriceForItem($itemId, $enchantmentId, $spiceId, $lowestPrice);
+        $this->marketListingRepository->upsertLowestPriceForItem($item, $enchantment, $spice, $lowestPrice);
     }
 
-    private function computeLowestPriceForItem(int $itemId, ?int $enchantmentId, ?int $spiceId): ?int
+    private function computeLowestPriceForItem(Item $item, ?Enchantment $enchantment, ?Spice $spice): ?int
     {
         $qb = $this->em->createQueryBuilder()
             ->select('MIN(i.sellPrice)')
             ->from(Inventory::class, 'i')
             ->andWhere('i.item = :item')
-            ->setParameter('item', $itemId)
+            ->setParameter('item', $item)
             ->andWhere('i.sellPrice IS NOT NULL')
+            ->andWhere('i.sellPrice > 0')
         ;
 
-        if($enchantmentId)
+        if($enchantment)
         {
             $qb = $qb
                 ->andWhere('i.enchantment = :enchantment')
-                ->setParameter('enchantment', $enchantmentId)
+                ->setParameter('enchantment', $enchantment)
             ;
         }
+        else
+            $qb->andWhere('i.enchantment IS NULL');
 
-        if($spiceId)
+        if($spice)
         {
             $qb = $qb
                 ->andWhere('i.spice = :spice')
-                ->setParameter('spice', $spiceId)
+                ->setParameter('spice', $spice)
             ;
         }
+        else
+            $qb->andWhere('i.spice IS NULL');
 
         $minPrice = (int)$qb->getQuery()->getSingleScalarResult();
 
@@ -170,22 +173,20 @@ class MarketService
      */
     public function sell(Inventory $inventory, int $price): bool
     {
-        $user = $inventory->getOwner();
-
         if($price <= 0)
-        {
-            $inventory->setSellPrice(null);
-            return false;
-        }
-
-        $inventory->setSellPrice($price);
+            throw new \InvalidArgumentException('Price must be greater than 0.');
 
         $highestBid = $this->marketBidRepository->findHighestBidForItem($inventory, Inventory::calculateBuyPrice($price));
 
         if(!$highestBid)
+        {
+            $inventory->setSellPrice($price);
             return false;
+        }
 
         $this->logExchange($inventory);
+
+        $user = $inventory->getOwner();
 
         $this->transactionService->getMoney($user, $price, 'Sold ' . InventoryModifierFunctions::getNameWithModifiers($inventory) . ' in the Market.', [ 'Market' ]);
 

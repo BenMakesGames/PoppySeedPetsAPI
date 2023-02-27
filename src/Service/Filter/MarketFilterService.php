@@ -4,8 +4,7 @@ namespace App\Service\Filter;
 use App\Entity\ItemTool;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
-use App\Repository\InventoryRepository;
-use App\Repository\ItemRepository;
+use App\Repository\MarketListingRepository;
 use Doctrine\ORM\QueryBuilder;
 
 class MarketFilterService
@@ -21,9 +20,9 @@ class MarketFilterService
 
     private $repository;
 
-    public function __construct(InventoryRepository $inventoryRepository)
+    public function __construct(MarketListingRepository $marketListingRepository)
     {
-        $this->repository = $inventoryRepository;
+        $this->repository = $marketListingRepository;
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
@@ -54,17 +53,11 @@ class MarketFilterService
 
     public function createQueryBuilder(): QueryBuilder
     {
-        return $this->repository->createQueryBuilder('i')
-            ->select('i AS inventory,item,enchantment,MIN(i.sellPrice) AS minSellPrice')
-            ->leftJoin('i.item', 'item')
-            ->leftJoin('i.enchantment', 'enchantment')
-            ->leftJoin('i.spice', 'spice')
-            ->andWhere('i.sellPrice IS NOT NULL')
-            ->andWhere('i.owner != :user')
-            ->addGroupBy('item.name')
-            ->addGroupBy('enchantment.name')
-            ->addGroupBy('spice.name')
-            ->setParameter('user', $this->user->getId())
+        return $this->repository->createQueryBuilder('l')
+            ->select('l,item,enchantment,spice')
+            ->leftJoin('l.item', 'item')
+            ->leftJoin('l.enchantment', 'enchantment')
+            ->leftJoin('l.spice', 'spice')
         ;
     }
 
@@ -82,14 +75,14 @@ class MarketFilterService
         if(array_key_exists('nameExactMatch', $filters) && (bool)$filters['nameExactMatch'])
         {
             $qb
-                ->andWhere('i.fullItemName = :nameLike')
+                ->andWhere('l.fullItemName = :nameLike')
                 ->setParameter('nameLike', $name)
             ;
         }
         else
         {
             $qb
-                ->andWhere('i.fullItemName LIKE :nameLike')
+                ->andWhere('l.fullItemName LIKE :nameLike')
                 ->setParameter('nameLike', '%' . $name . '%')
             ;
         }
@@ -128,9 +121,6 @@ class MarketFilterService
 
         if(!in_array('food', $qb->getAllAliases()))
             $qb->leftJoin('item.food', 'food');
-
-        if(!in_array('spice', $qb->getAllAliases()))
-            $qb->leftJoin('i.spice', 'spice');
 
         if(!in_array('spiceFood', $qb->getAllAliases()))
             $qb->leftJoin('spice.effects', 'spiceFood');
