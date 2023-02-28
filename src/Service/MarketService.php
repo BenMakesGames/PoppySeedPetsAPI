@@ -132,9 +132,9 @@ class MarketService
         return $log;
     }
 
-    public function transferItemToPlayer(Inventory $item, User $newOwner, int $location)
+    public function transferItemToPlayer(Inventory $item, User $newOwner, int $location, int $sellPrice)
     {
-        $this->userStatsRepository->incrementStat($item->getOwner(), UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $item->getSellPrice());
+        $this->userStatsRepository->incrementStat($item->getOwner(), UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $sellPrice);
         $this->userStatsRepository->incrementStat($item->getOwner(), UserStatEnum::ITEMS_SOLD_IN_MARKET, 1);
         $this->userStatsRepository->incrementStat($newOwner, UserStatEnum::ITEMS_BOUGHT_IN_MARKET, 1);
 
@@ -212,7 +212,7 @@ class MarketService
             }
         }
 
-        $this->transferItemToPlayer($inventory, $highestBid->getUser(), $targetLocation);
+        $this->transferItemToPlayer($inventory, $highestBid->getUser(), $targetLocation, $price);
 
         if($highestBid->getQuantity() > 1)
             $highestBid->setQuantity($highestBid->getQuantity() - 1);

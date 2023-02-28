@@ -144,7 +144,7 @@ class BuyController extends AbstractController
 
                 $marketService->logExchange($itemToBuy, $itemToBuy->getBuyPrice());
 
-                $marketService->transferItemToPlayer($itemToBuy, $user, $placeItemsIn);
+                $marketService->transferItemToPlayer($itemToBuy, $user, $placeItemsIn, $itemToBuy->getSellPrice());
 
                 if($placeItemsIn === LocationEnum::BASEMENT)
                     $responseService->addFlashMessage('The ' . $itemToBuy->getItem()->getName() . ' is yours; you\'ll find it in your Basement! (Your Home is a bit full...)');
