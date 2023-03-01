@@ -5,6 +5,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\MeritEnum;
+use App\Functions\PetRenamingHelpers;
 use App\Functions\PlayerLogHelpers;
 use App\Functions\ProfanityFilterFunctions;
 use App\Repository\PetRepository;
@@ -42,28 +43,9 @@ class RenamingController extends AbstractController
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new NotFoundHttpException('There is no such pet.');
 
-        if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
-            throw new UnprocessableEntityHttpException('This pet is Affectionless. It\'s not interested in taking on a new name.');
-
-        $petName = ProfanityFilterFunctions::filter(trim($request->request->get('name', '')));
-
-        if($petName === $pet->getName())
-            throw new UnprocessableEntityHttpException('That\'s the pet\'s current name! (What a waste of the scroll that would be...)');
-
-        if(\mb_strlen($petName) < 1 || \mb_strlen($petName) > 30)
-            throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
-
-        // let's not worry about this for now... it's a suboptimal solution
-        /*
-        if(!StringFunctions::isISO88591($petName))
-            throw new UnprocessableEntityHttpException('Your pet\'s name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
-        */
-
-        $responseService->createActivityLog($pet, "{$pet->getName()} has been renamed to {$petName}!", '');
+        PetRenamingHelpers::renamePet($responseService, $pet, $request->request->get('name', ''));
 
         $em->remove($inventory);
-
-        $pet->setName($petName);
 
         $em->flush();
 

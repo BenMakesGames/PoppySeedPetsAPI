@@ -147,6 +147,7 @@ class PregnancyService
             ->setMom($pregnancy->getParent())
             ->setDad($pregnancy->getOtherParent())
             ->setScale($babySize)
+            ->setRenamingCharges(1)
         ;
 
         if($pregnancy->getAffection() > 0)

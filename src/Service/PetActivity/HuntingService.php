@@ -887,7 +887,7 @@ class HuntingService
 
                 $prizeItem = $this->itemRepository->findOneByName($prize);
 
-                $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt ' . '%pet:' . $pet->getId() . '.name%, but ' . $pet->getName() . ' was able to calm the spirit! Thankful, the spirit gives ' . $pet->getName() . ' ' . $prizeItem->getNameWithArticle() . '.', 'guilds/light-and-shadow')
+                $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt %pet:' . $pet->getId() . '.name%, but %pet:' . $pet->getId() . '.name% was able to calm the spirit! Thankful, the spirit gives %pet:' . $pet->getId() . '.name% ' . $prizeItem->getNameWithArticle() . '.', 'guilds/light-and-shadow')
                     ->addTags($this->petActivityLogTagRepository->findByNames([ 'Guild' ]))
                 ;
                 $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' received this from a grateful Pirate Ghost.', $activityLog);
@@ -911,7 +911,7 @@ class HuntingService
             {
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
 
-                $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt ' . '%pet:' . $pet->getId() . '.name%, but ' . $pet->getName() . ' was able to dispel it (and got its ' . $prize . ')!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt %pet:' . $pet->getId() . '.name%, but %pet:' . $pet->getId() . '.name% was able to dispel it (and got its ' . $prize . ')!', '');
                 $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' collected this from the remains of a Pirate Ghost.', $activityLog);
 
                 $pet
@@ -933,7 +933,7 @@ class HuntingService
                     'jumped into a hollow log'
                 ]);
 
-                $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt ' . '%pet:' . $pet->getId() . '.name%, but ' . $pet->getName() . ' ' . $hidSomehow . ', eluding the ghost!', '')
+                $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt %pet:' . $pet->getId() . '.name%, but %pet:' . $pet->getId() . '.name% ' . $hidSomehow . ', eluding the ghost!', '')
                     ->addTags($this->petActivityLogTagRepository->findByNames([ 'Stealth' ]))
                 ;
 
@@ -946,7 +946,7 @@ class HuntingService
         }
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
-        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out hunting, and got haunted by a Pirate Ghost! After harassing ' . $pet->getName() . ' for a while, the ghost became bored, and left.', '')
+        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out hunting, and got haunted by a Pirate Ghost! After harassing %pet:' . $pet->getId() . '.name% for a while, the ghost became bored, and left.', '')
             ->addTags($this->petActivityLogTagRepository->findByNames([ 'Hunting' ]))
         ;
         $pet->increaseSafety(-3);

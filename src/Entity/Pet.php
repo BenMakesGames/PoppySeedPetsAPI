@@ -368,6 +368,12 @@ class Pet
      */
     private $affectionExpressions;
 
+    /**
+     * @ORM\Column(type="smallint")
+     * @Groups({"myPet"})
+     */
+    private $renamingCharges;
+
     public function __construct()
     {
         $squirrel3 = new Squirrel3();
@@ -1808,6 +1814,18 @@ class Pet
     public function setAffectionExpressions(string $affectionExpressions): self
     {
         $this->affectionExpressions = $affectionExpressions;
+
+        return $this;
+    }
+
+    public function getRenamingCharges(): ?int
+    {
+        return $this->renamingCharges;
+    }
+
+    public function setRenamingCharges(int $renamingCharges): self
+    {
+        $this->renamingCharges = $renamingCharges;
 
         return $this;
     }
