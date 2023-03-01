@@ -372,7 +372,7 @@ class Pet
      * @ORM\Column(type="smallint")
      * @Groups({"myPet"})
      */
-    private $renamingCharges;
+    private $renamingCharges = 0;
 
     public function __construct()
     {
@@ -1818,7 +1818,7 @@ class Pet
         return $this;
     }
 
-    public function getRenamingCharges(): ?int
+    public function getRenamingCharges(): int
     {
         return $this->renamingCharges;
     }
