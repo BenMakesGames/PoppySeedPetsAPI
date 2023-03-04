@@ -169,6 +169,8 @@ class DreamingService
             [ 'a' => 'their own shadow', 'the' => 'their own shadow' ]
         ];
 
+        $petOrMonsterIsPet = $this->squirrel3->rngNextBool();
+
         $this->squirrel3->rngNextShuffle($monsters);
 
         return [
@@ -199,8 +201,8 @@ class DreamingService
             '%A_monster%' => ucfirst($monsters[0]['a']),
             '%the_monster%' => $monsters[0]['the'],
             '%a_wandering_monster%' => $monsters[1]['a'],
-            '%a_pet_or_monster%' => $this->squirrel3->rngNextFromArray([ 'a %pet_adjective% %species%', '%a_monster%' ]),
-            '%A_pet_or_monster%' => $this->squirrel3->rngNextFromArray([ 'A %pet_adjective% %species%', '%A_monster%' ]),
+            '%a_pet_or_monster%' => $petOrMonsterIsPet ? 'a %pet_adjective% %species%' : '%a_monster%',
+            '%A_pet_or_monster%' => $petOrMonsterIsPet ? 'A %pet_adjective% %species%' : '%A_monster%',
             '%plural_stuff%' => $this->squirrel3->rngNextFromArray(self::RANDOM_PLURAL_STUFF),
         ];
     }
