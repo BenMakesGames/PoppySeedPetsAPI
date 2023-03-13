@@ -77,4 +77,33 @@ class MarketListingRepository extends ServiceEntityRepository
 
         $this->_em->persist($newRecord);
     }
+
+    public function findMarketListingForItem(int $itemId, int $bonusId, int $spiceId): ?MarketListing
+    {
+        $qb = $this->createQueryBuilder('ml')
+            ->andWhere('ml.item = :itemId')
+            ->setParameter('itemId', $itemId);
+
+        if($bonusId)
+        {
+            $qb = $qb
+                ->andWhere('ml.enchantment = :bonusId')
+                ->setParameter('bonusId', $bonusId)
+            ;
+        }
+        else
+            $qb->andWhere('ml.enchantment IS NULL');
+
+        if($spiceId)
+        {
+            $qb = $qb
+                ->andWhere('ml.spice = :spiceId')
+                ->setParameter('spiceId', $spiceId)
+            ;
+        }
+        else
+            $qb->andWhere('ml.spice IS NULL');
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
 }

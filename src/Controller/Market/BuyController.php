@@ -116,7 +116,12 @@ class BuyController extends AbstractController
         });
 
         if(count($forSale) === 0)
+        {
+            $marketService->removeMarketListingForItem($itemId, $bonusId, $spiceId);
+            $em->flush();
+
             throw new UnprocessableEntityHttpException('An item for that price could not be found on the market. Someone may have bought it up just before you did! Sorry :| Reload the page to get the latest prices available!');
+        }
 
         /** @var Inventory $itemToBuy */
         $itemToBuy = ArrayFunctions::min($forSale, fn(Inventory $inventory) => $inventory->getSellPrice());

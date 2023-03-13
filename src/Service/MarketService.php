@@ -221,4 +221,14 @@ class MarketService
 
         return true;
     }
+
+    public function removeMarketListingForItem(int $itemId, int $bonusId, int $spiceId)
+    {
+        $item = $this->marketListingRepository->findMarketListingForItem($itemId, $bonusId, $spiceId);
+
+        if(!$item)
+            return;
+
+        $this->em->remove($item);
+    }
 }
