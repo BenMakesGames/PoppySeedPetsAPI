@@ -90,6 +90,10 @@ class GrocerService
         {
             $special = [ 'Jelephant Aminal Crackers', 8 ];
         }
+        else if($this->calendarService->isPiDay())
+        {
+            $special = [ 'Pi Pie', 46 ];
+        }
         else
         {
             $specialIndex = RandomFunctions::squirrel3Noise($day, 78934) % count(self::SPECIALS);
