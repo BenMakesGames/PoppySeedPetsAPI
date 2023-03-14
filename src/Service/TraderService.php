@@ -395,6 +395,16 @@ class TraderService
                 $user,
                 $quantities
             ),
+            TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Short-range Telephone'), 1),
+                    TraderOfferCostOrYield::createMoney(100),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Rotary Phone'), 1) ],
+                'Enjoy the hat!\n\nIt _is_ a hat, right??',
+                $user,
+                $quantities
+            )
         ];
     }
 

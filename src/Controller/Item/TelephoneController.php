@@ -1,0 +1,69 @@
+<?php
+namespace App\Controller\Item;
+
+use App\Entity\Inventory;
+use App\Entity\User;
+use App\Enum\LocationEnum;
+use App\Repository\ItemRepository;
+use App\Repository\UserQuestRepository;
+use App\Repository\UserStatsRepository;
+use App\Service\InventoryService;
+use App\Service\ResponseService;
+use App\Service\Squirrel3;
+use App\Service\TransactionService;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
+/**
+ * @Route("/item/telephone")
+ */
+class TelephoneController extends AbstractController
+{
+    /**
+     * @Route("/{inventory}/pizza", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function pizza(
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        UserQuestRepository $userQuestRepository, TransactionService $transactionService, Squirrel3 $rng,
+        InventoryService $inventoryService
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'telephone/#/pizza');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+
+        $today = (new \DateTimeImmutable())->format('Y-m-d');
+        $orderedDeliveryFood = $userQuestRepository->findOrCreate($user, 'Ordered Delivery Food', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
+
+        if($today === $orderedDeliveryFood->getValue())
+            return $responseService->itemActionSuccess('You can only order delivery food once per day. (More than that is just irresponsible!)');
+
+        $orderedDeliveryFood->setValue($today);
+
+        if($user->getMoneys() < 45)
+            throw new UnprocessableEntityHttpException('You don\'t have enough money to order pizza!');
+
+        $transactionService->spendMoney($user, 45, 'Got delivery pizza');
+
+        $pizzas = $rng->rngNextSubsetFromArray([
+            'Slice of Cheese Pizza',
+            'Slice of Chicken BBQ Pizza',
+            'Slice of Mixed Mushroom Pizza',
+            'Slice of Pineapple Pizza',
+            'Slice of Spicy Calamari Pizza',
+        ], 3);
+
+        sort($pizzas);
+
+        foreach($pizzas as $pizza)
+            $inventoryService->receiveItem($pizza, $user, $user, 'You ordered this pizza over the telephone.', LocationEnum::HOME);
+
+        return $responseService->itemActionSuccess('You ordered some pizza over the telephone. It\'s on its way-- no, wait, it\'s already here! (So speedy and so smart!)');
+    }
+}
