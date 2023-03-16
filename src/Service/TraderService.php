@@ -401,7 +401,7 @@ class TraderService
                     TraderOfferCostOrYield::createMoney(100),
                 ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Rotary Phone'), 1) ],
-                'Enjoy the hat!\n\nIt _is_ a hat, right??',
+                "Enjoy the hat!\n\nIt _is_ a hat, right??",
                 $user,
                 $quantities
             )
