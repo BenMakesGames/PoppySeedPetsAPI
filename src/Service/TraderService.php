@@ -283,6 +283,18 @@ class TraderService
             ),
             TraderOffer::createTradeOffer(
                 [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Chocolate Feather Bonnet'), 1),
+                    TraderOfferCostOrYield::createMoney(5)
+                ],
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('White Chocolate Feather Bonnet'), 1),
+                ],
+                "It's still edible, too! Oh, but did you know there's a bee in there? I think it was a little agitated by the bleaching process, so... eat carefully, I guess is what I'm saying.",
+                $user,
+                $quantities
+            ),
+            TraderOffer::createTradeOffer(
+                [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Black Baabble'), 1),
                     TraderOfferCostOrYield::createRecyclingPoints(25),
                     TraderOfferCostOrYield::createMoney(25),
