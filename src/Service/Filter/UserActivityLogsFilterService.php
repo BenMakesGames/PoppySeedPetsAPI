@@ -2,6 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Repository\UserActivityLogRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 class UserActivityLogsFilterService
@@ -52,5 +53,10 @@ class UserActivityLogsFilterService
             $qb->andWhere('tags.title=:tags');
 
         $qb->setParameter('tags', $value);
+    }
+
+    function applyResultCache(Query $qb, string $cacheKey): Query
+    {
+        return $qb;
     }
 }

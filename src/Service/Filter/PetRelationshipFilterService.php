@@ -2,6 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Repository\PetRelationshipRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 class PetRelationshipFilterService
@@ -40,5 +41,10 @@ class PetRelationshipFilterService
             ->andWhere('r.pet = :pet')
             ->setParameter('pet', $value)
         ;
+    }
+
+    function applyResultCache(Query $qb, string $cacheKey): Query
+    {
+        return $qb;
     }
 }

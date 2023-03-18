@@ -3,6 +3,7 @@ namespace App\Service\Filter;
 
 use App\Entity\User;
 use App\Repository\ParkEventRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 class ParkEventHistoryFilterService
@@ -46,4 +47,8 @@ class ParkEventHistoryFilterService
         $this->user = $user;
     }
 
+    function applyResultCache(Query $qb, string $cacheKey): Query
+    {
+        return $qb;
+    }
 }

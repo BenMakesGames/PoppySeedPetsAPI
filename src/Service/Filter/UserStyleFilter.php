@@ -4,6 +4,7 @@ namespace App\Service\Filter;
 use App\Entity\User;
 use App\Entity\UserStyle;
 use App\Repository\UserStyleRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 class UserStyleFilter
@@ -62,4 +63,8 @@ class UserStyleFilter
         return $qb;
     }
 
+    function applyResultCache(Query $qb, string $cacheKey): Query
+    {
+        return $qb;
+    }
 }

@@ -86,4 +86,9 @@ class UserFilterService
             ;
         }
     }
+
+    function applyResultCache(Query $qb, string $cacheKey): Query
+    {
+        return $qb;
+    }
 }

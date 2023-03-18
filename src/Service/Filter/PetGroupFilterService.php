@@ -3,6 +3,7 @@ namespace App\Service\Filter;
 
 use App\Repository\MuseumItemRepository;
 use App\Repository\PetGroupRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 class PetGroupFilterService
@@ -66,5 +67,10 @@ class PetGroupFilterService
                 ->groupBy('g')
             ;
         }
+    }
+
+    function applyResultCache(Query $qb, string $cacheKey): Query
+    {
+        return $qb;
     }
 }

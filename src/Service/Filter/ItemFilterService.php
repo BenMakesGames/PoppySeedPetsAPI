@@ -6,6 +6,8 @@ use App\Entity\ItemTool;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Repository\ItemRepository;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
@@ -247,5 +249,10 @@ class ItemFilterService
             $qb->andWhere('i.treasure IS NULL');
         else
             $qb->andWhere('i.treasure IS NOT NULL');
+    }
+
+    function applyResultCache(Query $qb, string $cacheKey): AbstractQuery
+    {
+        return $qb->enableResultCache(24 * 60 * 60, self::class . '_' . $cacheKey);
     }
 }

@@ -106,7 +106,7 @@ class Filterer
         else if($lastPage > 0 && $page >= $lastPage)
             $page = $lastPage - 1;
 
-        $paginator->getQuery()
+        $resultQuery = $paginator->getQuery()
             ->setFirstResult($page * $this->pageSize)
             ->setMaxResults($this->pageSize)
         ;
@@ -120,7 +120,10 @@ class Filterer
         $results->pageCount = $lastPage;
         $results->resultCount = $numResults;
         $results->unfilteredTotal = $grandTotal;
-        $results->results = $paginator->getQuery()->execute();
+
+        $resultQuery = $filterService->applyResultCache($resultQuery, Filterer::cacheKey('Results', $page, $orderBy, $orderDir, $filters));
+
+        $results->results = $resultQuery->execute();
 
         $parameters = [];
 
@@ -133,6 +136,11 @@ class Filterer
         ];
 
         return $results;
+    }
+
+    private static function cacheKey(string $prefix, int $page, string $orderBy, string $orderDir, array $filters): string
+    {
+        return sprintf('%s_%d_%s_%s_%s', $prefix, $page, $orderBy, $orderDir, md5(json_encode($filters)));
     }
 
     private function getGrandTotal(QueryBuilder $qb): int

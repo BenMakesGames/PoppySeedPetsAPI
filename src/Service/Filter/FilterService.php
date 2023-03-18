@@ -2,6 +2,8 @@
 namespace App\Service\Filter;
 
 use App\Model\FilterResults;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
@@ -28,4 +30,6 @@ trait FilterService
     }
 
     abstract function createQueryBuilder(): QueryBuilder;
+
+    abstract function applyResultCache(Query $qb, string $cacheKey): AbstractQuery;
 }

@@ -2,6 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Repository\SpiritCompanionRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 class SpiritCompanionFilterService
@@ -29,5 +30,10 @@ class SpiritCompanionFilterService
     public function createQueryBuilder(): QueryBuilder
     {
         return $this->repository->createQueryBuilder('p');
+    }
+
+    function applyResultCache(Query $qb, string $cacheKey): Query
+    {
+        return $qb;
     }
 }

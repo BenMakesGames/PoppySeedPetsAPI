@@ -2,6 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Repository\UserLetterRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 class UserLetterFilterService
@@ -40,5 +41,10 @@ class UserLetterFilterService
             ->andWhere('l.user = :userId')
             ->setParameter('userId', $value)
         ;
+    }
+
+    function applyResultCache(Query $qb, string $cacheKey): Query
+    {
+        return $qb;
     }
 }

@@ -2,6 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Repository\PetRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 class PetFilterService
@@ -83,5 +84,10 @@ class PetFilterService
             ->andWhere('guildMembership.guild=:guild')
             ->setParameter('guild', $value)
         ;
+    }
+
+    function applyResultCache(Query $qb, string $cacheKey): Query
+    {
+        return $qb;
     }
 }

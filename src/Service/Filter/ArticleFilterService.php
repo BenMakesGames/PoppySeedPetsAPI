@@ -2,6 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Repository\ArticleRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 class ArticleFilterService
@@ -41,5 +42,10 @@ class ArticleFilterService
             ->andWhere('designGoals.id=:designGoal')
             ->setParameter('designGoal', $value)
         ;
+    }
+
+    function applyResultCache(Query $qb, string $cacheKey): Query
+    {
+        return $qb; // TODO: enable caching, but clear the cache when an article is created or updated
     }
 }

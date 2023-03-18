@@ -3,6 +3,7 @@ namespace App\Service\Filter;
 
 use App\Entity\User;
 use App\Repository\PetSpeciesRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 class PetSpeciesFilterService
@@ -81,5 +82,10 @@ class PetSpeciesFilterService
             $qb->andWhere('(s.id<=16 OR s.availableFromBreeding=1 OR s.availableFromPetShelter=1)');
         else
             $qb->andWhere('s.id>16 AND s.availableFromBreeding=0 AND s.availableFromPetShelter=0');
+    }
+
+    function applyResultCache(Query $qb, string $cacheKey): Query
+    {
+        return $qb;
     }
 }

@@ -2,6 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Repository\UserFieldGuideEntryRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 class UserFieldGuideEntryFilterService
@@ -59,5 +60,10 @@ class UserFieldGuideEntryFilterService
             ->andWhere('entry.type = :entryType')
             ->setParameter('entryType', $value)
         ;
+    }
+
+    function applyResultCache(Query $qb, string $cacheKey): Query
+    {
+        return $qb;
     }
 }

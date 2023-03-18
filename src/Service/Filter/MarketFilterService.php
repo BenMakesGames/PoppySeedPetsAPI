@@ -5,6 +5,7 @@ use App\Entity\ItemTool;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Repository\MarketListingRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 class MarketFilterService
@@ -237,5 +238,10 @@ class MarketFilterService
             $qb->andWhere('item.treasure IS NULL');
         else
             $qb->andWhere('item.treasure IS NOT NULL');
+    }
+
+    function applyResultCache(Query $qb, string $cacheKey): Query
+    {
+        return $qb;
     }
 }

@@ -2,6 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Repository\PetActivityLogRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -87,5 +88,10 @@ class PetActivityLogsFilterService
             $qb->andWhere('tags.title=:tags');
 
         $qb->setParameter('tags', $value);
+    }
+
+    function applyResultCache(Query $qb, string $cacheKey): Query
+    {
+        return $qb;
     }
 }

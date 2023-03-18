@@ -56,4 +56,9 @@ class KnownRecipesFilterService
             ->setParameter('nameLike', '%' . $value . '%')
         ;
     }
+
+    function applyResultCache(Query $qb, string $cacheKey): Query
+    {
+        return $qb;
+    }
 }

@@ -2,6 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Repository\MeritRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 class MeritFilterService
@@ -29,5 +30,10 @@ class MeritFilterService
     public function createQueryBuilder(): QueryBuilder
     {
         return $this->repository->createQueryBuilder('m');
+    }
+
+    function applyResultCache(Query $qb, string $cacheKey): Query
+    {
+        return $qb;
     }
 }

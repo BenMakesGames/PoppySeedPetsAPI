@@ -2,6 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Repository\MuseumItemRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 class MuseumFilterService
@@ -41,5 +42,10 @@ class MuseumFilterService
             ->andWhere('m.user = :userId')
             ->setParameter('userId', $value)
         ;
+    }
+
+    function applyResultCache(Query $qb, string $cacheKey): Query
+    {
+        return $qb;
     }
 }

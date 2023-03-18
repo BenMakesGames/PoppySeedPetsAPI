@@ -2,6 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Repository\MonthlyStoryAdventureRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 class MonthlyStoryAdventureFilterService
@@ -29,5 +30,10 @@ class MonthlyStoryAdventureFilterService
     public function createQueryBuilder(): QueryBuilder
     {
         return $this->repository->createQueryBuilder('a');
+    }
+
+    function applyResultCache(Query $qb, string $cacheKey): Query
+    {
+        return $qb;
     }
 }
