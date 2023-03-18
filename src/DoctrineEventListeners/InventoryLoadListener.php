@@ -19,6 +19,9 @@ class InventoryLoadListener
     {
         $itemProxy = $inventory->getItem();
 
+        if(!$itemProxy instanceof \Doctrine\ORM\Proxy\Proxy)
+            return;
+
         // Check if the Item proxy is already initialized
         if ($itemProxy->__isInitialized()) {
             return;
