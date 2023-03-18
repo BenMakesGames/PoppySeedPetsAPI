@@ -52,3 +52,9 @@ services:
             $apiClientSecret: '%env(REDDIT_API_CLIENT_SECRET)%'
             $username: '%env(REDDIT_API_USERNAME)%'
             $password: '%env(REDDIT_API_PASSWORD)%'
+
+    App\DoctrineEventListeners\InventoryLoadListener:
+      arguments:
+        - '@doctrine.orm.default_entity_manager'
+      tags:
+        - { name: 'doctrine.orm.entity_listener', event: 'postLoad', entity: 'App\Entity\Inventory' }
