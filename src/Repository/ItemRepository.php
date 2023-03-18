@@ -24,7 +24,12 @@ class ItemRepository extends ServiceEntityRepository
 
     public function findOneByName(string $itemName): Item
     {
-        $item = $this->findOneBy([ 'name' => $itemName ]);
+        $item = $this->createQueryBuilder('i')
+            ->where('i.name=:name')
+            ->setParameter('name', $itemName)
+            ->getQuery()
+            ->enableResultCache(24 * 60 * 60, 'ItemRepository_FindOneByName_' . $itemName)
+            ->getSingleResult();
 
         if(!$item) throw new \InvalidArgumentException('There is no item called ' . $itemName . '.');
 
@@ -38,6 +43,7 @@ class ItemRepository extends ServiceEntityRepository
             ->where('i.name=:name')
             ->setParameter('name', $itemName)
             ->getQuery()
+            ->enableResultCache(24 * 60 * 60, 'ItemRepository_GetIdByName_' . $itemName)
             ->getSingleScalarResult();
 
         if(!$itemId)
