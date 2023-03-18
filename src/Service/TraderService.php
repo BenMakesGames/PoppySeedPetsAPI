@@ -284,7 +284,7 @@ class TraderService
             TraderOffer::createTradeOffer(
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Chocolate Feather Bonnet'), 1),
-                    TraderOfferCostOrYield::createMoney(5)
+                    TraderOfferCostOrYield::createMoney(100)
                 ],
                 [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('White Chocolate Feather Bonnet'), 1),
