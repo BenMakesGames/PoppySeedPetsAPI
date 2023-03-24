@@ -34,6 +34,7 @@ class CandyMakersCookbookController extends AbstractController
 
 #### Recipes
 
+* Candied Lotus Petals
 * Chocolates
 * Everybeans
 * Hard Fruit Candies
@@ -87,6 +88,15 @@ Quick method:
 4. Dries instantly, because reasons; don\'t worry about it
 
 ## Recipes
+
+#### Candied Lotus Petals
+
+A floral treat for your pets!
+
+Combine:
+* Egg
+* Sugar
+* Lotus Flower
 
 #### Chocolates
 
