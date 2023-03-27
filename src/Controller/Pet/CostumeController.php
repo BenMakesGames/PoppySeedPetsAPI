@@ -2,7 +2,10 @@
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
+use App\Entity\User;
+use App\Functions\ActivityHelpers;
 use App\Functions\ProfanityFilterFunctions;
+use App\Service\FieldGuideService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,6 +28,7 @@ class CostumeController extends AbstractController
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())

@@ -4,7 +4,6 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\FieldGuideEntryRepository;
-use App\Service\Filter\MuseumFilterService;
 use App\Service\Filter\UserFieldGuideEntryFilterService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

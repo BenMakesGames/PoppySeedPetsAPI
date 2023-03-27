@@ -120,7 +120,7 @@ class TraderController extends AbstractController
             }
         }
 
-        $fieldGuideService->maybeUnlock($user, 'Tell Samarzhoustia', 'You made an exchange with a trader from Tell Samarzhoustia.');
+        $fieldGuideService->maybeUnlock($user, 'Tell Samarzhoustia', '%user:' . $user->getId() . '.Name% made an exchange with a trader from Tell Samarzhoustia.');
 
         $em->flush();
 

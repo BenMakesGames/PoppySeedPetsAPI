@@ -12,6 +12,7 @@ use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
 use App\Service\CalendarService;
+use App\Service\FieldGuideService;
 use App\Service\PetActivity\EatingService;
 use App\Service\Holidays\HalloweenService;
 use App\Service\ResponseService;
@@ -99,7 +100,7 @@ class HalloweenController extends AbstractController
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
         Request $request, InventoryRepository $inventoryRepository, CalendarService $calendarService,
         UserRepository $userRepository, Squirrel3 $squirrel3, EatingService $eatingService,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        PetActivityLogTagRepository $petActivityLogTagRepository, FieldGuideService $fieldGuideService
     )
     {
         /** @var User $user */
@@ -198,6 +199,8 @@ class HalloweenController extends AbstractController
                 $responseService->addFlashMessage($trickOrTreater->getName() . ' happily takes the candy and heads off to the next house.');
             }
         }
+
+        $fieldGuideService->maybeUnlock($user, 'Trick-or-treating', 'After giving candy to trick-or-treaters, %user:' . $user->getId() . '.Name% found this just outside their front door...');
 
         $em->flush();
 
