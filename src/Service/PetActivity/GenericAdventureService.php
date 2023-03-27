@@ -19,6 +19,7 @@ use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\DragonHostageService;
+use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -48,14 +49,17 @@ class GenericAdventureService
     private DragonHostageService $dragonHostageService;
     private EntityManagerInterface $em;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private FieldGuideService $fieldGuideService;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        UserQuestRepository $userQuestRepository, TransactionService $transactionService, MeritRepository $meritRepository,
-        ItemRepository $itemRepository, Squirrel3 $squirrel3, SpiceRepository $spiceRepository,
-        WeatherService $weatherService, EnchantmentRepository $enchantmentRepository, HattierService $hattierService,
-        UserBirthdayService $userBirthdayService, DragonRepository $dragonRepository, DragonHostageService $dragonHostageService,
-        EntityManagerInterface $em, PetActivityLogTagRepository $petActivityLogTagRepository
+        ResponseService $responseService, InventoryService $inventoryService,
+        PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
+        TransactionService $transactionService, MeritRepository $meritRepository, ItemRepository $itemRepository,
+        Squirrel3 $squirrel3, SpiceRepository $spiceRepository, WeatherService $weatherService,
+        EnchantmentRepository $enchantmentRepository, HattierService $hattierService,
+        UserBirthdayService $userBirthdayService, DragonRepository $dragonRepository,
+        DragonHostageService $dragonHostageService, EntityManagerInterface $em,
+        PetActivityLogTagRepository $petActivityLogTagRepository, FieldGuideService $fieldGuideService
     )
     {
         $this->responseService = $responseService;
@@ -75,6 +79,7 @@ class GenericAdventureService
         $this->dragonHostageService = $dragonHostageService;
         $this->em = $em;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->fieldGuideService = $fieldGuideService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -339,6 +344,8 @@ class GenericAdventureService
             ;
 
             $pet->setHat($paperHat);
+
+            $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Tell Samarzhoustia', 'Your pet received a Paper Boat from a Tell Samarzhoustian representative.');
         }
 
         $message = 'While walking along a riverbank, ' . ActivityHelpers::PetName($pet) . ' was showered with confetti' . $givenAHat . '! A fish (apparently a representative from Tell Samarazhoustia) wished them a happy birthday... it\'s a little late, but still nice...? It would have been nicer if the fish didn\'t also remind ' . ActivityHelpers::PetName($pet) . ' to visit the Trader often...';
