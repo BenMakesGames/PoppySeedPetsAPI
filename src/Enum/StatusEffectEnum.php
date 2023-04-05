@@ -19,6 +19,7 @@ final class StatusEffectEnum
     public const ANTI_GRAVD = 'Anti-grav\'d';
     public const OIL_COVERED = 'Oil-covered';
     public const BUBBLEGUMD = 'Bubblegum\'d';
+    public const LAPINE_WHISPERS = 'Attuned to Lapine Whispers';
     public const WEREFORM = 'Wereform';
     public const VIVACIOUS = 'Vivacious';
     public const FRUIT_CLOBBERING = 'Fruit-clobbering';
