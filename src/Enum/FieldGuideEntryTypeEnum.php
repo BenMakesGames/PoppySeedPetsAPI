@@ -9,4 +9,5 @@ class FieldGuideEntryTypeEnum
     public const PLANT = 'plant';
     public const CELESTIAL = 'celestial';
     public const LOCATION = 'location';
+    public const CEREMONY = 'ceremony';
 }

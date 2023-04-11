@@ -3,7 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Functions\ArrayFunctions;
+use App\Entity\User;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -30,6 +30,9 @@ class PlasticEggController extends AbstractController
         'Red Gummies',
         'Yellow Gummies',
         'Chocolate Bar',
+        'Chocolate Bunny',
+        'Dark Chocolate Bunny',
+        'Marshmallow Bulbun',
     ];
 
     /**
@@ -44,6 +47,7 @@ class PlasticEggController extends AbstractController
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'plasticEgg/#/open');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
+        /** @var User $user */
         $user = $this->getUser();
 
         switch($inventory->getItem()->getName())

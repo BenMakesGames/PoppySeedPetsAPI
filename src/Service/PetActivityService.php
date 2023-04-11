@@ -413,6 +413,15 @@ class PetActivityService
             return;
         }
 
+        if($pet->hasStatusEffect(StatusEffectEnum::LAPINE_WHISPERS) && $this->squirrel3->rngNextInt(1, 2) === 1)
+        {
+            $changes = new PetChanges($pet);
+            $activityLog = $this->umbraService->speakToBunnySpirit($pet);
+            $activityLog->setChanges($changes->compare($pet));
+            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::LAPINE_WHISPERS));
+            return;
+        }
+
         if($pet->hasStatusEffect(StatusEffectEnum::ONEIRIC) && $this->squirrel3->rngNextInt(1, 2) === 1)
         {
             $this->dreamingService->dream($pet);

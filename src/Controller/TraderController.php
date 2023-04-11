@@ -6,6 +6,7 @@ use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\TraderRepository;
 use App\Repository\UserQuestRepository;
+use App\Service\FieldGuideService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -67,7 +68,8 @@ class TraderController extends AbstractController
      */
     public function makeExchange(
         string $id, TraderService $traderService, ResponseService $responseService, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository, InventoryService $inventoryService, Request $request
+        UserQuestRepository $userQuestRepository, InventoryService $inventoryService, Request $request,
+        FieldGuideService $fieldGuideService
     )
     {
         /** @var User $user */
@@ -117,6 +119,8 @@ class TraderController extends AbstractController
                 $message = 'Oh, and here, have a Behatting Scroll. It\'ll come in handy for Halloween, trust me!';
             }
         }
+
+        $fieldGuideService->maybeUnlock($user, 'Tell Samarzhoustia', '%user:' . $user->getId() . '.Name% made an exchange with a trader from Tell Samarzhoustia.');
 
         $em->flush();
 

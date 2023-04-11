@@ -1071,4 +1071,16 @@ class UmbraService
 
         return $activityLog;
     }
+
+    public function speakToBunnySpirit(Pet $pet): PetActivityLog
+    {
+        $activityLog = $this->responseService->createActivityLog($pet, 'A rabbit spirit visited %pet:' . $pet->getId() . '.name%, and the two talked for a while, about this world, and the other...', '')
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra' ]))
+        ;
+        $this->petExperienceService->gainExp($pet, 10, [ PetSkillEnum::UMBRA, PetSkillEnum::NATURE ]);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+
+        return $activityLog;
+
+    }
 }
