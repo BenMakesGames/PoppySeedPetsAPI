@@ -29,7 +29,7 @@ class ItemRepository extends ServiceEntityRepository
             ->setParameter('name', $itemName)
             ->getQuery()
             ->enableResultCache(24 * 60 * 60, 'ItemRepository_FindOneByName_' . $itemName)
-            ->getSingleResult();
+            ->getOneOrNullResult();
 
         if(!$item) throw new \InvalidArgumentException('There is no item called ' . $itemName . '.');
 
