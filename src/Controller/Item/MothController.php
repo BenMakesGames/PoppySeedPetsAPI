@@ -103,7 +103,7 @@ class MothController extends AbstractController
             'owner' => $user,
             'item' => $mothItem,
             'location' => $mothLocation
-        ]);
+        ], [], $mothCount);
 
         if(count($moths) != $mothCount)
             throw new UnprocessableEntityHttpException('You do not have that many moths to release!');
