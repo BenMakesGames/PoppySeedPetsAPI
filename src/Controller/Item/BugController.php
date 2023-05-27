@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
@@ -41,6 +42,7 @@ class BugController extends AbstractController
         EntityManagerInterface $em, UserQuestRepository $userQuestRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'bug/#/squish');
@@ -68,6 +70,7 @@ class BugController extends AbstractController
         EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'bug/#/putOutside');
@@ -92,6 +95,7 @@ class BugController extends AbstractController
         InventoryService $inventoryService, ItemRepository $itemRepository, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'feedBug');
@@ -190,6 +194,7 @@ class BugController extends AbstractController
         PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'bug/#/adopt');
@@ -282,6 +287,7 @@ class BugController extends AbstractController
         ResponseService $responseService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'bug/#/squish');

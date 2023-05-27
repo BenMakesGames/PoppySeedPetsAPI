@@ -35,4 +35,5 @@ final class StatusEffectEnum
     public const FOCUSED_UMBRA = 'Focused (Umbra)';
     public const GLITTER_BOMBED = 'Glitter-bombed';
     public const RAWR = 'Rawr!';
+    public const MOONSTRUCK = 'Moonstruck';
 }

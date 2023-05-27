@@ -164,7 +164,7 @@ class PetExperienceService
 
     public function spendSocialEnergy(Pet $pet, int $energy)
     {
-        if($pet->hasStatusEffect(StatusEffectEnum::EXTRA_EXTROVERTED))
+        if($pet->hasStatusEffect(StatusEffectEnum::EXTRA_EXTROVERTED) || $pet->hasStatusEffect(StatusEffectEnum::MOONSTRUCK))
             $energy = ceil($energy / 2);
 
         if($this->squirrel3->rngNextInt(1, 10) === 1)

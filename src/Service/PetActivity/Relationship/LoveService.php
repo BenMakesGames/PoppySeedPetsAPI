@@ -7,6 +7,7 @@ use App\Entity\PetSkills;
 use App\Enum\LoveLanguageEnum;
 use App\Enum\MeritEnum;
 use App\Enum\RelationshipEnum;
+use App\Enum\StatusEffectEnum;
 use App\Model\ComputedPetSkills;
 use App\Service\PetActivity\PregnancyService;
 use App\Service\Squirrel3;
@@ -218,6 +219,9 @@ class LoveService
             return 0;
 
         $totalDrive = $p1->getComputedSkills()->getSexDrive()->getTotal() + $p2->getComputedSkills()->getSexDrive()->getTotal();
+
+        if($p1->hasStatusEffect(StatusEffectEnum::MOONSTRUCK)) $totalDrive += 2;
+        if($p2->hasStatusEffect(StatusEffectEnum::MOONSTRUCK)) $totalDrive += 2;
 
         switch($relationshipType)
         {
