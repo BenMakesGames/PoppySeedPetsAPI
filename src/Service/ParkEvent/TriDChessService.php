@@ -286,22 +286,24 @@ class TriDChessService implements ParkEventInterface
                 $this->results .= $participant->pet->getName() . ' got 2nd place, and ' . $secondPlaceMoneys . '~~m~~!';
             }
 
-            $this->petExperienceService->gainExp(
-                $participant->pet,
-                $expGain,
-                [ PetSkillEnum::SCIENCE ]
-            );
-
             $participant->pet->increaseEsteem(2 * $wins);
 
             $log = (new PetActivityLog())
                 ->setPet($participant->pet)
                 ->setEntry($activityLogEntry)
-                ->setChanges($state->compare($participant->pet))
                 ->setIcon('icons/activity-logs/park')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Park Event', 'Tri-D Chess' ]))
             ;
+
+            $this->petExperienceService->gainExp(
+                $participant->pet,
+                $expGain,
+                [ PetSkillEnum::SCIENCE ],
+                $log
+            );
+
+            $log->setChanges($state->compare($participant->pet));
 
             $this->em->persist($log);
 

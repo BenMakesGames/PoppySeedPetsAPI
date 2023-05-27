@@ -102,11 +102,18 @@ class PetSummonedAwayService
             ;
         }
 
-        $this->petExperienceService->gainExp($pet, $this->squirrel3->rngNextInt(1, 3), [ PetSkillEnum::BRAWL, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
-
-        return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')
+        $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')
             ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
         ;
+
+        $this->petExperienceService->gainExp(
+            $pet,
+            $this->squirrel3->rngNextInt(1, 3),
+            [ PetSkillEnum::BRAWL, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ],
+            $activityLog
+        );
+
+        return $activityLog;
     }
 
     private function doSummonedToCleanAndHost(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -156,7 +163,7 @@ class PetSummonedAwayService
         $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' was summoned by a wizard to ' . $activity . '; they returned home with this!', $activityLog);
 
         if($skill !== null)
-            $this->petExperienceService->gainExp($pet, $this->squirrel3->rngNextInt(1, 2), [ $skill ]);
+            $this->petExperienceService->gainExp($pet, $this->squirrel3->rngNextInt(1, 2), [ $skill ], $activityLog);
 
         return $activityLog;
 
@@ -213,7 +220,7 @@ class PetSummonedAwayService
             ->addTags($this->petActivityLogTagRepository->findByNames($tags))
         ;
 
-        $this->petExperienceService->gainExp($pet, $this->squirrel3->rngNextInt(1, 2), [ $skill ]);
+        $this->petExperienceService->gainExp($pet, $this->squirrel3->rngNextInt(1, 2), [ $skill ], $activityLog);
 
         return $activityLog;
     }

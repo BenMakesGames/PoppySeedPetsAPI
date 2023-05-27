@@ -133,8 +133,6 @@ class HouseMonsterService
 
         foreach($petsAtHome as $pet)
         {
-            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ]);
-
             if($won)
             {
                 $pet
@@ -181,8 +179,6 @@ class HouseMonsterService
 
         foreach($petsAtHome as $pet)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(5, 15), PetActivityStatEnum::HUNT, $won);
-
             $changes = $petChanges[$pet->getId()]->compare($pet);
 
             $tags = [ 'Fighting' ];
@@ -193,10 +189,14 @@ class HouseMonsterService
             $activityLog = (new PetActivityLog())
                 ->setPet($pet)
                 ->setEntry($result)
-                ->setChanges($changes)
                 ->setViewed()
                 ->addTags($this->petActivityLogTagRepository->findByNames($tags))
             ;
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(5, 15), PetActivityStatEnum::HUNT, $won);
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $activityLog);
+
+            $activityLog->setChanges($changes);
 
             $this->em->persist($activityLog);
         }

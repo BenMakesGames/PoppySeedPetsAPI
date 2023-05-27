@@ -185,9 +185,10 @@ class GatheringHolidayAdventureService
         }
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, $numItems > 0);
-        $this->petExperienceService->gainExp($pet, $experience, [ PetSkillEnum::NATURE ]);
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, '');
+
+        $this->petExperienceService->gainExp($pet, $experience, [ PetSkillEnum::NATURE ], $activityLog);
 
         if($holiday === GatheringHolidayEnum::EASTER)
         {
@@ -265,11 +266,12 @@ class GatheringHolidayAdventureService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
 
             $pet->increaseEsteem($level);
-            $this->petExperienceService->gainExp($pet, $level, [ PetSkillEnum::BRAWL ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by some kind of ' . $adjective . ', fish-rabbit hybrid thing, but was able to defeat it!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $level * 3)
             ;
+
+            $this->petExperienceService->gainExp($pet, $level, [ PetSkillEnum::BRAWL ], $activityLog);
 
             $newItem = $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated some kind of ' . $adjective . ', fish-rabbit hybrid thing, and got this!', $activityLog);
 
@@ -290,9 +292,10 @@ class GatheringHolidayAdventureService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
 
             $pet->increaseSafety(-$level);
-            $this->petExperienceService->gainExp($pet, ceil($level / 2), [ PetSkillEnum::BRAWL ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by some kind of ' . $adjective . ', fish-rabbit hybrid thing! ' . $pet->getName() . ' couldn\'t land a single attack, and ran away!', '');
+
+            $this->petExperienceService->gainExp($pet, ceil($level / 2), [ PetSkillEnum::BRAWL ], $activityLog);
 
             return $activityLog;
         }

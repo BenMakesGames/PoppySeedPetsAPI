@@ -75,24 +75,24 @@ class TreasureMapService
 
         if($followMapCheck < 14)
         {
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to follow Cetgueli\'s Treasure Map, but kept getting lost. (They\'re sure they\'re making progress, though!)', 'icons/activity-logs/confused')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering', 'Adventure!' ]))
             ;
             $pet->increaseEsteem(-1);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 90), PetActivityStatEnum::GATHER, false);
         }
         else
         {
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE ]);
-            $pet->increaseEsteem(5);
-
             $prize = 'Outrageously Strongbox';
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% followed Cetgueli\'s Treasure Map, and found a ' . $prize . '! (Also, the map was lost, because video games.)', 'items/map/cetgueli')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering', 'Adventure!' ]))
             ;
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE ], $activityLog);
+            $pet->increaseEsteem(5);
 
             $this->em->remove($pet->getTool());
             $pet->setTool(null);
@@ -154,7 +154,7 @@ class TreasureMapService
 
         $pet->getOwner()->setUnlockedBulkSelling();
 
-        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ] );
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
         $this->petExperienceService->spendTime($pet, 120, PetActivityStatEnum::OTHER, null);
 
         $activityLog->setChanges($changes->compare($pet));
@@ -176,7 +176,7 @@ class TreasureMapService
         if($floor === 1)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% took their ' . $keybladeName . ' to the Tower of Trials, but couldn\'t even get past the first floor...', '');
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
             $pet
                 ->increaseEsteem(-2)
                 ->increaseFood(-1)
@@ -185,7 +185,7 @@ class TreasureMapService
         else if($floor < 25)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% took their ' . $keybladeName . ' to the Tower of Trials, but had to retreat after only the ' . GrammarFunctions::ordinalize($floor) . ' floor.', '');
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
             $pet
                 ->increaseFood(-2)
             ;
@@ -193,7 +193,7 @@ class TreasureMapService
         else if($floor < 50)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% took their ' . $keybladeName . ' to the Tower of Trials, but got tired and had to quit after the ' . GrammarFunctions::ordinalize($floor) . ' floor.', '');
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
             $pet
                 ->increaseFood(-3)
             ;
@@ -201,7 +201,7 @@ class TreasureMapService
         else if($floor < 75)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% took their ' . $keybladeName . ' to the Tower of Trials, and got as far as the ' . GrammarFunctions::ordinalize($floor) . ' floor before they had to quit. (Not bad!)', '');
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
             $pet
                 ->increaseFood(-4)
                 ->increaseEsteem(2)
@@ -210,7 +210,7 @@ class TreasureMapService
         else if($floor < 100)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% took their ' . $keybladeName . ' to the Tower of Trials, and got all the way to the ' . GrammarFunctions::ordinalize($floor) . ' floor, but couldn\'t get any further. (Pretty good, though!)', '');
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ], $activityLog);
             $pet
                 ->increaseFood(-5)
                 ->increaseEsteem(3)
@@ -219,7 +219,7 @@ class TreasureMapService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% took their ' . $keybladeName . ' to the Tower of Trials, and beat the 100th floor! They plunged the keyblade into the pedestal, unlocking the door to the treasure room, and claimed a Tower Chest!', '');
-            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::BRAWL ], $activityLog);
             $pet
                 ->increaseFood(-6)
                 ->increaseEsteem(5)
@@ -247,13 +247,12 @@ class TreasureMapService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-
         if($pet->getTool()->isGrayscaling())
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a Leprechaun approached them... but upon seeing %pet:' . $pet->getId() . '.name%\'s pale visage, fled screaming into the woods! (Oops!) %pet:' . $pet->getId() . '.name% put their ' . $pet->getTool()->getFullItemName() . ' down...', '')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fae-kind', 'Adventure!' ]))
             ;
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
             EquipmentFunctions::unequipPet($pet);
             return $activityLog;
         }
@@ -271,6 +270,7 @@ class TreasureMapService
         $this->em->remove($pet->getTool());
         $pet->setTool($newInventory);
 
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         return $activityLog;
@@ -278,7 +278,6 @@ class TreasureMapService
 
     public function doEggplantCurse(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
 
         $agk = $this->squirrel3->rngNextFromArray([ 'Agk!', 'Oh dang!', 'Noooo!', 'Quel dommage!', 'Welp!' ]);
@@ -288,6 +287,7 @@ class TreasureMapService
             ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
         ;
 
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
         $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::EGGPLANT_CURSED, $this->squirrel3->rngNextInt(24, 48) * 60);
 
         $pet
@@ -311,7 +311,6 @@ class TreasureMapService
             '"Acorn Fugu"'
         ]);
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ]);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
         
         $tags = [ 'Adventure!' ];
@@ -328,6 +327,7 @@ class TreasureMapService
             $pet->increaseLove(4);
         }
 
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ], $activityLog);
         $activityLog->addTags($this->petActivityLogTagRepository->findByNames($tags));
         
         return $activityLog;
@@ -348,8 +348,6 @@ class TreasureMapService
             return $activityLog;
         }
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
-
         $this->em->remove($pet->getTool());
         $pet->setTool(null);
 
@@ -363,6 +361,7 @@ class TreasureMapService
         ;
         $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this in Project-E by using a Diffie-H Key.', $activityLog);
 
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;

@@ -446,18 +446,20 @@ class JoustingService implements ParkEventInterface
             $this->inventoryService->petCollectsItem('Jousting Silver Trophy', $pet, $comment, null);
         }
 
-        $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ]);
-
         $pet->increaseEsteem(2 * $team->wins);
 
         $log = (new PetActivityLog())
             ->setPet($pet)
             ->setEntry($log)
-            ->setChanges($changes->compare($pet))
             ->setIcon('icons/activity-logs/park')
             ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
             ->addTags($this->petActivityLogTagRepository->findByNames([ 'Park Event', 'Jousting' ]))
         ;
+
+        $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $log);
+
+        $log->setChanges($changes->compare($pet));
+
 
         $this->em->persist($log);
 

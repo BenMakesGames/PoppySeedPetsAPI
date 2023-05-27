@@ -315,8 +315,6 @@ class HeartDimensionService
 
         $doIt = ArrayFunctions::max($stats, fn($v) => $v['value']);
 
-        $this->petExperienceService->gainExp($pet, 3, [ $doIt['stat'] ]);
-
         $message = $pet->getName() . ' saw their cursed reflection in a cracked mirror! ' . $doIt['message'];
 
         $pet
@@ -324,9 +322,13 @@ class HeartDimensionService
             ->incrementAffectionAdventures()
         ;
 
-        return $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/heart-dimension')
+        $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/heart-dimension')
             ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heart Dimension' ]))
         ;
+
+        $this->petExperienceService->gainExp($pet, 3, [ $doIt['stat'] ], $activityLog);
+
+        return $activityLog;
     }
 
     private function unlockTransformingAHeartstone(Pet $pet): PetActivityLog

@@ -203,10 +203,12 @@ class GuildService
 
         $member->increaseReputation();
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+        $activityLog = $this->responseService->createActivityLog($pet, $message, '');
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
-        return $this->responseService->createActivityLog($pet, $message, '');
+        return $activityLog;
     }
 
     private function doLightAndShadowMission(Pet $pet): PetActivityLog
@@ -221,10 +223,12 @@ class GuildService
 
         $member->increaseReputation();
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+        $activityLog = $this->responseService->createActivityLog($pet, $message, '');
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
-        return $this->responseService->createActivityLog($pet, $message, '');
+        return $activityLog;
     }
 
     private function doTapestriesMission(Pet $pet): PetActivityLog
@@ -239,10 +243,12 @@ class GuildService
 
         $member->increaseReputation();
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+        $activityLog = $this->responseService->createActivityLog($pet, $message, '');
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
-        return $this->responseService->createActivityLog($pet, $message, '');
+        return $activityLog;
     }
 
     private function doInnerSanctumMission(Pet $pet): PetActivityLog
@@ -282,8 +288,6 @@ class GuildService
                     $this->statusEffectService->applyStatusEffect($pet, $effectToGive['effect'], $effectToGive['duration']);
                 }
             }
-
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::getRandomValue($this->squirrel3) ]);
         }
         else
         {
@@ -291,15 +295,17 @@ class GuildService
                 '%pet:' . $pet->getId() . '.name% ' . $this->squirrel3->rngNextFromArray([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
                 '%pet:' . $pet->getId() . '.name% had a minor philosophical debate with a senior ' . $member->getGuild()->getName() . ' member.'
             ]);
-
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::getRandomValue($this->squirrel3) ]);
         }
 
         $member->increaseReputation();
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
-        return $this->responseService->createActivityLog($pet, $message, '');
+        $activityLog = $this->responseService->createActivityLog($pet, $message, '');
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::getRandomValue($this->squirrel3) ]);
+
+        return $activityLog;
     }
 
     private function doDwarfcraftMission(Pet $pet): PetActivityLog
@@ -314,10 +320,12 @@ class GuildService
 
         $member->increaseReputation();
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ]);
+        $activityLog = $this->responseService->createActivityLog($pet, $message, '');
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
-        return $this->responseService->createActivityLog($pet, $message, '');
+        return $activityLog;
     }
 
     private function doHighImpactMission(Pet $pet): ?PetActivityLog
@@ -336,10 +344,12 @@ class GuildService
 
         $member->increaseReputation();
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ]);
+        $activityLog = $this->responseService->createActivityLog($pet, $message, '');
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
-        return $this->responseService->createActivityLog($pet, $message, '');
+        return $activityLog;
     }
 
     private function doTheUniverseForgetsMission(Pet $pet): PetActivityLog
@@ -354,10 +364,12 @@ class GuildService
 
         $member->increaseReputation();
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+        $activityLog = $this->responseService->createActivityLog($pet, $message, '');
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
-        return $this->responseService->createActivityLog($pet, $message, '');
+        return $activityLog;
     }
 
     private function doCorrespondenceMission(Pet $pet): ?PetActivityLog
@@ -376,9 +388,11 @@ class GuildService
 
         $member->increaseReputation();
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ]);
+        $activityLog = $this->responseService->createActivityLog($pet, $message, '');
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
-        return $this->responseService->createActivityLog($pet, $message, '');
+        return $activityLog;
     }
 }

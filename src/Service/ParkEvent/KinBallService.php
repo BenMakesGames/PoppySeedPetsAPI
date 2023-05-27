@@ -220,12 +220,6 @@ class KinBallService implements ParkEventInterface
                 else
                     $activityLogEntry = $participant->pet->getName() . ' played a game of Kin-Ball. ' . $participant->pet->getName() . ' wasn\'t on the winning team, but it was still a good game!';
 
-                $this->petExperienceService->gainExp(
-                    $participant->pet,
-                    $expGain,
-                    [ PetSkillEnum::BRAWL ]
-                );
-
                 $participant->pet->increaseSafety(3);
                 $participant->pet->increaseLove(3);
                 $participant->pet->increaseEsteem(3);
@@ -233,11 +227,19 @@ class KinBallService implements ParkEventInterface
                 $log = (new PetActivityLog())
                     ->setPet($participant->pet)
                     ->setEntry($activityLogEntry)
-                    ->setChanges($state->compare($participant->pet))
                     ->setIcon('icons/activity-logs/park')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
                     ->addTags($this->petActivityLogTagRepository->findByNames([ 'Park Event', 'Kin-ball' ]))
                 ;
+
+                $this->petExperienceService->gainExp(
+                    $participant->pet,
+                    $expGain,
+                    [ PetSkillEnum::BRAWL ],
+                    $log
+                );
+
+                $log->setChanges($state->compare($participant->pet));
 
                 $this->em->persist($log);
 

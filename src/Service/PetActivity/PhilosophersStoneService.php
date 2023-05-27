@@ -97,8 +97,6 @@ class PhilosophersStoneService
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(50, 70), PetActivityStatEnum::HUNT, $roll >= 20);
 
-            $this->petExperienceService->gainExp($pet, $roll >= 20 ? 3 : 2, [ PetSkillEnum::BRAWL ]);
-
             if($roll >= 20)
             {
                 $activityLogMessage = $useDex
@@ -158,6 +156,8 @@ class PhilosophersStoneService
                     ''
                 );
             }
+
+            $this->petExperienceService->gainExp($pet, $roll >= 20 ? 3 : 2, [ PetSkillEnum::BRAWL ], $activityLog);
         }
 
         $activityLog
@@ -216,8 +216,6 @@ class PhilosophersStoneService
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(50, 70), PetActivityStatEnum::UMBRA, $roll >= 20);
 
-            $this->petExperienceService->gainExp($pet, $roll >= 20 ? 3 : 2, [ PetSkillEnum::UMBRA ]);
-
             if($roll >= 20)
             {
                 $activityLogMessage = 'The Ceremony of Fire lead ' . ActivityHelpers::PetName($pet) . ' to an ice cave in the frozen quag in the Umbra, and used their Ceremony of Fire to melt the huge Everice icicles that stood in their way.';
@@ -269,6 +267,8 @@ class PhilosophersStoneService
                     ''
                 );
             }
+
+            $this->petExperienceService->gainExp($pet, $roll >= 20 ? 3 : 2, [ PetSkillEnum::UMBRA ], $activityLog);
         }
 
         $activityLog
@@ -322,8 +322,6 @@ class PhilosophersStoneService
             $roll = $this->rng->rngNextInt(1, $skill);
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(50, 70), PetActivityStatEnum::HUNT, $roll >= 20);
-
-            $this->petExperienceService->gainExp($pet, $roll >= 20 ? 3 : 2, [ PetSkillEnum::BRAWL ]);
 
             if($roll >= 20)
             {
@@ -382,6 +380,8 @@ class PhilosophersStoneService
                     ''
                 );
             }
+
+            $this->petExperienceService->gainExp($pet, $roll >= 20 ? 3 : 2, [ PetSkillEnum::BRAWL ], $activityLog);
         }
 
         $activityLog
@@ -406,8 +406,6 @@ class PhilosophersStoneService
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 120), PetActivityStatEnum::OTHER, false);
 
-        $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::SCIENCE ]);
-
         $pet
             ->increaseEsteem(12)
             ->increaseSafety(-24)
@@ -418,6 +416,8 @@ class PhilosophersStoneService
             ActivityHelpers::PetName($pet) . ' went to the top of the island\'s volcano, and waited for a bolt of lightning. When they sensed one was finally coming, they held their ' . $pet->getTool()->getFullItemName() . ' up into the air! In an explosion of light and sound, ' . ActivityHelpers::PetName($pet) . ' was knocked to the ground, dizzy, unable to see, or hear, and feeling as though on fire! After several minutes, their senses started to return. ' . ActivityHelpers::PetName($pet) . ' slowly stood up, and moved toward a glowing gem among the rocks: a Merkaba of Air! They picked it up, and returned home, vowing to never do this again...',
             ''
         );
+
+        $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::SCIENCE ], $activityLog);
 
         $this->inventoryService->petCollectsItem('Merkaba of Air', $pet, $pet->getName() . ' got this by splitting a bolt of lightning in two!', $activityLog);
 
