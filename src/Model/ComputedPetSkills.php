@@ -337,7 +337,9 @@ class ComputedPetSkills
         $skill = new TotalPetSkill();
         $skill->base = $this->pet->getSexDrive();
         $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->sexDriveBonus() : 0;
-        $skill->statusEffects = ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 1 : 0);
+        $skill->statusEffects =
+            ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 1 : 0) +
+            ($this->pet->hasStatusEffect(StatusEffectEnum::MOONSTRUCK) ? 2 : 0);
 
         return $skill;
     }

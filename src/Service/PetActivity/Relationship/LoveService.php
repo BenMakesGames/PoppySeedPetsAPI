@@ -214,14 +214,12 @@ class LoveService
 
     public function sexyTimeChances(Pet $p1, Pet $p2, string $relationshipType): int
     {
-        // parent-child are implemented as BFFs, which have a tiny chance of sexy times that I don't think we need in this game :P
+        // parent-child are implemented as BFFs, which have a tiny chance of sexy times that
+        // I don't think we need in this game >_>
         if($this->isTooCloselyRelatedForSex($p1, $p2))
             return 0;
 
         $totalDrive = $p1->getComputedSkills()->getSexDrive()->getTotal() + $p2->getComputedSkills()->getSexDrive()->getTotal();
-
-        if($p1->hasStatusEffect(StatusEffectEnum::MOONSTRUCK)) $totalDrive += 2;
-        if($p2->hasStatusEffect(StatusEffectEnum::MOONSTRUCK)) $totalDrive += 2;
 
         switch($relationshipType)
         {
