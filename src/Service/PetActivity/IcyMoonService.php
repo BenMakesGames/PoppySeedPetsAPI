@@ -5,7 +5,6 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\Spice;
 use App\Enum\GuildEnum;
-use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
@@ -17,7 +16,6 @@ use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
 use App\Service\FieldGuideService;
-use App\Service\HattierService;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -98,9 +96,6 @@ class IcyMoonService
         if($activityLog)
         {
             $activityLog->setChanges($changes->compare($pet));
-
-            if($activityLog->getChanges()->containsLevelUp())
-                $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
         }
     }
 
@@ -112,7 +107,7 @@ class IcyMoonService
             ->addTags($this->petActivityLogTagRepository->findByNames([ 'Icy Moon' ]))
         ;
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
 
         return $activityLog;
     }
@@ -135,7 +130,7 @@ class IcyMoonService
 
         $this->inventoryService->petCollectsEnhancedItem('Everice', null, $this->getIcySpice(), $pet, $pet->getName() . ' found this in a snowfield on an Icy Moon.', $activityLog);
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
 
         return $activityLog;
     }
@@ -150,7 +145,7 @@ class IcyMoonService
 
         $this->inventoryService->petCollectsEnhancedItem('Rock', null, $this->getIcySpice(), $pet, $pet->getName() . ' found this in a field of rocks on an Icy Moon.', $activityLog);
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
 
         return $activityLog;
     }
@@ -175,8 +170,6 @@ class IcyMoonService
                 $extra = $this->squirrel3->rngNextFromArray([
                     ' (Fascinating!)', ' (Interesting...)', ' (Curious...)'
                 ]);
-
-                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
             }
             else
             {
@@ -185,14 +178,13 @@ class IcyMoonService
                 ]);
 
                 $extra = '';
-
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
             }
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored an Icy Moon, and found a Cryovolcano! It was a bit cold, but they rummaged through the deposits, and found a sample of ' . $loot . '!' . $extra, '')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Icy Moon', 'Gathering' ]))
             ;
 
+            $this->petExperienceService->gainExp($pet, $roll >= 25 ? 3 : 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
             $this->inventoryService->petCollectsEnhancedItem($loot, null, $this->getIcySpice(), $pet, $pet->getName() . ' found this amidst cryovolcano deposits on an Icy Moon.', $activityLog);
         }
         else
@@ -205,7 +197,7 @@ class IcyMoonService
 
             $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
         }
 
         $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Cryovolcano', ActivityHelpers::PetName($pet) . ' found a Cryovolcano on an Icy Moon.');
@@ -250,7 +242,7 @@ class IcyMoonService
             for($i = 0; $i < $pieces; $i++)
                 $this->inventoryService->petCollectsItem($this->squirrel3->rngNextFromArray([ 'Glass', 'Gypsum', 'Fiberglass' ]), $pet, $pet->getName() . ' got this by defeating a Mini Crystalline Entity on an Icy Moon!', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 1 + $pieces, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->gainExp($pet, 1 + $pieces, [ PetSkillEnum::BRAWL ], $activityLog);
         }
         else if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
         {
@@ -262,7 +254,7 @@ class IcyMoonService
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Icy Moon', 'Fighting', 'Guild' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
         }
         else
         {
@@ -274,7 +266,7 @@ class IcyMoonService
 
             $pet->increaseSafety(-$this->squirrel3->rngNextInt(3, 6));
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
         }
 
         return $activityLog;
@@ -318,7 +310,7 @@ class IcyMoonService
             foreach($loot as $itemName)
                 $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in the core of an Icy Moon.', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE, PetSkillEnum::NATURE ]);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE, PetSkillEnum::NATURE ], $activityLog);
 
             if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
             {
@@ -364,10 +356,9 @@ class IcyMoonService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found the entrance to the core of an Icy Moon! They got lost in the tunnels for a while, but fortunately found their way out after a while...', 'icons/activity-logs/confused')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Icy Moon', 'Gathering', 'Needs Light' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::NATURE ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::NATURE ], $activityLog);
         }
 
         return $activityLog;
     }
-
 }

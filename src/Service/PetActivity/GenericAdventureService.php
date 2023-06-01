@@ -32,14 +32,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GenericAdventureService
 {
-    private $responseService;
-    private $inventoryService;
-    private $petExperienceService;
-    private $userQuestRepository;
-    private $transactionService;
-    private $meritRepository;
-    private $itemRepository;
-    private $spiceRepository;
+    private ResponseService $responseService;
+    private InventoryService $inventoryService;
+    private PetExperienceService $petExperienceService;
+    private UserQuestRepository $userQuestRepository;
+    private TransactionService $transactionService;
+    private MeritRepository $meritRepository;
+    private ItemRepository $itemRepository;
+    private SpiceRepository $spiceRepository;
     private IRandom $squirrel3;
     private WeatherService $weatherService;
     private EnchantmentRepository $enchantmentRepository;

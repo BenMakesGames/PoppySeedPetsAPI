@@ -18,9 +18,9 @@ use App\Service\Squirrel3;
 
 class GreenhouseAdventureService
 {
-    private $responseService;
-    private $inventoryService;
-    private $squirrel3;
+    private ResponseService $responseService;
+    private InventoryService $inventoryService;
+    private Squirrel3 $squirrel3;
     private PetExperienceService $petExperienceService;
     private HattierService $hattierService;
     private EnchantmentRepository $enchantmentRepository;
