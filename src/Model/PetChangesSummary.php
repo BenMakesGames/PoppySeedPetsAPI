@@ -59,6 +59,11 @@ class PetChangesSummary
      */
     public $scrollLevel;
 
+    public function containsLevelUp(): bool
+    {
+        return strpos($this->level, '+') !== false;
+    }
+
     public static function rate($value): ?string
     {
         if($value > 20)

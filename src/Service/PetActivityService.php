@@ -496,7 +496,7 @@ class PetActivityService
                 $activityLog = $do[0]->adventure($petWithSkills, $do[1]);
                 $activityLog->setEntry($description . ' ' . $activityLog->getEntry());
 
-                if($activityLog->getChanges()->level > 0)
+                if($activityLog->getChanges()->containsLevelUp())
                     $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
             }
 

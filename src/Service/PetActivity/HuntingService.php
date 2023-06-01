@@ -189,7 +189,7 @@ class HuntingService
         {
             $activityLog->setChanges($changes->compare($pet));
 
-            if($activityLog->getChanges()->level > 0)
+            if($activityLog->getChanges()->containsLevelUp())
                 $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
         }
 
