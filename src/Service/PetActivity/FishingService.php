@@ -26,12 +26,12 @@ use App\Service\WeatherService;
 
 class FishingService
 {
-    private $responseService;
-    private $inventoryService;
-    private $petExperienceService;
-    private $transactionService;
-    private $userQuestRepository;
-    private $weatherService;
+    private ResponseService $responseService;
+    private InventoryService $inventoryService;
+    private PetExperienceService $petExperienceService;
+    private TransactionService $transactionService;
+    private UserQuestRepository $userQuestRepository;
+    private WeatherService $weatherService;
     private IRandom $squirrel3;
     private FieldGuideService $fieldGuideService;
     private GatheringDistractionService $gatheringDistractions;

@@ -168,12 +168,6 @@ class GatheringService
         if($activityLog)
         {
             $activityLog->setChanges($changes->compare($pet));
-
-            // this activity has been converted so that all gainExp calls pass an ActivityLog; the following is no longer needed:
-            /*
-            if($activityLog->getChanges()->containsLevelUp())
-                $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
-            */
         }
 
         if($this->squirrel3->rngNextInt(1, 75) === 1)
