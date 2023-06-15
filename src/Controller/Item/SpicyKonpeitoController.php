@@ -9,6 +9,7 @@ use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -34,13 +35,13 @@ class SpicyKonpeitoController extends AbstractController
         $dragon = $dragonRepository->findOneBy([ 'owner' => $user ]);
 
         if(!$dragon)
-            throw new NotFoundHttpException('You don\'t know any dragons to give the ' . $inventory->getItem()->getName() . ' to...');
+            throw new UnprocessableEntityHttpException('You don\'t know any dragons to give the ' . $inventory->getItem()->getName() . ' to...');
 
         if(!$dragon->getIsAdult())
-            throw new NotFoundHttpException('Your fireplace dragon, ' . $dragon->getName() . ', is too young for such an adult snack!');
+            throw new UnprocessableEntityHttpException('Your fireplace dragon, ' . $dragon->getName() . ', is too young for such an adult snack!');
 
         if(!$inventory->getSpice() || $inventory->getSpice()->getEffects()->getSpicy() === 0)
-            throw new NotFoundHttpException($dragon->getName() . ' is excited at first, but takes a sniff, and realizes the Konpeitō hasn\'t been properly spiced! (That Konpeitō\'s gotta\'s be SPICY!)');
+            throw new UnprocessableEntityHttpException($dragon->getName() . ' is excited at first, but takes a sniff, and realizes the Konpeitō hasn\'t been properly spiced! (That Konpeitō\'s gotta\'s be SPICY!)');
 
         $em->remove($inventory);
 
