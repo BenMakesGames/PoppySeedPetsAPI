@@ -36,14 +36,16 @@ class EggController extends AbstractController
         MeritRepository $meritRepository, PetFactory $petFactory
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'egg/jellingPolyp/#/hatch');
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'egg/jellingPolyp/#/hatch');
 
         $jelling = $petSpeciesRepository->findOneBy([ 'name' => 'Sága Jelling' ]);
 
         if(!$jelling)
             throw new HttpException(500, 'The species "Sága Jelling" does not exist! :| Make Ben fix this!');
 
-        $user = $this->getUser();
         $location = $inventory->getLocation();
 
         if($location !== LocationEnum::HOME)
