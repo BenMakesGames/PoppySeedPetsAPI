@@ -10,6 +10,7 @@ use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
 use App\Model\ComputedPetSkills;
 use App\Service\PetActivity\PregnancyService;
+use App\Service\PetRelationshipService;
 use App\Service\Squirrel3;
 
 class LoveService
@@ -34,9 +35,9 @@ class LoveService
             $expression = $giver->getLoveLanguage();
 
         $giver
-            ->increaseLove($this->squirrel3->rngNextInt(3, 6))
-            ->increaseSafety($this->squirrel3->rngNextInt(3, 6))
-            ->increaseEsteem($this->squirrel3->rngNextInt(3, 6))
+            ->increaseLove($this->squirrel3->rngNextInt(3, 5))
+            ->increaseSafety($this->squirrel3->rngNextInt(3, 5))
+            ->increaseEsteem($this->squirrel3->rngNextInt(3, 5))
         ;
 
         $side = 0;
@@ -59,9 +60,9 @@ class LoveService
         }
 
         $receiver
-            ->increaseLove($this->squirrel3->rngNextInt(3, 6))
-            ->increaseSafety($this->squirrel3->rngNextInt(3, 6))
-            ->increaseEsteem($this->squirrel3->rngNextInt(3, 6))
+            ->increaseLove($this->squirrel3->rngNextInt(3, 5))
+            ->increaseSafety($this->squirrel3->rngNextInt(3, 5))
+            ->increaseEsteem($this->squirrel3->rngNextInt(3, 5))
         ;
 
         // the message array triplets refer to whether the expression is the giver's love language, both of the pets' love languages,
@@ -76,8 +77,19 @@ class LoveService
 
                 if($this->squirrel3->rngNextInt(1, 100) <= $sexyTimesChance)
                 {
+                    $cordial = $giver->hasStatusEffect(StatusEffectEnum::CORDIAL) || $receiver->hasStatusEffect(StatusEffectEnum::CORDIAL);
+
+                    if($cordial)
+                    {
+                        $fun = 'They had a simply _wonderful_ time!';
+                        $giver->increaseLove(4)->increaseSafety(4)->increaseEsteem(4);
+                        $receiver->increaseLove(4)->increaseSafety(4)->increaseEsteem(4);
+                    }
+                    else
+                        $fun = [ 'They had fun!', 'They both had an awesome time!', 'They had fun!' ][$side];
+
                     $message .=
-                        [ 'They had fun!', 'They both had an awesome time!', 'They had fun!' ][$side] . ' ' .
+                        $fun . ' ' .
                         $this->sexyTimesEmoji($giver, $receiver) . ' ' .
                         [ $giver->getName() . ' really enjoyed giving ' . $receiver->getName() . ' the attention!', '', $receiver->getName() . ' really appreciated the attention!' ][$side]
                     ;

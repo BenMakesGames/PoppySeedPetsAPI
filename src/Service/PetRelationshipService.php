@@ -500,18 +500,27 @@ class PetRelationshipService
             {
                 if($this->squirrel3->rngNextInt(1, 100) <= $this->loveService->sexyTimeChances($pet, $friend, $p1->getCurrentRelationship()))
                 {
-                    $message = $pet->getName() . ' hung out with ' . $friend->getName() . '. They had fun! ' . $this->loveService->sexyTimesEmoji($pet, $friend);
+                    $cordial = self::EitherPetIsCordial($pet, $friend);
+                    $fun = $cordial ? 'a simply _wonderful_ time' : 'fun';
+
+                    if($cordial)
+                    {
+                        $pet->increaseLove(4)->increaseSafety(4)->increaseEsteem(4);
+                        $friend->increaseLove(4)->increaseSafety(4)->increaseEsteem(4);
+                    }
+
+                    $message = $pet->getName() . ' hung out with ' . $friend->getName() . '. They had ' . $fun . '! ' . $this->loveService->sexyTimesEmoji($pet, $friend);
 
                     $pet
-                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
-                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
-                        ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseLove($this->squirrel3->rngNextInt(3, 5))
+                        ->increaseSafety($this->squirrel3->rngNextInt(3, 5))
+                        ->increaseEsteem($this->squirrel3->rngNextInt(3, 5))
                     ;
 
                     $friend
-                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
-                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
-                        ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseLove($this->squirrel3->rngNextInt(3, 5))
+                        ->increaseSafety($this->squirrel3->rngNextInt(3, 5))
+                        ->increaseEsteem($this->squirrel3->rngNextInt(3, 5))
                     ;
 
                     $extraTags[] = 'Romance';
@@ -527,18 +536,27 @@ class PetRelationshipService
                 }
                 else
                 {
-                    $message = $pet->getName() . ' hung out with ' . $friend->getName() . '. They had fun! :)';
+                    $cordial = self::EitherPetIsCordial($pet, $friend);
+                    $fun = $cordial ? 'a simply _wonderful_ time' : 'fun';
+
+                    if($cordial)
+                    {
+                        $pet->increaseLove(4)->increaseSafety(4)->increaseEsteem(4);
+                        $friend->increaseLove(4)->increaseSafety(4)->increaseEsteem(4);
+                    }
+
+                    $message = $pet->getName() . ' hung out with ' . $friend->getName() . '. They had ' . $fun . '! :)';
 
                     $pet
-                        ->increaseLove($this->squirrel3->rngNextInt(3, 6))
-                        ->increaseSafety($this->squirrel3->rngNextInt(3, 6))
-                        ->increaseEsteem($this->squirrel3->rngNextInt(3, 6))
+                        ->increaseLove($this->squirrel3->rngNextInt(3, 5))
+                        ->increaseSafety($this->squirrel3->rngNextInt(3, 5))
+                        ->increaseEsteem($this->squirrel3->rngNextInt(3, 5))
                     ;
 
                     $friend
-                        ->increaseLove($this->squirrel3->rngNextInt(3, 6))
-                        ->increaseSafety($this->squirrel3->rngNextInt(3, 6))
-                        ->increaseEsteem($this->squirrel3->rngNextInt(3, 6))
+                        ->increaseLove($this->squirrel3->rngNextInt(3, 5))
+                        ->increaseSafety($this->squirrel3->rngNextInt(3, 5))
+                        ->increaseEsteem($this->squirrel3->rngNextInt(3, 5))
                     ;
                 }
             }
@@ -591,7 +609,16 @@ class PetRelationshipService
         }
         else if($petLowestNeed === 'love')
         {
-            $message = $pet->getName() . ' was feeling lonely, so hung out with ' . $friend->getName() . '. They had fun :)';
+            $cordial = self::EitherPetIsCordial($pet, $friend);
+            $fun = $cordial ? 'a simply _wonderful_ time' : 'fun';
+
+            if($cordial)
+            {
+                $pet->increaseLove(3)->increaseSafety(3);
+                $friend->increaseLove(3)->increaseSafety(3)->increaseEsteem(3);
+            }
+
+            $message = $pet->getName() . ' was feeling lonely, so hung out with ' . $friend->getName() . '. They had ' . $fun . ' :)';
             $pet
                 ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
                 ->increaseLove($this->squirrel3->rngNextInt(2, 4))
@@ -621,7 +648,7 @@ class PetRelationshipService
             }
             else
             {
-                $message = $pet->getName() . ' and ' . $friend->getName() . ' were both feeling down. They complained about other people, and the world. It was kind of negative, but sharing their feelings made them both feel a little better.';
+                $message = $pet->getName() . ' and ' . $friend->getName() . ' were both feeling down. They vented about other people, and the world. Sharing their feelings made them both feel a little better.';
 
                 $pet
                     ->increaseLove($this->squirrel3->rngNextInt(2, 4))
