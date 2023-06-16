@@ -6,7 +6,6 @@ use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\PetLocationEnum;
 use App\Functions\PetColorFunctions;
-use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;

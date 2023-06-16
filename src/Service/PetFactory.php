@@ -9,8 +9,6 @@ use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
-use App\Functions\ArrayFunctions;
-use App\Functions\ColorFunctions;
 use App\Model\PetShelterPet;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;

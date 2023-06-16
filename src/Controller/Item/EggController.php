@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
@@ -117,14 +118,16 @@ class EggController extends AbstractController
         MeritRepository $meritRepository, PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'egg/weird-blue/#/hatch');
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'egg/weird-blue/#/hatch');
 
         $starMonkey = $petSpeciesRepository->findOneBy([ 'name' => 'Star Monkey' ]);
 
         if(!$starMonkey)
             throw new HttpException(500, 'The species "Star Monkey" does not exist! :| Make Ben fix this!');
 
-        $user = $this->getUser();
         $location = $inventory->getLocation();
 
         if($location !== LocationEnum::HOME)
@@ -204,6 +207,7 @@ class EggController extends AbstractController
         if(!$grabber)
             throw new HttpException(500, 'The species "Grabber" does not exist! :| Make Ben fix this!');
 
+        /** @var User $user */
         $user = $this->getUser();
         $location = $inventory->getLocation();
 
