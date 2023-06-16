@@ -734,6 +734,10 @@ class PetActivityService
                     return true;
                 }
                 break;
+
+            case 'Fruit Fly on a String':
+                $this->treasureMapService->doFruitHunting($pet);
+                return true;
         }
 
         if($pet->getTool()->getEnchantment())

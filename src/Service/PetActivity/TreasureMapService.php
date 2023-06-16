@@ -367,6 +367,47 @@ class TreasureMapService
         return $activityLog;
     }
 
+    public function doFruitHunting(Pet $pet): PetActivityLog
+    {
+        $this->em->remove($pet->getTool());
+        $pet->setTool(null);
+
+        $loot = [ 'Naner' ];
+
+        $loot[] = $this->squirrel3->rngNextFromArray([
+            'Orange', 'Apricot', 'Red', 'Cacao Fruit', 'Hot Dog', 'Blackberries', 'Blueberries', 'Sweet Beet'
+        ]);
+
+        $magicLocation = 'a strange tear in the fabric of the physical realm which flickered out of existence';
+
+        $location = $this->squirrel3->rngNextFromArray([
+            'an open dumpster',
+            'a discarded grocery bag near the river',
+            'a recently-abandoned raccoon den',
+            'a friendly deer with an open pack draped over its back',
+            $magicLocation,
+            'a half-buried hole just outside town'
+        ]);
+
+        $skillTrained = $location == $magicLocation ? PetSkillEnum::UMBRA : PetSkillEnum::NATURE;
+
+        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% followed a Fruit Fly on a String to ' . $location . ', and retrieved ' . ArrayFunctions::list_nice($loot) . ' after setting the fly free.', 'items/bug/fly-fruit')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
+        ;
+
+        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::BUGS_PUT_OUTSIDE);
+
+        foreach($loot as $itemName)
+            $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' got this from ' . $location . ', which they found by following a Fruit Fly on a String.', $activityLog);
+
+        $this->petExperienceService->gainExp($pet, 1, [ $skillTrained ], $activityLog);
+
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+
+        return $activityLog;
+    }
+
     public function doFluffmongerTrade(Pet $pet): PetActivityLog
     {
         $changes = new PetChanges($pet);
