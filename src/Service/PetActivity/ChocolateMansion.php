@@ -217,6 +217,7 @@ class ChocolateMansion
         $loot = [];
         $tags = [];
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl(false)->getTotal());
+        $extraInterestingness = 0;
 
         if($pet->getTool() && $pet->getTool()->isGrayscaling())
         {
@@ -232,6 +233,7 @@ class ChocolateMansion
             $tags[] = 'Stealth';
 
             $description .= 'Fortunately, %pet:' . $pet->getId() . '.name%\'s pale color tricked the vampire into thinking they were the same sort of creatures. After apologizing, the vampire offered %pet:' . $pet->getId() . '.name% ' . $item->getNameWithArticle() . '. They accepted, and left as quickly as seemed polite.';
+            $extraInterestingness = PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY;
         }
         else if($pet->hasStatusEffect(StatusEffectEnum::CORDIAL))
         {
@@ -246,6 +248,7 @@ class ChocolateMansion
             $loot[] = $item;
 
             $description .= 'Fortunately, the vampire was completely taken by %pet:' . $pet->getId() . '.name%\'s cordiality, and the two had a simply _wonderful_ time! The vampire offered %pet:' . $pet->getId() . '.name% ' . $item->getNameWithArticle() . '. They accepted, and left as quickly as seemed polite.';
+            $extraInterestingness = PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY;
         }
         else if($roll >= 20)
         {
@@ -280,6 +283,7 @@ class ChocolateMansion
 
         $activityLog = $this->responseService->createActivityLog($pet, $description, '')
             ->addTags($this->petActivityLogTagRepository->findByNames($tags))
+            ->addInterestingness($extraInterestingness)
         ;
 
         foreach($loot as $item)
