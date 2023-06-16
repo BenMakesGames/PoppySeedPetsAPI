@@ -1076,7 +1076,22 @@ class HuntingService
 
         $pet->increaseFood(-1);
 
-        if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY) && $pet->hasMerit(MeritEnum::SOOTHING_VOICE))
+        if($pet->hasStatusEffect(StatusEffectEnum::CORDIAL))
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Satyr; the Satyr was so enamored by ' . $pet->getName() . '\'s cordiality, they had a simply _wonderful_ time, and offered gifts before leaving in peace.', 'icons/activity-logs/drunk-satyr')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fae-kind' ]))
+            ;
+            $pet->increaseEsteem(1);
+            $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
+
+            if($this->squirrel3->rngNextInt(1, 5) === 1)
+                $this->inventoryService->petCollectsItem('Quintessence', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
+            else
+                $this->inventoryService->petCollectsItem('Plain Yogurt', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(20, 40), PetActivityStatEnum::HUNT, true);
+        }
+        else if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY) && $pet->hasMerit(MeritEnum::SOOTHING_VOICE))
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Satyr, but remembered that Satyrs love music, so sang a song. The Satyr was so enthralled by ' . $pet->getName() . '\'s Soothing Voice, that it offered gifts before leaving in peace.', 'icons/activity-logs/drunk-satyr')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fae-kind' ]))

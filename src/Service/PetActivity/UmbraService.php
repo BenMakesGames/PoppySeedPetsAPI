@@ -9,6 +9,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SpiritCompanionStarEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
@@ -820,6 +821,20 @@ class UmbraService
             $pet->increaseEsteem(2);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was apparently home to vampires! Fortunately, the vampires mistook ' . $pet->getName() . '\'s monochromatic appearance as vampirism, and welcomed them as kin. ' . $pet->getName() . ' stole a few items while none of the vampires were looking, and fled the castle as soon as they could!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra' ]))
+            ;
+
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this from a vampire castle.', $activityLog);
+        }
+        else if($pet->hasStatusEffect(StatusEffectEnum::CORDIAL))
+        {
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
+            $loot = $this->squirrel3->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
+
+            $pet->increaseEsteem(2);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was apparently home to vampires! Fortunately, the vampires were completely taken by ' . $pet->getName() . '\'s cordiality, and they all had a simply _wonderful_ time! ' . $pet->getName() . ' received a few gifts from the vampires, then found some excuse to leave...', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra' ]))
             ;

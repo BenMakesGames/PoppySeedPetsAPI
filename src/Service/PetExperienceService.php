@@ -54,6 +54,8 @@ class PetExperienceService
      */
     public function gainExp(Pet $pet, int $exp, array $stats, ?PetActivityLog $activityLog = null): bool
     {
+        if(count($stats) == 0) return false;
+
         if($pet->hasStatusEffect(StatusEffectEnum::INSPIRED))
             $exp++;
 

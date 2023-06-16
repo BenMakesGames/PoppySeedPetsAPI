@@ -9,6 +9,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -231,6 +232,20 @@ class ChocolateMansion
             $tags[] = 'Stealth';
 
             $description .= 'Fortunately, %pet:' . $pet->getId() . '.name%\'s pale color tricked the vampire into thinking they were the same sort of creatures. After apologizing, the vampire offered %pet:' . $pet->getId() . '.name% ' . $item->getNameWithArticle() . '. They accepted, and left as quickly as seemed polite.';
+        }
+        else if($pet->hasStatusEffect(StatusEffectEnum::CORDIAL))
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(20, 40), PetActivityStatEnum::OTHER, true);
+            $expAmount = 0;
+            $expStats = [ ];
+
+            $item = $this->itemRepository->findOneByName($this->rng->rngNextFromArray([
+                'Blood Wine', 'Chocolate Wine',
+            ]));
+
+            $loot[] = $item;
+
+            $description .= 'Fortunately, the vampire was completely taken by %pet:' . $pet->getId() . '.name%\'s cordiality, and the two had a simply _wonderful_ time! The vampire offered %pet:' . $pet->getId() . '.name% ' . $item->getNameWithArticle() . '. They accepted, and left as quickly as seemed polite.';
         }
         else if($roll >= 20)
         {
